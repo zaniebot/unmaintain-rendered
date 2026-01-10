@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLR0133: False Positive - astral-sh/ruff #11232</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLR0133: False Positive</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11232">#11232</a>
+        opened by <a href="https://github.com/colin99d">@colin99d</a>
+        on 2024-05-01 14:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/colin99d">@colin99d</a> on 2024-05-01 14:32</div>
+            <div class="timeline-body"><ul>
+<li>A minimal code snippet that reproduces the bug.</li>
+</ul>
+<pre><code>x = 5
+x or 0 &gt; 0
+</code></pre>
+<ul>
+<li>The command you invoked (e.g., <code>ruff /path/to/file.py --fix</code>), ideally including the <code>--isolated</code> flag.
+<code>ruff check .</code></li>
+<li>The current Ruff version (<code>ruff --version</code>).
+<code>ruff 0.4.2</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-05-01 14:41</div>
+            <div class="timeline-body"><p>It's not clear to me why you consider this a false positive. The <code>0 &gt; 0</code> is a constant comparison. Could you mind explaining your reasoning in more detail?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2024-05-01 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2024-05-01 14:45</div>
+            <div class="timeline-body"><p>According to the ruff docs, the reason for this rule is that:</p>
+<p><code>Comparing two constants will always resolve to the same value, so the comparison is redundant. Instead, the expression should be replaced with the result of the comparison.</code></p>
+<p>However, given that x is of type None | int, then this will not always yield the same result. In our code, we often use or statements to handle None values. So the usage is basically &quot;if x is None, compare with 0 instead&quot;. Given that x or 0 is not a constant, I don't think this rule is helpful here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trag1c">@trag1c</a> on 2024-05-01 14:48</div>
+            <div class="timeline-body"><p>@colin99d You're not taking operator precedence into account here; <code>x or 0 &gt; 0</code> is correctly flagged as it's actually <code>x or (0 &gt; 0)</code>, as <code>&gt;</code> has higher precedence than <code>or</code> (see https://docs.python.org/3.12/reference/expressions.html#operator-precedence).</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; print(ast.dump(ast.parse(&quot;x or 0 &gt; 0&quot;), indent=2))
+Module(
+  body=[
+    Expr(
+      value=BoolOp(
+        op=Or(),
+        values=[
+          Name(id='x', ctx=Load()),
+          Compare(
+            left=Constant(value=0),
+            ops=[
+              Gt()],
+            comparators=[
+              Constant(value=0)])]))],
+  type_ignores=[])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2024-05-01 14:50</div>
+            <div class="timeline-body"><p>Oh wow nice catch @trag1c. Will close.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @colin99d on 2024-05-01 14:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:43 UTC
+    </footer>
+</body>
+</html>

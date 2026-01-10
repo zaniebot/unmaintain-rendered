@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PD013 UseOfDotStack triggered by np.stack - astral-sh/ruff #1659</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PD013 UseOfDotStack triggered by np.stack</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1659">#1659</a>
+        opened by <a href="https://github.com/ManonMarchand">@ManonMarchand</a>
+        on 2023-01-05 10:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ManonMarchand">@ManonMarchand</a> on 2023-01-05 10:42</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>I think this is not intentional: using the numpy function <code>stack</code> with <code>np.stack</code> triggers the error PD013 <code>UseOfDotStack .melt is preferred to .stack; provides same functionality</code> even if this has nothing to do with a Pandas dataframe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-05 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-05 14:47</div>
+            <div class="timeline-body"><p>Yeah we can probably guard against this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-05 14:48</div>
+            <div class="timeline-body"><p>(We could ensure that whatever’s referenced isn’t an in import. Maybe some other heuristics too.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/twoertwein">@twoertwein</a> on 2023-01-05 15:25</div>
+            <div class="timeline-body"><p>(same for <code>torch.stack</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ManonMarchand">@ManonMarchand</a> on 2023-01-05 15:38</div>
+            <div class="timeline-body"><p>Is there a way to check the type of what's referenced? The issue might also occur in all the other <code>UseOfDot*</code> checks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2023-01-05 15:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there a way to check the type of what's referenced?</p>
+</blockquote>
+<p>Not really, since types would have to be tracked beyond the module being analyzed. The best we could do is check the imports, like Charlie said above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-05 16:05</div>
+            <div class="timeline-body"><p>Yeah, I think we can at least ensure that <code>np.stack</code> and <code>torch.stack</code> themselves don't trigger. What we can't guard against are things like:</p>
+<pre><code class="language-py">x = np.array([])
+x.stack(...)
+</code></pre>
+<p>(That's not valid NumPy code anyway, more illustrating the point that this would be a false positive.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-01-05 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-06 00:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:28:47 UTC
+    </footer>
+</body>
+</html>

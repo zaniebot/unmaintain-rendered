@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autofix for SIM401 produces broken code - astral-sh/ruff #2007</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Autofix for SIM401 produces broken code</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2007">#2007</a>
+        opened by <a href="https://github.com/henryiii">@henryiii</a>
+        on 2023-01-20 01:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/henryiii">@henryiii</a> on 2023-01-20 01:56</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+- A minimal code snippet that reproduces the bug.
+- The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+- The current Ruff settings (any relevant sections from your `pyproject.toml`).
+- The current Ruff version (`ruff --version`).
+-->
+
+<p>I was trying this on cibuildwheel, and got a broken autofix:</p>
+<pre><code class="language-diff">diff --git a/cibuildwheel/options.py b/cibuildwheel/options.py
+index 6b7b335f..d5295083 100644
+--- a/cibuildwheel/options.py
++++ b/cibuildwheel/options.py
+@@ -558,8 +558,7 @@ def build_options(self, identifier: str | None) -&gt; BuildOptions:
+                     if not config_value:
+                         # default to manylinux2014
+                         image = pinned_images[&quot;manylinux2014&quot;]
+-                    elif config_value in pinned_images:
+-                        image = pinned_images[config_value]
++                    image = pinned_images.get(config_value, config_value)
+                     else:
+                         image = config_value
+</code></pre>
+<p>That's broken. MWE:</p>
+<pre><code class="language-python">config_value = 1
+pinned_images = {1}
+pinned_images = dict()
+
+if not config_value:
+    # default to manylinux2014
+    image = pinned_images[&quot;manylinux2014&quot;]
+elif config_value in pinned_images:
+    image = pinned_images[config_value]
+else:
+    image = config_value
+</code></pre>
+<pre><code class="language-console">&gt; ruff --fix --isolated --select SIM401 tmp.py
+</code></pre>
+<pre><code class="language-python">config_value = 1
+pinned_images = {1}
+pinned_images = dict()
+
+if not config_value:
+    # default to manylinux2014
+    image = pinned_images[&quot;manylinux2014&quot;]
+image = pinned_images.get(config_value, config_value)
+else:
+    image = config_value
+</code></pre>
+<p>Will show the issue. Using 0.0.225 (from brew, isolated example above) &amp; 0.0.226 (in pre-commit, for cibuildwheel).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-01-20 02:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-20 02:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-20 02:03</div>
+            <div class="timeline-body"><p>Will fix this tonight. I actually thought we <em>had</em> fixed this, but maybe it was just the exact same issue with a different rule. (Correcting myself: yes, it was SIM103 via https://github.com/charliermarsh/ruff/issues/1943.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-20 02:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:28:57 UTC
+    </footer>
+</body>
+</html>

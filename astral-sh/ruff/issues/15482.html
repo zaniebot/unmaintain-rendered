@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recognize type hints/annotations with F821 `undefined-name` - astral-sh/ruff #15482</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Recognize type hints/annotations with F821 <code>undefined-name</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15482">#15482</a>
+        opened by <a href="https://github.com/wzyboy">@wzyboy</a>
+        on 2025-01-14 23:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wzyboy">@wzyboy</a> on 2025-01-14 23:22</div>
+            <div class="timeline-body"><p>When writing modules for <a href="https://github.com/saltstack/salt">SaltStack</a>, dynamic variables such as <a href="https://docs.saltproject.io/en/latest/topics/development/modules/developing.html#dunder-dictionaries"><code>__grains__</code></a> are often used. These variables are not defined in the code but are injected at runtime by Salt's execution environment. For example:</p>
+<pre><code class="language-python">def my_custom_function():
+    os_family = __grains__[&quot;os_family&quot;]
+    return {&quot;os_family&quot;: os_family}
+</code></pre>
+<p>Here is a real-world example: <a href="https://github.com/saltstack/salt/blob/9233e1cc3b6b072a61b445d285ba856fc642ef3b/salt/modules/pacmanpkg.py#L36">pacmanpkg.py</a></p>
+<p>To make type checkers happy, type hints can be used:</p>
+<pre><code class="language-python">__grains__: dict
+
+def my_custom_function():
+    os_family = __grains__[&quot;os_family&quot;]
+    return {&quot;os_family&quot;: os_family}
+</code></pre>
+<p>I find this is enough to make <a href="https://github.com/microsoft/pyright">pyright</a> happy, but Ruff still reports F821 <code>undefined-name</code>:</p>
+<pre><code>$ ruff check --select F821 foo.py
+foo.py:4:17: F821 Undefined name `__grains__`
+  |
+3 | def my_custom_function():
+4 |     os_family = __grains__[&quot;os_family&quot;]
+  |                 ^^^^^^^^^^ F821
+5 |     return {&quot;os_family&quot;: os_family}
+  |
+
+Found 1 error.
+</code></pre>
+<p>Is it possible to recognize type hints/annotations in Ruff?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-15 00:10</div>
+            <div class="timeline-body"><p>The <a href="https://docs.astral.sh/ruff/settings/#builtins"><code>builtins</code></a> setting should help with this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wzyboy">@wzyboy</a> on 2025-01-15 00:14</div>
+            <div class="timeline-body"><p>Thanks! Using <code>builtins</code> indeed looks better than disabling F821 altogether.</p>
+<p>However, it would still be even better if Ruff can regonize type hints like pyright does...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-15 00:23</div>
+            <div class="timeline-body"><p>In that case, how about this?</p>
+<pre><code class="language-py">TYPE_CHECKING = False
+
+if TYPE_CHECKING:
+    __grains__: dict = ...
+
+os_family = __grains__[&quot;os_family&quot;]  # fine
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wzyboy">@wzyboy</a> on 2025-01-15 00:32</div>
+            <div class="timeline-body"><pre><code>if TYPE_CHECKING:
+    __grains__: dict = ...
+</code></pre>
+<p>This triggers errors from other static checkers (e.g. pyright): <code>Type &quot;EllipsisType&quot; is not assignable to declared type &quot;dict[Unknown, Unknown]&quot;</code></p>
+<p>If I simply use <code>__grains__ = ...</code> then there will be <code>__grains__[&quot;os_family&quot;] ■ &quot;__getitem__&quot; method not defined on type &quot;EllipsisType&quot;</code> error.</p>
+<p>Your suggestion inspired me to try this:</p>
+<pre><code>if TYPE_CHECKING:
+    __grains__: dict = {}
+</code></pre>
+<p>This makes everyone happy, but it's a bit confusing to read.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-15 00:36</div>
+            <div class="timeline-body"><p><code>__grains__ = {}</code> works too. Alternatively:</p>
+<pre><code class="language-py">__grains__: dict = ...  # type: ignore
+__grains__ = cast(dict, ...)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2025-01-15 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-15 00:40</div>
+            <div class="timeline-body"><p>@dylwil3 I think this is more of a <a href="https://github.com/astral-sh/ruff/labels/question">question</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dylwil3 on 2025-01-15 01:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> removed by @dylwil3 on 2025-01-15 01:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-15 04:58</div>
+            <div class="timeline-body"><blockquote>
+<p>However, it would still be even better if Ruff can regonize type hints like pyright does...</p>
+</blockquote>
+<p>This would be resolved by the on-going red knot project which will recognize the type hints and will not complain about an undefined name in your scenario. For Ruff, I think it's unlikely that we expand the scope of this rule to look at type hints as (a) it'll diverge from the upstream flake8 rule and (b) the implementation will be fairly basic as Ruff cannot do multifile analysis.</p>
+<p>Considering the conversation above, I think that resolves your need and answers the question. Feel free to ask any other questions that you might have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-01-15 04:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:17 UTC
+    </footer>
+</body>
+</html>

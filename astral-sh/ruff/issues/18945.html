@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-simplify`] `SIM109` fix reorders statements incorrectly - astral-sh/ruff #18945</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-simplify</code>] <code>SIM109</code> fix reorders statements incorrectly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18945">#18945</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-06-25 20:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-25 20:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I found this while working on #15584</p>
+<p><a href="https://docs.astral.sh/ruff/rules/compare-with-tuple/#compare-with-tuple-sim109">compare-with-tuple (SIM109)</a> does not respect the <code>or</code> ordering in expressions. <code>x or y == z or y == w</code> should be turned into <code>x or (y in (z, w))</code>, but instead becomes <code>y in (z, w) or x</code>, changing the meaning of the code.</p>
+<p>https://play.ruff.rs/f7ed8e28-c451-48d8-ace1-c1fdb85f51cd</p>
+<pre><code>PS ~\Desktop\New_folder\ruff&gt;Get-Content issue.py
+</code></pre>
+<pre><code class="language-py">x = None
+y = &quot;y&quot;
+z = &quot;z&quot;
+w = &quot;w&quot;
+print(x or y == z or y == w)
+</code></pre>
+<pre><code>PS ~\Desktop\New_folder\ruff&gt;py issue.py
+</code></pre>
+<pre><code>False
+</code></pre>
+<pre><code>PS ~\Desktop\New_folder\ruff&gt;uvx ruff check issue.py --isolated --select SIM
+</code></pre>
+<pre><code class="language-snap">issue.py:5:7: SIM109 Use `y in (z, w)` instead of multiple equality comparisons
+  |
+3 | z = &quot;z&quot;
+4 | w = &quot;w&quot;
+5 | print(x or y == z or y == w)
+  |       ^^^^^^^^^^^^^^^^^^^^^ SIM109
+  |
+  = help: Replace with `y in (z, w)`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<pre><code>PS ~\Desktop\New_folder\ruff&gt;uvx ruff check issue.py --isolated --select SIM --fix --unsafe-fixes
+</code></pre>
+<pre><code>Found 1 error (1 fixed, 0 remaining).
+</code></pre>
+<pre><code>PS ~\Desktop\New_folder\ruff&gt;Get-Content issue.py
+</code></pre>
+<pre><code class="language-py">x = None
+y = &quot;y&quot;
+z = &quot;z&quot;
+w = &quot;w&quot;
+print(y in (z, w) or x)
+</code></pre>
+<pre><code>PS ~\Desktop\New_folder\ruff&gt;py issue.py
+</code></pre>
+<pre><code>None
+</code></pre>
+<p>Other misc things about <code>SIM109</code> I noticed:
+The lint currently doesn't apply at all if there are comments inside the expr, but I don't know why. I think it should instead be a normally safe fix, and only unsafe if there are comments. (There is the same amount of <code>__eq__</code> calls pre and post fix, ordering in those calls is preserved, and the code already doesn't lint if there is any possibility of other side effects.)</p>
+<h3>Version</h3>
+<p>ruff 0.12.0 (87f0feb21 2025-06-17) + playground</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-simplify`] `SIM109` does not respect `or` ordering (false positive)" to "[`flake8-simplify`] `SIM109` fix reorders statements incorrectly" by @MeGaGiGaGon on 2025-06-25 22:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-06-25 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-06-25 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-25 22:30</div>
+            <div class="timeline-body"><p>Thanks, this seems like a bug. Maybe we can use <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_ast/src/operator_precedence.rs#L9"><code>OperatorPrecedence</code></a> here.</p>
+<p>With regard to the fix, I'm not sure if we want to upgrade it to a safe fix when there are no comments, but we could at least avoid the <code>continue</code> in the presence of comments since it's already unsafe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeleppane">@mikeleppane</a> on 2025-08-05 06:40</div>
+            <div class="timeline-body"><p>I'm working on this.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:50 UTC
+    </footer>
+</body>
+</html>

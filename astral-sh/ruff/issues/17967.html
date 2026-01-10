@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autofix `S608` when fstring has no placeholders - astral-sh/ruff #17967</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Autofix <code>S608</code> when fstring has no placeholders</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17967">#17967</a>
+        opened by <a href="https://github.com/dosisod">@dosisod</a>
+        on 2025-05-08 21:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dosisod">@dosisod</a> on 2025-05-08 21:22</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I ran into this on one of my codebases today:</p>
+<pre><code class="language-python">from sqlite3 import connect
+
+db = connect(&quot;:memory:&quot;)
+
+db.execute(f&quot;SELECT * FROM table&quot;).fetchall()
+</code></pre>
+<p>Running with ruff v0.11.8:</p>
+<pre><code>$ ruff check x.py --select S608,F541
+x.py:5:12: F541 [*] f-string without any placeholders
+  |
+3 | db = connect(&quot;:memory:&quot;)
+4 |
+5 | db.execute(f&quot;SELECT * FROM table&quot;).fetchall()
+  |            ^^^^^^^^^^^^^^^^^^^^^^ F541
+  |
+  = help: Remove extraneous `f` prefix
+
+x.py:5:12: S608 Possible SQL injection vector through string-based query construction
+  |
+3 | db = connect(&quot;:memory:&quot;)
+4 |
+5 | db.execute(f&quot;SELECT * FROM table&quot;).fetchall()
+  |            ^^^^^^^^^^^^^^^^^^^^^^ S608
+  |
+
+Found 2 errors.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p>In this case, fixing F541 by removing the <code>f</code> will also fix S608, which means you can do one of the following:</p>
+<ul>
+<li>Emit both errors, and mark them both as fixable</li>
+<li>Emit just S608, and mark it as fixable (by applying the fix logic from S541)</li>
+</ul>
+<p>It might be more effort than it's worth to improve this, but it would be an easy case to detect in S608.</p>
+<h3>Version</h3>
+<p>ruff 0.11.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-05-09 06:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-05-09 06:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">h]</span> added by @MichaReiser on 2025-05-09 06:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">h]</span> removed by @MichaReiser on 2025-05-09 06:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-09 06:11</div>
+            <div class="timeline-body"><p>Skipping <code>S608</code> for f-strings without any placeholders seems a good idea</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-10 10:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:25 UTC
+    </footer>
+</body>
+</html>

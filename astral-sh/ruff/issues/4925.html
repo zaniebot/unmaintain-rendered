@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E712: Invalid parentheses removal - astral-sh/ruff #4925</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>E712: Invalid parentheses removal</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4925">#4925</a>
+        opened by <a href="https://github.com/addisoncrump">@addisoncrump</a>
+        on 2023-06-07 12:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/addisoncrump">@addisoncrump</a> on 2023-06-07 12:08</div>
+            <div class="timeline-body"><p>E712 fix may remove parentheses in a way which causes invalid syntax:</p>
+<pre><code class="language-py">def a(x):
+  return x == 5
+
+if(a(2)) == True:
+  print(&quot;it's five&quot;)
+</code></pre>
+<p>Becomes:</p>
+<pre><code class="language-py">def a(x):
+  return x == 5
+
+ifa(2) is True:
+  print(&quot;it's five&quot;)
+</code></pre>
+<p>Discovered by #4822.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-06-07 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-07 21:22</div>
+            <div class="timeline-body"><p>\cc @MichaReiser - A parenthesized node would solve this (just tabulating).</p>
+<p>In the meantime, we'd need to rewrite with LibCST I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-08 05:06</div>
+            <div class="timeline-body"><blockquote>
+<p>\cc @MichaReiser - A parenthesized node would solve this (just tabulating).</p>
+<p>In the meantime, we'd need to rewrite with LibCST I think.</p>
+</blockquote>
+<p>Thanks for the ping. Mutating the tree instead of manually creating text edits would solve that too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-08 15:45</div>
+            <div class="timeline-body"><p>Ideally the edit would be &quot;just&quot; replacing <code>==</code> with <code>is</code>, rather than rewriting the entire expression :joy:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on 2023-06-08 15:47</div>
+            <div class="timeline-body"><p>Sadly would not work for the opposite reason:</p>
+<pre><code class="language-py">if a==True:
+  ...
+</code></pre>
+<p>would become</p>
+<pre><code class="language-py">if aisTrue:
+  ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jasikpark">@jasikpark</a> on 2023-06-17 05:56</div>
+            <div class="timeline-body"><p>Just repro'ed another version of this w/ #4822 in libafl mode 😁</p>
+<pre><code class="language-python">if(True) == TrueElement or x == TrueElement:
+    pass
+
+assert (not Soo) in bar
+assert {&quot;x&quot;: not foo} in bar
+</code></pre>
+<pre><code class="language-shell">cargo run --bin ruff -- --fix ./minimized-from-crash-2c30da3ded030419
+    Finished dev [unoptimized + debuginfo] target(s) in 0.11s
+     Running `target/debug/ruff --fix ./minimized-from-crash-2c30da3ded030419`
+warning: Detected debug build without --no-cache.
+error: Autofix introduced a syntax error in `minimized-from-crash-2c30da3ded030419` with rule codes E712: invalid syntax. Got unexpected token Newline at byte offset 42
+---
+ifTrue is TrueElement or x == TrueElement:
+    pass
+
+assert (not Soo) in bar
+assert {&quot;x&quot;: not foo} in bar
+
+---
+minimized-from-crash-2c30da3ded030419:1:4: E712 Comparison to `True` should be `cond is True` or `if cond:`
+minimized-from-crash-2c30da3ded030419:1:13: F821 Undefined name `TrueElement`
+minimized-from-crash-2c30da3ded030419:1:28: F821 Undefined name `x`
+minimized-from-crash-2c30da3ded030419:1:33: F821 Undefined name `TrueElement`
+minimized-from-crash-2c30da3ded030419:3:14: F821 Undefined name `Soo`
+minimized-from-crash-2c30da3ded030419:3:22: F821 Undefined name `bar`
+minimized-from-crash-2c30da3ded030419:4:18: F821 Undefined name `foo`
+minimized-from-crash-2c30da3ded030419:4:26: F821 Undefined name `bar`
+Found 8 errors.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/addisoncrump">@addisoncrump</a> on 2023-07-31 23:36</div>
+            <div class="timeline-body"><p>I found another, more exciting example of this; consider the following snippet:</p>
+<pre><code class="language-py">x = range(0, 10)
+
+def y():
+  global x
+
+  for i in x:
+    if (yield i) == True:
+      print(&quot;even&quot;)
+    else:
+      print(&quot;odd&quot;)
+
+v = y()
+next(v)
+
+for i in range(1, 10):
+  print(v.send(i % 2 == 0))
+</code></pre>
+<p>This is a really dumb program that uses generators wrong, but it gets the point across. Ruff attempts to fix this to:</p>
+<pre><code class="language-py">x = range(0, 10)
+
+def y():
+  global x
+
+  for i in x:
+    if yield i is True:
+      print(&quot;even&quot;)
+    else:
+      print(&quot;odd&quot;)
+
+v = y()
+next(v)
+
+for i in range(1, 10):
+  print(v.send(i % 2 == 0))
+</code></pre>
+<p>Which is invalid because the <code>yield</code> must be surrounded by parentheses. I think the answer to this is to simply <em>not</em> remove the parentheses, as it seems to be not a totally sane fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-08-01 04:35</div>
+            <div class="timeline-body"><blockquote>
+<p>Which is invalid because the <code>yield</code> must be surrounded by parentheses. I think the answer to this is to simply <em>not</em> remove the parentheses, as it seems to be not a totally sane fix.</p>
+</blockquote>
+<p>This seems like a regression as I can only reproduce this on <code>v0.0.279</code> onwards and not on any previous versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-08-01 04:53</div>
+            <div class="timeline-body"><p>A bisection search gives me 875e04e36900114a3b7fdefe84e5ea9c4afdb5b7.</p>
+<p>Right, so the patch generation was moved from <code>Generator</code>-based to <code>Locator</code>-based which is not aware of the parenthesis while the <code>Generator</code>-based is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-08-14 21:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-17 15:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:18 UTC
+    </footer>
+</body>
+</html>

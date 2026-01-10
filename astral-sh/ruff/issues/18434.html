@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM118 maybe shouldn't fire on `for key in dict.keys()` - astral-sh/ruff #18434</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM118 maybe shouldn't fire on <code>for key in dict.keys()</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18434">#18434</a>
+        opened by <a href="https://github.com/zackw">@zackw</a>
+        on 2025-06-02 20:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zackw">@zackw</a> on 2025-06-02 20:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/in-dict-keys/">The documentation for SIM118</a> makes it sound like it applies specifically to <code>if k in d.keys()</code> and similar, but it also fires on <code>for k in d.keys()</code>:</p>
+<pre><code>def f(d: dict):
+    for k in d:
+        print(k)
+
+def g(d: dict):
+    for k in d.keys():  # Use `key in dict` instead of `key in dict.keys()` (SIM118)
+        print(k)
+</code></pre>
+<p>(playground: <a href="https://play.ruff.rs/4f8a2dce-14a4-4de9-a41e-cbe523721349">https://play.ruff.rs/4f8a2dce-14a4-4de9-a41e-cbe523721349</a>)</p>
+<p>Whenever the dictionary is being <em>iterated over</em>, rather than checking for membership of a single element, I think the case for insisting on bare <code>k in d</code> is much weaker and in fact I personally want the <em>exact opposite</em> lint, because I have often made the mistake of writing <code>for k, v in d</code> when I meant to write <code>for k, v in dict.items()</code>.</p>
+<p>Therefore I request that the effect of SIM118 be restricted to situations like <code>if k in d.keys()</code>, and that new lints be added for <em>both</em> <code>for k in d.keys()</code> =&gt; <code>for k in d</code> <em>and</em> <code>for k in d</code> =&gt; <code>for k in d.keys()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-02 20:46</div>
+            <div class="timeline-body"><p>On the one hand, this looks very intentional in the current code:</p>
+<p>https://github.com/astral-sh/ruff/blob/87a15f7e4cf328e6485cee98960d19f51a955ef4/crates/ruff_linter/src/rules/flake8_simplify/rules/key_in_dict.rs#L163-L172</p>
+<p>but on the other hand, this appears to be a departure from the upstream rule:</p>
+<pre><code class="language-shell">$ cat &lt;&lt;'EOF' | uvx --with flake8-simplify flake8 --select SIM118 -
+def f(d: dict):
+    &quot;&quot; in d.keys()  # error
+    for k in d.keys(): ...  # okay
+EOF
+stdin:2:5: SIM118 Use '&quot;&quot; in d' instead of '&quot;&quot; in d.keys()'
+</code></pre>
+<p>I personally prefer the explicit <code>d.keys()</code> call for loops too, but I'd be interested to see what others think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-06-02 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-06-02 20:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MrXerios">@MrXerios</a> on 2025-06-03 11:50</div>
+            <div class="timeline-body"><p>Same here, I think <code>d.keys()</code> is much better since it's more explicit. Is it a performance issue ? <code>for k in d :</code> can't be much faster than <code>for k in d.keys() :</code>, can it ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zackw">@zackw</a> on 2025-06-03 13:10</div>
+            <div class="timeline-body"><p>@MrXerios The bytecode compiler cannot eliminate the call to keys(), so <code>for x in d</code> will produce something like</p>
+<pre><code>...
+              LOAD_FAST                0 (d)
+              GET_ITER
+      L1:     FOR_ITER                14 (to L2)
+...
+</code></pre>
+<p>whereas <code>for x in d.keys()</code> will produce something like</p>
+<pre><code>...
+              LOAD_FAST                0 (x)
+              LOAD_ATTR                1 (keys + NULL|self)
+              CALL                     0
+              GET_ITER
+      L1:     FOR_ITER                14 (to L2)
+...
+</code></pre>
+<p>The loop body, however, is identical, so this difference should be in the noise for any substantial program.</p>
+<p>The same difference is observable with <code>x in d[.keys()]</code> used as a boolean expression (just replace the GET_ITER/FOR_ITER pair with CONTAINS_OP) and in that case I <em>can</em> imagine a program where the performance difference would be measurable, but it would be pretty contrived.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:35 UTC
+    </footer>
+</body>
+</html>

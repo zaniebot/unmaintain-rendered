@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C414 --fix is also unsafe for sorted(reversed(iterable)), and other issues encountered when comparing with shed - astral-sh/ruff #10245</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>C414 --fix is also unsafe for sorted(reversed(iterable)), and other issues encountered when comparing with shed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10245">#10245</a>
+        opened by <a href="https://github.com/jakkdl">@jakkdl</a>
+        on 2024-03-06 10:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jakkdl">@jakkdl</a> on 2024-03-06 10:34</div>
+            <div class="timeline-body"><p>C414 is marked as unsafe fix, but only because of dropping comments: https://docs.astral.sh/ruff/rules/unnecessary-double-cast-or-process/#fix-safety</p>
+<p>EDIT: I noticed now that C413 has an extensive warning about safety with regards to stable sorting https://docs.astral.sh/ruff/rules/unnecessary-call-around-sorted/#fix-safety - so the fix is perhaps just that it should be copied over?</p>
+<p>But it also breaks sorting stability in some cases, autofixing <code>sorted(reversed(iterable))</code> to <code>sorted(iterable)</code>.</p>
+<p>full shell command:</p>
+<pre><code class="language-sh">$ ruff check --select=C414 --fix --unsafe-fixes --isolated - &lt;&lt;&lt; 'sorted(reversed(iterable))'  
+sorted(iterable)
+Found 1 error (1 fixed, 0 remaining).
+</code></pre>
+<p>ruff version: 0.3.0
+platform: linux</p>
+<p>And a full minimal example where the problem is demonstrated. Assertions pass before autofixing with ruff, but fail afterwards.</p>
+<pre><code class="language-py">from __future__ import annotations
+from dataclasses import dataclass
+@dataclass
+class MyClass:
+    a: int
+    b: int
+    def __lt__(self, other: MyClass) -&gt; bool:
+        return self.a &lt; other.a
+
+first = MyClass(1, 1)
+second = MyClass(1, 2)
+
+# ruff will remove the reversed call in the line below, breaking the assertion
+assert sorted(reversed((first, second))) == [second, first]
+assert sorted((first, second)) == [first, second]
+</code></pre>
+<p>Found in the process of replacing some of sheds libcst code mods with ruff https://github.com/Zac-HD/shed/pull/105
+CodeMod in question: https://github.com/Zac-HD/shed/blob/692a429bff19c3e1a798b97cb45396160dc138eb/src/shed/_codemods.py#L275-L315</p>
+<p>Unrelated to this specific issue: That codemod also handles cases of combining <code>reverse</code>:
+<code>sorted(sorted(iterable, reverse=True), reverse=False)</code> -&gt; <code>sorted(iterable, reverse=False)</code>
+<code>sorted(sorted(iterable, reverse=False), reverse=True)</code> -&gt; <code>sorted(iterable, reverse=True)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakkdl">@jakkdl</a> on 2024-03-06 10:52</div>
+            <div class="timeline-body"><p>EDIT: see https://github.com/Zac-HD/shed/blob/master/CODEMODS.md#replace_unnecessary_subscript_reversal</p>
+<p>I'll continue mentioning some related things popping up, can open dedicated issues for them later if you want:
+C415 does not have an autofix in ruff, but does in shed. So you might be interested in copying the implementation/logic: https://github.com/Zac-HD/shed/blob/692a429bff19c3e1a798b97cb45396160dc138eb/src/shed/_codemods.py#L317-L330</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakkdl">@jakkdl</a> on 2024-03-06 11:26</div>
+            <div class="timeline-body"><p><a href="https://docs.astral.sh/ruff/rules/none-comparison/">E711 docs</a> states 'fix is always available' but it's marked as unsafe</p>
+<pre><code>$ ruff check --select=E711 --isolated --fix-only - &lt;&lt;&lt; 'z == None' 
+z == None
+No errors fixed (1 fix available with `--unsafe-fixes`).
+</code></pre>
+<p>The &quot;Use instead&quot; in the example also only contains one of the two input examples in the Example: https://docs.astral.sh/ruff/rules/none-comparison/#example</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakkdl">@jakkdl</a> on 2024-03-06 12:20</div>
+            <div class="timeline-body"><p>shed has a custom codemod for handling empty collections passed to builtins, which isn't fully covered by ruff - likely because flake8-comprehensions doesn't cover them either. (I have not dug into if they've been rejected by flake8-comprehensions, or just not considered)</p>
+<pre><code class="language-python"># handled by ruff
+list([]) # C410
+list(()) # C410
+
+dict({}) # C418
+dict([]) # C406
+dict(()) # C406
+
+tuple([]) # C409
+tuple(()) # C409
+
+# ruff does not raise any errors
+list({}) 
+list(&quot;&quot;)
+dict(&quot;&quot;)
+tuple({})
+tuple(&quot;&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "C414 --fix is also unsafe for sorted(reversed(iterable))" to "C414 --fix is also unsafe for sorted(reversed(iterable)), and other issues encountered when comparing with shed" by @jakkdl on 2024-03-06 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakkdl">@jakkdl</a> on 2024-03-06 12:42</div>
+            <div class="timeline-body"><p>EDIT: see https://github.com/Zac-HD/shed/blob/master/CODEMODS.md#leave_assert</p>
+<p>there's two checks for <code>assert False</code> being disallowed (PT015 and B011), but none for <code>assert True</code> (though F631 is related).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakkdl">@jakkdl</a> on 2024-03-06 14:04</div>
+            <div class="timeline-body"><p><a href="https://docs.astral.sh/ruff/rules/pytest-composite-assertion/">PT018 docs</a> also mention nothing about being unsafe</p>
+<pre><code class="language-sh">$ ruff check --select=PT018 --fix - &lt;&lt;&lt; 'assert a and b'          
+assert a and b
+-:1:1: PT018 Assertion should be broken down into multiple parts
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>and it very much is, doesn't even handle the trivial case of a single trailing comment:</p>
+<pre><code class="language-sh">$ ruff check --select=PT018 --fix --unsafe-fixes - &lt;&lt;&lt; 'assert a and b # comment'
+assert a
+assert b
+Found 1 error (1 fixed, 0 remaining).
+</code></pre>
+<p>shed has a very chonky, afaik fully comment-safe, autofix for it. Since you don't use libcst, and it being very much tailored to it wrt comments, it maybe isn't of that much use to you though https://github.com/Zac-HD/shed/blob/692a429bff19c3e1a798b97cb45396160dc138eb/src/shed/_codemods.py#L476-625</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 14:10</div>
+            <div class="timeline-body"><p>Thanks! Heads up that it's not defined that removing comments merits an unsafe fix, there's discussion here that needs a decision: https://github.com/astral-sh/ruff/issues/9790.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakkdl">@jakkdl</a> on 2024-03-06 14:46</div>
+            <div class="timeline-body"><p>Good to know! Regardless of the decision though, it seems you need a pass (and/or automated test) to make sure that checks that require <code>--unsafe-fixes</code> are documented as such.</p>
+<h1></h1>
+<p>SIM117 joins the ranks of checks not being documented as requiring <code>--unsafe-fixes</code>, and it appears to give up on collapsing once it hits the line-length limit (regardless of python version). <code>ruff format</code> handles multi-line <code>with</code>s perfectly.</p>
+<p>before</p>
+<pre><code class="language-python">with make_context_manager() as cm1:
+    with make_context_manager() as cm2:
+        with make_context_manager() as cm3:
+            with make_context_manager() as cm4:
+                pass
+</code></pre>
+<p>after running <code>ruff --select=SIM117 --unsafe-fixes --fix --target-version=py312 --isolated foo.py</code></p>
+<pre><code class="language-python">with make_context_manager() as cm1, make_context_manager() as cm2:
+    with make_context_manager() as cm3:
+        with make_context_manager() as cm4:
+            pass
+</code></pre>
+<p>Shed codemod that handles cases like the above: https://github.com/Zac-HD/shed/blob/692a429bff19c3e1a798b97cb45396160dc138eb/src/shed/_codemods.py#L688-L749
+Inspired by pybetter: https://github.com/lensvol/pybetter/blob/master/pybetter/transformers/nested_withs.py</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakkdl">@jakkdl</a> on 2024-03-06 15:06</div>
+            <div class="timeline-body"><p>SIM101 and PLR1701 seems to be the exact same check, except the former requires <code>--unsafe-fixes</code> while the latter doesn't...
+which is entirely backward because PLR1701 does more than just remove comments:</p>
+<pre><code>$ ruff check --select=PLR1701 --fix - &lt;&lt;&lt; 'isinstance(x, y) or CRITICAL_CALL() or isinstance(x, z)'
+isinstance(x, (y, z))
+Found 1 error (1 fixed, 0 remaining).
+</code></pre>
+<p>SIM101 does not trigger an error on the above code, which is the correct behaviour.</p>
+<p>They funnily enough also differ on whether they sort(?) the types:</p>
+<pre><code>$ source='isinstance(x, int) or isinstance(x, float)' 
+
+$ ruff check --select=SIM101 --fix --unsafe-fixes - &lt;&lt;&lt; $source                               
+isinstance(x, (int, float))
+Found 1 error (1 fixed, 0 remaining).
+
+$ ruff check --select=PLR1701 --fix - &lt;&lt;&lt; $source                                     
+isinstance(x, (float, int))
+Found 1 error (1 fixed, 0 remaining).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 15:08</div>
+            <div class="timeline-body"><p><code>PLR1701</code> should probably be removed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakkdl">@jakkdl</a> on 2024-03-06 15:12</div>
+            <div class="timeline-body"><p>I'll also try to document the remaining autofixes in shed, several of which has no checks in other flake8 plugins, so ruff can consider adding them as checks and potentially fixes without having to dig straight into the source code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 15:12</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2024-03-06 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakkdl">@jakkdl</a> on 2024-03-08 15:42</div>
+            <div class="timeline-body"><p>Quick draft: https://github.com/jakkdl/shed/blob/use_ruff/CODEMODS.md</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:01 UTC
+    </footer>
+</body>
+</html>

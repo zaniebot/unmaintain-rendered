@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add armv8l alias for armv7l to support arm 32-bit compatibility mode - astral-sh/uv #8881</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add armv8l alias for armv7l to support arm 32-bit compatibility mode</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/8881">#8881</a>
+        opened by <a href="https://github.com/adbjo">@adbjo</a>
+        on 2024-11-07 08:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/adbjo">@adbjo</a> on 2024-11-07 08:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p><code>uv</code> commands like <code>uv venv</code> and <code>uv tool</code> throw this error when running on arm64 in 32-bit <a href="https://elixir.bootlin.com/linux/v6.11.6/source/arch/arm64/include/asm/compat.h#L32">compatibility mode</a>:</p>
+<pre><code>unknown variant `armv8l`, expected one of `aarch64`, `arm64`, `armv6l`, `armv7l`, `powerpc64le`, `ppc64le`, `powerpc64`, `ppc64`, `i386`, `i686`, `x86`, `amd64`, `x86_64`, `s390x`, `riscv64`
+--- stdout:
+{&quot;result&quot;: &quot;success&quot;, &quot;markers&quot;: {&quot;implementation_name&quot;: &quot;cpython&quot;, &quot;implementation_version&quot;: &quot;3.11.10&quot;, &quot;os_name&quot;: &quot;posix&quot;, &quot;platform_machine&quot;: &quot;armv8l&quot;, &quot;platform_python_implementation&quot;: &quot;CPython&quot;, &quot;platform_release&quot;: &quot;6.8.0-1015-azure&quot;, &quot;platform_system&quot;: &quot;Linux&quot;, &quot;platform_version&quot;: &quot;#17-Ubuntu SMP Mon Sep  2 15:50:42 UTC 2024&quot;, &quot;python_full_version&quot;: &quot;3.11.10&quot;, &quot;python_version&quot;: &quot;3.11&quot;, &quot;sys_platform&quot;: &quot;linux&quot;}, &quot;sys_base_prefix&quot;: &quot;/home/pi/.local/share/uv/python/cpython-3.11.10-linux-armv7-gnueabihf&quot;, &quot;sys_base_exec_prefix&quot;: &quot;/home/pi/.local/share/uv/python/cpython-3.11.10-linux-armv7-gnueabihf&quot;, &quot;sys_prefix&quot;: &quot;/home/pi/.local/share/uv/python/cpython-3.11.10-linux-armv7-gnueabihf&quot;, &quot;sys_base_executable&quot;: &quot;/home/pi/.local/share/uv/python/cpython-3.11.10-linux-armv7-gnueabihf/bin/python3.11&quot;, &quot;sys_executable&quot;: &quot;/home/pi/.local/share/uv/python/cpython-3.11.10-linux-armv7-gnueabihf/bin/python3.11&quot;, &quot;sys_path&quot;: [&quot;/home/pi/.cache/uv/.tmpvXy34S&quot;, &quot;/home/pi/.local/share/uv/python/cpython-3.11.10-linux-armv7-gnueabihf/lib/python311.zip&quot;, &quot;/home/pi/.local/share/uv/python/cpython-3.11.10-linux-armv7-gnueabihf/lib/python3.11&quot;, &quot;/home/pi/.local/share/uv/python/cpython-3.11.10-linux-armv7-gnueabihf/lib/python3.11/lib-dynload&quot;, &quot;/home/pi/.local/share/uv/python/cpython-3.11.10-linux-armv7-gnueabihf/lib/python3.11/site-packages&quot;], &quot;stdlib&quot;: &quot;/home/pi/.local/share/uv/python/cpython-3.11.10-linux-armv7-gnueabihf/lib/python3.11&quot;, &quot;scheme&quot;: {&quot;platlib&quot;: &quot;/home/pi/.local/share/uv/python/cpython-3.11.10-linux-armv7-gnueabihf/lib/python3.11/site-packages&quot;, &quot;purelib&quot;: &quot;/home/pi/.local/share/uv/python/cpython-3.11.10-linux-armv7-gnueabihf/lib/python3.11/site-packages&quot;, &quot;include&quot;: &quot;/home/pi/.local/share/uv/python/cpython-3.11.10-linux-armv7-gnueabihf/include/python3.11&quot;, &quot;scripts&quot;: &quot;/home/pi/.local/share/uv/python/cpython-3.11.10-linux-armv7-gnueabihf/bin&quot;, &quot;data&quot;: &quot;/home/pi/.local/share/uv/python/cpython-3.11.10-linux-armv7-gnueabihf&quot;}, &quot;virtualenv&quot;: {&quot;purelib&quot;: &quot;lib/python3.11/site-packages&quot;, &quot;platlib&quot;: &quot;lib/python3.11/site-packages&quot;, &quot;include&quot;: &quot;include/site/python3.11&quot;, &quot;scripts&quot;: &quot;bin&quot;, &quot;data&quot;: &quot;&quot;}, &quot;platform&quot;: {&quot;os&quot;: {&quot;name&quot;: &quot;manylinux&quot;, &quot;major&quot;: 2, &quot;minor&quot;: 31}, &quot;arch&quot;: &quot;armv8l&quot;}, &quot;manylinux_compatible&quot;: true, &quot;gil_disabled&quot;: false, &quot;pointer_size&quot;: &quot;32&quot;}
+--- stderr:
+
+---
+</code></pre>
+<p>This is needed when building for 32-bit arm on a arm64 runner.</p>
+<p>The <code>platform.machine()</code> function in python (which uses the <code>uname</code> syscall) outputs<code>armv8l</code> when running in 32-bit <a href="https://elixir.bootlin.com/linux/v6.11.6/source/arch/arm64/include/asm/compat.h#L32">compatibility mode</a>, which means that the system supports armv7l binaries.</p>
+<h2>Test Plan</h2>
+<p>Not tested :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-07 08:44</div>
+            <div class="timeline-body"><p>Are armv8l and armv7l binary compatible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adbjo">@adbjo</a> on 2024-11-07 09:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Are armv8l and armv7l binary compatible?</p>
+</blockquote>
+<p>I'm no expert, and I don't really know what I'm doing, but any <code>armv8</code> chip can run <code>armv7</code> binaries, since arm 64-bit is backwards compatible, but a <code>armv7</code> chip cannot run <code>armv8</code> binaries.</p>
+<p>arm 64-bit architecture is typically referred to using the <code>arm64</code> or <code>aarch64</code> aliases. The <code>armv8l</code> alias is only used when running in a 32-bit operating environment on a arm 64-bit chip. So <code>armv8l</code> output from <code>platform.machine()</code> means that the system runs binaries compiled for 32-bit arm (<code>armv7l</code>).</p>
+<p>Read more here:
+https://stackoverflow.com/questions/73688696/what-is-my-architecture-and-what-does-armv8l-exactly-means</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adbjo">@adbjo</a> on 2024-11-07 13:20</div>
+            <div class="timeline-body"><p>The <code>uv</code> installer already has support for it:</p>
+<pre><code class="language-bash">case &quot;$_cputype&quot; in
+
+    i386 | i486 | i686 | i786 | x86)
+        _cputype=i686
+        ;;
+
+    xscale | arm)
+        _cputype=arm
+        if [ &quot;$_ostype&quot; = &quot;linux-android&quot; ]; then
+            _ostype=linux-androideabi
+        fi
+        ;;
+
+    armv6l)
+        _cputype=arm
+        if [ &quot;$_ostype&quot; = &quot;linux-android&quot; ]; then
+            _ostype=linux-androideabi
+        else
+            _ostype=&quot;${_ostype}eabihf&quot;
+        fi
+        ;;
+
+    armv7l | armv8l)
+        _cputype=armv7
+        if [ &quot;$_ostype&quot; = &quot;linux-android&quot; ]; then
+            _ostype=linux-androideabi
+        else
+            _ostype=&quot;${_ostype}eabihf&quot;
+        fi
+        ;;
+
+    aarch64 | arm64)
+        _cputype=aarch64
+        ;;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-11-07 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-07 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-11-07 16:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:14 UTC
+    </footer>
+</body>
+</html>

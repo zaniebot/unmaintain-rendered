@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`invalid-index-type` (RUF016) has false negatives and false positives - astral-sh/ruff #20204</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>invalid-index-type</code> (RUF016) has false negatives and false positives</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20204">#20204</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-09-02 12:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-09-02 12:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/invalid-index-type/"><code>invalid-index-type</code> (RUF016)</a> has false negatives and false positives.</p>
+<p><code>bool</code> is a valid index type. RUF016 should allow it. <a href="https://play.ruff.rs/a21c0299-f48b-41b8-9935-9eb883aa5a10">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;ruf016_1.py &lt;&lt;'# EOF'
+print([1, 2, 3][False])
+print([1, 2, 3][False:True:True])
+# EOF
+
+$ python ruf016_1.py
+1
+[1]
+
+$ ruff --isolated check ruf016_1.py --select RUF016 --output-format concise -q
+ruf016_1.py:1:17: RUF016 Indexed access to type `list` uses type `bool` instead of an integer or slice
+ruf016_1.py:2:17: RUF016 Slice in indexed access to type `list` uses type `bool` instead of an integer
+ruf016_1.py:2:23: RUF016 Slice in indexed access to type `list` uses type `bool` instead of an integer
+ruf016_1.py:2:28: RUF016 Slice in indexed access to type `list` uses type `bool` instead of an integer
+</code></pre>
+<p>Lambda expressions, generator expressions, and t-strings are invalid. RUF016 should not allow them. <a href="https://play.ruff.rs/360e16a4-e710-4f40-a988-cfac4b7fb1f7">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;ruf016_2.py &lt;&lt;'# EOF'
+try: [1, 2, 3][lambda: 0]
+except TypeError as e: print(e)
+try: [1, 2, 3][(x for x in ())]
+except TypeError as e: print(e)
+try: [1, 2, 3][t&quot;x&quot;]
+except TypeError as e: print(e)
+# EOF
+
+$ python3.14 ruf016_2.py
+ruf016_2.py:1: SyntaxWarning: list indices must be integers or slices, not function; perhaps you missed a comma?
+  try: [1, 2, 3][lambda: 0]
+ruf016_2.py:3: SyntaxWarning: list indices must be integers or slices, not generator; perhaps you missed a comma?
+  try: [1, 2, 3][(x for x in ())]
+ruf016_2.py:5: SyntaxWarning: list indices must be integers or slices, not str; perhaps you missed a comma?
+  try: [1, 2, 3][t&quot;x&quot;]
+list indices must be integers or slices, not function
+list indices must be integers or slices, not generator
+list indices must be integers or slices, not string.templatelib.Template
+
+$ ruff --isolated check ruf016_2.py --select RUF016 --preview --target-version py314
+All checks passed!
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.11 (c2bc15bc1 2025-08-28)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-09-02 12:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TaKO8Ki">@TaKO8Ki</a> on 2025-09-02 17:08</div>
+            <div class="timeline-body"><p>I will work on this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @TaKO8Ki by @ntBre on 2025-09-02 21:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-09-12 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-09-12 18:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:19 UTC
+    </footer>
+</body>
+</html>

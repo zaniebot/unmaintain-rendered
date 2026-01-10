@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positives when defering import of `typing.Literal` - astral-sh/ruff #15306</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positives when defering import of <code>typing.Literal</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15306">#15306</a>
+        opened by <a href="https://github.com/mikeshardmind">@mikeshardmind</a>
+        on 2025-01-06 18:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-01-06 18:56</div>
+            <div class="timeline-body"><pre><code class="language-py"># _typings.py
+
+from __future__ import annotations
+
+TYPE_CHECKING = False
+
+if TYPE_CHECKING:
+    from typing import Any, Final, Literal, Self, final
+else:
+    def final(f):  # noqa: ANN001
+        return f
+
+
+def __getattr__(name: str):
+    if name == &quot;final&quot;:  # this one actually executes at runtime
+        return final
+
+    if name in {&quot;Any&quot;, &quot;Final&quot;, &quot;Literal&quot;, &quot;Self&quot;}:
+        import typing
+        return getattr(typing, name)
+
+    msg = f&quot;module {__name__!r} has no attribute {name!r}&quot;
+    raise AttributeError(msg)
+
+
+__all__ = [&quot;Any&quot;, &quot;Final&quot;, &quot;Literal&quot;, &quot;Self&quot;, &quot;final&quot;]
+</code></pre>
+<pre><code class="language-py"># any other module
+
+from ._typings import Literal
+
+type HandleableSignals = Literal[&quot;SIGINT&quot;, &quot;SIGTERM&quot;, &quot;SIGBREAK&quot;, &quot;SIGHUP&quot;]
+</code></pre>
+<p>This causes ruff to give an F821 (Undefined name) on each string literal here, while also trying to have me remove the quotes with TC0008 This happens with that as the entirety of the file, and there is no corresponding symbol with that name here.</p>
+<p>(This is used to cross-platform handle any of these signals so long as they are handleable on the platform, as they may not exist on signals.Signals at runtime on a platform, this pulls the intersections of what's on the system, and which of the ones the user wants handled)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-06 19:15</div>
+            <div class="timeline-body"><p>Thanks for the issue -- have you tried making use of this setting? https://docs.astral.sh/ruff/settings/#lint_typing-modules</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-01-06 19:18</div>
+            <div class="timeline-body"><p>I wasn't aware of that setting, but I would expect that ruff if linting typings would see the type checking conditional block and that those are for the purposes of typing sourced from typing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-01-06 19:26</div>
+            <div class="timeline-body"><p>Setting handles it, and this is documented behavior, so I'm going to close this, but this is pretty surprising to need to specify.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mikeshardmind on 2025-01-06 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-06 20:19</div>
+            <div class="timeline-body"><p>Yeah, I agree that this is often somewhat confusing for users; sorry about that. In the long term we hope to transform Ruff into a linter capable of multifile analysis, which will solve this problem, but it'll be a long road to get there unfortunately.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:12 UTC
+    </footer>
+</body>
+</html>

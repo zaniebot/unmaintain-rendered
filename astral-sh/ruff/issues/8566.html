@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>formatter removes blank line after class definition - astral-sh/ruff #8566</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>formatter removes blank line after class definition</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8566">#8566</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-11-08 16:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-11-08 16:05</div>
+            <div class="timeline-body"><pre><code class="language-sh">$ black --diff foo.py 
+All done! ✨ 🍰 ✨
+1 file would be left unchanged.
+$ ruff format --diff foo.py
+--- foo.py
++++ foo.py
+@@ -1,5 +1,4 @@
+ class Foo:
+-
+     bar = 1
+ 
+     def __init__(self):
+
+$ cat foo.py
+class Foo:
+
+    bar = 1
+
+    def __init__(self):
+        pass
+
+</code></pre>
+<p>→ ruff should not remove the blank line</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-08 16:06</div>
+            <div class="timeline-body"><p>Do you know what Black version you're using? The behavior is identical for me in the playground: https://black.vercel.app/?version=main&amp;state=_Td6WFoAAATm1rRGAgAhARYAAAB0L-Wj4ACnAGxdAD2IimZxl1N_WlXnON2nzNX9HFvHyHbXdX0Ms6iKT6MFYYQATMUD1OePdwlX142nVYoknzNqjCZuF1C-2qRxjAe1b_PNzGhgl2Uikz5qLOibGl5-HYJNlgbh2oqOzRkM6DJB73sLqD6q1cogjgBuZBfc0jIxPgABiAGoAQAABTDLhbHEZ_sCAAAAAARZWg==</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-11-08 16:12</div>
+            <div class="timeline-body"><pre><code>$ black --version
+black, 22.10.0 (compiled: yes)
+Python (CPython) 3.7.3
+
+</code></pre>
+<p>same for:</p>
+<pre><code class="language-python">class Foo:
+
+    # bar
+
+    def __init__(self):
+        pass
+</code></pre>
+<p>Additionally I would like to have a flag in ruff which prevents that</p>
+<pre><code class="language-python">class Foo:
+
+    def __init__(self):
+        pass
+</code></pre>
+<p>get converted to:</p>
+<pre><code class="language-python">class Foo:
+    def __init__(self):
+        pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-08 16:13</div>
+            <div class="timeline-body"><p>Our current behavior is identical to Black's though in all of the above cases -- see the playground link I shared above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-11-08 16:48</div>
+            <div class="timeline-body"><p>OK, then see this as feature request to change it via a config option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @zanieb on 2023-11-08 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> added by @zanieb on 2023-11-08 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-09 01:48</div>
+            <div class="timeline-body"><p>Realistically, I think we're unlikely to implement a setting for this given that it's so specific. We also enforce a blank line if you use a docstring for your classes which should mitigate this, but I'm gonna close for now in the interest of keeping the issue queue manageable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-09 01:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Frost">@Frost</a> on 2023-11-15 09:59</div>
+            <div class="timeline-body"><blockquote>
+<pre><code>$ black --version
+black, 22.10.0 (compiled: yes)
+Python (CPython) 3.7.3
+</code></pre>
+<p>same for:</p>
+<pre><code class="language-python">class Foo:
+
+    # bar
+
+    def __init__(self):
+        pass
+</code></pre>
+<p>Additionally I would like to have a flag in ruff which prevents that</p>
+<pre><code class="language-python">class Foo:
+
+    def __init__(self):
+        pass
+</code></pre>
+<p>get converted to:</p>
+<pre><code class="language-python">class Foo:
+    def __init__(self):
+        pass
+</code></pre>
+</blockquote>
+<p>This behavior changed between <code>black</code> 22.x and 23.x. Black has a stable format that they only update yearly. This means that once per year, you can suddenly get massive diffs from black, <em>if you keep your dependencies updated</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-11-15 10:10</div>
+            <div class="timeline-body"><p>This formatting is one of multiple reasons I don't use black - the maintainers also have strong opinions and you cannot argue with them. I have the hope that ruff is more user friendly and configurable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Frost">@Frost</a> on 2023-11-15 12:39</div>
+            <div class="timeline-body"><p>As long as ruff follows what black does, the same problem will exist. Soon it's 2024, and black will do some changes to their format again. There's a separate issue for tracking that here: #8678.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jongracecox">@jongracecox</a> on 2024-03-15 18:04</div>
+            <div class="timeline-body"><p>I'm using <code>black==24.2.0</code> and <code>ruff==0.3.2</code>, and finding they produce different results:</p>
+<h2>Input file</h2>
+<pre><code class="language-python">class MyClass:
+
+    def __init__(self):
+        pass
+</code></pre>
+<h2>black</h2>
+<pre><code class="language-python">class MyClass:
+
+    def __init__(self):
+        pass
+</code></pre>
+<h2>ruff</h2>
+<pre><code class="language-python">class MyClass:
+    def __init__(self):
+        pass
+</code></pre>
+<p>Something interesting to note is that black will leave the blank line after class statement if it is there, but <strong>won't insert one</strong> if it's not already there. This means if you take my input file and run black then ruff, only ruff will make changes to the file. However, if you run ruff then black, black will not change the file - it won't revert the ruff changes. It will accept the ruff formatting. This means there's a subtle difference in behavior that could be made more consistent between the two tools:</p>
+<ul>
+<li>Black honors the existing blank lines after the class statement</li>
+<li>Ruff always removes the blank line after the class statement</li>
+</ul>
+<p>What's the stance on conformity with black? It would help me a lot if it was a true drop-in like-for-like.</p>
+<p><em>Side note: Thanks for an AMAZING project! I appreciate how complicated it is to manage everyones expectations.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-18 08:29</div>
+            <div class="timeline-body"><p>Hi @jongracecox</p>
+<p>Thanks for the excellent write-up. Yes, Black 24 or newer allows an optional blank line at the start of a block. We intentionally didn't implement this design change (yet?) because it can lead to unintentionally blank lines at the top of blocks after moving or deleting code.</p>
+<blockquote>
+<p>Currently, we are concerned that allowing blank lines at the start of a block leads https://github.com/astral-sh/ruff/issues/8893#issuecomment-1867259744. However, we will consider adopting Black's formatting at a later point with an improved heuristic. The style change is tracked in https://github.com/astral-sh/ruff/issues/9745.
+<a href="https://github.com/astral-sh/ruff/blob/main/docs/formatter/black.md#blank-lines-at-the-start-of-a-block">source</a></p>
+</blockquote>
+<p>I'm glad that you pointed this out because it made me realize that the <em>known deviations</em> on our website don't mention this deviation yet because I only updated the <code>README.md</code> in the <code>ruff-python-formatter</code> crate but not the markdown file rendered on the website. I fixed this, and the deviations should be correctly reflected when we push the next version of our documentation.</p>
+<blockquote>
+<p>Side note: Thanks for an AMAZING project! I appreciate how complicated it is to manage everyones expectations.</p>
+</blockquote>
+<p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dody">@dody</a> on 2024-09-27 07:53</div>
+            <div class="timeline-body"><p>Using <code>black==24.8.0</code> and <code>ruff==0.6.8</code>. Ruff removing blank lines not only in classes but also in other blocks like <code>for</code> loop.</p>
+<p>Any idea how to make ruff output equal to black ?</p>
+<h2>black:</h2>
+<pre><code class="language-python">class MyClass(object):
+
+    def test(self):
+
+        pass
+
+
+for i in range(1):
+
+    pass
+</code></pre>
+<h2>ruff:</h2>
+<pre><code class="language-python">class MyClass(object):
+    def test(self):
+        pass
+
+
+for i in range(1):
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-27 08:06</div>
+            <div class="timeline-body"><p>@dody see https://github.com/astral-sh/ruff/issues/9745</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:55 UTC
+    </footer>
+</body>
+</html>

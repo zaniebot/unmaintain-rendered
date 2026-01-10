@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive for F841 in case clause - astral-sh/ruff #17477</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive for F841 in case clause</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17477">#17477</a>
+        opened by <a href="https://github.com/Goldziher">@Goldziher</a>
+        on 2025-04-19 11:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Goldziher">@Goldziher</a> on 2025-04-19 11:47</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>False positive of unused variable</p>
+<pre><code class="language-python">from typing import Final
+
+EVENT_APPLICATION_SETUP: Final[str] = &quot;application_setup&quot;
+
+
+def match(event_type: str) -&gt; None:
+    match event_type:
+        case EVENT_APPLICATION_SETUP: # &lt;-- F841 violation
+            ...
+</code></pre>
+<h3>Version</h3>
+<blockquote>
+<p>=0.11.1</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maxmynter">@maxmynter</a> on 2025-04-19 23:31</div>
+            <div class="timeline-body"><p>I've looked into this a bit and my hypothesis is that while the <code>visitor</code> correctly traverses the AST correctly, the semantic analyzer does not add a reference to the name. We seem to only visit the context, not the constant itself. This results in the false positive if the constant is only used in a <code>match</code>.</p>
+<p>https://github.com/astral-sh/ruff/blob/da6b68cb58824e52efa2a9ae7ebf3c2cbeacad2d/crates/ruff_python_ast/src/visitor.rs#L523-L525
+Note that there is no <code>visitor.visit_expr(value)</code> call and the <code>ast::ExprName</code> also has no<code>value</code> field.</p>
+<p>I will do some more digging the coming days. But since I'm new to the codebase, I'm thankful for any pointers</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-20 00:20</div>
+            <div class="timeline-body"><p>I believe this is a duplicate of #16969. Variables in <code>case</code> arms must be dotted names if they're meant to refer to existing variables. The <code>EVENT_APPLICATION_SETUP</code> in the <code>case</code> is a new variable <strong>not</strong> the  <code>EVENT_APPLICATION_SETUP</code> outside the <code>match</code>, so if you don't use it in the <code>case</code> arm it's genuinely unused.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-04-20 00:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maxmynter">@maxmynter</a> on 2025-04-20 11:50</div>
+            <div class="timeline-body"><p>Seems like it! The following example, using dotted access, doesn't violate F841:</p>
+<pre><code class="language-python">from dataclasses import dataclass
+from typing import Final
+
+
+@dataclass
+class Globals:
+    EVENT_APPLICATION_SETUP: Final[str] = &quot;application_setup&quot;
+
+
+def match(event_type: str) -&gt; None:
+    match event_type:
+        case Globals.EVENT_APPLICATION_SETUP:
+            ...
+</code></pre>
+<p>Nice, i learned something new today. I didn't use <code>match</code> much in Python before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-04-22 07:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:17 UTC
+    </footer>
+</body>
+</html>

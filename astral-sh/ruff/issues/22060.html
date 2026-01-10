@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP032 fix misinterprets `\N` in a raw string as an escape sequence - astral-sh/ruff #22060</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP032 fix misinterprets <code>\N</code> in a raw string as an escape sequence</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/22060">#22060</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-12-18 20:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-12-18 20:45</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/f-string/"><code>f-string</code> (UP032)</a> can introduce a runtime error by misinterpreting <code>\N</code> in a raw string literal, where it is not an escape sequence. The fix in #21901 should not apply to raw strings. <a href="https://play.ruff.rs/8003ac00-7f7d-458f-8752-3667a768a40d">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;up032.py &lt;&lt;'# EOF'
+print(r&quot;\N{angle}AOB = {angle}°&quot;.format(angle=180))
+# EOF
+
+$ python up032.py
+\N180AOB = 180°
+
+$ ruff --isolated check up032.py --select UP032 --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat up032.py
+print(rf&quot;\N{angle}AOB = {180}°&quot;)
+
+$ python up032.py 2&gt;&amp;1 | tail -n 1
+NameError: name 'angle' is not defined. Did you mean: 'range'?
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.14.10 (45bbb4cbf 2025-12-18)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-12-18 20:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-12-18 20:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-12-18 20:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/denyszhak">@denyszhak</a> on 2025-12-18 22:13</div>
+            <div class="timeline-body"><p>I'd love to grab this one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @denyszhak by @ntBre on 2025-12-18 23:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:50 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow overriding module name for uv build backend - astral-sh/uv #11884</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow overriding module name for uv build backend</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11884">#11884</a>
+        opened by <a href="https://github.com/csachs">@csachs</a>
+        on 2025-03-01 14:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/csachs">@csachs</a> on 2025-03-01 14:05</div>
+            <div class="timeline-body"><p>Thank you for uv, it has game-changer capabilities in the field of Python package and environment maangement!</p>
+<h2>Summary</h2>
+<p>This is a small PR adding the option <code>module-name</code> (<code>tool.uv.build-backend.module-name</code>) to the uv build backend ( https://github.com/astral-sh/uv/issues/8779 ).</p>
+<p>Currently, the uv build backend will assume that the module name matches the (dash to underdash-transformed) package name. In some packaging scenarios this is not the case, and currently there exists no possibility to override it, which this PR addresses.</p>
+<p>From the main issue ( https://github.com/astral-sh/uv/issues/8779 ) I could not tell if there is any extensive roadmap or plans how to implement more complex scenarios, hence this PR as a suggestion for a small feature with a big impact for certain scenarios.</p>
+<p>I am new to Rust, I hope the borrow/reference usage is correct.</p>
+<h2>Test Plan</h2>
+<p>So far I tested this at an example, if desired I can look into extending the tests.</p>
+<p>Fixes #11428</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2025-03-01 16:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-03-03 11:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2025-03-04 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2025-03-04 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>Cargo.lock</code>:1844 on 2025-03-04 15:03</div>
+            <div class="timeline-body"><p>Is this version bump necessary? I think we usually let renovatebot do this.</p>
+<p>Not a big deal to include it here I guess, but if it isn't necessary it's probably best to kick this out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:850 on 2025-03-04 15:05</div>
+            <div class="timeline-body"><p>cc @konstin on the terminology here. I would expect this to be <em>unspecified behavior</em> and not <em>undefined</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-build-backend/src/source_dist.rs</code>:74 on 2025-03-04 15:08</div>
+            <div class="timeline-body"><p>I would say, &quot;This should never result in an error.&quot; Otherwise I think just &quot;should never happen&quot; is a little confusing and ambiguous. I thought it meant that <code>settings.module_name</code> could never be <code>None</code> (which confused me).</p>
+<p>I would also therefore be tempted to do an <code>expect(&quot;...&quot;)</code> here, but I'm not 100% on the relevant invariants here. Returning an error seems fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-build-backend/src/wheel.rs</code>:136 on 2025-03-04 15:09</div>
+            <div class="timeline-body"><p>Same comment as above applies here too I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pypi-types/src/identifier.rs</code>:19 on 2025-03-04 15:11</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        &quot;Invalid first character `{first}` for identifier `{identifier}`, expected an underscore or an alphabetic character&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pypi-types/src/identifier.rs</code>:10 on 2025-03-04 15:11</div>
+            <div class="timeline-body"><p>What does wrong if we say an identifier is valid but Python's rules says it isn't?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pypi-types/src/identifier.rs</code>:12 on 2025-03-04 15:11</div>
+            <div class="timeline-body"><p>This could probably be a <code>Box&lt;str&gt;</code>.</p>
+<p>A minor point and perhaps premature, but these things have a tendency to build up over time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pypi-types/src/identifier.rs</code>:23 on 2025-03-04 15:12</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        &quot;Invalid character `{invalid_char}` at position {pos} for identifier `{identifier}`, \
+         expected an underscore or an alphanumeric character&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pypi-types/src/identifier.rs</code>:124 on 2025-03-04 16:36</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        assert_snapshot!(
+            Identifier::from_str(&quot;1foo&quot;).unwrap_err(),
+            @&quot;Invalid first character `1` at for `1foo`, expected an underscore or an alphabetic character&quot;,
+        );
+</code></pre>
+<p>And then do the same for the other assertions. Otherwise the lines get very long. Long lines as a result of snapshot strings are fine, because those are more annoying to fix. But otherwise, adding some line breaks, makes the code generating the snapshot a little easier to read IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/it/build_backend.rs</code>:283 on 2025-03-04 16:37</div>
+            <div class="timeline-body"><p>Can you add a little more detail about what this test is doing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/it/build_backend.rs</code>:367 on 2025-03-04 16:40</div>
+            <div class="timeline-body"><p>Can you say why this doesn't work despite there being a <code>src/foo/__init__.py</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2025-03-04 16:40</div>
+            <div class="timeline-body"><p>I think this generally looks good to me, but I have some requests, nits and questions. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-03-06 08:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/source_dist.rs</code>:74 on 2025-03-06 08:28</div>
+            <div class="timeline-body"><p>We're very permissive with things that can never happen in other place (returning errors instead of unwrapping), which I'm mirroring here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-03-06 08:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pypi-types/src/identifier.rs</code>:10 on 2025-03-06 08:31</div>
+            <div class="timeline-body"><p>Python's and Rust's documentation reference different parts of the unicode standard for what's an allowed letter, but I strongly suspect that no one will actually into a case where they disagree.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-03-06 12:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-03-07 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-03-07 14:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:21 UTC
+    </footer>
+</body>
+</html>

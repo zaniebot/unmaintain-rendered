@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;N804 First argument of a class method should be named `cls`&quot; on a property of a metaclass - astral-sh/ruff #9195</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;N804 First argument of a class method should be named <code>cls</code>&quot; on a property of a metaclass</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9195">#9195</a>
+        opened by <a href="https://github.com/ZeeD">@ZeeD</a>
+        on 2023-12-19 09:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ZeeD">@ZeeD</a> on 2023-12-19 09:13</div>
+            <div class="timeline-body"><p>minimal case:</p>
+<pre><code class="language-python">class C:
+    @property
+    def foo(self) -&gt; str:
+        return 'foo'
+
+
+class M(type):
+    @property
+    def foo(self) -&gt; str:
+        return 'foo'
+</code></pre>
+<p><code>ruff</code> (current version, <code>0.1.8</code>) says that, while <code>C.foo</code> first arguments should be called <code>self</code>, for <code>M</code> (that is a metaclass) the <code>foo</code> method first argument should be called <code>cls</code> - as it is a class method</p>
+<pre><code>src/metaproperty.py:9:13: N804 First argument of a class method should be named `cls`
+</code></pre>
+<p>(honestly, I'm not even sure it's a bug or a feature, as I am trying to achieve something like a <code>@staticproperty</code>, but that's not really relevant here)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-12-19 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-19 21:11</div>
+            <div class="timeline-body"><p>I think you're correct -- we should change this rule when within a metaclass. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/picnixz">@picnixz</a> on 2023-12-20 08:32</div>
+            <div class="timeline-body"><p>I would also like to point out that the <code>__new__</code> method in a metaclass should allow <code>mcs</code> or <code>mcls</code> as its first argument and not enforce <code>cls</code>. More generally, I would like to suggest a way to specify which names are allowed as the first argument for a method or a classmethod on a metaclass (by default it should be <code>cls</code> and <code>mcs/mcls</code> respectively but I know that some codes still use <code>__mcs</code> or <code>__mcls</code> if they don't support the positional-only arguments).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-20 17:05</div>
+            <div class="timeline-body"><p>Actually, I think this might be correct. I thought we were suggesting <code>self</code> but we're suggesting <code>cls</code> as you said above, which seems right to me...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-20 17:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ZeeD">@ZeeD</a> on 2023-12-22 06:51</div>
+            <div class="timeline-body"><p>Hi @charliermarsh</p>
+<p>Thinking about it again...
+I'm not sure it is correct: <code>foo</code> is a <em>normal</em> method, that just appear to be defined on a class that extends <code>type</code>.
+When you access the property value (for example with a <code>bar = M().foo</code>) the first parameter is an instance of <code>M</code>, not the <code>M</code> class itself, even when <code>M</code> is actually used as metaclass
+I'm failing to grasp the reason behind expecting the first parameter to be called <code>cls</code>.</p>
+<p>In https://github.com/astral-sh/ruff/issues/9195#issuecomment-1864062666 moreover, there is a reference to <code>__new__</code>, but it's just half relevant here: <code>__new__</code> is a <em>static</em> method, so it should have <code>cls</code> by definition (as it has commonly). Yet I understand, for <code>__new__</code> specifically, to suggest the usage of <code>mcls</code> for metaclasses, as, generally, <code>cls</code> is used to the variable that should be returned. But for this case I would suggest to open a dedicated issue, as it is not really relevant here for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/picnixz">@picnixz</a> on 2023-12-22 08:40</div>
+            <div class="timeline-body"><p>Actually, I commented because it fell under N804 but I should have probably made a separate issue.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:15 UTC
+    </footer>
+</body>
+</html>

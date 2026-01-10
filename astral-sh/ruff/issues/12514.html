@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neovim - issue with configuration/configurationPreference - astral-sh/ruff #12514</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Neovim - issue with configuration/configurationPreference</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12514">#12514</a>
+        opened by <a href="https://github.com/steakhutzeee">@steakhutzeee</a>
+        on 2024-07-25 16:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/steakhutzeee">@steakhutzeee</a> on 2024-07-25 16:53</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Hello, I'm configuring ruff server 0.5.5 for Neovim and having some issues:</p>
+<ol>
+<li>First thing I noted is that this setting https://docs.astral.sh/ruff/editors/settings/#configurationpreference works also on Neovim, even if the docs specify that it works on VS Code.</li>
+<li>About the setting mentioned above, I think that <code>&quot;filesystemFirst&quot;</code> should be the default. Apart from my personal ruff settings, if working on a someone else's project, I think I should use the setting the user of the project intended for it, and not the ones I specified for my client.</li>
+<li>With the above setting enabled/disabled, I'm not able to let the setting https://docs.astral.sh/ruff/editors/settings/#configuration to work. I intend to use it to set some values not actually exposed by the ruff server.</li>
+</ol>
+<p>This is my Neovim configuration in <code>/home/user/.config/nvim/lua/user/lspsettings/ruff.lua</code>:</p>
+<pre><code>return {
+  init_options = {
+    settings = {
+      configuration = &quot;/home/user/.config/nvim/lua/user/lspsettings/ruff.toml&quot;,
+      lineLength = 88,
+      configurationPreference = &quot;filesystemFirst&quot;,
+      lint = {
+        select = {&quot;ALL&quot;},
+        ignore = {
+          -- Prevent duplicates with basedpyright
+          &quot;ANN&quot;,
+          &quot;B018&quot;,
+          &quot;F821&quot;,
+          &quot;F401&quot;,
+          &quot;PLC0414&quot;,
+          &quot;RUF013&quot;,
+          &quot;RUF016&quot;
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<p>Tried also disabling <code>configurationPreference</code>.</p>
+<p>And tried with the following <code>/home/user/.config/nvim/lua/user/lspsettings/ruff.toml</code>:</p>
+<p><code>indent-width = 2</code></p>
+<p>But it does not work. I tried with a python file related to an existing pyproject.toml file and also with a test file without any pyproject.toml file. Indent is still set to 4.</p>
+<p>Any idea? Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steakhutzeee">@steakhutzeee</a> on 2024-07-25 17:11</div>
+            <div class="timeline-body"><p>From further tests it looks that:</p>
+<ol>
+<li>If <code>configurationPreference = &quot;filesystemFirst&quot;</code> the <code>configuration</code> setting does not work with files related to an existing pyproject.toml. I'm fine with this, I think it works ok this way. So it's just extending the client config, but that's ignored if there is some other config file in the workspace.</li>
+<li>Tried setting another option in my <code>/home/user/.config/nvim/lua/user/lspsettings/ruff.toml</code> and it works, so the problem is with <code>indent-width</code>?</li>
+</ol>
+<pre><code>indent-width = 2
+line-length = 5 #This works.
+</code></pre>
+<p>Tested with another random option and it does not work:</p>
+<pre><code>indent-width = 2
+line-length = 5 #Only this works.
+[format]
+quote-style = &quot;single&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-26 06:33</div>
+            <div class="timeline-body"><blockquote>
+<ol>
+<li>First thing I noted is that this setting <a href="https://docs.astral.sh/ruff/editors/settings/#configurationpreference">docs.astral.sh/ruff/editors/settings#configurationpreference</a> works also on Neovim, even if the docs specify that it works on VS Code.</li>
+</ol>
+</blockquote>
+<p>Yes, those are server settings which works on all editors. Can you tell me why you thought that it only works on VS Code? Could we improve the documentation to make it clear? The example usage provides one for Neovim as well.</p>
+<blockquote>
+<ol start="2">
+<li>About the setting mentioned above, I think that <code>&quot;filesystemFirst&quot;</code> should be the default. Apart from my personal ruff settings, if working on a someone else's project, I think I should use the setting the user of the project intended for it, and not the ones I specified for my client.</li>
+</ol>
+</blockquote>
+<p>There's some discussion about this in https://github.com/astral-sh/ruff-vscode/issues/425 and https://github.com/astral-sh/ruff-vscode/issues/3.</p>
+<blockquote>
+<ol start="3">
+<li>With the above setting enabled/disabled, I'm not able to let the setting <a href="https://docs.astral.sh/ruff/editors/settings/#configuration">docs.astral.sh/ruff/editors/settings#configuration</a> to work. I intend to use it to set some values not actually exposed by the ruff server.</li>
+</ol>
+</blockquote>
+<p>Ok, I think there's some problem in here. I'm scratching my head to figure it out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2024-07-26 06:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-26 06:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Ok, I think there's some problem in here. I'm scratching my head to figure it out.</p>
+</blockquote>
+<p>Ugh, nevermind, it was a silly mistake from my end.</p>
+<p>Ok, so I tried your setup and it's working fine for me. Here's what I've tried:</p>
+<ol>
+<li>Create a <code>/tmp/ruff.toml</code> with <code>indent-width = 2</code></li>
+<li>Using the following Neovim config</li>
+</ol>
+<pre><code class="language-lua">require('lspconfig').ruff.setup({
+  init_options = {
+    settings = {
+      configuration = '/tmp/ruff.toml',
+      configurationPreference = 'filesystemFirst',
+    },
+  },
+})
+</code></pre>
+<ol start="3">
+<li>Open a file in any directory other than <code>/tmp/</code> and run the formatter via the language server</li>
+</ol>
+<p>https://github.com/user-attachments/assets/78656e16-aa84-44d0-a2e3-4092869aa152</p>
+<blockquote>
+<p>But it does not work. I tried with a python file related to an existing pyproject.toml file and also with a test file without any pyproject.toml file. Indent is still set to 4.</p>
+</blockquote>
+<p>Can you tell me how you verified this?</p>
+<p>Do you have any configuration file that's existing in the project that you've opened in Neovim?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @dhruvmanila on 2024-07-26 06:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steakhutzeee">@steakhutzeee</a> on 2024-07-26 07:04</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<ol>
+<li>First thing I noted is that this setting <a href="https://docs.astral.sh/ruff/editors/settings/#configurationpreference">docs.astral.sh/ruff/editors/settings#configurationpreference</a> works also on Neovim, even if the docs specify that it works on VS Code.</li>
+</ol>
+</blockquote>
+<p>Yes, those are server settings which works on all editors. Can you tell me why you thought that it only works on VS Code? Could we improve the documentation to make it clear? The example usage provides one for Neovim as well.</p>
+</blockquote>
+<p>Hi, thank you for the feedback.</p>
+<p>Yes it is just the docs to be a little misleading, stating</p>
+<blockquote>
+<p>The strategy to use when resolving settings across VS Code and the filesystem.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steakhutzeee">@steakhutzeee</a> on 2024-07-26 07:10</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Ok, I think there's some problem in here. I'm scratching my head to figure it out.</p>
+</blockquote>
+<p>Ugh, nevermind, it was a silly mistake from my end.</p>
+<p>Ok, so I tried your setup and it's working fine for me. Here's what I've tried:</p>
+<ol>
+<li>Create a <code>/tmp/ruff.toml</code> with <code>indent-width = 2</code></li>
+<li>Using the following Neovim config</li>
+</ol>
+<pre><code class="language-lua">require('lspconfig').ruff.setup({
+  init_options = {
+    settings = {
+      configuration = '/tmp/ruff.toml',
+      configurationPreference = 'filesystemFirst',
+    },
+  },
+})
+</code></pre>
+<ol start="3">
+<li>Open a file in any directory other than <code>/tmp/</code> and run the formatter via the language server</li>
+</ol>
+<p>Screen.Recording.2024-07-26.at.12.09.15.mov</p>
+<blockquote>
+<p>But it does not work. I tried with a python file related to an existing pyproject.toml file and also with a test file without any pyproject.toml file. Indent is still set to 4.</p>
+</blockquote>
+<p>Can you tell me how you verified this?</p>
+<p>Do you have any configuration file that's existing in the project that you've opened in Neovim?</p>
+</blockquote>
+<p>Ok, I only tried using <code>:=vim.lsp.buf.format()</code> as your example and it works as inteded.</p>
+<p>But it does not work when using https://github.com/stevearc/conform.nvim that I use with the following config:</p>
+<pre><code>local M = {
+  'stevearc/conform.nvim'
+}
+
+function M.config()
+  require(&quot;conform&quot;).setup({
+    formatters_by_ft = {
+      python = {'ruff_organize_imports', 'ruff_format'},
+    },
+    format_after_save = {
+      lsp_fallback = true,
+    },
+    notify_on_error = true,
+  })
+end
+
+return M
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-26 07:32</div>
+            <div class="timeline-body"><p>Yeah, that's because the <code>ruff_format</code> as specified in your <code>conform.nvim</code> setup uses the <code>ruff</code> executable. IOW, it doesn't use the language server to format the buffer and the settings that you specify in <code>require('lspconfig').ruff.setup</code> is only relevant in that context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-26 07:34</div>
+            <div class="timeline-body"><p>Closing this issue as resolved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-07-26 07:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> removed by @dhruvmanila on 2024-07-26 07:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steakhutzeee">@steakhutzeee</a> on 2024-07-26 07:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah, that's because the <code>ruff_format</code> as specified in your <code>conform.nvim</code> setup uses the <code>ruff</code> executable. IOW, it doesn't use the language server to format the buffer and the settings that you specify in <code>require('lspconfig').ruff.setup</code> is only relevant in that context.</p>
+</blockquote>
+<p>Thank you, this means that actually using Conform the Ruff language server formatter will not work at all? Do you know of any way this can be fixed or should be requested upstream to Conform?</p>
+<p>Also, for the import sorting, it looks like Conform still works, so for that I can continue to use it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-26 12:04</div>
+            <div class="timeline-body"><p>No, you can still use <code>conform.nvim</code> but you need to explicitly tell it to use the language server to format the buffer instead of the CLI. So, I think you'd need to remove all the formatters for the Python language from the list (<code>ruff_organize_imports</code>, <code>ruff_format</code>) so that it falls back to using the language server. But, then you loose the functionality to organize imports. My recommendation would be to use either the language server or the CLI for everything. It's fine to use either of them at the same time but then the settings which are specific to the one cannot be used with the other, for example, using the <code>ruff</code> CLI won't see the server settings set in your Neovim config.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steakhutzeee">@steakhutzeee</a> on 2024-07-26 12:21</div>
+            <div class="timeline-body"><blockquote>
+<p>No, you can still use <code>conform.nvim</code> but you need to explicitly tell it to use the language server to format the buffer instead of the CLI. So, I think you'd need to remove all the formatters for the Python language from the list (<code>ruff_organize_imports</code>, <code>ruff_format</code>) so that it falls back to using the language server. But, then you loose the functionality to organize imports. My recommendation would be to use either the language server or the CLI for everything. It's fine to use either of them at the same time but then the settings which are specific to the one cannot be used with the other, for example, using the <code>ruff</code> CLI won't see the server settings set in your Neovim config.</p>
+</blockquote>
+<p>Thank you, indeed I can format disabling the formatters. Any hint on how I could also use the language server for the import sorting?</p>
+<p>Maybe I could also implement the following (that I had commented out because I was using Conform for everything):</p>
+<pre><code>vim.api.nvim_create_autocmd({ &quot;BufWritePost&quot; }, {
+  pattern = { &quot;*.py&quot; },
+  callback = function()
+    vim.lsp.buf.code_action {
+      context = {
+        only = { 'source.organizeImports.ruff' },
+      },
+      apply = true,
+    }
+  end,
+})
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-26 12:47</div>
+            <div class="timeline-body"><p>Yeah, that should work. The benefit of plugins like <code>conform.nvim</code> is that it would run multiple formatters sequentially which is what you want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steakhutzeee">@steakhutzeee</a> on 2024-07-26 15:30</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah, that should work. The benefit of plugins like <code>conform.nvim</code> is that it would run multiple formatters sequentially which is what you want.</p>
+</blockquote>
+<p>I see, maybe there is a way to run the autocommand from Conform, in order with the other formatter.</p>
+<p>Anyway, which should run first? The formatter or the import sorter?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-27 02:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Anyway, which should run first? The formatter or the import sorter?</p>
+</blockquote>
+<p>I don't think the order matters in this case.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:28 UTC
+    </footer>
+</body>
+</html>

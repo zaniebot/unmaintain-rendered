@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N818 error-suffix-on-exception-name false positives because it doesn't know if a given exception is an error - astral-sh/ruff #5367</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>N818 error-suffix-on-exception-name false positives because it doesn't know if a given exception is an error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/5367">#5367</a>
+        opened by <a href="https://github.com/karolinepauls">@karolinepauls</a>
+        on 2023-06-26 10:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/karolinepauls">@karolinepauls</a> on 2023-06-26 10:25</div>
+            <div class="timeline-body"><p>I believe that this rule does more harm than good.</p>
+<blockquote>
+<p>you should use the suffix “Error” on your exception names (<strong>if the exception actually is an error</strong>).</p>
+</blockquote>
+<ul>
+<li>https://peps.python.org/pep-0008/#exception-names</li>
+</ul>
+<p>The ratio of non-error exceptions to error exceptions varies depending on the specific task, but I'd assume it to be about 1:1. since Python encourages exceptions for control flow, which is kind of good in absence of Rust-like result types. For example:</p>
+<ul>
+<li>we may be calling some code to add funds to a user's account which may fail for a number of reasons, like: UserIsAnAdmin, UserSuspended, UserUnverified. Those are not errors, they are exceptions from the happy path of successfully adding funds.</li>
+<li>we may have a message processor which raises MessageIgnored for messages which i refuses to process based on its current functionality or configuration.</li>
+</ul>
+<p>Meanwhile, there are already many important considerations when raising exceptions, like not reusing the same concrete exception type for more than one error. Having unreliable lint rules (which can be 50% incorrect) takes attention away from those very important considerations which cannot be linted for.</p>
+<p>I suggest removing this rule and adding a more limited one which checks that an exception name doesn't end with <code>Exception</code> and suggests replacing the <code>Exception</code> suffix with <code>Error</code>.</p>
+<p>At least, the message should be improved to, rather than saying <code>Exception name &lt;NAME&gt; should be named with an Error suffix</code>, say <code>Exception name &lt;NAME&gt; should be named with an Error suffix if it is an error, please ignore otherwise</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-26 16:23</div>
+            <div class="timeline-body"><p>I'm noticing that this rule is ignored-by-default in pep8-naming -- which makes me think we should consider removing it entirely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-06-26 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-06-27 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-27 15:20</div>
+            <div class="timeline-body"><p>@andersk - Not high-priority, but do you happen to have an opinion on this? (Was looking back at #783.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-07-10 01:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-07-10 01:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/quassy">@quassy</a> on 2024-02-12 01:18</div>
+            <div class="timeline-body"><pre><code class="language-py">class FoobarException(Exception):
+</code></pre>
+<p>I guess it's not mentioned in the PEP but I would like at least expect obviously named exceptions like this not to be flagged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2024-02-12 03:18</div>
+            <div class="timeline-body"><p>PEP 8 <a href="https://peps.python.org/pep-0008/#programming-recommendations">says</a>:</p>
+<blockquote>
+<p>Class naming conventions apply here, although you should add the suffix “Error” to your exception classes if the exception is an error. Non-error exceptions that are used for non-local flow control or other forms of signaling need no special suffix.</p>
+</blockquote>
+<p>So <code>FoobarException</code> doesn’t satisfy either convention; it should be <code>FoobarError</code> for an error or just <code>Foobar</code> for a non-error.</p>
+<p>Clearly it’s difficult for a linter to recognize the intended use case for a class deriving from <code>Exception</code>, but errors are the most common ones. Custom non-error exceptions are pretty rare, and someone writing them is likely a more advanced programmer who can determine whether the lint should be ignored or disabled. So I think the rule still has value for most users who have decided to enable <code>N</code> rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karolinepauls">@karolinepauls</a> on 2024-02-13 10:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Custom non-error exceptions are pretty rare</p>
+</blockquote>
+<p>This is not true, any web backend that specialises its BadRequest exceptions will have plenty.</p>
+<blockquote>
+<p>and someone writing them is likely a more advanced programmer who can determine whether the lint should be ignored or disabled</p>
+</blockquote>
+<p>Except that programmers don't work in isolation, in every project there will be more &quot;less advanced&quot; programmers for every, likely overworked, &quot;advanced programmer&quot;.</p>
+<p>Now the &quot;advanced programmer&quot; is put in the uncomfortable position of making sure that &quot;less advanced&quot; programmers:</p>
+<ul>
+<li>ignore this rule for the &quot;more advanced&quot; errors</li>
+<li>but don't learn the habit of adding a noqa for every slightly confusing lint.</li>
+</ul>
+<p><em>Moreover, the division between &quot;advanced&quot; and &quot;not advanced&quot; programmers is rather naive. The real division is between programmers of any seniority who want to learn, think, and reason at work and professional clock-watchers who cobble things together until they kind of work.</em></p>
+<p>The cost of false positives is much worse than the cost of false negatives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steve-mavens">@steve-mavens</a> on 2024-06-29 09:01</div>
+            <div class="timeline-body"><p>I suggest an opportunity here for two different rules: one to flag exception names ending in <code>Exception</code>, saying that this is a violation of PEP-8, and a separate rule (the existing one) to be enabled by people who use exceptions only for errors and therefore want all exception names to end in <code>Error</code>. @karolinepauls could use the new rule but not the existing one, @andersk could make an advanced programming decision whether to use the existing rule on a per-project basis (or noqa a few cases), and @quassy prefers an <code>Exception</code> suffix and therefore disables both rules.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:31 UTC
+    </footer>
+</body>
+</html>

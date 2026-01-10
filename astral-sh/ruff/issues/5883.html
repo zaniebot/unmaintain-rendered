@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff check --diff` writes summary message to stdout instead of stderr - astral-sh/ruff #5883</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>ruff check --diff</code> writes summary message to stdout instead of stderr</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/5883">#5883</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2023-07-19 14:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-19 14:28</div>
+            <div class="timeline-body"><p>When running <code>ruff check --diff</code> the diff <em>and</em> summary message (&quot;Would fix 2 errors&quot;) is written to standard output.</p>
+<pre><code class="language-shell">$ ruff check --select F,W,RUF015 --no-cache example.py --diff 2&gt; /dev/null
+--- example.py
++++ example.py
+@@ -1,10 +1,9 @@
+ from typing import List
+ 
+-import os
+ 
+ def sum_even_numbers(numbers: List[int]) -&gt; int:
+     &quot;&quot;&quot;Given a list of integers, return the sum of all even numbers in the list.&quot;&quot;&quot;
+     return sum(num for num in numbers if num % 2 == 0)
+ 
+ x = range(10)
+-list(x)[0]
+\ No newline at end of file
++list(x)[0]
+
+Would fix 2 errors.
+</code></pre>
+<p>I presumed this would cause problems with displaying or applying the patch but it turns out it does not since the number of lines is specified in the diff.</p>
+<p>e.g.</p>
+<p>You can use <code>ydiff</code> for a pretty diff and the summary is separate:</p>
+<pre><code>$ ruff check --select F,W,RUF015 --no-cache example.py --diff | ydiff -s
+--- example.py
++++ example.py
+@@ -1,10 +1,9 @@
+ 1 from typing import List                                                           1 from typing import List
+ 2                                                                                   2 
+ 3 import os    
+ 4                                                                                   3 
+ 5 def sum_even_numbers(numbers: List[int]) -&gt; int:                                  4 def sum_even_numbers(numbers: List[int]) -&gt; int:
+ 6     &quot;&quot;&quot;Given a list of integers, return the sum of all even numbers in the list&gt;  5     &quot;&quot;&quot;Given a list of integers, return the sum of all even numbers in the list&gt;
+ 7     return sum(num for num in numbers if num % 2 == 0)                            6     return sum(num for num in numbers if num % 2 == 0)
+ 8                                                                                   7 
+ 9 x = range(10)                                                                     8 x = range(10)
+10 list(x)[0]                                                                        9 list(x)[0]
+
+Would fix 2 errors.
+</code></pre>
+<p>Or you can use <code>git apply</code> to apply the diff:</p>
+<pre><code> $ ruff check --select F,W,RUF015 --no-cache example.py --diff | git apply -
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-19 14:28</div>
+            <div class="timeline-body"><p>As far as I can tell, this is not an issue. Feel free to chime in if it affects your use-case!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-07-19 14:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:44 UTC
+    </footer>
+</body>
+</html>

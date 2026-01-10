@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect unawaited coroutines - astral-sh/ruff #9833</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Detect unawaited coroutines</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9833">#9833</a>
+        opened by <a href="https://github.com/alekssamos">@alekssamos</a>
+        on 2024-02-05 15:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alekssamos">@alekssamos</a> on 2024-02-05 15:24</div>
+            <div class="timeline-body"><p>Hello. I fixed my code via ruff.
+Applied fix and  unsafe fixes.
+But ruff did not find one error.
+I forgot to write await when calling an asynchronous function.
+Accordingly, I received RuntimeWarning never awaited...
+e.g.</p>
+<pre><code class="language-python">async def another():
+    ...
+
+async def main():
+    result = another()
+</code></pre>
+<p>Is there any way to do this, and if not, will it be taken into account in the new versions of ruff?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-02-05 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-05 15:55</div>
+            <div class="timeline-body"><p>I don't believe we check this now, but it looks like a reasonable rule to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Question: how do I detect a forgotten await?" to "Detect `async` function without `await`" by @charliermarsh on 2024-02-05 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeleppane">@mikeleppane</a> on 2024-02-08 14:11</div>
+            <div class="timeline-body"><p>WIP</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-09 13:36</div>
+            <div class="timeline-body"><p>Note that mypy already implements this rule with its <code>unused-awaitable</code> error code: https://mypy.readthedocs.io/en/stable/error_code_list2.html#check-that-awaitable-return-value-is-used-unused-awaitable.</p>
+<p>That doesn't stop ruff implementing it as well -- but I feel like it might be a better fit for a type checker, as a type checker has the power to analyse multiple files at a time and track which calls return awaitable objects. Ruff doesn't (yet) have the power to do that (though it's obviously something we'd like to have).</p>
+<p>Still, it can be hard to configure mypy to enable just that warning without also enabling other warnings that might be unwelcome -- and maybe we can provide a valuable lint here even while only looking at one file at a time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-09 14:01</div>
+            <div class="timeline-body"><p>@AlexWaygood - I guess the rule as implemented here is actually a bit different (unclear if better or worse) than what's described in the Mypy docs, since this raises whenever you have an <code>async</code> method that doesn't await anything (like Clippy's unnecessary async rule), whereas the Mypy rule seems to raise on the <em>awaitable</em> rather than the async function. Is that correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-09 14:05</div>
+            <div class="timeline-body"><blockquote>
+<p>@AlexWaygood - I guess the rule as implemented here is actually a bit different (unclear if better or worse) than what's described in the Mypy docs, since this raises whenever you have an <code>async</code> method that doesn't await anything (like Clippy's unnecessary async rule), whereas the Mypy rule seems to raise on the <em>awaitable</em> rather than the async function. Is that correct?</p>
+</blockquote>
+<p>Ah interesting -- I think what you describe is possibly what's originally being asked for in this issue, but the implementation that's been put forward for consideration in https://github.com/astral-sh/ruff/pull/9911 is more similar to mypy's <code>unused-awaitable</code> check than what you're describing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-09 14:07</div>
+            <div class="timeline-body"><p>Oh sorry, I hadn't looked at the code yet. I was imagining we'd look for <code>async</code> function definitions that lack any <code>await</code> or <code>async</code> iterator (like <code>async for</code>, etc.).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-09 16:02</div>
+            <div class="timeline-body"><p>Yeah it sounds like #9911 addresses a separate (but also valid) use case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/plredmond">@plredmond</a> on 2024-02-09 18:36</div>
+            <div class="timeline-body"><p>~~Hi, I've blocked out time to do this on Monday.~~</p>
+<p>[Edit: I'll work on #9951, not this.]</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @plredmond by @zanieb on 2024-02-09 23:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Detect `async` function without `await`" to "Detect unawaited coroutines" by @zanieb on 2024-02-12 19:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @plredmond by @zanieb on 2024-02-12 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @mikeleppane by @zanieb on 2024-02-12 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gu1nness">@Gu1nness</a> on 2024-08-19 12:00</div>
+            <div class="timeline-body"><p>Do you know when this will be implemented?
+This would be a great addition to ruff!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> added by @MichaReiser on 2024-08-19 12:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-19 12:02</div>
+            <div class="timeline-body"><p>This will take a while. Ruff cannot currently resolve functions across files, which is a requirement for this rule to work reliable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-10-24 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> removed by @MichaReiser on 2024-10-24 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeckennedy">@mikeckennedy</a> on 2024-11-19 17:39</div>
+            <div class="timeline-body"><p>I want to just add a strong +1 here for detecting non-awaited coroutines. Check out the discussion here:</p>
+<p>https://www.reddit.com/r/Python/comments/1gulzjt/rewriting_4000_lines_of_python_to_migrate_to/</p>
+<p>One of the commenters says they have a huge code base but can not (never?) migrate to async because it's just too hard to make sure all the code works together (like no missed awaits). This feature would make Ruff a must have tool for such upgrades.</p>
+<p>However, I realize this is super hard. For example, this should be fine even though the coroutines are not directly awaited.</p>
+<pre><code class="language-python">t1 = async_thing_1()
+t2 = async_thing_2()
+
+await task.gather(t1, t2)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Zac-HD">@Zac-HD</a> on 2025-02-05 01:23</div>
+            <div class="timeline-body"><p>Note that the <code>gather()</code> example is only a difficulty for <code>asyncio</code>; neither <code>anyio</code> nor <code>trio</code> permit calling async functions without immediately awaiting them, in large part to avoid this kind of confusion.  Ruff could be very valuable for these use-cases, even if the rule had to be disabled for asyncio codebases, or at least disable-if-retval-used.</p>
+<p>(idiomatically, you'd call <code>my_gather(partial(fn1, *args), partial(fn2, **kwargs), ...)</code> - a list of functions)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeckennedy">@mikeckennedy</a> on 2025-02-08 16:07</div>
+            <div class="timeline-body"><p>Hey @Zac-HD nice to see you here. I'm somewhat familiar with Trio and AnyIO. But how do you actually run two or more things concurrently without starting them before awaiting them?</p>
+<pre><code class="language-python">for x in xes:
+   await async_thing(x)
+</code></pre>
+<p>still only runs one thing at a time. And await gather(f(x), g(x), ...) is fine but can be tricky if you have to build up the args for each one in a loop.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-08 18:15</div>
+            <div class="timeline-body"><p>@mikeckennedy I believe the canonical example would be using <code>TaskGroup.start_soon</code> (https://anyio.readthedocs.io/en/stable/tasks.html#creating-and-managing-tasks)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pirate">@pirate</a> on 2025-05-28 17:49</div>
+            <div class="timeline-body"><p>Would this be a feature better suited to https://github.com/astral-sh/ty ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-28 20:06</div>
+            <div class="timeline-body"><p>Maybe in the future. Our focus right now is exclusively on typing features (things that are simply incorrect and not just suspicious)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JoshPaulie">@JoshPaulie</a> on 2025-07-12 15:09</div>
+            <div class="timeline-body"><p>Big fan of this rule proposal!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:40 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Include base installation directory in uv run PATH - astral-sh/uv #9585</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Include base installation directory in uv run PATH</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9585">#9585</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-12-02 22:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-02 22:01</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>On Windows, non-virtual environments put the <code>python.exe</code> in the top-level of the installation directory, rather than in <code>Scripts</code>. This PR adds those paths to <code>PATH</code> in <code>uv run</code> and <code>uv tool run</code>.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/9574#issuecomment-2512217110.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-02 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-12-02 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-02 22:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/run.rs</code>:1026 on 2024-12-02 22:10</div>
+            <div class="timeline-body"><p>I'm sort of hesitant to do this so broadly, couldn't this add something like <code>/usr/bin</code> to the <code>PATH</code>? I would find that surprising. That example is a bit contrived, but it could be an arbitrary directory containing a link to the interpreter right? Should we just be special-casing the Python executable (e.g., by invoking the full path to the interpreter) instead of adding its parent directory to the <code>PATH</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-02 22:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/run.rs</code>:1026 on 2024-12-02 22:10</div>
+            <div class="timeline-body"><p>Ah sorry that suggestion doesn't resolve the linked issue, in which you'd expect the executable to be on the <code>PATH</code> in a child shell. Hm.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-02 22:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/run.rs</code>:1026 on 2024-12-02 22:12</div>
+            <div class="timeline-body"><p>In the ephemeral environment case we should never need to do this, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-02 22:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/run.rs</code>:1026 on 2024-12-02 22:13</div>
+            <div class="timeline-body"><p>Another possibility is #5839</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-02 22:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/run.rs</code>:1026 on 2024-12-02 22:13</div>
+            <div class="timeline-body"><p>Hmm, I don't think that's sufficient. There are other executables in the top-level too, right? I think this is just correct, at least on Windows. We could limit it to Windows?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-02 22:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/run.rs</code>:1026 on 2024-12-02 22:13</div>
+            <div class="timeline-body"><p>Yeah good call. That will always be virtual.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-02 22:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/run.rs</code>:1026 on 2024-12-02 22:13</div>
+            <div class="timeline-body"><p>We could also choose to limit this to Windows, non-virtual environments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-02 22:14</div>
+            <div class="timeline-body"><p>I tested this on my machine and confirmed that the path is added for non-virtual environments and omitted otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-02 22:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/run.rs</code>:1026 on 2024-12-02 22:16</div>
+            <div class="timeline-body"><p>I'm more comfortable limiting this to Windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-02 22:48</div>
+            <div class="timeline-body"><p>Limited to Windows, and to <code>uv run</code> (not <code>uv tool run</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-12-02 22:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-12-02 23:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-02 23:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-02 23:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:15 UTC
+    </footer>
+</body>
+</html>

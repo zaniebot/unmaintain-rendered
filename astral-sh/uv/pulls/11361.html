@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `uv sync --script` - astral-sh/uv #11361</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>uv sync --script</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11361">#11361</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-02-09 19:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-09 19:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The environment is located at a stable path within the cache, based on the script's absolute path.</p>
+<p>If a lockfile exists for the script, then we use our standard lockfile semantics (i.e., update the lockfile if necessary, etc.); if not, we just do a <code>uv pip sync</code> (roughly).</p>
+<p>Example usage:</p>
+<pre><code>❯ uv init --script hello.py
+Initialized script at `hello.py`
+
+❯ uv add --script hello.py requests
+Updated `hello.py`
+
+❯ cargo run sync --script hello.py
+Using script environment at: /Users/crmarsh/.cache/uv/environments-v1/hello-84e289fe3f6241a0
+Resolved 5 packages in 3ms
+Installed 5 packages in 12ms
+ + certifi==2025.1.31
+ + charset-normalizer==3.4.1
+ + idna==3.10
+ + requests==2.32.3
+ + urllib3==2.3.0
+</code></pre>
+<p>Closes https://github.com/astral-sh/uv/issues/6637.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2025-02-09 19:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">no-build</span> added by @charliermarsh on 2025-02-09 19:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cli/src/lib.rs</code>:3144 on 2025-02-10 11:05</div>
+            <div class="timeline-body"><p>Does it make sense to allow active e.g. for <code>uv sync --script --active scripts/publish/test_publish.py</code>? My use case is getting IDE support without explicit uv IDE support, having a shortcut for <code>uv export --script scripts/publish/test_publish.py | uv pip install -</code>. (I remember we had a discussion about that, but i can't find it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/sync.rs</code>:140 on 2025-02-10 11:20</div>
+            <div class="timeline-body"><p><code>uv sync --group foo --script scripts/publish/test_publish.py</code> passes without warnings, is that intended? Same for <code>--extra</code>, both are banned by <code>uv run</code>.</p>
+<p>With syncing support there's new a cause for groups in scripts (say a lint group that requires ruff because you want to format and lint the script), but i assume that discussion is for later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/sync.rs</code>:6710 on 2025-02-10 11:29</div>
+            <div class="timeline-body"><p>Should we add this filter to the test context, given that it's an unstable part of stderr for this workflow?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-02-10 11:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-10 14:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/sync.rs</code>:140 on 2025-02-10 14:49</div>
+            <div class="timeline-body"><p>They should be banned. Groups and extras are not supported in scripts — they’re not in the standard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-11 02:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-cli/src/lib.rs</code>:3144 on 2025-02-11 02:19</div>
+            <div class="timeline-body"><p>I sort of defer to @zanieb here because it <em>could</em> cause complications if we ever want to allow &quot;run a script in the context of a project&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2025-02-11 02:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-11 14:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:3144 on 2025-02-11 14:20</div>
+            <div class="timeline-body"><blockquote>
+<p>&quot;run a script in the context of a project&quot;.</p>
+</blockquote>
+<p>Can you describe what this means briefly? Layered on top of the project environment?</p>
+<p>I think <code>--active</code> makes sense here. I presume it's awkward to support given how I implemented <code>--active</code> though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-11 14:22</div>
+            <div class="timeline-body"><blockquote>
+<p>Perhaps controversially, running uv sync --script does create a lockfile for the script, if it doesn't exist. We can avoid that... it's just more work and more code.</p>
+</blockquote>
+<p>It's pretty surprising that it does this, given it's otherwise opt-in. I'm hesitant to ask you to do more work, but...</p>
+<p>Is there a reason it's that way — other than it being the easier implementation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-11 14:23</div>
+            <div class="timeline-body"><p>I can change it, it will just be a lot more code, since it requires <code>sync</code> to support these alternative semantics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-11 14:23</div>
+            <div class="timeline-body"><p>It's not a lot of <em>work</em>, it's just a lot more code (plus some test coverage).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-11 14:34</div>
+            <div class="timeline-body"><p>Yeah that stinks... I think we should only change it if we want to take a firmer stance on scripts having lockfiles? The part that bothers me is that we'd create one on <code>uv sync</code> but not <code>uv run</code>. Should we create one during <code>uv run</code> too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-11 16:42</div>
+            <div class="timeline-body"><p>Sounds good -- I think I should just change it to be consistent with <code>uv run</code> for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-12 02:40</div>
+            <div class="timeline-body"><p>Updated the PR to avoid creating a lockfile if it doesn't already exist.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-12 02:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-cli/src/lib.rs</code>:3144 on 2025-02-12 02:41</div>
+            <div class="timeline-body"><p>I think <code>--active</code> wouldn't be too bad to support. I thought there was some thought that we might want you to be able to &quot;run a script in the context of a project&quot; -- I don't know what it means exactly, but there's some vague allusions to it in the code. Maybe, like, layering the script's dependencies atop the project's dependencies (like you said)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-12 02:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-cli/src/lib.rs</code>:3144 on 2025-02-12 02:51</div>
+            <div class="timeline-body"><p>Should we... warn, if <code>VIRTUAL_ENV</code> is set but the user didn't provide <code>--active</code> (following projects)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-12 03:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-cli/src/lib.rs</code>:3144 on 2025-02-12 03:05</div>
+            <div class="timeline-body"><p>Did this separately: https://github.com/astral-sh/uv/pull/11433</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-12 14:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:3145 on 2025-02-12 14:28</div>
+            <div class="timeline-body"><p>You know <code>conflicts_with_all</code> exists, right? :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-12 14:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:3139 on 2025-02-12 14:30</div>
+            <div class="timeline-body"><p>Minor preference to keep this on one line for brevity / readability in the CLI short help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-02-12 14:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-02-12 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-12 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-12 16:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

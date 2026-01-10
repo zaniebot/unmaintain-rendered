@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forbidden combinations with PEP-654 - astral-sh/ruff #14168</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Forbidden combinations with PEP-654</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14168">#14168</a>
+        opened by <a href="https://github.com/jakkdl">@jakkdl</a>
+        on 2024-11-07 16:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jakkdl">@jakkdl</a> on 2024-11-07 16:15</div>
+            <div class="timeline-body"><h3>continue/break/return in except*</h3>
+<p>continue/break/return in <code>except*</code> is a syntax error, see https://peps.python.org/pep-0654/#forbidden-combinations</p>
+<pre><code class="language-python">def foo():
+    for _ in range(5):
+        try:
+            ...
+        except* Exception:
+            continue
+        except* ValueError:
+            break
+        except* TypeError:
+            return
+</code></pre>
+<pre><code class="language-sh">$ ruff check --isolated --select=ALL --ignore=D,ANN ruff_except.py
+ruff_except.py:5:9: S112 `try`-`except`-`continue` detected, consider logging the exception
+ruff_except.py:5:9: PERF203 `try`-`except` within a loop incurs performance overhead
+ruff_except.py:5:17: BLE001 Do not catch blind exception: `Exception`
+Found 3 errors.
+</code></pre>
+<p>The BLE001 and PERF203 are probably fine, but the S112 seems like a misfire. And of course we should get three errors.</p>
+<h3>except + except* error is uninformative</h3>
+<pre><code class="language-python">try:
+    ...
+except BaseException:
+    ...
+except* BaseException:
+    ...
+</code></pre>
+<pre><code class="language-sh">$ ruff check --isolated --select=ALL --ignore=D ruff_except2.py 
+error: Failed to parse ruff_except2.py:5:7: Unexpected token '*'
+ruff_except2.py:5:7: E999 SyntaxError: Unexpected token '*'
+Found 1 error.
+</code></pre>
+<h3>as is the other way around</h3>
+<pre><code class="language-python">try:
+    ...
+except* BaseException:
+    ...
+except BaseException:
+    ...
+</code></pre>
+<pre><code class="language-sh">$ ruff check --isolated --select=ALL --ignore=D ruff_except3.py
+error: Failed to parse ruff_except3.py:5:8: Expected '&quot;*&quot;', but got 'BaseException'
+ruff_except3.py:5:8: E999 SyntaxError: Expected '&quot;*&quot;', but got 'BaseException'
+Found 1 error.
+</code></pre>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dylwil3 on 2024-11-07 17:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-08 05:19</div>
+            <div class="timeline-body"><p>Thanks for catching this, and for the great examples!</p>
+<p>Would you mind sharing which ruff version you're using? For some reason I was only able to get the same messages as you when using v0.3. Here's what it looks like with the latest version:</p>
+<pre><code class="language-console">➜  tempruff uv tool run ruff check --select ALL --ignore D,ANN --output-format concise
+⠙ Resolving dependencies...                                                             INFO add_decision: root @ 0a0.dev0 without checking dependencies
+⠙ ruff==0.7.2                                                                           INFO add_decision: ruff @ 0.7.2 without checking dependencies
+ruff_except.py:5:9: S112 `try`-`except`-`continue` detected, consider logging the exception
+ruff_except.py:5:9: PERF203 `try`-`except` within a loop incurs performance overhead
+ruff_except.py:5:17: BLE001 Do not catch blind exception: `Exception`
+ruff_except2.py:3:8: BLE001 Do not catch blind exception: `BaseException`
+ruff_except2.py:5:9: BLE001 Do not catch blind exception: `BaseException`
+ruff_except2.py:5:9: B025 try-except block with duplicate exception `BaseException`
+ruff_except3.py:3:9: BLE001 Do not catch blind exception: `BaseException`
+ruff_except3.py:5:8: BLE001 Do not catch blind exception: `BaseException`
+ruff_except3.py:5:8: B025 try-except block with duplicate exception `BaseException`
+Found 12 errors.
+[*] 3 fixable with the `--fix` option.
+</code></pre>
+<p>And here's what it looks like in v0.3:</p>
+<pre><code class="language-console">➜  tempruff uv tool run ruff@0.3 check --select ALL --ignore D,ANN
+⠙ Resolving dependencies...                                                             INFO add_decision: root @ 0a0.dev0 without checking dependencies
+⠙ ruff==0.3.0                                                                           INFO add_decision: ruff @ 0.3.0 without checking dependencies
+error: Failed to parse ruff_except2.py:5:7: Unexpected token '*'
+error: Failed to parse ruff_except3.py:5:8: Expected '&quot;*&quot;', but got 'BaseException'
+ruff_except.py:5:9: S112 `try`-`except`-`continue` detected, consider logging the exception
+ruff_except.py:5:9: PERF203 `try`-`except` within a loop incurs performance overhead
+ruff_except.py:5:17: BLE001 Do not catch blind exception: `Exception`
+ruff_except2.py:5:7: E999 SyntaxError: Unexpected token '*'
+ruff_except3.py:5:8: E999 SyntaxError: Expected '&quot;*&quot;', but got 'BaseException'
+Found 8 errors.
+[*] 3 fixable with the `--fix` option.
+</code></pre>
+<p>Ruff switched to a hand-written parser in v0.4 (see the <a href="https://astral.sh/blog/ruff-v0.4.0">announcement post</a>), and the handling of syntax errors changed (see <a href="https://astral.sh/blog/ruff-v0.5.0#changes-to-e999-and-reporting-of-syntax-errors">this v0.5 post</a>). This has certainly been a net big improvement! However, there are still some known limitations in the new implementation, and I can see that this particular syntax error is one such: https://github.com/astral-sh/ruff/blob/272d24bf3e4dabe59d2ec49f505e8fa4e00ba798/crates/ruff_python_parser/src/parser/statement.rs#L1341</p>
+<p>When this functionality gets added, this will be a great reminder to have an informative error message!</p>
+<p>Finally - you mention that S112 looks like a misfire. Could you say more about that? My understanding was that exception groups are, essentially, collections of exceptions that you might catch. S112 is suggesting doing something with these (e.g. you could iterate over them and log them) rather than just continuing the loop. Is the concern that the message doesn't distinguish between exceptions and groups of exceptions?</p>
+<p>Thanks again and let me know if I'm missing anything here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-08 08:12</div>
+            <div class="timeline-body"><blockquote>
+<p>continue/break/return in <code>except*</code> is a syntax error, see <a href="https://peps.python.org/pep-0654/#forbidden-combinations">peps.python.org/pep-0654#forbidden-combinations</a></p>
+</blockquote>
+<p>This should be covered by #11934. The other two examples doesn't raise any syntax errors currently (https://play.ruff.rs/6e84baaa-228d-454c-a137-4d7f87f837ae) and as mentioned by @dylwil3 the TODO mentioned should also be part of #11934. I'd prefer to merge this into the linked issue if it's all related to syntax errors raised by the compiler.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jakkdl">@jakkdl</a> on 2024-11-08 11:46</div>
+            <div class="timeline-body"><p>Ah, it indeed appears I did some of my testing in an old venv with an ancient ruff version (0.3.7), sorry!</p>
+<blockquote>
+<p>Finally - you mention that S112 looks like a misfire. Could you say more about that? My understanding was that exception groups are, essentially, collections of exceptions that you might catch. S112 is suggesting doing something with these (e.g. you could iterate over them and log them) rather than just continuing the loop. Is the concern that the message doesn't distinguish between exceptions and groups of exceptions?</p>
+</blockquote>
+<p>S112 talks about wanting to do more than just <code>continue</code> inside the <code>except*</code> ... but having a <code>continue</code> inside an <code>except*</code> is fully invalid! <code>try-except*-pass</code> makes sense to warn about, but if a user is doing <code>try-except*-continue</code> the first priority is to fix the syntaxerror, and once doing so you no longer get any S112, so I think the effect in most cases is just to confuse the user with a redundant error.
+I can come up with some contrived example where the user gets S112, remembers that they should handle that problem, and makes sure to also log it when fixing the syntaxerror. But for that you'd probably want a separate improved rule that will trigger more generally on &quot;not making any use of an exception&quot; (though that'd be a very noisy rule, so ehh) so it keeps triggering once the user refactors the code as e.g.</p>
+<pre><code class="language-python">for _ in range(1):
+    try:
+        ...
+    except* ValueError:
+        should_continue = True
+
+    if should_continue:
+        continue
+</code></pre>
+<p>.
+Feel free to track/merge the syntax errors however you want :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-08 15:54</div>
+            <div class="timeline-body"><blockquote>
+<p>if a user is doing try-except*-continue the first priority is to fix the syntaxerror, and once doing so you no longer get any S112, so I think the effect in most cases is just to confuse the user with a redundant error.</p>
+</blockquote>
+<p>Makes sense to me, thanks for the explanation!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:39 UTC
+    </footer>
+</body>
+</html>

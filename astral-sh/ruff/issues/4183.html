@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `Applicability` to `Fix` - astral-sh/ruff #4183</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>Applicability</code> to <code>Fix</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4183">#4183</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-05-02 09:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-02 09:12</div>
+            <div class="timeline-body"><p>Part of #4181 and depends on #4182</p>
+<ul>
+<li>Add a new <code>Applicability</code> enum in <code>fix.rs</code> similar to <a href="https://github.com/rome/tools/blob/38104b339da8ff688f469799e1fc3f4a46f3d2ec/crates/rome_diagnostics/src/suggestion.rs#L6-L16">Rome's</a> or <a href="https://doc.rust-lang.org/stable/nightly-rustc/rustc_errors/enum.Applicability.html">Clippy's</a> <code>Applicability</code> enums with three variants:<ul>
+<li><code>Safe</code> (or <code>Automatic</code>, <code>Always</code>, <code>MachineApplicable</code>?)</li>
+<li><code>MaybeIncorrect</code></li>
+<li><code>Unspecified</code></li>
+</ul>
+</li>
+<li>Add the <code>applicability</code> field to <code>Fix</code></li>
+<li>Add the new <code>safe</code> and <code>safe_edits</code> constructor functions (identical to <code>unspecified</code> and <code>unspecified_edits)</code></li>
+<li>Add the new <code>maybe_incorrect</code> and <code>maybe_incorrect_edits</code> constructor functions (identical to <code>unspecified</code> and <code>unspecified_edits)</code></li>
+<li>Mark <code>unspecified</code> and <code>unspecified_edits</code> as <code>deprecated</code> (new lints should use either <code>safe_*</code> or <code>maybe_incorrect_*). Add </code>allow(deprecated)` at the call-sites.</li>
+<li>Change the <a href="https://github.com/charliermarsh/ruff/blob/fdd5fd2ad1999ef43a418da29f37858fd98cb151/crates/ruff/src/message/diff.rs#L54"><code>Diff</code></a> implementation to write <code>Suggested Fix</code> for <code>MaybeIncorrect</code> and <code>Unspecified</code>, and <code>Safe fix</code> for <code>Applicability::Safe</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2023-05-02 09:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2023-05-02 09:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-05-03 01:58</div>
+            <div class="timeline-body"><p>FYI I've started working on this branched off of #4198</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @MichaReiser on 2023-05-03 07:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-03 14:42</div>
+            <div class="timeline-body"><p>This will allow us to change <code>min_start</code> to return a <code>TextSize</code> rather than <code>Option&lt;TextSize&gt;</code> because it is guaranteed that the <code>Fix</code> always contains at least one edit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-05-04 22:03</div>
+            <div class="timeline-body"><p>I'm working on the names here and looking for something where they're coherent with each other. I'm curious if we're likely to add more levels in the future?</p>
+<p>For example, here's an option centered on &quot;certainty&quot; that's consistent while leaving room for feature options</p>
+<pre><code class="language-rust">enum Applicability {
+    /// The change is guaranteed to be correct and safe to apply automatically.
+    Certain,
+
+    /// The change is likely to be correct, but may require a manual review to ensure correctness.
+    Likely,
+
+    /// The change might not be correct, and requires manual review before applying.
+    Uncertain,
+
+    /// The change could introduce errors or break the code, and should be applied with caution.
+    Risky,
+
+    /// The applicability of the change is not specified or cannot be determined.
+    Unspecified,
+}
+</code></pre>
+<p>Or if we do not need more options in the future</p>
+<pre><code class="language-rust">enum Applicability {
+    Safe,
+    Unsafe,
+    Unspecified
+}
+</code></pre>
+<p>This option matches your safe/unsafe framing in the primary issue https://github.com/charliermarsh/ruff/issues/4181 — I think this may be the clearest framing if there are not going to be additional options?</p>
+<p>Or if we want to center on how it will be applied</p>
+<pre><code class="language-rust">enum Applicability {
+    Automatic,
+    Suggested,
+    Unspecified
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-05 07:14</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm working on the names here and looking for something where they're coherent with each other. I'm curious if we're likely to add more levels in the future?</p>
+</blockquote>
+<p>I don't think we can rule it out completely. For example, Clippy has a <code>HasPlaceholders</code> <code>Applicability</code> which could be useful.</p>
+<p>Thank you for your thoughtful suggestions. They are way more consistent than my initial proposal :)</p>
+<p>The challenge I'm facing right now evaluating the proposals is that we need to make a call on what a <em>future</em> <code>Appicability</code> level could be: Will it represent a more risky code fixe, or mark incomplete code fixes (that e.g. require manual edits from users)? Depending on that, an <code>Applicability level around </code>certainty` or how it is applied is more appropriate.</p>
+<blockquote>
+<p>For example, here's an option centered on &quot;certainty&quot; that's consistent while leaving room for feature options</p>
+</blockquote>
+<p>I'm trying to think about how the fix review workflows for <code>Likely</code>, <code>Uncertain</code>, and <code>Risky</code> would differ because it seems all of them require manual review. We could show some scary warnings around <code>Uncertain</code> and <code>Risky</code> fixes but I fear that it will be difficult for users to understand the differences (or why some fixes have scary warnings and others don't).</p>
+<blockquote>
+<p>Or if we want to center on how it will be applied</p>
+</blockquote>
+<p>That's why I'm leaning more towards this naming, but I fail to come up with a good name for a fix that we &quot;propose&quot; to a user but e.g. don't support applying automatically because we want users to manually apply, either because the code is incomplete or has a good chance to be incorrect. Would that be <code>Manual</code>?</p>
+<p>What's your preference?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-05-07 15:59</div>
+            <div class="timeline-body"><p>I think the following makes sense</p>
+<pre><code class="language-rust">pub enum Applicability {
+    /// The fix is definitely what the user intended, or maintains the exact meaning of the code.
+    /// This fix should be automatically applied.
+    Automatic,
+
+    /// The fix may be what the user intended, but it is uncertain.
+    /// The fix should result in valid code if it is applied.
+    /// The fix can be applied with user opt-in.
+    Suggested,
+
+    /// The fix has a good chance of being incorrect or the code is incomplete.
+    /// The fix may result in invalid code if it is applied.
+    /// The fix should only be manually applied by the user.
+    Manual,
+
+    /// The applicability of the fix is unknown.
+    #[default]
+    Unspecified,
+}
+</code></pre>
+<p>I agree that &quot;certainty&quot; doesn't really help with the typical user workflow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-08 06:27</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the following makes sense</p>
+</blockquote>
+<p>I like it. Thanks for pushing for, and improving the naming!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-05-10 06:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:58 UTC
+    </footer>
+</body>
+</html>

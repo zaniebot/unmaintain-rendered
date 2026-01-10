@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Cache workspace discovery - astral-sh/uv #12096</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cache workspace discovery</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12096">#12096</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-03-10 14:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-03-10 14:43</div>
+            <div class="timeline-body"><p>Reduce the overhead of <code>uv run</code> in large workspaces. Instead of re-discovering the entire workspace each time we resolve the metadata of a member, we can the discovered set of workspace members. Care needs to be taken to not cache the discovery for <code>uv init</code>, <code>uv add</code> and <code>uv remove</code>, which change the definitions of workspace members.</p>
+<p>Below is apache airflow e3fe06382df4b19f2c0de40ce7c0bdc726754c74 <code>uv run python</code> with a minimal payload. With this change, we avoid a ~350ms overhead of each <code>uv run</code> invocation.</p>
+<pre><code>$ hyperfine --warmup 2 \
+    &quot;uv run --no-dev python -c \&quot;print('hi')\&quot;&quot; \
+    &quot;uv-profiling run --no-dev python -c \&quot;print('hi')\&quot;&quot;
+Benchmark 1: uv run --no-dev python -c &quot;print('hi')&quot;
+  Time (mean ± σ):     492.6 ms ±   7.0 ms    [User: 393.2 ms, System: 97.1 ms]
+  Range (min … max):   482.3 ms … 501.5 ms    10 runs
+ 
+Benchmark 2: uv-profiling run --no-dev python -c &quot;print('hi')&quot;
+  Time (mean ± σ):     129.7 ms ±   2.5 ms    [User: 105.4 ms, System: 23.2 ms]
+  Range (min … max):   126.0 ms … 136.1 ms    22 runs
+ 
+Summary
+  uv-profiling run --no-dev python -c &quot;print('hi')&quot; ran
+    3.80 ± 0.09 times faster than uv run --no-dev python -c &quot;print('hi')&quot;
+</code></pre>
+<p>The profile after those change below. We still spend a large chunk in toml parsing (both <code>uv.lock</code> and <code>pyproject.toml</code>), but it's not excessive anymore.</p>
+<p><img src="https://github.com/user-attachments/assets/6fe78510-7e25-48ee-8a6d-220ee98ad120" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @konstin on 2025-03-10 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-workspace/src/workspace.rs</code>:687 on 2025-03-10 14:44</div>
+            <div class="timeline-body"><p>We could avoid the clone here with a nested hashmap but I prefer the simplicity and extensibility (with future discovery options) here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-03-10 14:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-03-10 19:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-10 21:03</div>
+            <div class="timeline-body"><p>CC @potiuk this is hopefully relevant to you too, I've been checking if there are performance gotchas when adopting uv for large workspaces.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-03-10 21:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-03-10 21:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-10 21:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2025-03-11 15:43</div>
+            <div class="timeline-body"><blockquote>
+<p>CC @potiuk this is hopefully relevant to you too, I've been checking if there are performance gotchas when adopting uv for large workspaces.</p>
+</blockquote>
+<p>Nice! I did notice a bit of overhead in our workspace and haven't got a time to follow up to do some checking... But you seem to be (as usual) solving the problems before your users manage to even realise them :)</p>
+<p>Good job :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:21 UTC
+    </footer>
+</body>
+</html>

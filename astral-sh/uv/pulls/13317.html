@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>make `uv version` lock and sync - astral-sh/uv #13317</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>make <code>uv version</code> lock and sync</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13317">#13317</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-05-06 18:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-06 18:54</div>
+            <div class="timeline-body"><p>This adopts the logic from <code>uv remove</code> for locking and syncing, as the scope of the changes made are ultimately similar. Unlike <code>uv remove</code> there is no support for modifying PEP723 scripts, as these are not versioned.</p>
+<p>In doing this the <code>version</code> command gains a truckload of args for configuring lock/sync behaviour. Presumably most of these are passed via settings or env files, and not of particular concern.</p>
+<p>The most interesting additions are:</p>
+<ul>
+<li><code>--frozen</code>: makes <code>uv version</code> work ~exactly as it did before this PR</li>
+<li><code>--locked</code>: errors if the lockfile is out of date</li>
+<li><code>--no-sync</code>: updates the lockfile, but doesn't run the equivalent of <code>uv sync</code></li>
+<li><code>--package name</code>: a convenience for referring to a package in the workspace</li>
+</ul>
+<p>Note that the existing <code>--dry-run</code> flag effectively implies <code>--frozen</code>.</p>
+<p>Fixes #13254
+Fixes #13548</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-06 18:58</div>
+            <div class="timeline-body"><p>Note for reviewers: <code>print_version</code>, <code>bumped_version</code>, and similar &quot;compute the version change&quot; logic should be completely unchanged. All the project read/write logic was completely rewritten and can be reviewed in a vacuum.</p>
+<p>The added code is nearly an exact copy paste from <code>uv::commands::project::remove::remove</code>, but with the support for <code>RemoveTarget::Script</code> removed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Gankra on 2025-05-06 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-06 19:03</div>
+            <div class="timeline-body"><p>I should almost certainly add some new tests for this...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-06 19:14</div>
+            <div class="timeline-body"><p>Some new sample outputs</p>
+<pre><code>$ uv version
+myfast 1.2.8
+</code></pre>
+<pre><code>$ uv version 1.2.9
+Resolved 36 packages in 7ms
+Audited 34 packages in 0.02ms
+myfast 1.2.8 =&gt; 1.2.9
+</code></pre>
+<pre><code>$ uv version 1.2.10 --no-sync
+Resolved 36 packages in 7ms
+myfast 1.2.9 =&gt; 1.2.10
+</code></pre>
+<pre><code>$ uv version 1.2.11 --frozen 
+myfast 1.2.10 =&gt; 1.2.11
+</code></pre>
+<pre><code>uvloc version 1.2.12 --locked 
+Resolved 36 packages in 7ms
+error: The lockfile at `uv.lock` needs to be updated, but `--locked` was provided. To update the lockfile, run `uv lock`.
+</code></pre>
+<p>...it occurs to me that <code>--locked</code> is basically an unusable cli flag for add/remove/version but well, that's a pre-existing truth I guess. I suppose it works for:</p>
+<ul>
+<li><code>uv version --locked</code> (no values to set)</li>
+<li><code>uv version --locked the-version-thats-already-there</code> (noop)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-06 22:54</div>
+            <div class="timeline-body"><p>Can you add a test for the pathological but motivating case where a registry package depends on the bumped package, causing a conflict if not updated? So that we cover why we need the full set of resolver-installer options.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-05-08 00:08</div>
+            <div class="timeline-body"><p>This looks great! The one thing that's missing is a few tests to verify that the lockfile is <em>actually</em> getting updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HenriBlacksmith">@HenriBlacksmith</a> on 2025-05-20 07:43</div>
+            <div class="timeline-body"><p>Any plans to merge this fix?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-05-20 17:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/src/commands/project/version.rs</code>:337 on 2025-05-20 17:57</div>
+            <div class="timeline-body"><p>This logic for mapping the package to the version is extremely dubious to me...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-05-20 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/src/commands/project/version.rs</code>:109 on 2025-05-20 17:58</div>
+            <div class="timeline-body"><p>this is how we get the &quot;name&quot; we'll be looking up in the lockfile</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-05-20 17:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/src/commands/project/version.rs</code>:240 on 2025-05-20 17:59</div>
+            <div class="timeline-body"><p>This is how we find the project we use to lookup the pyproject.toml to get the name from</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-05-20 18:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/src/commands/project/version.rs</code>:109 on 2025-05-20 18:06</div>
+            <div class="timeline-body"><p>I think this part can at least be simplified to <code>project.project_name()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-20 18:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/version.rs</code>:213 on 2025-05-20 18:44</div>
+            <div class="timeline-body"><p>Nit: This is the proper style</p>
+<pre><code class="language-suggestion">/// Note that `uv version` never needs to support PEP 723 scripts, as those are unversioned.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/version.rs</code>:105 on 2025-05-20 19:26</div>
+            <div class="timeline-body"><p>I think if we don't have a <code>name</code>, then we don't have a <code>[project]</code> table, so we don't have a version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-05-20 19:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-05-21 13:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/version.rs</code>:102 on 2025-05-21 13:02</div>
+            <div class="timeline-body"><p>I think I'd stylize this as: &quot;Missing <code>project.name</code> field in: {}&quot; (note the backticks)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-05-21 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-05-21 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-21 13:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:24 UTC
+    </footer>
+</body>
+</html>

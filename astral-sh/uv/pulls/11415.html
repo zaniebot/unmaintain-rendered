@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark `sync::sync_dry_run` test as requiring `python-managed` - astral-sh/uv #11415</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Mark <code>sync::sync_dry_run</code> test as requiring <code>python-managed</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11415">#11415</a>
+        opened by <a href="https://github.com/mgorny">@mgorny</a>
+        on 2025-02-11 07:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mgorny">@mgorny</a> on 2025-02-11 07:28</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Mark <code>sync::sync_dry_run</code> as requiring <code>python-managed</code>, as it fails with system Python executables due to extraneous Python packages being installed:</p>
+<pre><code>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: sync_dry_run
+Source: crates/uv/tests/it/sync.rs:6574
+────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+    5     5 │ Using CPython 3.12.[X] interpreter at: [PYTHON-3.12]
+    6     6 │ Would create virtual environment at: .venv
+    7     7 │ Resolved 2 packages in [TIME]
+    8     8 │ Would create lockfile at: uv.lock
+    9       │-Would download 1 package
+   10       │-Would install 1 package
+   11       │- + iniconfig==2.0.0
+          9 │+Would uninstall 1310 packages
+         10 │+ - a2wsgi==1.10.8
+[…]
+</code></pre>
+<h2>Test Plan</h2>
+<pre><code>cargo test --no-default-features --features=python,pypi,git
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgorny">@mgorny</a> on 2025-02-11 08:00</div>
+            <div class="timeline-body"><p>Looks like macOS failed due to a flaky test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @konstin on 2025-02-11 08:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-02-11 08:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-02-11 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-02-11 08:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-11 09:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgorny">@mgorny</a> on 2025-02-11 09:17</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-11 15:11</div>
+            <div class="timeline-body"><p>This seems wrong... cc @charliermarsh</p>
+<p>Related #11376</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-11 15:13</div>
+            <div class="timeline-body"><p>It looks like we say</p>
+<p>https://github.com/astral-sh/uv/blob/0735be21b92c695ded494d6e3b4be16b60e7c993/crates/uv/tests/it/sync.rs#L6650</p>
+<p>then perform the sync dry-run against the interpreter's environment instead of an empty one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mgorny">@mgorny</a> on 2025-02-11 17:29</div>
+            <div class="timeline-body"><p>Oops, so I've found a serious bug? :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-11 17:35</div>
+            <div class="timeline-body"><p>Haha, well it's just dry-run reporting (doesn't modify the environment at all), so not <em>serious</em>, but definitely wrong.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

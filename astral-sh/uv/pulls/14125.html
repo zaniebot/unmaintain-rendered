@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix the current directory change issue upon activation of a relocatable venv within fish - astral-sh/uv #14125</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix the current directory change issue upon activation of a relocatable venv within fish</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14125">#14125</a>
+        opened by <a href="https://github.com/ri-char">@ri-char</a>
+        on 2025-06-18 12:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ri-char">@ri-char</a> on 2025-06-18 12:05</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Activating a relocatable venv within fish shell will change current directory unexpectedly.
+An example:</p>
+<pre><code class="language-fish">~ &gt; pwd
+/home/user
+
+~ &gt; uv venv --relocatable
+Using CPython 3.13.3 interpreter at: /usr/bin/python3.13
+Creating virtual environment at: ./.venv
+Activate with: source .venv/bin/activate.fish
+
+~ &gt; source .venv/bin/activate.fish
+
+(project) ~/.venv/bin &gt; pwd   # current directory is changed here!
+/home/user/.venv/bin
+</code></pre>
+<p>This PR removes <code>cd</code> command in activate script. And the current directory will not be changed any more.</p>
+<p>Versions:</p>
+<pre><code>fish: 4.0.1
+uv: 0.7.12
+</code></pre>
+<h2>Test Plan</h2>
+<pre><code class="language-fish">set old_cwd (pwd)
+uv venv --relocatable
+source .venv/bin/activate.fish
+set cwd (pwd)
+test &quot;$old_cwd&quot; = &quot;$cwd&quot;
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:26 UTC
+    </footer>
+</body>
+</html>

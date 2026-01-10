@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter can insert mysterious extraneous parentheses in `with` statements - astral-sh/ruff #14001</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter can insert mysterious extraneous parentheses in <code>with</code> statements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14001">#14001</a>
+        opened by <a href="https://github.com/lpulley">@lpulley</a>
+        on 2024-10-30 15:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lpulley">@lpulley</a> on 2024-10-30 15:42</div>
+            <div class="timeline-body"><p>My <code>ruff --version</code> is 0.7.1.</p>
+<p>I've encountered a case where <code>ruff format</code> adds nesting parentheses for seemingly no reason:</p>
+<pre><code class="language-py">with (
+    open(
+        &quot;some/path.txt&quot;,
+        &quot;rb&quot;,
+    )
+    if True
+    else open(&quot;other/path.txt&quot;)
+    # Bar
+):
+    pass
+</code></pre>
+<pre><code>➜ ruff format --diff up034.py
+--- up034.py
++++ up034.py
+@@ -1,10 +1,12 @@
+ with (
+-    open(
+-        &quot;some/path.txt&quot;,
+-        &quot;rb&quot;,
++    (
++        open(
++            &quot;some/path.txt&quot;,
++            &quot;rb&quot;,
++        )
++        if True
++        else open(&quot;other/path.txt&quot;)
+     )
+-    if True
+-    else open(&quot;other/path.txt&quot;)
+     # Bar
+ ):
+     pass
+
+1 file would be reformatted
+</code></pre>
+<p>i.e. it wants this:</p>
+<pre><code class="language-py">with (
+    (
+        open(
+            &quot;some/path.txt&quot;,
+            &quot;rb&quot;,
+        )
+        if True
+        else open(&quot;other/path.txt&quot;)
+    )
+    # Bar
+):
+    pass
+</code></pre>
+<p>UP034 complains about this, for good reason.</p>
+<p>If the <code># Bar</code> comment is removed, the formatter makes no changes. More curiously, if I keep <code># Bar</code> but add <code>as _</code>, the formatter makes no changes. (I also checked that Black does not do this.)</p>
+<p>I've resolved the issue in the meantime by moving the <code># Bar</code> comment to a different line, but this seems like a formatter bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-10-30 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-10-30 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2024-10-30 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-30 17:43</div>
+            <div class="timeline-body"><p>Thanks for reporting this. Agree, this looks silly but I'm a bit scared from fixing it... with item formatting is complicated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-01 08:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lpulley">@lpulley</a> on 2024-11-04 18:30</div>
+            <div class="timeline-body"><p>Hmm... with Ruff 0.7.2, the example I gave above is still problematic; it still wants to add extra <code>(</code> <code>)</code> and fail UP034.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-04 19:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm... with Ruff 0.7.2, the example I gave above is still problematic; it still wants to add extra <code>(</code> <code>)</code> and fail UP034.</p>
+</blockquote>
+<p>Yeah, we can't fix it before promoting the new style to stable. You would have to use <code>format.preview = true</code> for now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lpulley">@lpulley</a> on 2024-11-04 19:55</div>
+            <div class="timeline-body"><p>Aha; I missed that. Thanks for the clarification!!</p>
+<p>-------- Original Message --------
+On 11/4/24 13:52, Micha Reiser  wrote:</p>
+<blockquote>
+<blockquote>
+<p>Hmm... with Ruff 0.7.2, the example I gave above is still problematic; it still wants to add extra ( ) and fail UP034.</p>
+</blockquote>
+<p>Yeah, we can't fix it before promoting the new style to stable. You would have to use format.preview = true for now</p>
+<p>—
+Reply to this email directly, <a href="https://github.com/astral-sh/ruff/issues/14001#issuecomment-2455575739">view it on GitHub</a>, or <a href="https://github.com/notifications/unsubscribe-auth/ABW4EY3TB6AAI6UTPRAK5FDZ67GBFAVCNFSM6AAAAABQ4NIQLOVHI2DSMVQWIX3LMV43OSLTON2WKQ3PNVWWK3TUHMZDINJVGU3TKNZTHE">unsubscribe</a>.
+You are receiving this because you authored the thread.Message ID: <em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-04 19:57</div>
+            <div class="timeline-body"><p>You can subscribe to #13371 to get notified when the preview style gets stabilized.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lpulley">@lpulley</a> on 2025-01-09 15:15</div>
+            <div class="timeline-body"><p>I'm trying out 0.9.0 and still seeing this behavior. Did this make it into the 2025 style?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-09 15:23</div>
+            <div class="timeline-body"><p>Hmmm, no. That's on me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lpulley">@lpulley</a> on 2025-01-09 15:26</div>
+            <div class="timeline-body"><p>Not the end of the world; just wanted to make sure I wasn't missing anything obvious. Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-09 15:31</div>
+            <div class="timeline-body"><p>Thanks for being so understanding and sorry that I missed that one last preview style</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cj81499">@cj81499</a> on 2025-01-09 16:01</div>
+            <div class="timeline-body"><p>Hey @MichaReiser, I'm one of @lpulley's coworkers. Will this make it into 0.9.1? Or will we be waiting till the 2026 style?</p>
+<p>fwiw, we've been super happy with ruff and this will not change that :) Thanks for helping to build such an awesome piece of software!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-10 07:16</div>
+            <div class="timeline-body"><p>Thanks for the kind words.</p>
+<p>We might want to pull it into 0.10, considering that changes should be super rare. I don't feel comfortable shipping it as part of a patch release because it would violate our versioning policy</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2025-01-10 07:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.10" by @MichaReiser on 2025-01-10 07:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cj81499">@cj81499</a> on 2025-01-10 14:01</div>
+            <div class="timeline-body"><p>Sounds good to me, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-03-11 08:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-11 08:35</div>
+            <div class="timeline-body"><p>This fix is now merged into the release branch for 0.10</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:34 UTC
+    </footer>
+</body>
+</html>

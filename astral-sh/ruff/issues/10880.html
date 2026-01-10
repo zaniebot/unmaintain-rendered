@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>error: Failed to initialize cache at &lt;dir&gt;/.ruff_cache: File exists (os error 17) - astral-sh/ruff #10880</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>error: Failed to initialize cache at <dir>/.ruff_cache: File exists (os error 17)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10880">#10880</a>
+        opened by <a href="https://github.com/pjonsson">@pjonsson</a>
+        on 2024-04-11 14:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pjonsson">@pjonsson</a> on 2024-04-11 14:24</div>
+            <div class="timeline-body"><p>Using Ruff 0.3.5 on Ubuntu 22.04 LTS, I just got this error:</p>
+<pre><code>&lt;poetry install completes&gt;
+make[1]: Leaving directory '&lt;dir&gt;'
+15 files already formatted
+error: Failed to initialize cache at &lt;dir&gt;/.ruff_cache: File exists (os error 17)
+</code></pre>
+<p>This is the first time over hundreds of runs (Ruff 0.3.4/0.3.5), so unfortunately I don't have a reproducer.</p>
+<p>This part of the setup is easy to explain though, I'm running multiple linters in parallel, these are the relevant parts of the Makefile:</p>
+<pre><code class="language-Makefile">lint: check format &lt;other linters&gt;
+
+check:
+        poetry run ruff check
+format:
+        poetry run ruff format --check --diff
+</code></pre>
+<p>and then <code>make -j4 lint</code> is called. The &quot;make&quot; is the GNU Make version 4.x that comes as a package in Ubuntu 22.04.</p>
+<p>The non-Ruff linters (like mypy) are explicitly passed the subdirectories <code>src tests</code> so I do not believe they would create <code>.ruff_cache</code> or anything inside Ruff's cache directory at the project top level. All linters are configured to only report errors (so no <code>--fix</code> or similar is used), so the source code is not changed underneath the linters.</p>
+<p>I managed to get a file listing from the machine before things were cleared:</p>
+<pre><code>user@&lt;dir&gt; $ ls -l .ruff_cache/
+total 8
+drwxr-xr-x 2 gitlab-runner gitlab-runner 4096 Apr 11 13:16 0.3.5
+-rw-r--r-- 1 gitlab-runner gitlab-runner   43 Apr 11 13:16 CACHEDIR.TAG
+user@&lt;dir&gt; $ ls -l .ruff_cache/0.3.5/
+total 20
+-rw------- 1 gitlab-runner gitlab-runner  204 Apr 11 13:16 10942930790367313274
+-rw------- 1 gitlab-runner gitlab-runner  137 Apr 11 13:16 13043565573132441774
+-rw------- 1 gitlab-runner gitlab-runner  436 Apr 11 13:16 16835848346372968819
+-rw------- 1 gitlab-runner gitlab-runner 1547 Apr 11 13:16 2039258722430934445
+-rw------- 1 gitlab-runner gitlab-runner  844 Apr 11 13:16 262724646336492797
+</code></pre>
+<p>I have no idea if the directory/files are as expected, but the file permissions look as I would expect them to look, and the machine has plenty of both inodes and space available.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-11 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-04-11 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-11 14:47</div>
+            <div class="timeline-body"><p>Thanks, probably a rare race condition in the cache.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-11 16:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:28 UTC
+    </footer>
+</body>
+</html>

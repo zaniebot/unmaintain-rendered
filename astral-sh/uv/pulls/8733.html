@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve interactions with existing Python executables during install - astral-sh/uv #8733</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve interactions with existing Python executables during install</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/8733">#8733</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-10-31 18:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-31 18:27</div>
+            <div class="timeline-body"><p>Previously, we'd use the <code>--reinstall</code> flag to determine if we should replace existing Python executables in the bin directory during an install. There are a few problems with this:</p>
+<ul>
+<li>We replace executables we don't manage</li>
+<li>We can replace executables from other uv Python installations during reinstall (surprising)</li>
+<li>We don't do the &quot;right&quot; thing when installing patch versions e.g. installing <code>3.12.4</code> then <code>3.12.6</code> would fail without the reinstall flag</li>
+</ul>
+<p>In <code>uv tool</code>, we have separate <code>--force</code> and <code>--reinstall</code> concepts. Here we separate the flags (<code>--force</code> was previously just a <code>--reinstall</code> alias) and add inspection of the existing executables to inform a decision on replacement.</p>
+<p>In brief, we will:</p>
+<ul>
+<li>Replace any executables with <code>--force</code></li>
+<li>Replace executables for the same installation with <code>--reinstall</code></li>
+<li>Replace executables for an older patch version by default</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-10-31 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-10-31 19:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-10-31 20:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-02 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/python/install.rs</code>:313 on 2024-11-02 17:18</div>
+            <div class="timeline-body"><p>I think we'd typically not include a period here, since it's a single sentence</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-02 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/python/install.rs</code>:321 on 2024-11-02 17:18</div>
+            <div class="timeline-body"><p>We may want to use <code>simplified_display</code> for these which is always absolute, but don't feel strongly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-02 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/python/install.rs</code>:324 on 2024-11-02 17:18</div>
+            <div class="timeline-body"><p>Does this resolve symlinks? (Does it need to? Should we use same-file?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/python/install.rs</code>:373 on 2024-11-02 17:19</div>
+            <div class="timeline-body"><p>Can we not do an atomic replace here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-02 17:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-02 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/python/install.rs</code>:364 on 2024-11-02 17:20</div>
+            <div class="timeline-body"><p>Should any of this be user-facing? I'm unsure... At least this last one seems like it should be, though? Otherwise we risk silent no-ops here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-11-02 17:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:373 on 2024-11-02 17:33</div>
+            <div class="timeline-body"><p>Hm yeah we can probably do an atomic replace as in <code>uv-fs::replace_symlink</code>. That doesn't change here, it's just refactored, so I'd prefer to tackle it separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-11-03 02:51</div>
+            <div class="timeline-body"><p>(I trust you to resolve feedback.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-11-04 19:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:324 on 2024-11-04 19:27</div>
+            <div class="timeline-body"><p>No, but I can't think of a reasonable case where it needs to. I don't think we can use <code>same-file</code> because it's a directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-11-04 19:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:364 on 2024-11-04 19:28</div>
+            <div class="timeline-body"><p>I'm not sure either. I opted for this to be silent because if I ran <code>uv python install 3.12.6</code> then <code>uv python install 3.12.4</code> I would not expect the <code>python3.12</code> executable to change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-04 20:18</div>
+            <div class="timeline-body"><p>I'll follow up on that atomic replacement and we can iterate on the level of the logs based on feedback from preview users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-11-04 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-11-04 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-04 20:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failed to read pyproject.toml after adding additional pyproject.toml file - astral-sh/ruff #10483</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failed to read pyproject.toml after adding additional pyproject.toml file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10483">#10483</a>
+        opened by <a href="https://github.com/mataton">@mataton</a>
+        on 2024-03-19 23:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mataton">@mataton</a> on 2024-03-19 23:02</div>
+            <div class="timeline-body"><p>I am wanting to ignore docstring rules in my project's unit-test directories. I have a <code>pyproject.toml</code> file located at the root of the project, which looks like this:</p>
+<pre><code>[build-system]
+# https://numpy.org/doc/stable/dev/depending_on_numpy.html#adding-a-dependency-on-numpy
+requires = [&quot;Cython&gt;=0.29.32&quot;, &quot;oldest-supported-numpy&quot;, &quot;setuptools&quot;, &quot;wheel&quot;]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    &quot;ignore::skbio.util.SkbioWarning&quot;,
+]
+
+[tool.check-manifest]
+ignore = [
+    &quot;.coveragerc&quot;,
+    &quot;.dockerignore&quot;,
+    &quot;.editorconfig&quot;,
+    &quot;aarch64.Dockerfile&quot;,
+    &quot;checklist.py&quot;,
+    # created by conda-incubator/setup-miniconda@v3 action
+    &quot;ci/setup-miniconda-patched-conda_host_env.yml&quot;,
+]
+
+# Basic configurations for Ruff.
+# See https://docs.astral.sh/ruff/configuration/
+[tool.ruff]
+target-version = &quot;py38&quot;
+exclude = [
+    &quot;doc/**&quot;,  # documentation
+    &quot;web/**&quot;,  # website
+]
+
+[tool.ruff.lint]
+select = [&quot;E&quot;, &quot;W&quot;, &quot;D&quot;]  # pycodestyle (E, W), pydocstyle (D)
+ignore = [
+    &quot;D203&quot;,  # puts a space before class docstrings
+    &quot;D213&quot;,  # puts summary on second line
+    &quot;D400&quot;,  # redundant with D415 in place
+    &quot;D301&quot;,  # forces raw string literals
+]
+</code></pre>
+<p>Then I add a <code>pyproject.toml</code> file to one of my unit test directories, which looks like this:</p>
+<pre><code>[tool.ruff]
+extend = &quot;../../pyproject.toml&quot;
+
+[tool.ruff.lint]
+ignore = [
+    &quot;D100&quot;,
+    &quot;D101&quot;,
+    &quot;D102&quot;,
+    &quot;D104&quot;
+]
+</code></pre>
+<p>I then try to run <code>ruff check path/to/test_directory</code> and ruff doesn't ignore the rules outlined in the <code>toml</code> file located in this directory. Furthermore, when I try to run <code>ruff check .</code> from the root directory, after having run all previous steps, I now get the following errors:</p>
+<pre><code>ruff failed
+  Cause: Failed to read /home/maton/qlab/skbio/github/scikit-bio/skbio/pyproject.toml
+  Cause: No such file or directory (os error 2)
+</code></pre>
+<p>I'm running Ruff 0.3.2</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-20 00:22</div>
+            <div class="timeline-body"><p>Does <code>/home/maton/qlab/skbio/github/scikit-bio/skbio/pyproject.toml</code> exist?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @dhruvmanila on 2024-03-20 07:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mataton">@mataton</a> on 2024-03-20 18:47</div>
+            <div class="timeline-body"><p>It does, which was the confusing part. I upgraded to ruff 0.3.3 today and can't replicate the issue. Anyway, I'm now using ruff's <code>lint.per-file-ignores</code> instead of putting separate <code>toml</code> files in all the test folders, and that is working for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-20 18:52</div>
+            <div class="timeline-body"><p>Okay thanks! That's strange, there's not much to that error, I believe it comes directly from the standard library when we try to read the file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-17 14:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:12 UTC
+    </footer>
+</body>
+</html>

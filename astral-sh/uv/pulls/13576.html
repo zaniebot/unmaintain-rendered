@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extend use of safe URL logging types to `uv-auth` crate - astral-sh/uv #13576</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Extend use of safe URL logging types to <code>uv-auth</code> crate</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13576">#13576</a>
+        opened by <a href="https://github.com/jtfmumm">@jtfmumm</a>
+        on 2025-05-21 12:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-05-21 12:37</div>
+            <div class="timeline-body"><p>Extends PR #13560 by using the <code>DisplaySafeUrl</code> and new <code>DisplaySafeUrlRef</code> types in the <code>uv-auth</code> crate.</p>
+<p>The old <code>tracing_url</code> function in <code>middleware.rs</code> created a string from request URL and credentials. If tracing was enabled, it would also add credentials to that URL and then mask them. In this PR, this function instead creates a <code>DisplaySafeUrl</code> and sets its credentials to be equal to the passed in credentials. This removes special-case masking logic and also ensures that downstream functions take a <code>DisplaySafeUrl</code> instead of a <code>&amp;str</code>. It comes at the cost of one extra clone per request (not including retries) when tracing mode is disabled.</p>
+<p><code>DisplaySafeUrlRef</code> was added to be able to work with <code>reqwest::Request::url()</code> without having to clone. As an alternative, we could have <code>DisplaySafeUrl</code> wrap a <code>Cow</code>, but this would require new lifetime annotations across many points in the codebase. Given that the need to wrap a <code>&amp;Url</code> is currently limited to a few cases in <code>uv_auth</code>, I decided against paying the ergonomic costs. We could also clone the request <code>Url</code> in each case and then wrap it in a <code>DisplaySafeUrl</code>. This would be a simple change and remove the need for <code>DisplaySafeUrlRef</code>, but would require multiple extra clones per request.</p>
+<p>Depends on #13560.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-05-21 12:43</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/uv/branches/jtfm%2Flog-safe-url-uv-auth">CodSpeed Instrumentation Performance Report</a></h2>
+<h3>Merging #13576 will <strong>degrade performances by 10.62%</strong></h3>
+<p><sub>Comparing <code>jtfm/log-safe-url-uv-auth</code> (71802f4) with <code>jtfm/log-safe-url</code> (28c59bd)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1</code> regressions<br />
+<code>✅ 11</code> untouched benchmarks</p>
+<blockquote>
+<p>:warning: <em>Please fix the performance issues or <a href="https://codspeed.io/astral-sh/uv/branches/jtfm%2Flog-safe-url-uv-auth">acknowledge them on CodSpeed</a>.</em></p>
+</blockquote>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ❌ | <code>wheelname_tag_compatibility[flyte-long-compatible]</code> | 1.8 µs | 2 µs | -10.62% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">security</span> added by @jtfmumm on 2025-05-24 20:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-05-26 20:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @jtfmumm on 2025-05-26 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-05-26 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-26 21:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:24 UTC
+    </footer>
+</body>
+</html>

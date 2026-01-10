@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`-v` / `--verbose` isn't user-friendly - astral-sh/ruff #2188</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>-v</code> / <code>--verbose</code> isn't user-friendly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2188">#2188</a>
+        opened by <a href="https://github.com/not-my-profile">@not-my-profile</a>
+        on 2023-01-26 06:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-26 06:22</div>
+            <div class="timeline-body"><pre><code>$ echo 'import foo' &gt; bar.py
+$ ruff bar.py -v
+[2023-01-26][07:21:36][globset][DEBUG] built glob set; 19 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+[2023-01-26][07:21:36][globset][DEBUG] built glob set; 0 literals, 1 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+[2023-01-26][07:21:36][ruff::commands][DEBUG] Identified files to lint in: 488.396µs
+[2023-01-26][07:21:36][ruff::commands][DEBUG] Checked files in: 569.952µs
+bar.py:1:8: F401 `foo` imported but unused
+Found 1 error.
+1 potentially fixable with the --fix option.
+</code></pre>
+<p>As a user I really don't care about DEBUG messages. I think it would make much more sense to instead show what <code>--show-source</code> currently shows:</p>
+<pre><code>bar.py:1:8: F401 `foo` imported but unused
+  |
+1 | import foo
+  |        ^^^ F401
+  |
+  = help: Remove unused import: `foo`
+
+Found 1 error.
+1 potentially fixable with the --fix option.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`-v` / `--verbose` is user-hostile" to "`-v` / `--verbose` isn't user-friendly" by @not-my-profile on 2023-01-26 09:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-26 14:11</div>
+            <div class="timeline-body"><img width="859" alt="Screen Shot 2023-01-26 at 9 10 30 AM" src="https://user-images.githubusercontent.com/1309177/214857113-1e61de84-b4fc-44ef-9398-01196f0be538.png">
+
+<p>😂 😂 😂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-26 14:21</div>
+            <div class="timeline-body"><p>I think <code>--show-source</code> would be a surprising behavior for <code>-v</code>. But I've gone back and forth on the <em>right</em> behavior as different tools treat <code>-v</code> differently.</p>
+<p>For example, Mypy shows you all sorts of info related to the cache:</p>
+<img width="868" alt="Screen Shot 2023-01-26 at 9 11 35 AM" src="https://user-images.githubusercontent.com/1309177/214857373-4c33045f-02d8-4a78-b280-df664e565fe2.png">
+
+<p>So that's very similar to what we do now.</p>
+<p>With <code>-v</code>, Black lists every file and whether it was changed or not (as opposed to only listing changed files), but doesn't show any &quot;debug&quot; info (dissimilar to what we do now).</p>
+<p>With <code>-v</code>, isort tells you how every import was categorized (something we do now).</p>
+<p>If I could enumerate the things we include with <code>-v</code>:</p>
+<ul>
+<li><code>globset</code> stuff (unintended, would be happy to remove this from any and all logging)</li>
+<li>Sub-step benchmarks (not critical)</li>
+<li>Whether a file was cached (useful)</li>
+<li>Whether a file excluded and why (useful)</li>
+<li>How imports were categorized and why (useful)</li>
+</ul>
+<p>I <em>could</em> see us moving all of that to <code>--debug</code>. Though I'm unsure what <code>-v</code> would then include, and what the use-case for it would be. Would we expect <code>-v</code> to be a setting that some users have enabled permanently?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2023-01-26 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-26 14:56</div>
+            <div class="timeline-body"><p>To answer my own question, <code>-v</code> could include:</p>
+<ul>
+<li>The number of fixes applied to each file (#2149)</li>
+<li>...anything else?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-26 14:56</div>
+            <div class="timeline-body"><p>While we're here, it'd be nice if <code>-v</code> also showed you whether rules were ignored due to <code>--per-file-ignores</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-26 17:50</div>
+            <div class="timeline-body"><p>I want to note that a primary reason for opening this issue was that I find <code>--show-source</code> to be very useful (it's much more userfriendly than <code>--diff</code>) but the flag is currently very verbose. And <code>-s</code> is already occupied as a short flag for <code>--silent</code>.</p>
+<p>I also don't consider <code>show-source</code> to be a great name for the feature since <code>--diff</code> also shows the source ... just in a different format. Semantically I think it makes sense to consider this output to be more verbose than the default output.</p>
+<blockquote>
+<p>it'd be nice if -v also showed you whether rules were ignored due to --per-file-ignores</p>
+</blockquote>
+<p>I guess that could be useful but probably rather in combination with <code>--show-files</code>, right? I don't think users always want to see this when desiring the current <code>--show-source</code> output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-01-26 19:06</div>
+            <div class="timeline-body"><p>There could be multiple verbosity levels, with the highest one reserved for debug information.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VictorGob">@VictorGob</a> on 2023-02-02 06:52</div>
+            <div class="timeline-body"><blockquote>
+<p>To answer my own question, <code>-v</code> could include:</p>
+<ul>
+<li>The number of fixes applied to each file (<a href="https://github.com/charliermarsh/ruff/issues/2149">CLI: Show <code>--fix</code>ed and fixable issues too? #2149</a>)</li>
+<li>...anything else?</li>
+</ul>
+</blockquote>
+<ul>
+<li>Number of files processed.</li>
+</ul>
+<p>Change it to <code>debug!(&quot;Checked {:?} files in: {:?}&quot;, file_count, duration);</code>
+https://github.com/charliermarsh/ruff/blob/7a83b65fbeed85a51975fc31d3c292ff192fb2ef/ruff_cli/src/commands.rs#L139</p>
+<p>I would use &quot;--show-files&quot; to see <em>exactly</em> which files have been processed.</p>
+<p><strong>EDIT:</strong>
+Actually, it's just:
+<code>debug!(&quot;Checked {:?} files in: {:?}&quot;, paths.len(), duration);</code></p>
+<p>Tested directly in the project folder +  <code>01.py</code> file created by me.</p>
+<pre><code>root@a2965381d438:/data# ./target/debug/ruff -v *.py --show-files --no-cache
+[2023-02-02][09:54:56][globset][DEBUG] built glob set; 19 literals, 0 basenames, 0 extensions, 0 prefixes, 0 suffixes, 0 required extensions, 0 regexes
+/data/01.py
+/data/setup.py
+[2023-02-02][09:54:56][ruff::commands][DEBUG] Identified files to lint in: 4.254566ms
+[2023-02-02][09:54:56][ruff::commands][DEBUG] Checked 2 files in: 4.794871ms
+01.py:1:8: F401 `os` imported but unused
+Found 1 error.
+1 potentially fixable with the --fix option.
+root@a2965381d438:/data# 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-03 18:31</div>
+            <div class="timeline-body"><p>I think I'm okay with the current state of this, for now at least. I removed the <code>globset</code> logging, so we only show first-party stuff. We could consider making <code>--verbose</code> <code>--debug</code> instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-03 18:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:02 UTC
+    </footer>
+</body>
+</html>

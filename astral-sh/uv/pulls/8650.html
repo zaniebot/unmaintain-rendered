@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `uv python install --default` - astral-sh/uv #8650</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>uv python install --default</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/8650">#8650</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-10-28 22:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-28 22:48</div>
+            <div class="timeline-body"><p>This pull request is best viewed with <a href="https://github.com/astral-sh/uv/pull/8650/files?diff=unified&amp;w=1">whitespace hidden</a></p>
+<p>Adds a <code>--default</code> flag to <code>uv python install</code> in preview. This includes a <code>python</code> and <code>python{major}</code> executable in addition to the <code>python{major}.{minor}</code> executable. We will replace uv-managed executables, but externally managed executables require the <code>--force</code> flag to overwrite.</p>
+<p>If you run <code>uv python install</code> (without arguments), we include the <code>--default</code> flag implicitly to populate <code>python</code> and <code>python3</code> for the &quot;default&quot; install version.</p>
+<p>In the future, we should add a warning if the installed executable isn't at the front of the PATH.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-10-31 01:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-11-26 20:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-26 20:21</div>
+            <div class="timeline-body"><p>I might add some more test cases here, but I think this is otherwise ready for review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jooon">@jooon</a> on 2024-11-26 23:35</div>
+            <div class="timeline-body"><p>When you install with --default, the log will show in parenthesis that you added python and python3 for a specific version.</p>
+<pre><code>$ uv python install --default 3.13 3.12
+Installed 2 versions in 7.95s
+ + cpython-3.12.7-linux-x86_64-gnu (python3.12)
+ + cpython-3.13.0-linux-x86_64-gnu (python, python3, python3.13)
+</code></pre>
+<p>However, when you uninstall the version that python and python3 points to it only shows you removed the major.minor version.</p>
+<pre><code>$ uv python uninstall 3.13
+Searching for Python versions matching: Python 3.13
+Uninstalled Python 3.13.0 in 64ms
+ - cpython-3.13.0-linux-x86_64-gnu (python3.13)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-26 23:38</div>
+            <div class="timeline-body"><p>Thanks, I can look into fixing that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jooon">@jooon</a> on 2024-11-27 00:09</div>
+            <div class="timeline-body"><p>I am a bit confused how the default versions are replaced. I know I can force replace them by adding --force, but if I don't, what is replaced feels a bit off.</p>
+<p>Starting from scratch, install and set 3.12.6 as default</p>
+<pre><code>$ uv python install --default 3.12.6
+Installed Python 3.12.6 in 4.55s
+ + cpython-3.12.6-linux-x86_64-gnu (python, python3, python3.12)
+</code></pre>
+<p>OK!</p>
+<p>New version released, install and set 3.12.7 as default</p>
+<pre><code>$ uv python install --default 3.12.7
+Installed Python 3.12.7 in 4.60s
+ + cpython-3.12.7-linux-x86_64-gnu (python, python3, python3.12)
+</code></pre>
+<p>OK!</p>
+<p>New minor version released, install and set 3.13 as default.</p>
+<pre><code>$ uv python install --default 3.13
+Installed Python 3.13.0 in 4.17s
+ + cpython-3.13.0-linux-x86_64-gnu (python3.13)
+</code></pre>
+<p>hmm?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-27 00:18</div>
+            <div class="timeline-body"><p>That looks wrong indeed :) thanks for giving it a try.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jooon">@jooon</a> on 2024-11-27 00:26</div>
+            <div class="timeline-body"><p>Should --default maybe always imply --force?</p>
+<p>From scratch again:</p>
+<pre><code>$ uv python install --default 3.13 3.12
+Installed 2 versions in 7.93s
+ + cpython-3.12.7-linux-x86_64-gnu (python3.12)
+ + cpython-3.13.0-linux-x86_64-gnu (python, python3, python3.13)
+$ uv python install --default 3.12
+$ echo $?
+0
+$ python
+Python 3.13.0 (main, Oct 16 2024, 03:23:02) [Clang 18.1.8 ] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; 
+</code></pre>
+<p>The install command returns success because it has successfully made sure there is a 3.12 version installed. However, in my mind, it &quot;failed&quot; to set 3.12 as default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-27 00:28</div>
+            <div class="timeline-body"><p>~If you use <code>--default</code> with multiple versions we'll set the <em>first</em> one as the default.~ Sorry, missed a command invocation there. We should definitely override <em>uv</em> managed executables with <code>--default</code>. <code>--force</code> implies overriding executables not managed by uv. For reference, the verbose logs are:</p>
+<pre><code>❯ cargo run -- python install --preview --default 3.12 -v
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.17s
+     Running `target/debug/uv python install --preview --default 3.12 -v`
+DEBUG uv 0.5.4 (c1619ee49 2024-11-26)
+DEBUG Acquired lock for `/Users/zb/.local/share/uv/python`
+DEBUG Found `cpython-3.12.7-macos-aarch64-none` for request `Python 3.12`
+DEBUG Using request timeout of 30s
+DEBUG Inspecting existing executable at `/Users/zb/.local/bin/python3.12`
+DEBUG Executable at `/Users/zb/.local/bin/python3.12` is already for `cpython-3.12.7-macos-aarch64-none`
+DEBUG Inspecting existing executable at `/Users/zb/.local/bin/python3`
+DEBUG Executable already exists at `cpython-3.13.0-macos-aarch64-none` for `/Users/zb/.local/bin/python3`. Use `--force` to replace it
+DEBUG Inspecting existing executable at `/Users/zb/.local/bin/python`
+DEBUG Executable already exists at `cpython-3.13.0-macos-aarch64-none` for `/Users/zb/.local/bin/python`. Use `--force` to replace it
+DEBUG Released lock at `/Users/zb/.local/share/uv/python/.lock`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-27 00:37</div>
+            <div class="timeline-body"><p>That's fixed now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jooon">@jooon</a> on 2024-11-27 00:58</div>
+            <div class="timeline-body"><p>--default works as I expected now!</p>
+<p>--force seems to both be needed to replace executables not managed by uv as well as allowing minor versions managed by uv to be downgraded.</p>
+<pre><code>$ touch $HOME/.local/bin/python3.12
+
+$ uv python install 3.12.5
+Installed Python 3.12.5 in 4.85s
+ + cpython-3.12.5-linux-x86_64-gnu
+error: Failed to install cpython-3.12.5-linux-x86_64-gnu
+  Caused by: Executable already exists at `/home/jon/.local/bin/python3.12` but is not managed by uv; use `--force` to replace it
+
+$ uv python install --force 3.12.5
+Installed Python 3.12.5 in 7ms
+ + cpython-3.12.5-linux-x86_64-gnu (python3.12)
+
+$ uv python install 3.12.7
+Installed Python 3.12.7 in 4.57s
+ + cpython-3.12.7-linux-x86_64-gnu (python3.12)
+
+$ uv python install 3.12.6
+Installed Python 3.12.6 in 4.44s
+ + cpython-3.12.6-linux-x86_64-gnu
+
+$ uv python install --force 3.12.6
+Installed Python 3.12.6 in 6ms
+ + cpython-3.12.6-linux-x86_64-gnu (python3.12)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-27 01:05</div>
+            <div class="timeline-body"><p>The latter is intentional. Do you think we should make the log more visible explaining that behavior?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jooon">@jooon</a> on 2024-11-27 01:13</div>
+            <div class="timeline-body"><p>I think it makes perfect sense and I don't think it needs to be clarified. More information can also confuse.</p>
+<p>I think I was mostly confused by your comment above that --force was for replacing executables not managed by uv. I just had never encountered that before.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-11-27 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-27 16:03</div>
+            <div class="timeline-body"><p>In a follow-up, I'd like to change the executable display to include all the executables available for the version not just the ones we <em>added</em> in this invocation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/python/install.rs</code>:141 on 2024-12-02 22:31</div>
+            <div class="timeline-body"><p>Nit: I think we only use a period when a message spans multiple sentences</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-cli/src/lib.rs</code>:4229 on 2024-12-02 22:35</div>
+            <div class="timeline-body"><p>I think it would be more intuitive to make it such that we error if you provide multiple requests. You can probably do it in Clap directly with groups (or in <code>python/install.rs</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/python/install.rs</code>:319 on 2024-12-02 22:36</div>
+            <div class="timeline-body"><p>Why <code>is_default_install</code> here? I thought that meant something distinct from <code>default</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-02 22:37</div>
+            <div class="timeline-body"><p>Generally looks good, just a few comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-02 22:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/python/install.rs</code>:332 on 2024-12-02 22:37</div>
+            <div class="timeline-body"><p>Is everything from here down mostly just an indent of the existing logic?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-02 22:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:332 on 2024-12-02 22:42</div>
+            <div class="timeline-body"><p>Yeah, and some tweaks from rebases though I've reduced those a couple times.</p>
+<blockquote>
+<p>This pull request is best viewed with <a href="https://github.com/astral-sh/uv/pull/8650/files?diff=unified&amp;w=1">whitespace hidden</a></p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-02 22:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:4229 on 2024-12-02 22:42</div>
+            <div class="timeline-body"><p>Sounds good to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-02 22:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:319 on 2024-12-02 22:44</div>
+            <div class="timeline-body"><blockquote>
+<p>If you run <code>uv python install</code> (without arguments), we include the --default flag implicitly to populate python and python3 for the &quot;default&quot; install version.</p>
+</blockquote>
+<p>When you run <code>uv python install</code> without arguments, it's a &quot;default install&quot;. The idea is for that bootstrapping experience to get you a complete installation. Using the <code>--default</code> flag in subsequent operations would be used to change the default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-02 22:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:319 on 2024-12-02 22:46</div>
+            <div class="timeline-body"><p>(If you've previously installed Python with uv, using <code>uv python install</code> without arguments has no effect)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-02 22:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:141 on 2024-12-02 22:47</div>
+            <div class="timeline-body"><p>I considered this but the semi-colon... haha I'll remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-02 22:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/python/install.rs</code>:319 on 2024-12-02 22:54</div>
+            <div class="timeline-body"><p>I see, ok. But if there's a <code>.python-version</code> file, it does <em>not</em> count as a &quot;default&quot; install.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-12-02 22:55</div>
+            <div class="timeline-body"><p>(Trust you to act on feedback as you see fit!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-02 22:56</div>
+            <div class="timeline-body"><p>Should be addressed in https://github.com/astral-sh/uv/pull/8650/commits/d3d94ce4f46f5fe2a6b7679dcbe508c54af79206</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:319 on 2024-12-02 23:47</div>
+            <div class="timeline-body"><p>Yeah, I'm not really sure if it makes sense but I would find it surprising for my &quot;default&quot; version to be set when installing the Python versions needed for a project, e.g., I noticed this for uv. It's pretty niche though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-02 23:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-12-03 01:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-12-03 01:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-03 01:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FURB122 false positive when the target variable is used beyond the `write` call - astral-sh/ruff #15725</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>FURB122 false positive when the target variable is used beyond the <code>write</code> call</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15725">#15725</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-01-24 16:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-01-24 16:26</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/for-loop-writes/"><code>for-loop-writes</code> (FURB122)</a> in Ruff 0.9.3 has a false positive if writing to the target variable has an effect beyond the <code>write</code> call. This can happen in two ways.</p>
+<p>When the <code>for</code> loop’s target list includes a global or nonlocal variable, writing to the target has a side effect. Rewriting the loop as a generator puts the target in a new, nested scope, which can change program behavior.</p>
+<pre><code class="language-console">$ cat &gt;furb122_1.py &lt;&lt;'EOF'
+from pathlib import Path
+CURRENT_LINE = &quot;...&quot;
+def wrap_line():
+    return f&quot;&lt;{CURRENT_LINE}&gt;\n&quot;
+def write(lines):
+    with Path(&quot;furb122.txt&quot;).open(&quot;w&quot;) as f:
+        global CURRENT_LINE
+        for CURRENT_LINE in lines:
+            f.write(wrap_line())
+write([&quot;line1&quot;, &quot;line2&quot;])
+EOF
+
+$ python furb122_1.py
+
+$ cat furb122.txt
+&lt;line1&gt;
+&lt;line2&gt;
+
+$ ruff --isolated check --preview --select FURB122 furb122_1.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat furb122_1.py
+from pathlib import Path
+CURRENT_LINE = &quot;...&quot;
+def wrap_line():
+    return f&quot;&lt;{CURRENT_LINE}&gt;\n&quot;
+def write(lines):
+    with Path(&quot;furb122.txt&quot;).open(&quot;w&quot;) as f:
+        global CURRENT_LINE
+        f.writelines(wrap_line() for CURRENT_LINE in lines)
+write([&quot;line1&quot;, &quot;line2&quot;])
+
+$ python furb122_1.py
+
+$ cat furb122.txt
+&lt;...&gt;
+&lt;...&gt;
+</code></pre>
+<p>Similarly, when the <code>for</code> loop’s target list includes a variable that is used after the loop, rewriting the loop as a generator changes the variable’s scope, so the outer variable is not set.</p>
+<pre><code class="language-console">$ cat &gt;furb122_2.py &lt;&lt;'EOF'
+from pathlib import Path
+line = &quot;...&quot;
+with Path(&quot;furb122.txt&quot;).open(&quot;w&quot;) as f:
+    for line in [&quot;line1&quot;, &quot;line2&quot;]:
+        f.write(f&quot;{line}\n&quot;)
+print(f&quot;{line=}&quot;)
+EOF
+
+$ python furb122_2.py
+line='line2'
+
+$ ruff --isolated check --preview --select FURB122 furb122_2.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat furb122_2.py
+from pathlib import Path
+line = &quot;...&quot;
+with Path(&quot;furb122.txt&quot;).open(&quot;w&quot;) as f:
+    f.writelines(f&quot;{line}\n&quot; for line in [&quot;line1&quot;, &quot;line2&quot;])
+print(f&quot;{line=}&quot;)
+
+$ python furb122_2.py
+line='...'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-01-24 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2025-01-24 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-28 19:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:25 UTC
+    </footer>
+</body>
+</html>

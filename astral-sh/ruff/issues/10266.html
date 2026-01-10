@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>isort counts third party imports as local when inside submodules with the same name - astral-sh/ruff #10266</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>isort counts third party imports as local when inside submodules with the same name</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10266">#10266</a>
+        opened by <a href="https://github.com/mmerickel">@mmerickel</a>
+        on 2024-03-07 06:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mmerickel">@mmerickel</a> on 2024-03-07 06:16</div>
+            <div class="timeline-body"><h2>repro example</h2>
+<pre><code>.
+├── pyproject.toml
+└── src
+    └── ruff_test
+        └── setuptools
+            ├── __init__.py
+            └── example.py
+</code></pre>
+<h3>pyproject.toml</h3>
+<pre><code class="language-toml">[project]
+name = &quot;ruff-test&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+authors = [
+    { name = &quot;Michael Merickel&quot;, email = &quot;unknown@domain.invalid&quot; }
+]
+dependencies = []
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;= 3.8&quot;
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = [&quot;src/ruff_test&quot;]
+
+[tool.ruff]
+src = [&quot;src&quot;]
+
+[tool.ruff.lint]
+select = [&quot;I&quot;]
+</code></pre>
+<h3>example.py</h3>
+<pre><code class="language-python">import setuptools
+</code></pre>
+<h3>ruff check output</h3>
+<pre><code>❯ ruff check -v --no-cache src/ruff_test/setuptools/example.py
+[2024-03-06][23:01:54][ruff::resolve][DEBUG] Using configuration file (via parent) at: /Users/michael.merickel/scratch/ruff-test/pyproject.toml
+[2024-03-06][23:01:54][ruff::commands::check][DEBUG] Identified files to lint in: 2.003584ms
+[2024-03-06][23:01:54][ruff::diagnostics][DEBUG] Checking: /Users/michael.merickel/scratch/ruff-test/src/ruff_test/setuptools/example.py
+[2024-03-06][23:01:54][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'setuptools' as Known(FirstParty) (SamePackage)
+[2024-03-06][23:01:54][ruff::commands::check][DEBUG] Checked 1 files in: 500.583µs
+</code></pre>
+<h2>explanation of problem</h2>
+<blockquote>
+<p>Categorized 'setuptools' as Known(FirstParty) (SamePackage)</p>
+</blockquote>
+<p><code>import setuptools</code> here is an absolute import and should be counted as <code>Known(ThirdParty)</code>.</p>
+<p>The isort logic appears to be counting this as a first party import in a very specific circumstance. The critical detail here is that <code>ruff_test</code> is a namespace package and has no <code>__init__.py</code> file. If you <code>touch src/ruff_test/__init__.py</code> then you get the expected output <code>Categorized 'setuptools' as Known(ThirdParty) (NoMatch)</code>.</p>
+<p>Instead of adding the <code>__init__.py</code> it is also possible to define a <code>known-third-party</code> section to solve this issue:</p>
+<pre><code class="language-toml">[tool.ruff.lint.isort]
+known-third-party = [&quot;setuptools&quot;]
+</code></pre>
+<p>Then you will see <code>Categorized 'setuptools' as Known(ThirdParty) (KnownThirdParty)</code>.</p>
+<p>If you remove the <code>src</code> declaration from <code>tool.ruff</code> it is still a problem, but I think the <code>src</code> declaration should make it extra clear to ruff that the absolute import of the package we created is <code>ruff_test.setuptools</code>, and not <code>setuptools</code>.</p>
+<p>If ruff knew the appropriate top-level package roots then <code>import setuptools</code> would be correctly matched to a third party package because &quot;absolute relative imports&quot; are no longer a thing in Python 3.</p>
+<p>Another workaround is setting <code>detect-same-package = false</code>. Another option is also <code>namespace-packages = [&quot;src/ruff_test&quot;]</code>.</p>
+<p>I opened this issue because I think the fact that I set <code>src = [&quot;src&quot;]</code> should have been enough info for ruff to do the right thing in the original <code>pyproject.toml</code>.</p>
+<p>I tested this on ruff 0.3.0 and 0.3.1 and observed the same behavior on both.</p>
+<p>Possibly related: https://github.com/astral-sh/ruff/issues/5667 https://github.com/astral-sh/ruff/issues/9130</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @MichaReiser on 2024-03-07 08:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-11 17:01</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>@charliermarsh do we just not support detection of first-party imports in namespace packages in general?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:02 UTC
+    </footer>
+</body>
+</html>

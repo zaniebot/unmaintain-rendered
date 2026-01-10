@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Missing `invalid-assignment` diagnostics - astral-sh/ruff #15669</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Missing <code>invalid-assignment</code> diagnostics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15669">#15669</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-01-22 10:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-22 10:42</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>There are some cases where we fail to issue <code>invalid-assignment</code> diagnostics. It seems like a good idea to increase our test coverage in this area. For example:</p>
+<pre><code class="language-py">class Foo: ...
+
+# error: [invalid-assignment] &quot;Implicit shadowing of class `Foo` …&quot;
+Foo = 1
+
+# no error here
+for Foo in [1, 2]: pass
+
+# no error here
+with some_context_manager() as Foo: pass
+
+# no error here
+type Foo = int
+
+# no error here
+import sys as Foo
+
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-01-22 10:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-01-22 10:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-03 21:51</div>
+            <div class="timeline-body"><p>I think all of these examples are expected and &quot;working as designed&quot; according to our current model (and known type inference TODOs).</p>
+<p>The iteration example is because we don't yet support generics, so we infer a <code>Todo</code> (dynamic) type for iterating over <code>[1, 2]</code>, and that dynamic type is assignable to anything. If we create a known iterable type and iterate over it, we do emit an <code>invalid-assignment</code> error here.</p>
+<p>The context manager example is because <code>some_context_manager</code> doesn't exist, so again we infer <code>Unknown</code>, which is assignable to anything. If we use a real context manager class instead, we do emit an <code>invalid-assignment</code> error here as well.</p>
+<p>The last two examples are both declarations themselves (we treat both <code>type</code> statements and imports as declarations), so since we permit re-declarations, those are both permitted &quot;re-declarations&quot; of the name <code>Foo</code>.</p>
+<p>There are some decisions here that we may want to revisit because they maybe don't lead to intuitive behavior (as evidenced by the very existence of this issue). For example:</p>
+<ol>
+<li><p>I'm not sure the special message for &quot;shadowing a class&quot; is useful. It might be better just to go with the usual <code>invalid-assignment</code> error message, plus a clearer display representation of class-literal types than <code>Literal[Foo]</code>. There are some issues with the heuristic we currently use to emit this message.</p>
+</li>
+<li><p>I'm not sure that imports should be allowed to re-declare a name.</p>
+</li>
+</ol>
+<p>But I think that we should revisit these questions in the context of running red-knot on real-world codebases and seeing what issues crop up; I don't think it's a priority to revisit now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-03-03 21:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-03 22:01</div>
+            <div class="timeline-body"><p>I do think at some point we will probably want to create a dedicated diagnostic for anytime an <em>unused</em> binding of a variable is shadowed, and in practice this will catch a lot of the problematic accidental shadowing cases.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:23 UTC
+    </footer>
+</body>
+</html>

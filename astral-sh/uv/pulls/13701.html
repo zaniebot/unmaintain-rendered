@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add an `ArchMode` to filter displayed architectures in `uv python list` - astral-sh/uv #13701</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add an <code>ArchMode</code> to filter displayed architectures in <code>uv python list</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13701">#13701</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-05-28 14:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-28 14:04</div>
+            <div class="timeline-body"><p>I'm trying to unblock</p>
+<ul>
+<li>https://github.com/astral-sh/uv/pull/13722</li>
+<li>https://github.com/astral-sh/uv/pull/13475</li>
+</ul>
+<p>which currently fail due to showing more downloads in <code>uv python list</code> and selecting non-native installs during <code>uv python install</code>. I don't really want to show non-native downloads without opt-in (it'll just be too noisy), and we should prefer native installs, so this pull request adds a change to apply some filtering. This should have no effect on the existing behavior, but will resolve the failing CI in those pull requests.</p>
+<p>Note, the modes do not yet capture the semantics we'll need for arm64 Windows, but I'll try to figure that out afterwards.</p>
+<p>This is a little forward-looking, in that it adds support for filtering based on architecture variants as needed for</p>
+<ul>
+<li>#9788</li>
+</ul>
+<p>That pull request is currently blocked on allowing the user to express they only want to use <code>x86-64-v1</code> even if they have a <code>v3</code> compatible machine. I expect the spelling of the options for &quot;best&quot; and &quot;compatible&quot; native architectures to change a little.</p>
+<p>I don't make this user-facing here, but we probably will in a subsequent change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2025-05-28 14:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @zanieb on 2025-05-28 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @zanieb on 2025-05-28 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @zanieb on 2025-05-28 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-28 16:27</div>
+            <div class="timeline-body"><p>Eek, this is actually quite hard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-28 19:19</div>
+            <div class="timeline-body"><p>The ordering actually needs to change, per https://github.com/astral-sh/uv/pull/13474#discussion_r2112586405, see https://github.com/astral-sh/uv/pull/13709</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-29 18:00</div>
+            <div class="timeline-body"><p>Need to make sure this reconciles with https://github.com/astral-sh/uv/pull/13719</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-29 19:27</div>
+            <div class="timeline-body"><p>Hmm in my heart we want to be internally producing a 2d list of pythons:</p>
+<ul>
+<li>cpython-3.13.3<ul>
+<li>windows x64</li>
+<li>windows arm64</li>
+</ul>
+</li>
+<li>cpython-3.13.2<ul>
+<li>windows x64</li>
+<li>windows arm64</li>
+</ul>
+</li>
+</ul>
+<p>And then unless the user asks we only show the top entry in each one. I'm not sure if that would be too disruptive architecturally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-29 19:48</div>
+            <div class="timeline-body"><p>Another subtlety: if the user <em>does</em> have a copy of python installed that is compatible but for whatever reason not preferred, we should probably still show it in <code>uv python list</code>, even though we'd otherwise not want to?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-29 19:56</div>
+            <div class="timeline-body"><blockquote>
+<p>if the user does have a copy of python installed that is compatible but for whatever reason not preferred, we should probably still show it in uv python list, even though we'd otherwise not want to?</p>
+</blockquote>
+<p>We will! This is just for listing available downloads and selection of downloads for installation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-29 19:57</div>
+            <div class="timeline-body"><blockquote>
+<p>And then unless the user asks we only show the top entry in each one. I'm not sure if that would be too disruptive architecturally.</p>
+</blockquote>
+<p>I think the arm Windows case is a bit of a separate concern. It's also plausible people will build wheels for older CPython versions on arm once it's commonplace, so it's not clear if we'll need that matrix yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-29 20:07</div>
+            <div class="timeline-body"><p>Right I've been confused why the tests were failing in those other PRs given we already do a ton of special filtering, and I think I just realized you might just be working around a bug in the filtering at the end of list?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-29 20:29</div>
+            <div class="timeline-body"><p>Put up an alternative here: https://github.com/astral-sh/uv/pull/13721</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-29 21:57</div>
+            <div class="timeline-body"><p>The alternative was convincing for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-05-29 21:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:25 UTC
+    </footer>
+</body>
+</html>

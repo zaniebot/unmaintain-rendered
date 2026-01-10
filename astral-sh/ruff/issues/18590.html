@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixes for FURB122 and FURB142 should parenthesize lambdas and ternary expressions - astral-sh/ruff #18590</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fixes for FURB122 and FURB142 should parenthesize lambdas and ternary expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18590">#18590</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-06-09 12:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-06-09 12:57</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The fixes for <a href="https://docs.astral.sh/ruff/rules/for-loop-writes/"><code>for-loop-writes</code> (FURB122)</a> and <a href="https://docs.astral.sh/ruff/rules/for-loop-set-mutations/"><code>for-loop-set-mutations</code> (FURB142)</a> should parenthesize the iterable expression when it is a lambda expression or a ternary conditional expression and it is not already parenthesized and the fix produces a comprehension.</p>
+<pre><code class="language-console">$ cat &gt;furb122.py &lt;&lt;'# EOF'
+from pathlib import Path
+def write(lines_a, lines_b, *, write_a):
+    with Path(&quot;file.txt&quot;).open(&quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+        for line in lines_a if write_a else lines_b:
+            f.write(f&quot;[{line}]&quot;)
+with Path(&quot;file.txt&quot;).open(&quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+    for l in lambda: 0:
+        f.write(f&quot;[{l}]&quot;)
+# EOF
+
+$ ruff --isolated check furb122.py --select FURB122 --preview --diff 2&gt;&amp;1 | grep error:
+error: Fix introduced a syntax error. Reverting all changes.
+
+$ cat &gt;furb142.py &lt;&lt;'# EOF'
+s = set()
+for x in (1,) if True else (2,):
+    s.add(-x)
+for x in lambda: 0:
+    s.discard(-x)
+# EOF
+
+$ ruff --isolated check furb142.py --select FURB142 --preview --diff 2&gt;&amp;1 | grep error:
+error: Fix introduced a syntax error. Reverting all changes.
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.11.13 (5faf72a4d 2025-06-05)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-06-09 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-06-09 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-06-09 20:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:38 UTC
+    </footer>
+</body>
+</html>

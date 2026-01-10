@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show PyPy downloads during `uv python list` - astral-sh/uv #12915</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Show PyPy downloads during <code>uv python list</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12915">#12915</a>
+        opened by <a href="https://github.com/alexprengere">@alexprengere</a>
+        on 2025-04-16 09:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/alexprengere">@alexprengere</a> on 2025-04-16 09:15</div>
+            <div class="timeline-body"><p>Fixes #12914.
+When <code>PythonDownloadRequest</code> does not have the <code>implementation</code> set, do not set it to CPython when calling <code>fill</code>, otherwise only CPython interpreters are shown when listing interpreters available for download, with <code>uv python list</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2025-04-16 09:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-16 14:06</div>
+            <div class="timeline-body"><p>Thanks for the pull request!</p>
+<p>Hm, but I think we <em>do</em> need to fill CPython as the default somewhere, right? I didn't look into this in depth yet, but we have the <code>Any</code> and <code>Default</code> request variants for this purpose. Can we leverage those here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexprengere">@alexprengere</a> on 2025-04-17 08:09</div>
+            <div class="timeline-body"><p>From what I can tell, using <code>fill()</code> is a bit wrong in that part of the code, because you do not want fill in CPython as default for <em>this</em> call site. There are other call sites for <code>fill()</code>, which caused the CI issues:</p>
+<ul>
+<li><a href="https://github.com/astral-sh/uv/blob/main/crates/uv/src/commands/python/install.rs#L55">crates/uv/src/commands/python/install.rs#L55</a></li>
+<li><a href="https://github.com/astral-sh/uv/blob/main/crates/uv-python/src/installation.rs#L124">crates/uv-python/src/installation.rs#L124</a></li>
+</ul>
+<p>I believe the usage of <code>fill()</code> is correct for those (filling CPython is correct there).
+So I created <code>fill_platform()</code>, that is only used in the uv-python-list logic.</p>
+<p>I see @j178 added tests in a separate PR #12931, if that one is merged first I can rebase and update.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-04-17 13:55</div>
+            <div class="timeline-body"><p>Makes sense, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-17 13:56</div>
+            <div class="timeline-body"><p>Separately from the implementation / regression, I sort of wonder if we want to be showing all those PyPy interpreters by default? Most users don't need them.</p>
+<p>We do already show them if you request <code>pypy</code></p>
+<pre><code>❯ uv python list pypy
+pypy-3.11.11-macos-aarch64-none    &lt;download available&gt;
+pypy-3.10.16-macos-aarch64-none    &lt;download available&gt;
+pypy-3.10.14-macos-aarch64-none    /opt/homebrew/bin/pypy3 -&gt; ../Cellar/pypy3.10/7.3.17_1/bin/pypy3
+pypy-3.9.19-macos-aarch64-none     &lt;download available&gt;
+pypy-3.8.16-macos-aarch64-none     &lt;download available&gt;
+</code></pre>
+<p>Maybe this should just be a documentation update?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexprengere">@alexprengere</a> on 2025-04-17 14:50</div>
+            <div class="timeline-body"><p>The reason I looked this up in the first place was because a someone told me &quot;I want to use uv, but uv does not support PyPy&quot;.
+They were running <code>uv python list</code>, and lots of CPython was shown as &quot;download available&quot;, but no PyPy.
+I work in data science where the use of PyPy is pretty frequent for performance reasons on long running jobs (perhaps to a more general audience, people will care less about this).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Do not set PythonDownloadRequest implementation to CPython when calli…" to "Show PyPy downloads during `uv python list`" by @zanieb on 2025-04-17 16:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-17 16:59</div>
+            <div class="timeline-body"><p>Alright, let's consider that separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-04-17 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-04-17 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-17 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-17 21:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:23 UTC
+    </footer>
+</body>
+</html>

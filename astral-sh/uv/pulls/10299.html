@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>README.md: revise powershell install cmd - astral-sh/uv #10299</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>README.md: revise powershell install cmd</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10299">#10299</a>
+        opened by <a href="https://github.com/God-damnit-all">@God-damnit-all</a>
+        on 2025-01-05 00:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/God-damnit-all">@God-damnit-all</a> on 2025-01-05 00:02</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<ul>
+<li>Primarily:<ul>
+<li><code>-NoProfile</code> (appreviated to <code>-NoP</code>) is used as the profile can interfere with the intended operation</li>
+</ul>
+</li>
+<li>Secondarily:<ul>
+<li>Changed <code>-ExecutionPolicy</code> to use its <code>-EP</code> abbreviation</li>
+<li>Removed <code>-c</code> as that's already implicit on PowerShell 5.1</li>
+<li>Changed <code>ByPass</code> to <code>Bypass</code> (nitpicky I know)</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-05 00:19</div>
+            <div class="timeline-body"><p>Thanks for the PR! We'll probably also want to change the installation in the docs.</p>
+<p>I have a couple questions, I'll also reach out to the cargo-dist team who maintains the installer library.</p>
+<blockquote>
+<p>-NoProfile (appreviated to -NoP) is used as the profile can interfere with the intended operation</p>
+</blockquote>
+<p>Can you share an example of how this would be a problem? Would you <em>always</em> want <code>-NoProfile</code>?</p>
+<blockquote>
+<p>Changed -ExecutionPolicy to use its -EP abbreviation</p>
+</blockquote>
+<p>Is there a strong justification for the abbreviation?</p>
+<blockquote>
+<p>Removed -c as that's already implicit on PowerShell 5.1</p>
+</blockquote>
+<p>What about users on older versions of PowerShell? I don't know if we can presume a modern version.</p>
+<blockquote>
+<p>Changed ByPass to Bypass (nitpicky I know)</p>
+</blockquote>
+<p>👍 This makes sense to me, it appears to match the official documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2025-01-05 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">releases</span> added by @zanieb on 2025-01-05 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/God-damnit-all">@God-damnit-all</a> on 2025-01-05 00:34</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there a strong justification for the abbreviation?</p>
+</blockquote>
+<p>Considering all the parameters in the Linux version of the command are abbreviated, and the functions in the PowerShell command itself are their abbreviated versions; I did it for consistency.</p>
+<blockquote>
+<p>What about users on older versions of PowerShell? I don't know if we can presume a modern version.</p>
+</blockquote>
+<p>Windows PowerShell 5.1, which shipped with Windows 10, is essentially a frozen legacy version that will only ever receive security updates from now on. Modern versions of PowerShell use <code>pwsh</code> rather than <code>powershell</code> and it's with versions beyond 5.1 that the behavior changed to require <code>-c</code> for passing commands. Windows 7's powershell.exe (which is PowerShell 2) doesn't require <code>-c</code> either.</p>
+<blockquote>
+<p>Can you share an example of how this would be a problem? Would you <em>always</em> want <code>-NoProfile</code>?</p>
+</blockquote>
+<p>For instance, if a profile automatically removed aliases, e.g. <code>Remove-Item alias:irm</code> ... I could give other examples but I'm guessing that should suffice?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-05 01:15</div>
+            <div class="timeline-body"><p>Thanks for the details! I'm not really a Windows user so it's helpful to have more context :)</p>
+<blockquote>
+<p>For instance, if a profile automatically removed aliases, e.g. Remove-Item alias:irm ... I could give other examples but I'm guessing that should suffice?</p>
+</blockquote>
+<p>That's sufficient, thanks! Is it possible that you'd have things in your profile that would <em>need</em> to be respected? e.g. some sort of proxy setting?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/God-damnit-all">@God-damnit-all</a> on 2025-01-05 03:35</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for the details! I'm not really a Windows user so it's helpful to have more context :)</p>
+<blockquote>
+<p>For instance, if a profile automatically removed aliases, e.g. Remove-Item alias:irm ... I could give other examples but I'm guessing that should suffice?</p>
+</blockquote>
+<p>That's sufficient, thanks! Is it possible that you'd have things in your profile that would <em>need</em> to be respected? e.g. some sort of proxy setting?</p>
+</blockquote>
+<p>One could change the default parameter values Invoke-RestMethod to use a proxy other than the system-wide proxy. That's not a very common occurrence. I think the profile interfering is more likely than not, but if one wanted to cover for both cases with a command that could be parsed correctly in both PowerShell and Command Prompt, you'd do something like this:</p>
+<pre><code>powershell -NoP -EP Bypass &quot;iex 'try{ irm https://astral.sh/uv/install.ps1 }catch{ . (gv profile).Value; irm https://astral.sh/uv/install.ps1 }' | iex&quot;
+</code></pre>
+<p>But, well, now we're getting off into the weeds and I'm starting to think it's just as well it's left as it is now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @God-damnit-all on 2025-01-05 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/duckinator">@duckinator</a> on 2025-01-06 20:53</div>
+            <div class="timeline-body"><p>We're addressing <code>ByPass</code> -&gt; <code>Bypass</code> in axodotdev/cargo-dist#1676.</p>
+<p>I also opened axodotdev/cargo-dist#1675 for using <code>-NoProfile</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:17 UTC
+    </footer>
+</body>
+</html>

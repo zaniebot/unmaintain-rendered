@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patch `sysconfig` data at install time - astral-sh/uv #9857</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Patch <code>sysconfig</code> data at install time</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9857">#9857</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-12-13 00:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-13 00:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR reimplements <a href="https://github.com/bluss/sysconfigpatcher"><code>sysconfigpatcher</code></a> in Rust and applies it to our Python installations at install-time, ensuring that the <code>sysconfig</code> data is more likely to be correct.</p>
+<p>For now, we only rewrite prefixes (i.e., any path that starts with <code>/install</code> gets rewritten to the correct absolute path for the current machine).</p>
+<p>Unlike <code>sysconfigpatcher</code>, this PR does not yet do any of the following:</p>
+<ul>
+<li>Patch <code>pkginfo</code> files.</li>
+<li>Change <code>clang</code> references to <code>cc</code>.</li>
+</ul>
+<p>A few things that we should do as follow-ups, in my opinion:</p>
+<ol>
+<li>Rewrite <a href="https://github.com/bluss/sysconfigpatcher/blob/c1ebf8ab9274dcde255484d93ce0f1fd1f76a248/src/sysconfigpatcher.py#L61"><code>AR</code></a>.</li>
+<li>Remove <code>-isysroot</code>, which we already do for newer builds.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">no-build</span> added by @charliermarsh on 2024-12-13 00:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">no-test</span> added by @charliermarsh on 2024-12-13 00:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2024-12-13 00:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-12-13 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-12-13 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-12-13 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">no-build</span> removed by @charliermarsh on 2024-12-13 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">no-test</span> removed by @charliermarsh on 2024-12-13 00:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-13 00:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-python/src/sysconfig/parser.rs</code>:1 on 2024-12-13 00:58</div>
+            <div class="timeline-body"><p>I initially thought we could just parse this as JSON, but we only started to output sysconfig data as JSON in the most recent PBS release. So it won't apply to existing Pythons.</p>
+<p>Instead, this is a small parser that just handles Python dictionaries with the assumption that keys are string and values are (strings or integers). Main complexity is that strings can be implicitly concatenated (and are in practice), but it's not too bad.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-13 00:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-python/src/sysconfig/cursor.rs</code>:1 on 2024-12-13 00:59</div>
+            <div class="timeline-body"><p>This comes from Ruff (which ported it from rustc).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-13 00:59</div>
+            <div class="timeline-body"><p>\cc @bluss who I also chatted with on Discord</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-12-13 00:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-12-13 00:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">no-build</span> added by @charliermarsh on 2024-12-13 03:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/sysconfig/parser.rs</code>:1 on 2024-12-13 03:57</div>
+            <div class="timeline-body"><p>Do we need to have @dhruvmanila review this? :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-13 03:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-13 04:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-python/src/sysconfig/parser.rs</code>:1 on 2024-12-13 04:12</div>
+            <div class="timeline-body"><p>Yeah good idea. @dhruvmanila -- this is applied to a file like the following. We know that it's an object with string keys, and the values must be strings or integers (no f-strings, but they can be implicitly concatenated).</p>
+<pre><code class="language-python"># system configuration generated and used by the sysconfig module
+build_time_vars = {'ABIFLAGS': '',
+ 'AC_APPLE_UNIVERSAL_BUILD': 0,
+ 'AIX_BUILDDATE': 0,
+ 'AIX_GENUINE_CPLUSPLUS': 0,
+ ...
+ 'XMLLIBSUBDIRS': 'xml xml/dom xml/etree xml/parsers xml/sax',
+ 'abs_builddir': '/private/var/folders/0w/4z5l9vds32nbkz7l22n8j6s80000gn/T/tmp5be2znu_/Python-3.10.16',
+ 'abs_srcdir': '/private/var/folders/0w/4z5l9vds32nbkz7l22n8j6s80000gn/T/tmp5be2znu_/Python-3.10.16',
+ 'datarootdir': '/install/share',
+ 'exec_prefix': '/install',
+ 'prefix': '/install',
+ 'srcdir': '.'}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/uv-python/src/sysconfig/parser.rs</code>:110 on 2024-12-13 04:57</div>
+            <div class="timeline-body"><p>Do we need to handle Python specific whitespaces?</p>
+<p>https://github.com/astral-sh/ruff/blob/be4ce1673507fe9033ba0d9bd132b8e94430fff8/crates/ruff_python_trivia/src/whitespace.rs#L38-L46</p>
+<p>https://docs.python.org/3/reference/lexical_analysis.html#whitespace-between-tokens</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/uv-python/src/sysconfig/parser.rs</code>:109 on 2024-12-13 05:05</div>
+            <div class="timeline-body"><p>Do we need to always do the lookahead first and then bump the character? Typically, we avoid doing lookaheads and only do it when required. If we bump the character first, it always avoids bumping it for every branch in the loop.</p>
+<p>This would look like:</p>
+<pre><code class="language-rust">loop {
+	let Some(next) = cursor.bump() else {
+		break;
+	};
+
+	match next {
+		...
+	}
+}
+</code></pre>
+<p>For other parse methods, it would then need to accept the character that's bumped. For strings, you could then utilize the <code>cursor.previous()</code> method to add a debug assertion that the previous character was the same as the given quote character.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/uv-python/src/sysconfig/parser.rs</code>:202 on 2024-12-13 05:08</div>
+            <div class="timeline-body"><p>Same as earlier, do we need to look at Python specific whitespace?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/uv-python/src/sysconfig/parser.rs</code>:189 on 2024-12-13 05:18</div>
+            <div class="timeline-body"><p>nit: we could utilize a <code>match</code> to avoid computing <code>self.first</code> for each branch</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/uv-python/src/sysconfig/parser.rs</code>:91 on 2024-12-13 05:20</div>
+            <div class="timeline-body"><p>Is there a chance that the whitespace around <code>=</code> might be missing? I think the data is auto-generated so it's quite unlikely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-12-13 05:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/uv-python/src/sysconfig/parser.rs</code>:1 on 2024-12-13 05:52</div>
+            <div class="timeline-body"><p>The parser looks good. I think it just has a lot of lookaheads where we could just use <code>bump</code> but if this is not in a critical path (which it seems like so), then it shouldn't matter practically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-12-13 05:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-13 18:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/sysconfig/mod.rs</code>:190 on 2024-12-13 18:23</div>
+            <div class="timeline-body"><p>I'd include something here that shouldn't be patched.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-12-13 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-12-13 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-13 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-13 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-13 19:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-python/src/sysconfig/parser.rs</code>:109 on 2024-12-13 19:38</div>
+            <div class="timeline-body"><p>I left it as-is but I'll play with changing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/sysconfig/cursor.rs</code>:9 on 2024-12-16 12:17</div>
+            <div class="timeline-body"><p>This looks a lot like https://github.com/typst/unscanny</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-12-16 12:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2024-12-17 05:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/uv-python/src/sysconfig/cursor.rs</code>:9 on 2024-12-17 05:12</div>
+            <div class="timeline-body"><p>That looks interesting!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:16 UTC
+    </footer>
+</body>
+</html>

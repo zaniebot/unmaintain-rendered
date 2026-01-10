@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add support for specifying conflicting extras - astral-sh/uv #8976</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add support for specifying conflicting extras</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/8976">#8976</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-11-09 18:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-09 18:11</div>
+            <div class="timeline-body"><p>This PR adds support for conflicting extras. For example, consider
+some optional dependencies like this:</p>
+<pre><code class="language-toml">[project.optional-dependencies]
+project1 = [&quot;numpy==1.26.3&quot;]
+project2 = [&quot;numpy==1.26.4&quot;]
+</code></pre>
+<p>These dependency specifications are not compatible with one another.
+And if you ask uv to lock these, you'll get an unresolvable error.</p>
+<p>With this PR, you can now add this to your <code>pyproject.toml</code> to get
+around this:</p>
+<pre><code class="language-toml">[tool.uv]
+conflicting-groups = [
+    [
+      { package = &quot;project&quot;, extra = &quot;project1&quot; },
+      { package = &quot;project&quot;, extra = &quot;project2&quot; },
+    ],
+]
+</code></pre>
+<p>This will make the universal resolver create additional forks
+internally that keep the dependencies from the <code>project1</code> and
+<code>project2</code> extras separate. And we make all of this work by reporting
+an error at <strong>install</strong> time if one tries to install with two or more
+extras that have been declared as conflicting. (If we didn't do this,
+it would be possible to try and install two different versions of the
+same package into the same environment.)</p>
+<p>This PR does <em>not</em> add support for conflicting <strong>groups</strong>, but it is
+intended to add support in a follow-up PR.</p>
+<p>Closes #6981</p>
+<p>Fixes #8024</p>
+<p>Ref #6729, Ref #6830</p>
+<p>This should also hopefully unblock
+https://github.com/dagster-io/dagster/pull/23814, but in my testing, I
+did run into other problems (specifically, with <code>pywin</code>). But it does
+resolve the problem with incompatible dependencies in two different
+extras once you declare <code>test-airflow-1</code> and <code>test-airflow-2</code> as
+conflicting for <code>dagster-airflow</code>.</p>
+<p>NOTE: This PR doesn't make <code>conflicting-groups</code> public yet. And in a follow-up PR, I plan to switch the name to <code>conflicts</code> instead of <code>conflicting-groups</code>, since it will be able to accept conflicting extras <em>and</em> conflicting groups.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-09 18:19</div>
+            <div class="timeline-body"><p>Epic!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-11-09 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-11-09 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-09 18:35</div>
+            <div class="timeline-body"><p>Reviewers should read this commit-by-commit. It should help a lot.</p>
+<p>Also, I haven't made any attempt at hiding the schema yet, since I'm guessing we'll want to merge this without exposing it yet. cc @zanieb I know we talked about this a couple days ago.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pypi-types/src/conflicting_groups.rs</code>:17 on 2024-11-09 18:46</div>
+            <div class="timeline-body"><p>Nit: I might expect this to be called <code>empty</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pypi-types/src/conflicting_groups.rs</code>:190 on 2024-11-09 18:47</div>
+            <div class="timeline-body"><p>Nit: &quot;two&quot; instead of &quot;2&quot;, sorry!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pypi-types/src/conflicting_groups.rs</code>:190 on 2024-11-09 18:47</div>
+            <div class="timeline-body"><p>Also might be worth special-casing zero instead of saying &quot;but found only 0&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/lock.rs</code>:631 on 2024-11-09 18:51</div>
+            <div class="timeline-body"><p>To clarify: does this mean conflicting groups must be defined in the workspace root?</p>
+<p>Could we instead have each project define its own conflicts, and then remove <code>package =</code> from the schema? I don't think it's necessary to allow arbitrary packages to be included in these groups, since we only allow <em>enabling</em> extras for members in the workspace.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:476 on 2024-11-09 18:52</div>
+            <div class="timeline-body"><p>Still necessary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2873 on 2024-11-09 18:54</div>
+            <div class="timeline-body"><p>This could potentially lead to a lot of forks, but... so be it? Unavoidable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pypi-types/src/conflicting_groups.rs</code>:11 on 2024-11-09 18:56</div>
+            <div class="timeline-body"><p>I am wondering if the terminology here should just around something more general, like &quot;Conflicts&quot;, since it has to cover both extras and dependency groups. The use of &quot;groups&quot; here makes it somewhat overloaded.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:734 on 2024-11-09 18:56</div>
+            <div class="timeline-body"><p>Where did this one go?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-09 18:57</div>
+            <div class="timeline-body"><p>This generally looks good to me. A few questions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2024-11-09 19:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>docs/reference/settings.md</code>:40 on 2024-11-09 19:44</div>
+            <div class="timeline-body"><p>Can you add a test case for this? where packages are different.
+I noticed all test cases use <code>package = &quot;project&quot;</code>. could you make it as default value to avoid explicitly writing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-11 13:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:734 on 2024-11-11 13:36</div>
+            <div class="timeline-body"><p>No longer needed! Since we should no longer generate these forks in the first place.</p>
+<p>The key change (below) is from this:</p>
+<pre><code class="language-rust">       let mut forks = vec![Fork {
+            dependencies: vec![],
+            markers: MarkerTree::TRUE,
+        }];
+</code></pre>
+<p>to this:</p>
+<pre><code class="language-rust">        let mut forks = vec![Fork {
+            dependencies: vec![],
+            env: env.clone(),
+        }];
+</code></pre>
+<p>where <code>env</code> contains the markers from the <em>parent fork</em> instead of just using <code>MarkerTree::TRUE</code> and then trying to &quot;combine&quot; the markers with the parent fork at a higher level (which is removed below, in the <code>with_env</code> method). This awkward dance is ultimately what led to https://github.com/astral-sh/uv/issues/8676. This commit actually undoes <a href="https://github.com/astral-sh/uv/pull/8759">my fix</a> and instead fixes it by simply not generating the forks in the first place.</p>
+<p>I don't know why we didn't always just start with the parent's markers when creating forks. My very vague recollection is that, at the time, we didn't have a good marker implementation and it led to bugs because it would overall produce more &quot;complicated&quot; markers that our disjoint checking failed on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-11 13:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pypi-types/src/conflicting_groups.rs</code>:17 on 2024-11-11 13:38</div>
+            <div class="timeline-body"><p>Fine by me! Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-11 13:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pypi-types/src/conflicting_groups.rs</code>:190 on 2024-11-11 13:40</div>
+            <div class="timeline-body"><p>Yeah, I totally get that style. I ended up using <code>2</code> intentionally for reasons of &quot;parallelism,&quot; since &quot;but found only {len}&quot; would also be written numerically. So I think it would be weird to, e.g., have <code>at least two entries, but found only 1</code>.</p>
+<p>However, if we're special casing the empty case to make it read a little nicer, we might as well special case the singleton case since those are the only two error cases related to the number of groups. In which case, we can just write the number out in English. :P</p>
+<p>So... long winded way of saying, SGTM. Lol.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-11 16:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2873 on 2024-11-11 16:19</div>
+            <div class="timeline-body"><p>Yup. I don't see another path here.</p>
+<p>And note that the way I went about this <em>should</em> hopefully minimize forks if possible. For example, one way of dealing with conflicting extras/groups is to use it to create an initial set of forks initially in resolution. And then you don't have to do it here: you just need to rely on forks not including dependencies in the extra/group exclusions. But doing it this way means that <em>every</em> marker-related fork gets duplicated according to the declared conflicts. But with this approach, <em>only</em> the forks that contain a conflict end up getting multiplied. So if there's an optional dependency that only exists in one marker fork and there are ten marker forks, the conflicting exclusions only fork off of that one fork and not all of them. (If that makes sense.)</p>
+<p>But it's not immediately obvious to me how to reduce this further or if it's possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-11 17:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/commands/project/lock.rs</code>:631 on 2024-11-11 17:09</div>
+            <div class="timeline-body"><p>I think this makes sense to me. From the resolver's perspective, it definitely needs the package name, but from the user's perspective, I can see how it makes sense to keep the conflicting declaration local to where the corresponding extras/groups are themselves defined. And in that context, the package name is implicit.</p>
+<p>I do wonder if there exists a conflict that does require the user to specify the package name, but I can't quite think of how that might manifest.</p>
+<p>I'll plan to remove <code>package</code> from the schema.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-11 17:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:476 on 2024-11-11 17:11</div>
+            <div class="timeline-body"><p>Nope. Good catch. Removed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-11 17:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pypi-types/src/conflicting_groups.rs</code>:11 on 2024-11-11 17:13</div>
+            <div class="timeline-body"><p>Yeah @zanieb suggested just using <code>conflicts</code>, so I think I'll switch to that. I don't like that it doesn't say <em>what</em> is conflicting, but &quot;extra&quot; and &quot;group&quot; are already such general names that it's hard to think of something more general than that but still captures their essence. And in theory, we could add more types of conflicts in the future, although the use cases aren't quite clear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-11 17:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/commands/project/lock.rs</code>:631 on 2024-11-11 17:13</div>
+            <div class="timeline-body"><p>(But note that we still need <code>package</code> in the lock file.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/lock.rs</code>:2192 on 2024-11-11 17:20</div>
+            <div class="timeline-body"><p>can we use something less heavy than numpy? numpy is a compiled wheel and therefore rather large.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-11-11 17:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-11 17:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/it/lock.rs</code>:2192 on 2024-11-11 17:47</div>
+            <div class="timeline-body"><p>Done! I switched over to <code>sortedcontainers</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-11-12 11:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:691 on 2024-11-12 11:35</div>
+            <div class="timeline-body"><p>Can't comment that high, but now diverging packages can be empty and the debug message has a hole:</p>
+<pre><code>DEBUG Splitting resolution on dummy==0.1.0 over  into 3 resolution with separate markers
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-12 13:29</div>
+            <div class="timeline-body"><p>Sharing this from our conversation:Currently, the following example leads to an install without <code>proxy-fork-1</code> but with <code>anyio==4.2.0</code>, while it should conflict, the conflict is unconditional.</p>
+<pre><code class="language-toml">[project]
+name = &quot;dummy&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;==3.12.*&quot;
+dependencies = [
+  &quot;proxy-fork-1[project1,project2]&quot;
+]
+
+[tool.uv.sources]
+proxy-fork-1 = { path = &quot;../proxy-fork-1&quot; }
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<pre><code class="language-toml">[project]
+name = &quot;proxy-fork-1&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;==3.12.*&quot;
+dependencies = []
+
+[project.optional-dependencies]
+project1 = [&quot;anyio==4.1.0&quot;]
+project2 = [&quot;anyio==4.2.0&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-12 19:24</div>
+            <div class="timeline-body"><p>@konstin Aye, I think that should be resolved now. Whenever a requirement is seen with an unconditional dependency on a conflicting extra, we error. This is perhaps overly conservative, but if we figure out a way to relax it (and a use case that wants it), we can do so in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-11-12 20:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-11-13 10:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/show_settings.rs</code>:3118 on 2024-11-13 10:28</div>
+            <div class="timeline-body"><p>The comment is out of date, and i think the example, too? (dev conflicting with dev sounds like it should warn/error)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-11-13 11:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-workspace/src/pyproject.rs</code>:497 on 2024-11-13 11:31</div>
+            <div class="timeline-body"><p>outdated example</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-11-13 11:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/reference/settings.md</code>:37 on 2024-11-13 11:33</div>
+            <div class="timeline-body"><p>outdated example</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-11-13 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-13 13:48</div>
+            <div class="timeline-body"><p>@konstin found another interesting case. In this case, resolution fails, even though it should be possible to declare conflicting extras in a way that makes it work. To reproduce, create a <code>pyproject.toml</code> with this:</p>
+<pre><code class="language-toml">[project]
+name = &quot;dummy&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;==3.12.*&quot;
+
+[project.optional-dependencies]
+project1 = [
+  &quot;proxy-fork-1[project1]&quot;,
+  # &quot;dummysub[project1]&quot; # Fails with or without this
+]
+project2 = [
+  &quot;proxy-fork-1[project2]&quot;
+  # &quot;dummysub[project2]&quot; # Fails with or without this
+]
+
+[tool.uv.sources]
+proxy-fork-1 = { path = &quot;./proxy-fork-1&quot; }
+dummysub =  { workspace = true }
+
+[tool.uv.workspace]
+members = [&quot;dummysub&quot;]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv]
+conflicting-groups = [
+  [
+    { extra = &quot;project1&quot; },
+    { extra = &quot;project2&quot; },
+  ],
+]
+</code></pre>
+<p>And another at <code>dummysub/pyproject.toml</code>:</p>
+<pre><code class="language-toml">[project]
+name = &quot;dummysub&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;==3.12.*&quot;
+
+[project.optional-dependencies]
+project1 = [
+  &quot;proxy-fork-1[project1]&quot;,
+]
+project2 = [
+  &quot;proxy-fork-1[project2]&quot;
+]
+
+[tool.uv.sources]
+proxy-fork-1 = { path = &quot;../proxy-fork-1&quot; }
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv]
+conflicting-groups = [
+  [
+    { extra = &quot;project1&quot; },
+    { extra = &quot;project2&quot; },
+  ],
+]
+</code></pre>
+<p>And finally, another one that isn't part of the workspace but is just an &quot;external&quot; package:</p>
+<pre><code class="language-toml">[project]
+name = &quot;proxy-fork-1&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;==3.12.*&quot;
+dependencies = []
+
+[project.optional-dependencies]
+project1 = [&quot;anyio==4.1.0&quot;]
+project2 = [&quot;anyio==4.2.0&quot;]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>In this case, we have <code>project1</code> and <code>project2</code> declared as conflicting extras in <em>both</em> <code>dummy</code> and <code>dummysub</code>. But they manifest as two different sets of conflicting extras. In order to make this example work, I believe they need to all be in one set, because they are all mutually conflicting. But since these extras span two different packages, the easiest way to do this is to bring back <code>package</code> (but we can make it optional). That is, in the root <code>pyproject.toml</code>, we have this:</p>
+<pre><code class="language-toml">[tool.uv]
+conflicting-groups = [
+  [
+    { extra = &quot;project1&quot; },
+    { extra = &quot;project2&quot; },
+    { package = &quot;dummysub&quot;, extra = &quot;project1&quot; },
+    { package = &quot;dummysub&quot;, extra = &quot;project2&quot; },
+  ],
+]
+</code></pre>
+<p>And we can remove <code>conflicting-groups</code> from <code>dummysub/pyproject.toml</code>. Once done, this makes resolution succeed.</p>
+<p>The only alternative I can see here, AFAIK, is to automatically combine conflicting groups among workspace members, so that every set of conflicts is combined with every other set of conflicts. But I think this leads to a combinatorial explosion, which would be bad juju. So I think we are left with allowing <code>package</code> but making it optional. (And now I think we've come full circle to @zanieb's suggestion. :P)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-13 14:14</div>
+            <div class="timeline-body"><p>The above solution means you can't install both <code>dummy[project1]</code> and <code>dummysub[project1]</code> at the same time. So I think you actually have to list out all pairs of possible conflicts:</p>
+<pre><code class="language-toml">[tool.uv]
+conflicting-groups = [
+  [
+    { extra = &quot;project1&quot; },
+    { extra = &quot;project2&quot; },
+  ],
+  [
+    { package = &quot;dummysub&quot;, extra = &quot;project1&quot; },
+    { package = &quot;dummysub&quot;, extra = &quot;project2&quot; },
+  ],
+  [
+    { extra = &quot;project1&quot; },
+    { package = &quot;dummysub&quot;, extra = &quot;project2&quot; },
+  ],
+  [
+    { package = &quot;dummysub&quot;, extra = &quot;project1&quot; },
+    { extra = &quot;project2&quot; },
+  ],
+]
+</code></pre>
+<p>And I do believe you need all four entries here, since you need to declare, e.g., that <code>dummy[project1]</code> and <code>dummysub[project2]</code> are conflicting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-13 14:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/it/show_settings.rs</code>:3118 on 2024-11-13 14:40</div>
+            <div class="timeline-body"><p>Aye, fixed. I'll do some more validation in a follow-up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-11-13 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-11-13 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-13 14:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-13 15:23</div>
+            <div class="timeline-body"><p>@BurntSushi is it then any different than taking all pairs of groups? I don't fully see the advantage.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-13 15:31</div>
+            <div class="timeline-body"><blockquote>
+<p>@BurntSushi is it then any different than taking all pairs of groups? I don't fully see the advantage.</p>
+</blockquote>
+<p>I think the advantage is that not all conflicting extras are mutually exclusionary. So the question becomes then, in what circumstances do you take all pairs? I don't think you want to do it in all cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-13 16:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>docs/reference/settings.md</code>:40 on 2024-11-13 16:42</div>
+            <div class="timeline-body"><p>Ah yeah, I'll add one of these in a follow-up PR. Originally I thought we were going to get rid of <code>package</code>, but now it's optional. I'll add the test from the comments below, which should cover &quot;conflicts with distinct <code>package</code> values&quot; case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-13 16:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:691 on 2024-11-13 16:52</div>
+            <div class="timeline-body"><p>Ah I missed this. I'll have this fixed in a follow-up PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-13 16:53</div>
+            <div class="timeline-body"><p>And also, the above isn't all pairs. For example, <code>dummy[project1]</code> and <code>dummysub[project1]</code> aren't marked as conflicting. You very specifically want to be able to install both of those at the same time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-13 19:59</div>
+            <div class="timeline-body"><p>NOTE: I accidentally squash-merged this PR. For anyone looking for better history in the future, my apologies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/martinitus">@martinitus</a> on 2024-12-23 12:07</div>
+            <div class="timeline-body"><p>Hey  folks, I have a followup question to the &quot;conflicting extras / groups&quot; features that were merged the last weeks.</p>
+<p>I would like to declare conflicting extras - however these dependencies have no <em>inherent</em> conflict in the package or version. Instead they happen to use the same module namespace  - <code>databricks-connect</code> and <code>pyspark</code> both use <code>pyspark</code> as module names.</p>
+<p>What I tried so far was</p>
+<pre><code class="language-toml">
+[project.optional-dependencies]
+databums = [&quot;databricks-connect&gt;=16.0.0&quot;,]
+vanilla = [&quot;pyspark&gt;=3.5.4&quot;,]
+
+[tool.uv]
+conflicts = [
+    [
+        {extra = &quot;databums&quot; },
+        {extra = &quot;vanilla&quot; },
+    ]
+]
+</code></pre>
+<p>However, when I run <code>uv lock</code> or <code>uv pip install -v -e  .[databums,vanilla]</code> or even just <code>uv pip -e .</code> it happily installs both packages (and screws up the site-package directory afaik).</p>
+<p>I presume the current implementation only prevents scenarios where the dependency resolution would have failed due to conflicting optional dependencies. Whereas what I want is explicitly declaring dependencies as conflicting?</p>
+<p>Let me know if I missed something and this should actually be possible!</p>
+<p>BTW: I also tried it with optional groups, but groups are not exposed to pip (yet, afaik). As I want to be able to install my package with pip on downstream systems, dependency groups seem to not be an option yet.</p>
+<p>-- Edit --
+I opened #10238</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-23 17:05</div>
+            <div class="timeline-body"><p>@martinitus I don't think we support that, but it does seem interesting.</p>
+<p>Could you open a new issue please?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:14 UTC
+    </footer>
+</body>
+</html>

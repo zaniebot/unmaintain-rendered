@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B024: ruff in pre-commit fails to recognise B024 with the presence of a class variable - astral-sh/ruff #14455</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>B024: ruff in pre-commit fails to recognise B024 with the presence of a class variable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14455">#14455</a>
+        opened by <a href="https://github.com/cmp0xff">@cmp0xff</a>
+        on 2024-11-19 13:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cmp0xff">@cmp0xff</a> on 2024-11-19 13:55</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<h1>List of keywords I searched for before creating this issue</h1>
+<ul>
+<li><code>B024</code></li>
+</ul>
+<h1>A minimal code snippet that reproduces the bug</h1>
+<pre><code class="language-py">from abc import ABC
+
+
+class Foo(ABC):
+    a: int
+    def method(self) -&gt; None:
+        print(&quot;nothing&quot;)
+</code></pre>
+<h1>The command you invoked</h1>
+<pre><code class="language-ps">poetry run pre-commit run -a
+</code></pre>
+<h1>The current Ruff settings</h1>
+<h2>Relevant snippet of <code>.pre-commit-config.yaml</code></h2>
+<pre><code class="language-yml">  - repo: https://github.com/astral-sh/ruff/
+    rev: 0.7.4
+    hooks:
+      # Run the linter.
+      - id: ruff
+        args:
+          - --fix
+          - --exit-non-zero-on-fix
+</code></pre>
+<h2>Relevant snippet of <code>pyproject.py</code></h2>
+<pre><code>[tool.ruff]
+line-length = 88
+force-exclude = true # Recommended for pre-commit (https://github.com/charliermarsh/ruff#force-exclude)
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    &quot;.bzr&quot;,
+    &quot;.direnv&quot;,
+    &quot;.eggs&quot;,
+    &quot;.git&quot;,
+    &quot;.git-rewrite&quot;,
+    &quot;.hg&quot;,
+    &quot;.mypy_cache&quot;,
+    &quot;.nox&quot;,
+    &quot;.pants.d&quot;,
+    &quot;.pytype&quot;,
+    &quot;.ruff_cache&quot;,
+    &quot;.svn&quot;,
+    &quot;.tox&quot;,
+    &quot;.venv&quot;,
+    &quot;__pypackages__&quot;,
+    &quot;_build&quot;,
+    &quot;buck-out&quot;,
+    &quot;build&quot;,
+    &quot;dist&quot;,
+    &quot;node_modules&quot;,
+    &quot;venv&quot;,
+]
+target-version = &quot;py310&quot;
+# unsafe-fixes = true
+
+[tool.ruff.lint.per-file-ignores]
+&quot;*ipynb*&quot; = [
+  &quot;B018&quot;,  # https://docs.astral.sh/ruff/rules/useless-expression/
+]
+
+[tool.ruff.lint]
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
+select = [&quot;ALL&quot;]
+ignore = [
+  &quot;ANN001&quot;,  # https://docs.astral.sh/ruff/rules/missing-type-function-argument/
+  &quot;ANN201&quot;,  # https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function/
+  &quot;ANN202&quot;,  # https://docs.astral.sh/ruff/rules/missing-return-type-private-function/
+  &quot;ANN401&quot;,  # https://docs.astral.sh/ruff/rules/any-type/
+  &quot;ARG&quot;,     # https://docs.astral.sh/ruff/rules/#flake8-unused-arguments-arg
+  &quot;B007&quot;,    # https://docs.astral.sh/ruff/rules/unused-loop-control-variable/
+  &quot;B023&quot;,    # https://docs.astral.sh/ruff/rules/function-uses-loop-variable/
+  &quot;B905&quot;,    # https://docs.astral.sh/ruff/rules/zip-without-explicit-strict/
+  &quot;C408&quot;,    # https://docs.astral.sh/ruff/rules/unnecessary-collection-call/
+  &quot;C901&quot;,    # https://docs.astral.sh/ruff/rules/complex-structure/
+  &quot;D&quot;,       # https://docs.astral.sh/ruff/rules/#pydocstyle-d
+  &quot;DTZ001&quot;,  # https://docs.astral.sh/ruff/rules/call-datetime-without-tzinfo/
+  &quot;E501&quot;,    # https://docs.astral.sh/ruff/rules/line-too-long/ (handled by black)
+  &quot;E722&quot;,    # https://docs.astral.sh/ruff/rules/bare-except/
+  &quot;E731&quot;,    # https://docs.astral.sh/ruff/rules/lambda-assignment/
+  &quot;F841&quot;,    # https://docs.astral.sh/ruff/rules/unused-variable/
+  &quot;G&quot;,       # https://docs.astral.sh/ruff/rules/#flake8-logging-format-g
+  &quot;S101&quot;,    # https://docs.astral.sh/ruff/rules/assert/
+  &quot;S301&quot;,    # https://docs.astral.sh/ruff/rules/suspicious-pickle-usage/
+  &quot;S608&quot;,    # https://docs.astral.sh/ruff/rules/hardcoded-sql-expression/
+  &quot;SIM114&quot;,  # https://docs.astral.sh/ruff/rules/if-with-same-arms/
+  &quot;BLE&quot;, &quot;COM&quot;, &quot;EM&quot;, &quot;ERA&quot;, &quot;FIX&quot;, &quot;FBT&quot;, &quot;FLY&quot;, &quot;INP&quot;,
+  &quot;N&quot;,
+  &quot;PD&quot;,
+  &quot;PERF&quot;, &quot;PGH&quot;,
+  &quot;PLC&quot;, &quot;PLR&quot;, &quot;PLW&quot;,
+  &quot;PT&quot;,
+  &quot;PTH&quot;,
+  &quot;PYI&quot;, &quot;RET&quot;,
+  &quot;SLF&quot;,
+  &quot;T201&quot;,
+  &quot;TCH&quot;, &quot;TD&quot;, &quot;TID&quot;, &quot;TRY&quot;, &quot;UP&quot;, &quot;W&quot;
+]
+</code></pre>
+<h1>The current Ruff version</h1>
+<p><code>0.7.4</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-20 05:28</div>
+            <div class="timeline-body"><p>Thank you for submitting this issue!</p>
+<p>This behavior is intentional - it is assumed that an unassigned, annotated class variable is intended to be abstract.</p>
+<p>But that has certainly been a point of discussion/refinement. See <a href="https://github.com/PyCQA/flake8-bugbear/issues/293">this flake8-bugbear issue</a> and the issues linked therein. Let us know if you think it should be further refined!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-11-20 07:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cmp0xff">@cmp0xff</a> on 2024-11-20 08:21</div>
+            <div class="timeline-body"><p>Hi, thank you for the reply.</p>
+<p>In such a case, the documentation needs to be updated. For example, in <a href="https://github.com/astral-sh/docs/blob/main/site/ruff/rules/abstract-base-class-without-abstract-method/index.html">abstract-base-class-without-abstract-method</a>, instead of</p>
+<blockquote>
+<p>Checks for abstract classes without abstract methods.</p>
+</blockquote>
+<p>we can write</p>
+<blockquote>
+<p>Checks for abstract classes without abstract methods or class variables.</p>
+</blockquote>
+<p>Please let me know if I can continue completing and implementing this idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-20 16:15</div>
+            <div class="timeline-body"><p>That'd be great! I think the check only skips if the class variable is annotated and not assigned, though. So you may want to adjust the wording a bit, maybe:</p>
+<blockquote>
+<p>Checks for abstract classes without abstract methods. Class variables which are annotated but not assigned are regarded as abstract.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @cmp0xff by @dylwil3 on 2024-11-20 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cmp0xff">@cmp0xff</a> on 2024-11-20 19:41</div>
+            <div class="timeline-body"><p>I am working on the documentation. Meanwhile, upon checking the <a href="https://docs.python.org/3/library/typing.html#typing.ClassVar">Python documentation</a>, it turns out that only when subscribed by <code>typing.ClassVar</code> is an annotate variable considered a class variable. Copied from the above-mentioned documentation:</p>
+<pre><code class="language-py">class Starship:
+    stats: ClassVar[dict[str, int]] = {} # class variable
+    damage: int = 10                     # instance variable
+</code></pre>
+<p>What I had as an example in the original post is therefore an instance variable, not a class variable. This contradicts the discussion in https://github.com/PyCQA/flake8-bugbear/issues/293, which only has to do with <code>typing.ClassVar</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-20 20:21</div>
+            <div class="timeline-body"><p>Hey @cmp0xff  - you'll want to open a PR for <code>ruff</code> not <code>docs</code>. The relevant code is here:</p>
+<p>https://github.com/astral-sh/ruff/blob/3c52d2d1bd8042d98415f70ecc8d6402795756ef/crates/ruff_linter/src/rules/flake8_bugbear/rules/abstract_base_class.rs#L13-L19</p>
+<blockquote>
+<p>Meanwhile, upon checking the <a href="https://docs.python.org/3/library/typing.html#typing.ClassVar">Python documentation</a>, it turns out that only when subscribed by typing.ClassVar is an annotate variable considered a class variable.</p>
+</blockquote>
+<p>That's an interesting point... can you open a separate issue for this? For the present issue let's just change the documentation.</p>
+<p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2024-11-21 15:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:47 UTC
+    </footer>
+</body>
+</html>

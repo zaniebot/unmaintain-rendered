@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hint at `tool.uv.environments` on resolution error - astral-sh/uv #13455</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Hint at <code>tool.uv.environments</code> on resolution error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13455">#13455</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-05-14 16:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-05-14 16:13</div>
+            <div class="timeline-body"><p>Users are not (yet) properly familiar with the concept of universal resolution and its implication that we need to resolve for all possible platforms and Python versions. Some projects only target a specific platform or Python version, and users experience resolution errors due to failures for other platforms. Indicated by the number of questions we get about it, <code>tool.uv.environments</code> for restricting environments is not well discoverable.</p>
+<p>We add a special hint when resolution failed on a fork disjoint with the current environment, hinting the user to constrain <code>requires-python</code> and <code>tool.uv.environments</code> respectively.</p>
+<p>The hint has false positives for cases where the resolution failed on a different platform, but equally fails on the current platform, in cases where the non-current fork was tried earlier. Given that conflicts can be based on <code>requires-python</code>, afaik we can't parse whether the current platform would also be affected from the derivation tree.</p>
+<p>Two cases not covered by this are build errors as well as install errors that need <code>tool.uv.required-environments</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2025-05-14 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2025-05-16 09:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-23 18:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-resolver/src/error.rs</code>:381 on 2025-05-23 18:52</div>
+            <div class="timeline-body"><p>Should this be <code>The resolution failed for a Python version range excluding the current ...</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-23 19:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/error.rs</code>:381 on 2025-05-23 19:03</div>
+            <div class="timeline-body"><p>Weakly towards &quot;outside&quot; for being the simpler word than the mathematical range-excludes, but no strong opinion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-23 19:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-resolver/src/error.rs</code>:381 on 2025-05-23 19:06</div>
+            <div class="timeline-body"><p>It's mostly that you'd normally use &quot;outside&quot; the other way: &quot;the current Python version falls outside the range&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv-resolver/src/error.rs</code>:381 on 2025-05-26 20:52</div>
+            <div class="timeline-body"><p>Can we use even more words here and include the versions in question? What about something like</p>
+<p>&quot;hint: There is a resolution for your current Python version (3.9), but your project supports multiple Python versions, and your dependencies cannot be resolved on Python &gt;=3.10. If your project does not need to support Python &gt;=3.10, consider limiting the Python version range listed in <code>requires-python</code> in pyproject.toml.&quot;</p>
+<p>Also, is it possible (as in, is it house style) for both of these errors to link to some page in the uv docs explaining why this might happen and what to do about it? A docs page would give us room to including (links to) the full syntax for <code>requires-python</code> and <code>tool.uv.environments</code> is, as well as some examples of how to write useful ones (e.g. how to do &quot;exclude Windows&quot; instead of &quot;only Linux&quot;, or how to do &quot;Python 3.13 and up&quot; instead of &quot;Python 3.13&quot;).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/geofft">@geofft</a> reviewed on 2025-05-26 20:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/error.rs</code>:381 on 2025-05-27 14:40</div>
+            <div class="timeline-body"><blockquote>
+<p>Also, is it possible (as in, is it house style) for both of these errors to link to some page in the uv docs explaining why this might happen and what to do about it?</p>
+</blockquote>
+<p>We do not do this yet because we don't have the ability to permalink to documentation (i.e., it's not versioned)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-27 14:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-05-27 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-27 14:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/error.rs</code>:381 on 2025-05-27 14:46</div>
+            <div class="timeline-body"><p>I do think the suggestion to include concrete versions and environments seems important. I think having a concrete suggestion to the user e.g., about how to exclude the failing environment, would also be really helpful. I think suggesting a upper bound on <code>requires-python</code> seems feasible too? At least in the common / simple case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-27 14:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/error.rs</code>:381 on 2025-05-27 14:55</div>
+            <div class="timeline-body"><p>I added the current Python version. If we want the Python version of the split it gets more complex, as would have to traverse the ADD, but we already show the split markers on top.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/error.rs</code>:381 on 2025-05-27 14:55</div>
+            <div class="timeline-body"><p>We also <em>could</em> just call this an incremental improvement and open issues to track making the hint more helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-27 14:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-27 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/error.rs</code>:381 on 2025-05-27 15:00</div>
+            <div class="timeline-body"><p>The improvement was prompted by writing the advice that's now in the hints in issue reports repeatedly, so I would consider this an incremental improvement and refine if we still get questions from users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-27 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/error.rs</code>:381 on 2025-05-27 15:41</div>
+            <div class="timeline-body"><p>My concern is mostly that you have the context on this now and it'll be more work to pick it up later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/geofft">@geofft</a> reviewed on 2025-05-27 18:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv-resolver/src/error.rs</code>:381 on 2025-05-27 18:02</div>
+            <div class="timeline-body"><p>Thanks, new version is helpful. I agree that given that the split marker is displayed in the full error, it's not necessary (but would be nice) to repeat it in the hint at the bottom.</p>
+<p>I still think there's some room to improve the phrasing - &quot;a Python version range excluding the current Python version&quot; is mathematically accurate, but I can totally imagine people interpreting it as, &quot;why is the current Python version excluded? I need to figure out how to include it.&quot; How about one of these?</p>
+<pre><code>Although the active Python version is {{current_python_version}},
+the resolution failed for other Python versions supported by your
+project. Consider limiting your project's supported Python versions
+using `requires-python`.
+</code></pre>
+<pre><code>Resolution succeeded for Python {{current_python_version}}, but not
+for other Python versions supported by your project. Consider
+limiting your project's supported Python versions using `requires-python`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-28 13:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/error.rs</code>:381 on 2025-05-28 13:55</div>
+            <div class="timeline-body"><p>The problem to giving better suggestions is the limited context we have when encountering this error. Consider the forks in transformers:</p>
+<pre><code class="language-toml">resolution-markers = [
+    &quot;python_full_version &gt;= '3.13' and sys_platform == 'darwin'&quot;,
+    &quot;python_full_version == '3.12.*' and sys_platform == 'darwin'&quot;,
+    &quot;python_full_version &gt;= '3.13' and platform_machine == 'aarch64' and sys_platform == 'linux'&quot;,
+    &quot;python_full_version == '3.12.*' and platform_machine == 'aarch64' and sys_platform == 'linux'&quot;,
+    &quot;(python_full_version &gt;= '3.13' and platform_machine != 'aarch64' and sys_platform == 'linux') or (python_full_version &gt;= '3.13' and sys_platform != 'darwin' and sys_platform != 'linux')&quot;,
+    &quot;(python_full_version == '3.12.*' and platform_machine != 'aarch64' and sys_platform == 'linux') or (python_full_version == '3.12.*' and sys_platform != 'darwin' and sys_platform != 'linux')&quot;,
+    &quot;python_full_version == '3.11.*' and sys_platform == 'darwin'&quot;,
+    &quot;python_full_version == '3.11.*' and platform_machine == 'aarch64' and sys_platform == 'linux'&quot;,
+    &quot;(python_full_version == '3.11.*' and platform_machine != 'aarch64' and sys_platform == 'linux') or (python_full_version == '3.11.*' and sys_platform != 'darwin' and sys_platform != 'linux')&quot;,
+    &quot;python_full_version == '3.10.*' and sys_platform == 'darwin'&quot;,
+    &quot;python_full_version == '3.10.*' and platform_machine == 'aarch64' and sys_platform == 'linux'&quot;,
+    &quot;(python_full_version == '3.10.*' and platform_machine != 'aarch64' and sys_platform == 'linux') or (python_full_version == '3.10.*' and sys_platform != 'darwin' and sys_platform != 'linux')&quot;,
+    &quot;python_full_version &lt; '3.10' and platform_machine == 'arm64' and sys_platform == 'darwin'&quot;,
+    &quot;python_full_version &lt; '3.10' and platform_machine == 'aarch64' and sys_platform == 'linux'&quot;,
+    &quot;(python_full_version &lt; '3.10' and platform_machine != 'arm64' and sys_platform == 'darwin') or (python_full_version &lt; '3.10' and platform_machine != 'aarch64' and sys_platform == 'linux') or (python_full_version &lt; '3.10' and sys_platform != 'darwin' and sys_platform != 'linux')&quot;,
+]
+</code></pre>
+<p>If we fail in one of those forks, do we know that it's about that fork and that it's not a more general, or maybe a specific subset? Is it about the platform component or the Python version component of the marker for those who have both? If we have multiple <code>python_full_version</code> components, which one do we show (and how do extract it from the <code>MarkerTree</code>)?</p>
+<p>In user support, my experience was that users were lost with the current error message, but could figure it out when given the right keywords, which were reduce <code>requires-python</code> and setting <code>tool.uv.environments</code> respectively (and, not covered here, <code>tool.uv.required-environments</code> for installation). If we have specific cases where we have the confidence to make more concrete suggestions, I can add more specific branches.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-05-28 14:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-28 14:41</div>
+            <div class="timeline-body"><p>Ready to merge but the depot runners are down atm</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-06 13:55</div>
+            <div class="timeline-body"><p>@konstin this needs an update with <code>main</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-06-06 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-06-06 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-06 14:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:24 UTC
+    </footer>
+</body>
+</html>

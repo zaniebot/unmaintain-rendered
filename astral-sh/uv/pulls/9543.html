@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handle Windows AV/EDR file locks during script installations - astral-sh/uv #9543</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Handle Windows AV/EDR file locks during script installations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9543">#9543</a>
+        opened by <a href="https://github.com/Coruscant11">@Coruscant11</a>
+        on 2024-11-30 15:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Coruscant11">@Coruscant11</a> on 2024-11-30 15:40</div>
+            <div class="timeline-body"><p>Fixes #9531</p>
+<h2>Context</h2>
+<p>While working with <a href="https://github.com/astral-sh/uv">uv</a>, I encountered issues with a python dependency, <a href="https://www.python-httpx.org/">httpx</a> unable to be installed because of a <strong>os error 5 permission denied</strong>.
+The error occur when we try to persist a <strong>.exe file</strong> from a temporary folder into a persistent one.
+I only reproduce the issue in an enterprise <strong>Windows</strong> Jenkins Runner. In my virtual machines, I don't have any issues. So I think this is most probably coming from the system configuration. This windows runner <strong>contains an AV/EDR</strong>. And the fact that the file locked occured only once for an executable make me think that it's most probably the cause.</p>
+<p>While doing some research and speaking with some colleagues (hi @vmeurisse), it seems that the issue is a very recurrent one on Windows.
+In the Javascript ecosystem, there is this package, created by the @isaacs, <code>npm</code> inventor: https://www.npmjs.com/package/graceful-fs, used inside <code>npm</code>, allowing its package installations to be more resilient to filesystem errors:</p>
+<blockquote>
+<p>The improvements are meant to normalize behavior across different platforms and environments, and to make filesystem access more resilient to errors.
+One of its core feature is this one:
+On Windows, it retries renaming a file for up to one second if EACCESS or EPERM error occurs, likely because antivirus software has locked the directory.</p>
+</blockquote>
+<p>So I tried to implement the same algorithm on <code>uv</code>, <strong>and it fixed my issue</strong>! I can finally install <code>httpx</code>.</p>
+<p>Then, <a href="https://github.com/astral-sh/uv/issues/9531#issuecomment-2508981316">as I mentionned in this issue</a>, I saw that you already implemented exactly the same algorithm in an asynchronous function for renames 😄
+https://github.com/astral-sh/uv/blob/22fd9f7ff17adfbec6880c6d92c162e3acb6a41c/crates/uv-fs/src/lib.rs#L221</p>
+<h2>Summary of changes</h2>
+<ul>
+<li>I added a similar function for <code>persist</code> (was not easy to have the benediction of the borrow checker 😄)</li>
+<li>I added a <code>sync</code> variant of <code>rename_with_retry</code></li>
+<li>I edited <code>install_script</code> to use the function including retries on Windows</li>
+</ul>
+<p>Let me know if I should change anything 🙂</p>
+<p>Thanks!!</p>
+<h2>Test Plan</h2>
+<p>This pull-request should be totally iso-functional, so I think it should be covered by existing tests in case of regression.
+All tests are still passing on my side.
+Also, of course validated that my windows machines (windows 10 &amp; windows 11) containing AV/EDR software are now able to install <code>httpx.exe</code> script.
+However, if you think any additional test is needed, feel free to tell me!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Handle Windows AV/EDR file locks during script installations" to "[DRAFT] Handle Windows AV/EDR file locks during script installations" by @Coruscant11 on 2024-11-30 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @Coruscant11 on 2024-11-30 15:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[DRAFT] Handle Windows AV/EDR file locks during script installations" to "Handle Windows AV/EDR file locks during script installations" by @Coruscant11 on 2024-11-30 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Coruscant11">@Coruscant11</a> on 2024-11-30 16:32</div>
+            <div class="timeline-body"><p>(Currently developping on a Windows virtual machine, have to admit I lost a lot of productivity 😆That's why I will stick to a draft for now and abuse of the GitHub CI, not enough cpu on my side unfortunately)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Coruscant11">@Coruscant11</a> on 2024-11-30 16:38</div>
+            <div class="timeline-body"><p>Hi @charliermarsh, I wanted to reuse an existing function, but which is already async, instead of writing a duplicate sync one. Is it a good idea? The install wheel crate is synchronous.
+I am currently facing some few tests not passing because of conflicted runtimes. Unfortunately I lack knowledge in async rust...</p>
+<p>The goal is to re-use <code>rename_with_retry</code>.
+Explained here: https://github.com/astral-sh/uv/issues/9531#issuecomment-2508981316
+I can also implement a sync version,</p>
+<p>Am I currently on the good way by trying to run it with a tokio runtime?
+Or do you think we should convert the <code>uv-install-wheel</code> to async before?</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @Coruscant11 on 2024-11-30 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Coruscant11">@Coruscant11</a> on 2024-11-30 19:57</div>
+            <div class="timeline-body"><p>So for now, I made a sync version of <code>rename_with_retry</code>.
+My first goal is to let you validate the functional behaviour solving the issue, I'm open to any comments🙂
+Confirmed it solved the issue under one Windows 10 and one Windows 11 machines both under the coverage of EDR security softwares.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-01 02:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:428 on 2024-12-01 02:29</div>
+            <div class="timeline-body"><p>My only concern is that this is now using rename rather than <code>persist</code>. And on Windows, it looks like persist is a bit different, in <code>tempfile</code>?</p>
+<pre><code class="language-rust">pub fn persist(old_path: &amp;Path, new_path: &amp;Path, overwrite: bool) -&gt; io::Result&lt;()&gt; {
+    unsafe {
+        let old_path_w = to_utf16(old_path);
+        let new_path_w = to_utf16(new_path);
+
+        // Don't succeed if this fails. We don't want to claim to have successfully persisted a file
+        // still marked as temporary because this file won't have the same consistency guarantees.
+        if SetFileAttributesW(old_path_w.as_ptr(), FILE_ATTRIBUTE_NORMAL) == 0 {
+            return Err(io::Error::last_os_error());
+        }
+
+        let mut flags = 0;
+
+        if overwrite {
+            flags |= MOVEFILE_REPLACE_EXISTING;
+        }
+
+        if MoveFileExW(old_path_w.as_ptr(), new_path_w.as_ptr(), flags) == 0 {
+            let e = io::Error::last_os_error();
+            // If this fails, the temporary file is now un-hidden and no longer marked temporary
+            // (slightly less efficient) but it will still work.
+            let _ = SetFileAttributesW(old_path_w.as_ptr(), FILE_ATTRIBUTE_TEMPORARY);
+            Err(e)
+        } else {
+            Ok(())
+        }
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Coruscant11">@Coruscant11</a> reviewed on 2024-12-01 12:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Coruscant11">@Coruscant11</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:428 on 2024-12-01 12:28</div>
+            <div class="timeline-body"><p>You're right! I will try to see if I can still use the <code>persist</code> function.
+Just currently fighting with the borrow-checker, as <code>persist</code> takes <code>self</code> and re-returns it in case of <code>PersistError</code>,</p>
+<pre><code class="language-rust">error[E0507]: cannot move out of `*from`, as `from` is a captured variable in an `FnMut` closure
+   --&gt; crates\uv-fs\src\lib.rs:277:42
+    |
+262 |     from: &amp;NamedTempFile,
+    |     ---- captured outer variable
+...
+277 |         backoff::retry(backoff, || match from.persist(to) {
+    |                                 --       ^^^^ ----------- `*from` moved due to this method call
+    |                                 |        |
+    |                                 |        move occurs because `*from` has type `NamedTempFile`, which does not implement the `Copy` trait
+    |                                 captured by this `FnMut` closure
+    |
+note: `NamedTempFile::&lt;F&gt;::persist` takes ownership of the receiver `self`, which moves `*from`
+   --&gt; C:\Users\Jp\.cargo\registry\src\index.crates.io-6f17d22bba15001f\tempfile-3.14.0\src\file\mod.rs:722:36
+    |
+722 |     pub fn persist&lt;P: AsRef&lt;Path&gt;&gt;(self, new_path: P) -&gt; Result&lt;F, PersistError&lt;F&gt;&gt; {
+</code></pre>
+<p>It's a good rust exercise 😄 I will ping you when I solve it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Coruscant11">@Coruscant11</a> reviewed on 2024-12-01 17:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Coruscant11">@Coruscant11</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:428 on 2024-12-01 17:59</div>
+            <div class="timeline-body"><p>@charliermarsh Updated! Looking forward for your opinion, the signature and the behavior of <code>persist</code> was not easy at the beggining to put inside a <code>backoff::retry</code> closure,</p>
+<pre><code class="language-rust">pub fn persist&lt;P: AsRef&lt;Path&gt;&gt;(self, new_path: P) -&gt; Result&lt;F, PersistError&lt;F&gt;&gt;
+</code></pre>
+<blockquote>
+<p>Persist the temporary file at the target path.</p>
+<p>If a file exists at the target path, persist will atomically replace it. If this method fails, it will return self in the resulting <a href="https://docs.rs/tempfile/latest/tempfile/struct.PersistError.html">PersistError</a>.</p>
+</blockquote>
+<p>I got bullied a lot by the borrow checker, but I finally managed to do it 😄</p>
+<p>So I found a way to get back the reference returned by the error for every retry.</p>
+<p>Looking forward for your opinion on this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-12-01 22:56</div>
+            <div class="timeline-body"><p>This looks great, thank you for persisting :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-12-01 22:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-12-01 22:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-01 22:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Coruscant11">@Coruscant11</a> on 2024-12-01 23:01</div>
+            <div class="timeline-body"><blockquote>
+<p>This looks great, thank you for persisting :)</p>
+</blockquote>
+<p>Thanks for the fast review and for making this such a welcoming project for contributors! 🙌</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:15 UTC
+    </footer>
+</body>
+</html>

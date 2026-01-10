@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch concurrently for non-first-match index strategies - astral-sh/uv #10432</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fetch concurrently for non-first-match index strategies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10432">#10432</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-01-09 14:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-09 14:59</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>On a basic test, this speeds up cold resolution by about 25%:</p>
+<pre><code>❯ hyperfine &quot;uv lock --extra-index-url https://download.pytorch.org/whl/cpu --index-strategy unsafe-best-match --upgrade --no-cache&quot; &quot;../target/release/uv lock --extra-index-url https://download.pytorch.org/whl/cpu --index-strategy unsafe-best-match --upgrade --no-cache&quot; --warmup 10 --runs 30
+Benchmark 1: uv lock --extra-index-url https://download.pytorch.org/whl/cpu --index-strategy unsafe-best-match --upgrade --no-cache
+  Time (mean ± σ):     585.8 ms ±  28.2 ms    [User: 149.7 ms, System: 97.4 ms]
+  Range (min … max):   541.5 ms … 654.8 ms    30 runs
+
+Benchmark 2: ../target/release/uv lock --extra-index-url https://download.pytorch.org/whl/cpu --index-strategy unsafe-best-match --upgrade --no-cache
+  Time (mean ± σ):     468.3 ms ±  52.0 ms    [User: 131.7 ms, System: 76.9 ms]
+  Range (min … max):   380.2 ms … 607.0 ms    30 runs
+
+Summary
+  ../target/release/uv lock --extra-index-url https://download.pytorch.org/whl/cpu --index-strategy unsafe-best-match --upgrade --no-cache ran
+    1.25 ± 0.15 times faster than uv lock --extra-index-url https://download.pytorch.org/whl/cpu --index-strategy unsafe-best-match --upgrade --no-cache
+</code></pre>
+<p>Given:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12.0&quot;
+dependencies = [
+    &quot;black&gt;=24.10.0&quot;,
+    &quot;django&gt;=5.1.4&quot;,
+    &quot;flask&gt;=3.1.0&quot;,
+    &quot;requests&gt;=2.32.3&quot;,
+]
+</code></pre>
+<p>And:</p>
+<pre><code class="language-shell">hyperfine &quot;uv lock --extra-index-url https://download.pytorch.org/whl/cpu --index-strategy unsafe-best-match --upgrade --no-cache&quot; &quot;../target/release/uv lock --extra-index-url https://download.pytorch.org/whl/cpu --index-strategy unsafe-best-match --upgrade --no-cache&quot; --warmup 10 --runs 30
+</code></pre>
+<p>Closes https://github.com/astral-sh/uv/issues/10429.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2025-01-09 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2025-01-09 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2025-01-09 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-01-09 17:39</div>
+            <div class="timeline-body"><p>Nice :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-01-09 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-09 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-09 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-09 19:23</div>
+            <div class="timeline-body"><p>Two review comments:</p>
+<p>Nit: We can remove the duplication and drop the manual pinning in favor of a <code>collect()</code>: https://gist.github.com/konstin/7072939997a8713a1db8a219065947c3</p>
+<p>Actual problem: If I'm reading the call hierarchy correctly, we're foregoing <code>ManagedClient::control</code> here, i.e. there can be (number of indexes) times more requests in parallel than the user requested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-09 19:27</div>
+            <div class="timeline-body"><p>I don't think that's a huge problem, but also not sure how to fix it given the setup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-10 10:13</div>
+            <div class="timeline-body"><p>We can either check eagerly and acquire more tokens or pass around a reference to the semaphore and acquire more tokens in the stream.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:17 UTC
+    </footer>
+</body>
+</html>

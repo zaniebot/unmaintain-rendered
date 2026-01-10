@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support `default-extras` config in the project interface. - astral-sh/uv #12965</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support <code>default-extras</code> config in the project interface.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12965">#12965</a>
+        opened by <a href="https://github.com/blueraft">@blueraft</a>
+        on 2025-04-18 12:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/blueraft">@blueraft</a> on 2025-04-18 12:41</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Depends on https://github.com/astral-sh/uv/pull/12964. Closes #8607. Closes #13174.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code>.</p>
+<p>Note: <a href="https://peps.python.org/pep-0771/">The draft PEP 771</a> uses the term <code>default-optional-dependency-keys</code>, but I've gone with <code>default-extras</code> here, since something like <code>--no-default-optional-dependency-keys</code> felt a bit too cumbersome to type. Let me know if we'd prefer sticking with the PEP’s naming instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @zanieb on 2025-04-21 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2025-04-21 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-04-25 08:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-25 14:16</div>
+            <div class="timeline-body"><p>Apologies for the delay, reviewing now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-25 20:05</div>
+            <div class="timeline-body"><p>I need to go back and read the PEP for what they do and don't specify but I wanna call out this fact right away: the <code>--only</code> semantics you've implemented here are in fact substantially different from the ones for dependency-groups.</p>
+<p>To be clear, I think you're probably <em>right</em> to do so, given what I know of extras, but I want to make sure we're going eyes wide open into that fact.</p>
+<p>With <code>--only-group</code> <em>it also disables the actual package and its normal dependencies</em>. This makes perfect sense for dependency-groups, because they're often &quot;some devtools or whatever&quot; and so &quot;install the devtools but not the actual project&quot; is indeed something you might want.</p>
+<p>But &quot;install only the extras for a package, and not the package&quot; would generally be a nonsense thing to ask for, right? So we indeed don't want that?</p>
+<p>If so then <code>ExtrasSpecificationInner::prod</code> should be removed, as the distinction it's intended to track is meaningless, and it's essentially unused in your implementation. The one place it <em>is</em> used is in <code>ExtrasSpecificationInner::is_empty</code> where I don't think it's really necessary (inclined to say &quot;incorrect&quot; but not 100% confident of that). By contrast the equivalent DependencyGroup API is used in several places, where it makes us throw out a ton of packages.</p>
+<p>At that point it's also a question of whether <code>--only-extra foo</code> is carrying its weight, as it would <em>just</em> be sugar for <code>--no-default-extras --extra foo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-25 20:06</div>
+            <div class="timeline-body"><p>The impl otherwise looks reasonable (more detailed review of the main refactor in the other PR).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-04-25 20:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/tests/it/sync.rs</code>:2148 on 2025-04-25 20:07</div>
+            <div class="timeline-body"><p>rad that you added all these tests, it would be nice to include tests for the other commands you added support to as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2025-04-26 13:44</div>
+            <div class="timeline-body"><blockquote>
+<p>But &quot;install only the extras for a package, and not the package&quot; would generally be a nonsense thing to ask for, right? So we indeed don't want that?</p>
+</blockquote>
+<p>Yes I think so.</p>
+<blockquote>
+<p>At that point it's also a question of whether --only-extra foo is carrying its weight, as it would just be sugar for --no-default-extras --extra foo.</p>
+</blockquote>
+<p>Good point! I think we could skip adding a <code>--only-extra</code> argument here.</p>
+<p>That said, the draft <a href="https://peps.python.org/pep-0771/#overriding-default-extras">PEP 771</a> proposes the pip interface so that specifying an extra would implicitly disable default extras. If the PEP gets accepted, we will have to make some changes. 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2025-04-26 13:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/uv/tests/it/sync.rs</code>:2148 on 2025-04-26 13:44</div>
+            <div class="timeline-body"><p>yes I'll add them!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2025-04-26 13:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/uv/tests/it/sync.rs</code>:2148 on 2025-04-26 13:45</div>
+            <div class="timeline-body"><p>should I add them for the default groups for those commands too? They weren't there for the other commands last time I checked</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-04-28 14:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/tests/it/sync.rs</code>:2148 on 2025-04-28 14:47</div>
+            <div class="timeline-body"><p>I wouldn't complain if you did but no biggie if you don't.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-28 17:18</div>
+            <div class="timeline-body"><p>Ok reading the PEP more closely, notable details:</p>
+<blockquote>
+<p>If extras are explicitly given in a dependency specification, the default extras are ignored. Otherwise, the default extras are installed.</p>
+</blockquote>
+<blockquote>
+<p>If the same package is specified multiple times in an installation command or dependency tree, the default extras must be installed if any of the instances of the package are specified without extras.</p>
+</blockquote>
+<blockquote>
+<p>Note that package[] would continue to be equivalent to package and would not be provided as a way to install without default extras (see the <a href="https://peps.python.org/pep-0771/#rejected-ideas">Rejected Ideas</a> section for the rationale).</p>
+</blockquote>
+<blockquote>
+<p>We also note that some tools such as <a href="https://github.com/wheel-next/pip/tree/pep_771">pip</a> currently ignore unrecognized extras, and emit a warning to the user to indicate that the extra has not been recognized, e.g:</p>
+<pre><code>$ pip install package[non-existent-extra]
+WARNING: package 3.0.0 does not provide the extra 'non-existent-extra'</code></pre>
+<p>For tools that behave like this (rather than raising an error), if an extra is recognized as invalid in a dependency specification, it should be ignored and treated as if the user has not passed an explicit extra. If none of the provided extras are valid, default extras should be installed.</p>
+</blockquote>
+<blockquote>
+<p>In some cases, package maintainers may want to facilitate installing packages without any default extras. In this case, as will be shown in more detail in <a href="https://peps.python.org/pep-0771/#examples">Examples</a>, the best approach is to define an extra which could be called e.g. minimal or nodefault (the naming would be up to the package maintainer) which would be an empty set of dependencies. If this extra is specified, no default extras will be included, so that e.g. package[minimal] would include only required dependencies and no extras. Note that this requires no additional specification and is a natural consequence of the rule described in <a href="https://peps.python.org/pep-0771/#overriding-default-extras">Overriding default extras</a>.</p>
+</blockquote>
+<blockquote>
+<p>The most significant backward-compatibility aspect is related to assumptions packaging tools make about extras – specifically, this PEP changes the assumption that extras are no longer exclusively additive in terms of adding dependencies to the dependency tree, and specifying some extras can result in fewer dependencies being installed (they go on to detail a case where <code>pip freeze</code> simplifies <code>package[minimal]</code> to <code>package</code>, which then results in defaults still applying when you <code>pip install -r requirements.txt</code>).</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-28 17:19</div>
+            <div class="timeline-body"><blockquote>
+<p>But &quot;install only the extras for a package, and not the package&quot; would generally be a nonsense thing to ask for, right? So we indeed don't want that?</p>
+</blockquote>
+<p>Just confirming that, yes, extras are purely additive whereas groups are designed to be sensical &quot;without the package&quot;. So only installing a given extra (but not the base package) is probably not something we should support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-28 17:20</div>
+            <div class="timeline-body"><p>The pep also links a draft pip implementation https://github.com/pypa/pip/compare/main...wheelnext:pip:pep_771</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-28 18:12</div>
+            <div class="timeline-body"><p>It's interesting because a lot of the PEP's semantics are for when talking about the package as a dependency, but the scope of this PR, by nature of it being a uv extension, means it has no(?) application to the package as a dependency.</p>
+<p>So it's really more like dependency-groups where it's purely a &quot;developer of this project&quot; experience improvement. Very interesting, I'm not sure if the CLI flags want to reproduce the behaviour of the PEP.</p>
+<p>Although really all the difference is that <code>--extra foo</code> becomes <code>--only-extra foo</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2025-04-28 18:24</div>
+            <div class="timeline-body"><blockquote>
+<p>So it's really more like dependency-groups where it's purely a &quot;developer of this project&quot; experience improvement. Very interesting, I'm not sure if the CLI flags want to reproduce the behaviour of the PEP.</p>
+</blockquote>
+<p>Yes, I think since many of these changes involve package metadata, the resolver will need to handle them. But if the PEP is accepted, I expect it will also influence local development workflows. For example, if a package defines <code>default-optional-dependency-keys</code>, we’d likely want to install those by default. However, would we want to maintain two separate fields for it then?</p>
+<blockquote>
+<p>Although really all the difference is that --extra foo becomes --only-extra foo?</p>
+</blockquote>
+<p>As far as I can tell, yes that seems to be the key difference for us. We could choose to handle this differently in the project interface though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-28 18:29</div>
+            <div class="timeline-body"><blockquote>
+<p>However, would we want to maintain two separate fields for it then?</p>
+</blockquote>
+<p>We would do the same thing we did with our old non-standard support for dependency-groups, where we take both sets of fields and merge them intelligently, with the understanding that everyone will want to move to the standard system when it's available (the maintenance burden is minimal).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-28 18:43</div>
+            <div class="timeline-body"><p>Flagging &quot;do we want <code>--extra foo</code> to have the semantics of <code>--only-extra foo</code>&quot; as a design blocker on landing this.</p>
+<p>Context: the (draft) PEP for default-extras specifies that <code>mypackage</code> installs the default extras, while <code>mypackage[foo]</code> actually disables the defaults and installs only <code>foo</code> (the user can do something like <code>mypackage[recommended, foo]</code> to recover the defaults, or the developer of the package can make <code>foo</code> inherit <code>recommended</code> if they don't like this behaviour).</p>
+<p>If you want <code>uv sync --extra foo</code> to be &quot;as if&quot; you installed <code>mypackage[foo]</code> it would follow that <code>--extra foo</code> is in fact <code>--only-extra foo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sglbl">@sglbl</a> on 2025-05-19 07:22</div>
+            <div class="timeline-body"><p>I think also related: <a href="https://github.com/astral-sh/uv/issues/10360">10360</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-11 02:07</div>
+            <div class="timeline-body"><p>I think I'll read the PEP and try to follow-up here to try to unblock this work.</p>
+<blockquote>
+<p>If you want uv sync --extra foo to be &quot;as if&quot; you installed mypackage[foo] it would follow that --extra foo is in fact --only-extra foo.</p>
+</blockquote>
+<p>I'm not sure we need <code>--extra foo</code> to match the semantics of <code>package[foo]</code>. Naively, I think I'm fine with <code>--extra foo</code> being additive on top of extras and using <code>--only-extra foo</code> to disable default extras. I think it'd be confusing otherwise. There's no way to express <code>--only-extra</code> in the <code>[&lt;name&gt;]</code> syntax, which is why they need that default behavior.</p>
+<p>Anyway, I think I should read the PEP before making more claims :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-06-11 02:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @zanieb on 2025-06-11 02:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-11 11:45</div>
+            <div class="timeline-body"><p>The PEP is renaming the key: https://github.com/python/peps/pull/4459</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blueraft">@blueraft</a> on 2025-06-11 14:02</div>
+            <div class="timeline-body"><blockquote>
+<p>There's no way to express --only-extra in the [<name>] syntax, which is why they need that default behavior.</p>
+</blockquote>
+<p>There were some discussions on introducing a new syntax for this, which was ultimately rejected https://peps.python.org/pep-0771/#syntax-for-deselecting-extras. But I agree with <code>--extra</code> being additive, since we are not bound by that limitation.</p>
+<p>I've rebased and fixed the conflicts!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @konstin on 2025-06-18 15:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @konstin removed by @konstin on 2025-06-18 16:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:23 UTC
+    </footer>
+</body>
+</html>

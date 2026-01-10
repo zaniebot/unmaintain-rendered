@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOC201: false positive when mixing yield and return statements - astral-sh/ruff #21336</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>DOC201: false positive when mixing yield and return statements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21336">#21336</a>
+        opened by <a href="https://github.com/loenard97">@loenard97</a>
+        on 2025-11-08 10:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/loenard97">@loenard97</a> on 2025-11-08 10:32</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h1>Current unexpected behaviour</h1>
+<p>Using <code>uvx ruff check --preview --select DOC201,DOC202 --ignore D203,D212 --isolated</code> on the following code</p>
+<pre><code class="language-python">def my_generator(val: object) -&gt; object:
+    &quot;&quot;&quot;
+    Minimal generator.
+
+    Yields:
+        val
+
+    &quot;&quot;&quot;
+    if val is not None:
+        yield val
+
+    return
+
+</code></pre>
+<p>raises a <code>DOC201</code> suggesting to add a <code>Returns</code> section to the docstirng. However, trying to fix it by adding a <code>Returns</code> section</p>
+<pre><code class="language-python">def my_generator(val: object) -&gt; object:
+    &quot;&quot;&quot;
+    Minimal generator.
+
+    Yields:
+        val
+
+    Returns:
+        None
+
+    &quot;&quot;&quot;
+    if val is not None:
+        yield val
+
+    return
+
+</code></pre>
+<p>now raises a <code>DOC202</code> suggesting to remove the <code>Returns</code> section again.</p>
+<p><a href="https://play.ruff.rs/b7c0be7a-a188-4ef8-92f3-cc602dade0ff">Playground link</a></p>
+<h1>Expected behaviour</h1>
+<p>Seems to me like the first code snippet is not supposed to raise a <code>DOC201</code>, because the return does not return anything.  Quote from <a href="https://docs.astral.sh/ruff/rules/docstring-missing-returns/">DOC201 rules</a>:</p>
+<blockquote>
+<p>This rule is not enforced for abstract methods or functions that only return None.</p>
+</blockquote>
+<p>The problem seems be the <code>yield val</code> statement. If I change that to <code>return val</code>, it works as expected and the second example does not raise any linter errors. The obvious fix is ofc to remove the redundant <code>return</code> from the last line, which then works as expected, but the behaviour of ruff still seems to be unexpected to me.</p>
+<h3>Version</h3>
+<p>ruff 0.14.4 (c7ff9826d 2025-11-06)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-10 09:25</div>
+            <div class="timeline-body"><p>There's certainly a mismatch between <code>DOC201</code> and <code>DOC202</code></p>
+<p><code>DOC201</code> takes the return type into account and only allows an implicit <code>return</code> (without a value) if the function has no annotated return type.</p>
+<p>https://github.com/astral-sh/ruff/blob/a630a46849bd25c461aeda2e1efa73c0e1b37a34/crates/ruff_linter/src/rules/pydoclint/rules/check_docstring.rs#L1223-L1230</p>
+<p><code>DOC202</code> always allows implicit returns</p>
+<p>https://github.com/astral-sh/ruff/blob/a630a46849bd25c461aeda2e1efa73c0e1b37a34/crates/ruff_linter/src/rules/pydoclint/rules/check_docstring.rs#L1312-L1316</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-11-10 09:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/loenard97">@loenard97</a> on 2025-11-10 14:40</div>
+            <div class="timeline-body"><p>After looking at it again, I think there are two separate things here:
+Concerning <code>DOC202</code> (<a href="https://play.ruff.rs/b5f831c3-46cc-4ccb-88af-686f0c68ca5b">Playground link</a>):</p>
+<pre><code class="language-python">def func(val):
+    &quot;&quot;&quot;
+    Empty function.
+
+    Returns:
+        nothing
+
+    &quot;&quot;&quot;
+    return None
+
+</code></pre>
+<p>This code snippet <em>does not</em> trigger a <code>DOC202</code> error, but replacing the <code>return None</code> with a <code>return</code> <em>does</em> trigger a <code>DOC202</code>. IMO these two things should behave the same way, because the executed Python behaves the same way. Note, that <code>DOC201</code> does treat <code>return</code> and <code>return None</code> exactly the same way.</p>
+<p>Concerning <code>DOC202</code>:
+as @MichaReiser noted, <code>DOC202</code> takes the return annotation into account:</p>
+<pre><code class="language-python">def func(val) -&gt; int:
+    &quot;&quot;&quot;
+    Empty function.
+
+    &quot;&quot;&quot;
+    return
+
+</code></pre>
+<p>This code snippet raises a <code>DOC202</code>. Note, that it is explicitly the <code>int</code> annotation, that triggers the <code>DOC202</code>, but not the <code>return</code>. Removing the annotation does not trigger a <code>DOC202</code> as expected. However, leaving the <code>int</code> annotation in, but changing the <code>return</code> to a <code>pass</code>, does suddenly not trigger a <code>DOC202</code> anymore.</p>
+<p>IMO a clarification would be good whether the <code>DOC</code> rules should take annotations into account or not and then make their behaviour consistent. (My personal opinion would be, that these docstring rules should not take annotations into account and only parse the actual code. Only after these docstring rules I would validate rules that concern annotations and check whether the annotations are correct with regards to the code. I.e., the code above should trigger an error that the <code>int</code> annotation is wrong, but no error about the docstrings. I feel like that's not for me to decide though.)</p>
+<p>After this is clarified, would this be a good first contribution that I could try to solve? I know Python and Rust, but haven't done anything in the ruff code base yet. I would be interested in figureing out a PR for this.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:42 UTC
+    </footer>
+</body>
+</html>

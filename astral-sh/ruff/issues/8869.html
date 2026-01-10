@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[I001] false error triggered when specifying `--config` file - astral-sh/ruff #8869</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[I001] false error triggered when specifying <code>--config</code> file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8869">#8869</a>
+        opened by <a href="https://github.com/ErickKramer">@ErickKramer</a>
+        on 2023-11-28 15:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ErickKramer">@ErickKramer</a> on 2023-11-28 15:52</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<h2>Description</h2>
+<p>Hi, I encountered a very interesting bug where ruff is triggering a false I001 error.</p>
+<p>I have the following project layout</p>
+<pre><code class="language-console">dummy_python_package
+├── CMakeLists.txt
+├── configs
+│   └── hello_world_params.yml
+├── dummy_python_package
+│   ├── __init__.py
+│   ├── my_lib.py
+├── launch
+│   └── hello_world.launch.py
+├── package.xml
+├── pyproject.toml
+├── scripts
+│   └─ hello_world_node.py
+└── test
+    └── test_hello.py
+</code></pre>
+<p>When running the following command <code>ruff check --config dummy_python_package/pyproject.toml --show-source dummy_python_package</code></p>
+<p>I get this output</p>
+<pre><code class="language-console">❯ ruff check --config dummy_python_package/pyproject.toml --show-source dummy_python_package
+dummy_python_package/launch/hello_world.launch.py:7:1: I001 [*] Import block is un-sorted or un-formatted
+   |
+ 6 |   &quot;&quot;&quot;Example of ROS 2 launch file that provides input arguments.&quot;&quot;&quot;
+ 7 | / from pathlib import Path
+ 8 | | 
+ 9 | | from ament_index_python.packages import get_package_share_directory
+10 | | from launch_ros.actions import Node
+11 | | 
+12 | | from launch import LaunchDescription
+13 | | from launch.actions import DeclareLaunchArgument
+14 | | from launch.substitutions import LaunchConfiguration
+15 | | 
+16 | | 
+17 | | def generate_launch_description() -&gt; LaunchDescription:
+   | |_^ I001
+18 |       &quot;&quot;&quot;Generate launch description of a node with parameters and logging level arguments.&quot;&quot;&quot;
+19 |       # Launch Arguments
+   |
+   = help: Organize imports
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p>Funnily enough, if I go one level down into the <code>dummy_python_package</code>, I don't get this error</p>
+<pre><code class="language-console">&gt; ruff check --config pyproject.toml --show-source .
+&gt; /tmp/tests/dummy_python_package
+</code></pre>
+<p>nor does it happen if I run the check without specifying the <code>--config</code> from outside the <code>dummy_python_package</code></p>
+<pre><code class="language-console">&gt; ruff check --show-source dummy_python_package
+&gt; /tmp/tests 
+</code></pre>
+<p>The verbose output shows that the same <code>pyproject.toml</code> file is selected when the <code>--config</code> is not passed</p>
+<pre><code class="language-console">[2023-11-28][16:50:15][ruff_cli::resolve][DEBUG] Using Ruff default settings
+[2023-11-28][16:50:15][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/tmp/tests/dummy_python_package/test/test_hello.py&quot;
+[2023-11-28][16:50:15][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/tmp/tests/dummy_python_package/dummy_python_package/my_lib.py&quot;
+[2023-11-28][16:50:15][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/tmp/tests/dummy_python_package/dummy_python_package/__init__.py&quot;
+[2023-11-28][16:50:15][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/tmp/tests/dummy_python_package/pyproject.toml&quot;
+[2023-11-28][16:50:15][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/tmp/tests/dummy_python_package/launch/hello_world.launch.py&quot;
+[2023-11-28][16:50:15][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/tmp/tests/dummy_python_package/scripts/hello_world_node.py&quot;
+[2023-11-28][16:50:15][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;/tmp/tests/dummy_python_package/.ruff_cache&quot;
+[2023-11-28][16:50:15][ruff_cli::commands::check][DEBUG] Identified files to lint in: 2.050071ms
+[2023-11-28][16:50:15][ruff_cli::diagnostics][DEBUG] Checking: /tmp/tests/dummy_python_package/pyproject.toml
+[2023-11-28][16:50:15][ruff_cli::commands::check][DEBUG] Checked 6 files in: 75.005µs
+</code></pre>
+<p>Am I using ruff check wrong somehow?</p>
+<h2>Version</h2>
+<p>ruff <code>0.1.6</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-28 21:40</div>
+            <div class="timeline-body"><p>I think you're running into a quirk of <code>--config</code>. When Ruff loads a configuration file, it needs to figure out the &quot;project root&quot; relative to which any paths should be resolved. For example, when it tries to figure out whether an import like <code>launch</code> is a first-party import, what directory should it look in? Without <code>--config</code>, Ruff will use the directory that contains the <code>pyproject.toml</code> as the project root. So, above, it would use <code>dummy_python_package</code> as the project root. When you encounter <code>import launch</code>, it would see <code>dummy_python_package/launch</code>, and mark it as first-party.</p>
+<p>However, if you provide <code>--config</code>, then we have to use the <em>current working directory</em> as the project root. We try to avoid ever relying on the current working directory, since it tends to lead to confusing behavior, but this is one exception. Typically, when folks use <code>--config</code>, the config file lives outside the project hierarchy, or is even shared between a few different projects, so using the directory that contains the <code>--config</code> file would make it non-reusable. Imagine, e.g., that your <code>--config</code> file is in your home directory -- then we'd be unable to identify first-party imports in any project.</p>
+<p>Let me know if this is unclear at all!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-28 21:40</div>
+            <div class="timeline-body"><p>I'm going to close since this is &quot;working as intended&quot; but I'm def happy to keep discussing here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-28 21:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ErickKramer">@ErickKramer</a> on 2023-11-29 08:14</div>
+            <div class="timeline-body"><p>Thank you for your detailed and quick explanation!</p>
+<p>I took another look at the report from ruff and, based on your explanation, I understand now what it is causing the behavior.</p>
+<p>It seems that I am running into a naming clash between a Python library <code>launch</code> and a project directory with the same name. (Naming conventions in ROS 2 are not their strength)</p>
+<pre><code class="language-console">❯ pip3 list | rg launch
+launch                               1.0.4
+</code></pre>
+<p>Just for the sake of testing, I renamed the <code>launch</code> directory and now managed to get a consistent report from ruff check regardless of where my <code>pyproject.toml</code> is located</p>
+<p>This is my current file tree, with the <code>launch</code> directory renamed to <code>launch_files</code></p>
+<pre><code class="language-console">.
+├── CMakeLists.txt
+├── configs
+│   └── hello_world_params.yml
+├── dummy_python_package2
+│   ├── __init__.py
+│   └── my_lib.py
+├── package.xml
+├── pyproject.toml
+├── scripts
+│   └─ hello_world_node.py
+├── launch_files
+│   └── hello_world.launch.py
+└── test
+    └── test_hello.py
+</code></pre>
+<p>With this, I don't get a <code>I001</code> error message with any of these variants</p>
+<pre><code class="language-console">❯ ruff check --show-source .
+❯ ruff check --config pyproject.toml .
+❯ ..
+❯ ruff check --config dummy_python_package2/pyproject.toml dummy_python_package2
+❯ ruff check --config ~/pyproject.toml dummy_python_package2
+</code></pre>
+<p>Is there a reason for prioritizing a local directory over a Python library while resolving the includes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-11-30 22:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there a reason for prioritizing a local directory over a Python library while resolving the includes?</p>
+</blockquote>
+<p>I think it's because the runtime has the same behavior? That is, if you have a <code>foo.py</code> file and a <code>pathlib.py</code> file in the same directory, then if you run <code>python3 foo.py</code> which imports <code>pathlib</code>, it'll use the local <code>pathlib.py</code> instead of the stdlib <code>pathlib</code> module.</p>
+<p>I might be wrong here, @charliermarsh might have more context on this.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:06 UTC
+    </footer>
+</body>
+</html>

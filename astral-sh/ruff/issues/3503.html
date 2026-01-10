@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLC1901 false positives/incorrect response - astral-sh/ruff #3503</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLC1901 false positives/incorrect response</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3503">#3503</a>
+        opened by <a href="https://github.com/onerandomusername">@onerandomusername</a>
+        on 2023-03-14 05:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/onerandomusername">@onerandomusername</a> on 2023-03-14 05:12</div>
+            <div class="timeline-body"><p>code:</p>
+<pre><code class="language-py">def bug(query: str | None):
+    if query == &quot;&quot;:
+        ...
+    else:
+        ...
+</code></pre>
+<p>this should not be flagged as <code>&quot;&quot;</code> is different from None.</p>
+<p>Additionally, ruff provides the following error:</p>
+<pre><code class="language-md"> PLC1901 `query == &quot;&quot;` can be simplified to `query` as an empty string is falsey
+</code></pre>
+<p>This is inaccurate, it should be simplified to <code>not query</code> (if it wasn't possible for query to be None).</p>
+<p>possible related issue but not the same: GH-3494</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "PLC1901 false positives/incorrect response." to "PLC1901 false positives/incorrect response" by @onerandomusername on 2023-03-14 05:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/calumy">@calumy</a> on 2023-03-14 07:22</div>
+            <div class="timeline-body"><p>I think this is fixed by #3497.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2023-03-14 08:01</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this is fixed by #3497.</p>
+</blockquote>
+<p>Only the second part. Linked PR does not touch the case where there is information about the variable type and the type is Union.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-03-14 13:34</div>
+            <div class="timeline-body"><p>I'm seeing the not:</p>
+<pre><code>src/scikit_build_core/settings/sources.py:159:55: PLC1901 `self.env[name] != &quot;&quot;` can be simplified to `not self.env[name]` as an empty string is falsey
+</code></pre>
+<p>That's the backward &quot;not&quot;, but also, the original was:</p>
+<pre><code class="language-python">def ...(...) -&gt; bool:
+    return name in self.env and self.env[name] != &quot;&quot;
+</code></pre>
+<p>It's not valid to simply that without the incorrect <code>not</code>, as <code>self.env[name]</code> is probably not a bool, and <code>and</code> returns the last truthy value - without the <code>not</code> making it a bool, it's not a bool. IIRC, pylint might suggest wrapping it in <code>bool</code>. (A better way to simplify it would probably be to use get &amp; truthiness, actually)</p>
+<p>I don't think you need variable type info; pylint doesn't do full type checking, you just can only simplify in cases were it's known to be a bool, via <code>not</code> or wrapping in <code>bool</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-14 17:44</div>
+            <div class="timeline-body"><p>FWIW, Pylint treats these identically. Every example shared here is flagged by Pylint:</p>
+<pre><code class="language-py">def bug(query: str | None):
+    if query == &quot;&quot;:
+        ...
+    else:
+        ...
+
+def f() -&gt; bool:
+    return name in self.env and self.env[name] != &quot;&quot;
+</code></pre>
+<p>Yields:</p>
+<pre><code class="language-console">foo.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+foo.py:1:0: C0104: Disallowed name &quot;foo&quot; (disallowed-name)
+foo.py:1:0: C0116: Missing function or method docstring (missing-function-docstring)
+foo.py:2:7: C1901: Avoid comparisons to empty string (compare-to-empty-string)
+foo.py:7:0: C0116: Missing function or method docstring (missing-function-docstring)
+foo.py:7:0: C0103: Function name &quot;f&quot; doesn't conform to snake_case naming style (invalid-name)
+foo.py:8:11: E0602: Undefined variable 'name' (undefined-variable)
+foo.py:8:19: E0602: Undefined variable 'self' (undefined-variable)
+foo.py:8:32: C1901: Avoid comparisons to empty string (compare-to-empty-string)
+foo.py:8:32: E0602: Undefined variable 'self' (undefined-variable)
+foo.py:8:41: E0602: Undefined variable 'name' (undefined-variable)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-03-14 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cclauss">@cclauss</a> on 2023-03-15 06:46</div>
+            <div class="timeline-body"><p>In <code>tests/*</code> we will ignore rule <code>PLC1901</code> because we want to be sure results are empty strings.
+<code>[]</code>, <code>{}</code>, <code>0</code>, <code>False</code>, and <code>None</code> are all falsey, but are not empty strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-03-15 14:42</div>
+            <div class="timeline-body"><p>Yes, but <em>most</em> of the time, you either have something that's always a string, or you have an interface that can produce some of those other values, and you should <em>also</em> check to make sure it's a string. For example, <code>x != &quot;&quot;</code> will also be True if <code>x</code> is some other falsey value, which might then break the next line in your tests where you expect it to be a non-empty string. You could also overload a class to compare equal to an empty string. (I'd say this is not totally impossible to find, ROOT overloads classes to compare equal to None...)</p>
+<p>There are certain types of tests where this can't be simplified (like testing custom <code>__eq__</code>), but I'd carefully think about it before doing an ignore on <code>tests/**</code>. But ignoring a rule is always fine, you don't have to accept any rule, and can disable them on patterns!</p>
+<p>Above, I was only worried about the case where the value is not in a place where the bool is directly evaluated and can leak the value (and/or is itself not a boolean context unless inside <code>if</code> or <code>bool()</code>). If Pylint does this (I'm running pylint on my codebase and don't have this rule disabled, and haven't seen an error here), then that's fine. I'd expect the pylint checks to behave like pylint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-03-15 14:44</div>
+            <div class="timeline-body"><p>Ahh, it's working now (0.256!). Pylint and Ruff are both happy. I think the <code>not</code> fix also fixed the FP.</p>
+<p>Edit, wait a minute, forgot I rewrote it...</p>
+<p>Nope, restoring the original, I still get:</p>
+<pre><code>src/scikit_build_core/settings/sources.py:160:55: PLC1901 `self.env[name] != &quot;&quot;` can be simplified to `self.env[name]` as an empty string is falsey
+...
+nox &gt; pylint scikit_build_core
+
+--------------------------------------------------------------------
+Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)
+
+nox &gt; Session pylint was successful.
+</code></pre>
+<p>The message is correct, though, so that's great. I'm not sure how to get pylint to flag this error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-03-15 14:55</div>
+            <div class="timeline-body"><p>Ahh, empty string comparisons is an optional checker in pylint. Okay, I'm happy, I'd want Ruff'd Pylint checker to behave like pylint. Though if it was a hair smarter and could tell boolean context (assert, if, bool()) from places that could see the result, that'd be an improvement, but I think that could be proposed to pylint first. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cclauss">@cclauss</a> on 2023-03-15 14:59</div>
+            <div class="timeline-body"><p>If I go to https://play.ruff.rs and in <code>Settings</code> enable <code>PL</code> and then in <code>Source</code> put:</p>
+<pre><code>s == &quot;&quot;  # Raises PLC1901
+s != &quot;&quot;  # Raises PLC1901
+</code></pre>
+<p>Is there a syntax you would recommend or just <code># noqa: PLC1901</code> on all lines where we really want to test for empty str?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-03-15 15:20</div>
+            <div class="timeline-body"><p>You can use <code>&quot;tests/&lt;filename&gt;&quot; = [&quot;PLC1901&quot;]</code> or put <code># ruff: noqa: PLC1901 </code> at the top for a file that has multiple of these that you'd like to silence. I have checks for a series of attributes, and it's much more symmetric to write <code>== &quot;&quot;</code> for the ones that are empty strings, rather that to make it look like a bool, so that test file is a good candidate for this sort of disable. And for any file that has just one or two instances, after verifying they are correct, you can just pass <code>--add-noqa</code> to Ruff to get it to add the ignores for you per line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-15 23:43</div>
+            <div class="timeline-body"><p>Ah yeah, sorry, I should've mentioned that this is behind a Pylint extension.</p>
+<p>I'm honestly a little tempted to remove this rule given the number of false positives 🙈 But I try to defer to upstream plugins, and so look to Pylint as a guide, and... it has the same behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-22 03:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:38 UTC
+    </footer>
+</body>
+</html>

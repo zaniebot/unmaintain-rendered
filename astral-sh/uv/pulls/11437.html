@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix: make -p flag in  an alias for --python - astral-sh/uv #11437</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix: make -p flag in  an alias for --python</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11437">#11437</a>
+        opened by <a href="https://github.com/Aditya-PS-05">@Aditya-PS-05</a>
+        on 2025-02-12 06:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Aditya-PS-05">@Aditya-PS-05</a> on 2025-02-12 06:44</div>
+            <div class="timeline-body"><p>closes #11285</p>
+<h2>Changes</h2>
+<ul>
+<li>Modified the argument parsing in <code>PipCompileArgs</code> to make <code>-p</code> alias to <code>--python</code></li>
+<li>Removed short form from <code>--python-version</code> option</li>
+<li>Added explicit long and short form specifications to avoid ambiguity</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/j178">@j178</a> reviewed on 2025-02-12 07:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/j178">@j178</a> on <code>crates/uv-cli/src/lib.rs</code>:1346 on 2025-02-12 07:12</div>
+            <div class="timeline-body"><p>Why <code>long</code> and <code>env = EnvVars::UV_PYTHON</code> are removed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Aditya-PS-05">@Aditya-PS-05</a> reviewed on 2025-02-12 07:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Aditya-PS-05">@Aditya-PS-05</a> on <code>crates/uv-cli/src/lib.rs</code>:1346 on 2025-02-12 07:20</div>
+            <div class="timeline-body"><p>a typo, I wanted to change in <code>PipCompileArgs</code> but accidently also changed in <code>PipSyncArgs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @j178 by @Aditya-PS-05 on 2025-02-12 09:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-12 14:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:1092 on 2025-02-12 14:52</div>
+            <div class="timeline-body"><p>I don't think we need the verbose <code>long</code> and <code>short</code> options — we don't use that anywhere and coherence with the existing style is important.</p>
+<p>This also seems to add support for the <code>UV_PYTHON</code> variable. It's fine to leave here, but please be careful with changes like that / note them in the summary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-12 14:53</div>
+            <div class="timeline-body"><p>Unfortunately this is a breaking change and we'll need to do some tricks to make this roughly backwards compatible. I can own that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.6.0" by @zanieb on 2025-02-12 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @zanieb on 2025-02-12 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2025-02-12 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-12 14:57</div>
+            <div class="timeline-body"><p>The failure mode can be seen in CI</p>
+<pre><code>    9       │-warning: The requested Python version 3.8 is not available; 3.12.[X] will be used to build dependencies instead.
+   10       │-Resolved 1 package in [TIME]
+          5 │+error: No interpreter found for Python 3.8 in virtual environments, managed installations, or search path
+</code></pre>
+<p>We could decide this is okay and just hint to use <code>--python-version</code> instead there? I worry we'll break a fair number of workflows though. Thoughts @charliermarsh ?</p>
+<p>The alternative is <code>--python</code> falls back to the semantics of <code>--python-version</code> if it can't find the version — but then there's not a great way to say &quot;Fail if this Python version cannot be found&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Aditya-PS-05">@Aditya-PS-05</a> reviewed on 2025-02-13 06:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Aditya-PS-05">@Aditya-PS-05</a> on <code>crates/uv-cli/src/lib.rs</code>:1092 on 2025-02-13 06:22</div>
+            <div class="timeline-body"><p>Ok</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-13 18:52</div>
+            <div class="timeline-body"><p>I tried a different approach in #11486</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-02-13 18:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

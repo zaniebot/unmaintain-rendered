@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule TRY302 raised while the re-raise changes the error - astral-sh/ruff #4548</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule TRY302 raised while the re-raise changes the error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4548">#4548</a>
+        opened by <a href="https://github.com/153957">@153957</a>
+        on 2023-05-20 17:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/153957">@153957</a> on 2023-05-20 17:23</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>With code like the example below I got this unexpected error:</p>
+<blockquote>
+<p>TRY302 Remove exception handler; error is immediately re-raised</p>
+</blockquote>
+<p>Although the error is immediately re-raised, it is modified, the causes are removed.</p>
+<p>Code to reproduce:</p>
+<pre><code class="language-python">try:
+    self.assertEqual(cells, interlinked)
+except AssertionError as error:
+    # Catch and raise again without causes
+    raise error from None
+</code></pre>
+<p>Enabled ALL settings.
+Version: ruff 0.0.269</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-05-20 17:33</div>
+            <div class="timeline-body"><p>Good catch!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-05-20 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-05-21 09:52</div>
+            <div class="timeline-body"><p>Would you like to work on it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/153957">@153957</a> on 2023-05-21 11:21</div>
+            <div class="timeline-body"><p>I'd like to, but have no experience writing Rust, so probably can't without some pointers.</p>
+<p>I assume fixing this requires changes to the logic here: https://github.com/charliermarsh/ruff/blob/fc63c6f2e260760963c5fdea2d9d4e0cf38ec58a/crates/ruff/src/rules/tryceratops/rules/useless_try_except.rs#L52-L55
+Somehow checking it there is a <code>from</code> after the raise statement, i.e. following the expression for which the name is checked, if that is the case just <code>return None;</code>.</p>
+<p>And add a new test case(s) here: https://github.com/charliermarsh/ruff/blob/fc63c6f2e260760963c5fdea2d9d4e0cf38ec58a/crates/ruff/resources/test/fixtures/tryceratops/TRY302.py#L4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-05-21 11:40</div>
+            <div class="timeline-body"><p>You can look up <code>cause</code> in <code>ast::StmtRaise</code>.
+It should be only changing the pattern matching.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/153957">@153957</a> on 2023-05-21 13:07</div>
+            <div class="timeline-body"><p>Thank you for the hint, PR is up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-21 15:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:09 UTC
+    </footer>
+</body>
+</html>

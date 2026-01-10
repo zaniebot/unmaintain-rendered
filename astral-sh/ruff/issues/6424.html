@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Line length is ignored. - astral-sh/ruff #6424</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Line length is ignored.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6424">#6424</a>
+        opened by <a href="https://github.com/Nuno-Mota">@Nuno-Mota</a>
+        on 2023-08-08 10:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Nuno-Mota">@Nuno-Mota</a> on 2023-08-08 10:50</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Hi.</p>
+<p>I'm not sure if this is intended behaviour, but it seems that the line length of in-line comments that do not have a space after <code>#</code> is ignored.
+This was tested for <code>ruff 0.0.282</code>.</p>
+<p>For example:</p>
+<p>pyproject.toml</p>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 4
+show-source = true
+</code></pre>
+<p>Test file</p>
+<pre><code class="language-python">#aaa
+#aaaa
+# aa
+# aaa
+</code></pre>
+<p>ruff's output</p>
+<pre><code class="language-zsh">ruff check test.py 
+test.py:4:5: E501 Line too long (5 &gt; 4 characters)
+  |
+2 | #aaaa
+3 | # aa
+4 | # aaa
+  |     ^ E501
+  |
+
+Found 1 error.
+✗ - status code 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nuno-Mota">@Nuno-Mota</a> on 2023-08-08 12:31</div>
+            <div class="timeline-body"><p>While looking into another issue, I realised that the issue might actually simply be related to the lack of a space in the line.
+For example, modifying the above test file to this one:</p>
+<pre><code class="language-python">#aaa
+#aaaa
+# aa
+# aaa
+print('no-spaces')
+</code></pre>
+<p>Gives the same output as before (barring the new line):</p>
+<p>ruff's output</p>
+<pre><code class="language-zsh">ruff check test.py 
+test.py:4:5: E501 Line too long (5 &gt; 4 characters)
+  |
+2 | #aaaa
+3 | # aa
+4 | # aaa
+  |     ^ E501
+5 | print('no-spaces')
+  |
+
+Found 1 error.
+✗ - status code 1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-08 12:34</div>
+            <div class="timeline-body"><p>Yeah that’s intentional behavior - we don’t flag overlong lines that consist of a single word with no breakable whitespace. This is generally good since it avoids false positives for URLs and other words that can’t be split across multiple lines without hurting readability.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nuno-Mota">@Nuno-Mota</a> on 2023-08-08 13:50</div>
+            <div class="timeline-body"><p>Ok, that's good to know.
+Can this be added to the documentation somewhere? Potentially in the <code>line-length</code> setting?</p>
+<p>In any case, I think the rule makes sense most of the times.
+My only concern is potentially for tab-indented lines that are long, but breakable without hurting readability.
+Such cases would fail silently, while the error raised for the cases you mentioned can be suppressed.</p>
+<p>However, realistically speaking, I believe such tab-indented cases would be rare (I can't think of any atm), so it might be more beneficial maintaining the current behaviour (and document it somewhere, imo).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2023-08-08 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-08 18:46</div>
+            <div class="timeline-body"><p>I just checked, it looks like we <em>do</em> mention this in the documentation for the rule: https://beta.ruff.rs/docs/rules/line-too-long/. Does that look sufficient?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-08-08 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Nuno-Mota">@Nuno-Mota</a> on 2023-08-08 21:18</div>
+            <div class="timeline-body"><p>Ah, it looks like I completely missed it. My apologies.
+Maybe it's worth a mention of exceptions (with a reference to that explanation) <a href="https://beta.ruff.rs/docs/settings/#line-length">here</a>? Just a suggestion, though.</p>
+<p>In any case, thank you for looking into it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-08 21:20</div>
+            <div class="timeline-body"><p>No worries, thanks for reporting these!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-08 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/asmaier">@asmaier</a> on 2024-04-26 15:32</div>
+            <div class="timeline-body"><p>I believe you should mention in the documentation at https://docs.astral.sh/ruff/settings/#line-length that the rule E501 is disabled by default. That means to enforce a <code>line-length</code> one has to configure in <code>pyproject.toml</code>:</p>
+<pre><code>[tool.ruff]
+line-length=120
+[tool.ruff.lint]
+extend-select = [&quot;E501&quot;]
+</code></pre>
+<p>Without the last line <code>ruff check</code> will not find any line-length violations.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:55 UTC
+    </footer>
+</body>
+</html>

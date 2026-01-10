@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider removing `ISC001` from the conflict list with ruff format - astral-sh/ruff #8272</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider removing <code>ISC001</code> from the conflict list with ruff format</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8272">#8272</a>
+        opened by <a href="https://github.com/yakMM">@yakMM</a>
+        on 2023-10-27 07:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yakMM">@yakMM</a> on 2023-10-27 07:20</div>
+            <div class="timeline-body"><p>Reminder on the rule: <a href="https://docs.astral.sh/ruff/rules/single-line-implicit-string-concatenation/">Checks for implicitly concatenated strings on a single line.</a></p>
+<p>Why I believe there is actually no conflict with ruff format on default settings:</p>
+<p>Imagine a situation where the formatter puts two strings on the same line:
+<code>foo = &quot;foo&quot; &quot;bar&quot;</code></p>
+<p>If the rule is activated (and a fix available), the line will become:
+<code>foo = &quot;foobar&quot;</code></p>
+<p>Which will not be further modified by ruff format.</p>
+<p>However, if the rule is not activated, it will stay like:
+<code>foo = &quot;foo&quot; &quot;bar&quot;</code></p>
+<p>I assume some people will want to be warned about this appearing because of the formatter and will want to fix it, hence <code>ISC001</code> being useful alongside ruff format.</p>
+<p>Am I missing something on the incompatibility between this rule and ruff format?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-10-27 07:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2023-10-27 07:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-27 07:58</div>
+            <div class="timeline-body"><p>Thanks for reporting and opening a new issue.</p>
+<p>I think we didn't make an explicit decision, but we merged the improvements we had to include them in 0.1.3</p>
+<p>Rules and options that are compatible with the formatter should have the following properties:</p>
+<ol>
+<li>Formatting the code doesn't introduce new violations; to prevent that, it is necessary to run <code>check --fix</code>, <code>format</code>, <code>check --fix</code>, ... until you get a stable result. This especially becomes important when we integrate <code>format</code> into <code>check</code> (and <code>check --fix</code>)</li>
+<li>Formatting doesn't undo an intent that you explicitly expressed. For example, <code>split-on-trailing-comma=true</code>conflicts with <code>format.skip-magic-trailing-comma=false</code> because the formatter would remove the trailing comma, undoing your expressed intent that the aliases should be wrapped. This is an extension of 1, but I like to list it separately because it is not just incompatible with the rule, it does not uphold the expressed intent of users.</li>
+</ol>
+<p>I do see how <code>ISC001</code> is useful in combination with the formatter, and it doesn't violate the 2nd property, but it does violate the first property (so does <code>E501</code>, so maybe I shouldn't have removed that one).</p>
+<p>I don't have a good answer yet about what we should do about these rules. Warning seems appropriate because you can run into situations where you must run <code>ruff check --fix</code> a second time after running <code>ruff format</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yakMM">@yakMM</a> on 2023-10-27 09:15</div>
+            <div class="timeline-body"><p>I fully agree with the intent <code>2.</code>, no doubt about it.</p>
+<p>I'm mixed about <code>1.</code> It is easily fixed if you run the formatter before the linter, thing that was mandatory at the time of <code>black</code> and <code>flake8</code>: the formatter would preemptively fix some code that would otherwise be a violation for the linter (lines too long for example, would be fixed by the formatter).</p>
+<p>I get that this way of thinking is a bit changed because of the <code>--fix</code> flag, but still I believe it's more appropriate to have a pipeline with formatting first and linter as second, as you don't expect <code>check --fix</code> to &quot;break the format&quot; of some code, unless you have actual contradictions within your rules (breaking point <code>2.</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yakMM">@yakMM</a> on 2023-10-27 09:18</div>
+            <div class="timeline-body"><p>If we imagine a world in which <code>format</code> and <code>check</code> are combined, I believe we can expect <code>format + fix</code> according to the rules, and the the remaining violations are displayed to the user. In this context, having <code>ISC001</code> on would not bring any contradiction, it would just specify &quot;format my code and make sure strings are concatenated&quot;, which is exactly what I want to express in my pipeline, by running <code>format</code> and then <code>check</code> with <code> ISC001</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yakMM">@yakMM</a> on 2023-10-27 09:19</div>
+            <div class="timeline-body"><p>Anyways, thank you very much for the openness and allowing discussions about all this, as well as the quick iterative fixes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-27 09:19</div>
+            <div class="timeline-body"><blockquote>
+<p>I get that this way of thinking is a bit changed because of the --fix flag, but still I believe it's more appropriate to have a pipeline with formatting first and linter as second, as you don't expect check --fix to &quot;break the format&quot; of some code, unless you have actual contradictions within your rules (breaking point 2.)</p>
+</blockquote>
+<p>Unfortunately, this is not guaranteed. Applying an autofixes may produce code that now exceeds the preferred line width or the formatter can now collapse multiple lines. That means, it is generally necessary to run the formatter after linting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yakMM">@yakMM</a> on 2023-10-27 09:28</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I get that this way of thinking is a bit changed because of the --fix flag, but still I believe it's more appropriate to have a pipeline with formatting first and linter as second, as you don't expect check --fix to &quot;break the format&quot; of some code, unless you have actual contradictions within your rules (breaking point 2.)</p>
+</blockquote>
+<p>Unfortunately, this is not guaranteed. Applying an autofixes may produce code that now exceeds the preferred line width or the formatter can now collapse multiple lines. That means, it is generally necessary to run the formatter after linting.</p>
+</blockquote>
+<p>Oh really? I'm surprised as rules like <a href="https://docs.astral.sh/ruff/rules/if-else-block-instead-of-if-exp/">SIM108</a> do not trigger if there is no place for the fix within the specified line-length. Maybe it depends on the rules then</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-27 09:32</div>
+            <div class="timeline-body"><p>Yeah, some rules have this check, but not all of them. However, all fixes that remove (or change code) may reduce the length of lines, possibly causing reformats.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/yakMM">@yakMM</a> on 2023-10-29 08:32</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah, some rules have this check, but not all of them. However, all fixes that remove (or change code) may reduce the length of lines, possibly causing reformats.</p>
+</blockquote>
+<p>Ah okay I get it. It would be best if the fixes of <code>ruff check --fix</code> would be compliant with the formatter settings imo, but I see the ruff approach is more to run <code>format</code> after <code>check</code>.</p>
+<p>In that case should I go back advocating for a way to suppress warning about rules breaking point 1?</p>
+<p>My use case is to be warned about <code>implicitly concatenated strings on a single line</code> without warnings ideally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-12-12 15:45</div>
+            <div class="timeline-body"><p>I really don't want warnings every time I run <code>ruff format</code>. I might personally know that it's safe to ignore, but this is bound to confuse more junior members of my team. For reference, when I previously pre-emptively included <code>FURB</code> in our config so it would be enabled as soon as it was out of preview, they saw the warnings about <code>--preview</code> when running <code>ruff format</code>, thought they had to run <code>ruff format --preview</code> instead, and ended up with &gt;80 changed files in an otherwise tiny PR.</p>
+<p>This rule is not incompatible with the formatter in the same way as <code>ISC003</code> or <code>E501</code>. Moreover, disabling this rule would easily allow bugs to creep in, because it's never the case that someone intentionally concatenates two strings in a line without an f-string or <code>+</code> sign.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-14 04:57</div>
+            <div class="timeline-body"><p>I hear your feedback and I see how <code>ISC001</code> is useful even when used with the formatter. The issue is on my to do list I just haven't gotten around to look at it in more detail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Stable" by @MichaReiser on 2023-12-14 04:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arthur-st">@arthur-st</a> on 2023-12-22 10:39</div>
+            <div class="timeline-body"><p>@tylerlaprade What do you mean under <code>ISC003</code> incompatibility with the formatter? Doesn't seem to be incompatible as per the docs or the formatter behaviour, at least.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-01-10 14:36</div>
+            <div class="timeline-body"><p>One option for addressing this issue is to change our formatter, see https://github.com/astral-sh/ruff/issues/9457. However, there's a caveat. The new formatting would be non-reversible and I'm undecided if we should accept that or wait until we implement Black's string processing preview style.</p>
+<p>Please comment on the linked issue if you would object to the formatter making this change automatically for you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steve-mavens">@steve-mavens</a> on 2024-04-25 10:18</div>
+            <div class="timeline-body"><p>I don't know if this is useful to anyone, but my current local lint script runs:</p>
+<pre><code>ruff . --fix
+ruff format .
+ruff . --extend-select ISC001
+</code></pre>
+<p>If the final check fails then I assume manual intervention will be required to make sure my check/format config is compatible, or  perhaps to manually reformat some bit of code that's triggering incompatibilities. In some cases re-runs without intervention could reach a stable state.</p>
+<p>Is this the expected usage of ruff? If so then it does feel like ruff itself could provide that workflow in a combined &quot;fix my code using all my config&quot; command. Currently it feels like <code>ruff check</code> and <code>ruff format</code> are two separate tools that happen to be in the same executable, with a bit of work left to do meet the potential goal of bringing black formatting into ruff &quot;proper&quot;, in the way that (for example) isort formatting already has been. Which is fine, because both ruff commands work really well, it just requires a bit of research to figure out how to run ruff at the moment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mscheifer">@mscheifer</a> on 2024-05-07 01:57</div>
+            <div class="timeline-body"><p>Another option could be a way to disable the warning per rule like:</p>
+<pre><code class="language-toml">[tool.ruff.format]
+disable-rule-conflict-warning = [&quot;ICS001&quot;]
+</code></pre>
+<p>That way I'm explicitly stating that I understand that I might have to run the formatter and <code>check --fix</code> back and forth, and maybe do some manual intervention even, to get it to all pass, for this rule specifically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VeckoTheGecko">@VeckoTheGecko</a> on 2024-08-15 09:47</div>
+            <div class="timeline-body"><p>Not sure if this is the right thread (maybe this should be a new issue), but there is a conflict between ISC001 and Ruff format if the string has a method associated with it.</p>
+<pre><code>parcels/tools/exampledata_utils.py:135:13: ISC001 Implicitly concatenated string literals on one line
+    |
+133 |     if dataset not in example_data_files:
+134 |         raise ValueError(
+135 |             f&quot;Dataset {dataset!r} not found. Available datasets are: &quot; &quot;, &quot;.join(example_data_files.keys())
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ISC001
+136 |         )
+</code></pre>
+<p>Of course, those string literals can't be combined because of the join.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-25 11:17</div>
+            <div class="timeline-body"><p>Preview mode now comes with https://github.com/astral-sh/ruff/pull/13663. This isn't enough to fix the incompatibility because the preview style doesn't support triple quoted and raw strings.</p>
+<p>A simple way of solving the incompatibility is to always format raw and triple quoted implicitly concatenated strings over multiple lines (except when in unparenthesized statement positions). This fixes the incompatibility and, arguably, also makes the implicit concat more visible.</p>
+<pre><code class="language-python">a = r&quot;test&quot; &quot;other&quot;
+</code></pre>
+<p>would be formatted as</p>
+<pre><code class="language-python">a = (
+	r&quot;test&quot;
+	&quot;other&quot;
+)
+</code></pre>
+<p>Any thoughts on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-03 11:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/johnthagen">@johnthagen</a> on 2025-01-09 15:39</div>
+            <div class="timeline-body"><p>Looks like this was released as part of 0.9.0</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/pull/15238</li>
+<li>https://astral.sh/blog/ruff-v0.9.0#fewer-single-line-implicitly-concatenated-strings</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:45 UTC
+    </footer>
+</body>
+</html>

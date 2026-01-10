@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False-positive of PLR0206 with decorator injecting parameter into method - astral-sh/ruff #22050</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False-positive of PLR0206 with decorator injecting parameter into method</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/22050">#22050</a>
+        opened by <a href="https://github.com/fritz-k">@fritz-k</a>
+        on 2025-12-18 10:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fritz-k">@fritz-k</a> on 2025-12-18 10:41</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When injecting parameters from decorators, ruff complains about additional parameters on a property (PLR0206):</p>
+<p>The sample code (<a href="https://play.ruff.rs/d56db4a0-9311-4c0e-9445-b791d2c61c4e">playground</a>)</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from functools import wraps
+from typing import TYPE_CHECKING, Concatenate, get_args
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
+
+def inject_arg[I, T, **P](
+    fn: Callable[Concatenate[I, str, P], T],
+) -&gt; Callable[Concatenate[I, P], T]:
+
+    @wraps(fn)
+    def wrapped(instance: I, *args: P.args, **kwargs: P.kwargs) -&gt; T:
+        additional_param = &quot;some_arg&quot;
+        return fn(instance, additional_param, *args, **kwargs)
+
+    return wrapped
+
+
+class Test:
+    @property
+    @inject_arg
+    def prop(
+        self,
+        additional_param: str,
+    ) -&gt; str:
+        return additional_param
+</code></pre>
+<p>produces</p>
+<pre><code>    Cannot have defined parameters for properties (PLR0206) [Ln 25, Col 9]
+</code></pre>
+<p>Exempting the offending parameter</p>
+<pre><code class="language-diff">-        additional_param: str,
++        additional_param: str,  # noqa: PLR0206  - Additional param is injected -&gt; false-positive
+</code></pre>
+<p>doesn't silence the finding, only</p>
+<pre><code class="language-diff">-    def prop(
++    def prop(  # noqa: PLR0206  - Additional param is injected -&gt; false-positive
+</code></pre>
+<p>does. With the entire method being exempt, the (later) addition of non-injected parameters is not caught by ruff.</p>
+<p>Ideally ruff can detect the decorator injecting arguments, but if that is not feasible, allowing the offending parameters to be exempted individually would still prove useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-18 14:24</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>I think it would be quite difficult to understand the decorator to the extent that it would suppress the rule. But I kind of agree about the noqa comment positioning. From a quick local test, we could accept your first noqa placement if we change the diagnostic range from the method name to the parameter itself. We would have to be careful because that's a breaking change, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-12-18 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-12-18 14:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:50 UTC
+    </footer>
+</body>
+</html>

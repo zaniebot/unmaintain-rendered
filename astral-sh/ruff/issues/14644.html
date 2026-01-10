@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C403 is wrong with async_generator - astral-sh/ruff #14644</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>C403 is wrong with async_generator</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14644">#14644</a>
+        opened by <a href="https://github.com/dacevedo12">@dacevedo12</a>
+        on 2024-11-27 21:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dacevedo12">@dacevedo12</a> on 2024-11-27 21:53</div>
+            <div class="timeline-body"><p>Given</p>
+<pre><code class="language-python">set([name for project in projects for name in await get_users(project)])
+</code></pre>
+<p>Ruff outputs</p>
+<blockquote>
+<p>Unnecessary <code>list</code> comprehension (rewrite as a <code>set</code> comprehension) Ruff (C403)</p>
+</blockquote>
+<p>But doing so leads to a runtime error</p>
+<blockquote>
+<p>TypeError: 'async_generator' object is not iterable.</p>
+</blockquote>
+<p>Note that C403 is not triggered by using <code>list()</code> instead of brackets on the comprehension, but it still causes the same runtime error.</p>
+<p>Ruff: 0.8.0
+Python 3.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-11-27 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-27 22:20</div>
+            <div class="timeline-body"><p>Hi @dacevedo12 -- could you clarify exactly what code you're trying that's causing the <code>TypeError</code> there? A set comprehension seems to work fine for me:</p>
+<pre><code class="language-pycon">% python -m asyncio       
+asyncio REPL 3.13.0 (main, Oct  8 2024, 11:56:29) [Clang 15.0.0 (clang-1500.3.9.4)] on darwin
+Use &quot;await&quot; directly instead of &quot;asyncio.run()&quot;.
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import asyncio
+&gt;&gt;&gt; async def get_users():
+...     return ['mary', 'jane']
+...     
+&gt;&gt;&gt; {name for name in await get_users()}
+{'jane', 'mary'}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @AlexWaygood on 2024-11-27 22:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dacevedo12">@dacevedo12</a> on 2024-11-27 22:30</div>
+            <div class="timeline-body"><p>Hmm, this seems to happen when you have more than one <code>for</code> in the comprehension. I updated the issue to reflect this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-27 22:34</div>
+            <div class="timeline-body"><p>Those also seem to work fine in set comprehensions as far as I can tell :-)</p>
+<pre><code class="language-pycon">% python -m asyncio
+asyncio REPL 3.13.0 (main, Oct  8 2024, 11:56:29) [Clang 15.0.0 (clang-1500.3.9.4)] on darwin
+Use &quot;await&quot; directly instead of &quot;asyncio.run()&quot;.
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import asyncio
+&gt;&gt;&gt; PROJECTS = {'x': ['mary', 'jane'], 'y': ['peter', 'paul']}
+&gt;&gt;&gt; async def get_users(project):
+...     return PROJECTS[project]
+...     
+&gt;&gt;&gt; {name for project in PROJECTS for name in await get_users(project)}
+{'jane', 'peter', 'mary', 'paul'}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-27 22:38</div>
+            <div class="timeline-body"><p>You've shown me a minimized version of the code that Ruff is complaining about but not a minimized version of the code that you've tried using to fix Ruff's complaint (which is causing your <code>TypeError</code>). Could you show me that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dacevedo12">@dacevedo12</a> on 2024-11-27 22:59</div>
+            <div class="timeline-body"><p>Try your same snippet but with <code>set()</code></p>
+<p><code>set(name for project in PROJECTS for name in await get_users(project))</code></p>
+<p>That will for sure fail, and ruff will say it's ok, same with <code>set(list(name for project in PROJECTS for name in await get_users(project)))</code></p>
+<p>I guess it's an overcomplicated way to do it. set comprehension is cleaner but C403 in its current state may lead you to a runtime error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-27 23:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Try your same snippet but with <code>set()</code></p>
+<p><code>set(name for project in PROJECTS for name in await get_users(project))</code></p>
+</blockquote>
+<p>I see! That's not actually what Ruff is suggesting for you to do here, however. Ruff is suggesting for you to use a set comprehension, but <code>set(name for project in PROJECTS for name in await get_users(project))</code> is actually a generator expression passed to a function call rather than a set comprehension.</p>
+<p>I think the docs for this rule are fairly clear about what's being recommended here: https://docs.astral.sh/ruff/rules/unnecessary-list-comprehension-set. Maybe we could improve the error message? But it's not immediately clear to me how we'd improve it.</p>
+<p>What do you think? :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-11-27 23:19</div>
+            <div class="timeline-body"><blockquote>
+<p>That will for sure fail, and ruff will say it's ok</p>
+</blockquote>
+<p>Unfortunately ruff can't catch all possible bugs and runtime errors, but I'd expect a type checker to flag code like this. We <a href="https://docs.astral.sh/ruff/faq/#how-does-ruff-compare-to-mypy-or-pyright-or-pyre">recommend</a> running Ruff alongside a type checker — they're complementary rules that catch different kinds of bugs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dacevedo12 on 2024-11-28 01:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @AlexWaygood on 2024-11-28 08:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:53 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLC0414 conflicts with re-exporting imports in py files - astral-sh/ruff #5698</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLC0414 conflicts with re-exporting imports in py files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/5698">#5698</a>
+        opened by <a href="https://github.com/twoertwein">@twoertwein</a>
+        on 2023-07-11 23:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/twoertwein">@twoertwein</a> on 2023-07-11 23:39</div>
+            <div class="timeline-body"><p>Pandas uses similar code in <code>pandas/_typing.py</code></p>
+<pre><code class="language-py">if TYPE_CHECKING:
+    if sys.version_info &gt;= (3, 10):
+        from typing import TypeGuard
+    else:
+        from typing_extensions import TypeGuard
+else:
+    TypeGuard: Any = None
+</code></pre>
+<p><code>TypeGuard</code> is not used inside this file (pyright detects this). A fix for pyright is to use the redundant <code>as TypeGuard</code> import but PLC0414 conflicts with that. Alternatives are: ignore the pyright error or create <code>__all__</code> (but that would need to contain a lot of symbols).</p>
+<p>xref https://github.com/astral-sh/ruff/issues/3734 https://github.com/pandas-dev/pandas/pull/54085</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-11 23:47</div>
+            <div class="timeline-body"><p>Thanks for the clear issue!</p>
+<p><code>PLC0414</code> is not enabled by default — perhaps you don't want to use it in Pandas if you need to export names with the redundant <code>as ...</code> or perhaps it'd make sense to disable it in that file?</p>
+<p>What do you see as the ideal behavior for Ruff here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/twoertwein">@twoertwein</a> on 2023-07-12 00:08</div>
+            <div class="timeline-body"><p>Thank you, ignoring this rule (for this one file/or all) is probably the best option.</p>
+<p>As far as I remember, flake8's F401 (haven't used it since switching to ruff :) ) also treats explicit re-exports as used imports.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-12 00:11</div>
+            <div class="timeline-body"><p>Yes F401 will be raised on <code>from . import foo</code> but not <code>from . import foo as foo</code> (some discussion on that right now at #5697)</p>
+<p>Anything else you can see Ruff doing better here or should we close this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/twoertwein">@twoertwein</a> on 2023-07-12 00:13</div>
+            <div class="timeline-body"><p>Can be closed.</p>
+<blockquote>
+<p>Anything else you can see Ruff doing better here or should we close this?</p>
+</blockquote>
+<p>(Consider removing this rule.) I will ignore this rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @twoertwein on 2023-07-12 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-12 03:09</div>
+            <div class="timeline-body"><p>Yeah PLC0414 is a strange rule because explicit re-export is a respected mechanism to indicate publicity by many tools (Ruff, but also Pyright).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:41 UTC
+    </footer>
+</body>
+</html>

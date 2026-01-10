@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Style suggestion: Allow aligning dict values - astral-sh/ruff #10462</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Style suggestion: Allow aligning dict values</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10462">#10462</a>
+        opened by <a href="https://github.com/kaddkaka">@kaddkaka</a>
+        on 2024-03-18 18:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2024-03-18 18:27</div>
+            <div class="timeline-body"><p><strong>Describe the style change</strong>
+Allow aligning dict values in dict literals.</p>
+<p><strong>Example in the current style</strong></p>
+<pre><code class="language-py">DATA = {
+    &quot;aa&quot;: 0x000F,
+    &quot;bbbb&quot;: 0x00F0,
+    &quot;cccccccc&quot;: 0x0F00,
+    &quot;dddddd&quot;: 0xF000,
+}
+</code></pre>
+<p><strong>Desired style</strong>
+Having aligned values can aid readability in some cases.</p>
+<pre><code class="language-python">DATA = {
+    &quot;aa&quot;:       0x000F,
+    &quot;bbbb&quot;:     0x00F0,
+    &quot;cccccccc&quot;: 0x0F00,
+    &quot;dddddd&quot;:   0xF000,
+}
+</code></pre>
+<p>If the values are already aligned, that could be an heuristic to leave them aligned, just like trailing comma is a heuristic to control 1 element per line.</p>
+<p>The same suggestion got a cold welcome on black: https://github.com/psf/black/issues/4281</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @AlexWaygood on 2024-03-18 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> added by @AlexWaygood on 2024-03-18 19:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-19 12:59</div>
+            <div class="timeline-body"><p>Thanks for creating this style proposal. I don't think there's enough consense to change the existing formatting to use aligned formatting instead. So the ask here is to implement a new formatting style and allow users to pick their preferred style. We haven't yet decided if we want to make the formatter more configurable or not. That's why it's unlikely that we would accept any contributions to this style near term (or implement this ourselves).</p>
+<p>Regarding the style. Would you expect that function parameters are aligned too?</p>
+<pre><code class="language-python">def perform_some_tasks(
+    data:    List[float]           = a,
+    arg2:    Union[int, str, bool] = b,
+    hello:   Optional[int]         = c,
+    good:    Dict[str, Any]        = d,
+    morning: float                 = e,
+) -&gt; None:
+    ...
+</code></pre>
+<p>What would you propose how dictionaries are formatted with very long keys, that potentially even exceed the configured line length:</p>
+<pre><code class="language-python">a = {
+    &quot;%s_VERSION&quot; % entry.upper().replace(&quot;-&quot;, &quot;_&quot;).replace(&quot;.&quot;, &quot;_&quot;): DOWNLOADS[entry][&quot;version&quot;],
+    other                                                             3,
+}
+
+
+b = {
+    &quot;%s_VERSION&quot; 
+    % entry.upper().replace(&quot;-&quot;, &quot;_&quot;).replace(&quot;.&quot;, &quot;_&quot;).replace(&quot;,&quot;, &quot;_&quot;).replace(&quot;/&quot;, &quot;_&quot;).replace(&quot;more&quot;): DOWNLOADS[
+    	entry
+    ][&quot;version&quot;],
+    b                                                                                                      : 10                                                        
+}
+</code></pre>
+<p>How would your example format with comments ?</p>
+<pre><code class="language-python">DATA = {
+    &quot;aa&quot;: # trailing key comment
+    		0x000F,
+    # line comment in betweeen
+    &quot;bbbb&quot;:     
+    # leading value comment
+    0x00F0,
+    &quot;cccccccc&quot;: 0x0F00, # trailing value comment
+    &quot;dddddd&quot;:   0xF000,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2024-03-19 17:15</div>
+            <div class="timeline-body"><p>I have only felt the need for dicts, maybe this pattern is less common for function arguments.</p>
+<p>I want to clarify the last sentence about heuristic with an example:</p>
+<p>Heuristic is &quot;If already aligned, keep it aligned&quot;. So</p>
+<pre><code class="language-py">DATA = {
+    &quot;aa&quot;:       0x000F,
+    &quot;bbbb&quot;:     0x00F0,
+    &quot;cccccccc&quot;: 0x0F00,
+    &quot;dddddd&quot;:   0xF000,
+}
+</code></pre>
+<p>would stay unchanged. But</p>
+<pre><code class="language-py">DATA = {
+    &quot;aa&quot;:   0x000F,
+    &quot;bbbb&quot;:     0x00F0,
+    &quot;cccccccc&quot;: 0x0F00,
+    &quot;dddddd&quot;:     0xF000,
+}
+</code></pre>
+<p>would be formatted (as today) into:</p>
+<pre><code class="language-py">DATA = {
+    &quot;aa&quot;: 0x000F,
+    &quot;bbbb&quot;: 0x00F0,
+    &quot;cccccccc&quot;: 0x0F00,
+    &quot;dddddd&quot;: 0xF000,
+}
+</code></pre>
+<hr />
+<p>Your example does not have aligned values:</p>
+<pre><code class="language-py">DATA = {
+    &quot;aa&quot;: # trailing key comment
+                0x000F,
+    # line comment in betweeen
+    &quot;bbbb&quot;:
+    # leading value comment
+    0x00F0,
+    &quot;cccccccc&quot;: 0x0F00, # trailing value comment
+    &quot;dddddd&quot;:   0xF000,
+}
+</code></pre>
+<p>so it would format (as today) into:</p>
+<pre><code class="language-py">DATA = {
+    &quot;aa&quot;:  # trailing key comment
+    0x000F,
+    # line comment in betweeen
+    &quot;bbbb&quot;:
+    # leading value comment
+    0x00F0,
+    &quot;cccccccc&quot;: 0x0F00,  # trailing value comment
+    &quot;dddddd&quot;: 0xF000,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2024-03-19 19:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Heuristic is &quot;If already aligned, keep it aligned</p>
+</blockquote>
+<p>👍</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:12 UTC
+    </footer>
+</body>
+</html>

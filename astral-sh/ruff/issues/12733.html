@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff formatter conflicting with isort when used as pre-commit hooks. - astral-sh/ruff #12733</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff formatter conflicting with isort when used as pre-commit hooks.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12733">#12733</a>
+        opened by <a href="https://github.com/vmatekole">@vmatekole</a>
+        on 2024-08-07 15:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vmatekole">@vmatekole</a> on 2024-08-07 15:17</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>A conflict is created — when running ruff format as a pre-commit hook, together with isort. Hooks never pass, as a workaround I have placed #fmt off / #fmt on around the imports:</p>
+<pre><code class="language-python"># fmt: off
+import os
+
+from azure.appconfiguration.provider import AzureAppConfigurationProvider
+from dotenv import load_dotenv
+from pydantic import Field
+from pydantic_settings import (
+    BaseSettings,
+    SettingsConfigDict
+)
+# fmt: on
+</code></pre>
+<p><strong>Keywords searched</strong>: isort pre-commit hooks isort imports formatting recursive failure</p>
+<p>pyproject.toml(excerpt)</p>
+<pre><code class="language-toml">[tool.isort]
+multi_line_output = 3
+force_grid_wrap = 2
+
+[tool.ruff]
+line-length = 80
+[tool.ruff.format]
+quote-style = &quot;double&quot;
+indent-style = &quot;space&quot;
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = [
+    &quot;A&quot;,  # prevent using keywords that clobber python builtins
+    &quot;B&quot;,  # bugbear: security warnings
+    &quot;D&quot;, # pydocstyle
+    &quot;E&quot;,  # pycodestyle
+    &quot;F&quot;,  # pyflakes
+    &quot;ISC&quot;,  # implicit string concatenation
+    &quot;RUF&quot;,  # the ruff developer's own rules
+]
+
+ignore = [
+    &quot;B904&quot;,  # raise-without-from-inside-except: syntax not compatible with py2
+    &quot;D100&quot;, # Missing docstring in public module
+    &quot;D101&quot;, # Missing docstring in public class
+    &quot;D102&quot;, #  Missing docstring in public method
+    &quot;D103&quot;, #  Missing docstring in public function
+    &quot;D104&quot;, #  Missing docstring in public package
+    &quot;D105&quot;, # Missing docstring in magic method
+    &quot;E731&quot;,  # lambda-assignment: lambdas are substential in maintenance of py2/3 codebase
+    &quot;ISC001&quot;,  # conflicts with ruff format command
+    &quot;RUF005&quot;,  # collection-literal-concatenation: syntax not compatible with py2
+    &quot;RUF012&quot;, # mutable-class-default: typing is not available for py2
+    &quot;I001&quot;, # unsorted imports https://docs.astral.sh/ruff/rules/unsorted-imports/#unsorted-imports-i001
+    &quot;W191&quot;,
+    &quot;E111&quot;,
+    &quot;E114&quot;,
+    &quot;W191&quot;,
+    &quot;W191&quot;,
+    &quot;W191&quot;,
+    &quot;W191&quot;,
+    &quot;E117&quot;,
+    &quot;D206&quot;,
+    &quot;D300&quot;,
+    &quot;Q000&quot;,
+    &quot;Q001&quot;,
+    &quot;Q002&quot;,
+    &quot;Q003&quot;,
+    &quot;COM812&quot;,
+    &quot;COM819&quot;,
+    &quot;ISC001&quot;,
+    &quot;ISC002&quot;,
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = &quot;google&quot;
+</code></pre>
+<p>Code formatted app_config.py</p>
+<pre><code class="language-python">import os
+
+from azure.appconfiguration.provider import AzureAppConfigurationProvider
+from dotenv import load_dotenv
+from pydantic import Field
+from pydantic_settings import (
+    BaseSettings,
+    SettingsConfigDict
+)
+
+load_dotenv()
+
+
+def load_azure_config() -&gt; any:
+    return AzureAppConfigurationProvider.load(
+        connection_string=&quot;&quot;
+    )
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(env_file_encoding=&quot;utf-8&quot;)
+    authority: str
+    redirect_path: str
+    scope: str
+    session_type: str
+    port: int
+    azure_sz_config_connection_string: str
+    env: str
+    azure_credentials: AzureAppConfigurationProvider = Field(
+        default_factory=load_azure_config
+    )  # type: ignore
+
+
+sz_config = Settings(_env_file=os.environ[&quot;APP_ENV&quot;])
+
+</code></pre>
+<p>.pre-commit-config.yml</p>
+<pre><code class="language-yaml">repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.2.0
+    hooks:
+      -   id: trailing-whitespace
+      -   id: end-of-file-fixer
+      -   id: check-yaml
+      -   id: check-added-large-files
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    # Ruff version.
+    rev: v0.5.6
+    hooks:
+      # Run the linter.
+      - id: ruff
+        args: [ --fix ]
+      # Run the formatter.
+      - id: ruff-format
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        name: isort (python)
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v3.4.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args: []
+
+</code></pre>
+<p>pre-commit run -v  --files app_config.py</p>
+<p><img src="https://github.com/user-attachments/assets/1e67f303-a752-40a2-8a32-c6d5fdcf3e6d" alt="Screenshot 2024-08-07 at 17 10 42" /></p>
+<p>ruff 0.5.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-08-08 05:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-08 05:57</div>
+            <div class="timeline-body"><p>Ruff and isort (or Black and isort) are only compatible when using isort with <code>profile=black</code>. Full compatibility with isort is not a goal of the formatter. Maybe long-term if we decide to build isort into the formatter.</p>
+<p>For now, I recommend you to either use isort with <a href="https://pycqa.github.io/isort/docs/configuration/black_compatibility.html"><code>profile=black</code></a> or use <a href="https://docs.astral.sh/ruff/rules/#isort-i">Ruff's isort</a> which warns you if you use an incompatible setting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-08 05:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:36 UTC
+    </footer>
+</body>
+</html>

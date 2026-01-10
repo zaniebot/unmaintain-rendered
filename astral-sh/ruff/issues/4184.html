@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categorise `fixes` as `safe` or `maybe_incorrect` - astral-sh/ruff #4184</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Categorise <code>fixes</code> as <code>safe</code> or <code>maybe_incorrect</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4184">#4184</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-05-02 09:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-02 09:18</div>
+            <div class="timeline-body"><p>Part of #4181 and depends on #4183</p>
+<p>#4183 introduced the new <code>Fix::safe</code> and <code>Fix::maybe_incorrect</code> constructors. The goal of this task is to go through all usages of  <code>Fix::unspecified</code>, <code>Fix::unspecified_edits</code>, <code>Diagnostic::try_set_from_edit</code>, and <code>Diagnostic::set_from_edit</code> and replace them with <code>Fix::safe*</code> or <code>Fix::maybe_incorrect</code> depending on whether the fix is safe or <em>unsafe</em> (may introduce semantic changes).</p>
+<p>I recommend creating individual PRs per rule because it makes discussing the safety properties of individual fixes easier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2023-05-02 09:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2023-05-02 09:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-05-14 01:18</div>
+            <div class="timeline-body"><p>Note the constructor names have changed:</p>
+<ul>
+<li><code>Fix::safe</code> -&gt; <code>Fix::automatic</code></li>
+<li><code>Fix::maybe_incorrect</code> -&gt; <code>Fix::suggested</code> or <code>Fix::manual</code></li>
+<li><code>Diagnostic::try_set_from_edit</code> -&gt; <code>Diagnostic::try_set_fix_from_edit</code></li>
+</ul>
+<p>See https://github.com/charliermarsh/ruff/pull/4303 and https://github.com/charliermarsh/ruff/pull/4275 for details.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sladyn98">@sladyn98</a> on 2023-05-22 08:37</div>
+            <div class="timeline-body"><p>@MichaReiser I was going through the codebase and it seems all of the code has been migrated, is there something that I am missing with this migration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-22 08:50</div>
+            <div class="timeline-body"><blockquote>
+<p>@MichaReiser I was going through the codebase and it seems all of the code has been migrated, is there something that I am missing with this migration.</p>
+</blockquote>
+<p>You can search for usages of <code>Fix::unspecified</code> or <code>Fix::unspecified_edits</code> to find rules that need to be migrated</p>
+<p>https://github.com/charliermarsh/ruff/blob/c6e5fed6587c95839a814ee8dfa845b465351229/crates/ruff_diagnostics/src/fix.rs#L40-L59</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-06-15 19:59</div>
+            <div class="timeline-body"><p>#5119  depends on all <code>Fix::unspecified</code> instances being refactored to an applicable (pun intended :P ) <code>Applicability</code>. Currently, <code>ripgrep</code> says there are occurrences in:</p>
+<ol>
+<li><code>flake8_commas</code>: fixed in #5127</li>
+<li><code>flake8_logging_format</code>: fixed in #5129</li>
+<li><code>flake8_pytest_style</code>:</li>
+<li><code>flake8_quotes</code>: fixed in #5130</li>
+<li><code>flake8_simpilfy</code>:</li>
+<li><code>flake8_tidy_imports</code>:</li>
+<li><code>flynt</code></li>
+<li><code>isort</code></li>
+<li><code>pandas_vet</code></li>
+<li><code>pycodestyle</code></li>
+<li><code>pydocstyle</code></li>
+<li><code>pyflakes</code></li>
+<li><code>pylint</code></li>
+<li><code>pyupgrade</code></li>
+</ol>
+<p>An up-to-date list can be found in the description for #5119.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @evanrittenhouse by @MichaReiser on 2023-06-21 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-23 22:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-06-23 23:06</div>
+            <div class="timeline-body"><p>@charliermarsh I believe there are two more linters that need to be completed - pycodestyle and flake8_pytest_style. May want to reopen until those are done, though I plan on completing them by the end of the weekend.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2023-06-23 23:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-23 23:20</div>
+            <div class="timeline-body"><p>Oh sorry, did this get closed accidentally by a PR? Anyway, reopened!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-06-28 13:46</div>
+            <div class="timeline-body"><p>I think this is done now! @evanrittenhouse let me know if that's wrong — thanks for taking all those on!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-06-28 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/evanrittenhouse">@evanrittenhouse</a> on 2023-06-28 13:57</div>
+            <div class="timeline-body"><p>Yup! On to the fun part ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-06-28 16:37</div>
+            <div class="timeline-body"><p>Wohoo. Nice work @evanrittenhouse.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:58 UTC
+    </footer>
+</body>
+</html>

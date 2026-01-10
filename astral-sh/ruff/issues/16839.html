@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F821 (E0601) False negative - astral-sh/ruff #16839</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F821 (E0601) False negative</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16839">#16839</a>
+        opened by <a href="https://github.com/pa5555">@pa5555</a>
+        on 2025-03-19 07:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/pa5555">@pa5555</a> on 2025-03-19 07:01</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Both pylint and ruff fails to detect mistake in the code, see attached link</p>
+<p>https://play.ruff.rs/f229c153-a059-4efe-99d5-2a600f0ecc70</p>
+<h3>Version</h3>
+<p>0.11.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-19 13:36</div>
+            <div class="timeline-body"><p>Thanks for the report! There are some other open issues around F821 (https://github.com/astral-sh/ruff/issues/6242 and https://github.com/astral-sh/ruff/issues/9858, for example), but those seem to be related to <code>del</code>. I think it's worth tracking this separately.</p>
+<p>I think we would need to know that the assignment to <code>x</code> can raise an exception, so this probably requires better type inference. Or we could take the approach described in the <a href="https://pylint.readthedocs.io/en/latest/user_guide/messages/error/used-before-assignment.html">pylint docs</a>:</p>
+<blockquote>
+<p>Assignments in try blocks are assumed not to have occurred when evaluating associated except/finally blocks.</p>
+</blockquote>
+<p>(pasting the playground code for easier quick reference)</p>
+<pre><code class="language-python"># ruff says all good
+# pylint says: E0601: Using variable 'x' before assignment (used-before-assignment)
+try:
+    x = 1 / 0
+    #if x:
+    #    ...
+except Exception:
+    print(x)
+
+
+# ruff says all good
+# pylint says all good
+try:
+    x = 1 / 0
+    if x:
+        ...
+except Exception:
+    print(x)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-03-19 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-19 15:08</div>
+            <div class="timeline-body"><p>I think the most correct would be to mark every variable defined inside a <code>try</code> to be possibly unbound in the <code>except</code> handlers and any code coming after. However, I worry that this is too strict for most users and should probably be its own rule. At least, this is what we do in our new type checker (<a href="https://playknot.ruff.rs/2ac1f0fb-c2b6-477a-bea5-3a6a77edceb7">playground</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2025-03-19 15:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:58 UTC
+    </footer>
+</body>
+</html>

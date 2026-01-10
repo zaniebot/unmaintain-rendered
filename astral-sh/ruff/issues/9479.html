@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM222: false positive on format strings - astral-sh/ruff #9479</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM222: false positive on format strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9479">#9479</a>
+        opened by <a href="https://github.com/reitzig">@reitzig</a>
+        on 2024-01-11 23:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/reitzig">@reitzig</a> on 2024-01-11 23:38</div>
+            <div class="timeline-body"><p>Consider this script:</p>
+<p><code>repro.py</code></p>
+<pre><code class="language-python">def foo(a: str, b: str) -&gt; None:
+    print(f&quot;{a}{b}&quot; or &quot;bar&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    foo(&quot;Hello &quot;, &quot;World&quot;)
+    foo(&quot;&quot;, &quot;&quot;)
+</code></pre>
+<p>When run, it prints:</p>
+<pre><code>❯ python repro.py
+Hello World
+bar
+</code></pre>
+<p>So apparently, <code>f&quot;{a}{b}&quot;</code> is not a truthy constant! And yet:</p>
+<pre><code class="language-shell">❯ ruff --version
+ruff 0.1.11
+❯ ruff check --isolated --select=SIM repro.py
+repro.py:2:11: SIM222 Use `f&quot;{a}{b}&quot;` instead of `f&quot;{a}{b}&quot; or ...`
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>FWIW, SonarLint's python:S5797 triggers as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-12 01:21</div>
+            <div class="timeline-body"><p>Thanks, I actually thought we had handling for this, but apparently not :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-01-12 01:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-01-12 01:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-12 02:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:27 UTC
+    </footer>
+</body>
+</html>

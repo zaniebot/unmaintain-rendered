@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Normalize `platform_system` to `sys_platform` - astral-sh/uv #9949</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Normalize <code>platform_system</code> to <code>sys_platform</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9949">#9949</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-12-16 23:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-16 23:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>A revival of an old idea (#9344) that I have slightly more confidence in now. I abandoned this idea because (1) it couldn't capture that, e.g., <code>platform_system == 'Windows' and sys_platform == 'foo'</code> (or some other unknown value) are disjoint, and (2) I thought that Android returned <code>&quot;android&quot;</code> for one of <code>sys_platform</code> or <code>platform_system</code>, which would've made this logic incorrect.</p>
+<p>However, it looks like Android... doesn't do that? And the values here are almost always in a small, known set. So in the end, the tradeoffs here actually seem pretty good.</p>
+<p>Vis-a-vis our current solution, this can (e.g.) <em>simplify out</em> expressions like <code>sys_platform == 'win32' or platform_system == 'Windows'</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-17 00:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:9097 on 2024-12-17 00:02</div>
+            <div class="timeline-body"><p>nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-12-17 00:03</div>
+            <div class="timeline-body"><p>I'm into this. Some churn for outputs though... I wonder if we should hold off on this until another minor version? (though these are less meaningful than some of the other resolution changes we've been making...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-17 00:29</div>
+            <div class="timeline-body"><p>I'm somewhat in favor of just shipping it, since it won't invalidate existing lockfiles.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-12-17 02:27</div>
+            <div class="timeline-body"><blockquote>
+<p>I thought that Android returned &quot;android&quot;</p>
+</blockquote>
+<p>Note, per <a href="https://peps.python.org/pep-0738/#sys">PEP-738</a>, it will return &quot;android&quot; starting in 3.13. Similar as &quot;ios&quot; in 3.13 for iPhones per <a href="https://peps.python.org/pep-0730/#sys">PEP-730</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-17 02:34</div>
+            <div class="timeline-body"><p>Thank you! Luckily it looks like it will also return <code>&quot;Android&quot;</code> for <code>platform.system()</code>, phew.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-12-17 02:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-12-17 02:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pep508/src/marker/algebra.rs</code>:275 on 2024-12-17 11:33</div>
+            <div class="timeline-body"><p>I would feel more confident if we could codify this upstream (packaging.python.org probably), so uv doesn't end up making assumptions that python redistributors don't make.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-12-17 11:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pep508/src/marker/algebra.rs</code>:275 on 2024-12-17 12:45</div>
+            <div class="timeline-body"><p>Can you open a convo about it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-17 12:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pep508/src/marker/algebra.rs</code>:275 on 2024-12-17 15:38</div>
+            <div class="timeline-body"><p>Also, do we have any context on <em>why</em> there is <code>platform_system</code> and <code>sys_platform</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pep508/src/marker/algebra.rs</code>:275 on 2024-12-17 15:39</div>
+            <div class="timeline-body"><p>And maybe it's obvious, but I think a comment saying why we normalize to <code>sys_platform</code> (instead of the other way around) would be good too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-12-17 15:40</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-12-17 15:40</div>
+            <div class="timeline-body"><p>(Meant to approve.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-pep508/src/marker/algebra.rs</code>:275 on 2024-12-17 15:41</div>
+            <div class="timeline-body"><p>https://discuss.python.org/t/clarify-usage-of-platform-system/70900 from Konsti's prompt in the <a href="https://discord.com/channels/803025117553754132/1259612340509343805/1318596370999021668">PyPA Discord</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-17 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-17 17:17</div>
+            <div class="timeline-body"><p>From the PyPA Discord, it sounds like this isn't really safe to assume in all cases:</p>
+<blockquote>
+<p>I gave the example of iPad, but looking at the docs, but some Unix OSes will have the major version number appended in sys.platform... in fact, that should be the case for FreeBSD, NetBSD, OpenBSD, and SunOS in your example</p>
+</blockquote>
+<p>It might be fine for macOS, Windows, and Linux though...? The downside is that the fewer values we rewrite, the more we risk messing up when we see a marker like <code>platform_system == &quot;Darwin&quot; and platform_system == &quot;FreeBSD&quot;</code>, since we'd then rewrite that to <code>sys_platform == &quot;darwin&quot; and platform_system == &quot;FreeBSD&quot;</code>, and no longer realize they're disjoint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-18 03:15</div>
+            <div class="timeline-body"><p>Maybe we run with this for macOS, Linux, Windows, and any other platforms that <em>don't</em> encode a version number.</p>
+<p>Then, we can use our existing &quot;incompatible markers&quot; infrastructure to mark those other platforms as incompatible with these <code>sys_platform</code> values? Like, we can mark <code>platform_system == &quot;FreeBSD&quot;</code> as incompatible with all of these <code>sys_platform</code> values.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-18 15:03</div>
+            <div class="timeline-body"><p>Ok, I did a second pass on this with more care around known semantics. I think it's good to go. Our strategy has two parts: (1) we normalize <code>platform_system</code> to <code>sys_platform</code> when we can; and (2) when we can't, we encode as many known incompatibilities as possible. (1) is preferable to (2), but (1) isn't always possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-12-18 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-18 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-18 15:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:16 UTC
+    </footer>
+</body>
+</html>

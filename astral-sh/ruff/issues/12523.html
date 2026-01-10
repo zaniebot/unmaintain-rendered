@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Provide log messages for the native server - astral-sh/ruff #12523</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Provide log messages for the native server</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12523">#12523</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-07-26 06:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-26 06:57</div>
+            <div class="timeline-body"><p>There aren't many log messages emitted by the server which can help in debugging. It would be quite useful to provide some more log messages at info / debug / trace levels.</p>
+<p>Note that these log messages shouldn't include the request response messages because that's taken care by the editor. It should be specific to the server logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2024-07-26 06:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-29 05:39</div>
+            <div class="timeline-body"><p>In addition to the log messages, it's also important for us to determine how to send these log messages to the client. Currently, all tracing logs are sent to stderr unless diverted by using the <code>ruff.logFile</code> server setting. But, as per the spec, the tracing logs are usually sent via the <code>$/logTrace</code> request. We should also consider using the <code>window/logMessage</code> request for user-facing messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-29 05:51</div>
+            <div class="timeline-body"><blockquote>
+<p>But, as per the spec, the tracing logs are usually sent via the $/logTrace</p>
+</blockquote>
+<p>There was some <a href="https://discord.com/channels/1039017663004942429/1248532294084460588/1248658835015733268">internal discussion around using <code>$logTrace</code></a>. I don't remember the reasoning to not use it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-09-06 05:02</div>
+            <div class="timeline-body"><p>I think this is becoming more relevant because currently the user experience around viewing log messages isn't automatic.</p>
+<p>Currently, the default value of the <code>ruff.trace.server</code> (in VS Code) or <code>RUFF_TRACE</code> environment variable (for other editors) is <code>off</code> and the default value of <code>ruff.logLevel</code> is <code>info</code>. This means that any error / warning messages that the server sends to the client are not going to be logged unless the user explicitly turns on server log messages by updating the trace value. This doesn't seem like a good user experience. For example,</p>
+<p>https://github.com/astral-sh/ruff/blob/a4ebe7d34407ea353762ebde1fef4a718edddb55/crates/ruff_server/src/server/api.rs#L61-L64</p>
+<p>Here, the client will display the notification with the message as in <code>show_err_msg</code> macro but it won't log the error via the <code>tracing::error</code> call unless the trace value is <code>messages</code> or <code>verbose</code>. This means that the user will see the notification and when they open the logs they won't see anything.</p>
+<p>The differentiating factor is that which messages should always be logged (<code>window/logMessage</code>) and which are optional (<code>$/logTrace</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-06 06:25</div>
+            <div class="timeline-body"><blockquote>
+<p>This means that any error / warning messages that the server sends to the client are not going to be logged unless the user explicitly turns on server log messages by updating the trace value. This doesn't seem like a good user experience. For example,</p>
+</blockquote>
+<p>Yeah. This doesn't seem like a good default. I think the default should be <code>info</code> similar to red knot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-09-06 06:39</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah. This doesn't seem like a good default. I think the default should be <code>info</code> similar to red knot.</p>
+</blockquote>
+<p>Do you mean the default trace value should be &quot;messages&quot;? The default value for the log level is <code>info</code> but the logs themselves are <code>off</code> by way of having the default trace value as <code>off</code>.</p>
+<p>Regardless, if we update the default trace value to be &quot;messages&quot;, the output channel in the VS Code will be filled with the request - response cycle messages like:</p>
+<pre><code>2024-09-06 12:08:38.040 [info] [Trace - 12:08:38 PM] Sending request 'textDocument/codeAction - (28)'.
+2024-09-06 12:08:38.041 [info] [Trace - 12:08:38 PM] Received response 'textDocument/codeAction - (28)' in 1ms.
+2024-09-06 12:08:38.290 [info] [Trace - 12:08:38 PM] Sending request 'textDocument/codeAction - (29)'.
+2024-09-06 12:08:38.291 [info] [Trace - 12:08:38 PM] Received response 'textDocument/codeAction - (29)' in 1ms.
+</code></pre>
+<p>We could have a separate output channel for the trace messages (similar to rust-analyzer) but that would also include the trace messages from the Ruff server. This is why we should also consider using <code>window/logMessage</code> in addition to <code>$/logTrace</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-06 08:05</div>
+            <div class="timeline-body"><p>Hmm. I would need to take a closer look at how our tracing setup works. Ideally, we would show info, warning, and error messages (<code>tracing::info!</code>) by default. We could then use those levels to e.g. log what configurations we discovered.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mpsijm">@mpsijm</a> on 2025-01-04 20:01</div>
+            <div class="timeline-body"><p>Hi there, newcomer to NeoVim here. After installing https://github.com/ray-x/navigator.lua, I started getting the generic error message quoted above: <code>&quot;Ruff failed to handle a request from the editor. Check the logs for more details.&quot;</code></p>
+<p>Nothing appears to be broken in functionality, it only <code>vim.notify</code>s the error message. I have no clue whether this is caused by the way this new plugin interacts with Ruff's language server, or something else.</p>
+<p>Is there any way I can dig deeper into where this message is coming from? I already enabled the debug logging options as per https://github.com/astral-sh/ruff/issues/14959#issuecomment-2541783682, even with a custom <code>logFile = '...'</code> option, but I don't see the <code>tracing::error!(&quot;Encountered error [...]&quot;)</code> message appear anywhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-06 10:27</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there any way I can dig deeper into where this message is coming from? I already enabled the debug logging options as per <a href="https://github.com/astral-sh/ruff/issues/14959#issuecomment-2541783682">#14959 (comment)</a>, even with a custom <code>logFile = '...'</code> option, but I don't see the <code>tracing::error!(&quot;Encountered error [...]&quot;)</code> message appear anywhere.</p>
+</blockquote>
+<p>I think what I've suggested <em>should</em> provide some insights into why this is failing. Can you provide the initialization options that you're passing to the Ruff language server in Neovim?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mpsijm">@mpsijm</a> on 2025-01-06 10:51</div>
+            <div class="timeline-body"><p>@dhruvmanila I'm currently passing the following options:</p>
+<pre><code class="language-lua">require('lspconfig').ruff.setup {
+    on_attach = on_attach,
+    trace = 'verbose',
+    init_options = {
+        settings = {
+            args = {},
+            logLevel = 'debug',
+            logFile = '/home/mpsijm/ruff.log',
+        }
+    }
+}
+</code></pre>
+<details>
+<summary>Collapsing the `on_attach` function because I don't think it's relevant (but sharing it anyway just in case):</summary>
+
+<pre><code class="language-lua">local on_attach = function(client, _)
+    vim.keymap.set('n', '&lt;leader&gt;r', vim.lsp.buf.rename, {})
+    vim.keymap.set('n', '&lt;leader&gt;ca', vim.lsp.buf.code_action, {})
+    vim.keymap.set('n', ']g', vim.diagnostic.goto_next)
+    vim.keymap.set('n', '[g', vim.diagnostic.goto_prev)
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
+    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, {})
+    vim.keymap.set('n', 'gr', require('telescope.builtin').lsp_references, {})
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, {})
+    vim.keymap.set('n', '&lt;C-Q&gt;', vim.lsp.buf.hover, {})
+
+    --  Source: https://www.reddit.com/r/neovim/comments/10a31vo/how_does_vimlspbufformat_deal_with_multiple/
+    vim.keymap.set('n', '&lt;leader&gt;l', function()
+        vim.lsp.buf.format {
+            async = true,
+            filter = function()
+                return client.name ~= 'ruff_lsp'
+            end
+        }
+    end, {})
+
+    if client.name == 'ruff_lsp' then
+        -- Disable hover in favor of Pyright
+        client.server_capabilities.hoverProvider = false
+    end
+end
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-06 10:58</div>
+            <div class="timeline-body"><p>That looks like it should work, it does for me:</p>
+<pre><code>   0.000014375s  INFO main ruff_server::server: No workspace settings found for file:///Users/dhruv/playground/ruff, using default settings
+   0.002282000s DEBUG ThreadId(04) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: /Users/dhruv/playground/ruff/.vscode
+   0.005479291s  INFO main ruff_server::session::index: Registering workspace: /Users/dhruv/playground/ruff
+   0.007846083s  INFO ruff:main ruff_server::server: Configuration file watcher successfully registered
+</code></pre>
+<p>(You don't need to pass the <code>args</code> settings as that's only relevant for <code>ruff_lsp</code>.)</p>
+<p>Are you getting nothing in <code>/home/mpsijm/ruff.log</code>? Does that file get created and is empty?</p>
+<p>You can also try removing the <code>logFile</code> setting which then should log the messages to the file as given by <code>vim.lsp.get_log_path()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mpsijm">@mpsijm</a> on 2025-01-06 14:38</div>
+            <div class="timeline-body"><p>Thanks, I removed <code>args</code> 🙂</p>
+<p>The file <code>/home/mpsijm/ruff.log</code> did not even get created.</p>
+<p>However, I've now found that I also had to call <code>vim.lsp.set_log_level('trace')</code> before NeoVim creates the log file, so now I do get logs (also in the default log file when I remove the <code>logFile</code> setting) 🥳</p>
+<p>The messages I'm getting are:</p>
+<pre><code>[DEBUG][2025-01-06 15:27:37] .../vim/lsp/rpc.lua:408    &quot;rpc.receive&quot;   {  jsonrpc = &quot;2.0&quot;,  method = &quot;window/showMessage&quot;,  params = {    message = &quot;Ruff failed to handle a request from the editor. Check the logs for more details.&quot;,    type = 1  }}
+[DEBUG][2025-01-06 15:27:37] .../vim/lsp/rpc.lua:408    &quot;rpc.receive&quot;   {  error = {    code = -32603,    message = &quot;JSON parsing failure:\nInvalid request\nMethod: textDocument/codeAction\n error: missing field `range`&quot;  },  id = 5,  jsonrpc = &quot;2.0&quot;}
+[TRACE][2025-01-06 15:27:37] ...m/lsp/client.lua:1003   &quot;notification&quot;  &quot;window/showMessage&quot;    {  message = &quot;Ruff failed to handle a request from the editor. Check the logs for more details.&quot;,  type = 1}
+[TRACE][2025-01-06 15:27:37] ...lsp/handlers.lua:711    &quot;default_handler&quot;       &quot;window/showMessage&quot;    {  ctx = '{\n  client_id = 4,\n  method = &quot;window/showMessage&quot;\n}',  result = {    message = &quot;Ruff failed to handle a request from the editor. Check the logs for more details.&quot;,    type = 1  }}
+</code></pre>
+<p>Where I think the most important bit is in the second line:</p>
+<pre><code>JSON parsing failure:
+Invalid request
+Method: textDocument/codeAction
+ error: missing field `range`
+</code></pre>
+<p>I found https://www.reddit.com/r/neovim/comments/1g6cs0s/comment/lsmc40n/ who gets the same error, also caused by the Navigator plugin. Sounds like Navigator is trying to call the Ruff language server with incomplete arguments, which I'll pick up in their GitHub repo. If you happen to know from the top of your head where they could look to fix this, please share 🙂 Thanks for your help! ❤</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-08 05:12</div>
+            <div class="timeline-body"><blockquote>
+<p>I found <a href="https://www.reddit.com/r/neovim/comments/1g6cs0s/comment/lsmc40n/">reddit.com/r/neovim/comments/1g6cs0s/comment/lsmc40n</a> who gets the same error, also caused by the Navigator plugin. Sounds like Navigator is trying to call the Ruff language server with incomplete arguments, which I'll pick up in their GitHub repo. If you happen to know from the top of your head where they could look to fix this, please share 🙂 Thanks for your help! ❤</p>
+</blockquote>
+<p>Thanks, it seems that the plugin isn't passing in the <code>range</code> field which is required for the code action request (https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#codeActionParams) which is weird because it utilizes the standard library function to construct the parameters (https://github.com/ray-x/navigator.lua/blob/b1d0da438b2e0fa32e2d52a4a047b4900bb0e8ca/lua/navigator/codeAction.lua#L150-L156) so not sure why that is happening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-15 07:40</div>
+            <div class="timeline-body"><p>Should we close this and add more logs as we make changes to the LSP?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-01-15 07:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:28 UTC
+    </footer>
+</body>
+</html>

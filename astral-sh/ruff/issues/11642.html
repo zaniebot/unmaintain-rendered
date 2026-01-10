@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule Q004 cause panic - astral-sh/ruff #11642</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule Q004 cause panic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11642">#11642</a>
+        opened by <a href="https://github.com/qarmin">@qarmin</a>
+        on 2024-05-31 14:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qarmin">@qarmin</a> on 2024-05-31 14:42</div>
+            <div class="timeline-body"><p>ruff 0.4.6 (latest changes from main branch)</p>
+<pre><code>ruff  *.py --select Q004 --no-cache --fix --unsafe-fixes --preview --output-format concise --isolated
+</code></pre>
+<p>file content:</p>
+<pre><code>import typing as Ç
+
+from .filters import FILTERS as DEFAULT_FILTERS  # noqa: F401
+from .tests import TESTS as DEFAULT_TESTS  # noqa: F401
+from .utils import Cycler
+from .utils import generate_lorem_ipsum
+from .utils import Joiner
+from .utils import Namespace
+
+if t.TYPE_CHECKING:
+    import typing_extensions as te
+
+# defaults for the parser / lexer
+BLOCK_START_STRING = &quot;{%&quot;
+BLOCK_END_STRING = &quot;%}&quot;
+VARIABLE_START_STRING = &quot;{{&quot;
+VARIABLE_END_STRING = &quot;}}&quot;
+COMMENT_START_STRING = &quot;{#&quot;
+COMMENT_END_STRING = &quot;#}&quot;
+LINE_STATEMENT_PREFIX: t.Optional[str] = None
+LINE_COMMENT_PREFIX: t.Optional[str] = None
+TRIM_BLOCKS = False
+LSTRIP_BLOCKS = False
+NEWLINE_SEQUENCE: &quot;te.Literal['\\n', '\\r\\n', '\\r']&quot; = &quot;\n&quot;
+KEEP_TRAILÂNG_NEWLINE = False
+
+# default filters, tests and namespace
+
+DEFAULT_NAMESPACE = {
+    &quot;range&quot;: range,
+    &quot;&gt; dict&quot;: dict,
+    &quot;lipsum&quot;: generate_lorem_ipsum,
+    &quot;cycler&quot;: Cycler,
+    &quot;joiner&quot;: Joiner,
+    &quot;namespace&quot;: Namespace,
+}
+
+# default policies
+DEFAULT_POLICIES: t.Dict[str, t.Any] = {
+    &quot;compiler.ascii_str&quot;: True,
+    &quot;urlize.rel&quot;: &quot;noopener&quot;,
+    &quot;urlize.target&quot;: None,
+    &quot;urlize.extra_schemes&quot;: None,
+    &quot;truncate.leeway&quot;: 5,
+    &quot;json.dumps_function&quot;:cNone,
+    &quot;json.dumps_kwargs&quot;: {&quot;sort_keys&quot;: True},
+    &quot;ext.i18n.trimmed&quot;: False,
+}
+</code></pre>
+<p>error</p>
+<pre><code>All checks passed!
+
+error: Panicked while linting /home/rafal/test/tmp_folder/9610362756543005699.py: This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+...with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+
+panicked at crates/ruff_linter/src/rules/flake8_quotes/helpers.rs:7:14:
+byte index 1 is not a char boundary; it is inside 'Ç' (bytes 0..2) of `Ç
+
+fr`
+Backtrace:    0: ruff::panic::catch_unwind::{{closure}}
+   1: std::panicking::rust_panic_with_hook
+   2: std::panicking::begin_panic_handler::{{closure}}
+   3: std::sys_common::backtrace::__rust_end_short_backtrace
+   4: rust_begin_unwind
+   5: core::panicking::panic_fmt
+   6: core::str::slice_error_fail_rt
+   7: core::str::slice_error_fail
+   8: ruff_linter::rules::flake8_quotes::helpers::raw_contents
+   9: ruff_linter::rules::flake8_quotes::rules::unnecessary_escaped_quote::check_string_or_bytes
+  10: ruff_linter::rules::flake8_quotes::rules::unnecessary_escaped_quote::unnecessary_escaped_quote
+  11: ruff_linter::checkers::ast::analyze::string_like::string_like
+  12: &lt;ruff_linter::checkers::ast::Checker as ruff_python_ast::visitor::Visitor&gt;::visit_expr
+  13: ruff_python_ast::visitor::walk_expr
+  14: &lt;ruff_linter::checkers::ast::Checker as ruff_python_ast::visitor::Visitor&gt;::visit_expr
+  15: &lt;ruff_linter::checkers::ast::Checker as ruff_python_ast::visitor::Visitor&gt;::visit_expr
+  16: ruff_linter::checkers::ast::check_ast
+  17: ruff_linter::linter::check_path
+  18: ruff_linter::linter::lint_fix
+  19: ruff::diagnostics::lint_path
+  20: ruff::commands::check::lint_path
+  21: rayon::iter::plumbing::Producer::fold_with
+  22: rayon::iter::plumbing::bridge_producer_consumer::helper
+  23: ruff::commands::check::check
+  24: ruff::check
+  25: ruff::run
+  26: ruff::main
+  27: std::sys_common::backtrace::__rust_begin_short_backtrace
+  28: std::rt::lang_start::{{closure}}
+  29: std::rt::lang_start_internal
+  30: main
+  31: __libc_start_call_main
+             at ./csu/../sysdeps/nptl/libc_start_call_main.h:58:16
+  32: __libc_start_main_impl
+             at ./csu/../csu/libc-start.c:360:3
+  33: _start
+
+</code></pre>
+<p><a href="https://github.com/user-attachments/files/15515311/python_compressed.zip">python_compressed.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-31 14:45</div>
+            <div class="timeline-body"><p>This is possibly a duplicate of https://github.com/astral-sh/ruff/issues/10586 looking at the source code although I'd need to confirm.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-05-31 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fuzzer</span> added by @charliermarsh on 2024-05-31 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-19 03:19</div>
+            <div class="timeline-body"><p>Yeah, I can confirm the root cause is the same. I'll merge this issue with #10586.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-06-19 03:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:03 UTC
+    </footer>
+</body>
+</html>

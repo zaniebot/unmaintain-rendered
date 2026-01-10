@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Function level linting - astral-sh/ruff #3868</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Function level linting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3868">#3868</a>
+        opened by <a href="https://github.com/eronning">@eronning</a>
+        on 2023-04-03 18:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eronning">@eronning</a> on 2023-04-03 18:55</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+
+-->
+
+<p><strong>Feature Request:</strong></p>
+<p>Would like the ability to be able to lint against certain call patterns in our codebase.</p>
+<p>Context: We added a layer on top of our ORM and would like funnel code paths accessing the DB to that layer. There isn't an easy way to block native ORM calls without blocking DB operations altogether. Linting would be the best path.</p>
+<p><strong>Sample Code:</strong></p>
+<pre><code>class Model:
+  def foo()
+    ...
+
+class FooModel(Model):
+  def foo_fn()
+    ... # do things
+    foo() # noqa (want to ignore this)
+
+def to_implement()
+   FooModel.foo() # raise lint
+   FooModel.foo_fn() # preferred pattern
+ 
+</code></pre>
+<p>Due to this pattern of referencing functions we can't make use of the <code>banned-api</code> rule that exists today. We need a more granular form of linting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-03 19:45</div>
+            <div class="timeline-body"><p>Is it correct to say that you want to ban any call of the form <code>*.foo()</code> and <code>foo()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-04-03 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eronning">@eronning</a> on 2023-04-03 22:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Is it correct to say that you want to ban any call of the form <code>*.foo()</code> and <code>foo()</code>?</p>
+</blockquote>
+<p>Yes @charliermarsh, that is correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-07-10 01:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @charliermarsh on 2023-07-10 01:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adam-grant-hendry">@adam-grant-hendry</a> on 2023-08-30 18:44</div>
+            <div class="timeline-body"><p>@charliermarsh Could we add to this the ability to ignore a rule for an entire scope, like so:</p>
+<pre><code class="language-python">DEBUG = True
+
+def debug() -&gt; None:
+    # noqa: T201  # This is for debugging only
+    if DEBUG:
+        print(f'Debug message...')
+</code></pre>
+<p>This is similar in some respect to <a href="https://github.com/astral-sh/ruff/issues/3711">issue #3711</a>, but I would prefer not to have to explicitly turn linting <code>on</code> at the beginning of the function and <code>off</code> at the end unless I only need to turn off a particular segment of the code block (not the whole thing).</p>
+<p>The method I propose would match <code>pylint</code>'s <a href="https://pylint.pycqa.org/en/latest/user_guide/messages/message_control.html#block-disables">block disables</a> capability.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-31 03:40</div>
+            <div class="timeline-body"><p>@adam-grant-hendry I don't think that belongs in this issue — do you want to open a new issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-31 05:55</div>
+            <div class="timeline-body"><p>Although the specific proposal there is slightly different, I think I would just direct folks to add comments to https://github.com/astral-sh/ruff/issues/3711 rather than file a new issue. (We want to redo suppression comments eventually but probably won’t make minor changes to them until we do a full redesign.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adam-grant-hendry">@adam-grant-hendry</a> on 2023-08-31 14:16</div>
+            <div class="timeline-body"><p>@charliermarsh @zanieb Per our discussion, I’ll ask the author to create a checklist at the beginning of the issue so the items to be addressed are clear and can be marked as completed by different PRs:</p>
+<ul>
+<li>[ ] Add section-level suppression/ignoring of rules (<code>ruff: noqa: on</code> and <code>ruff: noqa: off</code>)</li>
+<li>[ ] Add scope-level suppression/ignoring of rules (matches <a href="https://pylint.pycqa.org/en/latest/user_guide/messages/message_control.html#block-disables"><code>pylint</code> block disabled</a>)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2025-06-16 18:58</div>
+            <div class="timeline-body"><p>I think I have a similar need for this. I want basically <a href="https://docs.astral.sh/ruff/rules/banned-api/">TID251 banned-api</a> but for any function</p>
+<p>The name banned-api is actually quite fitting.</p>
+<p>My problem is I have</p>
+<pre><code>import foo
+
+foo.bar.deprecated()  # I want the linter to error on this function call
+foo.bar.some_other_function()
+foo.baz.another()
+</code></pre>
+<p>the <code>deprecated( )</code> name is dynamically loaded and there are no imports. If I could ask the linter to ban the API this would solve a big issue I have, because there could this thing could be dormant in many of several hundred PRs of a project and I want them to be caught by the linter before merging to master.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:50 UTC
+    </footer>
+</body>
+</html>

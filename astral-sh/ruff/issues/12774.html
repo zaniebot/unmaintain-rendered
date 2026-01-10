@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>no error when duplicated rules in config file - astral-sh/ruff #12774</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>no error when duplicated rules in config file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12774">#12774</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2024-08-09 05:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-08-09 05:45</div>
+            <div class="timeline-body"><pre><code class="language-json">{
+  &quot;lint&quot;: {
+    &quot;select&quot;: [
+      &quot;RUF031&quot;,
+      &quot;RUF031&quot;
+    ],
+    &quot;ignore&quot;: [
+      &quot;D106&quot;,
+      &quot;D106&quot;
+    ]
+  }
+}
+</code></pre>
+<p>ruff should report an error when duplicated rules are present in the <code>select</code>/<code>ignore</code> lists, as it's an obvious mistake.</p>
+<p>it could also account for redundant rules, eg:</p>
+<pre><code class="language-jsonc">{
+  &quot;lint&quot;: {
+    &quot;select&quot;: [
+      &quot;ALL&quot;,
+      &quot;D106&quot;  // error: this rule is already covered by ALL
+    ]
+  }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-08-09 05:48</div>
+            <div class="timeline-body"><p>also:</p>
+<pre><code class="language-jsonc">{
+  &quot;lint&quot;: {
+    &quot;select&quot;: [
+      &quot;D106&quot;,
+    ],
+    &quot;ignore&quot;: [
+      &quot;D106&quot; // error: conflicts with &quot;select&quot; section
+    ]
+  }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-09 06:22</div>
+            <div class="timeline-body"><p>I'm not sure if ruff should error in this case because it can do a decent job at recovering (it very much seems that you wanted to enable the rule and the ordering in <code>select</code> doesn't matter).</p>
+<p>I think what would be nice is if we can lint your pyproject.toml and point out that you repeated a value in the selector. I consider this similar to a lint rule that detects <code>set(True, True)</code> and proposes to simplify it to <code>set(True)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-09 06:23</div>
+            <div class="timeline-body"><p>I'll merge this into https://github.com/astral-sh/ruff/issues/10487 which raises this problem in a more broader sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-09 06:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:39 UTC
+    </footer>
+</body>
+</html>

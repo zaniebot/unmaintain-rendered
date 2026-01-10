@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff --extend-select I` categorized local module as Known(ThirdParty) when it was set in src option. - astral-sh/ruff #11000</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>ruff --extend-select I</code> categorized local module as Known(ThirdParty) when it was set in src option.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11000">#11000</a>
+        opened by <a href="https://github.com/waketzheng">@waketzheng</a>
+        on 2024-04-17 13:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/waketzheng">@waketzheng</a> on 2024-04-17 13:40</div>
+            <div class="timeline-body"><ul>
+<li>ruff --version
+ruff 0.3.7</li>
+<li>python -V
+Python 3.11.8</li>
+<li>project structure</li>
+</ul>
+<pre><code>.
+├── my_package
+│   └── __init__.py
+├── pyproject.toml
+└── tests
+    ├── test_a.py
+    └── utils.py
+</code></pre>
+<ul>
+<li>config</li>
+</ul>
+<pre><code class="language-toml">[tool.ruff]
+src = [&quot;my_package&quot;,&quot;tests&quot;]
+
+[tool.isort]
+src_paths = [&quot;my_package&quot;,&quot;tests&quot;]
+</code></pre>
+<ul>
+<li>After run <code>ruff check --extend-select=I --fix tests/test_a.py</code> I got:</li>
+</ul>
+<pre><code class="language-py">import pytest
+from my_package import A
+from tests.utils import echo
+</code></pre>
+<ul>
+<li>While run <code>isort tests/test_a.py</code> got:</li>
+</ul>
+<pre><code class="language-py">import pytest
+
+from my_package import A
+from tests.utils import echo
+</code></pre>
+<ul>
+<li>How to reproduce</li>
+</ul>
+<pre><code class="language-bash">mkdir my-package
+cd my-package
+python3 -m venv venv
+source venv/bin/activate
+pip install ruff pytest isort
+echo '[tool.ruff]
+src = [&quot;my_package&quot;,&quot;tests&quot;]
+
+[tool.isort]
+src_paths = [&quot;my_package&quot;,&quot;tests&quot;]
+' &gt; pyproject.toml
+mkdir my_package
+echo 'class A: ...' &gt; my_package/__init__.py
+mkdir tests
+echo 'def echo(a):
+    print(a)
+' &gt; tests/utils.py
+echo 'import pytest
+from tests.utils import echo
+from my_package import A
+
+def test_a():
+    a = A()
+    echo(a)
+    with pytest.raises(AttributeError):
+        a.a
+' &gt; tests/test_a.py
+ruff check --extend-select=I --fix .
+echo 'Lint result by ruff:'
+head -3 tests/test_a.py|cat -n
+isort .
+echo 'By isort:'
+head -5 tests/test_a.py|cat -n
+</code></pre>
+<ul>
+<li>Similar issue
+#10989</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`ruff --select I` categorized local module as Known(ThirdParty) when it was set in src option." to "`ruff --extend-select I` categorized local module as Known(ThirdParty) when it was set in src option." by @waketzheng on 2024-04-17 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-17 13:47</div>
+            <div class="timeline-body"><p>I believe <code>src</code> should be the directory <em>containing</em> your package, not the directory of the package itself. So I believe you just want this?</p>
+<pre><code class="language-toml">[tool.ruff]
+src = [&quot;.&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-04-17 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2024-04-17 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/waketzheng">@waketzheng</a> on 2024-04-17 14:41</div>
+            <div class="timeline-body"><blockquote>
+<p>I believe <code>src</code> should be the directory <em>containing</em> your package, not the directory of the package itself. So I believe you just want this?</p>
+<pre><code class="language-toml">[tool.ruff]
+src = [&quot;.&quot;]
+</code></pre>
+</blockquote>
+<p>Worked. Thanks~</p>
+<p>It seems that <code>src</code> option of ruff is different from <code>src_paths</code> of isort.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @waketzheng on 2024-04-17 14:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:33 UTC
+    </footer>
+</body>
+</html>

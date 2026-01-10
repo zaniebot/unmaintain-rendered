@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANN101 False Positive - astral-sh/ruff #1231</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ANN101 False Positive</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1231">#1231</a>
+        opened by <a href="https://github.com/Tomperez98">@Tomperez98</a>
+        on 2022-12-13 21:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Tomperez98">@Tomperez98</a> on 2022-12-13 21:42</div>
+            <div class="timeline-body"><pre><code class="language-python">class AClass:
+    &quot;&quot;&quot;Loan Service exposes queries and commands required by the system.&quot;&quot;&quot;
+
+    def public_method(self, properties: Dict[Any, Any]) -&gt; polars.DataFrame:
+        &quot;&quot;&quot;A Docstring.&quot;&quot;&quot;
+        _ = properties
+
+</code></pre>
+<pre><code class="language-bash">ANN101 Missing type annotation for `self` in method
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-12-13 23:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-13 23:23</div>
+            <div class="timeline-body"><p>Weird, definitely a bug!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tomperez98">@Tomperez98</a> on 2022-12-13 23:30</div>
+            <div class="timeline-body"><p>If I write the code as</p>
+<pre><code class="language-python">class AClass:
+    &quot;&quot;&quot;Loan Service exposes queries and commands required by the system.&quot;&quot;&quot;
+
+    def public_method(self: &quot;AClass&quot;, properties: Dict[Any, Any]) -&gt; polars.DataFrame:
+        &quot;&quot;&quot;A Docstring.&quot;&quot;&quot;
+        _ = properties
+</code></pre>
+<p>It doesn't complain. Maybe that's the correct way to write it, but 💩  if it is</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2022-12-13 23:40</div>
+            <div class="timeline-body"><p>That's the behavior of <a href="https://pypi.org/project/flake8-annotations/">flake8-annotations</a>. The rationale is that inheritance patterns may depend on the concrete type of <code>self</code>.</p>
+<pre><code class="language-python">class A:
+    def public_method(self: &quot;A&quot;, properties: Dict[Any, Any]) -&gt; polars.DataFrame:
+        &quot;&quot;&quot;A Docstring.&quot;&quot;&quot;
+        _ = properties
+
+
+class B:
+    new_attr = True
+
+    def public_method(self: &quot;A&quot;, properties: Dict[Any, Any]) -&gt; polars.DataFrame:
+        &quot;&quot;&quot;A Docstring.&quot;&quot;&quot;
+        super().public_method(self, properties)
+        self.new_attr  # mypy would complain that `A` doesn't have a `new_attr` attribute.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-13 23:40</div>
+            <div class="timeline-body"><p>Wait, sorry, this actually <em>is</em> intended, because there are special for <code>self</code> and <code>cls</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-13 23:41</div>
+            <div class="timeline-body"><p>It's best to disable <code>ANN101</code> and <code>ANN102</code> if you don't want to enforce those.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-14 00:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tomperez98">@Tomperez98</a> on 2022-12-14 01:13</div>
+            <div class="timeline-body"><p>Thanks @edgarrmondragon</p>
+<p>Btw, is amazing what you're doing with the Meltano project</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:10:16 UTC
+    </footer>
+</body>
+</html>

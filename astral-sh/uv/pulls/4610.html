@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private locks - astral-sh/uv #4610</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Private locks</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/4610">#4610</a>
+        opened by <a href="https://github.com/idlsoft">@idlsoft</a>
+        on 2024-06-28 04:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/idlsoft">@idlsoft</a> on 2024-06-28 04:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>A basic implementation for #4574.</p>
+<p>This introduces <code>private-members</code> to <code>[tool.uv.workspace]</code>.
+Private members are not included in the workspace <code>uv.lock</code> and <code>.venv</code>, but have their own instead.</p>
+<p>The code could use some polish, and we'd need to make sure pip commands and workspace commands work consistently.</p>
+<p>Otherwise I think it's good enough to review.</p>
+<p>The basic implementation is in <a href="https://github.com/idlsoft/uv/blob/private_locks/crates/uv-workspace/src/workspace.rs">workspace.rs</a>.
+There is a new <code>private_lock</code> field in <code>WorkspaceMember</code>.
+The following functions moved from <code>Workspace</code> to <code>VirtualProject</code> and depend on <code>private_lock</code>:</p>
+<pre><code class="language-rust">pub fn venv(&amp;self) -&gt; PathBuf
+pub fn lockfile(&amp;self) -&gt; PathBuf
+pub fn members_as_requirements(&amp;self) -&gt; Vec&lt;Requirement&gt;
+pub fn constraints(&amp;self) -&gt; Vec&lt;Requirement&gt;
+pub fn overrides(&amp;self) -&gt; Vec&lt;Requirement&gt;
+</code></pre>
+<p>The rest is some refactoring to make the calls possible.
+These include changing the <code>Workspace</code> argument to <code>VirtualProject</code> for the following functions in <a href="https://github.com/idlsoft/uv/blob/private_locks/crates/uv/src/commands/project/mod.rs">mod.rs</a>:</p>
+<ul>
+<li><code>find_environment</code></li>
+<li><code>FoundInterpreter::discover</code></li>
+<li><code>get_or_init_environment</code></li>
+</ul>
+<p>I split it in a few commits to make following the changes easier.</p>
+<h2>Test Plan</h2>
+<p>A sample workspace and unittest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @idlsoft on 2024-06-28 10:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-21 23:38</div>
+            <div class="timeline-body"><p>Sorry for not engaging with this sooner (apart from our conversation on the originating issue). I think something like this is interesting but I likely won't prioritize exploring it until after we get the initial workspace support out.</p>
+<p>In the meantime... the intent is that you should be able to create a project outside of a workspace, and then use a path dependency to point to a member of a workspace that's it <em>not</em> part of, and it should &quot;just work&quot; -- which IIUC should achieve the same thing here? Since that separate project would get its own lock, venv, etc. Though not certain if we finished implementing that yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-21 23:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Though not certain if we finished implementing that yet.</p>
+</blockquote>
+<p>I just confirmed that this <em>does</em> work by creating <code>foo/pyproject.toml</code> in the uv root with:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.0.0&quot;
+dependencies = [
+  &quot;bird-feeder&quot;,
+]
+[tool.uv.sources]
+&quot;bird-feeder&quot; = { path = &quot;../scripts/workspaces/albatross-root-workspace/packages/bird-feeder&quot; }
+</code></pre>
+<p>Which does correctly include the workspace dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/idlsoft">@idlsoft</a> on 2024-07-22 00:57</div>
+            <div class="timeline-body"><blockquote>
+<p>In the meantime... the intent is that you should be able to create a project outside of a workspace, and then use a path dependency to point to a member of a workspace that's it <em>not</em> part of, and it should &quot;just work&quot;</p>
+</blockquote>
+<p>It does work. I actually checked a few days ago, and closed two other PRs, because<code>{path=... editable=true}</code> solved the use-case perfectly.
+And while you're right, path dependencies is a solution, I would still like to keep this one for future consideration.</p>
+<p>I think it's a valid use-case, and I like that <code>members</code> and <code>projects</code> are defined next to each other without a clear preference which one is the right approach, the choice being left to the developer.</p>
+<p>Workspaces, among other things, are a good way to share metadata, like default constraints, default versions etc. It would be nice if projects, even they're independent from each other, could take advantage of that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-07 20:51</div>
+            <div class="timeline-body"><p>Hi! Do you mind if I close this? We'll need more discussion in an issue before we can accept this kind of change and we're paying for these CI runs every time it is updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/idlsoft">@idlsoft</a> on 2024-08-07 20:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Hi! Do you mind if I close this? We'll need more discussion in an issue before we can accept this kind of change and we're paying for these CI runs every time it is updated.</p>
+</blockquote>
+<p>Will it still run CI if we mark it as draft?
+Also I can stop resolving conflicts for a while, it won't run builds then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-07 20:56</div>
+            <div class="timeline-body"><p>Yeah it'll still run CI if marked as a draft.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/idlsoft">@idlsoft</a> on 2024-08-07 20:58</div>
+            <div class="timeline-body"><p>I'll stop pushing then, so it shouldn't be a problem.
+If you'd like to close it, that's fine too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/idlsoft">@idlsoft</a> on 2024-09-12 18:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Sorry for not engaging with this sooner (apart from our conversation on the originating issue). I think something like this is interesting but I likely won't prioritize exploring it until after we get the initial workspace support out.</p>
+</blockquote>
+<p>@charliermarsh  any chance to giving this another look?</p>
+<p>I've been resolving conflicts periodically in another branch, so can bring the PR up to date easily.</p>
+<p>A couple of notes:</p>
+<ul>
+<li>about the user-facing naming conventions: <code>projects</code> was first neutral term that came to mind, <code>private_members</code> may be more consistent/easier to explain?</li>
+<li>the 1st commit can be merged with no side-effects in case you'd like to postpone the actual implementation till later</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/idlsoft">@idlsoft</a> on 2024-10-03 17:02</div>
+            <div class="timeline-body"><blockquote>
+<p>I'll stop pushing then</p>
+</blockquote>
+<p>@zanieb Made a minor change, <code>projects</code> has been renamed to <code>private-members</code>, I think it makes sense to use existing terms.</p>
+<p>Also the implementation will support intersecting globs for <code>members</code> and <code>private-members</code>. Private takes precedence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-04-28 12:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:12 UTC
+    </footer>
+</body>
+</html>

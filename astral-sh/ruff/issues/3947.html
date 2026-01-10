@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF001: data loss with embedded Cyrillic characters when auto-fix is enabled - astral-sh/ruff #3947</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF001: data loss with embedded Cyrillic characters when auto-fix is enabled</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3947">#3947</a>
+        opened by <a href="https://github.com/acdha">@acdha</a>
+        on 2023-04-12 14:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/acdha">@acdha</a> on 2023-04-12 14:29</div>
+            <div class="timeline-body"><p>I ran into an interesting problem with some test code:</p>
+<pre><code class="language-python">cyrillic = 'Салиас'
+escaped = '\u0421\u0430\u043b\u0438\u0430\u0441'
+assert cyrillic == escaped
+</code></pre>
+<p>Using ruff 0.0.261, this code will generate these warnings:</p>
+<pre><code class="language-bash">$ ruff check --select RUF001 tmp.py 
+tmp.py:3:13: RUF001 [*] String contains ambiguous unicode character `С` (did you mean `C`?)
+tmp.py:3:14: RUF001 [*] String contains ambiguous unicode character `а` (did you mean `a`?)
+tmp.py:3:17: RUF001 [*] String contains ambiguous unicode character `а` (did you mean `a`?)
+tmp.py:3:18: RUF001 [*] String contains ambiguous unicode character `с` (did you mean `c`?)
+Found 4 errors.
+[*] 4 potentially fixable with the --fix option.
+</code></pre>
+<p>If you run that with <code>--fix</code>, it will replace the Cyrillic <code>CYRILLIC CAPITAL LETTER ES</code>, <code>CYRILLIC SMALL LETTER A</code>, etc. with <code>LATIN CAPITAL LETTER C</code>, <code>LATIN SMALL LETTER A</code>, etc. Those may or may not be visually identical depending on the font but this has two problems. The first is that it actually can change behaviour — I noticed it because I was testing a search engine which does not attempt to convert Cyrillic characters into ASCII so documents stopped matching — but the second is that it can also trigger things like ambiguous character warnings since it's a single word mixing visually-similar characters in a way which is commonly used by phishers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-04-12 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-12 20:57</div>
+            <div class="timeline-body"><p>Yeah this is a good callout. I'm not certain how to handle, other than to remove the autofix, or wait for the introduction of autofix safety levels (to mark this as a &quot;potentially-unsafe fix&quot;).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/acdha">@acdha</a> on 2023-04-26 19:32</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah this is a good callout. I'm not certain how to handle, other than to remove the autofix, or wait for the introduction of autofix safety levels (to mark this as a &quot;potentially-unsafe fix&quot;).</p>
+</blockquote>
+<p>I think you're right — given that this can cause some pretty subtle failures, my vote would be to remove the autofix until you can mark it as potentially unsafe or find a robust way to detect runs of characters like that. In my test code, it seems like there should be a good way to recognize that the entire token is Cyrillic and not report it as ambiguous even though there are ASCII characters in other tokens on the same line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-26 19:46</div>
+            <div class="timeline-body"><p>I wish we had a way to disable this as an automatic fix, but still (e.g.) show it as a possible code action in VS Code and other LSP-enabled editors. \cc @MichaReiser (no response needed, just food for thought)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-26 20:50</div>
+            <div class="timeline-body"><blockquote>
+<p>I wish we had a way to disable this as an automatic fix, but still (e.g.) show it as a possible code action in VS Code and other LSP-enabled editors.</p>
+</blockquote>
+<p>I'm torn on this. One benefit of ruff over other language server only tools is that it gives you the same experience in the editor and the CLI (and CI). The main issue I see here is that this is not a safe fix, but users may assume it is. Should we instead extend <code>Fix</code> with a <code>safety</code> to support <code>safe</code> and potential unsafe fixes, and, ideally, document for every rule why they are potentially unsafe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/berzi">@berzi</a> on 2023-05-02 14:24</div>
+            <div class="timeline-body"><p>Can the rule be expanded to only take into account characters within words (or whole strings) that contain latin letters? This would remove most false positives I can think of and make the rule more useful, before considering its interactions with autofix, which are, in my opinion, a separate related matter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-05-02 14:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Can the rule be expanded to only take into account characters within words (or whole strings) that contain latin letters? This would remove most false positives I can think of and make the rule more useful, before considering its interactions with autofix, which are, in my opinion, a separate related matter.</p>
+</blockquote>
+<p>That's a neat idea nd relatively cheap to check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-05-20 20:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-05-20 20:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-05-20 20:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-22 14:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:52 UTC
+    </footer>
+</body>
+</html>

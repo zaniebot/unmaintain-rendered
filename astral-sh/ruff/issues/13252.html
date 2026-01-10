@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect `not_called()` and similar mistakes with Python mocks before Python 3.12 - astral-sh/ruff #13252</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Detect <code>not_called()</code> and similar mistakes with Python mocks before Python 3.12</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13252">#13252</a>
+        opened by <a href="https://github.com/potiuk">@potiuk</a>
+        on 2024-09-05 11:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/potiuk">@potiuk</a> on 2024-09-05 11:31</div>
+            <div class="timeline-body"><p>Python 3.12 started to report errors when mock assertion is done with a &quot;common&quot; mistake:</p>
+<pre><code>mock.not_called()
+</code></pre>
+<p>This does not do what you think it does, and when you run it with Python 3.12 you will get error:</p>
+<pre><code>'not_called' is not a valid assertion. Use a spec for the mock if 'not_called' is meant to be an attribute.
+</code></pre>
+<p>The correct way of calling it is:</p>
+<pre><code>mock.assert_not_called()
+</code></pre>
+<p>Similar for other methods. It's very easy to miss it during review and for Python &lt; 3.12 that call gets silently ignored (obviously it looks like you are calling <code>not_called</code> method on mock and it will just record the call in the mock.</p>
+<p>For projects like Apache Airflow where we optimize most PRs and run most tests with &quot;lowest&quot; supported Python (Python 3.8) this leads sometimes to false-positives where the tests start to fail in Python 3.12 &quot;canary&quot; build where it performs full suite of tests (not mentioning that this test passing on Python 3.8 does not test anything anyway because it does not make any assertion).</p>
+<p>Example case where it caused our &quot;canary&quot; builds to fail https://github.com/apache/airflow/pull/42027</p>
+<p>It would be great to detect such &quot;mistakes&quot; via static checks with ruff as a new rule.</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Detect `not_called()` and similar mistakes in Python mocks before Python 3.12" to "Detect `not_called()` and similar mistakes with Python mocks before Python 3.12" by @potiuk on 2024-09-05 11:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-06 08:58</div>
+            <div class="timeline-body"><p>This might be a good addition to PGH005, assuming that that rule doesn't flag this already</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-06 09:37</div>
+            <div class="timeline-body"><p>Indeed PGH005 does not currently flag this: https://play.ruff.rs/5f47abd1-efa4-4fd9-8077-616ae57edbad.</p>
+<p>There's a possibility of false positives here as we don't yet have type inference in Ruff. If the object is not a mock, just a regular class that has a <code>not_called()</code> method, then we'd emit a spurious error on the <code>not_called()</code> call, because we currently only have limited capability to detect the type of an object. However, this seems relatively unlikely, given that not many classes have methods with names like <code>not_called()</code>. So I think this should be fine to implement now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-09-06 09:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2024-09-06 09:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @AlexWaygood on 2024-09-06 09:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potiuk">@potiuk</a> on 2024-09-06 10:46</div>
+            <div class="timeline-body"><blockquote>
+<p>So I think this should be fine to implement now.</p>
+</blockquote>
+<p>Would be fantastic :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-13 11:43</div>
+            <div class="timeline-body"><p>@AlexWaygood Actually, <code>not_called</code> <a href="https://github.com/astral-sh/ruff/blob/f789b12705048a4f75cddeceb843fd4afbe783f1/crates/ruff_linter/src/rules/pygrep_hooks/rules/invalid_mock_access.rs#L91"><em>does</em> trigger a diagnostic</a>, but only <a href="https://github.com/astral-sh/ruff/blob/f789b12705048a4f75cddeceb843fd4afbe783f1/crates/ruff_linter/src/checkers/ast/analyze/statement.rs#L1258-L1294">in the context of an <code>assert</code> statement</a>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:03 UTC
+    </footer>
+</body>
+</html>

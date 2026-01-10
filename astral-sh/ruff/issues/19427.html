@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F401 warning when adding to __all__, but not on first assignment - astral-sh/ruff #19427</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F401 warning when adding to <strong>all</strong>, but not on first assignment</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/19427">#19427</a>
+        opened by <a href="https://github.com/mistydemeo">@mistydemeo</a>
+        on 2025-07-18 21:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mistydemeo">@mistydemeo</a> on 2025-07-18 21:59</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I've noticed that the F401 check permits reexports if those exports are listed in <code>__all__</code>, but still flags imports that are <em>added</em> to <code>__all__</code> later in the same file. For example:</p>
+<pre><code class="language-python">import os
+
+__all__ = [
+    &quot;os&quot;
+]
+</code></pre>
+<p>Is fine, and doesn't flag <code>import os</code> as unnecessary. However, if you want to add to <code>__all__</code> later:</p>
+<pre><code class="language-python">
+import re
+
+__all__.extend([&quot;re&quot;])
+</code></pre>
+<p>Is flagged as an error:</p>
+<pre><code>from bar import func
+                ^^^^ F401
+
+help: Remove unused import: `bar.func`
+</code></pre>
+<p>In some cases ruff will even outright tell you to &quot;Add unused import <code>bar</code> to <code>__all__</code>&quot;, even if that's what the user was doing.</p>
+<p>This primarily comes up for me in an application where certain features are gated by optional dependencies. So, for example, I might want to define <code>__all__</code> first with the reexports that are always available, and then add extra reexports from parts of the app that may or may not be available:</p>
+<pre><code class="language-python">if importlib.util.find_spec(&quot;yt_dlp&quot;):
+    from bar import func
+
+    __all__.extend([
+        &quot;func&quot;,
+    ])
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.4 (ee2759b36 2025-07-17)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-07-21 07:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:01 UTC
+    </footer>
+</body>
+</html>

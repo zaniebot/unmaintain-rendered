@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>typing-only-third-party-import (TCH002) doesn't catch compound imports - astral-sh/ruff #13060</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>typing-only-third-party-import (TCH002) doesn't catch compound imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13060">#13060</a>
+        opened by <a href="https://github.com/korverdev">@korverdev</a>
+        on 2024-08-22 16:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/korverdev">@korverdev</a> on 2024-08-22 16:23</div>
+            <div class="timeline-body"><p>When some of the imports from the same module are only used for type hinting, but not others, Ruff won't recommend any of the imports be moved to a type checking block when <a href="https://docs.astral.sh/ruff/rules/typing-only-third-party-import/">TCH002</a> is enabled.</p>
+<p>Minimum recreatable example:</p>
+<pre><code class="language-python">from test_module import a, b
+
+c: b = a()
+</code></pre>
+<p>Expected recommendation:</p>
+<pre><code class="language-python">from test_module import a
+
+if TYPE_CHECKING:
+    from test_module import b
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-22 18:57</div>
+            <div class="timeline-body"><p>Hmm, why would you want this? To import a single member from <code>test_module</code>, Python needs to parse and execute the entire file <code>test_module.py</code> (assuming it's a single-file module). Splitting the import into two just slows down the startup time for your module (because Python now has to execute two import statements rather than one — imports are cached in <code>sys.modules</code>, but there's still a cost) and doubles the vertical space taken up by the imports.</p>
+<p>Unless test_module.py has a fancy module-level <code>__getattr__</code> method that it uses to provide the symbols <code>a</code> and <code>b</code> lazily, I suppose... But that's something of a rare edge case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-08-22 20:40</div>
+            <div class="timeline-body"><p>This should already be possible by turning on the strict setting, i.e. <code>lint.flake8-type-checking.strict = true</code>, the original flake8 plugin also allows you to set whether you want to flag this or not, but it's off by default, exactly for the reason that @AlexWaygood mentioned. There's not really any runtime benefit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/korverdev">@korverdev</a> on 2024-08-23 14:43</div>
+            <div class="timeline-body"><p>I'm not really concerned about performance during type checking which is, if I'm not mistaken, the only time those performance concerns would apply. I'm more interested in the potential clarity that forcing all type check only imports into the same block gives me, but it sounds like there's a good reason for this not to be enabled by default. Thanks for pointing me at that option that I overlooked.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @korverdev on 2024-08-23 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-23 14:56</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not really concerned about performance during type checking which is, if I'm not mistaken, the only time those performance concerns would apply.</p>
+</blockquote>
+<p>Right, splitting it into two import statements likely won't slow things down at runtime if one of the import cycles is in an <code>if TYPE_CHECKING</code> block -- I misspoke. (However, putting some of the imports into a separate <code>if TYPE_CHECKING</code> branch also won't speed things up at runtime or break any runtime import cycles either -- and those are <em>generally</em> the motivations for moving imports into <code>if TYPE_CHECKING</code> blocks.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/korverdev">@korverdev</a> on 2024-08-23 15:48</div>
+            <div class="timeline-body"><p>@AlexWaygood A somewhat related question for you since you seem to be pretty active on this project. This wasn't documented as an option for that check in the documentation, which is why I overlooked it originally. Is there a reason for this you know of? Just wanted to check before I submit a PR to flesh out the documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-23 15:54</div>
+            <div class="timeline-body"><blockquote>
+<p>@AlexWaygood A somewhat related question for you since you seem to be pretty active on this project. This wasn't documented as an option for that check in the documentation, which is why I overlooked it originally. Is there a reason for this you know of? Just wanted to check before I submit a PR to flesh out the documentation.</p>
+</blockquote>
+<p>Not that I know of. We seem to already explicitly list nearly all the other <code>flake8-type-checking</code> options at https://docs.astral.sh/ruff/rules/typing-only-third-party-import/#options -- I think it makes sense to list <code>flake8-type-checking.strict</code> as well! <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-type-checking_exempt-modules"><code>exempt-modules</code></a> could also possibly be listed.</p>
+<p>A docs PR would be welcome, thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:55 UTC
+    </footer>
+</body>
+</html>

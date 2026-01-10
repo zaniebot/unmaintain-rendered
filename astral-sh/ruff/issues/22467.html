@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`F821`: Incorrectly reports use before assignment for conditional import - astral-sh/ruff #22467</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>F821</code>: Incorrectly reports use before assignment for conditional import</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/22467">#22467</a>
+        opened by <a href="https://github.com/k4lizen">@k4lizen</a>
+        on 2026-01-08 23:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/k4lizen">@k4lizen</a> on 2026-01-08 23:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I do this in my code:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+import pwndbg
+
+
+def myfunc() -&gt; None:
+    # note that dbg is an object in the pwndbg module
+    if pwndbg.dbg.is_gdblib_available():
+        import pwndbg.gdblib.functions
+        _ = pwndbg.gdblib.functions.functions
+        print(&quot;yes!&quot;)
+    else:
+        print(&quot;no!&quot;)
+
+myfunc()
+</code></pre>
+<p>And I get the following:</p>
+<pre><code>~❯ uv run ruff check repro.py
+F823 Local variable `pwndbg` referenced before assignment
+ --&gt; repro.py:7:8
+  |
+6 | def myfunc() -&gt; None:
+7 |     if pwndbg.dbg.is_gdblib_available():
+  |        ^^^^^^
+8 |         import pwndbg.gdblib.functions
+9 |         _ = pwndbg.gdblib.functions.functions
+  |
+
+Found 1 error.
+</code></pre>
+<p>What is going on?</p>
+<h3>Repro</h3>
+<pre><code class="language-bash">git clone https://github.com/k4lizen/pwndbg/
+cd pwndbg
+git checkout 4588a455f5e511b567458ef618eb627788b539d5
+uv run --all-groups --all-extras ruff check repro.py
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.14.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @amyreese on 2026-01-09 00:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ruff misinterprets a module as an object" to "`F821`: Incorrectly reports use before assignment for conditional import" by @MichaReiser on 2026-01-09 11:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:54 UTC
+    </footer>
+</body>
+</html>

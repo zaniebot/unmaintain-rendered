@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add test for package priority size - astral-sh/uv #10851</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add test for package priority size</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10851">#10851</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-01-22 11:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-01-22 11:13</div>
+            <div class="timeline-body"><p>See also #10833</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @konstin on 2025-01-22 11:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-22 11:46</div>
+            <div class="timeline-body"><p>This is an optimization that rustc misses, the type below stores the same data and is 16 bytes:</p>
+<pre><code class="language-rust">    #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+    pub(crate) enum PubGrubPriority {
+        /// The package has no specific priority.
+        ///
+        /// As such, its priority is based on the order in which the packages were added (FIFO), such
+        /// that the first package we visit is prioritized over subsequent packages.
+        ///
+        /// TODO(charlie): Prefer constrained over unconstrained packages, if they're at the same depth
+        /// in the dependency graph.
+        Unspecified(Reverse&lt;usize&gt;, u32),
+
+        /// Selected version of this package were often the culprit of rejecting another package, so
+        /// it's deprioritized behind `ConflictEarly`. It's still the higher than `Unspecified` to
+        /// conflict before selecting unrelated packages.
+        ConflictLate(Reverse&lt;usize&gt;, u32),
+
+        /// Selected version of this package were often rejected, so it's prioritized over
+        /// `ConflictLate`.
+        ConflictEarly(Reverse&lt;usize&gt;, u32),
+
+        /// The version range is constrained to a single version (e.g., with the `==` operator).
+        Singleton(Reverse&lt;usize&gt;, u32),
+
+        /// The package was specified via a direct URL.
+        ///
+        /// N.B.: URLs need to have priority over registry distributions for correctly matching registry
+        /// distributions to URLs, see [`PubGrubPackage::from_package`] an
+        /// [`ForkUrls`].
+        DirectUrl(Reverse&lt;usize&gt;, u32),
+
+        /// The package is the root package.
+        Root,
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-02-19 10:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:18 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obfuscate password in credentials debug messages - astral-sh/uv #12944</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Obfuscate password in credentials debug messages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12944">#12944</a>
+        opened by <a href="https://github.com/jtfmumm">@jtfmumm</a>
+        on 2025-04-17 13:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-17 13:18</div>
+            <div class="timeline-body"><p>I noticed in the trace output that we weren't obfuscating the <code>Credentials</code> password in a trace message. This PR creates a <code>Password</code> newtype with a custom <code>Debug</code> implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">security</span> added by @jtfmumm on 2025-04-17 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Obfuscate password in credentials" to "Obfuscate password in credentials debug messages" by @jtfmumm on 2025-04-17 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-17 13:47</div>
+            <div class="timeline-body"><p>See also https://github.com/astral-sh/uv/issues/1714</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-17 14:09</div>
+            <div class="timeline-body"><blockquote>
+<p>See also #1714</p>
+</blockquote>
+<p>Thanks, I'll address that here as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-17 14:54</div>
+            <div class="timeline-body"><blockquote>
+<p>See also #1714</p>
+</blockquote>
+<p>I've addressed the first example in your linked issue (<code>Updating ...</code>) but I think it's worth a more thorough audit of how we're handling URLs. I suggest we merge this PR first because it's critical and then I can do the audit separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-17 16:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/credentials.rs</code>:320 on 2025-04-17 16:54</div>
+            <div class="timeline-body"><p>I feel like we may want to introduce a wrapper type for this, like <code>ObfuscatedUrl</code> with a different display? It feels weird both to:</p>
+<ul>
+<li>Mutate the given URL</li>
+<li>Return a type that does not encode that there's obfuscation</li>
+</ul>
+<p>It feels like too much of a footgun.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-17 16:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/credentials.rs</code>:320 on 2025-04-17 16:55</div>
+            <div class="timeline-body"><p>(The approach implemented here is quite different from the one you did in the middleware, perhaps we should just separate it entirely?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-04-17 17:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/credentials.rs</code>:320 on 2025-04-17 17:02</div>
+            <div class="timeline-body"><p>Agreed, I think this should somehow be enforced in the type system (or some kind of <code>Sensitive</code> trait).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-17 17:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-auth/src/credentials.rs</code>:320 on 2025-04-17 17:04</div>
+            <div class="timeline-body"><p>Yeah my intention after this PR is to audit the codebase and come up with a unified solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-17 17:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-auth/src/credentials.rs</code>:320 on 2025-04-17 17:06</div>
+            <div class="timeline-body"><p>That was just a quick fix for the issue you linked in the meantime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-auth/src/credentials.rs</code>:320 on 2025-04-17 17:11</div>
+            <div class="timeline-body"><p>But the real solution will use the type system.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-17 17:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-17 17:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-auth/src/credentials.rs</code>:320 on 2025-04-17 17:38</div>
+            <div class="timeline-body"><p>I've reverted these changes and just left the main <code>Credentials</code> fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-04-17 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @jtfmumm on 2025-04-17 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-04-18 16:10</div>
+            <div class="timeline-body"><p>As noted in https://github.com/astral-sh/uv/pull/12969#issuecomment-2815718797, we'll probably want a <code>UV_LOG_SHOW_SECRETS</code> variable or something to toggle this back on for people that are debugging if their secrets are correct. I don't know if that needs to block this change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-18 17:37</div>
+            <div class="timeline-body"><blockquote>
+<p>As noted in <a href="https://github.com/astral-sh/uv/pull/12969#issuecomment-2815718797">#12969 (comment)</a>, we'll probably want a <code>UV_LOG_SHOW_SECRETS</code> variable or something to toggle this back on for people that are debugging if their secrets are correct. I don't know if that needs to block this change.</p>
+</blockquote>
+<p>I'd argue we shouldn't provide the option to log secrets, though admittedly that's pretty strict. That could be part of a bigger conversation. Since this PR doesn't mask usernames (avoiding the other question you raise in your linked comment), I'd say we merge it as is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-18 19:48</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd argue we shouldn't provide the option to log secrets, though admittedly that's pretty strict.</p>
+</blockquote>
+<p>Why? It's very helpful for debugging and it seems quite reasonable to allow people to opt-in to?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-18 19:57</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I'd argue we shouldn't provide the option to log secrets, though admittedly that's pretty strict.</p>
+</blockquote>
+<p>Why? It's very helpful for debugging and it seems quite reasonable to allow people to opt-in to?</p>
+</blockquote>
+<p>Yeah I agree it’s helpful. But it’s the kind of option that can be accidentally left on. Do other tools in the space provide flags to log secrets?</p>
+<p>For debugging purposes we could consider opt in logging of the salted hash of the secret.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-18 21:01</div>
+            <div class="timeline-body"><p>I'm not sure about other tools in the space. I looked around a little, but didn't find clear answers. However, I don't really feel concerned about the situation where someone explicitly enables showing secrets in order to debug something then leaves it on by accident? It feels fairly contrived. We could even call it <code>UV_UNSAFE_SHOW_SECRETS</code> or whatever, but authentication is a complicated part of uv and we have spent a great deal of time debugging it — I'm very hesitant about losing the ability to get any insight into what credentials are used. I think a salted hash sounds pretty overkill for something like this, I worry it'd just be more confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-18 21:42</div>
+            <div class="timeline-body"><p>A simpler way to put it is that this option allows careless developers to log secrets in production when debugging a problem. I can write something up separately. Is this blocking the PR or should I merge in the meantime?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-18 21:46</div>
+            <div class="timeline-body"><p>No I don't think it needs to block this change.</p>
+<p>If careless developers want to log secrets in production, they'll do so regardless of uv's security posture. We usually design to be secure by default, but trust users to make insecure choices if they need to, e.g., <code>--insecure-host</code> and <code>--index-strategy</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @jtfmumm on 2025-04-18 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-04-18 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-18 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/topher96">@topher96</a> on 2025-04-19 11:31</div>
+            <div class="timeline-body"><p>Regarding password logging - what about a password masking option instead?  Logs are nearly impossible get rid of at a big company due to centralized logging with long retention policies and shared widely to aid multiple levels of support.   I suggest instead of an option to log passwords at any log level (outside of some extreme trace level)  you add an option to only log the first N characters and the total length.  You could add some logic to reduce N further when the length is short.   Also add something grep-able in the string so centralized loggers could mask it out.  The benefit is companies could just leave the option on in at least a quality environment.   For example if my secret was PASSWORD123 it could show {SEC:11}'PA'   - that's enough to be useful for debugging in a broad set of cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-20 16:01</div>
+            <div class="timeline-body"><p>I've been down that route before :) https://github.com/PrefectHQ/prefect/issues/6707#issuecomment-1248344263</p>
+<p>But it's a nice middle-ground for opt-in.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:23 UTC
+    </footer>
+</body>
+</html>

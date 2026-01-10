@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`unnecessary-literal-within-tuple-call` (C409) rule transforms single element list literals incorrectly - astral-sh/ruff #10323</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>unnecessary-literal-within-tuple-call</code> (C409) rule transforms single element list literals incorrectly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10323">#10323</a>
+        opened by <a href="https://github.com/bardiharborow">@bardiharborow</a>
+        on 2024-03-11 03:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bardiharborow">@bardiharborow</a> on 2024-03-11 03:31</div>
+            <div class="timeline-body"><p>The <code>unnecessary-literal-within-tuple-call</code> (<a href="https://docs.astral.sh/ruff/rules/unnecessary-literal-within-tuple-call/">C409</a>) rule detects the violation here:</p>
+<pre><code class="language-py">tuple([1])
+</code></pre>
+<p><code>ruff check --fix --unsafe-fixes</code> fails to transform the code correctly, resulting in this, which is not a tuple:</p>
+<pre><code class="language-py">(1)
+</code></pre>
+<p>Instead it should transform the code to:</p>
+<pre><code class="language-py">(1,)
+</code></pre>
+<p>Environment:</p>
+<pre><code class="language-shell">% ruff --version
+ruff 0.3.2
+
+% cat pyproject.toml
+[tool.ruff]
+lint.select = [
+    &quot;C4&quot;
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`unnecessary-literal-within-tuple-call` (C409) rule fixes single element tuples incorrectly" to "`unnecessary-literal-within-tuple-call` (C409) rule fixes zero and single element lists incorrectly" by @bardiharborow on 2024-03-11 04:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`unnecessary-literal-within-tuple-call` (C409) rule fixes zero and single element lists incorrectly" to "`unnecessary-literal-within-tuple-call` (C409) rule transforms single element list literals incorrectly" by @bardiharborow on 2024-03-11 04:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-03-11 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2024-03-11 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @zanieb on 2024-03-11 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> added by @zanieb on 2024-03-11 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-11 16:44</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WindowGenerator">@WindowGenerator</a> on 2024-03-11 20:19</div>
+            <div class="timeline-body"><p>@zanieb Hi!
+Can I take it too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-11 21:13</div>
+            <div class="timeline-body"><p>Go for it @WindowGenerator.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @WindowGenerator by @zanieb on 2024-03-11 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bardiharborow">@bardiharborow</a> on 2024-03-12 02:01</div>
+            <div class="timeline-body"><p>I don't know much about Ruff internals but it feels like it might be safer to take the approach of transforming and then rendering the AST, rather than replacing specific string indexes, since the latter is vulnerable to producing invalid or incorrect code in this fashion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-03-12 09:00</div>
+            <div class="timeline-body"><p>Yeah, we have a <a href="https://github.com/astral-sh/ruff/blob/2cad4bbb354f5d43131b2d9cd583caad8e65e840/crates/ruff_python_codegen/src/generator.rs#L64"><code>Generator</code></a> struct which does exactly that. Moving the fix to use that would solve the issue as it takes one element tuple into consideration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 13:49</div>
+            <div class="timeline-body"><p>We should just add this case to the fix. Text-based fixes are preferable because they preserve all trivia. (This fix used to use LibCST but we intentionally changed it because it’s slow and we want to remove our LibCST dependency altogether eventually.)</p>
+<p>I think there was just a misunderstanding on what the fix is supposed to do based on the comment above it in the code, which led to this oversight.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bardiharborow">@bardiharborow</a> on 2024-03-26 06:45</div>
+            <div class="timeline-body"><p>Fixed by #10491.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bardiharborow on 2024-03-26 06:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:05 UTC
+    </footer>
+</body>
+</html>

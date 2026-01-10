@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show messages for slow tasks in non-interactive mode - astral-sh/uv #11165</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Show messages for slow tasks in non-interactive mode</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11165">#11165</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-02-02 13:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-02-02 13:40</div>
+            <div class="timeline-body"><p>When stderr is not a tty, we currently don't show any messages for build or large downloads, since indicatif is hidden. We can improve this by showing a message for:</p>
+<ul>
+<li>Starting and finishing a large download (&gt;1MB)</li>
+<li>Starting and finishing a build</li>
+</ul>
+<p>Downloads are limited to 1MB or unknown size to keep the logs concise and not scroll the entire terminal away for a download that finishes almost immediately.</p>
+<p>These messages are not captured in the tests since their order is non-deterministic (downloads and builds race to finish).</p>
+<p>There are no &quot;tick&quot; messages for large downloads yet, we could e.g. show an update on runnning downloads every n seconds.</p>
+<p>Part of #11121</p>
+<p><strong>Test Plan</strong></p>
+<pre><code>$ uv venv &amp;&amp; FORCE_COLOR=1 cargo run -q pip install numpy --no-binary :all: --no-cache 2&gt;&amp;1 | tee a.txt
+  Using CPython 3.13.0
+  Creating virtual environment at: .venv
+  Activate with: source .venv/bin/activate
+  Resolved 1 package in 221ms
+     Building numpy==2.2.2
+        Built numpy==2.2.2
+  Prepared 1 package in 2m 34s
+  Installed 1 package in 6ms
+   + numpy==2.2.2
+</code></pre>
+<p><img src="https://github.com/user-attachments/assets/f4b64313-afa7-449f-9e5b-2b1b7026bef3" alt="image" /></p>
+<pre><code>$ uv venv &amp;&amp; FORCE_COLOR=1 cargo run -q pip install torch --no-cache 2&gt;&amp;1 | tee b.txt
+  Using CPython 3.13.0
+  Creating virtual environment at: .venv
+  Activate with: source .venv/bin/activate
+  Resolved 24 packages in 648ms
+  Downloading setuptools (1.2MiB)
+  Downloading nvidia-cuda-cupti-cu12 (13.2MiB)
+  Downloading torch (731.1MiB)
+  Downloading nvidia-nvjitlink-cu12 (20.1MiB)
+  Downloading nvidia-cufft-cu12 (201.7MiB)
+  Downloading nvidia-cuda-nvrtc-cu12 (23.5MiB)
+  Downloading nvidia-curand-cu12 (53.7MiB)
+  Downloading nvidia-nccl-cu12 (179.9MiB)
+  Downloading nvidia-cudnn-cu12 (634.0MiB)
+  Downloading nvidia-cublas-cu12 (346.6MiB)
+  Downloading sympy (5.9MiB)
+  Downloading nvidia-cusparse-cu12 (197.8MiB)
+  Downloading nvidia-cusparselt-cu12 (143.1MiB)
+  Downloading networkx (1.6MiB)
+  Downloading nvidia-cusolver-cu12 (122.0MiB)
+  Downloading triton (241.4MiB)
+   Downloaded setuptools
+   Downloaded networkx
+   Downloaded sympy
+   Downloaded nvidia-cuda-cupti-cu12
+   Downloaded nvidia-nvjitlink-cu12
+   Downloaded nvidia-cuda-nvrtc-cu12
+   Downloaded nvidia-curand-cu12
+[...]
+</code></pre>
+<p><img src="https://github.com/user-attachments/assets/71918d94-c5c0-44ce-bea8-aaba6cd80ef7" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-02-02 13:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-02-02 13:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-git/src/source.rs</code>:123 on 2025-02-02 13:40</div>
+            <div class="timeline-body"><p>This change avoids the start messages showing the long hash, while the finish message shows the short hash.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-02-02 13:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/reporters.rs</code>:113 on 2025-02-02 13:42</div>
+            <div class="timeline-body"><p>We could raise the errors here if we need.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Show message in non-interactive mode" to "Show messages for slow tasks in non-interactive mode" by @konstin on 2025-02-02 16:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-02-05 23:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-02-05 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-02-05 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-05 23:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-06 00:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/reporters.rs</code>:230 on 2025-02-06 00:12</div>
+            <div class="timeline-body"><p>Should we not grab both of these with a single lock acquisition?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/reporters.rs</code>:180 on 2025-02-06 00:13</div>
+            <div class="timeline-body"><p>Hmm, it's a bit strange that we hide these but <em>always</em> show them if we don't have a size? I'd expect them to be always visible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-06 00:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robinjhuang">@robinjhuang</a> on 2025-02-06 01:38</div>
+            <div class="timeline-body"><p>This is very helpful and adding tick messages would be even better! For large downloads like pytorch cuda, this would still seem like uv is stuck on downloading this step since it takes so long.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-06 02:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/reporters.rs</code>:180 on 2025-02-06 02:18</div>
+            <div class="timeline-body"><p>I don't quite follow your comment. You expect them not to be gated by size? (I sort of agree, since it's not in a tty anyway it seems fine to write them all) Or you expect them to not be gated by the multiprogress status?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-06 02:19</div>
+            <div class="timeline-body"><blockquote>
+<p>For large downloads like pytorch cuda, this would still seem like uv is stuck on downloading this step since it takes so long.</p>
+</blockquote>
+<p>I will still insist a JSON output is the solution for this. I don't think we can deliver nice human readable tick messages — that's why we have progress bars in the interactive output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-06 02:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/reporters.rs</code>:180 on 2025-02-06 02:22</div>
+            <div class="timeline-body"><p>I expect them <em>not</em> to be gated by size, i.e., always shown. (In the <code>else</code> branch, where we don't <em>have</em> a size, we always show them, so that discrepancy seemed odd to me.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-06 02:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/reporters.rs</code>:180 on 2025-02-06 02:28</div>
+            <div class="timeline-body"><p>Let's track in https://github.com/astral-sh/uv/issues/11272</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:19 UTC
+    </footer>
+</body>
+</html>

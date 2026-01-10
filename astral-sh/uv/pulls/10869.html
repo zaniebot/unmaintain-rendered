@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: error on non-existent extra - astral-sh/uv #10869</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: error on non-existent extra</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10869">#10869</a>
+        opened by <a href="https://github.com/mkniewallner">@mkniewallner</a>
+        on 2025-01-22 18:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2025-01-22 18:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes #10597.</p>
+<p>Check for invalid extras specified on the CLI, through either <code>--extra &lt;extra&gt;</code> or <code>--all-extras --no-extra &lt;extra&gt;</code></p>
+<p>If an usage of dynamic optional dependencies is detected, validation is not performed, as in this case, we cannot determine which extras exist, as this is delegated to the build backend.</p>
+<p>This concretely means that we do not perform the validation if:</p>
+<ul>
+<li>for workspace, at least one project uses dynamic optional dependencies</li>
+<li>for project, it uses dynamic optional dependencies</li>
+</ul>
+<p>Adding this check required to update quite a lot of things. I've tried to split the changes as much as possible, especially since there are some changes I'm not sure about, in terms of architecture.</p>
+<p>First, to my knowledge, optional dependencies work similarly to dependency groups for the validation, so I thought it would be ok to make <code>DependencyGroupsTarget</code> more generic by renaming it to <code>SpecificationTarget</code>, so that the same logic can be reused both for dependency groups and optional dependencies, but maybe you have a different opinion.</p>
+<p>I also needed to add <code>dynamic</code> field to <code>Project</code>, and a few methods to check the usage of a dynamic key in a project or workspace. Not sure if there are better ways or places to do that.</p>
+<h2>Test Plan</h2>
+<p>Snapshot tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.6.0" by @zanieb on 2025-01-22 18:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-01-22 20:00</div>
+            <div class="timeline-body"><p>cross-talk note from #10861 which is working on a similar thing:</p>
+<p>The <code>pip install</code> and <code>pip compile</code> commands also take <code>--extra</code>, and with my PR will also take <code>--dependency-group</code>. However those commands have a quirky ability to accept <em>multiple</em> pyproject.tomls, which raises questions of &quot;how should diagnostics even work for that&quot;.</p>
+<p>(It's fine if this PR doesn't handle the pip commands, just doing these ones is an Improvement!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2025-01-22 23:41</div>
+            <div class="timeline-body"><blockquote>
+<p>cross-talk note from #10861 which is working on a similar thing:</p>
+<p>The <code>pip install</code> and <code>pip compile</code> commands also take <code>--extra</code>, and with my PR will also take <code>--dependency-group</code>. However those commands have a quirky ability to accept <em>multiple</em> pyproject.tomls, which raises questions of &quot;how should diagnostics even work for that&quot;.</p>
+<p>(It's fine if this PR doesn't handle the pip commands, just doing these ones is an Improvement!)</p>
+</blockquote>
+<p>Thanks for the heads up! Depending on how complex it is, it might be easier to implement as a follow-up PR yep, not sure, I'm not familiar with the pip interface.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @mkniewallner on 2025-01-23 03:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mkniewallner">@mkniewallner</a> on <code>crates/uv/tests/it/lock_conflict.rs</code>:4416 on 2025-01-23 03:35</div>
+            <div class="timeline-body"><p>Not sure if the test is still relevant as this now errors out, but since there's also a lock assertion right after, I've added a <code>sync</code> call without argument below, as I wasn't sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mkniewallner">@mkniewallner</a> reviewed on 2025-01-23 03:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-01-23 05:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-01-23 14:12</div>
+            <div class="timeline-body"><p>For the record I landed my checking here:</p>
+<p>https://github.com/astral-sh/uv/blob/e3a09888abaa2cd504e7511b1bd38c1f4efc9c56/crates/uv-requirements/src/source_tree.rs#L118-L131</p>
+<p>My implementation is a bit flawed, notably because it runs &quot;per pyproject.toml&quot; and in concurrent async. Because this wasn't the primary focus of my PR I put in a hacky filter to leave better checking as future work:</p>
+<p>https://github.com/astral-sh/uv/blob/e3a09888abaa2cd504e7511b1bd38c1f4efc9c56/crates/uv/tests/it/pip_install.rs#L8617-L8620</p>
+<p>The &quot;better&quot; implementation of this would shove a bunch of extra state in <code>SourceTreeResolution</code> and return it from <code>SourceTreeResolver::resolve_source_tree</code>, so that <code>SourceTreeResolver::resolve</code> could see the defined extras/dependency-groups of all pyprojects at once and produce deterministic output (and potentially error on totally undefined keys?). I don't have plans to implement that myself, at the moment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @Gankra on 2025-01-23 14:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-23 14:13</div>
+            <div class="timeline-body"><p>I think we should be doing this against the lockfile instead -- same for dependency groups, probably. Then it will work with <code>--frozen</code>, and we won't need any sort of special-casing for dynamic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @zanieb on 2025-01-23 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2025-01-24 01:48</div>
+            <div class="timeline-body"><blockquote>
+<p>I think we should be doing this against the lockfile instead -- same for dependency groups, probably. Then it will work with <code>--frozen</code>, and we won't need any sort of special-casing for dynamic.</p>
+</blockquote>
+<p>Tried to implement the validation at lock file level in https://github.com/astral-sh/uv/pull/10925, but one case that cannot be handled is if we have an extra with no dependencies, like so:</p>
+<pre><code class="language-toml">[project.optional-dependencies]
+http = []
+</code></pre>
+<p>as in that case, the empty list would not get added to the lock file, so this will be reported as not existing.</p>
+<p>Don't know how ok this is, but if it is fine, we'll probably have to rephrase the errors to not confuse the users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-24 02:24</div>
+            <div class="timeline-body"><p>Ah dang... I did think about this before posting, and I thought we included these in <code>project.requires-dist</code>, but I guess that's only true for empty <em>groups</em> (which are included in <code>project.requires-dev</code>). Arguably we should start writing them to the lockfile as <code>provides-extra</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-24 14:54</div>
+            <div class="timeline-body"><p>@mkniewallner -- Do you want me to first PR a change to add <code>provides-extras</code> to the lockfile, so we can use that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2025-01-24 16:36</div>
+            <div class="timeline-body"><blockquote>
+<p>@mkniewallner -- Do you want me to first PR a change to add <code>provides-extras</code> to the lockfile, so we can use that?</p>
+</blockquote>
+<p>Won't have time to do so right away, so feel free to :)</p>
+<p>Just curious though, since this would be a new field, that would I believe only be present if we have <code>project.optional-dependencies</code> (even if empty), how will the retro-compatibility be handled for older versions?</p>
+<p>I believe we won't be able to differentiate between:</p>
+<ul>
+<li>previous uv versions that did not set the new lock file attribute, even if <code>project.optional-dependencies</code> is set</li>
+<li>new uv versions that set the new attribute, but could not be present if there is no <code>project.optional-dependencies</code> (which seems to be the behaviour of <code>requires-dev</code> from what I see)</li>
+</ul>
+<p>I believe since the check would now live after locking it might be fine, but even though, this means that people working on the same project would all have to update uv to the minimum version that sets the new attribute to avoid adding/removing it depending on the version used for locking?</p>
+<p>But I guess that since the check would land in 0.6.0, this is less problematic than shipping this in a patch version though, as this could be advertised.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-24 17:22</div>
+            <div class="timeline-body"><p>We would need to consider always-setting <code>provides-extra</code>, even if it's empty, so we can detect whether the information is available.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-01-30 13:50</div>
+            <div class="timeline-body"><p>Depends on #11063</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mkniewallner">@mkniewallner</a> on 2025-02-09 14:46</div>
+            <div class="timeline-body"><p>Closing in favour of https://github.com/astral-sh/uv/pull/10925.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mkniewallner on 2025-02-09 14:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:18 UTC
+    </footer>
+</body>
+</html>

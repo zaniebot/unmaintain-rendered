@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>refactor resolver forking to make it easier to centralize decision making - astral-sh/uv #8754</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>refactor resolver forking to make it easier to centralize decision making</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/8754">#8754</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-11-01 16:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-01 16:00</div>
+            <div class="timeline-body"><p>This PR is a step in the direction to supporting conflicting groups.
+While this PR doesn't make any specific effort to support conflicting
+groups, it does refactor how resolver fork state is represented such
+that it is more encapsulated than what we have today. This should
+hopefully make it easier to tweak the logic to include conflicting
+groups. (The idea is that a <code>ResolverEnvironment</code> will represent the
+conflicting group configuration and then use that in its own internal
+case analysis.)</p>
+<p>The main idea behind this refactor is to try to push direct
+<code>MarkerTree</code> manipulation down into <code>ResolverEnvironment</code>. The
+encpasulation isn't quite perfect (for example, we still have a
+<code>try_markers</code> method that exposes the markers), but I think we can
+improve upon that going forward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-11-01 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-11-01 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/candidate_selector.rs</code>:144 on 2024-11-01 22:16</div>
+            <div class="timeline-body"><p>sweet</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/pubgrub/package.rs</code>:171 on 2024-11-01 22:22</div>
+            <div class="timeline-body"><p>why the <code>#[allow(dead_code)]</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:11 on 2024-11-01 22:26</div>
+            <div class="timeline-body"><p>I'd phrase the other round, we're building a resolution that works for the specified environment(s), ignoring dependency edge outside of it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:120 on 2024-11-01 22:31</div>
+            <div class="timeline-body"><p>i see the order of forks similar to the order of dependencies: we don't guarantee any specific treatment, but reordering can help where our prioritization fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:157 on 2024-11-01 22:33</div>
+            <div class="timeline-body"><p>can we ever run into this branch, and if so, isn't discarding the rhs wrong?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:318 on 2024-11-01 22:35</div>
+            <div class="timeline-body"><p>Are we doing unit tests inline or in an extra file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:270 on 2024-11-01 22:36</div>
+            <div class="timeline-body"><p>These messages should start with a lower case letter, so that we don't get an upper case letter mid-sentence.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-11-01 22:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-11-01 23:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:1943 on 2024-11-01 23:43</div>
+            <div class="timeline-body"><p>&quot;Marker Environment&quot; seems pretty weird for users to see here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-11-01 23:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/branching_urls.rs</code>:134 on 2024-11-01 23:43</div>
+            <div class="timeline-body"><p>Should not be capitalized</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-11-01 23:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/branching_urls.rs</code>:134 on 2024-11-01 23:44</div>
+            <div class="timeline-body"><p>(As noted in https://github.com/astral-sh/uv/pull/8754#discussion_r1826349897)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-04 15:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/pubgrub/package.rs</code>:171 on 2024-11-04 15:19</div>
+            <div class="timeline-body"><p>I think I added this before I realized I wanted to do a refactor. It isn't used yet, but I believe I'll need it for the conflicting extras work. I'll remove this for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-04 15:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:11 on 2024-11-04 15:43</div>
+            <div class="timeline-body"><p>Hmmm I see. It's a little tortured, but I re-phrased it like so:</p>
+<pre><code>/// Represents one or more marker environments for a resolution.
+///
+/// Dependencies outside of the marker environments represented by this value
+/// are ignored for that particular resolution.
+///
+/// In normal &quot;pip&quot;-style resolution, one resolver environment corresponds to
+/// precisely one marker environment. In universal resolution, multiple marker
+/// environments may be specified via a PEP 508 marker expression. In either
+/// case, as mentioned above, dependencies not in these marker environments are
+/// ignored for the corresponding resolution.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-04 15:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:120 on 2024-11-04 15:45</div>
+            <div class="timeline-body"><p>Thanks! I've updated the wording here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-04 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:157 on 2024-11-04 15:51</div>
+            <div class="timeline-body"><p>My thinking was that &quot;narrowing environment&quot; is not really a well defined operation when resolution is configured for one single specific marker environment. So in that sense, narrowing would be a no-op.</p>
+<p>In practice, I think you're right that this code path isn't actually exercised, and if it was, we should <em>probably</em> consider it a bug. So I've changed this to a panicking branch and updated the docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-04 15:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:318 on 2024-11-04 15:53</div>
+            <div class="timeline-body"><p>I think this is idiomatic for unit tests. And we do it pretty frequently?</p>
+<p>(Feel free to start a thread on Discord about this. I'm curious about your thoughts on this.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-04 15:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/it/branching_urls.rs</code>:134 on 2024-11-04 15:58</div>
+            <div class="timeline-body"><p>Yeah good catch. Fixed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:1943 on 2024-11-04 15:59</div>
+            <div class="timeline-body"><p>Also good catch. Fixed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-04 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-11-04 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-11-04 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-04 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-11-04 20:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:318 on 2024-11-04 20:51</div>
+            <div class="timeline-body"><p>i prefer the inline tests, but all other tests were moved out in the PR that merged the integration tests, I'm asking for consistency's sake</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-11-04 21:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:318 on 2024-11-04 21:58</div>
+            <div class="timeline-body"><p>Yeah I think this is no longer idiomatic for us for performance reasons? I don't know all the reasoning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-05 12:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:318 on 2024-11-05 12:21</div>
+            <div class="timeline-body"><p>Hmmm. Yeah I get the thinking with merging the integration tests, but I don't yet grok the thinking around unit tests being inline or in a separate file.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:13 UTC
+    </footer>
+</body>
+</html>

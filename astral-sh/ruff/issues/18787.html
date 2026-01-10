@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Perflint] PERF401/PERF403 fix can duplicate comments - astral-sh/ruff #18787</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Perflint] PERF401/PERF403 fix can duplicate comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18787">#18787</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-06-19 07:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-19 07:38</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>With preview enabled, the fix for <code>PERF401</code> can duplicate comments if they are inside an empty tuple inside the <code>if</code> test. <a href="https://play.ruff.rs/7a4d8896-1d7a-45c5-96c9-5f92b73709ff">playground</a></p>
+<pre><code>PS D:\python_projects&gt; Get-Content issue.py
+</code></pre>
+<pre><code class="language-py">original = list(range(10000))
+filtered = []
+for i in original:
+    if (
+        # comment
+    ):
+        filtered.append(i)
+</code></pre>
+<pre><code>PS D:\python_projects&gt; uvx ruff check issue.py --select PERF --preview
+</code></pre>
+<pre><code class="language-snap">issue.py:7:9: PERF401 Use a list comprehension to create a transformed list
+  |
+5 |         # comment
+6 |     ):
+7 |         filtered.append(i)
+  |         ^^^^^^^^^^^^^^^^^^ PERF401
+  |
+  = help: Replace for loop with list comprehension
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<pre><code>PS D:\python_projects&gt; uvx ruff check issue.py --select PERF --preview --unsafe-fixes --fix --diff
+</code></pre>
+<pre><code class="language-diff">--- issue.py
++++ issue.py
+@@ -1,7 +1,5 @@
+ original = list(range(10000))
+-filtered = []
+-for i in original:
+-    if (
++# comment
++filtered = [i for i in original if (
+         # comment
+-    ):
+-        filtered.append(i)
++    )]
+
+Would fix 1 error.
+</code></pre>
+<p>This also applies to <code>PERF403</code> <a href="https://play.ruff.rs/7f71ad67-7481-41a5-8b69-7da107f499b2">playground</a></p>
+<h3>Version</h3>
+<p>ruff 0.12.0 (87f0feb 2025-06-17) + playground</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[Perflint] PERF401 fix can duplicate comments" to "[Perflint] PERF401/PERF403 fix can duplicate comments" by @MeGaGiGaGon on 2025-06-19 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-06-19 09:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-06-19 09:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-06-19 22:06</div>
+            <div class="timeline-body"><p>What would be the correct fix for this, delete the comment inside the <code>if</code> or the comment outside?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-19 22:35</div>
+            <div class="timeline-body"><p>I'm not sure if this is the best answer, but I think the current implementation is over-zealous at formatting, which is why so many comments need to be moved. If it kept the original formatting of the code, there are a good amount of places where comments don't need to be moved.</p>
+<pre><code class="language-py">original = list(range(10000))
+filtered = []
+for (  # doesn't need to be moved 1
+    i  # doesn't need to be moved 2
+) in (  # doesn't need to be moved 3
+    original  # doesn't need to be moved 4
+):  # needs to be moved 5
+    # needs to be moved 6
+    if (  # doesn't need to be moved 7
+        1,  # doesn't need to be moved 8
+    ):  # needs to be moved 9
+        # needs to be moved 10
+        filtered.append(  # doesn't need to be moved 11
+            i  # doesn't need to be moved 12
+        )  # doesn't need to be moved 13
+</code></pre>
+<p>The playground currently does <a href="https://play.ruff.rs/9fc6d544-73ec-4edf-b0b8-1a1ad6c96f1d">this</a>:</p>
+<pre><code class="language-py">original = list(range(10000))
+# doesn't need to be moved 1
+# doesn't need to be moved 2
+# doesn't need to be moved 3
+# doesn't need to be moved 4
+# needs to be moved 5
+# needs to be moved 6
+# doesn't need to be moved 7
+# doesn't need to be moved 8
+# needs to be moved 9
+# needs to be moved 10
+# doesn't need to be moved 11
+# doesn't need to be moved 12
+filtered = [i for i in original if (  # doesn't need to be moved 7
+        1,  # doesn't need to be moved 8
+    )]  # doesn't need to be moved 13
+</code></pre>
+<p>But all those could remain unmoved since they are within an expression that needs to have parenthesis to be multiline anyways</p>
+<pre><code class="language-py"># needs to be moved 5
+# needs to be moved 6
+# needs to be moved 9
+# needs to be moved 10
+filtered = [(  # doesn't need to be moved 11
+    i  # doesn't need to be moved 12
+) for (  # doesn't need to be moved 1
+    i  # doesn't need to be moved 2
+) in (  # doesn't need to be moved 3
+    original  # doesn't need to be moved 4
+) if (  # doesn't need to be moved 7
+        1,  # doesn't need to be moved 8
+)]  # doesn't need to be moved 13
+</code></pre>
+<p>Another option would be to always move all comments for consistency.</p>
+<p>Not sure which one though, or if there are more besides these two.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:45 UTC
+    </footer>
+</body>
+</html>

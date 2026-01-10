@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>docstring code formatter: add support for Markdown Python code snippets - astral-sh/ruff #8860</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>docstring code formatter: add support for Markdown Python code snippets</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8860">#8860</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2023-11-27 17:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-27 17:04</div>
+            <div class="timeline-body"><p>The initial implementation of the docstring code snippet formatter in #8811 only reformats doctest code snippets. This issue tracks the work for making it also reformat Markdown Python code snippets. Work should probably proceed by adding a new <code>CodeExampleKind</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/d9845a2628d25cba3fa21bb53ad78ad377128aa2/crates/ruff_python_formatter/src/expression/string.rs#L1373-L1385</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @BurntSushi on 2023-11-27 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-11-27 17:08</div>
+            <div class="timeline-body"><p>I am especially looking forward to this as my code snippets render as documentation and are almost exclusively written as Markdown Python code blocks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-27 17:25</div>
+            <div class="timeline-body"><p>@ofek Do you have any example code I could take a look at that uses Markdown blocks?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-11-27 17:34</div>
+            <div class="timeline-body"><ul>
+<li>https://github.com/pypa/hatch/blob/52a81d80cd03bfb90d99a5837c778971ea0c8c22/src/hatch/env/plugin/interface.py#L23-L41 (<a href="https://hatch.pypa.io/1.7/plugins/environment/reference/#hatch.env.plugin.interface.EnvironmentInterface">rendered</a>)</li>
+<li>https://github.com/pypa/hatch/blob/52a81d80cd03bfb90d99a5837c778971ea0c8c22/src/hatch/env/plugin/interface.py#L694-L697 (<a href="https://hatch.pypa.io/1.7/plugins/environment/reference/#hatch.env.plugin.interface.EnvironmentInterface.get_build_process">rendered</a>)</li>
+<li>https://github.com/DataDog/integrations-core/blob/master/datadog_checks_base/datadog_checks/base/checks/base.py#L990-L995 (<a href="https://datadoghq.dev/integrations-core/base/api/#datadog_checks.base.checks.base.AgentCheck.metadata_entrypoint">rendered</a>)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-27 18:40</div>
+            <div class="timeline-body"><p>Another example, with mixed non-python and python blocks: https://github.com/sacdallago/bio_embeddings/blob/efb9801f0de9b9d51d19b741088763a7d2d0c3a2/bio_embeddings/embed/bepler_embedder.py#L1-L38. i think it makes sense to assume blocks are python just like rustdoc defaults to code blocks being python, but we should skip blocks with an explicitly different language</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-11-27 20:22</div>
+            <div class="timeline-body"><p>I would prefer if we don't treat Markdown blocks differently compared to other parsers and assume unspecified blocks are generic, similar to the first block in your example where they show shell commands to run.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-27 20:56</div>
+            <div class="timeline-body"><p>I think it makes sense to <em>assume</em> unmarked blocks are Python code. As @konstin said, this is what <code>rustdoc</code> does and it works great. The mitigation here is that if the blocks are not valid Python code, then we can leave them as-is untouched.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-11-27 21:18</div>
+            <div class="timeline-body"><p>I understand what you both are saying but I'm saying that model does not work for Python because historically we do not use Markdown and have no such concept of embedded documentation that is rendered in a standard way. If you do what you say here you're going to immediately fail on the vast majority of code blocks, because most are not Python, because we do not do that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-27 21:59</div>
+            <div class="timeline-body"><p>Here are some additional examples from a real project (kind of randomly pulled, there are more for sure)</p>
+<ul>
+<li>https://github.com/PrefectHQ/prefect/blob/bbaa0208d476240da1ac370d2735c4af41c304f0/src/prefect/runner/runner.py#L6-L29 (<code>python</code> annotation)</li>
+<li>https://github.com/PrefectHQ/prefect/blob/bbaa0208d476240da1ac370d2735c4af41c304f0/src/prefect/utilities/annotations.py#L81-L89 (no annotation, python)</li>
+<li>https://github.com/PrefectHQ/prefect/blob/bbaa0208d476240da1ac370d2735c4af41c304f0/src/prefect/blocks/kubernetes.py#L38-L42 (<code>python</code> annotation)</li>
+<li>https://github.com/PrefectHQ/prefect/blob/bbaa0208d476240da1ac370d2735c4af41c304f0/src/prefect/settings.py#L160-L163 (<code>python</code> annotation)</li>
+<li>https://github.com/PrefectHQ/prefect/blob/bbaa0208d476240da1ac370d2735c4af41c304f0/src/prefect/utilities/templating.py#L180-L186 (no annotation, json)</li>
+<li>https://github.com/PrefectHQ/prefect/blob/bbaa0208d476240da1ac370d2735c4af41c304f0/src/prefect/workers/process.py#L10-L12 (<code>bash</code> annotation)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @MichaReiser on 2023-11-27 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Stable" by @BurntSushi on 2023-11-29 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-12-07 19:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:06 UTC
+    </footer>
+</body>
+</html>

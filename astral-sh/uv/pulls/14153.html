@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prevent concurrent updates of the environment in `uv run` - astral-sh/uv #14153</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Prevent concurrent updates of the environment in <code>uv run</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14153">#14153</a>
+        opened by <a href="https://github.com/oconnor663">@oconnor663</a>
+        on 2025-06-20 14:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-20 14:07</div>
+            <div class="timeline-body"><p>This is very similar to the locking added for <code>uv sync</code>, <code>uv add</code>, and <code>uv remove</code> in https://github.com/astral-sh/uv/pull/13869. Improving our (f)locking in general is tracked in
+https://github.com/astral-sh/uv/issues/13883.</p>
+<p>This is a minimal change that un-breaks parallel invocations of <code>uv run</code>. It's too easy to confuse locking as in &quot;lockfile generation&quot; and locking as in &quot;file locking to prevent race conditions&quot;, so we probably need a broader overhaul of how these things are named. It's also too easy to miss a callsite here, or to accidentally retain one of these locks across <code>run_to_completion</code>, so ideally we could move this file locking down to a lower-level function that's shared by all these callers, possibly <code>pip::operations::install</code>. I want to get this minimal change through testing and review before I tackle either of those.</p>
+<p>Here's a repro of the current race condition in <code>uv run</code>, which this PR fixes. Add a bunch of dependencies to provoke it, as suggested in #12751:</p>
+<pre><code>$ cd `mktemp -d`
+$ uv init --package --name scratch
+Initialized project `scratch`
+$ uv add boto3 fastapi numba pandas polars protobuf pyarrow pydantic requests urllib3 scikit-learn jupyter
+...
+$ rm -r .venv &amp;&amp; uv run -q scratch &amp; uv run -q scratch
+[1] 1451463
+error: Failed to install: jupyterlab_widgets-3.0.15-py3-none-any.whl (jupyterlab-widgets==3.0.15)
+  Caused by: failed to copy file from /home/jacko/.cache/uv/archive-v0/zXFcriPVQ1wOXqf_UUK1u/jupyterlab_widgets-3.0.15.data/data/share/jupyter/labextensions/@jupyter-widgets/jupyterlab-manager/schemas/@jupyter-widgets/jupyterlab-manager/plugin.json to /tmp/tmp.NFEGYgsQnF/.venv/lib/python3.13/site-packages/jupyterlab_widgets-3.0.15.data/data/share/jupyter/labextensions/@jupyter-widgets/jupyterlab-manager/schemas/@jupyter-widgets/jupyterlab-manager/plugin.json: No such file or directory (os error 2)
+</code></pre>
+<p>With this change:</p>
+<pre><code>$ rm -r .venv &amp;&amp; ~/uv/target/fast-build/uv run -q scratch &amp; ~/uv/target/fast-build/uv run -q scratch
+[1] 1452335
+Hello from scratch!
+[1]  + done       ~/uv/target/fast-build/uv run -q scratch
+Hello from scratch!
+
+# Run 100 invocations in parallel.
+$ rm -r .venv &amp;&amp; for i in `seq 100` ; do ~/uv/target/fast-build/uv run -q scratch &amp; done
+[lots of job output, no failures]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @oconnor663 on 2025-06-20 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @oconnor663 on 2025-06-20 14:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-06-20 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-20 15:22</div>
+            <div class="timeline-body"><p>I wonder if this is a flake? Reruning it. (Edit: Yep: https://github.com/astral-sh/uv/issues/14160.)</p>
+<pre><code>    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Snapshot: run_groups_requires_python-4
+    Source: crates/uv/tests/it/run.rs:4690
+    ────────────────────────────────────────────────────────────────────────────────
+    Expression: snapshot
+    ────────────────────────────────────────────────────────────────────────────────
+    -old snapshot
+    +new results
+    ────────────┬───────────────────────────────────────────────────────────────────
+        1     1 │ exit_code: 0
+        2     2 │ ----- stdout -----
+        3     3 │ 
+        4     4 │ ----- stderr -----
+              5 │+Using CPython 3.12.[X] interpreter at: [PYTHON-3.12]
+              6 │+Removed virtual environment at: .venv
+              7 │+Creating virtual environment at: .venv
+        5     8 │ Resolved 6 packages in [TIME]
+        6       │-Audited 2 packages in [TIME]
+              9 │+Installed 2 packages in [TIME]
+             10 │+ + sniffio==1.3.1
+             11 │+ + typing-extensions==4.10.0
+    ────────────┴───────────────────────────────────────────────────────────────────
+    Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+    test run::run_groups_requires_python ... FAILED
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/run.rs</code>:368 on 2025-06-20 16:04</div>
+            <div class="timeline-body"><p>nit: we can more one statement later, just before <code>update_environment</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-06-20 16:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-20 20:23</div>
+            <div class="timeline-body"><p>Manual testing for the two script cases. First unlocked:</p>
+<pre><code>$ cd `mktemp -d`
+$ uv init --script myscript.py
+Initialized script at `myscript.py`
+$ uv add --script myscript.py boto3 fastapi numba pandas polars protobuf pyarrow pydantic requests urllib3 scikit-learn jupyter
+Updated `myscript.py`
+$ for i in `seq 10` ; do
+    uv run myscript.py &amp;
+done
+[...lots of job output...]
+error: Failed to install: widgetsnbextension-4.0.14-py3-none-any.whl (widgetsnbextension==4.0.14)
+  Caused by: failed to rename file from /home/jacko/.cache/uv/environments-v2/myscript-e99e98cc3e25a2bf/lib/python3.13/site-packages/.tmpRU8hBM/widgetsnbextension.json to /home/jacko/.cache/uv/environments-v2/mys
+cript-e99e98cc3e25a2bf/lib/python3.13/site-packages/widgetsnbextension-4.0.14.data/data/etc/jupyter/nbconfig/notebook.d/widgetsnbextension.json: No such file or directory (os error 2)
+[...lots more errors...]
+</code></pre>
+<p>Fixed with this PR:</p>
+<pre><code>$ uv init --script myscript.py
+Initialized script at `myscript.py`
+$ uv add --script myscript.py boto3 fastapi numba pandas polars protobuf pyarrow pydantic requests urllib3 scikit-learn jupyter
+Updated `myscript.py`
+$ for i in `seq 10` ; do
+    ~/uv/target/fast-build/uv run myscript.py &amp;
+done
+[...job output, no errors...]
+</code></pre>
+<hr />
+<p>And now the locked case:</p>
+<pre><code>$ uv init --script myscript.py
+Initialized script at `myscript.py`
+$ uv add --script myscript.py boto3 fastapi numba pandas polars protobuf pyarrow pydantic requests urllib3 scikit-learn jupyter
+Updated `myscript.py`
+$ uv lock --script myscript.py
+Resolved 124 packages in 74ms
+$ for i in `seq 10` ; do
+    uv run myscript.py &amp;
+done
+[...lots of job output...]
+error: Failed to install: jupyterlab_widgets-3.0.15-py3-none-any.whl (jupyterlab-widgets==3.0.15)
+  Caused by: failed to remove directory `/home/jacko/.cache/uv/environments-v2/myscript-ae497719a2d6056a/lib/python3.13/site-packages/jupyterlab_widgets-3.0.15.data`: Directory not empty (os error 39)
+[...lots more errors...]
+</code></pre>
+<p>Fixed with this PR:</p>
+<pre><code>$ uv init --script myscript.py
+Initialized script at `myscript.py`
+$ uv add --script myscript.py boto3 fastapi numba pandas polars protobuf pyarrow pydantic requests urllib3 scikit-learn jupyter
+Updated `myscript.py`
+$ uv lock --script myscript.py
+Resolved 124 packages in 12ms
+$ for i in `seq 10` ; do
+    ~/uv/target/fast-build/uv run myscript.py &amp;
+done
+[...job output, no errors...]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @oconnor663 on 2025-06-20 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @oconnor663 on 2025-06-20 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-20 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-20 20:38</div>
+            <div class="timeline-body"><p>As a minor note, I'd title this to be user-facing so it makes sense in the changelog</p>
+<p>What's the actual user-facing change? &quot;Lock the Python environment during updates in <code>uv run</code>&quot;? or &quot;Prevent concurrent changes to the environment during <code>uv run</code>&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-06-20 20:43</div>
+            <div class="timeline-body"><p>Got it. Yes, I'd go with either of your descriptions above, or maybe &quot;lock the virtual environment when <code>uv run</code> does an implicit sync, to prevent concurrent modifications&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "(f)lock during `uv run`" to "Prevent concurrent updates of the environment in `uv run`" by @zanieb on 2025-06-21 01:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:26 UTC
+    </footer>
+</body>
+</html>

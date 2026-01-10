@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PERF101 False positive - astral-sh/ruff #8746</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PERF101 False positive</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8746">#8746</a>
+        opened by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a>
+        on 2023-11-17 19:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2023-11-17 19:57</div>
+            <div class="timeline-body"><p>From the CPython source:</p>
+<pre><code>        klasses = [
+            Mock, MagicMock, NonCallableMock, NonCallableMagicMock
+        ]
+        for Klass in list(klasses):  # PERF101 [*] Do not cast an iterable to `list` before iterating over it
+            klasses.append(lambda K=Klass: K(spec=Anything))
+            klasses.append(lambda K=Klass: K(spec_set=Anything))
+</code></pre>
+<p>The auto-fix rule removes <code>list</code>, which breaks this code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-17 19:58</div>
+            <div class="timeline-body"><p>What type is <code>klasses</code>? How does this break the code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2023-11-17 20:01</div>
+            <div class="timeline-body"><p>It's a list.  Removing the copy means that the append statements below would modify the list that's being iterated over.  I edited in the context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-17 20:03</div>
+            <div class="timeline-body"><p>I see that makes sense. We can probably special case <code>append</code> calls to the inner item which would then not trigger the rule. Separately, I think this code should use <code>copy(klasses)</code> which is much clearer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2023-11-17 20:04</div>
+            <div class="timeline-body"><p>I agree with you that <code>copy</code> would have been clearer.  (Not my code and I can't change it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2023-11-17 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2023-11-17 20:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2023-11-21 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-11-21 21:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:01 UTC
+    </footer>
+</body>
+</html>

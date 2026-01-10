@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B006 doesn’t flag mutable defaults when passed via a named constant - astral-sh/ruff #21142</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>B006 doesn’t flag mutable defaults when passed via a named constant</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21142">#21142</a>
+        opened by <a href="https://github.com/yehiahesham">@yehiahesham</a>
+        on 2025-10-30 15:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yehiahesham">@yehiahesham</a> on 2025-10-30 15:09</div>
+            <div class="timeline-body"><p>Ruff’s B006 (mutable-argument-default) correctly flags obvious mutable defaults written inline (e.g., {}, [], set()), but it does not warn when the default is a reference to a module-level named constant that is a mutable object (e.g., a set). This yields a false negative and can lead to shared mutable state across calls/instances without any lint warning.</p>
+<p>This appears to be a false negative due to B006’s syntax-local detection not resolving identifiers to determine mutability.</p>
+<h1>Environment</h1>
+<p>Ruff version: ruff 0.9.6
+Python version: Python 3.13.7
+pyproject.toml file Config has: select = [&quot;ALL&quot;]; B006 not ignored</p>
+<pre><code>[tool.ruff.lint]
+select = [&quot;ALL&quot;]
+exclude = [&quot;.github/**&quot;]
+</code></pre>
+<h1>Minimal Reproducer</h1>
+<pre><code>Python
+# Module-level mutable “constant”
+MY_SET = {&quot;ABC&quot;, &quot;DEF&quot;}  # plain set
+
+# NOT triggering B006
+def func_A(s: set[str] = MY_SET):
+    return s
+
+# Triggering B006
+def func_B(s: set[str] = {&quot;ABC&quot;, &quot;DEF&quot;}):
+    return s
+</code></pre>
+<h1>Observed Behavior</h1>
+<ul>
+<li>Ruff flags <code>func_B</code> with B006 (as expected).</li>
+<li>Ruff does not flag <code>func_A</code> even though they share the same mutable default object via <code>MY_SET</code>.</li>
+</ul>
+<h1>Expected Behavior</h1>
+<ul>
+<li>B006 should flag mutable default arguments even when the default is provided via a referenced identifier bound at module scope to a mutable object (list/set/dict).</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-30 18:25</div>
+            <div class="timeline-body"><p>I think it would make sense to extend the rule in this way, in preview.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-10-30 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-10-30 18:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:39 UTC
+    </footer>
+</body>
+</html>

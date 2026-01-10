@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `uvw` as alias for `uv` without console window on Windows - astral-sh/uv #11786</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>uvw</code> as alias for <code>uv</code> without console window on Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11786">#11786</a>
+        opened by <a href="https://github.com/CrendKing">@CrendKing</a>
+        on 2025-02-26 01:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/CrendKing">@CrendKing</a> on 2025-02-26 01:40</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Related to https://github.com/astral-sh/uv/issues/6801.</p>
+<p>Currently on Windows, uv itself will always creates a console window, even though the window could be empty if <code>uv run --gui-script</code> is used. This is due to it using the <a href="https://rust-lang.github.io/rfcs/1665-windows-subsystem.html">default <code>console</code> window subsystem</a>.</p>
+<p>This PR introduces a wrapper <code>uvw</code> that, similar to the existing <code>uvx</code>, invokes <code>uv</code> with the <a href="https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags#:~:text=CREATE_NO_WINDOW"><code>CREATE_NO_WINDOW</code></a> process creation flag on Windows, which creates child process without console window.</p>
+<p>Note that this PR does not alter any behaviors regarding <code>run --script</code> and <code>run --gui-script</code>.</p>
+<h2>Test Plan</h2>
+<p>Built and tested locally by doing something like <code>uvw run test.py</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CrendKing">@CrendKing</a> on 2025-02-26 01:42</div>
+            <div class="timeline-body"><p>I personally don't like the amount of duplicate code between <code>uvx</code> and <code>uvw</code>. Should I extract the common logic to a separate file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-26 03:27</div>
+            <div class="timeline-body"><p>Thanks for posting the pull request — I haven't looked at the implementation yet but note you'll want to look back at when we added <code>uvx</code> because we messed that up and broke the release process. I think there are various places you need to put the binary in an archive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-02-26 03:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for posting the pull request — I haven't looked at the implementation yet but note you'll want to look back at when we added <code>uvx</code> because we messed that up and broke the release process. I think there are various places you need to put the binary in an archive.</p>
+</blockquote>
+<p>Is the goal to distribute uvw only on windows or all platforms? For example, I don't think pythonw is available on other platforms besides windows. That will determine the distribution changes needed.</p>
+<p>e.g. In the case of windows only, I don't expect bundling this binary in the docker images</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-26 03:42</div>
+            <div class="timeline-body"><p>Yeah I think we should not publish this on other platforms.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CrendKing">@CrendKing</a> on 2025-02-26 03:43</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for posting the pull request — I haven't looked at the implementation yet but note you'll want to look back at when we added <code>uvx</code> because we messed that up and broke the release process. I think there are various places you need to put the binary in an archive.</p>
+</blockquote>
+<p>Can you link the issue(s) and where do I put this in?</p>
+<blockquote>
+<p>Is the goal to distribute uvw only on windows or all platforms? For example, I don't think pythonw is available on other platforms besides windows. That will determine the distribution changes needed.</p>
+<p>e.g. In the case of windows only, I don't expect bundling this binary in the docker images</p>
+</blockquote>
+<p>True. Technically this binary wouldn't need the existence of <code>pythonw</code>. But it also wouldn't do anything special under non-Windows OSes. So it makes sense not to distribute there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-26 03:48</div>
+            <div class="timeline-body"><ul>
+<li>https://github.com/astral-sh/uv/pull/4632</li>
+<li>https://github.com/astral-sh/uv/pull/4743</li>
+<li>https://github.com/astral-sh/uv/pull/4744</li>
+<li>https://github.com/astral-sh/uv/pull/4756</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CrendKing">@CrendKing</a> on 2025-02-26 03:56</div>
+            <div class="timeline-body"><p>I added the relevant lines to the Action config. However, I think currently the binary is generated under all platforms regardless. I don't know how to generate <code>uvw</code> only under Windows. https://users.rust-lang.org/t/compile-a-binary-for-a-specific-platform/56528 says there isn't built-in way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-26 04:50</div>
+            <div class="timeline-body"><p>That's sort of a blocker.</p>
+<p>@Gankra may know some dark arts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CrendKing">@CrendKing</a> on 2025-03-03 00:12</div>
+            <div class="timeline-body"><p>Any update? I personally don't think having a harmless executable in the build directory, which is not included in the final release archive, is that big of a deal. On the other hand, if you guys have to introduce dark magic to get rid of it, that could become maintenance burden in the future. Would documenting the behavior somewhere in the <code>docs</code> suffice?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-03-04 19:34</div>
+            <div class="timeline-body"><p>Ah sorry I missed this!</p>
+<p>Yes cargo doesn't let you have platform-conditional-binaries. It <em>does</em> however let you have feature-flag-conditional binaries. So you could, in theory, introduce a <code>windows-gui-bin</code> feature or something and add <code>required-features = [&quot;windows-gui-bin&quot;]</code> to the <code>[[bin]]</code> entry for <code>uvw</code>.</p>
+<p>https://doc.rust-lang.org/cargo/reference/cargo-targets.html#binaries</p>
+<p>Then in our maturin release build tooling, we could add <code>--features windows-gui-bin</code> to the build invocation:</p>
+<p>https://github.com/astral-sh/uv/blob/b7f98f1ff2b7e4a9ff4d62d1946f697dd9198ca7/.github/workflows/build-binaries.yml#L181</p>
+<p>and add uvw to the files we archive:</p>
+<p>https://github.com/astral-sh/uv/blob/b7f98f1ff2b7e4a9ff4d62d1946f697dd9198ca7/.github/workflows/build-binaries.yml#L198-L201</p>
+<p>Probably the biggest issue with this is I don't think cargo-dist('s installers) would understand? I was actually remarkably pedantic about this possibility in <em>a lot</em> of cargo-dist's code/metadata, so actually it might be a relatively small change to support. But I believe there's no UI to tell cargo-dist &quot;ok I'm actually doing this!&quot; (unless it was added in the last 4 months).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CrendKing">@CrendKing</a> on 2025-03-04 20:07</div>
+            <div class="timeline-body"><p>Thank you Gankra. I updated the PR. Could you check if I'm doing it correctly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-03-06 15:00</div>
+            <div class="timeline-body"><p>Sorry I should have been more clear -- I believe we can't ship this without upstream work in
+https://github.com/axodotdev/cargo-dist/</p>
+<p>If I checkout your branch (which is indeed written Correctly as I described) we see that dist doesn't understand and will expect every platform to provide uvw. This will likely lead to installers erroring out as they try to validate the presence of missing files:</p>
+<pre><code>$ dist plan
+...
+announcing v0.6.3
+  uv 0.6.3
+    source.tar.gz
+      [checksum] source.tar.gz.sha256
+    uv-installer.sh
+    uv-installer.ps1
+    sha256.sum
+    uv-aarch64-apple-darwin.tar.gz
+      [bin] uv
+      [bin] uvw
+      [bin] uvx
+      [checksum] uv-aarch64-apple-darwin.tar.gz.sha256
+    uv-aarch64-pc-windows-msvc.zip
+      [bin] uv.exe
+      [bin] uvw.exe
+      [bin] uvx.exe
+      [checksum] uv-aarch64-pc-windows-msvc.zip.sha256
+      ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CrendKing">@CrendKing</a> on 2025-03-06 18:54</div>
+            <div class="timeline-body"><p>Sorry I didn't understand that cargo-dist is a required component/step for uv.</p>
+<p>I think there are three options forward.</p>
+<ol>
+<li>Like I mentioned <a href="https://github.com/astral-sh/uv/pull/11786#issuecomment-2692986842">above</a>, we can make it so every platform builds the uvw binary. It is just that uvw does nothing special other than directly wrapping <code>uv</code> on non-Windows platforms, which I consider being useless but also harmless. Maybe this requires some documentation somewhere, if you guys are OK with that.</li>
+<li>We wait for cargo-dist to update to support platform-specific binaries.</li>
+<li>We abandon this PR. I could move the source code to a new repository that you guys own (like under astral-sh account, e.g. <code>astral-sh/uvw</code>). Setup a release process there.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-06 19:02</div>
+            <div class="timeline-body"><p>Regarding (1), I think there's a cost to every additional artifact we add to releases. It's user-facing complexity.</p>
+<p>(2) I think we'll need to push for support in <code>cargo-dist</code> directly, or wait until we start to take more ownership over that component of our releases.</p>
+<p>(3) A derived third-party artifact is an option, though I'd be a bit sad about it. I understanding pursuing it as a stop-gap, but hopefully we can do better for users.</p>
+<p>@Gankra do you have an idea of the scope of work needed upstream?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CrendKing">@CrendKing</a> on 2025-03-06 19:08</div>
+            <div class="timeline-body"><p>Thank you zanieb. I do believe option 2 is the best to go, if we can push the required changes to <code>cargo-dist</code> in timely fashion. Please let me know if you need me to create or follow-up issue ticket in their repo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-03-06 20:08</div>
+            <div class="timeline-body"><p>On paper it's actually not a huge lift. It's ideally mostly just adding config option similar to the <a href="https://opensource.axo.dev/cargo-dist/book/reference/config.html?highlight=bins#min-glibc-version">min-glibc-version</a> but for <a href="https://opensource.axo.dev/cargo-dist/book/reference/config.html?highlight=bins#packagebinaries">package.binaries</a> instead.</p>
+<p>Then that config value would need to be queried/applied here:</p>
+<p>https://github.com/axodotdev/cargo-dist/blob/c8ba950c63f9c38c77782912ec6cdb6807bd0fbd/cargo-dist/src/tasks/mod.rs#L1340-L1344</p>
+<p>So in an ideal world 99% of the work is agreeing on the config and piping it to this location and it Just Works.</p>
+<p>However there's a non-zero chance that random things will blow up because although the code tries really hard to make things deal with per-platform-binaries it hasn't ever <em>really</em> been a thing so it's very easy for something to have cut a corner and for it to have been fine up until now. However the only way to know is Try It And See.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CrendKing">@CrendKing</a> on 2025-03-08 00:34</div>
+            <div class="timeline-body"><p>I see that currently the <code>package.binaries</code> is internally a Vec of string, while <code>min-glibc-version</code> is a <code>SortedMap&lt;String, LibcVersion&gt;</code>. Pushing through this backward incompatible change doesn't seem to be a trivial task at all, not to mention the cargo-dist owners might not like the idea of platform-specific artifacts to begin with. Maybe I'm a bit pessimistic here.</p>
+<p>Do you guys want me to start an issue ticket on cargo-dist and reference to this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-08 01:31</div>
+            <div class="timeline-body"><p>@Gankra is a former cargo-dist maintainer and has a fair amount of perspective there. Anyway, please do open an issue there and we can try to coordinate with them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CrendKing">@CrendKing</a> on 2025-03-08 04:27</div>
+            <div class="timeline-body"><p>https://github.com/axodotdev/cargo-dist/issues/1791</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-09 18:03</div>
+            <div class="timeline-body"><p>platform-specific bins support in cargo-dist https://github.com/astral-sh/cargo-dist/pull/17</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CrendKing">@CrendKing</a> on 2025-04-09 21:50</div>
+            <div class="timeline-body"><p>Great news! I'll wait for the release there.</p>
+<p>Below is for documentation.</p>
+<p>I've been using the <code>uvw</code> locally myself, and the only thing bothering me is that even though there is no visible console window now, since <code>uvw</code> actually invokes <code>uv</code>, which is built with console option, it still spawns a useless <code>conhost.exe</code> process.</p>
+<p>The only way to make that conhost.exe never spawn is to change our creation flag to <a href="https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags#:~:text=0x00000008"><code>DETACHED_PROCESS</code></a>, and always use <code>--gui-script</code>. Unfortunately, if user doesn't use <code>--gui-script</code> (which is the default), the console window is back.</p>
+<p>For maximum ease of use, I think we should keep the current <code>CREATE_NO_WINDOW</code> flag, unless one day <code>uv</code> supports an option to always use <code>--gui-script</code> through config file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @zanieb on 2025-04-15 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dpy013">@dpy013</a> on 2025-04-20 03:12</div>
+            <div class="timeline-body"><p>Suggested Resolve conflicts</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CrendKing">@CrendKing</a> on 2025-04-21 00:02</div>
+            <div class="timeline-body"><p>I added a <code>[workspace.metadata.dist.binaries]</code> section in Cargo.toml. I tested with <code>dist plan</code> and see only Windows target has the extra <code>uvw.exe</code>. I'm not sure if there is more concise way to write all Windows targets though (e.g. <code>*-windows-msvc = ...</code>)</p>
+<p>I also applied the update to <code>uvx</code> from https://github.com/astral-sh/uv/pull/12923 about suffix searching. I tested myself. Though now there are even more duplicate logic between <code>uvx</code> and <code>uvw</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CrendKing">@CrendKing</a> on 2025-05-14 06:31</div>
+            <div class="timeline-body"><p>Anyone still interested?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-14 14:27</div>
+            <div class="timeline-body"><p>@Gankra can take a look, but is at a conference right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-05-28 17:05</div>
+            <div class="timeline-body"><p>Apologies for all the delays, this seems to just be... done? I don't see any obvious reasons to complain, other than we should probably add some tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-28 17:51</div>
+            <div class="timeline-body"><p>Ok I've locally confirmed uvw.exe does what it intends, by creating a windows shortcut</p>
+<pre><code>C:\Users\gankra\dev\uv\target\release\uvw.exe run C:\Users\gankra\dev\tmp\tkinter-app\main.py
+</code></pre>
+<p>And double-clicking it. (And changing uvw.exe to uv.exe does indeed spawn a shell)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-28 18:05</div>
+            <div class="timeline-body"><p>Hmm I guess this is basically as tested as <code>uvx</code> is?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-05-28 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-05-28 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-28 18:37</div>
+            <div class="timeline-body"><p>Thanks so much for this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CrendKing">@CrendKing</a> on 2025-05-29 00:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Hmm I guess this is basically as tested as <code>uvx</code> is?</p>
+</blockquote>
+<p>I'm sorry I am not familiar with the code structure of uv. I did not see <code>uvx</code> itself have dedicated test, so I didn't start one for <code>uvw</code>. I see <code>uvx --help</code> is called in <code>build-binaries.yml</code>, so I added for <code>uvw</code>.</p>
+<p>I see there is also a <code>scripts/smoke-test</code> which seems like an integration test. Maybe we can add some <code>uvw</code> calls there?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

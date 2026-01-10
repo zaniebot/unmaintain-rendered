@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use a `SmallString` for the Yanked enum - astral-sh/uv #11715</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use a <code>SmallString</code> for the Yanked enum</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11715">#11715</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-02-22 22:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-22 22:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is stored on <code>File</code>, which we create extensively. Easy way to reduce size.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2025-02-22 22:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-02-24 16:10</div>
+            <div class="timeline-body"><p>Should we use a <code>Option&lt;Box&lt;Yanked&gt;&gt;</code> on <code>File</code>? This should be even smaller (<code>usize</code>) and yanked versions are rare.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-24 18:45</div>
+            <div class="timeline-body"><p>We should validate that that’s smaller, since SmallString is also a single word (but Yanked might be two now with discriminant).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-24 18:59</div>
+            <div class="timeline-body"><p>I can check and change if necessary before merging; no need for you to spend more time on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-24 19:00</div>
+            <div class="timeline-body"><p>I've confirmed that that's the case on x86_64 with a test (below). The background is that even though <code>Arc</code> (and its variant such as <code>ArcStr</code>) are a pointer, and an x86_64 pointer only uses 48 bits of its 64 bits (leaving us 16 bit), rustc only sees a <code>NonNull</code> with a single niche (Null). <code>Yanked</code> needs at least two niches to represent <code>Yanked::Bool</code>, so it doesn't fit and we get padded to two words. In the experiments I made, all instances of enums where one variant contained a pointer and there was more than a single other variant without (like <code>Option&lt;T&gt;</code>), the enum would get padded to two words.</p>
+<p>I don't feel strongly about what we do with <code>File</code> here, its 432 vs 424 bytes, this is for context.</p>
+<pre><code class="language-rust">    #[test]
+    fn yanked_size() {
+        assert_eq!(size_of::&lt;Option&lt;Yanked&gt;&gt;(), size_of::&lt;usize&gt;() * 2);
+        assert_eq!(size_of::&lt;Option&lt;Box&lt;Yanked&gt;&gt;&gt;(), size_of::&lt;usize&gt;());
+    }
+
+    #[test]
+    #[cfg(target_pointer_width = &quot;64&quot;)]
+    fn file_size() {
+        assert_eq!(size_of::&lt;Option&lt;crate::File&gt;&gt;(), 432);
+        #[derive(Debug, Clone, Deserialize)]
+        #[serde(rename_all = &quot;kebab-case&quot;)]
+        pub struct File2 {
+            // PEP 714-renamed field, followed by PEP 691-compliant field, followed by non-PEP 691-compliant
+            // alias used by PyPI.
+            pub core_metadata: Option&lt;CoreMetadata&gt;,
+            pub dist_info_metadata: Option&lt;CoreMetadata&gt;,
+            pub data_dist_info_metadata: Option&lt;CoreMetadata&gt;,
+            pub filename: String,
+            pub hashes: Hashes,
+            /// There are a number of invalid specifiers on PyPI, so we first try to parse it into a
+            /// [`VersionSpecifiers`] according to spec (PEP 440), then a [`LenientVersionSpecifiers`] with
+            /// fixup for some common problems and if this still fails, we skip the file when creating a
+            /// version map.
+            #[serde(
+                default,
+                deserialize_with = &quot;crate::simple_json::deserialize_version_specifiers_lenient&quot;
+            )]
+            pub requires_python: Option&lt;Result&lt;VersionSpecifiers, VersionSpecifiersParseError&gt;&gt;,
+            pub size: Option&lt;u64&gt;,
+            pub upload_time: Option&lt;Timestamp&gt;,
+            pub url: String,
+            pub yanked: Option&lt;Box&lt;Yanked&gt;&gt;,
+        }
+        assert_eq!(size_of::&lt;File2&gt;(), 424);
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-24 19:03</div>
+            <div class="timeline-body"><p>I'll change separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-02-24 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-24 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-24 19:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

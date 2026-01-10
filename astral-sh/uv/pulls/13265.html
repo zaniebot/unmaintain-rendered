@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move static feature out of perf features - astral-sh/uv #13265</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Move static feature out of perf features</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13265">#13265</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-05-02 13:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-05-02 13:59</div>
+            <div class="timeline-body"><p>#5577 fixed a bug on macos due to dynamically linking lzma/xz through static linking. In #7686, this feature was moved to the performance category.</p>
+<p>This PR moves the <code>xz2/static</code> back to the general default features, and, inspired by https://github.com/Homebrew/homebrew-core/pull/222211, it structures and documents the feature flags cleaner.</p>
+<p>We need to take care that this feature does not accidentally disable features we want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @konstin on 2025-05-02 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2025-05-02 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-02 14:08</div>
+            <div class="timeline-body"><p>I feel like I'm misremembering how this all work. I thought this (and <code>performance</code>) was intentionally not enabled by default to speed up development?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-02 14:20</div>
+            <div class="timeline-body"><p>I don't remember how exactly this came to be, but afaik we always used the allocator. This is fine from my POV, since we generally have builds with cached dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-02 14:23</div>
+            <div class="timeline-body"><p>Why is this a feature at all?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-05-02 14:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-02 14:44</div>
+            <div class="timeline-body"><p>On review, I guess this is correct given the state of the setup! We could probably just remove this feature, alternatively. Otherwise, we might want to add the static features for all the other compression types?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-02 15:25</div>
+            <div class="timeline-body"><p>The static feature for lzma/xz is special: Without it, we have a non-manylinux dependency:</p>
+<pre><code>$ cargo build
+$ ldd target/debug/uv
+        linux-vdso.so.1 (0x00007fffcca65000)
+        libgcc_s.so.1 =&gt; /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007265aa01c000)
+        libm.so.6 =&gt; /lib/x86_64-linux-gnu/libm.so.6 (0x00007265a5117000)
+        libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x00007265a4e00000)
+        /lib64/ld-linux-x86-64.so.2 (0x00007265aa06d000)
+$ cargo build --no-default-features
+$ ldd target/debug/uv
+        linux-vdso.so.1 (0x00007ffc1e95d000)
+        liblzma.so.5 =&gt; /lib/x86_64-linux-gnu/liblzma.so.5 (0x000077fd6b5c8000)
+        libgcc_s.so.1 =&gt; /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x000077fd6b59a000)
+        libm.so.6 =&gt; /lib/x86_64-linux-gnu/libm.so.6 (0x000077fd6b4b1000)
+        libc.so.6 =&gt; /lib/x86_64-linux-gnu/libc.so.6 (0x000077fd66800000)
+        /lib64/ld-linux-x86-64.so.2 (0x000077fd6b61d000)
+</code></pre>
+<p>We keep it as a feature so that redistributors (such as linux distros) can deactivate it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-02 15:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/Cargo.toml</code>:161 on 2025-05-02 15:32</div>
+            <div class="timeline-body"><p>Can these be &quot;test dependency&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-05-02 15:32</div>
+            <div class="timeline-body"><p>&lt;3 thank you for cleaning things up here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-02 15:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/Cargo.toml</code>:161 on 2025-05-02 15:36</div>
+            <div class="timeline-body"><p>Cargo has dev dependencies (and build dependencies), but they are always obligatory dependencies, while optional dependencies are always mandatory (https://github.com/rust-lang/cargo/issues/1596)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-02 15:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/Cargo.toml</code>:161 on 2025-05-02 15:37</div>
+            <div class="timeline-body"><p>I'm saying something much dumber :)</p>
+<pre><code class="language-suggestion"># Introduces a testing dependency on crates.io.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-02 15:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/Cargo.toml</code>:161 on 2025-05-02 15:37</div>
+            <div class="timeline-body"><p>or &quot;test suite&quot; or something</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-02 15:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/Cargo.toml</code>:161 on 2025-05-02 15:42</div>
+            <div class="timeline-body"><p>ah lol</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-02 15:45</div>
+            <div class="timeline-body"><p>Sorry, asking for that change on all those comments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-05-02 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-05-02 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-02 15:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:24 UTC
+    </footer>
+</body>
+</html>

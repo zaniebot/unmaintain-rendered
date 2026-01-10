@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM201 and SIM202 fixes should be marked unsafe - astral-sh/ruff #15619</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM201 and SIM202 fixes should be marked unsafe</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15619">#15619</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-01-20 15:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-01-20 15:33</div>
+            <div class="timeline-body"><p>The fixes for <a href="https://docs.astral.sh/ruff/rules/negate-equal-op/"><code>negate-equal-op</code> (SIM201)</a> and <a href="https://docs.astral.sh/ruff/rules/negate-not-equal-op/"><code>negate-not-equal-op</code> (SIM202)</a> should generally be marked unsafe because <code>__eq__</code> and <code>__ne__</code> may return any type, not just <code>bool</code>. The fixes are still safe when the operands are of types whose <code>__eq__</code> and <code>__ne__</code> are known to return <code>bool</code>.</p>
+<pre><code class="language-console">$ cat sim20.py
+import numpy as np
+a = np.array([0])
+b = np.array([1])
+print(not a == b)
+print(not a != b)
+
+$ python sim20.py
+True
+False
+
+$ ruff --isolated check --select SIM201,SIM202 sim20.py --fix
+Found 2 errors (2 fixed, 0 remaining).
+
+$ python sim20.py
+[ True]
+[False]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2025-01-20 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-01-21 17:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:21 UTC
+    </footer>
+</body>
+</html>

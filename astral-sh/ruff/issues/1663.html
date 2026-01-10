@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive: `UP028` flags `for-yield` loop that can't be rewritten into a `yield from` - astral-sh/ruff #1663</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive: <code>UP028</code> flags <code>for-yield</code> loop that can't be rewritten into a <code>yield from</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1663">#1663</a>
+        opened by <a href="https://github.com/woodruffw">@woodruffw</a>
+        on 2023-01-05 15:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/woodruffw">@woodruffw</a> on 2023-01-05 15:23</div>
+            <div class="timeline-body"><p>Thanks again for the excellent tool! This time I think I have a real false positive 🙂</p>
+<p>When running the latest <code>ruff</code> with <code>pyupgrade</code> rules enabled on the following code:</p>
+<pre><code class="language-python">    def resolve_all(
+        self, reqs: Iterator[Requirement]
+    ) -&gt; Iterator[tuple[Requirement, list[Dependency]]]:
+        &quot;&quot;&quot;
+        Resolve a collection of `Requirement`s into their respective `Dependency` sets.
+
+        `DependencyResolver` implementations can override this implementation with
+        a more optimized one.
+        &quot;&quot;&quot;
+        for req in reqs:
+            yield (req, self.resolve(req))
+</code></pre>
+<p>I get the following <code>UP028</code> lint result:</p>
+<pre><code class="language-console">pip_audit/_dependency_source/interface.py:87:9: UP028 Replace `yield` over `for` loop with `yield from`
+</code></pre>
+<p>...which, when I auto-apply it with <code>--fix</code>, produces the following:</p>
+<pre><code class="language-python">    def resolve_all(
+        self, reqs: Iterator[Requirement]
+    ) -&gt; Iterator[tuple[Requirement, list[Dependency]]]:
+        &quot;&quot;&quot;
+        Resolve a collection of `Requirement`s into their respective `Dependency` sets.
+
+        `DependencyResolver` implementations can override this implementation with
+        a more optimized one.
+        &quot;&quot;&quot;
+        yield from reqs
+</code></pre>
+<p>but this is no longer correct: the type signature no longer matches (we're now returning an <code>Iterator[Requirement]</code> instead of an <code>Iterator[tuple[Requirement, list[Dependency]]]</code>, and an important behavioral component of the function (calling <code>self.resolve(req)</code>) has been erased.</p>
+<p>More generally, I don't think this particular <code>for-yield</code> loop can be re-written into a <code>yield from</code> -- I <em>think</em> the only valid rewrites of that sort are &quot;trivial&quot; loop bodies like these:</p>
+<pre><code class="language-python"># original
+for x in iter:
+    yield iter
+    
+# rewritten
+yield from x
+</code></pre>
+<p>(more precisely the loop binding needs to be the only thing yielded, but I'm not sure if <code>ruff</code> has that kind of granularity 🙂)</p>
+<p>Runtime context:</p>
+<pre><code>$ ruff --version
+ruff 0.0.211
+
+$ python -V
+Python 3.7.15
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2023-01-05 15:24</div>
+            <div class="timeline-body"><p>Likely introduction point here: https://github.com/charliermarsh/ruff/pull/1544 (cc @colin99d)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-05 16:02</div>
+            <div class="timeline-body"><p>Definitely a false positive, sorry about that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-05 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-05 16:19</div>
+            <div class="timeline-body"><p>(Will fix this today, just an oversight + weak test coverage.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2023-01-05 16:27</div>
+            <div class="timeline-body"><p>No problem at all! Thanks for the fast response.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/colin99d">@colin99d</a> on 2023-01-05 16:29</div>
+            <div class="timeline-body"><p>@charliermarsh I went about this by checking these two items:
+yield_items: Vec<String>, (the variables after the yield)
+target_items: Vec<String>, (the variables after for)
+If they were not identical I did not attempt to fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-05 16:34</div>
+            <div class="timeline-body"><p>Yeah, we do have that logic, it's just not robust to <code>yield</code> statements that include non-trivial names.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-05 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodruffw">@woodruffw</a> on 2023-01-06 22:20</div>
+            <div class="timeline-body"><p>Thanks for the quick fix!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:28:47 UTC
+    </footer>
+</body>
+</html>

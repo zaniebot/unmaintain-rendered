@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combination of re-exported import and classvar of the same name results in F811 - astral-sh/ruff #16359</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Combination of re-exported import and classvar of the same name results in F811</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16359">#16359</a>
+        opened by <a href="https://github.com/thatch">@thatch</a>
+        on 2025-02-25 00:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thatch">@thatch</a> on 2025-02-25 00:54</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>demo.py</p>
+<pre><code class="language-py">from msgspec import Struct
+from msgspec.structs import replace as replace
+
+
+class T(Struct):
+    search: str = &quot;&quot;
+    replace: str = &quot;&quot;
+</code></pre>
+<p>However running:</p>
+<pre><code>$ uvx ruff check --fix demo.py
+demo.py:7:5: F811 Redefinition of unused `replace` from line 2
+  |
+5 | class T(Struct):
+6 |     search: str = &quot;&quot;
+7 |     replace: str = &quot;&quot;
+  |     ^^^^^^^ F811
+  |
+  = help: Remove definition: `replace`
+
+Found 1 error.
+</code></pre>
+<p>I don't think this should be treated as shadowing (it only is during the class body).  Adding a module-level use of the re-exported <code>replace</code> makes it chill out, but I couldn't figure out a good way to use the classvar to do so.</p>
+<pre><code>$ uvx ruff --version
+ruff 0.9.7
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-02-25 02:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-25 08:23</div>
+            <div class="timeline-body"><p>This might be a duplicate of https://github.com/astral-sh/ruff/issues/10874</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-25 08:24</div>
+            <div class="timeline-body"><p>Yeah, I think this is a duplicate (see the very last comment in that thread).</p>
+<p>Thanks for reporting this issue. I'll merge it with the existing issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-25 08:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:44 UTC
+    </footer>
+</body>
+</html>

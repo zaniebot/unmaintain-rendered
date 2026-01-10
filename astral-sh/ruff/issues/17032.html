@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Implicit type aliases in typeshed are widened as `Unknown | T` - astral-sh/ruff #17032</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Implicit type aliases in typeshed are widened as <code>Unknown | T</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17032">#17032</a>
+        opened by <a href="https://github.com/cake-monotone">@cake-monotone</a>
+        on 2025-03-28 08:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2025-03-28 08:49</div>
+            <div class="timeline-body"><p>Some implicit type aliases in <code>typeshed</code> are not annotated using <code>TypeAlias</code>, such as:</p>
+<pre><code class="language-python"># types.pyi
+LambdaType = FunctionType
+NotImplementedType = _NotImplementedType
+</code></pre>
+<pre><code class="language-python"># ctypes/wintypes.pyi
+BYTE = c_byte
+WORD = c_ushort
+...
+BOOLEAN = BYTE
+</code></pre>
+<p>Since these aliases lack explicit type annotations, Red-knot currently widens them as <code>Unknown | T</code>:</p>
+<pre><code class="language-python">from types import LambdaType
+
+reveal_type(LambdaType)  # revealed: Unknown | Literal[FunctionType]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2025-03-28 08:50</div>
+            <div class="timeline-body"><p>I’d like to get a sense of how this issue might be resolved in the future.</p>
+<p>My guess is:</p>
+<ul>
+<li>Once <code>TypeAlias</code> support is fully implemented in Red-knot,</li>
+<li>These kinds of aliases (like <code>LambdaType</code>) will be treated as <code>TypeAlias</code> instances, not as just <code>Literal[Class]</code>.</li>
+<li>TypeAlias instances are <code>KnownInstance</code>, and currently, the widening step is skipped for them.</li>
+<li>So the widening problem would no longer occur.</li>
+</ul>
+<p>Is this understanding correct? Or is there something else going on that I might have missed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-03-28 11:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-28 15:10</div>
+            <div class="timeline-body"><p>The simplest short-term solution here is to extend our current special case for KnownInstance to also apply to KnownClass. I think it's hard to justify this on principled grounds, though, so we probsbly need to think through a more comprehensive solution. It may be that avoiding the widening for anything we identify as a potential type alias is workable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-28 19:08</div>
+            <div class="timeline-body"><p>I think a lot of these aliases-that-are-not-type-aliases should really be annotated with <code>Final</code> in typeshed. If we made this change in typeshed, it would probably benefit users of other type checkers as well as users of red-knot. Once we've implemented support for <code>Final</code>, it should mean that we use the inferred type as the public type directly for aliases like these, rather than using <code>&lt;inferred_type&gt; | Unknown</code> as the public type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-28 19:11</div>
+            <div class="timeline-body"><p>Maybe the right rule will be &quot;assume all module-level assignments in typeshed are <code>Final</code>&quot;, pending a hopeful future where they are actually annotated that way.</p>
+<p>I could also see some justification for always considering all module-level assignments in stub files to be implicitly <code>Final</code>? Since a stub file is more like a declaration of a typed module surface, rather than just being some Python code whose intention is less clear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-04-11 06:03</div>
+            <div class="timeline-body"><blockquote>
+<p>I could also see some justification for always considering all module-level assignments in stub files to be implicitly Final? Since a stub file is more like a declaration of a typed module surface, rather than just being some Python code whose intention is less clear.</p>
+</blockquote>
+<p>That makes sense to me. Just jumping in to say that in typeshed, such assignments are usually because it's simpler to replicate what the implementation does. Such aliases amount to saying &quot;these two symbols will be the same&quot;.
+If we expect it can be changed, then it would (should) be explicitly annotated with a type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-04-23 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-04-23 17:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:05 UTC
+    </footer>
+</body>
+</html>

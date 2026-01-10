@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neovim configuration: Ruff LSP, formatexpr and gq command - astral-sh/ruff #11634</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Neovim configuration: Ruff LSP, formatexpr and gq command</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11634">#11634</a>
+        opened by <a href="https://github.com/gzagatti">@gzagatti</a>
+        on 2024-05-31 11:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gzagatti">@gzagatti</a> on 2024-05-31 11:04</div>
+            <div class="timeline-body"><p>I am tring to use Ruff in Neovim via LSP, but I have been having trouble with <code>formatexpr</code>. Once ruff LSP is started, I can't reformat a long line by pressing <code>gq</code>.</p>
+<p>For some context, I have installed ruff with <a href="https://github.com/williamboman/mason.nvim">Mason</a>, and the LSP config with <a href="https://github.com/neovim/nvim-lspconfig">nvim-lspconfig</a>. I have also followed <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_server/docs/setup/NEOVIM.md">the guide in the ruff documentation</a>.</p>
+<p>I have tried different things to fix this issue. First, I tried to modify the server capabilities on attach:</p>
+<pre><code class="language-lua"> client.server_capabilities.documentFormattingProvider = false
+ client.server_capabilities.documentRangeFormattingProvider = false
+</code></pre>
+<p>Second, I tried to modify the settings capabilities which is passed to the setup</p>
+<pre><code class="language-lua">local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.formatting = { dynamicRegistration = false }
+capabilities.textDocument.rangeFormatting = { dynamicRegistration = false }
+</code></pre>
+<p>I also found additional references related with this problem on <a href="https://github.com/nvimtools/none-ls.nvim/wiki/Avoiding-LSP-formatting-conflicts"><code>none-ls</code> documentation</a>.</p>
+<p>I suspect the problem is related with <code>ruff</code> LSP client. I tested a similar setup with <code>pyright</code>, and <code>gq</code> formats lines without any issues. I would appreciate any help in locating and fixin this bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-31 11:19</div>
+            <div class="timeline-body"><p>Interesting, let me try this out myself and come back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-31 11:30</div>
+            <div class="timeline-body"><blockquote>
+<p>I can't reformat a long line by pressing <code>gq</code>.</p>
+</blockquote>
+<p>I'm assuming by &quot;reformat a long line&quot;, you mean that the editor is reformatting it to satisfy the <code>textwidth</code> value.</p>
+<p>So, the value of <code>formatexpr</code> is by default set by Neovim (https://github.com/neovim/neovim/blob/7e44ab696a0488ad234b0915a8cf804fd6d79156/runtime/lua/vim/lsp.lua#L347-L353) to use the language server.</p>
+<p>As per https://neovim.io/doc/user/lsp.html#lsp-quickstart:</p>
+<blockquote>
+<p><a href="https://neovim.io/doc/user/options.html#%27formatexpr%27">'formatexpr'</a> is set to <a href="https://neovim.io/doc/user/lsp.html#vim.lsp.formatexpr(">vim.lsp.formatexpr()</a>), so you can format lines via <a href="https://neovim.io/doc/user/change.html#gq">gq</a> if the language server supports it.
+To opt out of this use <a href="https://neovim.io/doc/user/change.html#gw">gw</a> instead of gq, or clear <a href="https://neovim.io/doc/user/options.html#%27formatexpr%27">'formatexpr'</a> on <a href="https://neovim.io/doc/user/lsp.html#LspAttach">LspAttach</a>.</p>
+</blockquote>
+<p>Can you try doing this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dhruvmanila on 2024-05-31 11:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gzagatti">@gzagatti</a> on 2024-05-31 11:51</div>
+            <div class="timeline-body"><p>Including the following line on my <code>on_attach</code> function does the trick.</p>
+<pre><code>vim.bo[bufnr].formatexpr = nil
+</code></pre>
+<p>At the same time, it seems weird that <code>ruff</code> LSP set <code>gq</code> to a no-operation while <code>pyright</code> does not.</p>
+<p>Thanks for your prompt response.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-31 12:27</div>
+            <div class="timeline-body"><blockquote>
+<p>At the same time, it seems weird that <code>ruff</code> LSP set <code>gq</code> to a no-operation while <code>pyright</code> does not.</p>
+</blockquote>
+<p>Just to clarify, it's not <code>ruff</code> who is setting the <code>formatexpr</code> option value but rather Neovim. And the reason it does it only for <code>ruff</code> is because Ruff supports formatting capability while Pyright doesn't. You can see in https://github.com/neovim/neovim/blob/7e44ab696a0488ad234b0915a8cf804fd6d79156/runtime/lua/vim/lsp.lua#L347-L353 that Neovim checks if the server supports range formatting and updates <code>formatexpr</code> only if it does.</p>
+<p>I'm glad that the solution works. I'll close the issue now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-05-31 12:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gegoune">@gegoune</a> on 2024-05-31 12:54</div>
+            <div class="timeline-body"><p>I wanted to respond saying that it would be nice have this use case working as well, but it actually works fine for me (don't have the issue that OP reported).
+On a too long line, formatting works when I press <code>gql</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gzagatti">@gzagatti</a> on 2024-05-31 13:19</div>
+            <div class="timeline-body"><p>Thanks for your answer! From your response, I suspect that there must be some unexpected interaction going on with my setup that somehow leads to the problem I reported above.</p>
+<p>Since the solution of setting <code>formatexpr = nil</code> works reasonably well for now. I'll just leave to debug my setup to some point in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-31 14:53</div>
+            <div class="timeline-body"><blockquote>
+<p>From your response, I suspect that there must be some unexpected interaction going on with my setup that somehow leads to the problem I reported above.</p>
+</blockquote>
+<p>I'm sorry if my response wasn't clear but there's nothing wrong with your config. It's just that Neovim sets the value of <code>formatexpr</code> to use the language server if <em>any</em> of them supports range formatting[^1]. This is done by default. To avoid having this default behavior, it's recommended to set <code>formatexpr = nil</code> in the LSP config as per Neovim docs.</p>
+<p>[^1]: Source https://github.com/neovim/neovim/blob/7e44ab696a0488ad234b0915a8cf804fd6d79156/runtime/lua/vim/lsp.lua#L347-L353, specifically this code: <code>client.supports_method(ms.textDocument_rangeFormatting)</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:03 UTC
+    </footer>
+</body>
+</html>

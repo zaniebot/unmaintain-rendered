@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move Python upgrade functionality behind `--preview` flag - astral-sh/uv #13762</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Move Python upgrade functionality behind <code>--preview</code> flag</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13762">#13762</a>
+        opened by <a href="https://github.com/jtfmumm">@jtfmumm</a>
+        on 2025-06-01 20:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-01 20:58</div>
+            <div class="timeline-body"><p>Because the required changes for transparent Python upgrades (#13312, #13712, and #13531) have a significant impact on how uv installs and executes managed Python executables, this PR moves these changes behind a <code>--preview</code> flag and updates the relevant docs.</p>
+<p>Most of the changes here are threading <code>PreviewMode</code> through new places in the code. The core of the change is to check the <code>PreviewMode</code> in <code>DirectorySymlink::from_executable</code>. When preview is disabled, this method will return <code>None</code>, causing calling code to use the existing behavior instead of the new behavior supporting transparent upgrades.</p>
+<p>Once an installation has been made upgradeable through <code>uv python install --preview</code> or <code>uv python upgrade --preview</code>, future operations do not require the <code>--preview</code> flag. For example, <code>uv venv -p 3.10</code> will create an upgradeable venv and <code>uv python install 3.10.18</code> will upgrade it if it had started on a lower patch version. This is accomplished by checking for the existence of the relevant symlink directory when executing operations.</p>
+<p>Any tests that check transparent upgrade behavior in <code>python_upgrade.rs</code> and <code>python_install.rs</code> have been updated to make use of the <code>--preview</code> flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-01 20:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-dev/src/compile.rs</code>:29 on 2025-06-01 20:59</div>
+            <div class="timeline-body"><p>It looks like in <code>uv-dev</code> we don't currently parse the preview flag. At the moment I am passing <code>PreviewMode::Disabled</code> directly here. How do we want to handle the preview flag in this context?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/python_list.rs</code>:452 on 2025-06-01 21:07</div>
+            <div class="timeline-body"><p>We no longer list a minor version (corresponding to a symlink directory) without the <code>--preview</code> flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-01 21:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-02 13:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-dev/src/compile.rs</code>:29 on 2025-06-02 13:06</div>
+            <div class="timeline-body"><p>I don't think we really need it. I don't use the <code>uv-dev</code> commands anymore, personally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @jtfmumm on 2025-06-02 13:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/guides/install-python.md</code>:125 on 2025-06-05 14:18</div>
+            <div class="timeline-body"><p>Can you move the preview hint out to a <code>!!! note</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-virtualenv/src/virtualenv.rs</code>:181 on 2025-06-05 14:39</div>
+            <div class="timeline-body"><p>We need to make sure that we update those comments when stabilizing the feature</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/python_upgrade.rs</code>:223 on 2025-06-05 14:40</div>
+            <div class="timeline-body"><p>Where did that test case go?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-06-05 14:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/python_upgrade.rs</code>:223 on 2025-06-05 15:01</div>
+            <div class="timeline-body"><p>I thought I had a comment on this one. This test no longer tests what we want because now that I've put upgrades behind preview, a <code>--preview</code> installation uses the new behavior from the upgrade changes, which is to install the latest patch version when a minor version is installed. However, in the <code>python_install_preview</code> test, we now check that the preview install installs a symlink to the upgradeable symlink directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-05 15:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-05 15:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>docs/guides/install-python.md</code>:125 on 2025-06-05 15:26</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-05 16:11</div>
+            <div class="timeline-body"><p>(Before we iterate too much here I want to review and make sure we're aligned that this is the right approach for rollout)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-05 17:31</div>
+            <div class="timeline-body"><blockquote>
+<p>(Before we iterate too much here I want to review and make sure we're aligned that this is the right approach for rollout)</p>
+</blockquote>
+<p>Sure. There haven’t been any changes yet except a minor one to the docs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-09 19:10</div>
+            <div class="timeline-body"><p>I've updated the code, tests, and PR description to only require the <code>--preview</code> flag on <code>uv python upgrade</code> and <code>uv python install</code> to create an upgradeable installation. Subsequent operations, such as <code>uv python uninstall</code> or <code>uv venv -p 3.10</code>, will check for and use the symlink directory if it exists.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-10 18:07</div>
+            <div class="timeline-body"><p>Merging into feature branch as part of the PR stack (as described in <a href="https://github.com/astral-sh/uv/pull/13312#issuecomment-2960012218">this comment</a>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @jtfmumm on 2025-06-10 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-06-10 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-10 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-10 18:22</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/uv/branches/jtfm%2Fupgrade-behind-preview">CodSpeed Walltime Performance Report</a></h2>
+<h3>Merging #13762 will <strong>improve performances by 16.67%</strong></h3>
+<p><sub>Comparing <code>jtfm/upgrade-behind-preview</code> (3e01986) with <code>main</code> (f20a25f)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements<br />
+<code>✅ 11</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>wheelname_parsing_failure[flyte-long-extension]</code> | 112 ns | 96 ns | +16.67% |</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:25 UTC
+    </footer>
+</body>
+</html>

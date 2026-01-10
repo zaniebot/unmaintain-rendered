@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replace executables with broken symlinks during `uv python install` - astral-sh/uv #9706</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Replace executables with broken symlinks during <code>uv python install</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9706">#9706</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-12-07 16:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-07 16:49</div>
+            <div class="timeline-body"><p>I somehow got in a state where we'd fail to install with</p>
+<pre><code>error: Failed to install cpython-3.13.0-macos-aarch64-none
+  Caused by: Executable already exists at `/Users/zb/.local/bin/python3` but is not managed by uv; use `--force` to replace it
+error: Failed to install cpython-3.13.0-macos-aarch64-none
+  Caused by: Executable already exists at `/Users/zb/.local/bin/python` but is not managed by uv; use `--force` to replace it
+</code></pre>
+<p>but <code>python</code> / <code>python3</code> <em>were</em> managed by uv, they just were linked to an installation that was deleted.</p>
+<p>This updates the logic to replace broken executables that are broken symlinks. We apply this to broken links regardless of whether or not we think the target is managed by uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-12-07 16:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-12-10 20:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-10 20:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/python/install.rs</code>:358 on 2024-12-10 20:43</div>
+            <div class="timeline-body"><p>I think you could write this as:</p>
+<pre><code class="language-rust">target.read_link().and_then(|target| target.try_exists()).inspect_err(...).unwrap_or(true)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-10 20:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/python/install.rs</code>:367 on 2024-12-10 20:43</div>
+            <div class="timeline-body"><p><code>anyf</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-10 20:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/python/install.rs</code>:386 on 2024-12-10 20:43</div>
+            <div class="timeline-body"><p>This logic only runs on Linux, right? It doesn't look like it's gated, but I assume the error it's handling only runs on Linux?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-12-10 20:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/python/install.rs</code>:400 on 2024-12-10 20:44</div>
+            <div class="timeline-body"><p>Maybe &quot;Replacing invalid symlink at <code>{}</code>&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-10 20:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:386 on 2024-12-10 20:58</div>
+            <div class="timeline-body"><p>I think this technically would run on Windows too (which is valid, you <em>could</em> have a broken symlink it's just rare).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-10 20:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-10 20:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:400 on 2024-12-10 20:58</div>
+            <div class="timeline-body"><p>Hm I was sticking with the existing style but I do like that wording.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-10 20:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:367 on 2024-12-10 20:58</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    // Figure out what installation it references, if any
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-10 20:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:358 on 2024-12-10 20:59</div>
+            <div class="timeline-body"><p>True! Not really any better imo but happy to change it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-10 22:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/python/install.rs</code>:358 on 2024-12-10 22:19</div>
+            <div class="timeline-body"><p>It does format nicely :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-12-10 22:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-12-10 22:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-10 22:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Autofix error] C408 - unnecessary-collection-call - syntax error when fixing within f-string - astral-sh/ruff #4249</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Autofix error] C408 - unnecessary-collection-call - syntax error when fixing within f-string</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4249">#4249</a>
+        opened by <a href="https://github.com/Hnasar">@Hnasar</a>
+        on 2023-05-05 18:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Hnasar">@Hnasar</a> on 2023-05-05 18:00</div>
+            <div class="timeline-body"><p>Presumably replacing <code>dict()</code> with <code>{}</code> gets confused when inside an f-string when it comes to using <code>&quot;</code> vs <code>'</code> (or maybe it's the nested <code>{</code>)</p>
+<pre><code class="language-python"># test.py
+f&quot;{dict(x='y')}&quot;  # should turn into f&quot;{{'x': 'y'}}&quot;
+</code></pre>
+<pre><code>$ ruff --select=C408 test.py  --fix
+
+error: Autofix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in `ruff`. If you could open an issue at:
+
+    https://github.com/charliermarsh/ruff/issues/new?title=%5BAutofix%20error%5D
+
+...quoting the contents of `test.py`, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+test.py:1:4: C408 Unnecessary `dict` call (rewrite as a literal)
+</code></pre>
+<p>Using ruff 0.0.264</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-05-05 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-05 18:02</div>
+            <div class="timeline-body"><p>Good call, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2023-05-05 18:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-05 18:06</div>
+            <div class="timeline-body"><p>(We track <code>in_f_string</code>, so we should just avoid triggering this rule, and perhaps some others in this category, when <code>in_f_string</code> is <code>true</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-06 11:55</div>
+            <div class="timeline-body"><p>I think it's the braces and not the quotes as the quotes are taken as is. So, this should be avoided in <code>dict</code> and <code>set</code> comprehensions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-05-09 10:40</div>
+            <div class="timeline-body"><p>Maybe the heuristics in the new <code>ruff::rules::flynt::helpers::to_fstring_elem</code> function could be of more generic use here :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DavideCanton">@DavideCanton</a> on 2023-05-21 14:25</div>
+            <div class="timeline-body"><p>I can work on it if nobody else wants to</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @DavideCanton by @MichaReiser on 2023-05-21 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-09 04:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:01 UTC
+    </footer>
+</body>
+</html>

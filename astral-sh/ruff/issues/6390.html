@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatting of end-of-line comments in empty parentheses - astral-sh/ruff #6390</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatting of end-of-line comments in empty parentheses</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6390">#6390</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-08-07 14:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2023-08-07 14:14</div>
+            <div class="timeline-body"><p>A challenge we have wrt to black compatibility and formatter stability is the formatting of dangling end-of-line comments in empty parentheses such as <code>()</code> (empty tuple) <code>f()</code>, <code>[]</code>, <code>{}</code>, etc.</p>
+<p>Given we have the following</p>
+<pre><code class="language-python">x = ( #
+)
+</code></pre>
+<p>do we want this to be formatted</p>
+<p>as (1) keep it end-of-line (closest to the original)/ the non-invasive way</p>
+<pre><code class="language-python">x = ( #
+)
+</code></pre>
+<p>or as (2) make it an own line comment (because it's meant as a placeholder element, so treat it as an element) / the semantic way</p>
+<pre><code class="language-python">x = (
+    #
+)
+</code></pre>
+<p>or as (3) move it to the end of line out of all expressions / the black way</p>
+<pre><code class="language-python">x = () #
+</code></pre>
+<p>The case above is simple, it's more complex with nested expressions, e.g.</p>
+<pre><code class="language-python">x = f(  # a
+        g( # b
+        )
+    )
+</code></pre>
+<p>which black formats as</p>
+<pre><code class="language-python">x = f(g())  # a  # b
+</code></pre>
+<p>and</p>
+<pre><code class="language-python">x = () - (#
+)
+</code></pre>
+<p>The latter is important for formatter stability, because currently an end-of-line comment expands the parent which can lead to extraneous parentheses and unstable formatting (https://github.com/astral-sh/ruff/pull/6386)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @konstin on 2023-08-07 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-07 14:21</div>
+            <div class="timeline-body"><p>Relatedly: https://github.com/astral-sh/ruff/pull/6389.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-08-07 14:37</div>
+            <div class="timeline-body"><p>Prettier:</p>
+<pre><code class="language-js">a = { // hi
+}
+
+b = { // hi
+    c: 1 
+}
+</code></pre>
+<p>to</p>
+<pre><code class="language-js">a = {
+  // hi
+};
+
+b = {
+  // hi
+  c: 1,
+};
+</code></pre>
+<p>Dart format:</p>
+<pre><code class="language-dart">void main() {
+  int a = f(// 1
+      );
+  int b = f(
+      // 2
+      );
+
+  int c = g(// 3
+      1);
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-08 07:35</div>
+            <div class="timeline-body"><p>To use the same syntax nodes across formatters:</p>
+<h3>Prettier</h3>
+<pre><code class="language-javascript">a = f(// 1
+    );
+b = f(
+    // 2
+    );
+
+c = g(// 3
+    1);
+
+// Formatted to
+
+a =
+  f(); // 1
+b =
+  f();
+  // 2
+
+c = g(
+  // 3
+  1,
+);
+</code></pre>
+<h3>Rust</h3>
+<pre><code class="language-rust">let a = f(// 1
+);
+let b = f(
+    // 2
+);
+
+c = g(// 3
+      1);
+
+
+// Formatted
+let a = f(// 1
+);
+let b = f(
+    // 2
+);
+
+let c = g(
+    // 3
+    1,
+);
+</code></pre>
+<p>Moves the comment <code>// 3</code> to a new line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-08-15 03:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-15 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Alpha" by @MichaReiser on 2023-08-16 07:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:54 UTC
+    </footer>
+</body>
+</html>

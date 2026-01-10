@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conflicting groups should handle conflicting inclusions automatically - astral-sh/uv #12005</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Conflicting groups should handle conflicting inclusions automatically</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12005">#12005</a>
+        opened by <a href="https://github.com/jtfmumm">@jtfmumm</a>
+        on 2025-03-06 14:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-03-06 14:00</div>
+            <div class="timeline-body"><p>This adds support for inferring dependency group conflict sets from the directly defined conflicts in configuration. For example, if you declare a conflict between groups <code>alpha</code> and <code>beta</code> and <code>dev</code> includes <code>beta</code>, then we will infer a conflict between <code>dev</code> and <code>alpha</code>. We will also handle a conflict between two groups if they transitively include groups that conflict with each other. See #11232 for more details.</p>
+<p>Closes #11232</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @jtfmumm on 2025-03-06 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-06 14:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-pypi-types/src/dependency_groups.rs</code>:1 on 2025-03-06 14:06</div>
+            <div class="timeline-body"><p>I've moved this file so that I can import <code>DependencyGroups</code> in <code>conflicts.rs</code>. It would have caused a circular dependency in <code>uv-workspace</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-06 14:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:154 on 2025-03-06 14:07</div>
+            <div class="timeline-body"><p>Can we assume cycle detection before this point? Otherwise, we'll have to return an error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-06 14:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:154 on 2025-03-06 14:36</div>
+            <div class="timeline-body"><p>There's a failing test that wasn't running locally for some reason that shows we can't assume it at this point. I'll update.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-06 14:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:154 on 2025-03-06 14:51</div>
+            <div class="timeline-body"><p>What I've done now is to just return if there's a <code>Cycle</code> error on <code>toposort</code>. I've left a <code>FIXME</code> comment indicating  that we're currently bailing and allowing more detailed include cycle detection downstream. Is this the behavior we want? If so, I'll remove the <code>FIXME</code> tag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pypi-types/Cargo.toml</code>:37 on 2025-03-06 15:25</div>
+            <div class="timeline-body"><p>How come this was made optional? I'm kinda wondering how this works at all, since I don't see any features enabling <code>serde</code> in this crate? I guess feature unification or something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:261 on 2025-03-06 15:34</div>
+            <div class="timeline-body"><p>It looks like this was done?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/it/sync.rs</code>:8309 on 2025-03-06 15:39</div>
+            <div class="timeline-body"><p>Nice tests!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/it/sync.rs</code>:8309 on 2025-03-06 15:39</div>
+            <div class="timeline-body"><p>Should we add a test that covers cycle detection?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:111 on 2025-03-06 15:47</div>
+            <div class="timeline-body"><p>I think you can if <code>if seen.insert(group) {</code> here. And then remove the <code>seen.insert(group)</code> below. Or even better, use an early-continue:</p>
+<pre><code class="language-rust">if !seen.insert(group) {
+    continue;
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:126 on 2025-03-06 15:48</div>
+            <div class="timeline-body"><p>I would do (same as above):</p>
+<pre><code class="language-rust">if !seen.insert(group) {
+    continue;
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:154 on 2025-03-06 15:52</div>
+            <div class="timeline-body"><p>Hmmm cc @zanieb</p>
+<p>One thing that strikes me here is that the cycle detection error would only kick in when a relevant conflicting group is declared? What happens if there aren't any conflicts declared? Is there cycle detection happening somewhere else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:282 on 2025-03-06 15:54</div>
+            <div class="timeline-body"><p>Does this need to be public?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-03-06 15:58</div>
+            <div class="timeline-body"><p>Nice work!</p>
+<p>The failing <code>duplicate_torch_and_sympy_because_of_wrong_inferences</code> is somewhat worrisome, because that doesn't use dependency groups at all. So in theory, it shouldn't be impacted by the work here?</p>
+<p>In your code, I wonder if something wonky is happening when no <code>DependencyGroupSpecifier::IncludeGroup</code> are found and thus no edges are added?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-06 16:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-pypi-types/Cargo.toml</code>:37 on 2025-03-06 16:25</div>
+            <div class="timeline-body"><p>It's because of moving <code>DependencyGroups</code> into this crate in order to depend on it in <code>conflicts.rs</code>. It looks like my comment on that file disappeared from this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-06 16:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:282 on 2025-03-06 16:27</div>
+            <div class="timeline-body"><p>Nope, it's being called from a newtype. Updated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-06 16:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/sync.rs</code>:8309 on 2025-03-06 16:27</div>
+            <div class="timeline-body"><p>Good idea. Added one!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-06 16:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:154 on 2025-03-06 16:31</div>
+            <div class="timeline-body"><p>Cycle detection is happening somewhere, maybe in the resolver? But that happens after this code is called. With this new version where I just return (no error) when <code>toposort()</code> returns an error, then only the original conflict sets are sent along.</p>
+<p>But it does seem weird to silently swallow the error. The reason I don't want it propagated is because better cycle detection happens elsewhere (&quot;there was a cycle&quot; vs. &quot;there was a cycle: dev -&gt; test -&gt; dev&quot;). So I could either warn the user in this method or match at the caller and warn there. Do either of those options make sense?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-03-06 16:36</div>
+            <div class="timeline-body"><blockquote>
+<p>The failing duplicate_torch_and_sympy_because_of_wrong_inferences is somewhat worrisome, because that doesn't use dependency groups at all. So in theory, it shouldn't be impacted by the work here?</p>
+</blockquote>
+<p>Good point. I'll investigate it further tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-03-06 16:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pypi-types/Cargo.toml</code>:37 on 2025-03-06 16:37</div>
+            <div class="timeline-body"><p>Does it have to be optional? (I'm overall kinda skeptical of even having optional dependencies in our crates unless there is a very specific need for them. In practice, in most cases, all of the features end up enabled through feature unification.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-03-06 16:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:154 on 2025-03-06 16:39</div>
+            <div class="timeline-body"><p>I think what you're doing now is probably reasonable with a comment explaining what's going on here (basically, what you just said). @zanieb might have a different opinion though!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-06 16:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pypi-types/Cargo.toml</code>:37 on 2025-03-06 16:42</div>
+            <div class="timeline-body"><p>(In general I think it's fine -- it's a pattern we use for Serde and Schemars, so I have no objection to propagating it. We should revisit elsewhere if we want to move away from it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pypi-types/Cargo.toml</code>:37 on 2025-03-06 16:42</div>
+            <div class="timeline-body"><p>I am slightly confused about why it was not optional before, but is optional now. Maybe that's Andrew's question.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-06 16:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-06 16:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pypi-types/src/dependency_groups.rs</code>:8 on 2025-03-06 16:43</div>
+            <div class="timeline-body"><p>Did you consider putting this file-move into a separate PR? It looks separable from the rest of the changes, and would be easy to merge on its own.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-06 16:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/lock_conflict.rs</code>:2144 on 2025-03-06 16:45</div>
+            <div class="timeline-body"><p>Do we know where these changes are coming from? Is it an Insta version mismatch on the team? Would be good to understand prior to merging so that they don't oscillate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-06 16:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:223 on 2025-03-06 16:46</div>
+            <div class="timeline-body"><p>I think this field would be written out in the <code>Serialize</code> representation, is that intentional? (Do you know where this is serialized?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-06 16:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:103 on 2025-03-06 16:48</div>
+            <div class="timeline-body"><p>Did you consider <code>let mut seen = FxHashSet::&lt;&amp;GroupName&gt;::default();</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-06 16:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:103 on 2025-03-06 16:49</div>
+            <div class="timeline-body"><p>(I think the type can be omitted entirely, but if you want to declare it, this seems simpler. Or at least <code>: FxHashSet&lt;&amp;GroupName&gt;</code> to match the syntax you used above.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-pypi-types/Cargo.toml</code>:37 on 2025-03-06 16:50</div>
+            <div class="timeline-body"><p>The superficial reason is because the compiler complained when I moved over <code>dependency-groups.rs</code>. But I think it might be because of the fact that <code>DependencyGroups</code> is used as a field on a struct with a feature flag in <code>pyproject.rs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-06 16:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-06 16:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/lock_conflict.rs</code>:2144 on 2025-03-06 16:51</div>
+            <div class="timeline-body"><p>These are from <code>cargo insta review</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-06 16:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-pypi-types/src/dependency_groups.rs</code>:8 on 2025-03-06 16:52</div>
+            <div class="timeline-body"><p>That's true. Would you rather I create that PR now, or just for the future?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:105 on 2025-03-06 16:54</div>
+            <div class="timeline-body"><p>You can remove a couple clones from this method:</p>
+<pre><code class="language-diff">diff --git a/crates/uv-pypi-types/src/conflicts.rs b/crates/uv-pypi-types/src/conflicts.rs
+index 61233cee4..05d23eaff 100644
+--- a/crates/uv-pypi-types/src/conflicts.rs
++++ b/crates/uv-pypi-types/src/conflicts.rs
+@@ -85,7 +85,7 @@ impl Conflicts {
+         groups: &amp;DependencyGroups,
+     ) {
+         let mut graph = DiGraph::new();
+-        let mut group_node_idxs: FxHashMap&lt;GroupName, NodeIndex&gt; = FxHashMap::default();
++        let mut group_node_idxs: FxHashMap&lt;&amp;GroupName, NodeIndex&gt; = FxHashMap::default();
+         let mut node_conflict_items: FxHashMap&lt;NodeIndex, Rc&lt;ConflictItem&gt;&gt; = FxHashMap::default();
+         // Used for transitively deriving new conflict sets with substitutions.
+         // The keys are canonical items (mentioned directly in configured conflicts).
+@@ -94,15 +94,14 @@ impl Conflicts {
+             FxHashMap::default();
+ 
+         // Conflict sets that were directly defined in configuration.
+-        let mut direct_conflict_sets: FxHashSet&lt;ConflictSet&gt; = FxHashSet::default();
++        let mut direct_conflict_sets: FxHashSet&lt;&amp;ConflictSet&gt; = FxHashSet::default();
+         // Conflict sets that we will transitively infer in this method.
+         let mut transitive_conflict_sets: FxHashSet&lt;ConflictSet&gt; = FxHashSet::default();
+ 
+         // Add groups in directly defined conflict sets to the graph.
+-        let mut seen: std::collections::HashSet&lt;&amp;GroupName, rustc_hash::FxBuildHasher&gt; =
+-            FxHashSet::default();
++        let mut seen = FxHashSet::default();
+         for set in &amp;self.0 {
+-            direct_conflict_sets.insert(set.clone());
++            direct_conflict_sets.insert(set);
+             for item in set.iter() {
+                 let ConflictPackage::Group(group) = &amp;item.conflict else {
+                     // TODO: Do we also want to handle extras here?
+@@ -115,8 +114,8 @@ impl Conflicts {
+                 let mut canonical_items = FxHashSet::default();
+                 canonical_items.insert(item.clone());
+                 let node_id = graph.add_node(canonical_items);
+-                group_node_idxs.insert(group.clone(), node_id);
+-                node_conflict_items.insert(node_id, item.clone());
++                group_node_idxs.insert(group, node_id);
++                node_conflict_items.insert(node_id, item);
+             }
+         }
+ 
+@@ -130,7 +129,7 @@ impl Conflicts {
+                 conflict: ConflictPackage::Group(group.clone()),
+             };
+             let node_id = graph.add_node(FxHashSet::default());
+-            group_node_idxs.insert(group.clone(), node_id);
++            group_node_idxs.insert(group, node_id);
+             node_conflict_items.insert(node_id, Rc::new(group_conflict_item));
+         }
+ 
+@@ -185,6 +184,7 @@ impl Conflicts {
+             let mut new_conflict_sets = FxHashSet::default();
+             for conflict_set in direct_conflict_sets
+                 .iter()
++                .copied()
+                 .chain(transitive_conflict_sets.iter())
+                 .filter(|set| set.contains_item(&amp;canonical_item))
+             {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-06 16:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-06 16:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:108 on 2025-03-06 16:54</div>
+            <div class="timeline-body"><p>Nit: <code>TODO(john)</code> please just to match style elsewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:103 on 2025-03-06 16:58</div>
+            <div class="timeline-body"><p>Yeah that's weird. I must have copied that in from a compiler error while quickly fixing something early on and missed it during my own review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-06 16:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-06 17:00</div>
+            <div class="timeline-body"><p>I think the <code>duplicate_torch_and_sympy_because_of_wrong_inferences</code> changes look okay... The main thing I was concerned by was:</p>
+<pre><code class="language-diff"> 2955       │-    { name = &quot;pyparsing&quot; },
+       2915 │+    { name = &quot;pyparsing&quot;, version = &quot;2.4.7&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, marker = &quot;extra == 'extra-4-test-alignn' or (extra == 'extra-4-test-all' and extra == 'extra-4-test-m3gnet') or (extra == 'extra-4-test-chgnet' and extra == 'extra-4-test-m3gnet')&quot; },
+       2916 │+    { name = &quot;pyparsing&quot;, version = &quot;3.2.1&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, marker = &quot;extra == 'extra-4-test-all' or extra == 'extra-4-test-chgnet' or extra != 'extra-4-test-alignn'&quot; },
+</code></pre>
+<p>We want to make sure that those markers cover the entire domain, and that they're not overlapping. The <code>extra != 'extra-4-test-alignn'</code> and <code>extra == 'extra-4-test-alignn'</code> ensure they cover the entire domain, and then the rest of the clauses are covered by conflicts, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-06 17:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/lock_conflict.rs</code>:2144 on 2025-03-06 17:00</div>
+            <div class="timeline-body"><p>My version is <code>1.41.1</code>, which isn't the latest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-03-06 17:24</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the <code>duplicate_torch_and_sympy_because_of_wrong_inferences</code> changes look okay... The main thing I was concerned by was:</p>
+<pre><code class="language-diff"> 2955       │-    { name = &quot;pyparsing&quot; },
+       2915 │+    { name = &quot;pyparsing&quot;, version = &quot;2.4.7&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, marker = &quot;extra == 'extra-4-test-alignn' or (extra == 'extra-4-test-all' and extra == 'extra-4-test-m3gnet') or (extra == 'extra-4-test-chgnet' and extra == 'extra-4-test-m3gnet')&quot; },
+       2916 │+    { name = &quot;pyparsing&quot;, version = &quot;3.2.1&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, marker = &quot;extra == 'extra-4-test-all' or extra == 'extra-4-test-chgnet' or extra != 'extra-4-test-alignn'&quot; },
+</code></pre>
+<p>We want to make sure that those markers cover the entire domain, and that they're not overlapping. The <code>extra != 'extra-4-test-alignn'</code> and <code>extra == 'extra-4-test-alignn'</code> ensure they cover the entire domain, and then the rest of the clauses are covered by conflicts, I think.</p>
+</blockquote>
+<p>Shouldn't there be no changes at all since that test doesn't use dependency groups (or the include mechanism)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-06 17:37</div>
+            <div class="timeline-body"><p>Hmm yeah, probably not. Looks like the order of the conflicts changed:</p>
+<pre><code class="language-diff">@@ -10225,14 +10225,14 @@ fn duplicate_torch_and_sympy_because_of_wrong_inferences() -&gt; Result&lt;()&gt; {
+             &quot;python_full_version &lt; '3.11' and extra != 'extra-4-test-alignn' and extra != 'extra-4-test-all' and extra != 'extra-4-test-chgnet' and extra != 'extra-4-test-m3gnet'&quot;,
+         ]
+         conflicts = [[
+-            { package = &quot;test&quot;, extra = &quot;chgnet&quot; },
+             { package = &quot;test&quot;, extra = &quot;alignn&quot; },
++            { package = &quot;test&quot;, extra = &quot;chgnet&quot; },
+         ], [
+             { package = &quot;test&quot;, extra = &quot;chgnet&quot; },
+             { package = &quot;test&quot;, extra = &quot;m3gnet&quot; },
+         ], [
+-            { package = &quot;test&quot;, extra = &quot;all&quot; },
+             { package = &quot;test&quot;, extra = &quot;alignn&quot; },
++            { package = &quot;test&quot;, extra = &quot;all&quot; },
+         ], [
+             { package = &quot;test&quot;, extra = &quot;all&quot; },
+             { package = &quot;test&quot;, extra = &quot;m3gnet&quot; },
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-06 17:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/lock_conflict.rs</code>:2144 on 2025-03-06 17:54</div>
+            <div class="timeline-body"><p>Yes it's an insta version thing. Old versions used <code>###</code> / new versions use <code>#</code> when they can, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-03-06 17:57</div>
+            <div class="timeline-body"><p>For the transitive conflict expansion algorithm, I updated <code>ConflictSet</code> to use a <code>BTreeSet</code> so that they could be inserted into sets. That's why the order is now alphabetical. I didn't expect the order within a <code>ConflictSet</code> to matter during resolution though (and I didn't think users would expect that when defining conflicts).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-06 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:154 on 2025-03-06 18:03</div>
+            <div class="timeline-body"><p>I don't know what our current behavior for cycles is. Are we talking about cycles in inclusions or cycles in the conflicts?</p>
+<ol>
+<li><p>If <code>dev</code> includes <code>test</code> and <code>test</code> includes <code>dev</code> don't we have a consistent set of dependencies? (just the union of <code>test</code> and <code>dev</code>?)</p>
+</li>
+<li><p>Similarly, if <code>test</code> is marked as conflicting with some other group <code>foo</code> then <code>dev</code> conflicts with <code>foo</code> too, the cycle doesn't matter here.</p>
+</li>
+<li><p>If <code>test</code> is marked as conflicting with <code>dev</code>, now the cycle is a problem because... they include each other and can't conflict. This applies to longer chains too, e.g., if we have <code>test -&gt;  foo -&gt; dev -&gt; test</code> a conflict between <code>test</code> and <code>dev</code> is &quot;invalid&quot;.</p>
+</li>
+</ol>
+<p>If we don't have test coverage for each of these cases, we should add it. In reply to</p>
+<blockquote>
+<p>One thing that strikes me here is that the cycle detection error would only kick in when a relevant conflicting group is declared?</p>
+</blockquote>
+<p>This seems fine, because this form of cycle (3) is the only one that creates an unresolvable situation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-07 01:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:154 on 2025-03-07 01:57</div>
+            <div class="timeline-body"><p>Unless I'm misunderstanding, cycles in dependency groups are an error. Per the PEP:</p>
+<blockquote>
+<p>Dependency Group Includes MUST NOT include cycles, and tools SHOULD report an error if they detect a cycle.</p>
+</blockquote>
+<p>I think we have an <code>DependencyGroupCycle</code> error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-07 02:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pypi-types/src/dependency_groups.rs</code>:8 on 2025-03-07 02:01</div>
+            <div class="timeline-body"><p>It's up to you. I think it's easier to do it even in this case -- we can merge that PR immediately, it makes this one easier to review, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-07 09:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:154 on 2025-03-07 09:42</div>
+            <div class="timeline-body"><p>Yeah, on <code>main</code> we definitely error on cycles. That's the behavior I'm relying on when just returning from the conflict expansion method when detecting a cycle during <code>toposort</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-07 11:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-pypi-types/src/dependency_groups.rs</code>:8 on 2025-03-07 11:34</div>
+            <div class="timeline-body"><p>Done. The other PR has been merged and this one simplified</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:154 on 2025-03-07 14:09</div>
+            <div class="timeline-body"><p>Oh, thanks for the correction. Maybe I was just thinking about feedback I wrote on the PEP.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-07 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:223 on 2025-03-07 14:38</div>
+            <div class="timeline-body"><p>This is there because it was already on both <code>ConflictSet</code> and <code>Conflicts</code> on <code>main</code>. I couldn't find anywhere that used it, so I tried removing it from both and that didn't seem to break anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-07 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>Cargo.lock</code>:6051 on 2025-03-07 16:11</div>
+            <div class="timeline-body"><p>Do we know why the versions for <code>windows-sys</code> changed here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-03-07 16:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-07 16:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>Cargo.lock</code>:6051 on 2025-03-07 16:24</div>
+            <div class="timeline-body"><p>That's a good question. I'm not sure</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:286 on 2025-03-07 16:26</div>
+            <div class="timeline-body"><p>Did you consider something like <code>with_inferred(self) -&gt; Self</code> to avoid mutability?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.lock</code>:6051 on 2025-03-07 16:27</div>
+            <div class="timeline-body"><p>Yeah this is pretty strange. I'd recommend checking out <code>Cargo.lock</code> from main, running <code>cargo check</code>, and seeing if these get reverted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-03-07 16:27</div>
+            <div class="timeline-body"><p>Looks good from my perspective modulo the <code>Cargo.lock</code> changes which we should verify before merging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-07 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-pypi-types/src/conflicts.rs</code>:286 on 2025-03-07 16:57</div>
+            <div class="timeline-body"><p>Updated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-07 17:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/sync.rs</code>:8308 on 2025-03-07 17:08</div>
+            <div class="timeline-body"><p>I don't quite understand this error, are we just repeating the groups here at the end? What's the value of that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-08 11:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>Cargo.lock</code>:6051 on 2025-03-08 11:49</div>
+            <div class="timeline-body"><p>Resolved</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/sync.rs</code>:8308 on 2025-03-08 14:40</div>
+            <div class="timeline-body"><p>I believe this is identical to the existing error we show in these cases, except &quot;transitively&quot; has been inserted. Perhaps this should be hashed out separately from this PR, since it doesn't seem to be a change? But for reference, the set at the end can be larger than &quot;just&quot; these two items. The set at the end is of arbitrary size, and the groups we list at the start are the activated, conflicting members.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-08 14:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-08 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/sync.rs</code>:8308 on 2025-03-08 14:43</div>
+            <div class="timeline-body"><p>Oh, if it's not changing here that's fine and we can revisit it separately — I just looked at the test case not the implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-03-08 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @jtfmumm on 2025-03-08 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-03-08 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-08 18:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:21 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disable interactive git terminal prompts during fetches - astral-sh/uv #11744</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Disable interactive git terminal prompts during fetches</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11744">#11744</a>
+        opened by <a href="https://github.com/piegamesde">@piegamesde</a>
+        on 2025-02-24 11:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/piegamesde">@piegamesde</a> on 2025-02-24 11:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The animation shadows any interactive authentication prompt which may occur when resolving dependencies of private repos.</p>
+<p>Fixes https://github.com/astral-sh/uv/issues/5107.</p>
+<h2>Test Plan</h2>
+<p>I started creating <code>install_git_private_https_interactive</code> as a regression test but am unsure how to test this because it is interactive and I don't really know the test framework</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/piegamesde">@piegamesde</a> on 2025-02-24 12:06</div>
+            <div class="timeline-body"><p>It looks like the test drive is having at least some sort of git credentials configuration leaking through global user state. If I run it naively, it fails directly:</p>
+<pre><code>   Updating https://github.com/astral-test/uv-private-pypackage (HEAD)                                                                                                     × Failed to download and build `uv-private-pypackage @ git+https://github.com/astral-test/uv-private-pypackage`
+  ├─▶ Git operation failed
+  ├─▶ failed to clone into: /home/piegames/.cache/uv/git-v0/db/8401f5508e3e612d
+  ╰─▶ process didn't exit successfully: `/home/piegames/.nix-profile/bin/git fetch --force --update-head-ok 'https://github.com/astral-test/uv-private-pypackage'
+      '+HEAD:refs/remotes/origin/HEAD'` (exit status: 128)
+      --- stderr
+      remote: Repository not found.
+      fatal: repository 'https://github.com/astral-test/uv-private-pypackage/' not found
+</code></pre>
+<p>But if I run it with my <code>.git-credentials</code> file deleted, I instead get the desired password prompt</p>
+<pre><code>    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.20s
+     Running `/home/piegames/.cache/cargo-target/debug/uv pip install 'git+https://github.com/astral-test/uv-private-pypackage'`
+   Updating https://github.com/astral-test/uv-private-pypackage (HEAD)
+Resolving dependencies...                                                                                                                                                Username for 'https://github.com': piegamesde
+   Updating https://github.com/astral-test/uv-private-pypackage (HEAD)                                                                                                   error: Git operation failed
+  Caused by: failed to fetch into: /home/piegames/.cache/uv/git-v0/db/8401f5508e3e612d
+  Caused by: process didn't exit successfully: `/home/piegames/.nix-profile/bin/git fetch --force --update-head-ok 'https://github.com/astral-test/uv-private-pypackage' '+HEAD:refs/remotes/origin/HEAD'` (exit status: 128)
+</code></pre>
+<p>(Which then also fails because I didn't use the correct credentials, but that's besides the point)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-24 17:18</div>
+            <div class="timeline-body"><p>I'm not sure if this is the change we want. Disabling the spinner entirely seems like a loss. It's unclear to me if we even want to <em>try</em> to support interactive authentication here.</p>
+<blockquote>
+<p>It looks like the test drive is having at least some sort of git credentials configuration leaking through global user state. If I run it naively, it fails directly:</p>
+</blockquote>
+<p>Do we need to just change the git configuration home to a tmpdir or something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-24 17:18</div>
+            <div class="timeline-body"><p>cc @jtfmumm since this was on your list of projects</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/piegamesde">@piegamesde</a> on 2025-02-25 12:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Disabling the spinner entirely seems like a loss. It's unclear to me if we even want to try to support interactive authentication here.</p>
+</blockquote>
+<p>If the spinner should stay, then interactive auth needs to go. I removed the spinner because it was the easier fix, but with some instructions I can also try to disable interactive auth instead. Keeping this PR as a hotfix in the meantime would also be okay for me.</p>
+<p>This issue is a major road block for a project migration to uv, because the project has private dependencies and if these are not set up correctly beforehand the application will seemingly just hang forever.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/piegamesde">@piegamesde</a> on 2025-02-25 13:28</div>
+            <div class="timeline-body"><p>Turns out that disabling the prompt is pretty easy, and it even works with other interactive auth mechanisms outside of the CLI. This is clearly a better solution.</p>
+<p>I'm not sure on whether the env variable should be set to all <code>git</code> calls to be sure, or only to the ones with operations which might prompt in the first place. Also, not sure how to make a proper regression test for this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-25 14:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/reporters.rs</code>:392 on 2025-02-25 14:27</div>
+            <div class="timeline-body"><p>Can you restore the change here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-25 14:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:2183 on 2025-02-25 14:28</div>
+            <div class="timeline-body"><p>Do we need the token here if we're not going to use it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-25 14:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:2202 on 2025-02-25 14:28</div>
+            <div class="timeline-body"><p>I'm guessing this succeeds because the credentials are in the git cache. Is there a way to disable that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-25 14:36</div>
+            <div class="timeline-body"><p>Thanks for looking into that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-25 14:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:2202 on 2025-02-25 14:37</div>
+            <div class="timeline-body"><p>Oh it does fail in CI</p>
+<pre><code>8       │- + uv-private-pypackage==0.1.0 (from git+https://***@github.com/astral-test/uv-private-pypackage@d780faf0ac91257d4d5a4f0c5a0e4509608c0071)
+          5 │+  × Failed to download and build `uv-private-pypackage @ git+[https://github.com/astral-test/uv-private-pypackage`](https://github.com/astral-test/uv-private-pypackage%60)
+          6 │+  ├─▶ Git operation failed
+          7 │+  ├─▶ failed to clone into: [CACHE_DIR]/git-v0/db/8401f5508e3e612d
+          8 │+  ╰─▶ process didn't exit successfully: `/usr/bin/git fetch --force --update-head-ok 'https://github.com/astral-test/uv-private-pypackage' '+HEAD:refs/remotes/origin/HEAD'` (exit status: 128)
+          9 │+      --- stderr
+         10 │+      fatal: could not read Username for 'https://github.com/': terminal prompts disabled
+</code></pre>
+<p>Maybe you just need to update the snapshot?</p>
+<p>We should also probably special-case this error, but we can track that in a new issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-02-25 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/piegamesde">@piegamesde</a> reviewed on 2025-02-25 14:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/piegamesde">@piegamesde</a> on <code>crates/uv/tests/it/pip_install.rs</code>:2183 on 2025-02-25 14:51</div>
+            <div class="timeline-body"><p>Well the original idea for the test was to test that login via CLI works, but now that this tests a failure instead I can indeed remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @piegamesde on 2025-02-25 16:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Remove animated spinner when resolving dependencies" to "Disable interactive git terminal prompts during fetches" by @zanieb on 2025-02-25 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-02-25 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-02-25 19:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-02-25 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-02-25 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-25 19:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-git/src/git.rs</code>:583 on 2025-02-25 19:46</div>
+            <div class="timeline-body"><p>@zanieb -- Should this be an <code>EnvVars</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-25 19:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-git/src/git.rs</code>:583 on 2025-02-25 19:47</div>
+            <div class="timeline-body"><p>Technically, yeah. Though we don't read it, so it matters less. I can add it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-02-26 03:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-git/src/git.rs</code>:583 on 2025-02-26 03:35</div>
+            <div class="timeline-body"><p>Still good source for documentation purposes internally like we annotate with <code>#[attr_hidden]</code> the other git env vars https://github.com/astral-sh/uv/blob/main/crates/uv-static/src/env_vars.rs#L454</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-26 03:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-git/src/git.rs</code>:583 on 2025-02-26 03:44</div>
+            <div class="timeline-body"><p>Oh thanks, I didn't notice we were hiding attrs.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

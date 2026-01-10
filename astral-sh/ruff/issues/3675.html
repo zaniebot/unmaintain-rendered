@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature request: convert str(Path) to fsdecode(Path) - astral-sh/ruff #3675</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature request: convert str(Path) to fsdecode(Path)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3675">#3675</a>
+        opened by <a href="https://github.com/m-aciek">@m-aciek</a>
+        on 2023-03-22 22:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/m-aciek">@m-aciek</a> on 2023-03-22 22:55</div>
+            <div class="timeline-body"><p>I <a href="https://discuss.python.org/t/make-pathlib-extensible/3428/79">learned today</a> that <a href="https://docs.python.org/3/library/os.html#os.fsdecode">os.fsdecode(Path)</a> is preferred over str(Path) for <a href="https://docs.python.org/3/library/pathlib.html">pathlib.Path</a> objects. Ruff could have a check for str(Path) usages.</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-03-23 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nstarman">@nstarman</a> on 2023-03-26 17:28</div>
+            <div class="timeline-body"><p>Isn't <code>.as_posix()</code> preferred over both?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edgarrmondragon">@edgarrmondragon</a> on 2023-03-26 17:59</div>
+            <div class="timeline-body"><p>I think this is hard to accomplish in a useful way without type checking. The only cases this would catch would be when the <code>Path</code> object is directly instantiated inside the <code>str()</code> call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/m-aciek">@m-aciek</a> on 2023-03-27 11:30</div>
+            <div class="timeline-body"><p>Related:</p>
+<ul>
+<li><a href="https://peps.python.org/pep-0519/">PEP 519</a></li>
+<li>https://stackoverflow.com/questions/65313454/how-to-switch-from-path-to-os-path-and-vice-versa</li>
+</ul>
+<blockquote>
+<p>Isn't <code>.as_posix()</code> preferred over both?</p>
+</blockquote>
+<p>No, if you strive to support multiple platforms, including Windows.</p>
+<p>Yes, I wonder if the difficulty of case recognition isn't a blocker here. For libraries not supporting Path objects where they should, <code>fspath</code> function should be used, but it can return also <code>bytes</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-03-28 12:04</div>
+            <div class="timeline-body"><p>According to https://discuss.python.org/t/make-pathlib-extensible/3428/83 this is only a problem if you don't use type checking or accept a <code>PathLike</code> instead of <code>Path</code>, so as i understood it would not make sense to enforce this on a <code>Path</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/m-aciek">@m-aciek</a> on 2023-04-02 23:07</div>
+            <div class="timeline-body"><p>Hm, <code>fspath()</code> is runtime utility to ensure that program really operates on a path, this way it does more than type checking – type checking doesn't prevent always from having a not expected type in runtime. But I agree that for many (majority of?) cases, when path object doesn't come as arbitrary object from outside (API?), the <code>fspath()</code> usage wouldn't be needed. Probably recommending using <code>fspath()</code> for all cases would be counter-productive.</p>
+<p>@brettcannon do you maybe have an opinion on it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Feature request: convert str(Path) to fsdecode(Path)" to "Feature request: convert str(Path) to fspath(Path)" by @m-aciek on 2023-04-02 23:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brettcannon">@brettcannon</a> on 2023-04-03 21:03</div>
+            <div class="timeline-body"><p>Since I was asked for my opinion, here's my opinionated opinion 😉:</p>
+<ol>
+<li>Never use <code>str(Path)</code>; can give you <code>None</code></li>
+<li>Only use <code>PurePath.as_posix()</code> if you specifically need the path in a POSIX format</li>
+<li>Use <code>os.fsdecode(path)</code> if you need the string encoding of the <code>Path</code> object (don't need to use <code>os.fspath()</code> since <code>pathlib</code> doesn't deal in <code>bytes</code>), but you should avoid this as much as possible and only do it last-minute when you must</li>
+<li>To be fully generic/duck-typing, us <code>os.fspath()</code> anywhere you accept a path and don't care if it's a <code>str</code> or <code>bytes</code>, else use <code>os.fsdecode()</code> or <code>os.encode()</code>, respectively</li>
+<li>To make this work you will need type hints</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Feature request: convert str(Path) to fspath(Path)" to "Feature request: convert str(Path) to fsdecode(Path)" by @m-aciek on 2023-04-04 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-10 01:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:43 UTC
+    </footer>
+</body>
+</html>

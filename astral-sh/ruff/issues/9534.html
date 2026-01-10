@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive F401 &quot;imported but unused&quot; when use is cast() inside a lambda - astral-sh/ruff #9534</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive F401 &quot;imported but unused&quot; when use is cast() inside a lambda</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9534">#9534</a>
+        opened by <a href="https://github.com/jriddy">@jriddy</a>
+        on 2024-01-15 17:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jriddy">@jriddy</a> on 2024-01-15 17:08</div>
+            <div class="timeline-body"><p>I found a fun edgy edge case running this one my code base. Ruff cannot detect use of classes in calls to <code>cast()</code> inside a lambda with <code>from __future__ import annotations</code> on.</p>
+<h2>Minimal reproducer</h2>
+<pre><code class="language-python">from __future__ import annotations
+
+from collections import Counter
+from typing import cast
+
+
+def get_most_common_fn(k):
+    return lambda c: cast(Counter, c).most_common(k)
+</code></pre>
+<p>Running ruff results in an error:</p>
+<pre><code class="language-shell">❯ ruff check --isolated repro.py
+repro.py:3:25: F401 [*] `collections.Counter` imported but unused
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<h2>Expected behavior</h2>
+<p>I expected Ruff to detect the use of the imported class in the call to <code>cast()</code>, but it looks like the combination of <code>from __future__ import annotations</code> and having the cast call in a <code>lambda</code> expression obscures that use from Ruff.  Note that with the annotations future feature off this does not occur, nor does using a cast in non-lambda code seem to cause any issue.</p>
+<h2>Info &amp; versions</h2>
+<p>Ruff: 0.1.13
+Python: 3.11.5
+OS: Fedora 38</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-01-15 17:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-15 17:09</div>
+            <div class="timeline-body"><p>Thank you, very much a bug!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-01-15 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-16 01:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jriddy">@jriddy</a> on 2024-01-16 13:09</div>
+            <div class="timeline-body"><p>Thanks for the quick turnaround on this! It gives me a lot of confidence in the project</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:28 UTC
+    </footer>
+</body>
+</html>

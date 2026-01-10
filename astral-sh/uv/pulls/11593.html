@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display the built file name instead of the canonicalized name in `uv build` - astral-sh/uv #11593</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Display the built file name instead of the canonicalized name in <code>uv build</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11593">#11593</a>
+        opened by <a href="https://github.com/jtfmumm">@jtfmumm</a>
+        on 2025-02-18 11:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-02-18 11:04</div>
+            <div class="timeline-body"><p>We keep the raw filename (prior to parsing/normalization) on the <code>BuildMessage</code> so we can display it.</p>
+<p>Closes #11103.</p>
+<p>Closes #11635.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/build_frontend.rs</code>:1150 on 2025-02-18 11:45</div>
+            <div class="timeline-body"><p>Do we still need the <code>filename</code> field now that we have the raw name?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-02-18 11:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-02-18 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/build_frontend.rs</code>:1150 on 2025-02-18 12:56</div>
+            <div class="timeline-body"><p>There are a couple places that grab the <code>.version()</code> and there's this line:</p>
+<pre><code>            let path = output_dir.join(sdist_build.filename().to_string());
+</code></pre>
+<p>I wasn't sure if it would be safe to replace it for that path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-18 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/build_frontend.rs</code>:1150 on 2025-02-18 14:24</div>
+            <div class="timeline-body"><p>I would expect that <code>let path = output_dir.join(sdist_build.filename().to_string</code> needs to use the raw filename since we're trying to read from that path. Can we check why that <em>isn't</em> failing today?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-02-19 19:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/build_frontend.rs</code>:1150 on 2025-02-19 19:52</div>
+            <div class="timeline-body"><p>I added a test to <code>build.rs</code> that fails because of this line. The test passes after updating to use the raw filename.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-19 22:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/build_frontend.rs</code>:1185 on 2025-02-19 22:34</div>
+            <div class="timeline-body"><p>I'd suggest returning <code>&amp;str</code> here? I think it's somewhat uncommon to return <code>&amp;String</code> since it's strictly less flexible (you can always get an <code>&amp;str</code> from an <code>&amp;String</code>, but you can't go the other way around).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-19 22:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/build_frontend.rs</code>:1199 on 2025-02-19 22:35</div>
+            <div class="timeline-body"><p>Nit: this seems like a potentially unnecessary assignment since they're so similar (but not blocking obviously, up to you).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-02-19 22:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-19 22:36</div>
+            <div class="timeline-body"><p>I linked the other issue here too, to close it out on merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-02-20 07:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/build_frontend.rs</code>:1199 on 2025-02-20 07:54</div>
+            <div class="timeline-body"><p>Yeah that was just an oversight</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @jtfmumm on 2025-02-20 08:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-02-20 08:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-20 08:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

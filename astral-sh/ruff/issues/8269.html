@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invalid flake8-quotes rule - astral-sh/ruff #8269</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Invalid flake8-quotes rule</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8269">#8269</a>
+        opened by <a href="https://github.com/wu-clan">@wu-clan</a>
+        on 2023-10-27 04:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wu-clan">@wu-clan</a> on 2023-10-27 04:53</div>
+            <div class="timeline-body"><p>This is pyproject.toml for ruff:</p>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 120
+cache-dir = &quot;./.ruff_cache&quot;
+
+[tool.ruff.isort]
+order-by-type = true
+
+[tool.ruff.flake8-quotes]
+inline-quotes = &quot;single&quot;
+multiline-quotes = &quot;single&quot;
+</code></pre>
+<p>When I change <code>[tool.ruff.flake8-quotes]</code> to <code>[tool.ruff.lint.flake8-quotes]</code>, <code>ruff check .</code> still doesn't work!</p>
+<p>When I use <code>[tool.ruff.format]</code>, <code>ruff format .</code> starts to work</p>
+<pre><code class="language-toml">[tool.ruff.format]
+quote-style = &quot;single&quot;
+</code></pre>
+<pre><code>&gt; pdm run ruff --version
+ruff 0.1.2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2023-10-27 08:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-10-27 08:03</div>
+            <div class="timeline-body"><p>Hey, thanks for opening this issue. Is it that the <code>ruff check</code> command isn't taking the <code>flake8-quotes</code> settings when performing a fix? Or is it a compatibility issue between the linter and formatter? If possible, can you please provide a minimal code snippet to test against?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wu-clan">@wu-clan</a> on 2023-10-27 08:57</div>
+            <div class="timeline-body"><p>Because I check the root directory, I want the settings to be applied automatically</p>
+<p>MRE:</p>
+<pre><code class="language-py">def mre_ruff_flake8_quotes():
+    &quot;&quot;&quot;
+    Ruff flake8 quotes check
+    &quot;&quot;&quot;
+    foo = &quot;bar&quot;
+
+    foo2 = &quot;&quot;&quot;
+    bar
+    &quot;&quot;&quot;
+
+    print(foo, foo2)
+</code></pre>
+<p>Then set up the rules in my description above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-27 09:09</div>
+            <div class="timeline-body"><p>There are two ways how you can enforce consistent quotes:</p>
+<ul>
+<li>Formatter: Using <code>ruff format</code>. This seems to work for you, if I understood you correctly</li>
+<li>Linter: Using <code>Q001-Q003</code>.</li>
+</ul>
+<p>What's best for you depends on your desired setup. We recommend to either use the Formatter or the <code>flake8-quote</code>  rules, but not both together (the formatter makes the lint rules redundant).</p>
+<p>To use the <code>flake8-quote</code> rules. I think what's missing is that you enable them using</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+extend-select = [&quot;Q&quot;]
+</code></pre>
+<p>You probably want to add <code>&quot;I&quot;</code> if you intend to use <code>isort</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wu-clan">@wu-clan</a> on 2023-10-27 09:19</div>
+            <div class="timeline-body"><p>Wow, thank you, I ignored the select rules in the new environment</p>
+<p>In my opinion, format should be more dominant</p>
+<p>They were so fast that I didn't react to them</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @wu-clan on 2023-10-27 09:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:45 UTC
+    </footer>
+</body>
+</html>

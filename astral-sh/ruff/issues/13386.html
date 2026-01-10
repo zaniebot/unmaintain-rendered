@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option to disable awkward line breaks for assert statements - astral-sh/ruff #13386</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Option to disable awkward line breaks for assert statements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13386">#13386</a>
+        opened by <a href="https://github.com/0xjmux">@0xjmux</a>
+        on 2024-09-17 21:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/0xjmux">@0xjmux</a> on 2024-09-17 21:21</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Hi,
+I'm using Ruff on a codebase with a good amount of <code>assert</code> statements - it's non-production code, and they're a good way to find bugs as you're testing things.</p>
+<p>However, the way that Black and Ruff format assert statements once they pass a certain length doesn't make sense, as the active issues on Black show:</p>
+<ul>
+<li><a href="https://github.com/psf/black/issues?q=is%3Aopen+label%3A%22T%3A+style%22+assert">Open issues on Black repo containing 'assert'</a></li>
+<li><a href="https://github.com/psf/black/issues/3663">example 1</a> <a href="https://github.com/psf/black/issues/3210">example 2</a> <a href="https://github.com/psf/black/issues/1483">example 3</a></li>
+</ul>
+<p>This seems to be a common issue with black that hasn't been addressed for some time, and the reason I started using Ruff is because I was hoping this behavior was something I could disable.</p>
+<h4>Example</h4>
+<p>Input:</p>
+<pre><code class="language-python">    assert Path(filepath).exists(), f'longish assert string with filepath {filepath} not found!'
+</code></pre>
+<p>Formatted output:</p>
+<pre><code class="language-python">    assert Path(
+        filepath
+    ).exists(), f'longish assert string with filepath {filepath} not found!'
+</code></pre>
+<p>Which is objectively less readable.</p>
+<p>Desired behavior:
+An option to either:</p>
+<ul>
+<li>Disable formatting of assert statements entirely</li>
+<li>Disable splitting parenthesis for specified keywords (<code>assert</code>, in this case)</li>
+<li>Option to format assert statements like this, and split the error string instead of the conditional.</li>
+</ul>
+<pre><code class="language-python">assert Path(filepath).exists(), \
+    f'longish assert string with filepath {filepath} not found!'
+</code></pre>
+<h4>Ruff Playground output and IR</h4>
+<p>Pasting the input into the <a href="https://play.ruff.rs/?secondary=FIR">Ruff Playground</a> and checking out the IR gives this output:</p>
+<details>
+<summary>Ruff playground output</summary>
+```
+empty_line,
+    source_position(356),
+    "filename = ",
+    best_fit_parenthesize("#5", ["\"hello.txt\""]),
+    source_position(378),
+    empty_line,
+    source_position(384),
+    "assert ",
+    best_fit_parenthesize("#6", [
+      "Path(",
+      fits_expanded(propagate_expand: false, condition: if_group_fits_on_line("#6"), [
+        group([indent([soft_line_break, group(["filename"])]), soft_line_break])
+      ]),
+      ").exists",
+      group(["()"])
+    ]),
+    ", ",
+    best_fit_parenthesize("#7", [
+      "f\"longish assert string with filepath {filename} not found!\""
+    ]),
+    source_position(477)
+  ]),
+  hard_line_break,
+```
+</details>
+
+<h4>Other</h4>
+<ul>
+<li>Ruff version: 0.6.5. Behavior is same using <code>--preview</code> and <code>--isolated</code> flags.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-09-18 06:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> added by @MichaReiser on 2024-09-18 06:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-18 06:21</div>
+            <div class="timeline-body"><p>Hi @0xjmux</p>
+<p>I agree that the formatting of asserts isn't ideal. IMO, it tries to hard to avoid parentheses which then leads to very awkward looking code.</p>
+<p>I do understand where you're coming from but the solution here isn't to introduce new options. Instead, we should improve how assert is formatted. This will benefit everyone (https://github.com/astral-sh/ruff/issues/8331, https://github.com/astral-sh/ruff/issues/8388).</p>
+<p>For now, you can use <code>fmt:skip</code> to disable formatting on a case-per-case basis. I know, it's not ideal.</p>
+<pre><code class="language-python">assert Path(filepath).exists(), f'longish assert string with filepath {filepath} not found!' # fmt: skip
+</code></pre>
+<p>For why I don't want to introduce the above mentioned options:</p>
+<p>I don't want to introduce a setting to disable formatting of assert statements entirely. The goal of the formatter is to get consistent code formatting and disabling formatting for a specific syntax misses that goal entirely. It also opens a flood of requests where we get request to add settings to disable formatting for every python-syntax there is. That's a precedence I rather not set. The same applies to having a setting that avoids splitting parentheses for specific keywords. Although that would also be very hard to implement because it is a non-local change (what about nested expressions?)</p>
+<blockquote>
+<p>Option to format assert statements like this, and split the error string instead of the conditional.</p>
+</blockquote>
+<p>Our style guide avoids the use of line continuations <code>\</code> where this is possible.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:10 UTC
+    </footer>
+</body>
+</html>

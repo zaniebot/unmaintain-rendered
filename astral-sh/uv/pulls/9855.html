@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix bug in terms when collapsing unavailable versions in resolver errors - astral-sh/uv #9855</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix bug in terms when collapsing unavailable versions in resolver errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9855">#9855</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-12-12 23:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-12 23:49</div>
+            <div class="timeline-body"><p><em>No description provided.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-12-12 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-12 23:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:13799 on 2024-12-12 23:50</div>
+            <div class="timeline-body"><p>This is what spurred this investigation, this conclusion made.. no sense at all? Now it is just missing a <code>&lt;=</code> instead of <code>=</code>. Hm.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-12 23:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:2184 on 2024-12-12 23:51</div>
+            <div class="timeline-body"><p>It's nice to avoid that enumeration, but where does <code>4.7.0</code> come from!?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-12 23:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:13799 on 2024-12-12 23:54</div>
+            <div class="timeline-body"><p>Here's the unsimplified version</p>
+<pre><code>          and open3d&lt;=0.15.2 has no wheels with a matching Python ABI tag, we can conclude that all of:
+              open3d&lt;0.15.2
+              open3d&gt;0.15.2,&lt;0.16.0
+              open3d&gt;0.16.0,&lt;0.16.1
+              open3d&gt;0.16.1,&lt;0.17.0
+              open3d&gt;0.17.0,&lt;0.18.0
+              open3d&gt;0.18.0
+           cannot be used.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-12 23:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:2184 on 2024-12-12 23:55</div>
+            <div class="timeline-body"><p>The unsimplified version</p>
+<pre><code>          have no usable wheels and building from source is disabled, we can conclude that all of:
+              anyio&lt;4.7.0
+              anyio&gt;4.7.0
+           cannot be used.
+</code></pre>
+<p>This suggests the terms merging is just wrong?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:13799 on 2024-12-13 04:22</div>
+            <div class="timeline-body"><p>And before... it's actually</p>
+<pre><code> we can conclude that all of:
+              open3d&lt;0.9.0.0
+              open3d&gt;0.9.0.0,&lt;0.10.0.0
+              open3d&gt;0.10.0.0,&lt;0.10.0.1
+              open3d&gt;0.10.0.1,&lt;0.11.0
+              open3d&gt;0.11.0,&lt;0.11.1
+              open3d&gt;0.11.1,&lt;0.11.2
+              open3d&gt;0.11.2,&lt;0.12.0
+              open3d&gt;0.12.0,&lt;0.13.0
+              open3d&gt;0.13.0,&lt;0.14.1
+              open3d&gt;0.14.1,&lt;0.15.1
+              open3d&gt;0.15.1,&lt;0.15.2
+              open3d&gt;0.15.2,&lt;0.16.0
+              open3d&gt;0.16.0,&lt;0.16.1
+              open3d&gt;0.16.1,&lt;0.17.0
+              open3d&gt;0.17.0,&lt;0.18.0
+              open3d&gt;0.18.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-13 04:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-12-13 06:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:16 UTC
+    </footer>
+</body>
+</html>

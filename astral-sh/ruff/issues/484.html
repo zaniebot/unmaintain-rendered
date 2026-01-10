@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--fix` flag removes imports in `__init__` files if there is a lack of `__all__` - astral-sh/ruff #484</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>--fix</code> flag removes imports in <code>__init__</code> files if there is a lack of <code>__all__</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/484">#484</a>
+        opened by <a href="https://github.com/Czaki">@Czaki</a>
+        on 2022-10-27 10:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Czaki">@Czaki</a> on 2022-10-27 10:09</div>
+            <div class="timeline-body"><p>If <code>__init__</code> file does not contain <code>__all__</code> variable and <code>--fix</code> option is specified then <code>ruff</code> removes imports instead of create <code>__all__</code> variable with include all variables imported from submodules.
+Or report it as an error without modifications to files. And highlight lack of <code>__all__</code> variable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "--fix flag removes imports in __init__ files if there is a lack of __all__" to "`--fix` flag removes imports in `__init__` files if there is a lack of `__all__`" by @Czaki on 2022-10-27 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-27 13:16</div>
+            <div class="timeline-body"><p>Will take a look at this today!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-27 15:00</div>
+            <div class="timeline-body"><p>Some relevant discussion from Flake8: https://github.com/PyCQA/pyflakes/issues/162, https://github.com/PyCQA/pyflakes/issues/471</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-27 15:03</div>
+            <div class="timeline-body"><p>A couple options:</p>
+<ol>
+<li>Suppress these errors entirely in <code>__init__.py</code> (always ignore unused imports for those files).</li>
+<li>Suppress these errors when <code>__init__.py</code> only contains imports (potentially confusing).</li>
+<li>Keep these errors under F401, but don't autofix them.</li>
+<li>Keep these errors under F401, but don't autofix them <em>and</em> add a custom message regarding <code>__all__</code>.</li>
+<li>Move these errors to a new error code, and don't autofix them.</li>
+</ol>
+<p>My preferences are either (1) or (4).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2022-10-27 15:13</div>
+            <div class="timeline-body"><p>I like 4.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-10-27 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-27 17:10</div>
+            <div class="timeline-body"><p>(Going out in v0.0.86, which is building now.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/fsouza">@fsouza</a> on 2022-10-28 14:44</div>
+            <div class="timeline-body"><p>@charliermarsh any thoughts on instructing users to configure <code>per-file-ignores</code> instead? Or adding a dedicated flag/config option (similar to autoflake's <code>--ignore-init-module-imports</code>)?</p>
+<p>I feel like that if an import error is reported is should be fixable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-28 14:47</div>
+            <div class="timeline-body"><p>I’m open to making it a configuration setting!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smackesey">@smackesey</a> on 2022-12-04 18:48</div>
+            <div class="timeline-body"><p>+1 for making it an option to autofix these. Our project (<a href="https://github.com/dagster-io/dagster">Dagster</a>) has two types of <code>__init__.py</code> files (1) pure &quot;export&quot; files (i.e. they just import from submodules); (2) those that define a bunch of functions themselves (and so are more like standard modules). The rule as currently implemented prevents removing all of the unused imports from type (2), which can be frustrating.</p>
+<p>FWIW, one can get around the conundrum of having intended-to-be-reexported symbols in <code>__init__.py</code> files appear to be unused (and flagged with F401) by using redundant aliases. That's what we do for <a href="https://github.com/dagster-io/dagster/blob/master/python_modules/dagster/dagster/__init__.py">top-level <code>dagster</code></a>:</p>
+<pre><code class="language-python">from dagster._core.definitions.decorators.sensor_decorator import (
+    asset_sensor as asset_sensor,
+    sensor as sensor,
+    multi_asset_sensor as multi_asset_sensor,
+)
+from dagster._core.definitions.decorators.source_asset_decorator import (
+    observable_source_asset as observable_source_asset,
+)
+from dagster._core.definitions.dependency import (
+    DependencyDefinition as DependencyDefinition,
+    MultiDependencyDefinition as MultiDependencyDefinition,
+    NodeInvocation as NodeInvocation,
+)
+</code></pre>
+<p>We had to add this because pyright/pylance complains the symbols are private otherwise (since they are imported rather than defined in the module).</p>
+<p>So since other popular tools require you to do this (or use <code>__all__</code>) to mark imported symbols as public, and this is also a developing <a href="https://github.com/python/typing/blob/master/docs/source/libraries.rst#how-much-of-my-library-needs-types">Python standard</a>, it seems reasonable to me to by default not treat <code>__init__.py</code> imports as special, and have users opt into the &quot;don't fix&quot; special-casing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-04 18:50</div>
+            <div class="timeline-body"><p>Yeah, that makes sense. I'll fix this today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-04 19:47</div>
+            <div class="timeline-body"><p>This is going out in <a href="https://github.com/charliermarsh/ruff/releases/tag/v0.0.157">v0.0.157</a> (building now), feedback welcome!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mara004">@mara004</a> on 2023-05-14 12:16</div>
+            <div class="timeline-body"><p>Can <a href="https://beta.ruff.rs/docs/settings/#ignore-init-module-imports">ignore-init-module-imports</a> only be set in a configuration file, or is it also possible to pass this on the command line? (I'm new to ruff.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-05-14 17:37</div>
+            <div class="timeline-body"><p>Currently, it's not possible to pass arbitrary config keys as flag on the command-line but that's likely to change in the future (https://github.com/charliermarsh/ruff/pull/4297#issuecomment-1539466250).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dream-dasher">@dream-dasher</a> on 2023-10-14 01:32</div>
+            <div class="timeline-body"><p>Was this fix/improvement rolled back?</p>
+<p>using <code>ruff 0.0.292</code> and it has the same behavior as described originally : it complains about unused imports in <strong>init</strong>.py [<code>F401</code>].</p>
+<p>And the <code>--fix</code> option merely deletes them.</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/33399972/aa029182-c03f-4de9-bbaf-10ebf07b3ee1" alt="error reporting" /></p>
+<p><img src="https://github.com/astral-sh/ruff/assets/33399972/fe1d7d0e-88b0-490b-85bc-a55a6c6d2908" alt="auto-fix changes" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-14 01:58</div>
+            <div class="timeline-body"><p>Do you have the relevant setting enabled? https://docs.astral.sh/ruff/settings/#ignore-init-module-imports</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cthorrez">@cthorrez</a> on 2024-01-19 08:14</div>
+            <div class="timeline-body"><p>I do have the <a href="https://docs.astral.sh/ruff/settings/#ignore-init-module-imports">ignore-init-module-imports</a> setting enabled in my pyproject.toml but it doesn't really &quot;ignore&quot; them. It doesn't fix them but it still fails the ruff run which is an issue if ruff is being used in a precommit hook.</p>
+<p>with <code>ignore-init-module-imports = false</code>, it just removes the imports breaking my code</p>
+<p>with <code>ignore-init-module-imports = true</code> I get this type of error blocking my commit</p>
+<pre><code>ruff.....................................................................Failed
+- hook id: ruff
+- exit code: 1
+
+riix/utils/__init__.py:1:25: F401 `.data_utils.RatingDataset` imported but unused; consider adding to `__all__` or using a redundant alias
+riix/utils/__init__.py:1:40: F401 `.data_utils.generate_matchup_data` imported but unused; consider adding to `__all__` or using a redundant alias
+Found 2 errors.```
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/joostsijm">@joostsijm</a> on 2024-01-31 14:14</div>
+            <div class="timeline-body"><p>@cthorrez workaround for pre-commit hook picking up the error message is to ignore F401 error per file type like in the following pyproject.toml:</p>
+<pre><code class="language-toml">[tool.ruff.per-file-ignores]
+&quot;__init__.py&quot; = [&quot;F401&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vergenzt">@vergenzt</a> on 2024-02-09 19:39</div>
+            <div class="timeline-body"><p>FYI all, I ended up writing an <a href="https://ast-grep.github.io/"><code>ast-grep</code></a> rule to rewrite such imports in my codebase to use the redundant import alias. (We're just getting started with <code>ruff</code>.) Figured I'd share it here:</p>
+<pre><code class="language-yaml">id: _
+language: py
+files:
+- ./src/**/__init__.py
+
+rule:
+  all:
+
+  - pattern: $NAME
+
+  - inside:
+      kind: import_from_statement
+      stopBy: end
+
+  - kind: dotted_name
+
+  # has to NOT be the first dotted_name in the import statement (that's the source module)
+  - follows:
+      any:
+      - has: { kind: dotted_name }
+      - kind: dotted_name
+      stopBy:
+        kind: import_from_statement
+
+transform:
+  REDUNDANT_ALIAS:
+    replace:
+      source: $NAME
+      replace: (.*)
+      by: $1 as $1
+
+fix: $REDUNDANT_ALIAS
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/grahamannett">@grahamannett</a> on 2024-03-19 22:33</div>
+            <div class="timeline-body"><blockquote>
+<p>@cthorrez workaround for pre-commit hook picking up the error message is to ignore F401 error per file type like in the following pyproject.toml:</p>
+<pre><code class="language-toml">[tool.ruff.per-file-ignores]
+&quot;__init__.py&quot; = [&quot;F401&quot;]
+</code></pre>
+</blockquote>
+<p>this is very helpful and what I ended up using but seems like it is then required for any code base that uses ruff with F401 (or pyflakes rules) and <code>__init__.py</code> as a way to import classes/functions/etc from elsewhere.</p>
+<p>Is this not the suggested project structure and there is a more modern/appropriate way to do that?  I don't really think <code>__all__</code> makes sense in this case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-20 01:09</div>
+            <div class="timeline-body"><p>Note we changed this behavior again recently in https://github.com/astral-sh/ruff/pull/10365, you can see more discussion there.</p>
+<blockquote>
+<p><strong>init</strong>.py as a way to import classes/functions/etc from elsewhere</p>
+</blockquote>
+<p>What do you mean? I would say that <code>__init__</code> is very much <em>not</em> intended for external imports unless you are intentionally exposing them as a part of your public interface in which case <code>__all__</code> or a redundant alias <code>import foo as foo</code> are the appropriate ways to do so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/me-v2">@me-v2</a> on 2024-06-26 03:21</div>
+            <div class="timeline-body"><p>fix it ?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:28:25 UTC
+    </footer>
+</body>
+</html>

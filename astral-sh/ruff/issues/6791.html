@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff does not honor declaration of character coding - astral-sh/ruff #6791</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff does not honor declaration of character coding</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6791">#6791</a>
+        opened by <a href="https://github.com/PeterSlickers">@PeterSlickers</a>
+        on 2023-08-22 19:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/PeterSlickers">@PeterSlickers</a> on 2023-08-22 19:04</div>
+            <div class="timeline-body"><p>According to PEP263, a character encoding can be declared in a Python program file. This is done with a specially formatted comment placed in the first or second line of the program:</p>
+<pre><code>#!/usr/bin/python
+# -*- coding: latin-1 -*-
+</code></pre>
+<p>It seems that Ruff (0.0.285) does not honor the coding declaration. Ruff seems to assume that input files are always encoded with utf8. The following Python program demonstrates the problem. It first generates three short Python program files with different encodings and than runs ruff and python3 on them.</p>
+<pre><code>#!/usr/bin/env python3
+# -*- coding: us-ascii -*-
+
+import subprocess
+
+
+prog = &quot;&quot;&quot;# -*- coding: {} -*-
+print(\&quot;\u00D8resund og Sj\u00E6lland\&quot;)
+&quot;&quot;&quot;
+
+## create artefacts with differing encodings
+filenames = []
+
+filenames.append(&quot;prog-utf8.py&quot;)
+print(f&quot;writing file '{filenames[-1]}'&quot;)
+with open(filenames[-1], &quot;wb&quot;) as outstream:
+	outstream.write(prog.format(&quot;utf8&quot;).encode(&quot;utf8&quot;))	
+
+filenames.append(&quot;prog-usascii.py&quot;)
+print(f&quot;writing file '{filenames[-1]}'&quot;)
+with open(filenames[-1], &quot;wb&quot;) as outstream:
+	# declared encoding differs from the true encoding
+	outstream.write(prog.format(&quot;us-ascii&quot;).encode(&quot;utf8&quot;))	
+
+filenames.append(&quot;prog-latin1.py&quot;)
+print(f&quot;writing file '{filenames[-1]}'&quot;)
+with open(filenames[-1], &quot;wb&quot;) as outstream:
+	outstream.write(prog.format(&quot;latin-1&quot;).encode(&quot;latin1&quot;))	
+
+## re-check encodings of the artefacts
+print(&quot;\nTrue encodings&quot;)	
+for filename in filenames:
+	subprocess.call([&quot;file&quot;, &quot;-i&quot;, filename,])
+
+## run python3 and ruff on the artefacts
+for filename in filenames:
+	cmd = [&quot;python3&quot;, filename,]
+	print(&quot;---\n&quot; + &quot; &quot;.join(cmd))
+	subprocess.call(cmd)
+	cmd = [&quot;ruff&quot;, filename,]
+	print(&quot;\n&quot; + &quot; &quot;.join(cmd))
+	subprocess.call(cmd)
+</code></pre>
+<p>The first file with utf8 encoding runs flawlessly with ruff and with python3. This is the expected behaviour.</p>
+<p>The second file comprises characters in utf8 encoding, but wrongly declares us-ascii encoding. This file throws an error when run with python3, but successfully passes ruff. I would expect that ruff complains on this file.</p>
+<p>The third file comprises characters in latin1 encoding and correctly declares its encoding. This program runs successfully with python3, but throws an error when checked with ruff. I would expect that ruff does not complain on this file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2023-08-23 06:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2023-08-23 06:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-23 06:26</div>
+            <div class="timeline-body"><p>Thanks for reporting this issue.</p>
+<p>Yes, your observation is correct. Ruff currently has no support for the <code>coding</code> pragma comments. Mainly because converting between encodings is hard and coding comments don't seem that widespread anymore. Nonetheless, this is a Ruff limitation and we should either document it or fix it.</p>
+<p>From an implementation standpoint. I rather don't add support for non-UTF-8 strings in the lexer/parser. We should rather normalize the string to UTF-8 as early as possible, ideally when, or after reading the file. The main challenge that I see comes with fixes. We would need to write the string back using the original encoding. So we would need to keep that information around.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/encukou">@encukou</a> on 2024-11-21 10:23</div>
+            <div class="timeline-body"><p>I believe that linters in general should <em>reject</em> at least some source encodings.
+See the (rather scary) example from <a href="https://peps.python.org/pep-0672/#source-encoding">the last section of PEP 672</a>, which, as-is, fails <code>ruff check</code> with <code>F401 `os` imported but unused</code>.</p>
+<p>I agree that support for encoding declarations doesn't need to be a priority, but if Ruff can't handle them, maybe there should be a linter rule for them? (For Ruff users, “you shouldn't do this <em>if you want to use Ruff</em>” is basically equivalent to “you shouldn't do this”, right?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2024-11-25 16:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:05 UTC
+    </footer>
+</body>
+</html>

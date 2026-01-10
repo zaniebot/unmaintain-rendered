@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix cases where the uv lock is incorrectly marked as out of date - astral-sh/uv #13635</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix cases where the uv lock is incorrectly marked as out of date</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13635">#13635</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-05-24 00:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-24 00:51</div>
+            <div class="timeline-body"><p>PackageMetadata, for whatever reason, does not have a mirrored Wire type so it was easy to not realize that it contains markers that need to be complexified.</p>
+<p>Fixes #13614</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Gankra on 2025-05-24 00:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-05-24 00:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:2858 on 2025-05-24 00:52</div>
+            <div class="timeline-body"><p>This is technically a drive-by fix; ideally I write a test that shows this was also broken.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-05-24 00:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:2841 on 2025-05-24 00:53</div>
+            <div class="timeline-body"><p>Should we have a PackageMetadataWire type? Is it problematic that we're serializing raw Requirements and not the SimplifiedMarkerTree stuff DependencyWire has?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-05-24 00:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:2852 on 2025-05-24 00:56</div>
+            <div class="timeline-body"><p>All the Results here are actually pointless, but I only realized this at the very end and I'm calling it a night. I should remove them (DependencyWire::unwire is fallible because it resolves packageids, not because it complexifies marker).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-05-24 00:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:2858 on 2025-05-24 00:59</div>
+            <div class="timeline-body"><p>hmm ok actually doing this causes massive breakage...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-24 01:07</div>
+            <div class="timeline-body"><p>Hmm ok this sure fixes my one test and causes a dozen failures elsewhere... so not quite the right approach 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-24 01:13</div>
+            <div class="timeline-body"><p>Note to self: Lock::to_toml explicitly Simplifies the other markers, but when it comes to these Requirements it just serializes them directly... Suspicious.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-05-24 12:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:2857 on 2025-05-24 12:17</div>
+            <div class="timeline-body"><p>Don't we need to <code>unwire</code> the <code>requires_dist</code> too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-05-24 17:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:2857 on 2025-05-24 17:33</div>
+            <div class="timeline-body"><p>I have that in an earlier commit and it caused even more test failures. I imagine yes it wants the same treatment as these dependency-groups, whatever the correct treatment is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-26 11:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:2857 on 2025-05-26 11:06</div>
+            <div class="timeline-body"><p>I could confirm this with the case below (failing on the branch), we should solve that one too.</p>
+<pre><code class="language-toml">[project]
+name = &quot;debug&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+  &quot;pytest; python_full_version&gt;'3.8' and python_full_version&lt;'3.6'&quot;
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-26 11:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:2857 on 2025-05-26 11:26</div>
+            <div class="timeline-body"><p>Do the test failures happen because we complexify with requires python? An alternative approach would be filtering out false markers entirely (they can never be used, we don't need to serialize them) or to make the marker parser aware of the <code>python[_full]_version &lt; 0</code> hack to restore symmetry between serializing and deserializing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-26 16:48</div>
+            <div class="timeline-body"><p>I think the problem here is just in the lockfile satisfies check. We're now comparing simplified to un-simplified markers or something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-26 16:55</div>
+            <div class="timeline-body"><p>I pushed a change that I think resolves the failures?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-05-26 16:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:4735 on 2025-05-26 16:56</div>
+            <div class="timeline-body"><p>I'm a little confused as to whether this should be simplify or complexify. It might not matter as long as it's consistent?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-05-26 17:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:4735 on 2025-05-26 17:19</div>
+            <div class="timeline-body"><p>Yeah that sounds right to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-26 17:19</div>
+            <div class="timeline-body"><p>Added konsti's test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-05-26 18:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-05-26 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-05-26 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-26 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Unwire PackageMetadata fields" to "Fix cases where the uv lock is incorrectly marked as out of date" by @Gankra on 2025-05-26 18:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:25 UTC
+    </footer>
+</body>
+</html>

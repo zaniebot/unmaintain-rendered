@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model groups as a property of requirements - astral-sh/uv #9545</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Model groups as a property of requirements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9545">#9545</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-12-01 01:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-01 01:38</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Today, our dependency group implementation is a little awkward... For each package <code>P</code>, we check if <code>P</code> contains dependencies for each enabled group, then add a dependency on <code>P</code> with the group enabled. There are a few issues here:</p>
+<ol>
+<li>It's sort of backwards... We add a dependency from the base package <code>P</code> to <code>P</code> with the group enabled. Then <code>P</code> with the group enabled adds a dependency on the base package.</li>
+<li>We can't, e.g., enable different groups for different packages. (We don't have a way for users to specify this on the CLI, but there's no reason that it should be <em>impossible</em> in the resolver.)</li>
+<li>It's inconsistent with how extras work, which leads to confusing differences in the resolver.</li>
+</ol>
+<p>Instead, our internal requirement type can now include dependency groups, which makes dependency groups look much, much more like extras in the resolver.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-12-01 01:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-12-01 01:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2024-12-01 01:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-01 02:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/workspace.rs</code>:1628 on 2024-12-01 02:27</div>
+            <div class="timeline-body"><p>\cc @zanieb -- I think you pointed out this general problem long ago.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:89 on 2024-12-03 12:53</div>
+            <div class="timeline-body"><p>As with #9582, I suspect you'll want to do the same thing for groups as I did for extras: conditionally add the base package dependency if the group is declared as conflicting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:39 on 2024-12-03 12:54</div>
+            <div class="timeline-body"><p>If <code>requirement.groups</code> isn't empty at this point, does this mean that all of those groups get skipped?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-12-03 12:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-03 13:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:39 on 2024-12-03 13:54</div>
+            <div class="timeline-body"><p>The assumption is that they’re mutually exclusive</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-12-03 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:39 on 2024-12-03 13:57</div>
+            <div class="timeline-body"><p>Interesting. Hard to tell from the type definition. But encoding that invariant in the types is probably annoying.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-03 14:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:39 on 2024-12-03 14:23</div>
+            <div class="timeline-body"><p>I could do it? It's a bit tedious because these also get serialized so we'd want to maintain backwards compatibility, but I could do it. Somewhat prefer to just document it clearly though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-12-03 14:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:39 on 2024-12-03 14:27</div>
+            <div class="timeline-body"><p>Documenting it seems fine, yeah.</p>
+<p>I am pretty much always torn about how much to encode in the types. I do like it, because I find it makes refactoring without fear a lot easier. It prevents you from getting the case analysis wrong. But as you rightly point out, it's a pain. And if the invariants change, it can make refactoring a pain (albeit higher confidence) too.</p>
+<p>It's a constant balancing act.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-03 14:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/workspace.rs</code>:1628 on 2024-12-03 14:51</div>
+            <div class="timeline-body"><p>Nice :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-12-03 23:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-03 23:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:89 on 2024-12-03 23:29</div>
+            <div class="timeline-body"><p>Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-03 23:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/dependencies.rs</code>:39 on 2024-12-03 23:29</div>
+            <div class="timeline-body"><p>Added.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-12-04 00:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-12-04 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-04 00:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-04 00:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:15 UTC
+    </footer>
+</body>
+</html>

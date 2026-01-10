@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow discovering virtual environments from the first interpreter found on the `PATH` - astral-sh/uv #11218</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow discovering virtual environments from the first interpreter found on the <code>PATH</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11218">#11218</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-02-04 16:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-04 16:15</div>
+            <div class="timeline-body"><p>Closes https://github.com/astral-sh/uv/issues/11214</p>
+<p>Special-cases the first Python executable we find on the <code>PATH</code>, allowing it to be considered during searches for virtual environments.</p>
+<p>For some context, there are two stages to Python interpreter discovery</p>
+<ol>
+<li>We find possible Python executables in various sources</li>
+<li>We query the executables to determine canonical metadata about the interpreter</li>
+</ol>
+<p>We can't really be &quot;sure&quot; if an executable is a complaint virtual environment during (1), we need to query the interpreter first. This means that if you're only allowed to installed into virtual environments, we'll query every interpreter on your PATH. This is not performant, and causes confusion for users. Notably, I recently improved error messaging when we can't find any valid interpreters, by showing the error message we encounter while querying an interpreter (if any). However, this is problematic when there's an error for an interpreter that is not relevant to your search. In https://github.com/astral-sh/uv/pull/11143, I added filtering to avoid querying additional interpreters, but that regressed some user experiences where they were relying on us finding implicitly active virtual environments via the PATH.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-02-04 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-04 19:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:7611 on 2025-02-04 19:52</div>
+            <div class="timeline-body"><p>This test case regresses, undoing the work from https://github.com/astral-sh/uv/pull/11143 if the interpreter is at the front of the PATH. We don't see the regression in the diff because I added a new test case below which retains the previous error message, i.e., we do the right thing if the broken interpreter is not at the front of the PATH. We can do better, but the regression this pull requests fixes seems more important to address?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-04 19:57</div>
+            <div class="timeline-body"><p>Looking back at https://github.com/astral-sh/uv/issues/2109 and https://github.com/astral-sh/uv/issues/4009, it seems likely that #11143 regressed behavior there. This <em>sort</em> of fixes that? It's basically a reimplementation of https://github.com/astral-sh/uv/pull/4032</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-04 20:18</div>
+            <div class="timeline-body"><p>An alternative approach would be something like 1467172726d9dcf4d283bc92ce351fd6cee8d7c6 which.. could also have problems, i.e., exclude interpreters incorrectly and requires querying more directories on the <code>PATH</code> when looking for virtual environments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2025-02-04 20:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-02-04 21:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-02-04 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-02-04 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-04 21:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:19 UTC
+    </footer>
+</body>
+</html>

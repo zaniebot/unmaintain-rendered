@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARG003 does not seem to respect Protocols - astral-sh/ruff #13678</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ARG003 does not seem to respect Protocols</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13678">#13678</a>
+        opened by <a href="https://github.com/harahu">@harahu</a>
+        on 2024-10-08 10:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/harahu">@harahu</a> on 2024-10-08 10:07</div>
+            <div class="timeline-body"><p>The ruff rule<code>ARG003: unused-class-method-argument</code> does not seem to understand that unused arguments sometimes are necessary in order to implement a protocol. See example below:</p>
+<pre><code class="language-py">from abc import abstractmethod
+from typing import Protocol
+
+
+class A(Protocol):
+    @classmethod
+    @abstractmethod
+    def foo(cls, bar: str) -&gt; str:
+        raise NotImplementedError
+
+
+class B(A):
+    @classmethod
+    def foo(cls, bar: object) -&gt; str:
+        return &quot;foo&quot;
+
+</code></pre>
+<p>https://play.ruff.rs/204c57b4-a35e-48d5-8f92-ca2e109dd2cd</p>
+<p>This problem appears in ruff 0.6.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-08 10:47</div>
+            <div class="timeline-body"><p>All Ruff rules don't understand Protocols, or class inheritance (with few hardcoded exceptions) because Ruff doesn't support multifile analysis (it doesn't understand the <code>Protocol</code> type nor can it resolve the class <code>A</code> if it is defined in another file).</p>
+<p>For now, I suggest that you add a <code>@typing.override</code> decorator to <code>B.foo</code>. It let's Ruff know that this is an overridden method and that extra arguments are intentional.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-10-08 10:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> added by @MichaReiser on 2024-10-08 10:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harahu">@harahu</a> on 2024-10-08 11:55</div>
+            <div class="timeline-body"><p>I appreciate your clear explanation of the current limitations of ruff. Also appreciate the advice on <code>@typing.override</code>. Thanks!</p>
+<p>I understand that there is a significant backlog of features hinging on type inference and multi-file analysis, so I wish you guys all the best in working towards those. Ruff is already really great, but would undoubtedly be even better with those capabilities implemented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> removed by @MichaReiser on 2024-10-24 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PeturEgilsson-Zoetis">@PeturEgilsson-Zoetis</a> on 2024-10-29 11:02</div>
+            <div class="timeline-body"><p>Same issue with inherited methods, such as:</p>
+<pre><code>class Foobar(IntEnum):
+    A = 1
+    B = 2
+    UNKNOWN = 255
+
+    @classmethod
+    def _missing_(cls, value: object) -&gt; Foobar:  # ruff reports ARG003 error on value
+        return cls.UNKNOWN
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:21 UTC
+    </footer>
+</body>
+</html>

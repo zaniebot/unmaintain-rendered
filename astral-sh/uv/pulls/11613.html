@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Close #9871: add uv self uninstall command - astral-sh/uv #11613</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Close #9871: add uv self uninstall command</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11613">#11613</a>
+        opened by <a href="https://github.com/loic-lescoat">@loic-lescoat</a>
+        on 2025-02-19 03:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/loic-lescoat">@loic-lescoat</a> on 2025-02-19 03:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Close #9871: add <code>uv self uninstall</code> command</p>
+<p>Mimics behavior listed on <a href="https://docs.astral.sh/uv/getting-started/installation/#uninstallation">uv's official uninstallation instructions</a></p>
+<h2>Test Plan</h2>
+<h3>How was this tested?</h3>
+<h4>Using a smoke test in <code>.github/workflows/ci.yml</code></h4>
+<h4>Manually</h4>
+<p>This was tested manually on Linux as follows:</p>
+<p>I ran <code>cargo build</code>, then:
+I placed the following content into <code>test-linux-Dockerfile</code></p>
+<pre><code class="language-test-linux-Dockerfile">FROM ubuntu:24.04
+
+RUN apt update
+RUN apt install -y curl
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+
+COPY target/debug/uv .
+CMD bash
+</code></pre>
+<p>then started the container using:</p>
+<pre><code>docker build -t test-linux -f test-linux-Dockerfile . &amp;&amp; docker run -it test-linux
+</code></pre>
+<p>Once inside the container, I ran the <code>uninstall</code> command
+on empty directories to make sure the command succeeds:</p>
+<pre><code>$ /uv self uninstall --remove-data
+No cache found at: /root/.cache/uv
+$ echo $?
+0
+$ ls $HOME/.local/bin
+env  env.fish
+$ ls $HOME/.local/share
+ls: cannot access '/root/.local/share': No such file or directory
+$ ls $HOME/.local/
+bin
+</code></pre>
+<p>I also tried calling <code>uv run python</code> and <code>uv tool run</code> at least once
+so that the <code>uv tool dir</code> and <code>uv python dir</code> are emptied by <code>uv self uninstall --remove-data</code></p>
+<pre><code>$ /uv run python -c 'print(&quot;hi&quot;)'
+Python 3.13.2 (main, Feb  5 2025, 19:11:32) [Clang 19.1.6 ] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt;
+$ uv tool run jupyter --version
+$ ls `/uv tool dir`
+$ ls -a `/uv tool dir`
+.  ..  .gitignore  .lock
+$ ls -a `/uv python dir`
+.  ..  .gitignore  .lock  .temp  cpython-3.13.2-linux-x86_64-gnu
+$ ls -a `/uv cache dir`
+.  ..  .gitignore  CACHEDIR.TAG  archive-v0  builds-v0  environments-v2  interpreter-v4  sdists-v7  sdists-v8  simple-v15  wheels-v4
+$ /uv self uninstall --remove-data
+Clearing cache at: /root/.cache/uv
+Removed 18176 files (408.0MiB)
+$ ls -a `/uv tool dir`
+ls: cannot access '/root/.local/share/uv/tools': No such file or directory
+$ ls -a `/uv python dir`
+ls: cannot access '/root/.local/share/uv/python': No such file or directory
+$ ls -a `/uv cache dir`
+ls: cannot access '/root/.cache/uv': No such file or directory
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Close #9871: add uv self uninstall command" to "Close #9871: add `uv self uninstall` command" by @loic-lescoat on 2025-02-19 03:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Close #9871: add `uv self uninstall` command" to "Close #9871: add uv self uninstall command" by @loic-lescoat on 2025-02-19 03:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-19 03:42</div>
+            <div class="timeline-body"><p>We use <code>fs_err</code> instead of <code>std::fs</code> for better error messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-19 03:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/self_uninstall.rs</code>:38 on 2025-02-19 03:43</div>
+            <div class="timeline-body"><p>Note instead of <code>.exe</code> you'll want the <code>std::env::consts</code> executable suffix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:533 on 2025-02-19 03:44</div>
+            <div class="timeline-body"><p>Can we call this something else? Maybe just <code>remove_data</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-19 03:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-19 03:45</div>
+            <div class="timeline-body"><p>Cool, thanks for contributing!</p>
+<p>I'm not really sure how we'd write unit tests for this, but we can test it in CI, e.g., in the <code>smoke-test-linux</code> job in <code>ci.yml</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-19 03:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/self_uninstall.rs</code>:39 on 2025-02-19 03:47</div>
+            <div class="timeline-body"><p>Also note, the install path might not be <code>.local/bin</code>. Should we use the <code>current_exe()</code> method instead and assume <code>uvx</code> is next to <code>uv</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-19 03:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/self_uninstall.rs</code>:13 on 2025-02-19 03:48</div>
+            <div class="timeline-body"><p>I wonder if we should require the uv installer to have been used to enable this? Like we do in <code>self_update</code></p>
+<p>If so, that'd give us another way to determine the canonical install path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/loic-lescoat">@loic-lescoat</a> reviewed on 2025-02-19 07:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/loic-lescoat">@loic-lescoat</a> on <code>crates/uv/src/commands/self_uninstall.rs</code>:38 on 2025-02-19 07:05</div>
+            <div class="timeline-body"><p>Thanks for the input! In <a href="https://github.com/loic-lescoat/uv/blob/a057630db284857267d4f17d2270ea7988d86878/crates/uv/src/commands/self_uninstall.rs?plain=1#L38">here</a> I tried checking the value of <code>cfg!(windows)</code> but this is more succinct, so I'll try this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/loic-lescoat">@loic-lescoat</a> reviewed on 2025-02-19 07:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/loic-lescoat">@loic-lescoat</a> on <code>crates/uv-cli/src/lib.rs</code>:533 on 2025-02-19 07:20</div>
+            <div class="timeline-body"><p>done in 4104fc8a0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/loic-lescoat">@loic-lescoat</a> on <code>crates/uv/src/commands/self_uninstall.rs</code>:38 on 2025-02-19 07:20</div>
+            <div class="timeline-body"><p>done in 4104fc8a0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/loic-lescoat">@loic-lescoat</a> reviewed on 2025-02-19 07:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/loic-lescoat">@loic-lescoat</a> reviewed on 2025-02-19 07:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/loic-lescoat">@loic-lescoat</a> on <code>crates/uv/src/commands/self_uninstall.rs</code>:39 on 2025-02-19 07:25</div>
+            <div class="timeline-body"><p>Got it. While the <a href="https://docs.astral.sh/uv/getting-started/installation/#uninstallation">official un-installation instructions</a> imply it is in <code>.local/bin</code>, this is fair, so I'll look into this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/loic-lescoat">@loic-lescoat</a> on 2025-02-19 07:29</div>
+            <div class="timeline-body"><p>TODO:</p>
+<ul>
+<li>[x] Relax assumption that binaries are in <code>.local/bin</code></li>
+<li>[x] Prototype test of this feature in <code>smoke-test-linux job in ci.yml</code></li>
+<li>[x] Evaluate whether we should <code>require the uv installer to have been used</code> to use <code>uv self uninstall</code></li>
+</ul>
+<p>@zanieb , instead of using <code>std::fs</code>, in a057630 I used <code>rm_rf</code> which ultimately calls <code>fs_err</code>. Is this OK?</p>
+<p>Thanks for your input. I'll address these items soon</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/loic-lescoat">@loic-lescoat</a> reviewed on 2025-02-19 07:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/loic-lescoat">@loic-lescoat</a> on <code>crates/uv/src/commands/self_uninstall.rs</code>:13 on 2025-02-19 07:31</div>
+            <div class="timeline-body"><p>Good point. Is it fair to say that the uv installer was used iff <code>uv</code> was built with the <code>self-update</code> feature? In other words, is it reasonable to enable the <code>uv self uninstall</code> command iff the <code>uv self update</code> command is enabled?</p>
+<p>Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-19 14:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/self_uninstall.rs</code>:39 on 2025-02-19 14:40</div>
+            <div class="timeline-body"><p>That's the default install location, which is sufficient for documentation but not an automated process.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-19 14:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/self_uninstall.rs</code>:13 on 2025-02-19 14:40</div>
+            <div class="timeline-body"><p>I think you can check for a receipt like the <code>update</code> command does.</p>
+<blockquote>
+<p>is it reasonable to enable the uv self uninstall command iff the uv self update command is enabled?</p>
+</blockquote>
+<p>This also makes sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/loic-lescoat">@loic-lescoat</a> reviewed on 2025-02-19 16:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/loic-lescoat">@loic-lescoat</a> on <code>crates/uv/src/commands/self_uninstall.rs</code>:39 on 2025-02-19 16:24</div>
+            <div class="timeline-body"><p>Addressed in e96b0f081</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/loic-lescoat">@loic-lescoat</a> on 2025-02-21 06:57</div>
+            <div class="timeline-body"><p>@zanieb as of <a href="https://github.com/astral-sh/uv/pull/11613/commits/d4965af3b14c146f345e74e53240e302a3af0bb9">d4965af</a> I added a smoke test which runs <code>self-uninstall</code> in <code>ci.yml</code>; this <a href="https://github.com/astral-sh/uv/actions/runs/13451643537/job/37587044368?pr=11613#step:4:80">fails</a> because the binary is built (e.g. <a href="https://github.com/loic-lescoat/uv/blob/d4965af3b14c146f345e74e53240e302a3af0bb9/.github/workflows/ci.yml?plain=1#L431">here</a>) using <code>cargo build</code> rather than using <code>cargo build --features self-update</code>.</p>
+<p>Which would you prefer?</p>
+<ol>
+<li>Change the build from <code>cargo build</code> to <code>cargo build --features self-update</code></li>
+<li>Add a separate <code>build</code> process, that runs <code>cargo build --features self-update</code></li>
+</ol>
+<p>On the one hand, option 1. is an easier, less verbose fix and option 2. will lengthen the actions file and increase the number of Github actions.</p>
+<p>On the other hand, the binary built using <code>cargo build</code> is used by other unrelated tests, e.g. <a href="https://github.com/loic-lescoat/uv/blob/d4965af3b14c146f345e74e53240e302a3af0bb9/.github/workflows/ci.yml?plain=1#L806-L822">integration tests</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/loic-lescoat">@loic-lescoat</a> on 2025-02-26 07:37</div>
+            <div class="timeline-body"><blockquote>
+<p>Which would you prefer?</p>
+</blockquote>
+<p>@zanieb I tried going with option 1. - but the <code>cargo dev generate-all</code> test <a href="https://github.com/astral-sh/uv/actions/runs/13538593476/job/37834646801?pr=11613#step:4:62">fails</a> with the message:</p>
+<pre><code>uv-dev failed
+  Caused by: cli.md changed, please run `cargo dev generate-cli-reference`:
+</code></pre>
+<p>I tried running this command locally, as well as <code>cargo dev generate-all</code>, but this does not change the contents of cli.md, and instead prints <code>Up-to-date: cli.md</code>. Do you know why this is? Do you have an idea of how to make this test pass?</p>
+<p>Thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-26 19:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>.github/workflows/ci.yml</code>:433 on 2025-02-26 19:18</div>
+            <div class="timeline-body"><p>I think it's fine to just enable <code>self-update</code> on the normal binary we are building / testing instead of creating a dedicated one.</p>
+<p>However, won't this testing approach fail if you add reading of the uv install receipt to verify that it was installed by our installer? I guess we could allow removing the <em>data</em> regardless of whether or not uv is being managed by us? I think that's suggestive that we might not want to gate this behind the self-update feature at all?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-26 19:19</div>
+            <div class="timeline-body"><blockquote>
+<p>tried running this command locally, as well as cargo dev generate-all</p>
+</blockquote>
+<p>Did you try merging the latest <code>main</code> into your branch? CI runs on the merge-commit which can be different than your local commit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/loic-lescoat">@loic-lescoat</a> reviewed on 2025-03-01 02:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/loic-lescoat">@loic-lescoat</a> on <code>.github/workflows/ci.yml</code>:433 on 2025-03-01 02:08</div>
+            <div class="timeline-body"><blockquote>
+<p>won't this testing approach fail if you add reading of the uv install receipt to verify that it was installed by our installer?</p>
+</blockquote>
+<p>I don't know. I did not use an install receipt to check whether uv was installed by our installer.</p>
+<blockquote>
+<p>I guess we could allow removing the data regardless of whether or not uv is being managed by us?</p>
+</blockquote>
+<p>I suppose so.</p>
+<blockquote>
+<p>I think that's suggestive that we might not want to gate this behind the self-update feature at all?</p>
+</blockquote>
+<p>~I am OK with this. I will adapt accordingly, e.g. by reverting to <a href="https://github.com/astral-sh/uv/pull/11613/commits/d3541676431066a6a2f6f184a0f65fc36e980738">d354167 - the parent of <code> can self uninstall iff can self update</code></a>~</p>
+<p>Since I'm not using the &quot;uv install receipt&quot;, I figure it's OK to gate this behind the self-update feature.</p>
+<p>I added a self-update feature flag.</p>
+<p><strong>Next steps</strong></p>
+<ul>
+<li>[x] Figure out workaround so that executable can remove itself on windows, see complications described in <a href="https://docs.rs/self-replace/latest/self_replace/#self-deletion">self-delete</a></li>
+<li>[x] ask for review</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/loic-lescoat">@loic-lescoat</a> on 2025-03-04 05:45</div>
+            <div class="timeline-body"><p>Hi @zanieb, can you please review this again? Here are my updates:</p>
+<ol>
+<li>On windows, instead of removing the <code>uv.exe</code> executable, we print a message to prompt the user to do this manually. This is because on Windows, an executable cannot remove itself, as mentioned <a href="https://docs.rs/self-replace/latest/self_replace/">here</a> - this previously caused the windows smoke test to <a href="https://github.com/astral-sh/uv/actions/runs/13613457231/job/38053541522#step:3:104">fail</a>. A google search suggests that workarounds are not very robust (e.g. renaming the executable and scheduling its removal at a later date - see <a href="https://github.com/mitsuhiko/self-replace">this crate</a> or <a href="https://stackoverflow.com/a/1606189">this stack overflow answer</a>). As a result, I think a more robust solution is to prompt the user to remove the <code>uv.exe</code> binary manually on windows. This is why we prompt the user to manually remove the <code>uv.exe</code> binary rather than removing it.</li>
+<li>The <code>cargo dev generate-all</code> test passes</li>
+</ol>
+<p>Are you OK with merging this? I think it is ready.</p>
+<p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/loic-lescoat">@loic-lescoat</a> on 2025-03-12 04:16</div>
+            <div class="timeline-body"><p>@zanieb do you have a moment to review this PR? As mentioned in my <a href="https://github.com/astral-sh/uv/pull/11613#issuecomment-2696285967">comment above</a>, I would like to hear if you think this is ready to merge. I believe it is ready to be helpful to users.</p>
+<p>Thank you.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

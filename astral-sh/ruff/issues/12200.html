@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[New Rule][Django] Verify that `settings` is correctly imported - astral-sh/ruff #12200</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[New Rule][Django] Verify that <code>settings</code> is correctly imported</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12200">#12200</a>
+        opened by <a href="https://github.com/bastian-wattro">@bastian-wattro</a>
+        on 2024-07-05 08:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bastian-wattro">@bastian-wattro</a> on 2024-07-05 08:17</div>
+            <div class="timeline-body"><p>I'd like to add a rule for Django projects. I'm not quite sure about where to add it (If backwards capability was not an issue, I would add it to DJ)</p>
+<h2>What it could do</h2>
+<p>Verify that <code>settings</code> is correctly imported from <code>django.conf</code>.</p>
+<p>An unsafe fix could exist, as some code might depend on the side effects of importing the module (even though import side-effects are considered poor practice).</p>
+<h2>Why is this bad?</h2>
+<p><a href="https://docs.djangoproject.com/en/5.0/topics/settings/#using-settings-in-python-code">The Django Docs</a> state that one <em>should</em> import <code>settings</code> from <code>django.conf</code>.
+It is an object (not a module) that is safe to access. Importing settings directly from the project could trigger side-effects.
+Also, <code>django.conf.settings</code> abstracts the concepts of default settings and site-specific settings; it presents a single interface. It also decouples the code that uses settings from the location of the settings.</p>
+<h2>Example</h2>
+<p>Incorrect:</p>
+<pre><code class="language-python">from myproject import settings
+</code></pre>
+<p>Use instead:</p>
+<pre><code class="language-python">from django.conf import settings
+</code></pre>
+<hr />
+<p>I'm looking forward to your feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-07-11 06:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/93578237">@93578237</a> on 2024-07-23 05:24</div>
+            <div class="timeline-body"><p>You can already do this with banned-api (no auto fix)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bastian-wattro">@bastian-wattro</a> on 2024-07-23 07:39</div>
+            <div class="timeline-body"><p>Nice.</p>
+<p>Add this to your pyproject.toml  and replace <code>myproject</code> with the name of your project.<br />
+drop <code>tool.ruff.</code> if you're using ruff.toml</p>
+<pre><code class="language-toml">[tool.ruff]
+lint.select = [
+   …
+   &quot;TID251&quot;, # tidy imports
+]
+…
+[tool.ruff.lint.flake8-tidy-imports.banned-api]
+&quot;myproject.settings&quot;.msg = &quot;See https://docs.djangoproject.com/en/dev/topics/settings/#using-settings-in-python-code. Use 'from django.conf import settings' instead.&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @bastian-wattro on 2024-07-23 07:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:18 UTC
+    </footer>
+</body>
+</html>

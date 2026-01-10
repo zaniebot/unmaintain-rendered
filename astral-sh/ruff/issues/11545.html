@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff server not closing with neovim instances - vol 2 - astral-sh/ruff #11545</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff server not closing with neovim instances - vol 2</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11545">#11545</a>
+        opened by <a href="https://github.com/danielhollas">@danielhollas</a>
+        on 2024-05-26 16:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-05-26 16:13</div>
+            <div class="timeline-body"><p>I am still seeing this problem originally reported (and fixed) in #11207
+I am on ruff 0.4.5 and neovim 0.9.5 on Linux Fedora 39.</p>
+<p>Here's the output from Lsp logs</p>
+<pre><code>[START][2024-05-26 16:20:07] LSP logging initiated
+  16021 [ERROR][2024-05-26 16:20:07] .../vim/lsp/rpc.lua:734»   &quot;rpc&quot;»  &quot;/home/hollas/.local/share/nvim/mason/bin/ruff&quot;»&quot;stderr&quot;»       &quot;wa        rning: The top-level linter settings are deprecated in favour of their counterparts in the `lint` section. Please update the follow        ing options in `.venv/lib64/python3.12/site-packages/pandas/pyproject.toml`:\n  - 'ignore' -&gt; 'lint.ignore'\n  - 'select' -&gt; 'lint.        select'\n  - 'typing-modules' -&gt; 'lint.typing-modules'\n  - 'unfixable' -&gt; 'lint.unfixable'\n  - 'per-file-ignores' -&gt; 'lint.per-fi        le-ignores'\n&quot;
+  16022 [ERROR][2024-05-26 16:20:07] .../vim/lsp/rpc.lua:734»   &quot;rpc&quot;»  &quot;/home/hollas/.local/share/nvim/mason/bin/ruff&quot;»&quot;stderr&quot;»       &quot;wa        rning: `PGH001` has been remapped to `S307`.\n&quot;
+  16023 [ERROR][2024-05-26 16:20:07] .../vim/lsp/rpc.lua:734»   &quot;rpc&quot;»  &quot;/home/hollas/.local/share/nvim/mason/bin/ruff&quot;»&quot;stderr&quot;»       &quot;           0.700874s WARN ruff_server::server LSP client does not support dynamic capability registration - automatic configuration reloading         will not be available.\n&quot;
+  16024 [ERROR][2024-05-26 16:20:16] .../vim/lsp/rpc.lua:734»   &quot;rpc&quot;»  &quot;/home/hollas/.local/share/nvim/mason/bin/ruff&quot;»&quot;stderr&quot;»       &quot;           9.789324s INFO ruff_server::server::connection Shutdown request received. Waiting for an exit notification...\n&quot;
+</code></pre>
+<p><em>Originally posted by @danielhollas in https://github.com/astral-sh/ruff/issues/11207#issuecomment-2128365016</em></p>
+<p>cc @dhruvmanila</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @AlexWaygood on 2024-05-26 16:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-27 10:30</div>
+            <div class="timeline-body"><p>Hey, thanks for providing the logs. I've a couple of follow-up questions:</p>
+<ol>
+<li>Are there no other logs apart from this?</li>
+<li>Do you get any diagnostics in the editor regardless of what the logs are saying?</li>
+</ol>
+<p>I think it'll also be useful to provide <code>INFO</code> level logs. You'll need to set the log level for the Neovim LSP client to INFO with the following snippet where you setup your LSP configs.</p>
+<pre><code class="language-lua">vim.lsp.set_log_level(vim.lsp.log_levels.INFO)
+require('vim.lsp.log').set_format_func(vim.inspect)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-05-27 12:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Are there no other logs apart from this?</p>
+</blockquote>
+<p>Nope.</p>
+<blockquote>
+<p>Do you get any diagnostics in the editor regardless of what the logs are saying?</p>
+</blockquote>
+<p>The ruff server functionality (diagnostics / code actions) work as expected AFAIK.</p>
+<p>Here are the logs including INFO level.</p>
+<pre><code>[START][2024-05-27 13:30:49] LSP logging initiated
+  [INFO][2024-05-27 13:30:49] .../vim/lsp/rpc.lua:662»    &quot;Starting RPC client&quot;»  {
+    args = { &quot;server&quot;, &quot;--preview&quot; },
+    cmd = &quot;/home/hollas/.local/share/nvim/mason/bin/ruff&quot;,
+    extra = {
+      cwd = &quot;/home/hollas/atmospec/aiida-core&quot;
+    }
+  }
+  [INFO][2024-05-27 13:30:49] .../lua/vim/lsp.lua:1344»   &quot;LSP[ruff]&quot;»    &quot;server_capabilities&quot;»  {
+    server_capabilities = {
+      codeActionProvider = {
+        codeActionKinds = { &quot;quickfix&quot;, &quot;source.fixAll.ruff&quot;, &quot;source.organizeImports.ruff&quot;, &quot;notebook.source.fixAll.ruff&quot;, &quot;notebook.sourc        e.organizeImports.ruff&quot; },
+        resolveProvider = true,
+        workDoneProgress = true
+      },
+      diagnosticProvider = {
+        identifier = &quot;Ruff&quot;,
+        interFileDependencies = false,
+        workDoneProgress = true,
+        workspaceDiagnostics = false
+      },
+      documentFormattingProvider = true,
+      documentRangeFormattingProvider = true,
+      hoverProvider = true,
+      notebookDocumentSync = {
+        notebookSelector = { {
+            cells = { {
+                language = &quot;python&quot;                                                                                                        
+              } }
+          } },
+        save = false
+      },
+      positionEncoding = &quot;utf-16&quot;,
+      textDocumentSync = {
+        change = 2,
+        openClose = true,
+        willSave = false,
+        willSaveWaitUntil = false
+      },
+      workspace = {
+        workspaceFolders = {
+          changeNotifications = true,
+          supported = true
+        }
+      }
+    }
+  }
+  [ERROR][2024-05-27 13:30:49] .../vim/lsp/rpc.lua:734»   &quot;rpc&quot;»  &quot;/home/hollas/.local/share/nvim/mason/bin/ruff&quot;»&quot;stderr&quot;»       &quot;warning:   The top-level linter settings are deprecated in favour of their counterparts in the `lint` section. Please update the following options   in `.venv/lib64/python3.12/site-packages/pandas/pyproject.toml`:\n  - 'ignore' -&gt; 'lint.ignore'\n  - 'select' -&gt; 'lint.select'\n  - 'typi  ng-modules' -&gt; 'lint.typing-modules'\n  - 'unfixable' -&gt; 'lint.unfixable'\n  - 'per-file-ignores' -&gt; 'lint.per-file-ignores'\n&quot;
+  [ERROR][2024-05-27 13:30:49] .../vim/lsp/rpc.lua:734»   &quot;rpc&quot;»  &quot;/home/hollas/.local/share/nvim/mason/bin/ruff&quot;»&quot;stderr&quot;»       &quot;warning:   `PGH001` has been remapped to `S307`.\n&quot;
+  [ERROR][2024-05-27 13:30:50] .../vim/lsp/rpc.lua:734»   &quot;rpc&quot;»  &quot;/home/hollas/.local/share/nvim/mason/bin/ruff&quot;»&quot;stderr&quot;»       &quot;   0.270  272s WARN ruff_server::server LSP client does not support dynamic capability registration - automatic configuration reloading will not be   available.\n&quot;
+  [INFO][2024-05-27 13:31:24] .../lua/vim/lsp.lua:1875»   &quot;exit_handler&quot;» { {
+      _on_attach = &lt;function 1&gt;,
+      attached_buffers = { true },
+      cancel_request = &lt;function 2&gt;,
+      commands = {},
+      config = {
+        autostart = true,
+        capabilities = {
+          textDocument = {
+            callHierarchy = {
+              dynamicRegistration = false
+            },
+            codeAction = {
+              codeActionLiteralSupport = {
+                codeActionKind = {
+                  valueSet = { &quot;&quot;, &quot;quickfix&quot;, &quot;refactor&quot;, &quot;refactor.extract&quot;, &quot;refactor.inline&quot;, &quot;refactor.rewrite&quot;, &quot;source&quot;, &quot;source.org                  anizeImports&quot; }
+                }
+              },                                                                                                                           
+              dataSupport = true,
+              dynamicRegistration = false,
+              isPreferredSupport = true,
+              resolveSupport = {
+                properties = { &quot;edit&quot; }
+              }
+            },
+             completion = {
+              completionItem = {
+                commitCharactersSupport = true,
+                deprecatedSupport = true,
+                documentationFormat = { &quot;markdown&quot;, &quot;plaintext&quot; },
+                insertReplaceSupport = true,
+                insertTextModeSupport = {
+                  valueSet = { 1, 2 }
+                },
+                labelDetailsSupport = true,
+                preselectSupport = true,
+                resolveSupport = {
+                  properties = { &quot;documentation&quot;, &quot;detail&quot;, &quot;additionalTextEdits&quot;, &quot;sortText&quot;, &quot;filterText&quot;, &quot;insertText&quot;, &quot;textEdit&quot;, &quot;ins                  ertTextFormat&quot;, &quot;insertTextMode&quot; }
+                },
+                snippetSupport = true,
+                tagSupport = {
+                  valueSet = { 1 }
+                }
+              },
+              completionItemKind = {
+                valueSet = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 }                   
+              },
+              completionList = {
+                itemDefaults = { &quot;commitCharacters&quot;, &quot;editRange&quot;, &quot;insertTextFormat&quot;, &quot;insertTextMode&quot;, &quot;data&quot; }
+              },
+              contextSupport = true,
+              dynamicRegistration = false,
+              insertTextMode = 1
+            },
+            declaration = {
+              linkSupport = true
+            },
+            definition = {                                                                                                                 
+              linkSupport = true
+            },
+            documentHighlight = {
+              dynamicRegistration = false
+            },
+            documentSymbol = {
+              dynamicRegistration = false,
+              hierarchicalDocumentSymbolSupport = true,
+              symbolKind = {
+                valueSet = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }
+              }
+            },
+            hover = {
+              contentFormat = { &quot;markdown&quot;, &quot;plaintext&quot; },
+              dynamicRegistration = false
+            },
+            implementation = {
+              linkSupport = true
+            },
+            publishDiagnostics = {
+              relatedInformation = true,
+              tagSupport = {
+                valueSet = { 1, 2 }
+              }
+            },
+            references = {
+              dynamicRegistration = false
+            },
+            rename = {
+              dynamicRegistration = false,
+              prepareSupport = true
+            },                                                                                                                             
+            semanticTokens = {
+              augmentsSyntaxTokens = true,
+              dynamicRegistration = false,
+              formats = { &quot;relative&quot; },
+              multilineTokenSupport = false,
+              overlappingTokenSupport = true,
+              requests = {
+                full = {
+                  delta = true
+                },
+              serverCancelSupport = false,
+              tokenModifiers = { &quot;declaration&quot;, &quot;definition&quot;, &quot;readonly&quot;, &quot;static&quot;, &quot;deprecated&quot;, &quot;abstract&quot;, &quot;async&quot;, &quot;modification&quot;, &quot;doc              umentation&quot;, &quot;defaultLibrary&quot; },
+              tokenTypes = { &quot;namespace&quot;, &quot;type&quot;, &quot;class&quot;, &quot;enum&quot;, &quot;interface&quot;, &quot;struct&quot;, &quot;typeParameter&quot;, &quot;parameter&quot;, &quot;variable&quot;, &quot;proper              ty&quot;, &quot;enumMember&quot;, &quot;event&quot;, &quot;function&quot;, &quot;method&quot;, &quot;macro&quot;, &quot;keyword&quot;, &quot;modifier&quot;, &quot;comment&quot;, &quot;string&quot;, &quot;number&quot;, &quot;regexp&quot;, &quot;o              perator&quot;, &quot;decorator&quot; }
+            },
+            signatureHelp = {
+              dynamicRegistration = false,
+              signatureInformation = {
+                activeParameterSupport = true,
+                documentationFormat = { &quot;markdown&quot;, &quot;plaintext&quot; },
+                parameterInformation = {
+                  labelOffsetSupport = true
+                }
+              }
+            },
+            synchronization = {
+              didSave = true,
+              dynamicRegistration = false,
+              willSave = true,
+              willSaveWaitUntil = true
+            },                                                                                                                             
+            typeDefinition = {
+              linkSupport = true
+            }
+          },
+          window = {
+            showDocument = {
+              support = true
+            },
+            showMessage = {
+              messageActionItem = {
+                additionalPropertiesSupport = false
+              }
+            },
+            workDoneProgress = true
+          },
+          workspace = {
+            applyEdit = true,
+            configuration = true,
+            didChangeWatchedFiles = {
+              dynamicRegistration = false,
+              relativePatternSupport = true
+            },
+            semanticTokens = {
+              refreshSupport = true
+            },
+            symbol = {
+              dynamicRegistration = false,
+              hierarchicalWorkspaceSymbolSupport = true,
+              symbolKind = {
+                valueSet = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 }
+              }
+            },                                                                                                                             
+            workspaceEdit = {
+              resourceOperations = { &quot;rename&quot;, &quot;create&quot;, &quot;delete&quot; }
+            },
+            workspaceFolders = true
+          }
+        },
+        cmd = { &quot;/home/hollas/.local/share/nvim/mason/bin/ruff&quot;, &quot;server&quot;, &quot;--preview&quot; },
+        cmd_cwd = &quot;/home/hollas/atmospec/aiida-core&quot;,
+        filetypes = { &quot;python&quot; },
+        flags = {},
+        get_language_id = &lt;function 3&gt;,
+        handlers = &lt;1&gt;{},
+        init_options = vim.empty_dict(),
+        log_level = 2,
+        message_level = 2,
+        name = &quot;ruff&quot;,
+        on_attach = &lt;function 4&gt;,
+        on_exit = &lt;function 5&gt;,
+        on_init = &lt;function 6&gt;,
+        root_dir = &quot;/home/hollas/atmospec/aiida-core&quot;,
+        settings = {},
+        single_file_support = true,
+        workspace_folders = &lt;2&gt;{ {
+            name = &quot;/home/hollas/atmospec/aiida-core&quot;,
+            uri = &quot;file:///home/hollas/atmospec/aiida-core&quot;
+          } },
+        &lt;metatable&gt; = &lt;3&gt;{
+          __tostring = &lt;function 7&gt;
+        }
+      },
+      handlers = &lt;table 1&gt;,
+      id = 1,                                                                                                                              
+      initialized = true,
+      is_stopped = &lt;function 8&gt;,
+      messages = {
+        messages = {},
+        name = &quot;ruff&quot;,
+        progress = {},
+        status = {}
+      },
+      name = &quot;ruff&quot;,
+      notify = &lt;function 9&gt;,
+      offset_encoding = &quot;utf-16&quot;,
+      request = &lt;function 10&gt;,
+      request_sync = &lt;function 11&gt;,
+      requests = {},
+      rpc = {
+        is_closing = &lt;function 12&gt;,
+        notify = &lt;function 13&gt;,
+        request = &lt;function 14&gt;,
+        terminate = &lt;function 15&gt;
+      },                                                                                                                                   
+      server_capabilities = {
+        codeActionProvider = {
+          codeActionKinds = { &quot;quickfix&quot;, &quot;source.fixAll.ruff&quot;, &quot;source.organizeImports.ruff&quot;, &quot;notebook.source.fixAll.ruff&quot;, &quot;notebook.sou          rce.organizeImports.ruff&quot; },
+          resolveProvider = true,
+          workDoneProgress = true
+        },
+        diagnosticProvider = {
+          identifier = &quot;Ruff&quot;,
+          interFileDependencies = false,
+          workDoneProgress = true,
+          workspaceDiagnostics = false
+        },
+        documentFormattingProvider = true,
+        documentRangeFormattingProvider = true,
+        hoverProvider = true,
+        notebookDocumentSync = {
+          notebookSelector = { {
+              cells = { {
+                  language = &quot;python&quot;
+                } }
+            } },
+          save = false
+        },
+        positionEncoding = &quot;utf-16&quot;,
+        textDocumentSync = {
+          change = 2,
+          openClose = true,
+          willSave = false,
+          willSaveWaitUntil = false
+        },
+        workspace = {
+          workspaceFolders = {
+            changeNotifications = true,
+            supported = true
+          }
+        }
+      },
+      stop = &lt;function 16&gt;,
+      supports_method = &lt;function 17&gt;,
+      workspace_did_change_configuration = &lt;function 18&gt;,
+      workspace_folders = &lt;table 2&gt;
+    } }
+  [ERROR][2024-05-27 13:31:24] .../vim/lsp/rpc.lua:734»   &quot;rpc&quot;»  &quot;/home/hollas/.local/share/nvim/mason/bin/ruff&quot;»&quot;stderr&quot;»       &quot;  35.157  125s INFO ruff_server::server::connection Shutdown request received. Waiting for an exit notification...\n&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-31 07:34</div>
+            <div class="timeline-body"><p>I'll need some time to get Fedora running in a VM setup but before that can you try running it with the following minimal config: https://gist.github.com/dhruvmanila/1c7afb9825c56c28c8d98a1afd96d05b</p>
+<p>In the above gist, there are two files:</p>
+<ol>
+<li><code>minimal.lua</code> - Neovim setup containing only LSP config for Ruff</li>
+<li><code>test.py</code> - Test file which will highlight two diagnostic if Ruff is running correctly</li>
+</ol>
+<p>Run the above setup with:</p>
+<pre><code>/path/to/nvim --clean -u /path/to/minimal.lua /path/to/test.py
+</code></pre>
+<p>Or, using the <code>debug</code> log level:</p>
+<pre><code>NVIM_LSP_LOG_LEVEL=debug /path/to/nvim --clean -u /path/to/minimal.lua /path/to/test.py
+</code></pre>
+<blockquote>
+<p>[!IMPORTANT]</p>
+<p><strong>Replace the &quot;/path/to&quot; to the actual path.</strong></p>
+</blockquote>
+<p>Can you provide the debug logs using this setup?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-05-31 09:19</div>
+            <div class="timeline-body"><p>Will do, thanks! I'll also try to get Neovim 0.10 going to see if it makes any difference. (Fedora didn't yet updated the neovim package, but I'll try to install it from Flathub)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-31 10:41</div>
+            <div class="timeline-body"><p>If it's available, I could also look at your Neovim config to get the exact setup which might help as well. I see that you're using <code>mason.nvim</code> but apart from that I don't know what your setup looks like.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-05-31 11:40</div>
+            <div class="timeline-body"><p>Here's my config (using kickstart.nvim)
+https://github.com/danielhollas/kickstart.nvim/tree/dh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-31 12:39</div>
+            <div class="timeline-body"><p>Hey @danielhollas, so I've got a VM running with Fedora 38 and I'm using the same setup that you've provided with Neovim 0.9.5 and Ruff 0.4.5 and unfortunately it's working fine on my machine. I'm sorry to ask yet another request but can you provide DEBUG logs?</p>
+<pre><code class="language-lua">vim.lsp.set_log_level(vim.lsp.log_levels.DEBUG)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-05-31 13:22</div>
+            <div class="timeline-body"><p>Thanks so much for taking time to investigate this. That's frustrating that you cannot reproduce. How exactly did you install Neovim?</p>
+<p>Here's the DEBUG log.</p>
+<p><a href="https://github.com/user-attachments/files/15514236/nvim.log">nvim.log</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-31 14:34</div>
+            <div class="timeline-body"><blockquote>
+<p>How exactly did you install Neovim?</p>
+</blockquote>
+<p>I just installed it via <code>dnf</code> and it gave me <code>0.9.5</code></p>
+<pre><code>sudo dnf install neovim
+</code></pre>
+<p>Thanks for the debug logs, I'm looking at it now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-05-31 14:44</div>
+            <div class="timeline-body"><p>The logs doesn't really show anything out of place. How did you determine if the server is not closing with Neovim instance?</p>
+<p>I don't really have anything else. I'm sorry that you're facing that. Is this making Ruff unusable i.e., is every instance of Ruff doesn't stop at all?</p>
+<p>We can keep this issue open to let others provide any additional information which can help debug the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-06-02 06:54</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't really have anything else. I'm sorry that you're facing that. Is this making Ruff unusable i.e., is every instance of Ruff doesn't stop at all?</p>
+</blockquote>
+<p>Yeah, it's every time I open and close with, 100% reproducible AFAICT. I see them with <code>pgrep ruff</code> and have to kill them all from time to time with <code>killall ruff</code>. I'll investigate some more and report back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-03 10:16</div>
+            <div class="timeline-body"><p>Ok, I can reproduce it now. I'm not sure why it was not showing up earlier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-06-03 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-03 10:29</div>
+            <div class="timeline-body"><p>Although, I'm not reliably able to reproduce this. Most of the times the process remains alive but sometimes the server does shutdown.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-06-03 12:02</div>
+            <div class="timeline-body"><p>I noticed that I cannot reproduce with Neovim 0.10 installed via Flatpack.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-03 12:20</div>
+            <div class="timeline-body"><p>Interesting, let me try that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-03 12:29</div>
+            <div class="timeline-body"><p>@danielhollas How are you running it via flatpak? I'm still seeing that the server doesn't quit.</p>
+<p>I followed the instruction as mentioned at https://flathub.org/apps/io.neovim.nvim:</p>
+<pre><code>flatpak install neovim
+flatpak run io.neovim.nvim
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-06-03 12:45</div>
+            <div class="timeline-body"><p>Yes, that's how I run it. (nvim config is located in Flatpack specific dir elsewhere as you probably know)</p>
+<p>Heh, seems like we have the opposite problem wrt reproduction 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2024-06-03 13:04</div>
+            <div class="timeline-body"><p>I should note just in case it is relevant that I've upgraded to ruff 0.4.7 in the meantime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-05 12:51</div>
+            <div class="timeline-body"><p>I dug a bit deeper here as you mentioned that it's not occurring on the latest version. Using <code>git bisect</code>, it seems that commit ded010cf9c9eb91f6c981cbafeb051fdd6ce6774 has solved this problem. I am consistently seeing that <code>ruff</code> process remains alive even after exiting Neovim on the parent commit (436dc18b15b6a6c27bbc22a9b4c17be822970eeb) but not on ded010cf9c9eb91f6c981cbafeb051fdd6ce6774.</p>
+<p>I'm a bit confused because the commit hasn't been released yet and somehow you're not seeing that behavior while I'm able to see it consistently 😅</p>
+<p>I'm going to keep this issue open for a while, feel free to ping me if you encounter this issue again. I'll probably look into <code>tracing-tree</code> as to what must've caused this bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-05 12:55</div>
+            <div class="timeline-body"><p>Maybe https://github.com/davidbarsky/tracing-tree/pull/82 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-05 12:57</div>
+            <div class="timeline-body"><p>Yeah, that could be it although not sure how to confirm.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-06-05 18:46</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/11747 will remove <code>tracing-tree</code>, just FYI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-06-11 02:13</div>
+            <div class="timeline-body"><p>This should be resolved by https://github.com/astral-sh/ruff/commit/ded010cf9c9eb91f6c981cbafeb051fdd6ce6774 which was released v0.4.8. Feel free to comment or open a new issue if anyone faces this issue again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2024-06-11 02:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/twmht">@twmht</a> on 2025-02-17 05:52</div>
+            <div class="timeline-body"><p>@dhruvmanila</p>
+<p>i am still facing these issues with lazyvim, a lot of ruff instance not closed. you can reproduce it via a fresh lazyvim  installation. And then install python language from lazyextra.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-17 07:59</div>
+            <div class="timeline-body"><p>@twmht Can you open a new issue with a way to reproduce this and other details like version and logs?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:59 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batch prefetch per fork - astral-sh/uv #10029</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Batch prefetch per fork</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10029">#10029</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-12-19 14:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-12-19 14:32</div>
+            <div class="timeline-body"><p>Previously, the batch prefetcher was part of the solver loop, used across forks. This would lead to each preference in a fork being counted as a tried version, so that after 5 forks with the identical version, we would start batch prefetching. The reported numbers of tried versions are also reported. By tracking the batch prefetcher on the fork the numbers are corrected.</p>
+<p>An alternative would be tracking the actually tried versions, but that would mean more overhead in the top level solver loop when the current heuristic works.</p>
+<p>In <code>ecosystem/transformers</code>:</p>
+<pre><code>$ hyperfine --runs 10 --prepare &quot;rm -f uv.lock&quot; &quot;../../target/release/uv lock --exclude-newer 2024-08-08T00:00:00Z&quot; &quot;uv lock --exclude-newer 2024-08-08T00:00:00Z&quot;
+Benchmark 1: ../../target/release/uv lock --exclude-newer 2024-08-08T00:00:00Z
+  Time (mean ± σ):     386.2 ms ±   6.1 ms    [User: 396.0 ms, System: 144.5 ms]
+  Range (min … max):   378.5 ms … 397.9 ms    10 runs
+
+Benchmark 2: uv lock --exclude-newer 2024-08-08T00:00:00Z
+  Time (mean ± σ):     422.0 ms ±   5.5 ms    [User: 459.6 ms, System: 190.3 ms]
+  Range (min … max):   415.0 ms … 430.5 ms    10 runs
+
+Summary
+  ../../target/release/uv lock --exclude-newer 2024-08-08T00:00:00Z ran
+    1.09 ± 0.02 times faster than uv lock --exclude-newer 2024-08-08T00:00:00Z
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2024-12-19 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-12-19 14:43</div>
+            <div class="timeline-body"><p>Nice, thanks -- this makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-12-19 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-12-19 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-12-19 14:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-19 14:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:16 UTC
+    </footer>
+</body>
+</html>

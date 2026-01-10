@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lock during `uv sync`, `uv add` and `uv remove` to avoid race conditions - astral-sh/uv #13869</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Lock during <code>uv sync</code>, <code>uv add</code> and <code>uv remove</code> to avoid race conditions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13869">#13869</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-06-05 17:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-06-05 17:48</div>
+            <div class="timeline-body"><p>Surprisingly, we weren't locking during <code>uv sync</code> so far, so running <code>uv sync</code> in parallel could cause errors in filesystem races.</p>
+<p>I've also added locks to <code>uv add</code> and <code>uv remove</code> which concurrently modify <code>pyproject.toml</code>. These locks only apply after we determined the interpreter, so they don't actually prevent computing the same thing twice when running <code>uv add</code> in parallel.</p>
+<p>All other subcommands that I checked were already locking (with no claim to exhaustiveness)</p>
+<p>Fixes #12751</p>
+<h1>Test Plan</h1>
+<p>I don't have CI-sized reproducer for this.</p>
+<pre><code class="language-toml">[project]
+name = &quot;debug&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+  &quot;boto3&gt;=1.38.30&quot;,
+  &quot;fastapi&gt;=0.115.12&quot;,
+  &quot;numba&gt;=0.61.2&quot;,
+  &quot;polars&gt;=1.30.0&quot;,
+  &quot;protobuf&gt;=6.31.1&quot;,
+  &quot;pyarrow&gt;=20.0.0&quot;,
+  &quot;pydantic&gt;=2.11.5&quot;,
+  &quot;requests&gt;=2.32.3&quot;,
+  &quot;urllib3&gt;=2.4.0&quot;,
+  &quot;scikit-learn&gt;=1.6.1&quot;,
+  &quot;jupyter&gt;=1.1.1&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<pre><code>rm -rf .venv &amp;&amp; parallel -n0 &quot;uv sync -q&quot; ::: {1..10}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-06-05 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leviska">@leviska</a> on 2025-06-05 19:22</div>
+            <div class="timeline-body"><p>Does this also lock on <code>uv run</code> if it needs sync?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-06-06 04:11</div>
+            <div class="timeline-body"><p><code>uv version</code> also presumably needs this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-06 12:16</div>
+            <div class="timeline-body"><p>Tracking follow-ups in #13883</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-06-06 12:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-06-06 12:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-06 12:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:25 UTC
+    </footer>
+</body>
+</html>

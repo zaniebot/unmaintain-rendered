@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAST003 false positives for path parameters that FastAPI doesn’t recognize - astral-sh/ruff #20680</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>FAST003 false positives for path parameters that FastAPI doesn’t recognize</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20680">#20680</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-10-02 13:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-10-02 13:34</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/fast-api-unused-path-parameter/"><code>fast-api-unused-path-parameter</code> (FAST003)</a> detects path parameter patterns that FastAPI doesn’t, in which case it is not really a path parameter so the rule doesn’t apply and the fix doesn’t help. FAST003 should only apply to <a href="https://github.com/Kludex/starlette/blob/0.48.0/starlette/routing.py#L121">parameters as detected by FastAPI</a>. <a href="https://play.ruff.rs/9515c75f-3dc9-4252-8782-f031bc5fdb0d">For example</a>, parameters (including convertors) must be ASCII and can’t include spaces. Note that these strings aren’t errors to FastAPI: they are valid, albeit unusual, paths without parameters.</p>
+<pre><code class="language-console">$ cat &gt;fast003.py &lt;&lt;'# EOF'
+from fastapi import FastAPI
+app = FastAPI()
+
+@app.get(&quot;/f1/{x: str}&quot;)
+async def f1():
+    return locals()
+
+@app.get(&quot;/f2/{用户身份}&quot;)
+async def f2():
+    return locals()
+
+from starlette.convertors import Convertor, register_url_convertor
+class ComplexConvertor(Convertor[complex]):
+    regex = r&quot;[+-]?[0-9]+(\.[0-9]+)?[+-][0-9]+(\.[0-9]+)?[Jj]&quot;
+    def convert(self, value: str) -&gt; complex: return complex(value)
+    def to_string(self, value: complex) -&gt; str: return str(value).lstrip(&quot;(&quot;).rstrip(&quot;)&quot;)
+register_url_convertor(&quot;ℂ&quot;, ComplexConvertor())
+@app.get(&quot;/f3/{complex_number:ℂ}&quot;)
+async def f3():
+    return locals()
+# EOF
+
+$ pip install -q 'fastapi[standard]==0.118.0'
+
+$ fastapi dev fast003.py
+
+$ curl 'http://127.0.0.1:8000/f1/%7Bx:%20str%7D'
+{}
+
+$ curl 'http://127.0.0.1:8000/f2/%7B%E7%94%A8%E6%88%B7%E8%BA%AB%E4%BB%BD%7D'
+{}
+
+$ curl 'http://127.0.0.1:8000/f3/%7Bcomplex_number:%E2%84%82%7D'
+{}
+
+$ ruff --isolated check fast003.py --select FAST003 --unsafe-fixes --fix 
+Found 3 errors (3 fixed, 0 remaining).
+
+$ curl 'http://127.0.0.1:8000/f1/%7Bx:%20str%7D'
+{&quot;detail&quot;:[{&quot;type&quot;:&quot;missing&quot;,&quot;loc&quot;:[&quot;query&quot;,&quot;x&quot;],&quot;msg&quot;:&quot;Field required&quot;,&quot;input&quot;:null}]}
+
+$ curl 'http://127.0.0.1:8000/f1/%7Bx:%20str%7D?x=foo'
+{&quot;x&quot;:&quot;foo&quot;}
+
+$ curl 'http://127.0.0.1:8000/f2/%7B%E7%94%A8%E6%88%B7%E8%BA%AB%E4%BB%BD%7D'
+{&quot;detail&quot;:[{&quot;type&quot;:&quot;missing&quot;,&quot;loc&quot;:[&quot;path&quot;,&quot;用户身份&quot;],&quot;msg&quot;:&quot;Field required&quot;,&quot;input&quot;:null}]}
+
+$ curl 'http://127.0.0.1:8000/f2/%7B%E7%94%A8%E6%88%B7%E8%BA%AB%E4%BB%BD%7D?%E7%94%A8%E6%88%B7%E8%BA%AB%E4%BB%BD=foo'
+{&quot;detail&quot;:[{&quot;type&quot;:&quot;missing&quot;,&quot;loc&quot;:[&quot;path&quot;,&quot;用户身份&quot;],&quot;msg&quot;:&quot;Field required&quot;,&quot;input&quot;:null}]}
+
+$ curl 'http://127.0.0.1:8000/f3/%7Bcomplex_number:%E2%84%82%7D'
+{&quot;detail&quot;:[{&quot;type&quot;:&quot;missing&quot;,&quot;loc&quot;:[&quot;query&quot;,&quot;complex_number&quot;],&quot;msg&quot;:&quot;Field required&quot;,&quot;input&quot;:null}]}
+
+$ curl 'http://127.0.0.1:8000/f3/%7Bcomplex_number:%E2%84%82%7D?complex_number=foo'
+{&quot;complex_number&quot;:&quot;foo&quot;}
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.13.2 (b0bdf0334 2025-09-25)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-02 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-10-02 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-09 20:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:29 UTC
+    </footer>
+</body>
+</html>

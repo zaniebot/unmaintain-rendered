@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid adding non-extra package with extra dependencies - astral-sh/uv #9540</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid adding non-extra package with extra dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9540">#9540</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-11-30 14:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-30 14:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Previously, when we encountered <code>foo[bar]</code>, we'd add a dependency on <code>PubGrubPackage::Package</code> for <code>foo</code>, and then <code>PubGrubPackage::Extra</code> for <code>foo[bar]</code>.</p>
+<p>Later, when we ask for the dependencies of the <code>PubGrubPackage::Extra</code>, we add <code>PubGrubPackage::Package</code> for <code>foo</code>, and <code>PubGrubPackage::Package</code> for <code>foo[bar]</code>. This is an intentional strategy because it ensures that PubGrub &quot;knows&quot; that these have to be solved to the same version as early as possible.</p>
+<p>It turns out that the first part here (&quot;add a dependency on <code>PubGrubPackage::Package</code> for <code>foo</code>&quot;) is suboptimal, because it means PubGrub might try to solve <em>just</em> <code>foo</code> without realizing that it also has to accommodate all the constraints from the extra.</p>
+<p>Instead, we now add <em>just</em> <code>PubGrubPackage::Extra</code> for <code>foo[bar]</code>, and defer adding the base package. It looks like this leads to a far more efficient solve for Airflow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2024-11-30 14:37</div>
+            <div class="timeline-body"><h2><a href="https://codspeed.io/astral-sh/uv/branches/charlie%2Ftransitive">CodSpeed Performance Report</a></h2>
+<h3>Merging #9540 will <strong>improve performances by 77.1%</strong></h3>
+<p><sub>Comparing <code>charlie/transitive</code> (042f88a) with <code>main</code> (8126a5e)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements<br />
+<code>✅ 13</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>main</code> | <code>charlie/transitive</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>resolve_warm_airflow</code> | 2 s | 1.1 s | +77.1% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-30 14:53</div>
+            <div class="timeline-body"><p>The gain actually seems real? At least to some degree:</p>
+<pre><code>❯ hyperfine &quot;./target/release/uv pip compile req.in&quot; &quot;./target/release/transitive pip compile req.in&quot; --warmup 10 --runs 50
+Benchmark 1: ./target/release/uv pip compile req.in
+  Time (mean ± σ):     198.6 ms ±   6.0 ms    [User: 224.9 ms, System: 244.6 ms]
+  Range (min … max):   189.8 ms … 213.9 ms    50 runs
+
+Benchmark 2: ./target/release/transitive pip compile req.in
+  Time (mean ± σ):     149.4 ms ±   4.1 ms    [User: 160.6 ms, System: 182.2 ms]
+  Range (min … max):   144.9 ms … 173.2 ms    50 runs
+
+Summary
+  ./target/release/transitive pip compile req.in ran
+    1.33 ± 0.05 times faster than ./target/release/uv pip compile req.in
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-30 14:54</div>
+            <div class="timeline-body"><p>This change is sound but I clearly need to modify some of how we interpret the downstream graph in <code>pip compile</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-11-30 22:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-11-30 22:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-11-30 22:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-11-30 22:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-30 22:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2475 on 2024-11-30 22:33</div>
+            <div class="timeline-body"><p>I reasoned through these and most of them can be removed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-30 22:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2347 on 2024-11-30 22:33</div>
+            <div class="timeline-body"><p>If we just use <code>name</code>, we can rely on <code>warn_user_once</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-12-01 13:29</div>
+            <div class="timeline-body"><p>wow wouldn't have thought about that trick for such a speed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-12-01 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-01 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-01 13:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:15 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for `# fmt: nowrap` and `# fmt: wrap` comments - astral-sh/ruff #13812</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for <code># fmt: nowrap</code> and <code># fmt: wrap</code> comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13812">#13812</a>
+        opened by <a href="https://github.com/ngnpope">@ngnpope</a>
+        on 2024-10-18 13:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ngnpope">@ngnpope</a> on 2024-10-18 13:33</div>
+            <div class="timeline-body"><p>Would it be possible to introduce a pair of formatting suppression comments that only disable wrapping?</p>
+<p>e.g. I might have a mapping with some long lists in it:</p>
+<pre><code class="language-python">MY_MAPPING = {
+    &quot;Item 1&quot;: [&quot;this&quot;, &quot;is&quot;, &quot;a&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;long&quot;, &quot;list&quot;],
+    &quot;Item 2&quot;: [&quot;this&quot;, &quot;is&quot;, &quot;another&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;long&quot;, &quot;list&quot;],
+    ...
+}
+</code></pre>
+<p>Running the formatter over this will produce:</p>
+<pre><code class="language-python">MY_MAPPING = {
+    &quot;Item 1&quot;: [
+        &quot;this&quot;,
+        &quot;is&quot;,
+        &quot;a&quot;,
+        &quot;very&quot;,
+        &quot;very&quot;,
+        &quot;very&quot;,
+        &quot;very&quot;,
+        &quot;very&quot;,
+        &quot;very&quot;,
+        &quot;very&quot;,
+        &quot;very&quot;,
+        &quot;very&quot;,
+        &quot;long&quot;,
+        &quot;list&quot;,
+    ],
+    &quot;Item 2&quot;: [
+        &quot;this&quot;,
+        &quot;is&quot;,
+        &quot;another&quot;,
+        &quot;very&quot;,
+        &quot;very&quot;,
+        &quot;very&quot;,
+        &quot;very&quot;,
+        &quot;very&quot;,
+        &quot;very&quot;,
+        &quot;very&quot;,
+        &quot;very&quot;,
+        &quot;very&quot;,
+        &quot;long&quot;,
+        &quot;list&quot;,
+    ],
+    ...
+}
+</code></pre>
+<p>I can do the following:</p>
+<pre><code class="language-python"># fmt: off
+MY_MAPPING = {
+    &quot;Item 1&quot;: [&quot;this&quot;, &quot;is&quot;, &quot;a&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;long&quot;, &quot;list&quot;],
+    &quot;Item 2&quot;: [&quot;this&quot;, &quot;is&quot;, &quot;another&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;long&quot;, &quot;list&quot;],
+    ...
+}
+# fmt: on
+</code></pre>
+<p>But that disables the formatter entirely. It would be nice to have something like the following to only disable wrapping and allow the formatter to ignore line length and fix other whitespace, quotes, etc.</p>
+<pre><code class="language-python"># fmt: nowrap
+MY_MAPPING = {
+    &quot;Item 1&quot;: [&quot;this&quot;, &quot;is&quot;, &quot;a&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;long&quot;, &quot;list&quot;],
+    &quot;Item 2&quot;: [&quot;this&quot;, &quot;is&quot;, &quot;another&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;very&quot;, &quot;long&quot;, &quot;list&quot;],
+    ...
+}
+# fmt: wrap
+</code></pre>
+<p>Am also open to spelling this in other ways, e.g. <code># fmt: disable-line-wrapping</code> and <code># fmt: enable-line-wrapping</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-18 14:11</div>
+            <div class="timeline-body"><p>Thanks for raising this idea.</p>
+<p>Disabling wrapping, unfortunately, isn't that easy because you want to preserve the line breaks exactly as is. That would require ruff to check before every token if there's a line break in the source and insert if there is. That would lead to very hard to maintain code and close to impossible to ensure we don't miss one token.</p>
+<p>My take on array formatting is still that we should find a better layout for long arrays rather than investing time in working around them. I just need to find time to work on it.</p>
+<p>I'll close this because implementing it would require tremendous effort that outweigh the benefit of the feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-10-18 14:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:28 UTC
+    </footer>
+</body>
+</html>

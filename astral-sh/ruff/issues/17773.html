@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>thinks typehint on enum key to TypedDict should be an assignment - astral-sh/ruff #17773</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>thinks typehint on enum key to TypedDict should be an assignment</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17773">#17773</a>
+        opened by <a href="https://github.com/theavey">@theavey</a>
+        on 2025-05-01 17:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/theavey">@theavey</a> on 2025-05-01 17:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The following code (incorrectly, AFAIK) is flagged by rule B032</p>
+<pre><code class="language-python">import datetime
+from enum import StrEnum
+from typing import TypedDict
+
+
+class RuleEnum(StrEnum):
+    DATE = &quot;date&quot;
+    SIGNAL = &quot;signal&quot;
+
+
+class RuleType(TypedDict):
+    RuleEnum.DATE: datetime.date
+    date: datetime.date
+</code></pre>
+<pre><code>scratch_19.py:12:5: B032 Possible unintentional type annotation (using `:`). Did you mean to assign (using `=`)?
+   |
+11 | class RuleType(TypedDict):
+12 |     RuleEnum.DATE: datetime.date
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ B032
+13 |     date: datetime.date
+   |
+
+Found 1 error.
+</code></pre>
+<p>Enums are valid (Typed)Dict keys, and still need to be annotated for a TypedDict</p>
+<h3>Version</h3>
+<p>ruff 0.11.7</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-01 18:23</div>
+            <div class="timeline-body"><p>Neither <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=a0a295b6ab54def0f421da1b73a32d5a">mypy</a> nor <a href="https://pyright-play.net/?pythonVersion=3.8&amp;strict=true&amp;enableExperimentalFeatures=true&amp;reportImplicitOverride=true&amp;reportShadowedImports=true&amp;reportUnusedCallResult=true&amp;code=JYWwDg9gTgLgBAEwIYwKY1KgUAMyhEOVAOwFdDRJY4BlGKAUTJF30JgE8xhiBzOStHgAVLqgQARYAGMYWedIA2SAM4q4AJVKLUTcgAo6jZgEoAXFjhW4EgILCGcALxwARMjSvL1mgEkA4gBytgAyzm4qwLzESIpeCspqmtqoomCo%2BmniUrLm3lZaOnogAHR2DmaIKOiYJR7Y1jb2DJX1GCCoddVAA">pyright</a> like this annotation.</p>
+<p>Can you tell me more why you think this annotation should be allowed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2025-05-01 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/theavey">@theavey</a> on 2025-05-05 15:09</div>
+            <div class="timeline-body"><p>The following is effectively the same, but does not get flagged</p>
+<pre><code class="language-python">import datetime
+from enum import StrEnum
+from typing import TypedDict
+
+
+class RuleEnum(StrEnum):
+    DATE = &quot;date&quot;
+    SIGNAL = &quot;signal&quot;
+
+DATE = RuleEnum.DATE
+
+class RuleType(TypedDict):
+    DATE: datetime.date
+    date: datetime.date
+</code></pre>
+<p>(note, changed the case of the second key of the typed dict to lower case to differentiate from the enum key)</p>
+<p>It seems that mypy and pyright also both like this syntax better.</p>
+<p>It is a personal preference, but I tend to access/use enum members as attributes of the enum, to keep it very clear they are instances of an enum. For example, I would write</p>
+<pre><code class="language-python">def func(input_enum: RuleEnum):
+    if input_enum is RuleEnum.DATE:
+        process_date_rule()
+    elif input_enum is RuleEnum.SIGNAL:
+        process_signal_rule()
+</code></pre>
+<p>Okay, so now that I look at this some more, the attributes of the TypedDict declaration are expected to be string keys (this is <a href="https://peps.python.org/pep-0589/#specification">explicitly stated in the PEP</a>), so I'm just using it wrong.</p>
+<p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @theavey on 2025-05-05 15:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:22 UTC
+    </footer>
+</body>
+</html>

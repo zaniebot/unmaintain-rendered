@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support finer-grained control when upgrading Python versions - astral-sh/uv #13712</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support finer-grained control when upgrading Python versions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13712">#13712</a>
+        opened by <a href="https://github.com/jtfmumm">@jtfmumm</a>
+        on 2025-05-28 22:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-05-28 22:56</div>
+            <div class="timeline-body"><p>Previously a symlink directory would be named something like <code>python3.10</code>. This did not account for information like the architecture or variant. This PR supports finer-grained control when upgrading Python versions. Transparent upgrades can be tied to more than just the minor version (e.g., the architecture). Accordingly, symlink directories naming now follows the existing Python build standalone directory format (excluding patch and prerelease). For example: <code>cpython-3.10-macos-aarch64-none</code>.</p>
+<p>This PR also adds a new <code>PythonInstallationMinorVersionKey</code> type that wraps a <code>PythonInstallationKey</code> but excludes the patch and prerelease in operations. This provides a more fine-grained key (and centralized code) for determining the current highest installation for a minor key. It also provides a more natural and type-based approach to naming symlink directories.</p>
+<p>The <code>DirectorySymlink</code> constructor has also been refactored accept the complete <code>PythonInstallationKey</code> instead of individual components.</p>
+<p>Depends on #13312.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @jtfmumm on 2025-05-28 22:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @jtfmumm on 2025-05-28 22:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @jtfmumm on 2025-05-28 22:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-28 22:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/common/mod.rs</code>:558 on 2025-05-28 22:56</div>
+            <div class="timeline-body"><p>This is no longer needed for existing tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Use most of key in symlink directory name" to "Symlink directory name utilizes most of Python installation key (excluding patch and prerelease)" by @jtfmumm on 2025-05-28 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-05-29 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/installation.rs</code>:517 on 2025-05-29 14:48</div>
+            <div class="timeline-body"><p>Can you explain why you took this approach instead of just making <code>patch</code> an <code>Option</code> on the <code>PythonInstallationKey</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-29 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-python/src/installation.rs</code>:517 on 2025-05-29 14:59</div>
+            <div class="timeline-body"><p>(I updated the PR description while you were commenting but I'll add some more context).</p>
+<p>First, I wanted a representation of the key that corresponds to Python upgrades. Making patch an <code>Option</code> would mean that you don't know without checking if a key is a &quot;minor version key&quot;. This is useful for example when building a map and searching for the highest installation for each key. It also provides a natural place to centralize code related to these checks. Finally, it allowed me to replace the more ad hoc symlink directory naming approach with a more type-based approach. You could probably do these things without this type but the intent would be less clear and I think it would be more prone to error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-29 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Symlink directory name utilizes most of Python installation key (excluding patch and prerelease)" to "Support finer-grained control when upgrading Python versions" by @jtfmumm on 2025-05-29 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-30 08:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/installation.rs</code>:517 on 2025-05-30 08:26</div>
+            <div class="timeline-body"><p>Can we do something like parameterizing the python installation key over the type of version that's inside of it or having wrapper types around a base key type? I find it strange that <code>PythonInstallationMinorVersionKey</code> carries a <code>patch</code> version when cast from PythonInstallationKey.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-30 11:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/installation.rs</code>:517 on 2025-05-30 11:19</div>
+            <div class="timeline-body"><p>This type works for me if we frame it as a view type onto <code>PythonInstallationKey</code> without dedicated constructor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-30 11:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-python/src/installation.rs</code>:517 on 2025-05-30 11:22</div>
+            <div class="timeline-body"><p>Yeah that's the idea. I've removed the constructor</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-05-30 12:09</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/uv/branches/jtfm%2Fpython-upgrade-expanded-symlink-name">CodSpeed Walltime Performance Report</a></h2>
+<h3>Merging #13712 will <strong>improve performances by 17.89%</strong></h3>
+<p><sub>Comparing <code>jtfm/python-upgrade-expanded-symlink-name</code> (d5422a6) with <code>main</code> (f20a25f)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements<br />
+<code>✅ 11</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>wheelname_parsing_failure[flyte-long-extension]</code> | 112 ns | 95 ns | +17.89% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-30 12:38</div>
+            <div class="timeline-body"><p>Sharing that false positive benchmark in https://discord.com/channels/1065233827569598464/1377989469579509841</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-04 17:03</div>
+            <div class="timeline-body"><p>What happens if you let's do a sequence of operation on a mac alternating with x86_64 python and aarch64 Python? Do we ensure that you never switch from one to the other?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-05 13:35</div>
+            <div class="timeline-body"><blockquote>
+<p>What happens if you let's do a sequence of operation on a mac alternating with x86_64 python and aarch64 Python? Do we ensure that you never switch from one to the other?</p>
+</blockquote>
+<p>The symlink directory now includes the arch and will always point to the latest patch version for that arch. A virtual environment will link to the symlink directory for the arch it was created with. If a virtual environment is for x86_64, it will only upgrade when that arch is upgraded (or a higher patch for that arch is installed).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @jtfmumm on 2025-06-10 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-06-10 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-10 17:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:25 UTC
+    </footer>
+</body>
+</html>

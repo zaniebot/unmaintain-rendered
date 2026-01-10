@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warn for builds in non-build and workspace root pyproject.toml - astral-sh/uv #11394</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Warn for builds in non-build and workspace root pyproject.toml</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11394">#11394</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-02-10 18:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-02-10 18:55</div>
+            <div class="timeline-body"><p>When running <code>uv pip install .</code> in a directory with a pyproject.toml that does not configure a build, we will invoke setuptools and get a wheel we can't parse (https://github.com/astral-sh/uv/issues/11344). This PR adds warnings around these setups.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2025-02-10 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-build-frontend/src/lib.rs</code>:530 on 2025-02-10 21:32</div>
+            <div class="timeline-body"><p>This looks like a repeated line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-10 21:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-10 21:33</div>
+            <div class="timeline-body"><p>What happens if a future version of <code>setuptools</code> respects a new dependency source, other than those enumerated here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-10 21:35</div>
+            <div class="timeline-body"><p>It seems a little sketchy to show these preemptively. Could we show them as a hint after the operation fails?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-10 22:00</div>
+            <div class="timeline-body"><blockquote>
+<p>What happens if a future version of setuptools respects a new dependency source, other than those enumerated here?</p>
+</blockquote>
+<p>If a user was to not declare <code>[build-system]</code> but add that new hypothetical non-PEP 621 metadata source, we would show a false positive error. I've opted for an error here matching the existing <code>Error::InvalidSourceDist</code> that errors if there are neither pyproject.toml nor setup.py, given that i consider it unlikely there will be a pre-PEP 517, post PEP 621 combination in the future, and given that a missing <code>[build-system]</code> is legacy behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-10 22:12</div>
+            <div class="timeline-body"><p>Just checking my understanding here... why does this work without error?</p>
+<pre><code>❯ mkdir example
+❯ cd example
+❯ touch pyproject.toml
+❯ uvx pip install -e .
+Installed 1 package in 6ms
+Obtaining file:///Users/zb/workspace/uv/example
+  Installing build dependencies ... done
+  Checking if build backend supports build_editable ... done
+  Getting requirements to build editable ... done
+  Preparing editable metadata (pyproject.toml) ... done
+Building wheels for collected packages: UNKNOWN
+  Building editable for UNKNOWN (pyproject.toml) ... done
+  Created wheel for UNKNOWN: filename=UNKNOWN-0.0.0-0.editable-py3-none-any.whl size=2564 sha256=9a02c4c29e39a2d66dd0ba0746adcdc16cfd2cf3c72cba21ae045d1b9d19d565
+  Stored in directory: /private/var/folders/6p/k5sd5z7j31b31pq4lhn0l8d80000gn/T/pip-ephem-wheel-cache-q0_zs90o/wheels/53/b1/66/9fb19b1939bbe46f93d4fe49b431cb32e3425de7bda20e8c88
+Successfully built UNKNOWN
+Installing collected packages: UNKNOWN
+Successfully installed UNKNOWN-0.0.0
+</code></pre>
+<p>Similarly, <code>uvx --from build pyproject-build</code> succeeds (as well as a subsequent <code>pip install</code> from the wheel).</p>
+<p>Does that mean we'd be breaking compatibility with <code>pip</code> here? I can't tell from the summary if this changes <code>uv pip install</code> behavior or just <code>uv build</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-11 10:13</div>
+            <div class="timeline-body"><p>Our current released behavior is that we don't support these cases, because we consider <code>UNKNOWN</code> to be unset, which results in the <code>Metadata field Name not found</code>. Apparently we do this already since f51432382ae3fce110afd8d7c2f88684078cbeb6, which we copied from python-pkginfo-rs, which doesn't document why it has this behavior.</p>
+<pre><code>$ mkdir a
+$ cd a
+$ touch pyproject.toml
+$ uv pip install .
+Using Python 3.13.0 environment at: /home/konsti/projects/uv/debug/foo/.venv
+error: Failed to parse metadata from built wheel
+  Caused by: Metadata field Name not found
+$ uv pip install -e .
+Using Python 3.13.0 environment at: /home/konsti/projects/uv/debug/foo/.venv
+error: Failed to parse metadata from built wheel
+  Caused by: Metadata field Name not found
+</code></pre>
+<p>I've tried to only touch the paths that were already failing and give them more actionable error message and catch the &quot;<code>uv pip install .</code> in a workspace root case&quot;.</p>
+<p>I know example of how to configure setuptools using setup.py, setup.cfg and pyproject.toml. It is not clear to me what uses cases setuptools intends to support outside of that, or what the correct way of handling <code>UNKNOWN</code> is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-13 17:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-build-frontend/src/lib.rs</code>:542 on 2025-02-13 17:41</div>
+            <div class="timeline-body"><p>So my concern here is... what if, in the future, setuptools supports something like <code>setup.toml</code>? Then existing versions of uv will fail here, overly-aggressively. That's partly why I was advocating that we do this &quot;after-the-fact&quot; (i.e., hint when we create an <code>UNKNOWN</code> wheel). How hard is that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Errors for builds in non-build and workspace root pyproject.toml" to "Warn for builds in non-build and workspace root pyproject.toml" by @konstin on 2025-02-17 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-17 14:27</div>
+            <div class="timeline-body"><p>Changed it to only warnings except for the no-pyproject.toml case that <code>pip</code> and <code>build</code> also reject.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-02-17 15:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-02-17 15:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-02-17 15:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-17 15:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-17 15:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

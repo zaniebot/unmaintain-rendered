@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter: `string_processing` preview style - astral-sh/ruff #6936</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter: <code>string_processing</code> preview style</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6936">#6936</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-08-28 08:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-28 08:46</div>
+            <div class="timeline-body"><p>Add support for Black's improved <a href="https://black.readthedocs.io/en/stable/the_black_code_style/future_style.html#improved-string-processing">string processing</a>.</p>
+<blockquote>
+<p>Black will split long string literals and merge short ones. Parentheses are used where appropriate. When split, parts of f-strings that don’t need formatting are converted to plain strings. User-made splits are respected when they do not exceed the line length limit. Line continuation backslashes are converted into parenthesized strings. Unnecessary parentheses are stripped. The stability and status of this feature is tracked in <a href="https://github.com/psf/black/issues/2188">this issue</a>.</p>
+</blockquote>
+<h2>Examples</h2>
+<pre><code class="language-python">&quot;a somewhat long string that doesn't fit the line length. &quot; &quot;Testing to see what black does keep it a bit longer and longer&quot;,
+&quot;a somewhat long string that doesn't fit the line length. &quot; \
+    &quot;Testing to see what black does keep it a bit longer and longer&quot;,
+
+if &quot;a somewhat long string that doesn't fit the line length. &quot; + &quot;Testing to see what black does keep it a bit longer and longer longer&quot;:
+    pass
+
+&quot;a somewhat long string that doesn't fit the line length. &quot; + &quot;Testing to see what black does keep it a bit longer and longer longer longer longer longer longer longer longer longer longer longer&quot;
+
+(&quot;a somewhat long string that doesn't fit the line length. &quot; + &quot;Testing to see what black does keep it a bit longer and longer longer longer longer longer longer longer longer longer longer longer&quot;)
+
+&quot;a somewhat long string that doesn't fit the line length. &quot; + [&quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;, &quot;bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb&quot;, &quot;Ccccccccccccccccccccccccccccccccccccccc cccccccccccccccccccccccccccccccccccccccccccccccccccccc&quot;]
+
+call(
+    &quot;a somewhat long string that doesn't fit the line length. &quot;
+    &quot;Testing to see what black does keep it a bit longer and longer&quot;,
+    &quot;a second argument&quot;,
+    3,
+    4,
+)
+
+
+call(
+    &quot;a somewhat long string that doesn't fit the line length. Testing to see what black does keep &quot;
+    &quot;it a bit longer and longer&quot;,
+    &quot;a second argument&quot;,
+    3,
+    4,
+)
+
+call(
+    &quot;a somewhat long string that doesn't fit the line length. &quot;
+    &quot;shorter&quot;,
+    &quot;a second argument&quot;,
+    3,
+    4,
+)
+
+
+L1 = [&quot;The is a short string&quot;, &quot;This is a really long string that can't possibly be expected to fit all together on one line. Also it is inside a list literal, so it's expected to be wrapped in parens when spliting to avoid implicit str concatenation.&quot;, short_call(&quot;arg&quot;, {&quot;key&quot;: &quot;value&quot;}), &quot;This is another really really (not really) long string that also can't be expected to fit on one line and is, like the other string, inside a list literal.&quot;, (&quot;parens should be stripped for short string in list&quot;)]
+</code></pre>
+<pre><code class="language-diff">--- /home/micha/.config/JetBrains/PyCharmCE2023.2/scratches/scratch.py  2023-08-28 09:15:01.476535+00:00
++++ /home/micha/.config/JetBrains/PyCharmCE2023.2/scratches/scratch.py  2023-08-28 09:15:02.026782+00:00
+@@ -1,17 +1,36 @@
+-&quot;a somewhat long string that doesn't fit the line length. &quot; &quot;Testing to see what black does keep it a bit longer and longer&quot;,
+-&quot;a somewhat long string that doesn't fit the line length. &quot; \
+-    &quot;Testing to see what black does keep it a bit longer and longer&quot;,
++&quot;a somewhat long string that doesn't fit the line length. &quot;
++&quot;Testing to see what black does keep it a bit longer and longer&quot;,
++&quot;a somewhat long string that doesn't fit the line length. &quot;
++&quot;Testing to see what black does keep it a bit longer and longer&quot;,
+ 
+-if &quot;a somewhat long string that doesn't fit the line length. &quot; + &quot;Testing to see what black does keep it a bit longer and longer longer&quot;:
++if (
++    &quot;a somewhat long string that doesn't fit the line length. &quot;
++    + &quot;Testing to see what black does keep it a bit longer and longer longer&quot;
++):
+     pass
+ 
+-&quot;a somewhat long string that doesn't fit the line length. &quot; + &quot;Testing to see what black does keep it a bit longer and longer longer longer longer longer longer longer longer longer longer longer&quot;
++(
++    &quot;a somewhat long string that doesn't fit the line length. &quot;
++    + &quot;Testing to see what black does keep it a bit longer and longer longer longer&quot;
++    &quot; longer longer longer longer longer longer longer longer&quot;
++)
+ 
+-(&quot;a somewhat long string that doesn't fit the line length. &quot; + &quot;Testing to see what black does keep it a bit longer and longer longer longer longer longer longer longer longer longer longer longer&quot;)
++(
++    &quot;a somewhat long string that doesn't fit the line length. &quot;
++    + &quot;Testing to see what black does keep it a bit longer and longer longer longer&quot;
++    &quot; longer longer longer longer longer longer longer longer&quot;
++)
+ 
+-&quot;a somewhat long string that doesn't fit the line length. &quot; + [&quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;, &quot;bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb&quot;, &quot;Ccccccccccccccccccccccccccccccccccccccc cccccccccccccccccccccccccccccccccccccccccccccccccccccc&quot;]
++&quot;a somewhat long string that doesn't fit the line length. &quot; + [
++    &quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;,
++    &quot;bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb&quot;,
++    (
++        &quot;Ccccccccccccccccccccccccccccccccccccccc&quot;
++        &quot; cccccccccccccccccccccccccccccccccccccccccccccccccccccc&quot;
++    ),
++]
+ 
+ call(
+     &quot;a somewhat long string that doesn't fit the line length. &quot;
+     &quot;Testing to see what black does keep it a bit longer and longer&quot;,
+     &quot;a second argument&quot;,
+@@ -19,22 +38,35 @@
+     4,
+ )
+ 
+ 
+ call(
+-    &quot;a somewhat long string that doesn't fit the line length. Testing to see what black does keep &quot;
+-    &quot;it a bit longer and longer&quot;,
++    &quot;a somewhat long string that doesn't fit the line length. Testing to see what black&quot;
++    &quot; does keep it a bit longer and longer&quot;,
+     &quot;a second argument&quot;,
+     3,
+     4,
+ )
+ 
+ call(
+-    &quot;a somewhat long string that doesn't fit the line length. &quot;
+-    &quot;shorter&quot;,
++    &quot;a somewhat long string that doesn't fit the line length. shorter&quot;,
+     &quot;a second argument&quot;,
+     3,
+     4,
+ )
+ 
+ 
+-L1 = [&quot;The is a short string&quot;, &quot;This is a really long string that can't possibly be expected to fit all together on one line. Also it is inside a list literal, so it's expected to be wrapped in parens when spliting to avoid implicit str concatenation.&quot;, short_call(&quot;arg&quot;, {&quot;key&quot;: &quot;value&quot;}), &quot;This is another really really (not really) long string that also can't be expected to fit on one line and is, like the other string, inside a list literal.&quot;, (&quot;parens should be stripped for short string in list&quot;)]
+\ No newline at end of file
++L1 = [
++    &quot;The is a short string&quot;,
++    (
++        &quot;This is a really long string that can't possibly be expected to fit all&quot;
++        &quot; together on one line. Also it is inside a list literal, so it's expected to&quot;
++        &quot; be wrapped in parens when spliting to avoid implicit str concatenation.&quot;
++    ),
++    short_call(&quot;arg&quot;, {&quot;key&quot;: &quot;value&quot;}),
++    (
++        &quot;This is another really really (not really) long string that also can't be&quot;
++        &quot; expected to fit on one line and is, like the other string, inside a list&quot;
++        &quot; literal.&quot;
++    ),
++    &quot;parens should be stripped for short string in list&quot;,
++]
+</code></pre>
+<p>Observations:</p>
+<ul>
+<li>Binary operators break before the strings</li>
+<li>The formatting only applies to implicit concatenated strings, but not strings joined with the <code>+</code> operator</li>
+</ul>
+<p>The strings must be parenthesized in some contexts, see https://github.com/psf/black/pull/3162/files</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-08-28 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Stable" by @MichaReiser on 2023-08-28 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-28 08:52</div>
+            <div class="timeline-body"><p>My first reaction is that this is similar to Prettier's/Rome's JSX formatting and that we need to use <code>BestFitting</code> with three variants:</p>
+<ol>
+<li>Join all string parts into a single string to make it fit</li>
+<li>Keep the same string parts as in the source. Test if all lines fit</li>
+<li>Use <code>fill</code> <a href="https://github.com/astral-sh/ruff/blob/f5f7ddf1ba02bc3134bb1257c49b0e83114e6997/crates/ruff_python_formatter/src/lib.rs#L267-L320">see prototype</a> to fit as many words as possible on the line.</li>
+</ol>
+<p>The main concern with this is performance:</p>
+<ul>
+<li>We should avoid normalizing the same strings multiple times. This is already one of the most expensive functions today</li>
+<li>We use <code>BestFitting</code> for the expression <code>BestFit</code> layout. Using <code>BestFitting for strings would result in a nested BestFitting layout with exponential complexity. Can we remove the need to use </code>BestFit` for Strings altogether?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2023-09-07 13:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2023-09-15 09:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @MichaReiser by @MichaReiser on 2023-10-27 02:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Improved string processing" to "Improved string processing (`string_processing`)" by @MichaReiser on 2023-11-29 00:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Improved string processing (`string_processing`)" to "Formatter: `string_processing` preview style" by @MichaReiser on 2023-11-29 03:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Formatter: Stable" by @MichaReiser on 2023-11-29 03:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2023-12-05 02:46</div>
+            <div class="timeline-body"><p>Black no longer wraps implicitly concatenated strings used as func args in parens, due to <a href="https://github.com/psf/black/issues/2188#issuecomment-1489015964">this comment</a>.
+There is an open issue to re-enable it: https://github.com/psf/black/issues/3955</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-02-02 22:27</div>
+            <div class="timeline-body"><p>fyi in case anyone was confused and thought this feature was removed in black version 24.1 like i did, the string processing now has to be enabled with <code>--enable-unstable-feature=string_processing</code> in addition to the <code>--preview</code> flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-23 21:30</div>
+            <div class="timeline-body"><p>Black considers to not move forward with the <code>string_processing</code> preview style (<a href="https://github.com/psf/black/issues/4208">issue</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2024-06-27 05:47</div>
+            <div class="timeline-body"><p>A simpler aspect of this larger problem is joining strings that get put onto the same line. It constantly annoys me and would love to see it resolved:</p>
+<pre><code class="language-py"># Before
+(
+    &quot;&quot;
+    &quot;&quot;
+)
+# After
+(&quot;&quot; &quot;&quot;)
+# Desired
+(&quot;&quot;) 
+# OR
+&quot;&quot;
+</code></pre>
+<ul>
+<li>from #12057</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-27 05:51</div>
+            <div class="timeline-body"><p>@KotlinIsland we agree. A solution for this is described in https://github.com/astral-sh/ruff/issues/9457</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/raayu83">@raayu83</a> on 2024-09-24 13:25</div>
+            <div class="timeline-body"><p>Would love to see this feature coming!
+When auto creating new Django migrations for models with long help text, I always get files with very long strings on a single line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hypnopump">@hypnopump</a> on 2025-01-17 13:22</div>
+            <div class="timeline-body"><p>+1 want this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-17 13:44</div>
+            <div class="timeline-body"><p>Ruff now automatically joins implicit concatenated strings and I consider it as unlikely that we'll implement automatic splitting of string literals, at least in the near future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carschandler">@carschandler</a> on 2025-01-17 14:15</div>
+            <div class="timeline-body"><p>Is there a suggested method for formatting long string literals, i.e. using docstrings and relying on text editor to format those?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> removed by @MichaReiser on 2025-01-17 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> added by @MichaReiser on 2025-01-17 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dukkee">@dukkee</a> on 2025-02-18 20:08</div>
+            <div class="timeline-body"><p>+1 want this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ArnoGW1">@ArnoGW1</a> on 2025-03-04 09:02</div>
+            <div class="timeline-body"><blockquote>
+<p>Ruff now automatically joins implicit concatenated strings and I consider it as unlikely that we'll implement automatic splitting of string literals, at least in the near future.</p>
+</blockquote>
+<p>Just mentioning that <a href="https://clang.llvm.org/docs/ClangFormatStyleOptions.html#breakstringliterals">clang-format's method</a> has always been satisfying in my experience. Is it a problem of having to think about what the expected result should be?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/k4lizen">@k4lizen</a> on 2025-05-08 18:36</div>
+            <div class="timeline-body"><p>re: the autopep8 solution</p>
+<p>It seems it also tries to break up strings, and is not the best at it:</p>
+<p><img src="https://github.com/user-attachments/assets/a463af37-49f2-4d5f-9e08-321487cd12b6" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/giampaolo">@giampaolo</a> on 2025-05-09 12:08</div>
+            <div class="timeline-body"><p>FWIW, <code>string_processing</code> is the only reason why I'm still using black. It's just too convenient to automatically split long lines on save.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/solace-rcampbell">@solace-rcampbell</a> on 2025-05-15 17:08</div>
+            <div class="timeline-body"><p>Manually splitting and reflowing strings (when you have to edit them later) is one of the worst parts of formatting code.  It would be a super useful feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ArnoGW1">@ArnoGW1</a> on 2025-05-19 12:33</div>
+            <div class="timeline-body"><p>I guess that there are some exceptions where you'd want the string to be unbroken, like URLs, but the case where we want the string to be broken up is <em>much</em> more common. Writing docs, especially, is pretty tedious by default if you want them to stay within bounds, and ruff could really help with that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brki">@brki</a> on 2025-12-23 20:31</div>
+            <div class="timeline-body"><p>I'd be happy with an interactive option. I'm imagining something like:</p>
+<pre><code>[tool.ruff]
+fix-interactive = [&quot;line-length&quot;]
+</code></pre>
+<p>Potentially non-safe <code>fix-interactive</code> changes would need user interaction to apply a suggested fix, or not.</p>
+<pre><code> call(
+-    &quot;a very long string that doesn't fit the line length. bla bla bla bla bla bla&quot;
++    (
++        &quot;a very long string that doesn't fit the line &quot;
++        &quot;length. bla bla bla bla bla bla&quot;
++    )
+ )
+
+(A)ccept / (S)kip [S]:
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:09 UTC
+    </footer>
+</body>
+</html>

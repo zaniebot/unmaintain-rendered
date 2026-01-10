@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add ability to load from .env files before invoking the command - astral-sh/uv #7357</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add ability to load from .env files before invoking the command</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7357">#7357</a>
+        opened by <a href="https://github.com/haydn-j-evans">@haydn-j-evans</a>
+        on 2024-09-13 11:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/haydn-j-evans">@haydn-j-evans</a> on 2024-09-13 11:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Pipenv and other equivalent tools have the ability to load an .env file during execution of a script etc</p>
+<p>https://pipenv.pypa.io/en/stable/shell.html#automatic-loading-of-env</p>
+<p>The PR adds a new flag <code>--load-dotenv</code> and a new ENV <code>UV_RUN_LOAD_DOTENV</code>  that enables this feature for <code>uv run</code></p>
+<p>resolves #1384</p>
+<h2>Test Plan</h2>
+<p>Have tested it locally by successfully invoking scripts that require ENV's to be set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eth3lbert">@eth3lbert</a> on 2024-09-13 11:28</div>
+            <div class="timeline-body"><p><code>dotenv</code> is implicitly unmaintained.
+Ref: https://github.com/rustsec/advisory-db/issues/1254</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/haydn-j-evans">@haydn-j-evans</a> on 2024-09-13 11:31</div>
+            <div class="timeline-body"><p>@eth3lbert I will switch it to <a href="https://github.com/allan2/dotenvy">dotenvy</a> if you are happy with the idea of the PR :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-09-15 21:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/theintz">@theintz</a> on 2024-09-26 10:29</div>
+            <div class="timeline-body"><p>Can't wait for this to land, we're excited to switch to uv, but are currently blocked by this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @zanieb on 2024-10-01 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @zanieb by @zanieb on 2024-10-01 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/haydn-j-evans">@haydn-j-evans</a> on 2024-10-09 12:23</div>
+            <div class="timeline-body"><p>@charliermarsh This PR is currently configured to be opt in, but in light of the discussion in the issue thread, should we instead make it opt out?</p>
+<p>i.e.</p>
+<p><code>--no-load-dotenv</code></p>
+<p><code>UV_RUN_NO_LOAD_DOTENV</code></p>
+<p>And also the naming can be discussed, I kept it scoped to <code>UV_RUN_ </code> as this is a run specific variable, but perhaps if there is a need for full uv configuration with a .env, we just call it <code>UV_NO_LOAD_DOTENV</code> and then just expand its use within uv later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PhilipVinc">@PhilipVinc</a> on 2024-10-09 12:26</div>
+            <div class="timeline-body"><p>Could this be used to set <code>UV_PROJECT_ENVIRONMENT</code> in the <code>.env</code> file, offering a slightly better workaround to the issues discussed in #7642 and #1495 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/haydn-j-evans">@haydn-j-evans</a> on 2024-10-09 12:57</div>
+            <div class="timeline-body"><p>@PhilipVinc currently it only affects the <code>run</code> command, it would have to be further expanded to support uv global config.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/haydn-j-evans">@haydn-j-evans</a> reviewed on 2024-10-09 13:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/haydn-j-evans">@haydn-j-evans</a> on <code>crates/uv/src/commands/project/run.rs</code>:833 on 2024-10-09 13:08</div>
+            <div class="timeline-body"><p>currently this will just fail silently if the file is malformed or missing - is this what we want?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sminnee">@sminnee</a> reviewed on 2024-10-09 20:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sminnee">@sminnee</a> on <code>crates/uv/src/commands/project/run.rs</code>:833 on 2024-10-09 20:47</div>
+            <div class="timeline-body"><p>IMO missing shouldn't show an error, because the chance that the file is missing means that someone doesn't want to use .env is high.</p>
+<p>However, a malformed file should be indicated to the developer. The chance that they have intentionally created a .env file that is malformed, in order for it not to be loaded by uv, is very low. I would suggest a warning rather than an error, because execution can still continue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-09 22:15</div>
+            <div class="timeline-body"><p>Yeah I think my preference would be:</p>
+<ul>
+<li>Read <code>.env</code> by default (only in <code>uv run</code> for now; we may expand it later).</li>
+<li>Allow users to pass <code>--env-file</code> (or <code>UV_ENV_FILE</code>) to override the file.</li>
+<li>Add <code>--no-env-file</code> and <code>UV_NO_ENV_FILE</code> to disable it.</li>
+</ul>
+<p>I think we can omit the <code>UV_RUN_</code> prefixes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/run.rs</code>:833 on 2024-10-09 22:20</div>
+            <div class="timeline-body"><p>Yeah, I think we should show a user-facing warning if there's an error other than &quot;file does not exist&quot;. We could also show a warning if it's &quot;file does not exist&quot; and the user provided an explicit path to a dotenv file, but I'm not certain if we should and it's not blocking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-09 22:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/haydn-j-evans">@haydn-j-evans</a> on 2024-11-05 12:25</div>
+            <div class="timeline-body"><p>closing this as it seems to be implemented already</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @haydn-j-evans on 2024-11-05 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/shreyansp">@shreyansp</a> on 2025-03-26 11:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah I think my preference would be:</p>
+<ul>
+<li>Read <code>.env</code> by default (only in <code>uv run</code> for now; we may expand it later).</li>
+<li>Allow users to pass <code>--env-file</code> (or <code>UV_ENV_FILE</code>) to override the file.</li>
+<li>Add <code>--no-env-file</code> and <code>UV_NO_ENV_FILE</code> to disable it.</li>
+</ul>
+<p>I think we can omit the <code>UV_RUN_</code> prefixes.</p>
+</blockquote>
+<p>@haydn-j-evans  @charliermarsh
+Thanks for the summary of features regarding <code>.env</code> setup.
+Before I raise a bug, I wanted to check if the first option in the above list ever implemented?
+In the latest version 0.6.9, I can confirm the second option to set .<code>env</code> manually every time works,
+but not the first option where <code>uv run</code> is suppose to pick up the <code>.env</code> by default</p>
+<p>UPDATE: Never mind just found: #9381</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:13 UTC
+    </footer>
+</body>
+</html>

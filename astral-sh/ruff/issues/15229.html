@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Errors for attempted autofixes visible to users even without passing `--fix` and for noqa lines - astral-sh/ruff #15229</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Errors for attempted autofixes visible to users even without passing <code>--fix</code> and for noqa lines</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15229">#15229</a>
+        opened by <a href="https://github.com/AA-Turner">@AA-Turner</a>
+        on 2025-01-02 22:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2025-01-02 22:04</div>
+            <div class="timeline-body"><p>I think related to #5454. cc @MichaReiser @wookie184</p>
+<h3>Reproducer:</h3>
+<p>Save to <code>bug.py</code>:</p>
+<pre><code class="language-python"># bug.py
+from typing import Callable
+
+
+def spam() -&gt; None:
+    C = Callable[[int], None]  # NoQA: UP006
+    _ = C
+    _ = Callable  # NoQA: UP006
+</code></pre>
+<p>Run the following:</p>
+<pre><code class="language-ps1con">PS&gt; ruff --version
+ruff 0.8.5
+PS&gt; ruff clean; ruff check bug.py --isolated --select UP006 --preview
+Removing cache at: .ruff_cache
+error: Failed to create fix for NonPEP585Annotation: Unable to insert `Callable` into scope due to name conflict
+error: Failed to create fix for NonPEP585Annotation: Unable to insert `Callable` into scope due to name conflict
+All checks passed!
+</code></pre>
+<p>Note the error only appears when there is no existing cache, hence <code>ruff clean</code>. Adding or removing <code>from __future__ import annotations</code> has no effect.</p>
+<p>A</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wookie184">@wookie184</a> on 2025-01-03 01:23</div>
+            <div class="timeline-body"><p>Good find, thanks for the issue.</p>
+<p>From what I can tell this isn't a new issue, and #5454 just made it easier to trigger it. An example that errors on 0.8.4 is</p>
+<pre><code class="language-python">from typing import Deque
+deque = ...
+Deque
+</code></pre>
+<p>That said, I also remember noticing this issue while writing the PR and implementing a fix. Unfortunately it seems like the fix was lost at some point, probably while a merge conflict was being resolved, and although I wrote a snapshot test for this case which <em>is</em> still there, the error doesn't seem to be shown in the snapshot file so the regression wasn't caught!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-03 02:32</div>
+            <div class="timeline-body"><p>Thanks for the report. @wookie184 Do you plan on addressing this? It's ok if you don't have the time, I can look at it and do a release later today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-01-03 02:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wookie184">@wookie184</a> on 2025-01-03 02:35</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for the report. @wookie184 Do you plan on addressing this? It's ok if you don't have the time, I can look at it and do a release later today.</p>
+</blockquote>
+<p>If you could that would be great</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-03 02:39</div>
+            <div class="timeline-body"><p>@dhruvmanila -- We might also want to move these fix failures to <code>--verbose</code>. I don't know if they make sense as user-visible warnings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-03 02:49</div>
+            <div class="timeline-body"><blockquote>
+<p>We might also want to move these fix failures to <code>--verbose</code>. I don't know if they make sense as user-visible warnings.</p>
+</blockquote>
+<p>Yeah, that makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2025-01-03 02:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-03 04:03</div>
+            <div class="timeline-body"><blockquote>
+<p>That said, I also remember noticing this issue while writing the PR and implementing a fix. Unfortunately it seems like the fix was lost at some point, probably while a merge conflict was being resolved, and although I wrote a snapshot test for this case which is still there, the error doesn't seem to be shown in the snapshot file so the regression wasn't caught!</p>
+</blockquote>
+<p>Apologies @wookie184 that was probably my fault - interactive rebasing feels like pinball with 20 balls at once, I must've lost a few! Please let me know if you notice any other errors in transcription and I'll fix them.</p>
+<p>If you don't get around to this @dhruvmanila, feel free to reassign it to me since I made the mess in the first place!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-03 04:14</div>
+            <div class="timeline-body"><blockquote>
+<p>If you don't get around to this <a href="https://github.com/dhruvmanila"><img alt="" width="16" height="16" src="https://avatars.githubusercontent.com/u/67177269?s=64&amp;u=3f6384e9bb2b4338388f8729ce4820e080607ebb&amp;v=4">@dhruvmanila</a>, feel free to reassign it to me since I made the mess in the first place!</p>
+</blockquote>
+<p>@dylwil3 Feel free to take this on if you want as you have the most context and will be able to resolve this faster than me :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dylwil3 by @dylwil3 on 2025-01-03 04:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @dhruvmanila by @dylwil3 on 2025-01-03 04:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-01-03 05:10</div>
+            <div class="timeline-body"><p>Just to clarify: Unless I'm misunderstanding, I don't think this has anything to do with #5454 . The actual fix/diagnostic behavior is as expected here, and there's no issues in the snapshot tests from that PR that I can find.</p>
+<p>This is really <em>just</em> about the visibility of that error message coming from <code>try_set_fix</code>. For example, you can see the same behavior with a FastAPI rule that also tries to get an import that would cause a name collision:</p>
+<pre><code class="language-console">❯ cat tmp.py
+from fastapi import Depends, FastAPI
+
+Annotated = &quot;hey&quot;
+
+app = FastAPI()
+
+
+async def common_parameters(q: str | None = None, skip: int = 0, limit: int = 100):
+    return {&quot;q&quot;: q, &quot;skip&quot;: skip, &quot;limit&quot;: limit}
+
+
+@app.get(&quot;/items/&quot;)
+async def read_items(commons: dict = Depends(common_parameters)):
+    return commons
+
+❯ uvx ruff check tmp.py --isolated --select FAST002 --preview --no-cache
+error: Failed to create fix for FastApiNonAnnotatedDependency: Unable to insert `Annotated` into scope due to name conflict
+tmp.py:13:22: FAST002 FastAPI dependency without `Annotated`
+   |
+12 | @app.get(&quot;/items/&quot;)
+13 | async def read_items(commons: dict = Depends(common_parameters)):
+   |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ FAST002
+14 |     return commons
+   |
+   = help: Replace with `typing.Annotated`
+
+Found 1 error.
+</code></pre>
+<p>The cache is sort of a red herring here that I believe has to do with the noqa comments in the original example: on the first run, I think ruff is running the diagnostic on those lines (which eagerly tries to make a fix anyway), and on subsequent runs the cache says not to worry about it.</p>
+<p>All that to say: I'm gonna fix the visibility of the errors here and call it good unless someone can tell me I'm missing something!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @dylwil3 on 2025-01-03 05:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @dylwil3 on 2025-01-03 05:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "0.8.5 regression: "error: Failed to create fix for NonPEP585Annotation"" to "Errors for attempted autofixes visible to users even without passing `--fix` and for noqa lines" by @dylwil3 on 2025-01-03 06:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-01-03 14:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:10 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ability to exit with non-zero after fixing errors  - astral-sh/ruff #2633</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ability to exit with non-zero after fixing errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2633">#2633</a>
+        opened by <a href="https://github.com/stefanv">@stefanv</a>
+        on 2023-02-07 19:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/stefanv">@stefanv</a> on 2023-02-07 19:31</div>
+            <div class="timeline-body"><p>This is one of those infuriating reports asking for behavior <a href="https://github.com/charliermarsh/ruff/issues/341">opposite to that already requested</a>.</p>
+<p>In SciPy, we use <code>ruff</code> in our pre-commit hook. We like that ruff is able to fix errors, but we still need a non-zero exit after doing so, so that the commit hook will fail and the user can re-commit.</p>
+<p>I will address it for now by parsing the ruff output, but that's not ideal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stefanv">@stefanv</a> on 2023-02-07 19:46</div>
+            <div class="timeline-body"><p>Related, it would be useful to show which files have been modified, so the developer can go check which ones were touched.</p>
+<p>I could potentially work some magic with git and staging, but it won't be pretty.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-07 19:53</div>
+            <div class="timeline-body"><p>Hahah not infuriating at all. Let me think on the best way to handle...</p>
+<p>@henryiii requested a similar thing to the &quot;show which files have been modified&quot; behavior recently.</p>
+<p>I don't know whether these should be the default behavior, or CLI flags, or settings, or both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2023-02-07 19:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-07 19:57</div>
+            <div class="timeline-body"><p>(We already have <code>--exit-zero</code>, so that suggests the exit behavior should be a CLI flag, like <code>--exit-non-zero</code> or something more specific.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stefanv">@stefanv</a> on 2023-02-07 20:10</div>
+            <div class="timeline-body"><p>Right, naming is hard :thinking:  Functionally, you need something like:</p>
+<pre><code>--exit-non-zero-if=never
+--exit-non-zero-if=unfixable
+</code></pre>
+<p>With the default being <code>--exit-non-zero-if=errors</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stefanv">@stefanv</a> on 2023-02-07 20:16</div>
+            <div class="timeline-body"><blockquote>
+<p>@henryiii requested a similar thing to the &quot;show which files have been modified&quot; behavior recently.</p>
+<p>I don't know whether these should be the default behavior, or CLI flags, or settings, or both.</p>
+</blockquote>
+<p>FWIW:</p>
+<pre><code>$ black tools/cythonize.py
+reformatted tools/cythonize.py
+
+All done! ✨ 🍰 ✨
+1 file reformatted.
+</code></pre>
+<p><code>prettier</code> prints different ANSI colors depending on whether it touched the file—not helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-07 20:18</div>
+            <div class="timeline-body"><p>So, I did implement that once in https://github.com/charliermarsh/ruff/pull/1701, but I ended up backing it out because I was worried it would be too noisy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-07 20:19</div>
+            <div class="timeline-body"><p>But, maybe that actually is useful. It wouldn't tell you what was fixed exactly, but it'd tell you which files were fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stefanv">@stefanv</a> on 2023-02-07 20:20</div>
+            <div class="timeline-body"><p>Exactly; this information is quite hard to come by any other way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-07 20:25</div>
+            <div class="timeline-body"><p>But, is listing the changed files like that sufficient?</p>
+<p>(Also, just to clarify: if we fix a bunch of errors, and no lint errors remain, you'd want to exit non-zero with that flag set, right? So the flag would effectively be: exit non-zero if there were any errors to start.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stefanv">@stefanv</a> on 2023-02-07 20:40</div>
+            <div class="timeline-body"><p>Right, any errors OR fixing would require a re-add and commit.</p>
+<p>Listing the files is sufficient for our purposes, i.e. of letting the user know which files to re-add.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-02-07 21:51</div>
+            <div class="timeline-body"><p>I'd like to see the fixes applied. I'm less interested in which files got fixed, since I can mostly tell that (but not entirely if Black or something else changes them too). Most tools do list that, though (Black does).</p>
+<p>A per file display of fixes would be fine:</p>
+<pre><code>my/file.py: Applied 3 fixes
+  A123: blah blah
+  B234 (x2): blah blah
+my/file2.py: Applied 7 fixes
+  A123 (x7): blah blah
+</code></pre>
+<p>Fine to have it default or behind a flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stefanv">@stefanv</a> on 2023-02-07 22:27</div>
+            <div class="timeline-body"><p>Ah, I see now what you were saying. I don't mind that information being there, we just don't need it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2023-02-07 22:46</div>
+            <div class="timeline-body"><p>Pre-commit already knows if files changed, so not sure knowing what files changes only would be useful. But knowing what rules were applied is big. Maybe you don’t agree with a rule and need to revert and exclude it. Maybe you learn about a new best practice you didn’t know about. Maybe it just deleted lines of code because print statements aren’t allowed (personally got surprised by that one). And so forth. Or maybe you need to report a broken fix but have no idea what was responsible (also been in that one).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-07 22:59</div>
+            <div class="timeline-body"><p>Alright I'll add some CLI flags here. Won't be tonight but should be this week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-08 00:03</div>
+            <div class="timeline-body"><p>I guess ESLint decided not to add this flag on request (https://github.com/eslint/eslint/issues/10099). I actually briefly wondered if we should <em>always</em> exit non-zero if there are fixes, even if it result in there being no lint errors... but neither ESLint nor Clippy behave that way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stefanv">@stefanv</a> on 2023-02-08 00:05</div>
+            <div class="timeline-body"><p>We would also be able to take a two-run approach.  I.e., lint, if it fails, try fixing, then check the error code again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-08 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-08 19:49</div>
+            <div class="timeline-body"><p>For now I added a dedicated flag. But I'm considering instead adopting the <code>--fail-level</code> semantics from RuboCop: https://docs.rubocop.org/rubocop/usage/basic_usage.html#exit-codes. It's more relevant if / when we support severities. But it would at least let us consolidate the flags (so you could do <code>--fail-level=fatal</code> for <code>--exit-zero</code>, and <code>--fail-level=autofix</code> for <code>--exit-non-zero-on-fix</code>, with the default being <code>--fail-level=error</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stefanv">@stefanv</a> on 2023-02-08 23:46</div>
+            <div class="timeline-body"><p>RuboCop's differing error codes for different failure conditions is neat!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-08 23:50</div>
+            <div class="timeline-body"><p>I actually added that too: https://github.com/charliermarsh/ruff#exit-codes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stefanv">@stefanv</a> on 2023-02-09 00:05</div>
+            <div class="timeline-body"><p>Ooh :eyes: But :thinking: no way to distinguish between &quot;errors were found and fixed&quot; and &quot;errors were found but couldn't be fixed&quot; with <code>--exit-non-zero-on-fix</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-09 00:11</div>
+            <div class="timeline-body"><p>That's probably a good idea... I was a little put off because all the other tools I looked at use <code>0</code>/<code>1</code>/<code>2</code> consistently, and I couldn't commit to a different scheme.</p>
+<p>E.g., I could move &quot;internal failure&quot; to <code>3</code>, and make <code>2</code> &quot;fixed with no remaining errors&quot;. But then what if we want to add a new non-internal-failure code? Does that become... <code>4</code>? 🤔 Perhaps instead, &quot;internal failure&quot; be some other, arbitrary high number -- but what's most conventional? Or should &quot;internal failure&quot; be <code>1</code> so that we have room to increment for more cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stefanv">@stefanv</a> on 2023-02-09 00:35</div>
+            <div class="timeline-body"><p>Traditionally, there's also -1 :thinking:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-09 01:24</div>
+            <div class="timeline-body"><p>It looks like ESLint thought to make this error code 3 which... does make sense. A little strange to have 1 and 3 be so similar, and 2 so different / special... but it means you're adhering pretty closely to conventions <em>and</em> have free space to add new codes beyond 3.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:16 UTC
+    </footer>
+</body>
+</html>

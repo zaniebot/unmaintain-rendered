@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BUG: Rule `D413` does not catch missing single blank line or multiple blank lines at end of docstring - astral-sh/ruff #13284</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>BUG: Rule <code>D413</code> does not catch missing single blank line or multiple blank lines at end of docstring</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13284">#13284</a>
+        opened by <a href="https://github.com/user27182">@user27182</a>
+        on 2024-09-08 17:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/user27182">@user27182</a> on 2024-09-08 17:01</div>
+            <div class="timeline-body"><p>There is a bug with rule <a href="https://docs.astral.sh/ruff/rules/missing-blank-line-after-last-section/"><code>D413</code></a>. With this rule, a single blank line is expected at the end of multiline docstrings.</p>
+<p>But, this does not work in a few cases. E.g.:</p>
+<p>Calling <code>ruff check foo.py --select D413 --fix</code> on this code does not insert a blank line at the end:</p>
+<pre><code class="language-python">def foo():
+    &quot;&quot;&quot;Bar.
+
+    Multiline docstring.
+    &quot;&quot;&quot;
+</code></pre>
+<p>In another case, we see that this rule works for some section names such as <code>Returns</code>, e.g. here a new line is correctly inserted at the end:</p>
+<pre><code class="language-python">def foo():
+    &quot;&quot;&quot;Bar.
+
+    Returns
+    -------
+    Nothing.
+    &quot;&quot;&quot;
+</code></pre>
+<p>But, it does not work for any general section heading. E.g. no blank line is inserted here after the <code>Section</code> section (but one is expected):</p>
+<pre><code class="language-python">def foo():
+    &quot;&quot;&quot;Bar.
+
+    Section
+    -------
+    Nothing.
+    &quot;&quot;&quot;
+</code></pre>
+<p>For the first case, I suppose there may be an argument that technically the docstring has no sections, and therefore the rule isn't being violated. And for the last case there may be an argument that only standard section names are supported (e.g. <code>Parameters</code>, <code>Returns</code>, <code>See Also</code>, etc.). But, in my view, I think that with this rule enabled, there should <em>always</em> be a blank line expected (and inserted with <code>--fix</code>) at the end of the docstring.</p>
+<p>I have not tested this against the <code>pydocstyle</code> behavior though, not sure what the expected result is from that. Maybe a new rule could be added instead in case the current behavior is considered to be &quot;correct&quot;?</p>
+<p>Also, related to https://github.com/astral-sh/ruff/issues/9451, with <code>D413</code> we should expect only a <em>single</em> line at the end of a docstring. But this code passes (the two blank lines should be replaced with a single blank line):</p>
+<pre><code class="language-python">def foo():
+    &quot;&quot;&quot;Bar.
+
+    Multiline docstring.
+
+
+    &quot;&quot;&quot;
+</code></pre>
+<p>Same thing with this code, only one line is expected:</p>
+<pre><code class="language-python">def foo():
+    &quot;&quot;&quot;Bar.
+
+    Multiline docstring.
+
+    Returns
+    -------
+    Nothing.
+
+    
+    &quot;&quot;&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @AlexWaygood on 2024-09-09 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-10 18:12</div>
+            <div class="timeline-body"><blockquote>
+<p>For the first case, I suppose there may be an argument that technically the docstring has no sections, and therefore the rule isn't being violated. And for the last case there may be an argument that only standard section names are supported (e.g. Parameters, Returns, See Also, etc.). But, in my view, I think that with this rule enabled, there should always be a blank line expected (and inserted with --fix) at the end of the docstring.</p>
+</blockquote>
+<p>I think extending the rule to work after any, even unsupported section does make sense.</p>
+<p>I don't think it's the right call to extend the rule to also flag docstrings without a section. It would change the rule's intention in a very significant way:</p>
+<blockquote>
+<p>Checks for missing blank lines after the last section of a multiline docstring.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2024-09-10 18:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @MichaReiser on 2024-09-10 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-10 18:15</div>
+            <div class="timeline-body"><p>It's also worth noting that custom section names aren't recognized by other rules as well. For example, D214 doesn't report a section named <code>Section</code> but is raised for <code>Parameters</code> (<a href="https://play.ruff.rs/2dc8fa12-1065-465a-82a8-7e409586a92a">playground</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/user27182">@user27182</a> on 2024-09-10 20:15</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think it's the right call to extend the rule to also flag docstrings without a section. It would change the rule's intention in a very significant way:</p>
+<blockquote>
+<p>Checks for missing blank lines after the last section of a multiline docstring.</p>
+</blockquote>
+</blockquote>
+<p>Fair enough. I guess this comes down to semantics/definitions. Is a section only considered to be a section if it has a heading (e.g.  <code>Parameters</code>)? Or is the initial summary also considered a section, but without a heading?</p>
+<p>Aside from technical definitions of what a section is, always having a single blank line makes the docstrings visually consistent, regardless of the presence of a heading or not. (In some cases, this is also useful to avoid RST syntax errors where a blank line may be required, though preventing syntax errors is likely out of scope for this rule).</p>
+<p>So if it's decided that a multiline docstring without any sections is excluded from <code>D413</code>, then I propose having a separate rule that would cover this case. The rule I am looking for is perhaps not:</p>
+<blockquote>
+<p>Checks for missing blank lines after the last section of a multiline docstring.</p>
+</blockquote>
+<p>but instead</p>
+<blockquote>
+<p>Checks that multiline docstrings have a single blank line at the end.</p>
+</blockquote>
+<p>And by a single blank line at the end, I mean something like this, where there a line of pure whitespace at the end:</p>
+<pre><code class="language-python">
+def foo():
+    &quot;&quot;&quot;Bar.
+
+    Multiline docstring.
+
+    &quot;&quot;&quot;
+</code></pre>
+<p>I mention this because technically, according to <a href="https://peps.python.org/pep-0257/#handling-docstring-indentation">PEP 257</a> the third line here with the triple quotes is considered a blank line:</p>
+<pre><code class="language-python">def foo():
+    &quot;&quot;&quot;
+    This is the second line of the docstring.
+    &quot;&quot;&quot;
+</code></pre>
+<p>And so based on the PEP 257 definition, <code>ruff</code> isn't applying <code>D413</code> correctly, since the following example <em>already has</em> a blank line at the end and therefore isn't missing one (but <code>ruff</code> disagrees, and will add a second line here).</p>
+<pre><code class="language-python">def foo():
+    &quot;&quot;&quot;Bar.
+
+    Returns
+    -------
+    Nothing.
+    &quot;&quot;&quot;
+</code></pre>
+<p>So perhaps &quot;section&quot; and &quot;blank line&quot; need to be more clearly defined and documented to ensure users better understand what to expect from this rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jhrr">@jhrr</a> on 2024-09-17 08:59</div>
+            <div class="timeline-body"><p>I'm also having this problem. The main issue for me is just to be able to ensure that there's an actual newline between the final closing <code>&quot;&quot;&quot;</code> no matter what (if it's a multiline docstring), just to enforce complete visual consistency everywhere.</p>
+<blockquote>
+<p>So if it's decided that a multiline docstring without any sections is excluded from D413, then I propose having a separate rule that would cover this case.</p>
+</blockquote>
+<p>As @user27182 says, all semantics aside, this would be my preferred solution also in order to satisfy that demand if this rule is not suitable for doing that job itself.</p>
+<p>Thanks for all the effort on the library.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:04 UTC
+    </footer>
+</body>
+</html>

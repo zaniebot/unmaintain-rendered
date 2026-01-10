@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow specifying `files` in persistent configuration - astral-sh/ruff #12757</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow specifying <code>files</code> in persistent configuration</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12757">#12757</a>
+        opened by <a href="https://github.com/daniil-berg">@daniil-berg</a>
+        on 2024-08-08 15:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/daniil-berg">@daniil-berg</a> on 2024-08-08 15:54</div>
+            <div class="timeline-body"><p>It would be nice, if I could specify the files to check, format, etc. via the ruff configuration file (in my case <code>pyproject.toml</code>). I thought of something analogous to the <a href="https://mypy.readthedocs.io/en/stable/config_file.html#confval-files"><code>files</code> directive of <code>mypy</code></a>.</p>
+<p>Maybe I missed something, but I found no mention of this ability to specify files in the <code>ruff</code> documentation and found no issues about it, when I searched for the terms <code>files config</code> here.</p>
+<p>Just trying out something like this gave me an error for commands like <code>ruff check</code> or <code>ruff format</code>:</p>
+<pre><code class="language-toml"># pyproject.toml
+[tool.ruff]
+files = [&quot;src&quot;, &quot;tests&quot;]
+# ...
+</code></pre>
+<pre><code>ruff failed
+  Cause: Failed to parse /path/to/pyproject.toml
+  ...
+unknown field `files`
+</code></pre>
+<p>I assume this is expected and not a bug. Therefore please consider this a humble feature request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-08-08 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-08 16:17</div>
+            <div class="timeline-body"><p>You can use <a href="https://docs.astral.sh/ruff/settings/#include"><code>include</code></a> (and <code>extend-include)</code> and <a href="https://docs.astral.sh/ruff/settings/#exclude"><code>exclude</code></a> (and <code>extend-exclude</code>) to specify which files should be included when running check or format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-08 16:18</div>
+            <div class="timeline-body"><p>I think this is a bit different @MichaReiser. In mypy, specifying <code>files</code> lets you run <code>mypy</code> without passing it any files (and it uses that list as the default).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-08 16:19</div>
+            <div class="timeline-body"><p>So the ask here is that you can set <code>files</code> in the configuration, and <code>ruff check</code> would default to checking those files (instead of <code>.</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-08 16:26</div>
+            <div class="timeline-body"><p>But I think that's roughly the same, isn't it?</p>
+<blockquote>
+<p>A comma-separated list of paths which should be checked by mypy if none are given on the command line. Supports recursive file globbing using <a href="https://docs.python.org/3/library/glob.html#module-glob">glob</a>, where * (e.g. <em>.py) matches files in the current directory and **/ (e.g. **/</em>.py) matches files in any directories below the current one. User home directory and environment variables will be expanded.</p>
+</blockquote>
+<p>You can set <code>exclude</code> and <code>include</code> and that specifies the paths that Ruff checks by default. You can explicitly pass files to <code>ruff check</code> that aren't covered by the set defined by <code>exclude</code>/<code>include</code> and ruff will check those files (unless <code>force-exclude</code> is specified)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/daniil-berg">@daniil-berg</a> on 2024-08-08 16:31</div>
+            <div class="timeline-body"><p>@MichaReiser Maybe I am misunderstanding the logic of those directives. Would you be so kind and provide the correct configuration to accomplish the following:</p>
+<ul>
+<li><code>ruff check</code> (without any following positional arguments) should operate on the directories <code>src</code> and <code>tests</code> only.</li>
+<li>The default inclusion and exclusion patterns of ruff are applied unchanged.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-08 16:39</div>
+            <div class="timeline-body"><p>Yeah you might be right. It might be possible but you would at least need to override <code>include</code> but then there's https://github.com/astral-sh/ruff/issues/9019</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2024-08-08 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2024-08-08 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @MichaReiser on 2024-08-08 16:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:38 UTC
+    </footer>
+</body>
+</html>

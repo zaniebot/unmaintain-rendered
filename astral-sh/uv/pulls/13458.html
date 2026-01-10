@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix #13456: Make VIRTUAL_ENV_PROMPT format consistent with venv/virtualenv - astral-sh/uv #13458</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix #13456: Make VIRTUAL_ENV_PROMPT format consistent with venv/virtualenv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13458">#13458</a>
+        opened by <a href="https://github.com/sandy-sachin7">@sandy-sachin7</a>
+        on 2025-05-14 17:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sandy-sachin7">@sandy-sachin7</a> on 2025-05-14 17:20</div>
+            <div class="timeline-body"><p>Changes shell activation scripts to use raw VIRTUAL_ENV_PROMPT value without adding parentheses or trailing space. This makes uv's behavior match venv and virtualenv, providing a more consistent experience across tools.</p>
+<p>Examples:</p>
+<ul>
+<li>Before: '(base) '</li>
+<li>After:  'base'</li>
+</ul>
+<p>Closes #13456</p>
+<h2>Summary</h2>
+<p>Modified all shell activation scripts (bash, fish, PowerShell, csh, nushell) to directly use the VIRTUAL_ENV_PROMPT value without adding any formatting characters. This change makes uv's virtual environment prompt behavior consistent with both venv and virtualenv, which is particularly important for scripts that rely on the VIRTUAL_ENV_PROMPT environment variable.</p>
+<h2>Test Plan</h2>
+<ol>
+<li><p>Create a virtual environment with a custom prompt:</p>
+<pre><code class="language-bash">uv venv --prompt base
+source .venv/bin/activate
+echo &quot;'$VIRTUAL_ENV_PROMPT'&quot;
+# Should output: 'base'
+</code></pre>
+</li>
+<li><p>Verify the same behavior in different shells:</p>
+<ul>
+<li>Bash: <code>source .venv/bin/activate</code></li>
+<li>Fish: <code>source .venv/bin/activate.fish</code></li>
+<li>PowerShell: <code>. .venv/bin/activate.ps1</code></li>
+<li>CSH: <code>source .venv/bin/activate.csh</code></li>
+<li>Nushell: <code>overlay use .venv/bin/activate.nu</code></li>
+</ul>
+</li>
+</ol>
+<p>The prompt should display without parentheses or trailing space in all shells, matching venv/virtualenv behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ericbn">@ericbn</a> reviewed on 2025-05-14 17:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ericbn">@ericbn</a> on <code>crates/uv-virtualenv/src/activator/activate</code>:104 on 2025-05-14 17:25</div>
+            <div class="timeline-body"><p>The corresponding change needs to be done when setting the shell prompt too in each script. For bash, it's</p>
+<pre><code class="language-diff">-PS1=&quot;${VIRTUAL_ENV_PROMPT}${PS1-}&quot;
++PS1=&quot;(${VIRTUAL_ENV_PROMPT}) ${PS1-}&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sandy-sachin7">@sandy-sachin7</a> reviewed on 2025-05-14 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sandy-sachin7">@sandy-sachin7</a> on <code>crates/uv-virtualenv/src/activator/activate</code>:104 on 2025-05-14 17:31</div>
+            <div class="timeline-body"><p>Not necessary as thats what causing the bug which has been raised !</p>
+<p>It just removes the paranthesis around the environment name and makes it uniform across all shells..</p>
+<p>It has passed all the testcases as well below</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ericbn">@ericbn</a> on <code>crates/uv-virtualenv/src/activator/activate</code>:104 on 2025-05-14 17:44</div>
+            <div class="timeline-body"><p>This means there are no tests cases covering this then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ericbn">@ericbn</a> reviewed on 2025-05-14 17:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ericbn">@ericbn</a> on <code>crates/uv-virtualenv/src/activator/activate</code>:104 on 2025-05-14 17:44</div>
+            <div class="timeline-body"><p>We don't want the rendered PS1 to change, only VIRTUAL_ENV_PROMPT to change. This means removing the parenthesis and trailing space from VIRTUAL_ENV_PROMPT and adding them to PS1.</p>
+<p>Compare this script with https://github.com/pypa/virtualenv/blob/main/src/virtualenv/activation/bash/activate.sh and https://github.com/python/cpython/blob/main/Lib/venv/scripts/common/activate</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ericbn">@ericbn</a> reviewed on 2025-05-14 17:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sandy-sachin7">@sandy-sachin7</a> reviewed on 2025-05-14 17:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sandy-sachin7">@sandy-sachin7</a> on <code>crates/uv-virtualenv/src/activator/activate</code>:104 on 2025-05-14 17:47</div>
+            <div class="timeline-body"><p>Got it .. will work it around !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sandy-sachin7">@sandy-sachin7</a> on 2025-05-14 18:05</div>
+            <div class="timeline-body"><p>@ericbn check the latest commit ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericbn">@ericbn</a> on 2025-05-14 19:33</div>
+            <div class="timeline-body"><p>@SANTHOSH-SACHIN, the changes so far don't look right to me. We want VIRTUAL_ENV_PROMPT to change, but not the rendered PS1 to change. This means removing the parenthesis and trailing space from VIRTUAL_ENV_PROMPT and adding them to PS1.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-15 07:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-virtualenv/src/activator/activate</code>:113 on 2025-05-15 07:36</div>
+            <div class="timeline-body"><p>Why did you change this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-15 07:49</div>
+            <div class="timeline-body"><p>This PR contains a number of changes unrelated to the bugfix (such as char -&gt; ansi and different parentheses). Could you slim it down to only the relevant changes.</p>
+<p>On which platform did you test the new activation scripts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericbn">@ericbn</a> on 2025-05-17 02:09</div>
+            <div class="timeline-body"><p>Actually only the bash/POSIX script was affected with the issue, not any of the others, as far as I've checked, so change is simpler. I've opened #13501.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-17 11:48</div>
+            <div class="timeline-body"><p>(Closing in favor of #13501, thank you for the help here!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-05-17 11:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:24 UTC
+    </footer>
+</body>
+</html>

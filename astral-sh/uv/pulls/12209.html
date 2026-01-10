@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for `-c` constraints in `uv add` - astral-sh/uv #12209</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for <code>-c</code> constraints in <code>uv add</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12209">#12209</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-03-17 00:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-17 00:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes https://github.com/astral-sh/uv/issues/11986.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2025-03-17 00:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-17 00:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/lock.rs</code>:249 on 2025-03-17 00:38</div>
+            <div class="timeline-body"><p>I didn't want to add a <code>constraints</code> argument to <code>do_safe_lock</code> when only one caller needed it, so I migrated this to a struct with a builder pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2025-03-17 00:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2025-03-17 00:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @charliermarsh on 2025-03-17 00:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:3293 on 2025-03-17 18:12</div>
+            <div class="timeline-body"><p>We should probably note these won't be added to the <code>pyproject.toml</code> and explain what final effect they have here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-17 18:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-17 18:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/add.rs</code>:724 on 2025-03-17 18:29</div>
+            <div class="timeline-body"><p>We might need to propagate <code>--marker</code> to the constraints, wdyt? I think it's needed for importing a platform-specific lock (e.g., <code>requirements-win.txt</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-17 18:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/add.rs</code>:724 on 2025-03-17 18:45</div>
+            <div class="timeline-body"><p>Can you explain the command that would be run and why we need to propagate?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-17 18:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/add.rs</code>:724 on 2025-03-17 18:53</div>
+            <div class="timeline-body"><p><code>pip-compile</code> does not add markers to its single platform output. So <code>pip-compile</code> on Windows will produce a Windows specific lockfile without markers.</p>
+<p>To import this, we need to gate the lock to win32, e.g.:</p>
+<pre><code>uv add -r requirements-win.in -c requirements-win.txt --marker &quot;sys_platform == 'win32'&quot;
+</code></pre>
+<p>I think in reality, this is actually more complicated :/ because you probably have a single <code>requirements.in</code> and multiple lockfiles. What you really need is:</p>
+<pre><code>uv add -r requirements.in \
+    -c &quot;requirements-win.txt; sys_platform == 'win32'&quot; \
+    -c &quot;requirements-linux.txt; sys_platform == 'linux'&quot;
+</code></pre>
+<p><code>--marker</code> doesn't work since it's applied to the input requirements.</p>
+<p>For a concrete example, here's what I have in my pip migration draft...</p>
+<blockquote>
+<p>For example, take a simple dependency:</p>
+<pre><code class="language-text">tqdm
+</code></pre>
+<p>On Linux, this compiles to:</p>
+<pre><code class="language-text">tqdm==4.67.1
+    # via -r requirements.in
+</code></pre>
+<p>While on Windows, this compiles to:</p>
+<pre><code class="language-text">colorama==0.4.6
+    # via tqdm
+tqdm==4.67.1
+    # via -r requirements.in
+</code></pre>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/add.rs</code>:724 on 2025-03-17 18:54</div>
+            <div class="timeline-body"><p>I'm not sure if separating input requirements is common. I don't think we should focus on support for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-17 18:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-17 18:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/add.rs</code>:724 on 2025-03-17 18:55</div>
+            <div class="timeline-body"><p>Hmm ok... We can add the marker... It should be harmless...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-17 19:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/add.rs</code>:724 on 2025-03-17 19:13</div>
+            <div class="timeline-body"><p>(Followed-up synchronously because I'm not sure what's best here)</p>
+<p>I think not respecting <code>--marker</code> to start is fine. I'm not sure what to do for that use-case yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-03-17 20:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-03-17 21:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-17 21:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-17 21:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:21 UTC
+    </footer>
+</body>
+</html>

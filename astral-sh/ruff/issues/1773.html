@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human-friendly rule names - astral-sh/ruff #1773</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Human-friendly rule names</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1773">#1773</a>
+        opened by <a href="https://github.com/not-my-profile">@not-my-profile</a>
+        on 2023-01-10 20:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-10 20:54</div>
+            <div class="timeline-body"><p>Pylint, ESLint and Clippy all let you enable or disable lints via human-friendly names e.g. Pylint <a href="https://pylint.pycqa.org/en/v2.11.1/faq.html#do-i-have-to-remember-all-these-numbers">lets you configure</a>:</p>
+<pre><code>disable= wildcard-import,
+ method-hidden,
+ too-many-lines
+</code></pre>
+<p>The idea is to also support such human-friendly names for ruff in <code>pyproject.toml</code>, while still somehow supporting the numeric codes for backwards compatibility. The reasoning being that symbolic names are much more human-friendly than cryptic numeric codes. Case in point projects that care about readable configs end up adding comments to every numeric code in their config: <a href="https://github.com/zulip/zulip/blob/a7fd994cbd00cdc905801c6394e198f81a4a4c32/pyproject.toml#L126">zulip</a>, <a href="https://github.com/tiangolo/fastapi/blob/5905c3f740c8590f1a370e36b99b760f1ee7b828/pyproject.toml#L172">fastapi</a>, <a href="https://github.com/sphinx-doc/sphinx/blob/e17f39e7b535f4849754d46f2cd2e411df8aa535/pyproject.toml#L163">sphinx</a></p>
+<p>Currently Ruff requires every rule to have a numeric code, which I don't think makes much sense given that Ruff also has Ruff-specific rules ... and I don't think we should have to introduce new cryptic numeric codes when we introduce a new Ruff-specific rule. This obviously requires quite some changes to the codebase/UI but I think doing this is worth it.</p>
+<p>In particular I would like us to follow the <a href="https://rust-lang.github.io/rfcs/0344-conventions-galore.html#lints">Rust naming convention for lints</a>:</p>
+<blockquote>
+<p>the lint name should make sense when read as &quot;allow <em>lint-name</em>&quot; or &quot;allow <em>lint-name</em> items&quot;</p>
+</blockquote>
+<p>I think this is a very nice convention because it results in descriptive names. And currently many of our lint names are not descriptive, e.g. TrueFalseComparison should probably rather be called EqualityComperatorForTrueOrFalse, UnnecessaryMap should probably rather be called MapWithLambdaInsteadOfComprehension.</p>
+<p>(Previous discussion: #967)</p>
+<ul>
+<li>[x] #2902</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-10 21:53</div>
+            <div class="timeline-body"><p>I agree with this and I want to do it! Will reply in a bit with some more thoughts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-11 03:35</div>
+            <div class="timeline-body"><p>Okay, so like I said -- I agree! And I think there's a lot of appetite for this (I know I've heard it from @andersk and @smackesey to name a few). We should definitely do it.</p>
+<p>A few comments:</p>
+<ul>
+<li><p>I <em>do</em> feel strongly about retaining the numeric codes, even just for the sake of retaining Flake8 compatibility (I wrote a bit on that point <a href="https://github.com/charliermarsh/ruff/issues/1767#issuecomment-1378025011">here</a> -- it's been critical for adoption), but IMO that in no way conflicts with adding and preferring human-friendly lint names. Of course, in some ways, we already <em>have</em> these names defined in the code as the <code>Violation</code> structs, but they're not exposed to the user at all, and the names aren't very good or consistent.</p>
+</li>
+<li><p>I <em>do</em> think we should give some thought to the constraints we'd like to introduce around names. For example, I don't know if Clippy has a formal convention here, but from a very informal skim, <code>case_sensitive_file_extension_comparisons</code> looks like the longest name. We probably want to have some reasonable cap on length.</p>
+</li>
+<li><p>We need to think on the mechanics of this from a configuration perspective (I'm referring here to the <code>pyproject.toml</code>, CLI arguments, and in-code directives (<code># noqa: ...</code>)). The most basic proposal would be to accept rule codes and rule names interchangeably -- so you could do <code>--select F841</code> or <code>--select whatever-that-rule-is-called</code>.</p>
+</li>
+</ul>
+<p>Separately:</p>
+<blockquote>
+<p>the lint name should make sense when read as &quot;allow lint-name&quot; or &quot;allow lint-name items&quot;</p>
+</blockquote>
+<p>This I appreciate too. I've thought about it in the past (in particular, whether the rules should describe the positive form or the negative behavior), but we've never been consistent on it. (Some of the names were also drawn from the originating plugins, which explains <em>some</em> of the discrepancy.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-11 03:43</div>
+            <div class="timeline-body"><p>Oh, it's worth mentioning: the one thing we lose by moving away from the <code>F841</code>-style system, is that we'll no longer have the ability to turn off sets of rules (apart from entire categories) with (e.g.) <code>--select F8</code>. I'm totally fine with this. I think it's quite rare to use that behavior -- anecdotally, most configurations tend to use precise codes (<code>F841</code>) and category codes (<code>F</code>) anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">core</span> added by @charliermarsh on 2023-01-11 04:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Human-friendly lint names" to "Human-friendly rule names" by @not-my-profile on 2023-01-19 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-30 15:20</div>
+            <div class="timeline-body"><p>I use the prefix categories heavily, as in <code>pycodestyle</code>'s <code>E</code> they are logically related. E.g. I am doing a tab-to-spaces migration by just selecting <code>E1</code> (in <code>autopep8</code>).</p>
+<p>Also I can remember a lot of codes but could not remember a lot of long names. And also wouldn't want to name them in a <code>--select</code> argument.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/scop">@scop</a> on 2023-01-30 18:23</div>
+            <div class="timeline-body"><p>I'd actually like to use the human friendly names as <code>--select</code> arguments rather than codes, provided that there's appropriate shell completion available for the args (currently there isn't). No need to remember that much, then. Some kind of prefix grouping would be highly useful in that scenario, too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-02-09 17:25</div>
+            <div class="timeline-body"><p>+1 for switching to human friendly names everywhere eventually.</p>
+<p>I think we should pivot away from the current flake8-plugin grouping of rules entirely to rule categories (as per #1774). That includes the way that the rules are grouped in the repository.</p>
+<p>And then only maintain a mapping of flake8-plugins/codes to ruff rules to show what has been implemented to aid migration. Ideally I'd like to see this documentation piece also refer to the original code prefixes (especially where ruff has changed them) and also state reasons for not implementing rules that the original plugin did, or why the implementation differs, e.g. <code>F401</code>+<code>F403</code>.</p>
+<p>This would also overcome some of the confusion highlighted in #2517 as well as the fact that many plugins have overlap with each other so they're implemented in some areas in the code, but not others.</p>
+<p>A couple of other thoughts:</p>
+<ul>
+<li>When we have categories we could replace <code>--select S1</code> with, say, <code>--select @security</code>?</li>
+<li>We could also implement a rule, e.g. <code>upgrade-noqa-comments</code>, to rewrite the old codes to their human-friendly versions?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2023-03-07 07:39</div>
+            <div class="timeline-body"><p>Oh please yes!
+Exactly for the reason of adding comments so I can better understand what a rule does, and why it may be disabled, at a glance and not have to remember hundreds of codes.</p>
+<p>I've just started trying out migrating to Ruff, and here's an example of a bunch of extra comments for that: https://github.com/Avasam/speedrun.com_global_scoreboard_webapp/blob/6678056ac2d42ee66b97fc074515855646f2bfc4/pyproject.toml</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sscherfke">@sscherfke</a> on 2023-04-19 10:22</div>
+            <div class="timeline-body"><p>This would make <code># noqa</code> comments more readable, too:</p>
+<pre><code class="language-python">def complex_func():  # noqa: C901
+    ...
+</code></pre>
+<p>vs.</p>
+<pre><code class="language-python">def compoex_func(): # noqa: complex-structure
+    ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/9999years">@9999years</a> on 2024-02-16 23:21</div>
+            <div class="timeline-body"><p>I would also like this! I found it confusing that the URL for <code>G004</code> is https://docs.astral.sh/ruff/rules/logging-f-string/ but that <code>--ignore logging-f-string</code> didn't work.</p>
+<p>Previous comments state that the names aren't exposed to users, but that isn't true any more:</p>
+<pre><code class="language-ShellSession">$ ruff rule G004
+# logging-f-string (G004)
+
+Derived from the **flake8-logging-format** linter.
+
+## What it does
+Checks for uses of f-strings to format logging messages.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2024-02-26 21:15</div>
+            <div class="timeline-body"><p>for pylint rules (PL): it might be wise to just reuse the pylint names without any modification.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2024-03-19 22:10</div>
+            <div class="timeline-body"><p>What needs to be done to get this implemented? What's left and can a beginner in this repo help out?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> added by @dhruvmanila on 2024-03-20 07:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gpshead">@gpshead</a> on 2024-06-12 21:42</div>
+            <div class="timeline-body"><p>I pretty much agree with what was already summarized above. One lesson from pylint: rules will need multiple names.  Only one should be considered the <em>primary</em> (presumably used in the error message and suggested for addition to noqa comments or use in a modern suppression config elsewhere).  That way when you don't really like an existing name or come up with a more meaningful alternative name, or need to align with another tools name, you can.  But all existing configs and directives in code still remain valid.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Pierre-Sassoulas">@Pierre-Sassoulas</a> on 2024-06-13 07:22</div>
+            <div class="timeline-body"><blockquote>
+<p>One lesson from pylint: rules will need multiple names.</p>
+</blockquote>
+<p>Yes, the refactor to be able to have multiple aliases after the fact was very painful.</p>
+<blockquote>
+<p>Only one message should be considered the primary</p>
+</blockquote>
+<p>In pylint we call this, &quot;old_names&quot; and we have a <strong>primary</strong> name the only one that is active (it has an impact in the documentation in particular), but in fact <code>aliases</code> would be more accurate / more powerful. A possible use case is to permits to have one message be a placeholder for multiple one, so you can deactivate multiple similar messages using a single englobing one.  For example, <code>missing-docstring</code> as a placeholder for <code>missing-function-docstring</code> / <code>missing-module-docstring</code> / <code>missing-class-docstring</code>. It's currently possible to do that in pylint but the semantic in the code / doc is not accurate. The documentation present <code>missing-docstring</code> as a deprecated message and not as a possible elegant disable shortcut and if we ever add a tool to upgrade the deprecated messages to the primary one, it would make the code worst / more verbose for nothing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-11-20 16:02</div>
+            <div class="timeline-body"><p>Do you think there is enough consensus to start extending the rule selectors to accept the current human-readable names in addition to the legacy codes? Happy to give it a try.</p>
+<p>Selecting by human-readable names is a stepping stone to presets/recategorisation.</p>
+<p>We could start off with extending support <code>ruff rule [human-name]</code> and when that's stable extend the rule selection in the remainder of <code>ruff</code>?</p>
+<p>I see there has been an attempt to extend selection for <code>noqa</code> comments already: https://github.com/astral-sh/ruff/pull/11757. However, that PR in addition modifies the linter output, which is not strictly necessary right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaelOultram-pexip">@MichaelOultram-pexip</a> on 2024-11-20 16:33</div>
+            <div class="timeline-body"><p>We have been running the changes proposed in https://github.com/astral-sh/ruff/pull/11757 internally at Pexip for the last few months, and have been very happy with the experience. While the linter output changes are useful, I agree they are not required for this PR. I'll work on removing that part to make the PR more manageable.</p>
+<p>EDIT: that PR has been closed as the ruff team wish to take a different approach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-11-28 10:01</div>
+            <div class="timeline-body"><p>I also have a very good use case for <code>ruff rule rule-name</code>. Will create a subissue and submit a PR tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-28 12:04</div>
+            <div class="timeline-body"><blockquote>
+<p>I also have a very good use case for <code>ruff rule rule-name</code>. Will create a subissue and submit a PR tomorrow.</p>
+</blockquote>
+<p>I suggest to first discuss it on the issue before submitting a PR. But I'm interested to hear about your use case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nathanscain">@nathanscain</a> on 2025-07-23 03:01</div>
+            <div class="timeline-body"><p>Quite a bit of time has passed on this, and I was getting curious on the team's intent. Since this discussion took place, ty has been released in alpha with human-friendly names from the start. That project is obviously based on ruff and would eventually be able to function as a full type-aware linter.</p>
+<p>Is the intention to still work towards something like this under ruff, or would this be something to instead expect to be part of a future ty-based linter.</p>
+<p>Similar question applies to #1774 regarding recategorizing rules more like clippy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-23 05:51</div>
+            <div class="timeline-body"><p>This is still on our mind and we want to work towards human readable names and a new form of rule categorization in Ruff. It's just that we've all been very busy with ty but we do plan on porting back some of the improvements (like human readable rule names) to Ruff in the future.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:28:49 UTC
+    </footer>
+</body>
+</html>

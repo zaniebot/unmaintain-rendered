@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SyntaxError is unable to return code on Linux - astral-sh/ruff #12271</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>SyntaxError is unable to return code on Linux</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12271">#12271</a>
+        opened by <a href="https://github.com/WutingjiaX">@WutingjiaX</a>
+        on 2024-07-10 11:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/WutingjiaX">@WutingjiaX</a> on 2024-07-10 11:42</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>&quot;SyntaxError&quot;, &quot;&quot;code&quot;: null&quot;, &quot;linux&quot;, &quot;Debian&quot;</p>
+<p>I run the <strong>same</strong> code on MacOS and Linux(Debian GNU/Linux 10 (buster)), with the cmd:</p>
+<pre><code>ruff check --output-format=json test.py
+</code></pre>
+<p>ruff version 0.5.1</p>
+<p>The code in the <em>test.py</em> is any Python code that may cause syntax errors， such as：</p>
+<pre><code>import .
+</code></pre>
+<p>the output on linux is:</p>
+<pre><code>[
+  {
+    &quot;cell&quot;: null,
+    &quot;code&quot;: null,
+    &quot;end_location&quot;: {
+      &quot;column&quot;: 9,
+      &quot;row&quot;: 1
+    },
+    &quot;filename&quot;: &quot;/home/code/test.py&quot;,
+    &quot;fix&quot;: null,
+    &quot;location&quot;: {
+      &quot;column&quot;: 8,
+      &quot;row&quot;: 1
+    },
+    &quot;message&quot;: &quot;SyntaxError: Expected an import name&quot;,
+    &quot;noqa_row&quot;: null,
+    &quot;url&quot;: null
+  },
+  {
+    &quot;cell&quot;: null,
+    &quot;code&quot;: null,
+    &quot;end_location&quot;: {
+      &quot;column&quot;: 1,
+      &quot;row&quot;: 2
+    },
+    &quot;filename&quot;: &quot;/home/code/test.py&quot;,
+    &quot;fix&quot;: null,
+    &quot;location&quot;: {
+      &quot;column&quot;: 9,
+      &quot;row&quot;: 1
+    },
+    &quot;message&quot;: &quot;SyntaxError: Expected one or more symbol names after import&quot;,
+    &quot;noqa_row&quot;: null,
+    &quot;url&quot;: null
+  }
+]
+</code></pre>
+<p>but on MacOS,the output is:</p>
+<pre><code>[
+  {
+    &quot;cell&quot;: null,
+    &quot;code&quot;: &quot;E999&quot;,
+    &quot;end_location&quot;: {
+      &quot;column&quot;: 9,
+      &quot;row&quot;: 1
+    },
+    &quot;filename&quot;: &quot;/Users/bytedance/Library/Application Support/JetBrains/PyCharm2023.3/light-edit/test.py&quot;,
+    &quot;fix&quot;: null,
+    &quot;location&quot;: {
+      &quot;column&quot;: 8,
+      &quot;row&quot;: 1
+    },
+    &quot;message&quot;: &quot;SyntaxError: Expected an import name&quot;,
+    &quot;noqa_row&quot;: 1,
+    &quot;url&quot;: &quot;https://docs.astral.sh/ruff/rules/syntax-error&quot;
+  }
+]%
+</code></pre>
+<p>I can't understand why the output is different (especially if one code field has a value and the other doesn't)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-10 12:03</div>
+            <div class="timeline-body"><p>I suspect that you're using two different Ruff versions. Can you try running <code>ruff --version</code> on both systems and verify that they're the same?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WutingjiaX">@WutingjiaX</a> on 2024-07-10 13:03</div>
+            <div class="timeline-body"><blockquote>
+<p>I suspect that you're using two different Ruff versions. Can you try running <code>ruff --version</code> on both systems and verify that they're the same?</p>
+</blockquote>
+<p>@MichaReiser oh！you're right，my local version on MacOS is 0.4.9 （though I have the same pyproject.toml）， But why is it that there is no code in higher versions instead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-10 13:11</div>
+            <div class="timeline-body"><p>This has been changed as part of 0.5. For more details, see the <a href="https://astral.sh/blog/ruff-v0.5.0#changes-to-e999-and-reporting-of-syntax-errors">announcement blog post</a>. Do you have a specific use for the error code?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-07-10 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2024-07-10 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WutingjiaX">@WutingjiaX</a> on 2024-07-11 03:00</div>
+            <div class="timeline-body"><p>@MichaReiser
+Thank you for your answer！If the code can be null, it needs some consideration when deserializing (such as using pydantic,it should be optional instead of string). But this is not a big problem</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @WutingjiaX on 2024-07-11 03:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-11 03:15</div>
+            <div class="timeline-body"><blockquote>
+<p>@MichaReiser Thank you for your answer！If the code can be null, it needs some consideration when deserializing (such as using pydantic,it should be optional instead of string). But this is not a big problem</p>
+</blockquote>
+<p>Yeah, I think I should've added something around the fact that the type of <code>cell</code> and <code>noqa_row</code> is now <code>string | null</code> in the output formats. Sorry for the confusion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dhruvmanila on 2024-07-11 03:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaste">@kaste</a> on 2024-07-12 19:13</div>
+            <div class="timeline-body"><p>This change breaks the Sublime Text plugin which assumed &quot;code: str&quot;.  https://github.com/kaste/SublimeLinter-contrib-ruff/issues/2</p>
+<p>This is easy to fix and I have to anyway but in Sublime Text the &quot;rule name&quot; aka &quot;code&quot; actually matters as the &quot;diagnostics&quot; can be styled per linter name, per error-type (&quot;severity&quot;), and per rule-name.  E.g. I literally use a bomb icon for E999 errors.</p>
+<p>(Why is that an Optional[str] anyway.  If I do <code>item[&quot;code&quot;]</code>, I ask what the code is and since there is a key, you basically answer: Yeah sure I have the code, it's ... a nah ... don't know.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-15 08:53</div>
+            <div class="timeline-body"><blockquote>
+<p>(Why is that an Optional[str] anyway. If I do <code>item[&quot;code&quot;]</code>, I ask what the code is and since there is a key, you basically answer: Yeah sure I have the code, it's ... a nah ... don't know.)</p>
+</blockquote>
+<p>You can find some context in the <a href="https://astral.sh/blog/ruff-v0.5.0#changes-to-e999-and-reporting-of-syntax-errors">blog post</a> and some discussion in the <a href="https://github.com/astral-sh/ruff/pull/11901">original PR</a> but the tldr is that the rule itself is deprecated i.e., <code>E999</code> doesn't exists in Ruff anymore. This means we can't use the code anywhere. Syntax errors are now always shown and one cannot select / ignore them. Regarding the type, it's <code>Optional[str]</code> because it's the value that's optional and not the key itself. The key will always be present but as there's no rule code for a syntax error, it will be <code>null</code> instead.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:20 UTC
+    </footer>
+</body>
+</html>

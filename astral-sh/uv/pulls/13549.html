@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>make the error message clearer when running distroless containers - astral-sh/uv #13549</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>make the error message clearer when running distroless containers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13549">#13549</a>
+        opened by <a href="https://github.com/oconnor663">@oconnor663</a>
+        on 2025-05-20 07:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-20 07:12</div>
+            <div class="timeline-body"><p>Previously you could generate a confusing warning like this:</p>
+<pre><code>$ dr ghcr.io/astral-sh/uv run python
+error: Could not read ELF interpreter from any of the following paths: /bin/sh, /usr/bin/env, /bin/dash, /bin/ls
+</code></pre>
+<p>Now the error message is better (updated):</p>
+<pre><code>error: Failed to discover managed Python installations
+  Caused by: Failed to determine the libc used on the current platform
+  Caused by: Failed to find any common binaries to determine libc from: /bin/sh, /usr/bin/env, /bin/dash, /bin/ls
+</code></pre>
+<p>See https://github.com/astral-sh/uv/issues/8635.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @oconnor663 on 2025-05-20 07:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-20 07:27</div>
+            <div class="timeline-body"><p>The direct way to test this is to rebuild our docker image and run a command in it, though that takes a long time:</p>
+<pre><code>$ cd ~/astral/uv
+$ docker build . -t test
+...
+$ docker run test run python
+error: Failed to determine libc version from common binaries (/bin/sh, /usr/bin/env, /bin/dash, /bin/ls). Are you running uv from a distroless Docker image or similar? That's not currently supported.
+</code></pre>
+<p>An more direct way to create the same condition is to use an empty <code>chroot</code>, though the build needs to be statically linked:</p>
+<pre><code>$ cd ~/astral/uv
+$ cargo build --target x86_64-unknown-linux-musl
+...
+$ mkdir /tmp/empty
+$ cp target/x86_64-unknown-linux-musl/debug/uv /tmp/empty/
+$ sudo chroot /tmp/empty /uv run python
+error: Failed to determine libc version from common binaries (/bin/sh, /usr/bin/env, /bin/dash, /bin/ls). Are you running uv from a distroless Docker image or similar? That's not currently supported.
+</code></pre>
+<p>I don't <em>love</em> this run-on error message. My first instinct was to use two or three separate <code>error!</code> lines, but I saw that those don't show up at all unless the caller uses <code>-v</code>, so it looks like we have to use the error message? Also I imagine this isn't really in the style of our other error messages? Happy to let someone else suggest a better phrasing.</p>
+<p>Pie-in-the-sky-new-guy thought: Would it be nice/useful if our errors supported some sort of <code>.with_context()</code> method similar to what <code>anyhow</code> does? It seems tough to figure out how much context to pack into this error message at the point in the code where we need to define it. Like the user probably doesn't know or care why we might want to &quot;determine the libc version&quot;. That's just what the proximate functions are doing when the error happens. The <code>DEBUG</code> lines in the original bug report are more informative, and if we're about to crash with an obscure error we might wish we could retroactively turn on verbose mode to log how we got there?</p>
+<p>What do you think about adding a test for this? Do we have any integration tests for the Docker image? My quick read of <code>.github/workflows/build-docker.yml</code> is that it's a publishing flow and not a testing flow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-20 11:18</div>
+            <div class="timeline-body"><p>My intuition is to split the error into two errors: A source error, the current one, and a nicer one that wraps it that says something like <code>Failed to determine libc version, are you in a distroless Docker image?</code>.</p>
+<p>We can also add an outer error that says something like &quot;Failed to install a managed Python interpreter&quot; to make it more clear what component failed and how to work around this (provide a system (or nix?) interpreter or install a Python yourself). In this case it's not too helpful since the problem is usually you're in the wrong docker container, but I generally try contextualize errors by component, it also helps when users are sharing error traces in bug reports.</p>
+<p>A trick that we sometimes use is to make a line break and add a <code>hint:</code>; this only renders nicely though if you're the first or the last error in the chain (which may not be applicable here; I'd love to properly propagate hints upwards but trait restrictions don't allow it). You can find the existing hints by grepping for <code>&quot;hint&quot;.bold().cyan()</code>.</p>
+<p>Can we add guidance in the error message what the user should do, e.g. if they are on nix?</p>
+<blockquote>
+<p>What do you think about adding a test for this? Do we have any integration tests for the Docker image? My quick read of <code>.github/workflows/build-docker.yml</code> is that it's a publishing flow and not a testing flow.</p>
+</blockquote>
+<p>One option is to use the musl build we already have in CI and mount it into a distroless docker and capture the output. This is complicated though, and for this error path may not be worth the complexity, manual testing might be sufficient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2025-05-20 11:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @geofft by @konstin on 2025-05-20 11:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-20 13:17</div>
+            <div class="timeline-body"><blockquote>
+<p>We can also add an outer error that says something like &quot;Failed to install a managed Python interpreter&quot; to make it more clear what component failed and how to work around this (provide a system (or nix?) interpreter or install a Python yourself). In this case it's not too helpful since the problem is usually you're in the wrong docker container, but I generally try contextualize errors by component, it also helps when users are sharing error traces in bug reports.</p>
+</blockquote>
+<p>Yeah I agree this is another thing I'd expect to see here. We should add one or more layers that elucidate <em>why</em> we're trying to read this thing as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-20 13:19</div>
+            <div class="timeline-body"><p>I don't think we need to add test coverage for this, a manual check is sufficient for now. We're not really set up to snapshot the output in a meaningful way. It might be a nice thing to have a harness for integration tests in the future so we can capture things like this (maybe open an issue to track that?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-05-20 14:11</div>
+            <div class="timeline-body"><ol>
+<li>I think we should change the existing &quot;Could not read ELF interpreter from any of the following paths&quot; message, perhaps in addition to the new error you're introducing here. It's not at all obvious (even to me!) why uv is trying to read an ELF interpreter, why it's doing it from those particular paths, whether I can get it to read from other paths, what it's trying to do with that information etc. We should start off by reporting the high-level thing that failed (we couldn't figure out what type of OS you are on to find a compatible Python distribution) and what to do about it, and maybe keep information about how we failed to figure that out in verbose logs or something. We should probably update &quot;Failed to determine libc&quot; too.</li>
+<li>I would not use the word &quot;distroless&quot; here; while that is the terminology we currently use on <a href="https://docs.astral.sh/uv/guides/integration/docker/">our Docker page</a>, there is a project called <a href="https://github.com/GoogleContainerTools/distroless">distroless</a>, and many of its containers have a libc installed, and running uv + python-build-standalone on those is fully supported. What's not supported is <em>our</em> ghcr.io/astral-sh/uv:latest container, which is built <code>FROM scratch</code> with only the uv binaries, and is kind of intended just for copying the binaries into some other container you're building (see the examples in our docs), not for running directly. If we can reliably detect that we're running in ghcr.io/astral-sh/uv:latest, it would be neat to provide some advice on what to run instead. (This may require reworking our docs first, or changing the ENTRYPOINT in uv:latest to print an error so that you don't even get to this part of the uv code, or something.)</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/geofft">@geofft</a> on 2025-05-20 14:32</div>
+            <div class="timeline-body"><p>One way to test this logic on an existing binary, without rebuilding anything, is to pick a different path for the ELF interpreter inside the chroot and use <code>patchelf</code> to change the path to the ELF interpreter in the built copy of uv. Here's a fully worked example on Ubuntu:</p>
+<pre><code class="language-sh-session">$ mkdir chroot
+$ patchelf ~/.local/bin/uv --set-interpreter /ld.so --output chroot/uv 
+$ cp &quot;$(patchelf --print-interpreter ~/.local/bin/uv)&quot; chroot/ld.so
+$ ldd ~/.local/bin/uv | sed -n 's/.*=&gt; \(.*\) .*/\1/p' | xargs -I_ rsync -aLR _ chroot
+$ busybox unshare -Urm chroot chroot /uv run python
+error: Could not read ELF interpreter from any of the following paths: /bin/sh, /usr/bin/env, /bin/dash, /bin/ls
+</code></pre>
+<p><code>unshare -U</code> creates a user namespace, which is an unprivileged way to do chroots. Because Ubuntu is paranoid they kind of sort of turn this off by default for the normal <code>unshare</code> command but <a href="https://x.com/roddux/status/1903028631514837107">not for <code>busybox unshare</code></a>; see also <a href="https://www.qualys.com/2025/three-bypasses-of-Ubuntu-unprivileged-user-namespace-restrictions.txt">Qualys' writeup</a> and <a href="https://discourse.ubuntu.com/t/understanding-apparmor-user-namespace-restriction/58007">Ubuntu's response</a> about how this is actually a feature. On non-Ubuntu systems, regular <code>unshare</code> works. It might also work on Ubuntu GHA runners, I haven't checked. In any case, the point of this is that you can chroot without actually needing root/sudo; ultimately it should be possible to do this in a test case in Rust or whatever other language instead of as its own full-scale integration test, though it will be a little more than your average unit test because it will need to run the <code>uv</code> binary as a separate process.</p>
+<p>The <code>ldd | xargs rsync</code> adventure copies all needed normal libraries to the chroot, since you need those too for a non-statically-linked uv.</p>
+<p>Also, because we aren't currently looking for the interpreter itself, just these files, you can reproduce the current behavior without even calling patchelf, just copy the ELF interpreter under its original name into the chroot:</p>
+<pre><code class="language-sh-session">$ rm -rf chroot
+$ mkdir chroot
+$ cp ~/.local/bin/uv chroot/uv
+$ rsync -aLR &quot;$(patchelf --print-interpreter ~/.local/bin/uv)&quot; chroot
+$ ldd ~/.local/bin/uv | sed -n 's/.*=&gt; \(.*\) .*/\1/p' | xargs -I_ rsync -aLR _ chroot
+$ busybox unshare -Urm chroot chroot /uv run python
+error: Could not read ELF interpreter from any of the following paths: /bin/sh, /usr/bin/env, /bin/dash, /bin/ls
+</code></pre>
+<p>(This is a bug - this chroot has a working ELF interpreter and python-build-standalone will work - but we can tackle that separately from improving the error messages of the current logic.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-20 15:28</div>
+            <div class="timeline-body"><p>Fwiw you can build a statically linked uv through musl and put that into a docker container (Using <code>ghcr.io/astral-sh/uv</code> in place of scratch as docker doesn't want to let me use scratch):</p>
+<pre><code>$ cargo build --target x86_64-unknown-linux-musl
+$ docker run --rm -it -w /io -v $(pwd)/target:/io --entrypoint /io/x86_64-unknown-linux-musl/debug/uv ghcr.io/astral-sh/uv venv
+  x Could not read ELF interpreter from any of the following paths: /bin/sh, /usr/bin/env, /bin/dash, /bin/ls
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-21 23:52</div>
+            <div class="timeline-body"><p>Brief check-in: I wound up spending the last couple days on https://github.com/astral-sh/uv/pull/13583. I'm going to put out a second iteration on that PR and get back to this one tomorrow.</p>
+<p>Edit: This is on top of my plate for tomorrow (Friday) morning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-24 00:15</div>
+            <div class="timeline-body"><p>Ok this is ready for another look. Here's what the error looks like now:</p>
+<pre><code>$ cargo build --target x86_64-unknown-linux-musl
+...
+$ cp target/x86_64-unknown-linux-musl/fast-build/uv /tmp/chroot/uv
+$ sudo chroot /tmp/chroot /uv run python
+error: Failed to find a managed Python installation matching the current platform
+  Caused by: Failed to determine the current platform
+  Caused by: Failed to find any common binaries (/bin/sh, /usr/bin/env, /bin/dash, /bin/ls)
+</code></pre>
+<p>This is my first time working with <code>thiserror</code>, so I wouldn't be at all surprised if there's some more idiomatic way to do these things. Thanks @konstin for talking me through a lot of this stuff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/discovery.rs</code>:227 on 2025-05-26 10:31</div>
+            <div class="timeline-body"><p>nit:</p>
+<pre><code class="language-suggestion">    #[error(&quot;Failed to find a managed Python installation&quot;)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-05-26 10:35</div>
+            <div class="timeline-body"><p>Looks good!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-26 10:37</div>
+            <div class="timeline-body"><p>There's a second <code>#[error(transparent)] LibcDetection(#[from] LibcDetectionError)</code>, should we annotate that one too? I'm not sure if the code path is accessible right now, maybe with a <code>uv python install</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-05-26 16:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-python/src/downloads.rs</code>:93 on 2025-05-26 16:00</div>
+            <div class="timeline-body"><p>Copy/pasting this in two places makes me wonder if there's an easy way to make the <code>LibcDetectionError</code> apply this annotation itself. I assume not without changing it into a struct with an internal &quot;error kind&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/downloads.rs</code>:93 on 2025-05-26 16:03</div>
+            <div class="timeline-body"><p>thiserror at least doesn't support it, I think that's a limitation because every <code>.source()</code> needs a type and we'd need two type for the <code>LibcDetectionError</code> error message and the variant error message, but we only have one type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-26 16:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-05-26 16:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-python/src/downloads.rs</code>:93 on 2025-05-26 16:08</div>
+            <div class="timeline-body"><p>Ah, I wasn't even thinking about the <code>.source()</code> representation, just prefixing the string representation of all variants of the enum with <code>&quot;Failed to find the current platform: (...)&quot;</code> or something like that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/geofft">@geofft</a> on <code>crates/uv-python/src/discovery.rs</code>:227 on 2025-05-27 19:07</div>
+            <div class="timeline-body"><p>I probably need to see the actual errors as they would be output to understand what's going on here, so feel free to disregard this, but - &quot;Failed to find a managed Python installation&quot; reads to me as that we were expecting something to already be installed, and it wasn't installed. I think this error is saying that it failed to find a <em>distribution</em> (though I hate that word, it's overloaded) that is <em>available</em> to be installed, that matches the current platform, right?</p>
+<p>&quot;Failed to find a compatible managed Python version&quot; maybe?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/geofft">@geofft</a> approved on 2025-05-27 19:08</div>
+            <div class="timeline-body"><p>I'm going to step back from this review so that you're not blocked on me being around to review, but in general it looks like what you have here is a definite improvement on the status quo, and getting much farther would require reworking the actual detection logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-27 19:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/discovery.rs</code>:227 on 2025-05-27 19:11</div>
+            <div class="timeline-body"><p>This is in the <code>Discovery</code> enum so it should be correct as-written?</p>
+<p>I'm more confused about why this isn't a <code>ManagedPython</code> enum member if it's <code>ManagedPython</code>-specific?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-27 19:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:93 on 2025-05-27 19:13</div>
+            <div class="timeline-body"><p>Should this be &quot;Failed to determine the libc used on the current platform&quot;? This message seems too generic for a libc-detection specific problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-27 19:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/managed.rs</code>:90 on 2025-05-27 19:13</div>
+            <div class="timeline-body"><p>Same as https://github.com/astral-sh/uv/pull/13549/files#r2109990567</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-27 19:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/libc.rs</code>:40 on 2025-05-27 19:15</div>
+            <div class="timeline-body"><p>Should we say what we're doing with these binaries?</p>
+<pre><code class="language-suggestion">    #[error(&quot;Failed to find any common binaries to determine libc from: {0}&quot;)]
+</code></pre>
+<p>Separately, we generally, stylize as <code>: &lt;values&gt;</code> at the end of a message</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-27 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/discovery.rs</code>:227 on 2025-05-27 19:17</div>
+            <div class="timeline-body"><p>I think this <code>from / source</code> split for managed Python errors is pretty awkward here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-27 19:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/downloads.rs</code>:93 on 2025-05-27 19:29</div>
+            <div class="timeline-body"><p>I'd push the libc part down to the most detailed error, I don't expect Python devs to know about libc flavors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-27 19:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/downloads.rs</code>:93 on 2025-05-27 19:36</div>
+            <div class="timeline-body"><p>As structured, it needs to be present here or it's too broad / inaccurate. I also don't expect devs to know about libc flavors, but there should be an error above this explaining why we're looking for it. I'm also fine with it being structured differently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/oconnor663">@oconnor663</a> reviewed on 2025-05-28 00:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/oconnor663">@oconnor663</a> on <code>crates/uv-python/src/discovery.rs</code>:227 on 2025-05-28 00:07</div>
+            <div class="timeline-body"><p>@geofft I don't know if we're necessarily <em>expecting</em> something to be installed, but this error occurs as we're looking at the versions that are already installed and filtering for the ones that are compatible with the current platform. (Presumably if we didn't find anything we would go on to try to download something, but we don't make it that far.) There's a piece of machinery called <a href="https://github.com/astral-sh/uv/blob/20cfc93c58fed2c30f778522d64bc86aa5cab60f/crates/uv-python/src/discovery.rs#L795"><code>Error::is_critical</code></a> involved here, where certain expected errors like &quot;we failed to invoke that interpreter&quot; are considered non-critical (because it's presumably just not compatible and we should try others), but this libc error isn't one of those expected cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-05-28 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-29 04:06</div>
+            <div class="timeline-body"><p>@zanieb I just pushed the <code>discovery::Error</code> change we talked about earlier today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/discovery.rs</code>:227 on 2025-05-29 12:18</div>
+            <div class="timeline-body"><p>I think this is too specific? This can be raised for any managed Python error.</p>
+<pre><code class="language-suggestion">    #[error(&quot;Failed to discover managed Python installations&quot;)]
+</code></pre>
+<p>It seems misleading to suggest it's specifically related to &quot;matching the current platform&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-29 12:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/oconnor663">@oconnor663</a> on 2025-05-29 14:50</div>
+            <div class="timeline-body"><p>Committed @zanieb's wording change and updated the PR description.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-05-29 15:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @oconnor663 on 2025-05-29 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @oconnor663 on 2025-05-29 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-29 17:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:24 UTC
+    </footer>
+</body>
+</html>

@@ -67,10 +67,36 @@ t.method()
         <div class="timeline-entry">
             <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-12-31 15:27</div>
         </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/11happy">@11happy</a> on 2026-01-10 10:51</div>
+            <div class="timeline-body"><p>Hii @ntBre , for the above issue as you mentioned loops are assumed to always execute atleast once, which causes for the above tests case to result in <code>Terminal::Raise</code> behaviour eventually returning <code>NoReturn</code> , for solution could we check if iterable in <code>for</code> &amp; <code>while</code> stmt  is guranteed to be non-empty something along these lines:</p>
+<pre><code>fn nonempty_tmep_check(iter: &amp;Expr) -&gt; bool {
+    match iter {
+        Expr::List(ast::ExprList { elts, .. }) =&gt; !elts.is_empty(),
+        Expr::Tuple(ast::ExprTuple { elts, .. }) =&gt; !elts.is_empty(),
+        Expr::Set(ast::ExprSet { elts, .. }) =&gt; !elts.is_empty(),
+        Expr::Dict(ast::ExprDict { items, .. }) =&gt; !items.is_empty(),
+        Expr::StringLiteral(ast::ExprStringLiteral { value, .. }) =&gt; !value.is_empty(),
+        Expr::BytesLiteral(ast::ExprBytesLiteral { value, .. }) =&gt; !value.is_empty(),
+        _ =&gt; false,
+    }
+}
+</code></pre>
+<p>&amp; then in <code>Terminal::from_body</code> we can only apply terminal behaviour if we know the loops executes, however how do we make sure for function calls or other variables ? What do you think of this approach please let me know.</p>
+<p>Also while exploring the codebase I noticed both <code>sometimes_break</code> &amp; <code>always_break</code> have same doc comments, I think <code>always_break</code> should have correct doc comment.</p>
+<pre><code>/// Returns `true` if the body may break via a `break` statement.
+fn sometimes_breaks(stmts: &amp;[Stmt]) -&gt; bool 
+
+ /// Returns `true` if the body may break via a `break` statement.
+fn always_breaks(stmts: &amp;[Stmt]) -&gt; bool
+
+</code></pre>
+</div>
+        </div>
     </div>
 
     <footer>
-        Synced at 2026-01-10 01:30:19 UTC
+        Synced at 2026-01-10 12:10:17 UTC
     </footer>
 </body>
 </html>

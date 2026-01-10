@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build basic source distributions - astral-sh/uv #8886</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Build basic source distributions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/8886">#8886</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-11-07 13:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-11-07 13:02</div>
+            <div class="timeline-body"><p>Very basic source distribution support. What's included:</p>
+<ul>
+<li>Include and exclude patterns (hard-coded): Currently, we have globset+walkdir in one part and glob in the other. I'll migrate everything to globset+walkset and some custom perf optimizations to avoid traversing irrelevant directories on top. I'll also pick a glob syntax (or subset), PEP 639 seems like a good candidate since it's consistent with what we already have to support.</li>
+<li>Add the <code>PKG-INFO</code> file with metadata: Thanks to Core Metadata 2.2, this metadata is reliable and can be read statically by external tools.</li>
+</ul>
+<p>Example output:</p>
+<pre><code>$ tar -ztvf dist/dummy-0.1.0.tar.gz
+-rw-r--r-- 0/0             154 1970-01-01 01:00 dummy-0.1.0/PKG-INFO
+-rw-rw-r-- 0/0             509 1970-01-01 01:00 dummy-0.1.0/pyproject.toml
+drwxrwxr-x 0/0               0 1970-01-01 01:00 dummy-0.1.0/src/dummy
+drwxrwxr-x 0/0               0 1970-01-01 01:00 dummy-0.1.0/src/dummy/submodule
+-rw-rw-r-- 0/0              30 1970-01-01 01:00 dummy-0.1.0/src/dummy/submodule/impl.py
+-rw-rw-r-- 0/0              14 1970-01-01 01:00 dummy-0.1.0/src/dummy/submodule/__init__.py
+-rw-rw-r-- 0/0              12 1970-01-01 01:00 dummy-0.1.0/src/dummy/__init__.py
+</code></pre>
+<p>No tests since the source distributions don't build valid wheels yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-11-07 13:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-11-07 13:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/lib.rs</code>:386 on 2024-11-07 13:02</div>
+            <div class="timeline-body"><p>It's not fully clear what the right default here is</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-11-07 13:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/lib.rs</code>:441 on 2024-11-07 13:03</div>
+            <div class="timeline-body"><p>It's not fully clear what the right default here is, since we're e.g. writing source dists that get used on unix</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-build-backend/src/lib.rs</code>:386 on 2024-11-07 13:11</div>
+            <div class="timeline-body"><p>I think this seems fine to me generally speaking. Or is there a more specific concern you have?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-build-backend/src/lib.rs</code>:441 on 2024-11-07 13:13</div>
+            <div class="timeline-body"><p>I'm not even sure what this means on non-Unix?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-build-backend/src/lib.rs</code>:415 on 2024-11-07 13:14</div>
+            <div class="timeline-body"><p>I believe this is correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-11-07 13:15</div>
+            <div class="timeline-body"><p>Looks like a good start!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-11-07 13:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/lib.rs</code>:441 on 2024-11-07 13:29</div>
+            <div class="timeline-body"><p>The problem we want to avoid is that we're writing a <code>.tar.gz</code> on windows, setting a default 000 mode and then fail to read the unpacked files on unix.</p>
+<p>There are other odd implications, e.g., when you check out a git repo and build a source dist from it, it may be different when built on windows and when built on unix: On windows, we lose the permissions that may be stored in git (as ntfs does not support them), while on unix, we copy the permissions to the archive.</p>
+<p>In the wild, 644 and 755 seem to be the most popular defaults: https://github.com/search?q=header.set_mode&amp;type=code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-11-07 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-11-07 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-11-07 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-07 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-07 13:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-build-backend/src/lib.rs</code>:441 on 2024-11-07 13:52</div>
+            <div class="timeline-body"><p>Yeah, and I imagine at least on Unix, a user's umask will smooth things out even when <code>644</code> is undesirable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/harkabeeparolus">@harkabeeparolus</a> reviewed on 2024-11-08 07:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/harkabeeparolus">@harkabeeparolus</a> on <code>crates/uv-build-backend/src/lib.rs</code>:441 on 2024-11-08 07:06</div>
+            <div class="timeline-body"><p><a href="https://github.com/libarchive/libarchive/blob/d60f3ea1b3bfd9f1dcd4040de9fca53fbedd829a/libarchive/archive_read_disk_windows.c#L2035C9-L2035C36">Here's what bsdtar / libarchive does on Windows</a>. My C is a bit <em>rusty</em> (hehe 🙄), but basically:</p>
+<ol>
+<li>Start with read bits for everyone, i.e. user, group and other: 444</li>
+<li>If the Windows file/dir is not readonly, add write bits for everyone (with bitwise OR): 222 (resulting in 666)</li>
+<li>If it is a directory, add execute bits for everyone: 111</li>
+<li>If it is a regular file ending in *.bat, *.cmd, or *.exe, add execute bits for everyone: 111</li>
+</ol>
+<p>I feel like there ought to be a portable Rust crate for creating tar files that performs reasonably similar heuristics on Windows, if you don't have a strong desire to roll your own heuristics. 😊</p>
+<p>This will work fine while running as a normal user (non-root), since tar by default applies the normal user's umask when extracting a tar archive. From the <a href="https://www.gnu.org/software/tar/manual/html_node/Option-Summary.html#index-no_002dsame_002dpermissions_002c-summary">manual page</a>:</p>
+<blockquote>
+<p>‘--no-same-permissions’
+When extracting an archive, subtract the user’s umask from files from the permissions specified in the archive. <strong>This is the default behavior for ordinary users</strong>.</p>
+</blockquote>
+<p><a href="https://www.gnu.org/software/tar/manual/html_node/Attributes.html#index-preserve_002dpermissions_002c-short-description">And</a>:</p>
+<blockquote>
+<p>‘-p’
+‘--same-permissions’
+‘--preserve-permissions’
+Extract all protection information.</p>
+<p>This option causes tar to set the modes (access permissions) of extracted files exactly as recorded in the archive. If this option is not used, the current umask setting limits the permissions on extracted files. This option is by default enabled when tar is executed by a superuser.</p>
+</blockquote>
+<p>If someone does extract a random tar file from the Internet as root, they should know to use <code>--no-same-permissions</code> and similar flags, in order not to shoot themselves in the foot.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:14 UTC
+    </footer>
+</body>
+</html>

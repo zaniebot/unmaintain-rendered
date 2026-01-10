@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set `VIRTUAL_ENV` in Jupyter kernels - astral-sh/uv #11155</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Set <code>VIRTUAL_ENV</code> in Jupyter kernels</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11155">#11155</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-02-01 19:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-01 19:43</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>It turns out activating the kernel does not change <code>VIRTUAL_ENV</code>, so we still install into the environment the Jupyter environment, rather than the project environment.</p>
+<p>Unfortunately, after this change, we do still show a warning on <code>uv add</code>:</p>
+<pre><code>warning: `VIRTUAL_ENV=/Users/crmarsh/.cache/uv/archive-v0/3bddKDdYXuX2w57Fu6itL` does not match the project environment path `.venv` and will be ignored
+</code></pre>
+<p><code>uv pip install</code> works without warning.</p>
+<p>Closes #11154.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2025-02-01 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @charliermarsh on 2025-02-01 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-01 19:44</div>
+            <div class="timeline-body"><p>@zanieb -- Do you think it's fair game to suppress that warning if <code>UV_PYTHON</code> is set?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/indrayam">@indrayam</a> on 2025-02-01 19:55</div>
+            <div class="timeline-body"><p>Thank you for this, @charliermarsh Will try it once I am home.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-01 19:56</div>
+            <div class="timeline-body"><p>Thanks so much for pointing it out. Not sure if I was confused when I wrote the docs or if something changed in Jupyter or uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-01 20:00</div>
+            <div class="timeline-body"><blockquote>
+<p>@zanieb -- Do you think it's fair game to suppress that warning if <code>UV_PYTHON</code> is set?</p>
+</blockquote>
+<p>Not broadly. Like, <code>UV_PYTHON</code> just says which interpreter to use for <em>creating</em> the project environment. It doesn't change that the active environment is inequal to the project environment path.</p>
+<p>I'll need to look more closely at what's going on here though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-01 20:05</div>
+            <div class="timeline-body"><p>Jupyter runs in an ephemeral environment, since it's installed via <code>--with</code>. The project is located at <code>.venv</code>. The user creates a kernel for the project. We want users to be able to run <code>!uv add</code> or <code>!uv pip install</code>. <code>VIRTUAL_ENV</code> is set to the ephemeral environment, despite the kernel. <code>!uv pip install</code> fails because it installs into the ephemeral environment (so this change sets <code>UV_PYTHON</code> explicitly to solve that), and <code>!uv add</code> succeeds but erroneously warns since <code>VIRTUAL_ENV</code> does not equal the project path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-01 20:05</div>
+            <div class="timeline-body"><p>The other option is setting <code>VIRTUAL_ENV</code> in the kernel spec, as opposed to <code>UV_PYTHON</code>. I don't know what the implications of that are.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-01 20:11</div>
+            <div class="timeline-body"><p>I see. It seems okay to silence the <code>VIRTUAL_ENV</code> warning if <code>UV_PYTHON</code> is set to the project environment path specifically / or (as a broader solution) if the requested interpreter matches the project environment, e.g., <code>-p .venv</code>.</p>
+<p>It does seem more correct to set <code>VIRTUAL_ENV</code> if we can.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-01 20:12</div>
+            <div class="timeline-body"><p>We can, yeah.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-02-01 20:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/indrayam">@indrayam</a> on 2025-02-01 21:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks so much for pointing it out. Not sure if I was confused when I wrote the docs or if something changed in Jupyter or uv.</p>
+</blockquote>
+<p>I absolutely adore &quot;uv&quot;. And since NOTHING I do these days does not use uv, Jupyter related challenges had been bugging me. Anyways, about to try your changes. Will keep you all posted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielhollas">@danielhollas</a> on 2025-02-01 21:11</div>
+            <div class="timeline-body"><p>Btw: the warning situation is somewhat similar to what happens when uv is run from pre-commit</p>
+<p>https://github.com/astral-sh/uv-pre-commit/issues/36</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/indrayam">@indrayam</a> on 2025-02-01 21:45</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Thanks so much for pointing it out. Not sure if I was confused when I wrote the docs or if something changed in Jupyter or uv.</p>
+</blockquote>
+<p>I absolutely adore &quot;uv&quot;. And since NOTHING I do these days does not use uv, Jupyter related challenges had been bugging me. Anyways, about to try your changes. Will keep you all posted.</p>
+</blockquote>
+<p>I recreated a new project and created a new ipython kernel using the updated <code>uv run ipython kernel</code> (as per @charliermarsh's commit diff). Everything worked like a charm! And by setting the <code>VIRTUAL_ENV</code> environment variable at the kernel level, there were no warnings that I saw, not even when I ran the <code>!uv add</code> command. Not sure if that was supposed to be the case.</p>
+<p><img width="1519" alt="image" src="https://github.com/user-attachments/assets/4a17f6e5-bc14-4e75-ab11-8767e4372d5f" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-01 21:54</div>
+            <div class="timeline-body"><p>Awesome, thank you for testing! It's good to see that the warning is gone too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-02-01 21:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-01 21:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-01 21:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Set `UV_PYTHON` in Jupyter kernels" to "Set `VIRTUAL_ENV` in Jupyter kernels" by @zanieb on 2025-02-01 21:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/indrayam">@indrayam</a> on 2025-02-01 21:57</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<blockquote>
+<p>Thanks so much for pointing it out. Not sure if I was confused when I wrote the docs or if something changed in Jupyter or uv.</p>
+</blockquote>
+<p>I absolutely adore &quot;uv&quot;. And since NOTHING I do these days does not use uv, Jupyter related challenges had been bugging me. Anyways, about to try your changes. Will keep you all posted.</p>
+</blockquote>
+<p>I recreated a new project and created a new ipython kernel using the updated <code>uv run ipython kernel</code> (as per @charliermarsh's commit diff). Everything worked like a charm! And by setting the <code>VIRTUAL_ENV</code> environment variable at the kernel level, there were no warnings that I saw, not even when I ran the <code>!uv add</code> command. Not sure if that was supposed to be the case.
+...</p>
+</blockquote>
+<p>Btw, on a somewhat related note, I am not entirely clear how <code>uv run --with jupyter jupyter notebook</code> invocations at times creates a new folder inside <code>$HOME/.cache/uv/archive-v0/..</code> with all the jupyter related dependencies and at other times reuses the existing one.</p>
+<p>Last evening, as I was dabbling with this, I saw <code>uv run --with jupyter...</code> create a folder under <code>.../archive-v0/</code>. This morning, when I decided to rerun the same command as I continued my work, I noticed it created a brand new folder and redownloaded Jupyter. Moreover, the older folder was not there anymore.</p>
+<p>I understand that since it is inside <code>$HOME/.cache/uv/..</code>, it is ephemeral. I was just curious, especially about the logic you are using to clear the existing Jupyter-related dependencies folder from the cache.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:19 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot]: Normalize paths stored in `Vfs` - astral-sh/ruff #11907</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot]: Normalize paths stored in <code>Vfs</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11907">#11907</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-06-17 16:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-17 16:03</div>
+            <div class="timeline-body"><p>I'm not entirely sure where the normalization should happen, but I ran into the following bug:</p>
+<pre><code class="language-rust">db.memory_file_system().write_files([
+      (&quot;src/a.py&quot;, &quot;from foo import x&quot;),
+      (&quot;src/foo.py&quot;, &quot;x = 10\ndef foo(): ...&quot;),
+])?;
+
+ let x_ty = public_symbol_ty(&amp;db, a, &quot;x&quot;).unwrap();
+
+db.memory_file_system()
+      .write_file(&quot;src/foo.py&quot;, &quot;x = 20\ndef foo(): ...&quot;)?;
+
+let foo = system_path_to_file(&amp;db, &quot;src/foo.py&quot;).unwrap();
+foo.touch(&amp;mut db);
+
+let x_ty_2 = public_symbol_ty(&amp;db, a, &quot;x&quot;).unwrap();
+</code></pre>
+<p>The code updates <code>foo.py</code> after its initial write. What I would have expected is that changing foo, retriggers the type inference for <code>a.py</code>, but it didn't.</p>
+<p>The problem is simple. The module resolver resolves <code>from foo import x</code> to the path <code>/src/foo.py</code> but we call <code>system_path_to_file</code> with <code>src/foo.py</code> (note the missing leading <code>/</code>.</p>
+<p>I think the solution here is that <code>Vfs</code> should normalize paths (not canoncialize, just normalize them) to ensure the path entries are unique.</p>
+<p>For now, I'm going to fix up the test to use absolute paths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-06-17 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot]: Normalize paths" to "[red-knot]: Normalize paths stored in `Vfs`" by @MichaReiser on 2024-06-17 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-07-09 07:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:11 UTC
+    </footer>
+</body>
+</html>

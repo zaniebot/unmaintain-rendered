@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature request: support jaxtyping type hints (currently valid type hints flagged incorrectly) - astral-sh/ruff #9860</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature request: support jaxtyping type hints (currently valid type hints flagged incorrectly)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9860">#9860</a>
+        opened by <a href="https://github.com/jaanli">@jaanli</a>
+        on 2024-02-06 16:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jaanli">@jaanli</a> on 2024-02-06 16:52</div>
+            <div class="timeline-body"><img width="506" alt="image" src="https://github.com/astral-sh/ruff/assets/5317244/1314bebe-b77f-4b30-aacb-93fa57af32f9">
+
+<p>Minimal example that incorrectly flags a valid type hint using the <code>jaxtyping</code> type hint library (https://github.com/patrick-kidger/jaxtyping):</p>
+<pre><code>import numpy as np
+from jaxtyping import Int
+from beartype import beartype
+
+@beartype
+def predict_labels_for_encounter(
+    encounter_index: np.int32,
+    val_sentence_neighbor_idx: Int[np.ndarray, &quot;num_nearest_neighbors&quot;]):
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-06 19:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/crypdick">@crypdick</a> on 2024-02-17 01:55</div>
+            <div class="timeline-body"><p>I found a <a href="https://github.com/beartype/beartype/issues/326">work-around</a> to this problem by changing Ruff's typing modules. However, it would be awesome if Ruff would ship this alias within the Ruff codebase. cc @charliermarsh @leycec</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-17 02:01</div>
+            <div class="timeline-body"><p>We may be able to add some of these as first-class members. I need to look into the relationship between jaxtyping and beartype though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leycec">@leycec</a> on 2024-02-17 05:41</div>
+            <div class="timeline-body"><p><strong>@beartype lead @leycec is summoned.</strong> Thanks so much for the kind consideration, @charliermarsh. Likewise, thanks for pinging me here, @crypdick. Let's also ping <code>jaxtyping</code> lead @patrick-kidger. This is his baby.</p>
+<blockquote>
+<p>I need to look into the relationship between jaxtyping and beartype though.</p>
+</blockquote>
+<p>Tenuous at best. @patrick-kidger could probably fill us in on all the details. Briefly:</p>
+<ul>
+<li><code>jaxtyping</code> type-checks <code>jaxtyping</code>-specific type hints (e.g., <code>jaxtyping.Int[...]</code> in the above example).</li>
+<li><code>jaxtyping</code> then loosely couples with a more general-purpose type-checker to type-check the remaining <code>jaxtyping</code>-agnostic type hints (e.g., <code>numpy.int32</code> in the above example). Because the coupling is <em>very</em> loose indeed, <code>jaxtyping</code> literally supports <em>all</em> possible general-purpose type-checkers satisfying the standard decorator protocol. This includes:<ul>
+<li>@beartype, of course. Yay! :partying_face:</li>
+<li><code>typeguard</code>, of course. Boo! Kidding. Only kidding. Everybody loves <code>typeguard</code> here. :eyes:</li>
+</ul>
+</li>
+</ul>
+<p>Honestly, this issue is <em>probably</em> just about @beartype. As awesome as <code>jaxtyping</code> and <code>typeguard</code> are, this really has nothing to do with either of those packages – I think, anyway. Let us know if @beartype can do anything to assist Ruff here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patrick-kidger">@patrick-kidger</a> on 2024-02-17 09:00</div>
+            <div class="timeline-body"><p>Hey folks! jaxtyping is my package. This is a known issue, and <a href="https://docs.kidger.site/jaxtyping/faq/#flake8-or-ruff-are-throwing-an-error">I recommend just disabling the F722 check
+</a> on this.</p>
+<p>(@leycec - this issue is purely jaxtyping-specific, and unrelated to beartype, you'll be pleased to know!)</p>
+<p>What's happening is that in type annotations, strings are either (a) just strings or (b) forward references. Ruff is assuming that only the second case is true, trying to resolve our strings as forward references, and failing. This is consistent with flake8.</p>
+<p>To be fair, Python itself offers no clear way of distinguishing these cases either. Most static type checkers have to special-case <code>Annotated</code> so that <code>Annotated[Foo, &quot;bar&quot;]</code> is still valid. We actually use <code>if TYPE_CHECKING: from typing import Annotated as Float</code> to make things work with them, but it's not clear if tools like ruff should respect <code>TYPE_CHECKING</code> themselves.</p>
+<p>If you'd like to special-case ruff support for jaxtyping that would be awesome. Conversely I recognise you may not wish to add special support to a third-party package, in which case I think no action is needed from ruff. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tpgillam">@tpgillam</a> on 2025-09-12 15:35</div>
+            <div class="timeline-body"><p>Is it possible that technology from ty would allow more general detection of types that are equivalent to <code>typing.Annotated</code> at type-checking time? And hence avoid a need to special-case jaxtyping.</p>
+<p>e.g. in the following, <code>moo3</code> seems like it would be &quot;easier&quot; to make work, insofar as the alias is contained in the same file. But presumably ty would understand the more general case where the alias happens within <code>jaxtyping._indirection</code>, when <code>TYPE_CHECKING</code> is set at least. (But at that point I'm not sure if this check would belong in ty itself, rather than ruff.)</p>
+<pre><code class="language-python">from __future__ import annotations
+
+import typing
+
+if typing.TYPE_CHECKING:
+    import jaxtyping
+    import torch
+
+
+def moo1(x: typing.Annotated[int, &quot;fsdfds fskdjfl skl&quot;]) -&gt; None:  # OK
+    del x
+
+
+def moo2(x: jaxtyping.Float[torch.Tensor, &quot;m n&quot;]) -&gt; None:  # Flags F722
+    del x
+
+
+Thing = typing.Annotated
+
+def moo3(x: Thing[int, &quot;fsdfds fskdjfl skl&quot;]) -&gt; None:  # Flags F722
+    del x
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-12 16:55</div>
+            <div class="timeline-body"><p>Yeah there are a couple of related issues for <code>typing.Annotated</code> aliases, both labeled <code>type-inference</code>. I think the infrastructure from ty will help here one day!</p>
+<p>https://github.com/astral-sh/ruff/issues/17386, https://github.com/astral-sh/ruff/issues/11378</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TimWalter">@TimWalter</a> on 2025-12-18 11:56</div>
+            <div class="timeline-body"><p>While disabling F722 works for most annotations it does not for symbolic annotations e.g.</p>
+<pre><code class="language-python">import torch
+from torch import Tensor
+from jaxtyping import Float, jaxtyped
+from beartype import beartype
+
+@jaxtyped(typechecker=beartype)
+def test(num_samples) -&gt; Float[Tensor, &quot;{num_samples}+1&quot;]:
+    return torch.rand(num_samples+1)
+
+
+if __name__ == &quot;__main__&quot;:
+    test(100)
+</code></pre>
+<p>gives &quot;Undefined name <code>num_samples</code> Ruff(undefined-name)&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/patrick-kidger">@patrick-kidger</a> on 2025-12-18 12:50</div>
+            <div class="timeline-body"><p>I think <code>Float[Tensor, &quot; {num_samples}+1&quot;]</code> (leading space) should work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/leycec">@leycec</a> on 2025-12-21 07:52</div>
+            <div class="timeline-body"><p><strong>...lol.</strong> Why does Ruff expect a <code>num_samples</code> attribute to exist in the common case of <code>Float[Tensor, &quot;{num_samples}+1&quot;]</code>, anyway? That's not an <code>f</code>-string. Doesn't make sense, honestly. Ruff wouldn't complain about a comparable PEP 586-compliant <code>typing.Literal[&quot;{num_samples}+1&quot;]</code> type hint, would it? That's a valid type hint – even if it looks and smells suspicious. Doesn't matter whether that string contains a <code>{</code>- and <code>}</code>-delimited format placeholder or not. All possible strings are equally valid.</p>
+<p><sup>Or am I truly as dumb as my cats think I am... 😅</sup></p>
+<p>Unrelatedly: <strong>Merry Christmas, everybody!</strong> Hope everyone had an awesome year. 2025 sure has been a ride. Here's to QA and hoofprints on the roof bringing fat presents. 🎅</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:41 UTC
+    </footer>
+</body>
+</html>

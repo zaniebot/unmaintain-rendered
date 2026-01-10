@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimize formatter with hot cache - astral-sh/ruff #8135</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Optimize formatter with hot cache</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8135">#8135</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-10-23 10:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2023-10-23 10:06</div>
+            <div class="timeline-body"><p>There's a lot of optimization opportunities with the formatter with a hot cache (the example is apache airflow with rayon removed):</p>
+<ul>
+<li>Sorting the result takes a long time so does building the result vec, even though we know its approximate size</li>
+<li>#8132</li>
+<li>Deserializing the cache takes noticeable time even if we just need 4k paths plus timestamps</li>
+<li>We first iterate over each directory only to check the timestamps later, could those be combined?</li>
+</ul>
+<p><img src="https://github.com/astral-sh/ruff/assets/6826232/bc47843b-64c3-467c-ac76-99d1df836cb0" alt="image" /></p>
+<p>Instructions for generating the flamegraph:</p>
+<ul>
+<li>Install perf and <code>cargo install flamegraph</code></li>
+<li>git clone apache airflow</li>
+<li>Apply https://gist.github.com/konstin/2e8c45c7f1fa53dc003833870226bab8</li>
+<li><code>flamegraph -F 9999 -- target/release-debug/ruff format ../airflow/</code> (Set your cpu to powersave for more samples)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @konstin on 2023-10-23 10:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-24 19:06</div>
+            <div class="timeline-body"><p>Fixing the sort here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-04 21:22</div>
+            <div class="timeline-body"><p>We did a bunch of stuff here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-04 21:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:40 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>formatter moves `type:ignore` comment and makes line too long - astral-sh/ruff #7730</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>formatter moves <code>type:ignore</code> comment and makes line too long</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7730">#7730</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2023-10-01 00:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2023-10-01 00:45</div>
+            <div class="timeline-body"><h1>before</h1>
+<pre><code class="language-py">def run_pytest(pytester, subprocess):
+    result = (
+        pytester.runpytest_subprocess 
+        if subprocess else pytester.runpytest  # type:ignore[no-any-expr]
+    )(*(pytest_args or []))
+</code></pre>
+<h1>after</h1>
+<pre><code class="language-py">def run_pytest(pytester, subprocess):
+    result = (
+        pytester.runpytest_subprocess if subprocess else pytester.runpytest  # type:ignore[no-any-expr]
+    )(*(pytest_args or []))
+
+</code></pre>
+<pre><code>E501 Line too long (103 &gt; 100 characters)
+</code></pre>
+<h1>playground</h1>
+<p>https://play.ruff.rs/720b0769-e4d7-430f-8e14-5c7295607d6d</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-01 00:49</div>
+            <div class="timeline-body"><p>This is an intentional behavior as we exclude pragmas when computing line length in the formatter: https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_formatter/README.md#pragma-comments-are-ignored-when-computing-line-width.</p>
+<p>In the next release, we're planning to ignore them when enforcing E501 violations to make the linter consistent with this behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-01 03:28</div>
+            <div class="timeline-body"><p>I'm gonna close as fixed by https://github.com/astral-sh/ruff/pull/7692, but won't actually be fixed until we cut the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-01 03:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-10-01 03:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonyscathe">@jonyscathe</a> on 2023-12-04 06:05</div>
+            <div class="timeline-body"><blockquote>
+<p>This is an intentional behavior as we exclude pragmas when computing line length in the formatter: https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_formatter/README.md#pragma-comments-are-ignored-when-computing-line-width.</p>
+</blockquote>
+<p>The example given there says that &quot;Ruff will also avoid moving pragma comments&quot; essentially to avoid suppressing more errors than intended.
+However in the example above Ruff not only exceeds the line length, but also applies the type ignore to more code than was originally intended (benign here, but could suppress genuine errors in some cases)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:30 UTC
+    </footer>
+</body>
+</html>

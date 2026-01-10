@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatically retry body errors when processing response - astral-sh/uv #9213</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Automatically retry body errors when processing response</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9213">#9213</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-11-19 02:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-19 02:08</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The reqwest middleware doesn't retry errors that occur &quot;after&quot; the request completes -- but in some cases, these do include spurious errors that we want to retry. See https://github.com/astral-sh/uv/issues/8144 for examples. This PR adds a second retry layer during the response <em>handler</em>, which should help with some of the spurious failures we see in the linked issue.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/8144.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-11-19 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-11-19 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-11-19 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-11-19 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-19 02:09</div>
+            <div class="timeline-body"><p>For reference, I ran this in <code>packse/index</code>:</p>
+<pre><code class="language-python">import http.server
+import socketserver
+import random
+import socket
+import threading
+
+class ErrorProneHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
+    error_probability = 0.2  # Default probability of triggering a connection reset
+
+    def copyfile(self, source, outputfile):
+        &quot;&quot;&quot;
+        Override the method responsible for writing the response body.
+        Simulate a 'Connection reset by peer' error by abruptly closing the connection.
+        &quot;&quot;&quot;
+        if random.random() &lt; self.error_probability:
+            print(&quot;Simulating connection reset by peer...&quot;)
+            raise ConnectionResetError(&quot;Simulated connection reset by peer&quot;)
+        else:
+            # Normal behavior if no error is simulated
+            super().copyfile(source, outputfile)
+
+    def log_message(self, format, *args):
+        &quot;&quot;&quot;Customize logging to reduce verbosity.&quot;&quot;&quot;
+        print(f&quot;{self.address_string()} - {format % args}&quot;)
+
+def run_server(port=8080, error_probability=0.2):
+    ErrorProneHTTPRequestHandler.error_probability = error_probability
+
+    handler = ErrorProneHTTPRequestHandler
+
+    with socketserver.TCPServer((&quot;&quot;, port), handler) as httpd:
+        print(f&quot;Serving on port {port}, serving files&quot;)
+        print(f&quot;Error probability set to {error_probability * 100}%&quot;)
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            print(&quot;Server shutting down...&quot;)
+        finally:
+            httpd.server_close()
+
+if __name__ == &quot;__main__&quot;:
+    import argparse
+
+    parser = argparse.ArgumentParser(description=&quot;Error-prone local HTTP server&quot;)
+    parser.add_argument(&quot;--port&quot;, type=int, default=8080, help=&quot;Port to serve on&quot;)
+    parser.add_argument(&quot;--error-probability&quot;, type=float, default=0.2,
+                        help=&quot;Probability of simulating a connection reset error (0 to 1)&quot;)
+    args = parser.parse_args()
+
+    run_server(args.port, args.error_probability)
+</code></pre>
+<p>Then, from the uv repo: <code>echo &quot;requires_python_wheels_a_43b963ac&quot; | cargo run pip compile --index-url http://localhost:8082/simple-html - --no-cache --verbose</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-11-19 02:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/base_client.rs</code>:474 on 2024-11-19 02:54</div>
+            <div class="timeline-body"><p>Should this just be an <code>or_else</code> on <code>if let Some(err) = find_source::&lt;reqwest_middleware::Error&gt;(&amp;err) </code> above?</p>
+<p>I guess that would require introducing either because the type differs or something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-11-19 02:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/cached_client.rs</code>:623 on 2024-11-19 02:57</div>
+            <div class="timeline-body"><p>Should there be some delay here on retry?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-19 02:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/base_client.rs</code>:474 on 2024-11-19 02:57</div>
+            <div class="timeline-body"><p>Conceptually yes but the compiler doesn't allow it, yeah.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-11-19 02:58</div>
+            <div class="timeline-body"><p>Nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-19 02:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/cached_client.rs</code>:623 on 2024-11-19 02:58</div>
+            <div class="timeline-body"><p>Oh, I guess? I can try to reuse the retry policy from the middleware.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-11-19 03:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/cached_client.rs</code>:623 on 2024-11-19 03:19</div>
+            <div class="timeline-body"><p>I would definitely expect an exponential backoff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-19 04:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/cached_client.rs</code>:623 on 2024-11-19 04:02</div>
+            <div class="timeline-body"><p>Done, good call, thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-11-19 04:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-19 04:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-19 04:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jgehrcke">@jgehrcke</a> reviewed on 2024-11-19 10:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jgehrcke">@jgehrcke</a> on <code>crates/uv-client/src/base_client.rs</code>:376 on 2024-11-19 10:49</div>
+            <div class="timeline-body"><p>Just a side note: when building a retrying strategy I often like to adopt a 'deadline' approach in which an upper bound to the total time spent retrying is the key concept, and not so much the number of retry attempts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jgehrcke">@jgehrcke</a> reviewed on 2024-11-19 10:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jgehrcke">@jgehrcke</a> on <code>crates/uv-client/src/cached_client.rs</code>:617 on 2024-11-19 10:51</div>
+            <div class="timeline-body"><p>Let's use a monotonic time source here instead.</p>
+<p>(maybe that could be my first patch to <code>uv</code> :)).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-11-19 11:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-client/src/cached_client.rs</code>:617 on 2024-11-19 11:32</div>
+            <div class="timeline-body"><p>I can't comment on system clocks (@BurntSushi probably knows), but if we switch to <code>Instant</code>, we should upstream that to https://github.com/TrueLayer/reqwest-middleware/blob/8a494c165734e24c62823714843e1c9347027e8a/reqwest-retry/src/middleware.rs#L144</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-11-19 11:38</div>
+            <div class="timeline-body"><p>Nice work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-19 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-client/src/cached_client.rs</code>:617 on 2024-11-19 14:50</div>
+            <div class="timeline-body"><p>Yes, both of these should 100% be monotonic time, or <code>std::time::Instant</code>.</p>
+<p>For upstream, it's not just <code>reqwest-retry</code>, but in the <code>retry_policies</code> crate: https://docs.rs/retry-policies/latest/retry_policies/trait.RetryPolicy.html#tymethod.should_retry</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:14 UTC
+    </footer>
+</body>
+</html>

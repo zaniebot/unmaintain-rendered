@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>unnecessary-literal-union (PYI030) can remove comments without being marked as unsafe - astral-sh/ruff #16317</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>unnecessary-literal-union (PYI030) can remove comments without being marked as unsafe</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16317">#16317</a>
+        opened by <a href="https://github.com/Avasam">@Avasam</a>
+        on 2025-02-22 17:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Avasam">@Avasam</a> on 2025-02-22 17:41</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>Reproduction:</p>
+<pre><code class="language-py">from typing import Literal
+
+_: (
+    # First group
+    Literal[&quot;a&quot;, &quot;b&quot;]
+    # Second group
+    | Literal[&quot;c&quot;, &quot;d&quot;]
+)
+</code></pre>
+<p>Becomes:</p>
+<pre><code class="language-py">from typing import Literal
+
+_: (
+    # First group
+    Literal[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]
+)
+</code></pre>
+<p>What I'd expect:</p>
+<pre><code class="language-py">from typing import Literal
+
+_: (
+    Literal[
+        # First group
+        &quot;a&quot;,
+        &quot;b&quot;,
+        # Second group
+        &quot;c&quot;,
+        &quot;d&quot;,
+    ]
+)
+</code></pre>
+<p>I don't think the autofix needs to know where to put the comments (although that'd be nice). Marking the autofix as unsafe in this situation like many other rules already do is enough.</p>
+<p>Ruff version: 0.9.6</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-02-22 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-02-22 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-02-22 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-22 18:54</div>
+            <div class="timeline-body"><p>Thanks for the report! If anyone wants to work on this, the main fix is something like this (from <a href="https://docs.astral.sh/ruff/rules/runtime-cast-value/">TC006</a>):
+https://github.com/astral-sh/ruff/blob/64effa4aead8bf2e5eeafbe48abed7921862b4d1/crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_cast_value.rs#L73-L77</p>
+<p>where we check if the region being replaced contains any comments. We'll also need to add a <code>## Fix safety</code> section to the rule documentation, also along the lines of TC006 or <a href="https://docs.astral.sh/ruff/rules/split-static-string/#fix-safety">SIM905</a>.</p>
+<p>We'll also want some new test cases showing where comments are preserved and lost.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-02-22 20:07</div>
+            <div class="timeline-body"><p>I can give a try ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @VascoSch92 by @ntBre on 2025-02-22 20:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-23 21:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:43 UTC
+    </footer>
+</body>
+</html>

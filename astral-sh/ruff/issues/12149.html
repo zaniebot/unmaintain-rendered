@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make flake8-type-checking's unsafe fixes not fix if a library is used in a doctest - astral-sh/ruff #12149</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make flake8-type-checking's unsafe fixes not fix if a library is used in a doctest</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12149">#12149</a>
+        opened by <a href="https://github.com/mikeweltevrede">@mikeweltevrede</a>
+        on 2024-07-02 12:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mikeweltevrede">@mikeweltevrede</a> on 2024-07-02 12:09</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Hi all, curious to hear your opinion on this :) Please let me know if this needs to be filed on flake8-type-checking instead!</p>
+<h1>Ruleset</h1>
+<p>flake8-type-checking (TCH) with unsafe fixes on.</p>
+<h1>Ruff call and settings</h1>
+<h2>Ruff version</h2>
+<p>0.4.8</p>
+<h2>Command invoked</h2>
+<p>pre-commit hooks:</p>
+<pre><code class="language-yaml">repos:
+  - repo: local
+    hooks:
+      - id:       ruff
+        name:     Run ruff linter
+        entry:    ruff
+        args:     [ &quot;--no-cache&quot; ]
+        language: python
+        types:    [ file, python ]
+        files:    .*\.py$
+</code></pre>
+<p>Relevant settings in <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 120
+target-version = &quot;py39&quot;
+fix = true  # Allow for ruff linting to fix some issues. Note that we control this behaviour in [tool.ruff.lint].
+
+[tool.ruff.lint]
+extend-select = [
+    &quot;TCH&quot;,  # flake8-type-checking | Allow for imports only used for type hinting | https://docs.astral.sh/ruff/rules/#flake8-type-checking-tch
+]
+fixable = [
+    &quot;TCH001&quot;, &quot;TCH002&quot;, &quot;TCH003&quot;, &quot;TCH004&quot;, &quot;TCH005&quot;,   # flake8-type-checking
+]
+extend-safe-fixes = [
+    &quot;TCH001&quot;, &quot;TCH002&quot;, &quot;TCH003&quot;, &quot;TCH004&quot;, &quot;TCH005&quot;,   # flake8-type-checking
+]
+
+[tool.ruff.lint.flake8-type-checking]
+quote-annotations = true
+strict = true
+exempt-modules = [&quot;typing&quot;, &quot;typing_extensions&quot;, &quot;types&quot;]
+</code></pre>
+<h1>Explanation and Example</h1>
+<p>When allowing TCH to auto-fix, it will transform this...</p>
+<pre><code class="language-python">from datetime import datetime
+
+def my_func(dt: datetime):
+    &quot;&quot;&quot;Example function
+
+    &gt;&gt;&gt; my_func(dt=datetime(year=2024, month=7, day=2))
+    'hello'
+    &quot;&quot;&quot;
+    return &quot;hello&quot;
+
+
+if __name__ == &quot;__main__&quot;:
+    import doctest
+    doctest.testmod()
+</code></pre>
+<p>into ...</p>
+<pre><code class="language-python">from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+def my_func(dt: &quot;datetime&quot;):
+    &quot;&quot;&quot;Example function
+
+    &gt;&gt;&gt; my_func(dt=datetime(year=2024, month=7, day=2))
+    'hello'
+    &quot;&quot;&quot;
+    return &quot;hello&quot;
+
+
+if __name__ == &quot;__main__&quot;:
+    import doctest
+    doctest.testmod()
+</code></pre>
+<p>While this seems correct at first glance (no SyntaxError), notice that <code>datetime</code> is used in the doctest. It would be great if the ruff fixer can scan doctests as well for usage.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @MichaReiser on 2024-07-03 06:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-03 06:37</div>
+            <div class="timeline-body"><p>It makes sense to me that Ruff shouldn't provide an autofix in this case because it breaks user code. Doing this would require that Ruff understands doctests and takes them into account when running the analysis. How this would work is an interesting question.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeweltevrede">@mikeweltevrede</a> on 2024-07-09 06:57</div>
+            <div class="timeline-body"><p>@MichaReiser Indeed, it is relatively strange behaviour and therefore it makes sense that it is an unsafe fix.</p>
+<p>Doctests are well-defined in Python, with <code>&gt;&gt;&gt;</code> being included at the start of a new line in the docstring. The doctest library (or pytest with the flag <code>--doctest-modules</code>) will then recognize these and run them as tests.</p>
+<p>It is interesting to think about whether there are use cases where people might use <code>&gt;&gt;&gt;</code> at the start of a new line where it is not intended to be a doctest. Does this happen? Are these valid use cases? Is this just ignorance (I learned about doctests like this a while back but before this thought they were just examples, not meant to be runnable code per se)? Should Ruff provide an opinion here? Either way, this should remain an unsafe fix, keeping these points in mind.</p>
+<p>I do not know how to program in Rust at the moment but if this would be implemented, I am happy to assist the person working on this and think along!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:17 UTC
+    </footer>
+</body>
+</html>

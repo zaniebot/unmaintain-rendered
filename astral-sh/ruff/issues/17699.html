@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`PTH*`: Incorrect suggestion to use `Pathlib` when using file descriptors - astral-sh/ruff #17699</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>PTH*</code>: Incorrect suggestion to use <code>Pathlib</code> when using file descriptors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17699">#17699</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-04-29 06:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-29 06:10</div>
+            <div class="timeline-body"><p>Multiple pathlib rules recommend the use of <code>pathlib.Path</code> over their <code>os</code> equivalent even when they're used with a bytes string or directory descriptor which aren't supported by pathlib.</p>
+<p>One such example is</p>
+<pre><code class="language-py">import os
+os.listdir(1)
+</code></pre>
+<pre><code>$ ruff --version
+ruff 0.11.7
+$ ruff check --isolated --select PTH208 t.py
+t.py:2:1: PTH208 Use `pathlib.Path.iterdir()` instead.
+  |
+1 | import os
+2 | os.listdir(1)
+  | ^^^^^^^^^^ PTH208
+  |
+
+Found 1 error.
+</code></pre>
+<p>Past instances of the same or similar error:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/issues/7620</li>
+<li>https://github.com/astral-sh/ruff/issues/12871</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-04-29 06:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-04-29 06:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-04-29 06:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-04-29 13:08</div>
+            <div class="timeline-body"><p>I can take all of those, but if anyone wants to take any of the others, feel free to.  I'll start with #17691.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrudenell">@sbrudenell</a> on 2025-04-29 21:11</div>
+            <div class="timeline-body"><p>I wrote the linked sub-issues.</p>
+<p>IMO file descriptor usage shouldn't be conflated with <code>bytes</code> usage.</p>
+<p>It's still valid to suggest <code>pathlib.Path</code> in place of a non-<code>pathlib</code> function used with a <code>bytes</code> path.</p>
+<p>It's not the case that <code>pathlib</code> somehow supports <code>str</code> and doesn't support <code>bytes</code>. It actually just expects its arguments to be <code>fsdecode()</code>'ed strings.</p>
+<p>That's to say, IMO the following <em>should</em> error:</p>
+<pre><code class="language-python">open(b&quot;foo&quot;)  # *should* error and suggest Path(fsdecode(b&quot;foo&quot;)).open()
+</code></pre>
+<p>In #17705 I see that <code>open(b&quot;foo&quot;)</code> is added as a test.</p>
+<p>This is a philosophical stance. In my experience, explicitly calling <code>fsdecode()</code> makes it clear where possible platform path encoding issues might arise.</p>
+<p>File descriptors are a different access pattern that just doesn't have an analog in <code>pathlib</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-29 21:31</div>
+            <div class="timeline-body"><p>Ah I see, I just tested <code>Path(b&quot;foo&quot;)</code> and concluded that it should be included here because it also causes an error.</p>
+<p>It does seem reasonable to me still to flag the bytes case if we update the rule docs with an example using <code>fsdecode</code>, but I'm curious what @MichaReiser and @LaBatata101 think too.</p>
+<p>Thanks for opening the issues and following up here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2025-04-29 22:17</div>
+            <div class="timeline-body"><p>I think that's reasonable, we could even provide a fix for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-30 06:34</div>
+            <div class="timeline-body"><p>Thanks @sbrudenell for the added context. I only read the pathlib documentation and it stated that byte strings aren't supported.</p>
+<p>Let's only change the file descriptor case for now. We need to be more careful about byte strings if we start providing fixes (although they have to be unsafe in most cases anyway because we can't tell in many instances if a path is a file descriptor, string or byte string)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`PTH*`: Incorrect suggestion to use `Pathlib` when using file descriptors or byte strings" to "`PTH*`: Incorrect suggestion to use `Pathlib` when using file descriptors" by @MichaReiser on 2025-04-30 06:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrudenell">@sbrudenell</a> on 2025-04-30 19:38</div>
+            <div class="timeline-body"><p>+1 for <code>PTH*</code> to <em>not</em> apply fixes.</p>
+<p>I'll mention that part of the type safety of <code>Path</code> over <code>str</code> is that it's effectively a strong type for the filesystem encoding. If you see a <code>Path</code>, it must (or should!) have been derived from <code>fsdecode()</code>, <em>not</em> <code>bytes.decode()</code>.</p>
+<p>I often find that using <code>Path</code> reminds me to check <em>other, upstream parts of my codebase</em> for encoding issues.</p>
+<p>Since converting <code>os</code> calls to <code>pathlib</code> is so instructive for humans, I would find it counterproductive for the machine to do it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:20 UTC
+    </footer>
+</body>
+</html>

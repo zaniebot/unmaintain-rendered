@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N805 False Positive - astral-sh/ruff #2868</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>N805 False Positive</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2868">#2868</a>
+        opened by <a href="https://github.com/sharyar">@sharyar</a>
+        on 2023-02-13 20:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharyar">@sharyar</a> on 2023-02-13 20:31</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Noticed that ruff gives a false positive with pydantic validation method as shown here:</p>
+<pre><code class="language-python">class MyClass(BaseModel):
+    name: str
+
+    @validator('name')
+    def name_validator(cls, v):
+        if v is None:
+            return &quot;John Smith&quot;
+        else:
+            return v
+
+</code></pre>
+<p>Running <code>ruff . --fix</code> gives me the following message: <code>...N805 First argument of a method should be named &quot;self&quot;</code>
+Ruff Version: ruff 0.0.246</p>
+<p>Sections from pyproject.toml:</p>
+<pre><code>[tool.ruff]
+fix = true
+line-length = 120
+target-version = &quot;py39&quot;
+select = [&quot;I&quot;, &quot;E&quot;, &quot;F&quot;, &quot;Q&quot;, &quot;W&quot;, &quot;N&quot;]
+ignore = [
+    &quot;F541&quot;,
+    &quot;N803&quot;,
+    &quot;N806&quot;,
+    &quot;Q000&quot;,
+    &quot;Q003&quot;,
+]
+[tool.ruff.pydocstyle]
+convention = &quot;numpy&quot;
+
+[tool.ruff.flake8-quotes]
+avoid-escape = false
+inline-quotes = &quot;double&quot;
+docstring-quotes = &quot;double&quot;
+multiline-quotes = &quot;double&quot;
+
+[tool.ruff.isort]
+known-first-party = [
+    &quot;tools&quot;
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/g-as">@g-as</a> on 2023-02-13 20:33</div>
+            <div class="timeline-body"><p>See https://github.com/charliermarsh/ruff#classmethod-decorators</p>
+<p>and
+https://github.com/PyCQA/pep8-naming/issues/169
+https://github.com/PyCQA/pep8-naming/pull/39
+for the context</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-13 20:36</div>
+            <div class="timeline-body"><p>Yeah you should be able to add:</p>
+<pre><code class="language-toml">[tool.ruff.pep8-naming]
+# Allow Pydantic's `@validator` decorator to trigger class method treatment.
+classmethod-decorators = [&quot;classmethod&quot;, &quot;pydantic.validator&quot;]
+</code></pre>
+<p>...to help with this. But if that doesn't work, let us know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-13 20:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharyar">@sharyar</a> on 2023-02-13 20:37</div>
+            <div class="timeline-body"><p>Thank you! Will do :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-13 20:37</div>
+            <div class="timeline-body"><p>Thanks for the clear issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharyar">@sharyar</a> on 2023-02-14 16:50</div>
+            <div class="timeline-body"><p>Hi @charliermarsh, it looks like this doesn't work unfortunately. I have to manually disable the N805 check to force the error to go away.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharyar">@sharyar</a> on 2023-02-14 16:52</div>
+            <div class="timeline-body"><p>Here is part of my config file:
+<img src="https://user-images.githubusercontent.com/9103610/218803637-ada7ad5b-45a4-47db-93b2-32b2647d0349.png" alt="image" /></p>
+<p>And here is the error still showing up:
+<img src="https://user-images.githubusercontent.com/9103610/218803773-88955901-301a-4404-a942-353d73755b48.png" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/g-as">@g-as</a> on 2023-02-14 17:11</div>
+            <div class="timeline-body"><pre><code class="language-toml">[tool.ruff.pep8-naming]
+# Allow Pydantic's `@validator` decorator to trigger class method treatment.
+classmethod-decorators = [&quot;classmethod&quot;, &quot;validator&quot;]
+</code></pre>
+<p>since you called the decorator with <code>@validator</code> (and not <code>@pydantic.validator</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharyar">@sharyar</a> on 2023-02-14 18:34</div>
+            <div class="timeline-body"><p>That does not work either sadly. Just tried it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-14 18:39</div>
+            <div class="timeline-body"><p>I just tested myself and this works as expected for me:</p>
+<pre><code class="language-py">from pydantic import validator
+
+class MyClass(BaseModel):
+    name: str
+
+    @validator('name')
+    def name_validator(cls, v):
+        if v is None:
+            return &quot;John Smith&quot;
+        else:
+            return v
+</code></pre>
+<p>Along with:</p>
+<pre><code class="language-toml">[tool.ruff.pep8-naming]
+# Allow Pydantic's `@validator` decorator to trigger class method treatment.
+classmethod-decorators = [&quot;classmethod&quot;, &quot;pydantic.validator&quot;]
+</code></pre>
+<p>Gives me empty output with <code>ruff foo.py --select N</code> (and an error if I remove <code>&quot;pydantic.validator&quot;</code> from that list).</p>
+<p>Can you post the entire file? Are you perhaps importing <code>validator</code> from some other file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharyar">@sharyar</a> on 2023-02-14 18:41</div>
+            <div class="timeline-body"><p>I realized the issue. I was on an earlier version of ruff (my poetry.lock file cause me to go back a version). Sorry to bother you guys! Great job on the application! i heard about you on the python podcast and since then have been a convert :D Getting everyone to use it 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-14 18:43</div>
+            <div class="timeline-body"><p>Amazing, thank you for the kind words! (I think this was broken for a release or two due to an internal refactor, but should be fixed in the last few.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/copdips">@copdips</a> on 2023-06-09 14:10</div>
+            <div class="timeline-body"><blockquote>
+<p>I just tested myself and this works as expected for me:</p>
+<pre><code class="language-python">from pydantic import validator
+
+class MyClass(BaseModel):
+    name: str
+
+    @validator('name')
+    def name_validator(cls, v):
+        if v is None:
+            return &quot;John Smith&quot;
+        else:
+            return v
+</code></pre>
+<p>Along with:</p>
+<pre><code class="language-toml">[tool.ruff.pep8-naming]
+# Allow Pydantic's `@validator` decorator to trigger class method treatment.
+classmethod-decorators = [&quot;classmethod&quot;, &quot;pydantic.validator&quot;]
+</code></pre>
+<p>Gives me empty output with <code>ruff foo.py --select N</code> (and an error if I remove <code>&quot;pydantic.validator&quot;</code> from that list).</p>
+<p>Can you post the entire file? Are you perhaps importing <code>validator</code> from some other file?</p>
+</blockquote>
+<p>Thanks, and for me without classmethod is ok too.</p>
+<pre><code class="language-toml">[tool.ruff.pep8-naming]
+classmethod-decorators = [&quot;pydantic.validator&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blakeNaccarato">@blakeNaccarato</a> on 2023-12-01 18:13</div>
+            <div class="timeline-body"><p>I was bit by this old issue again when bumping a project to Pydantic v2 while still using the old interface (e.g. <code>from pydantic.v1 import ...</code>). It's simple enough to fix, but it took me a minute to figure out, so I figured I'd detail it here in case a search engine brings you here as well. You must add <code>pydantic.v1.validator</code> to your <code>classmethod-decorators</code>.</p>
+<pre><code class="language-TOML">[tool.ruff.pep8-naming]
+classmethod-decorators = [&quot;pydantic.validator&quot;, &quot;pydantic.v1.validator&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-01 18:20</div>
+            <div class="timeline-body"><p>Maybe we should just add those to the defaults.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blakeNaccarato">@blakeNaccarato</a> on 2023-12-02 04:05</div>
+            <div class="timeline-body"><p>That seems sensible, especially for something as big as Pydantic. Sorry, I didn't intend to make a feature request in a closed issue, just a tip for the wary. I can raise it properly in a new Issue if that helps keep track of it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/g-as">@g-as</a> on 2023-12-02 15:13</div>
+            <div class="timeline-body"><p>Pydantic v2 allows to insert the <code>classmethod</code> decorator inbetween, specifically to play nice with linters &amp; type checkers:</p>
+<p>https://docs.pydantic.dev/latest/concepts/validators/#field-validators</p>
+<pre><code class="language-python">class UserModel(BaseModel):
+    id: int
+    name: str
+
+    @field_validator('name')
+    @classmethod
+    def name_must_contain_space(cls, v: str) -&gt; str:
+        if ' ' not in v:
+            raise ValueError('must contain a space')
+        return v.title()
+</code></pre>
+<blockquote>
+<p>@field_validators are &quot;class methods&quot;, so the first argument value they receive is the UserModel class, not an instance of UserModel. We recommend you use the @classmethod decorator on them below the @field_validator decorator to get proper type checking.</p>
+</blockquote>
+<p>Same applies to <code>model_validator</code>.</p>
+<p>So, IMHO, there is less need for special behaviour in ruff. I've removed my <code>[tool.ruff.pep8-naming]</code> overrides.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/blakeNaccarato">@blakeNaccarato</a> on 2023-12-03 19:38</div>
+            <div class="timeline-body"><p>Also a fair point, I'll just leave the issue raising decision to the team. Either Pydantic's <code>@classmethod</code> recommendation or https://github.com/astral-sh/ruff/issues/2868#issuecomment-1836564993 are explicit, existing solutions with some repetition burden. Implicit defaults would eliminate repetition at the expense of more special-casing, a slippery slope. I would say that we're getting into bikeshedding, but I guess if there's anywhere that it's appropriate to bikeshed, it would be in the closed issue section of a linter/formatter.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:21 UTC
+    </footer>
+</body>
+</html>

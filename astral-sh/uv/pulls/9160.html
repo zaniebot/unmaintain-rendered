@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow conflicting extras in explicit index assignments - astral-sh/uv #9160</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow conflicting extras in explicit index assignments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9160">#9160</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-11-16 02:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-16 02:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR enables something like the &quot;final boss&quot; of PyTorch setups -- explicit support for CPU vs. GPU-enabled variants via extras:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.13.0&quot;
+dependencies = []
+
+[project.optional-dependencies]
+cpu = [
+    &quot;torch==2.5.1+cpu&quot;,
+]
+gpu = [
+    &quot;torch==2.5.1&quot;,
+]
+
+[tool.uv.sources]
+torch = [
+    { index = &quot;torch-cpu&quot;, extra = &quot;cpu&quot; },
+    { index = &quot;torch-gpu&quot;, extra = &quot;gpu&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;torch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;torch-gpu&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+
+[tool.uv]
+conflicts = [
+    [
+        { extra = &quot;cpu&quot; },
+        { extra = &quot;gpu&quot; },
+    ],
+]
+</code></pre>
+<p>It builds atop the conflicting extras work to allow sources to be marked as specific to a dedicated extra being enabled or disabled.</p>
+<p>As part of this work, sources now have an <code>extra</code> field. If a source has an <code>extra</code>, it means that the source is only applied to the requirement when defined within that optional group. For example, <code>{ index = &quot;torch-cpu&quot;, extra = &quot;cpu&quot; }</code> above only applies to <code>&quot;torch==2.5.1+cpu&quot;</code>.</p>
+<p>The <code>extra</code> field does <em>not</em> mean that the source is &quot;enabled&quot; when the extra is activated. For example, this wouldn't work:</p>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.13.0&quot;
+dependencies = [&quot;torch&quot;]
+
+[tool.uv.sources]
+torch = [
+    { index = &quot;torch-cpu&quot;, extra = &quot;cpu&quot; },
+    { index = &quot;torch-gpu&quot;, extra = &quot;gpu&quot; },
+]
+
+[[tool.uv.index]]
+name = &quot;torch-cpu&quot;
+url = &quot;https://download.pytorch.org/whl/cpu&quot;
+explicit = true
+
+[[tool.uv.index]]
+name = &quot;torch-gpu&quot;
+url = &quot;https://download.pytorch.org/whl/cu124&quot;
+explicit = true
+</code></pre>
+<p>In this case, the sources would effectively be ignored. Extras are really confusing... but I think this is correct? We don't want enabling or disabling extras to affect resolution information that's <em>outside</em> of the relevant optional group.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-11-16 02:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-11-16 02:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-11-16 02:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-11-16 02:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-11-16 02:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-16 02:50</div>
+            <div class="timeline-body"><p>This needs documentation, but I'm gonna wait for approval.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-16 15:55</div>
+            <div class="timeline-body"><p>I worry about the confusion of</p>
+<blockquote>
+<p>The extra field does not mean that the source is &quot;enabled&quot; when the extra is activated.</p>
+</blockquote>
+<p>But otherwise I'm into it! We could be more verbose and say <code>from-extra</code> to help clarify that case, but I don't know if I love that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-16 17:29</div>
+            <div class="timeline-body"><p>This now also supports dependency groups equally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-16 17:30</div>
+            <div class="timeline-body"><p>Umm. Maybe <code>from = { extra = &quot;cpu&quot; }</code> and <code>from = { extra = &quot;gpu&quot; }</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-16 17:31</div>
+            <div class="timeline-body"><p>I could also try to make it such that we error if we see the dependency requested as a production dependency, when it has a source with an extra on it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-17 16:05</div>
+            <div class="timeline-body"><blockquote>
+<p>from = { extra = &quot;cpu&quot; } and from = { extra = &quot;gpu&quot; }?</p>
+</blockquote>
+<p>I can't think of a case from <code>from = &lt;package&gt;</code> makes sense which would be a mismatch with our other uses of <code>from</code>. Hm.</p>
+<blockquote>
+<p>I could also try to make it such that we error if we see the dependency requested as a production dependency, when it has a source with an extra on it?</p>
+</blockquote>
+<p>This seems reasonable, or at least a warning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-17 16:37</div>
+            <div class="timeline-body"><p>Ok, I'll start by adding some dedicated errors around this stuff. I think with good error messages (e.g., detect if <code>torch</code> is in <code>project.dependencies</code> but not in the relevant extra) it could be fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-17 18:21</div>
+            <div class="timeline-body"><p>Ok, I added some dedicated error messages around this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/indexes.rs</code>:28 on 2024-11-18 17:41</div>
+            <div class="timeline-body"><p>This is the subset of forks in which this entry occurs, not a conflict we generated?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pep508/src/marker/tree.rs</code>:1134 on 2024-11-18 17:43</div>
+            <div class="timeline-body"><p>Is that reachable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-11-18 17:49</div>
+            <div class="timeline-body"><p>This is a cool application of conflicting extras!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-distribution/src/metadata/lowering.rs</code>:46 on 2024-11-18 18:30</div>
+            <div class="timeline-body"><p>Should these be <code>Option&lt;&amp;ExtraName&gt;</code> and <code>Option&lt;&amp;GroupName&gt;</code>? It looks like the Clippy lint for this was suppressed explicitly, so I'm guessing there's a reason for it, but it doesn't immediately stand out to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/indexes.rs</code>:71 on 2024-11-18 18:35</div>
+            <div class="timeline-body"><p>Nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-11-18 18:36</div>
+            <div class="timeline-body"><p>Nice! I think this all makes sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-18 19:20</div>
+            <div class="timeline-body"><p>Just to clarify, this looks like it includes <code>group = </code> as well as <code>extra = </code> support?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 19:23</div>
+            <div class="timeline-body"><p>It does yes. I mentioned that <a href="https://github.com/astral-sh/uv/pull/9160#issuecomment-2480676512">here</a> but I guess not in the PR summary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/metadata/lowering.rs</code>:46 on 2024-11-19 00:45</div>
+            <div class="timeline-body"><p>They should but I can't for the life of me figure out how to get it to work at the call site.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-19 00:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-19 00:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/metadata/lowering.rs</code>:46 on 2024-11-19 00:48</div>
+            <div class="timeline-body"><p>Figured it out by removing a lifetime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-11-19 01:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-19 01:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-19 01:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-19 13:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-distribution/src/metadata/lowering.rs</code>:46 on 2024-11-19 13:44</div>
+            <div class="timeline-body"><p>Ahhh yeah I see now. Nice.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:14 UTC
+    </footer>
+</body>
+</html>

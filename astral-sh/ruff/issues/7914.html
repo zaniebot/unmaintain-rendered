@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive F821 (Undefined name) for list comprehension in Annotated[] - astral-sh/ruff #7914</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive F821 (Undefined name) for list comprehension in Annotated[]</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7914">#7914</a>
+        opened by <a href="https://github.com/guillaume-alliander">@guillaume-alliander</a>
+        on 2023-10-11 09:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/guillaume-alliander">@guillaume-alliander</a> on 2023-10-11 09:28</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Without further ado, the snippet:</p>
+<pre><code class="language-python">from typing import Annotated
+
+some_list = [&quot;1&quot;, &quot;2&quot;, &quot;3&quot;]
+desc = f&quot;Allowed values: {[p for p in some_list]}&quot;
+
+class WorkingModel:
+    profiles: Annotated[
+        list[str],
+        desc,  # Ruff is happy
+    ]
+
+class FailingModel:
+    profiles: Annotated[
+        list[str],
+        # Ruff complains about p being undefined
+        f&quot;Allowed values: {[p for p in some_list]}&quot;,
+    ]
+</code></pre>
+<p>Ruff complains about the second <code>Annotated</code> parameter of <code>FailingModel</code>, with: <code>F821 Undefined name &quot;p&quot;</code>. I think it should not be an error, and creating the string outside annotated works fine, which is an inconsistency.</p>
+<p>For the record, this is a minimal example which might not mean much. The real Model extends <code>BaseModel</code> from <code>pydantic</code>, and the second part of <code>Annotated</code> uses <code>Query</code> from <code>Fastapi</code>, with an Enum instead of a list. But both versions show the same ruff error.</p>
+<p>Ran with <code>ruff wtf.py --isolated</code>, ruff version 0.0.292 (and 0.0.291)</p>
+<p>My pyproject.toml has this for ruff, which I think is not too relevant here:</p>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 120
+# Group violations by containing file.
+output-format = &quot;grouped&quot;
+select = [
+    # See https://docs.astral.sh/ruff/rules/
+    &quot;E&quot;, # Default, pyflake
+    &quot;F&quot;, # Default, pyflake
+    &quot;I&quot;, # isort
+    &quot;W&quot;, # warning
+    &quot;C90&quot;, # McCabe
+    &quot;PL&quot;, # Pylint (a subset thereof)
+    &quot;RUF&quot;, # RUF rules
+    &quot;UP&quot;, # upgrade python rules
+    &quot;B&quot;, # catch common bugs
+    &quot;A&quot;, # catch builtin shadowing
+    &quot;C4&quot;, # unnecessary things in/with comprehensions
+    &quot;DTZ&quot;, # datetime good practice
+    &quot;PIE&quot;, # unnecessary args/code for some well known code
+    &quot;PT&quot;, # pytest linting
+    &quot;SIM&quot;, # simplify code
+    &quot;ARG&quot;, # unused arguments
+    &quot;PTH&quot;, # use pathlib instead of os &amp; co
+    &quot;PD&quot;, # pandas things
+    &quot;PERF&quot;, # performance things
+    &quot;N&quot;, # pep8
+    &quot;BLE&quot;, # catch too broad excpetion
+]
+[tool.ruff.pep8-naming]
+# extend= use the default ignored names and add those
+extend-ignore-names = [
+    &quot;G&quot;, # makes sense in the context of graph
+    &quot;mRID&quot;, &quot;lineColor&quot;, # cim notation
+    &quot;create_*&quot;, # some functions are named after CIM nomenclatures, not python
+    &quot;N&quot;, # shortcut in stack
+    ]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2023-10-11 09:36</div>
+            <div class="timeline-body"><p>I believe it fixed in #7885</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-11 13:20</div>
+            <div class="timeline-body"><p>Yes, should be fixed on main -- thanks for the clear issue!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-11 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-11 13:20</div>
+            <div class="timeline-body"><p>Funny that this came up twice in one week after being unnoticed for months :joy:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/guillaume-alliander">@guillaume-alliander</a> on 2023-10-11 13:33</div>
+            <div class="timeline-body"><p>Weird indeed 😕
+Nice, thanks for the quick fix and the awesome tool!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:34 UTC
+    </footer>
+</body>
+</html>

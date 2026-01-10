@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix handling of `--all-groups` and `--no-default-groups` flags - astral-sh/uv #11224</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix handling of <code>--all-groups</code> and <code>--no-default-groups</code> flags</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11224">#11224</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-02-04 19:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-02-04 19:28</div>
+            <div class="timeline-body"><p>This is a rewrite of the groups subsystem to have more clear semantics, and some adjustments to the CLI flag constraints. In doing so, the following bugs are fixed:</p>
+<ul>
+<li><code>--no-default-groups --no-group foo</code> is no longer needlessly rejected</li>
+<li><code>--all-groups --no-default-groups</code> now correctly evaluates to <code>--all-groups</code> where previously it was erroneously being interpretted as just <code>--no-default-groups</code></li>
+<li><code>--all-groups --only-dev</code> is now illegal, where previously it was accepted and mishandled, as if it was a mythical <code>--only-all-groups</code> flag</li>
+</ul>
+<p>Fixes #10890
+Closes #10891</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @Gankra on 2025-02-04 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:2735 on 2025-02-04 20:50</div>
+            <div class="timeline-body"><p><code>--only-dev</code> and <code>--dev</code> do not conflict, <code>--no-dev</code>?</p>
+<pre><code class="language-suggestion">    #[arg(long, conflicts_with_all = [&quot;group&quot;, &quot;no_dev&quot;, &quot;all_groups&quot;])]
+    pub only_dev: bool,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-04 20:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:2954 on 2025-02-04 20:50</div>
+            <div class="timeline-body"><p>Similarly, <code>--dev</code> and <code>--only-dev</code> do not conflict</p>
+<pre><code class="language-suggestion">    #[arg(long, conflicts_with_all = [&quot;group&quot;, &quot;no_dev&quot;, &quot;all_groups&quot;])]
+    pub only_dev: bool,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-04 20:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-04 20:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:2963 on 2025-02-04 20:52</div>
+            <div class="timeline-body"><p>Hm, this is tough because <code>--group dev</code> and <code>--only-dev</code> seems fine, similarly for <code>--group foo</code> and <code>--only-group foo</code>. <code>--only-group foo</code> and <code>--group bar</code> seems like an error as does <code>--group foo</code> and <code>--only-dev</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:3393 on 2025-02-04 20:53</div>
+            <div class="timeline-body"><p>See previous comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-04 20:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-02-04 20:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-cli/src/lib.rs</code>:2735 on 2025-02-04 20:55</div>
+            <div class="timeline-body"><p>The idea I'm trying to express here is essentially that <code>--dev --only-dev</code> is &quot;what are you even doing&quot;.</p>
+<p>This is more clear with <code>--group A --only-group B</code>, which is clearly &quot;what no&quot;, but rejecting that and <em>not</em> rejecting <code>--group A --only-group A</code> is a pain for very little benefit. Since <code>--dev --only-dev</code> essentially desugars to that, I figured it's best to reject it for uniformity (and the followup code essentially assumes only one of these flags is ever true, although in a trivial way where we could fix it to &quot;saturate&quot; to <code>--only-dev</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-04 20:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-configuration/src/dev.rs</code>:20 on 2025-02-04 20:58</div>
+            <div class="timeline-body"><p>&quot;non-group things&quot; not obvious to me. What's that mean?</p>
+<p>Is this what we're chatting about on Discord? Should this just be &quot;exclude_project&quot; or something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-04 20:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-configuration/src/dev.rs</code>:20 on 2025-02-04 20:58</div>
+            <div class="timeline-body"><p>&quot;users of this API&quot; is also a little confusing, idk who that is in this context</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-02-04 21:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-configuration/src/dev.rs</code>:20 on 2025-02-04 21:00</div>
+            <div class="timeline-body"><p>Yeah basically, this feeds into <code>.prod()</code> which is a name that has survived <em>several</em> refactors and baffled me for a while (didn't want to churn it).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-04 21:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-configuration/src/dev.rs</code>:60 on 2025-02-04 21:00</div>
+            <div class="timeline-body"><p>Should this assert <code>!only_groups</code>? Or are you allowed to do <code>--only-group foo --all-groups</code>? If that's banned at the CLI level, should it be mentioned here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-04 21:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-configuration/src/dev.rs</code>:63 on 2025-02-04 21:01</div>
+            <div class="timeline-body"><p>Perhaps something more aligned with the action we're taking</p>
+<pre><code class="language-suggestion">            // Include the defaults if they're not disabled
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-configuration/src/dev.rs</code>:60 on 2025-02-04 21:04</div>
+            <div class="timeline-body"><p>It could for sure, wasn't sure on the assert culture here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-02-04 21:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-04 21:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:2735 on 2025-02-04 21:05</div>
+            <div class="timeline-body"><p>That makes sense. I'd prefer to just allow redundant options, but understand it can get complicated and if it's not worth it it's not a big deal. Is it a breaking change though?</p>
+<p><code>--only-dev --no-dev</code> should still error though, no? Or does it not because we say that &quot;exclusions override&quot; and that's fine?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-04 21:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-configuration/src/dev.rs</code>:31 on 2025-02-04 21:07</div>
+            <div class="timeline-body"><p>This probably doesn't need to be <code>pub</code> right? It'd be nice to only have one public constructor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-04 21:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-configuration/src/dev.rs</code>:20 on 2025-02-04 21:09</div>
+            <div class="timeline-body"><p>I guess regarding this name and &quot;prod&quot; churn, maybe this should be like <code>ProjectMode</code> with included and excluded variants as an approximate corollary to <code>DevMode</code>? Fine to pursue separately. Here, I'm mostly looking for some clarity in the comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-02-04 21:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-cli/src/lib.rs</code>:2735 on 2025-02-04 21:11</div>
+            <div class="timeline-body"><p>Yeah I wasn't sure how exclusions and overrides interact. It should probably be tightened up but I didn't want to break something (I'll test it out / read the docs properly to figure out how this should be handled).</p>
+<p>In terms of breaking... hmm... seems like the old impl tried harder to rationalize both inputs being provided... but in a bit of an adhoc way...</p>
+<p>https://github.com/astral-sh/uv/blob/ac1004284acfe3e3b0a7cce08741c8396dafc964/crates/uv-configuration/src/dev.rs#L234-L256</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-configuration/src/dev.rs</code>:60 on 2025-02-04 21:11</div>
+            <div class="timeline-body"><p>Sorry I used assert sort of vaguely there — that could be a user-facing error or an actual assertion or just allowed. The contract just wasn't clear to me.</p>
+<p>On assert culture, we're generally anti-assertions in production unless it's truly critical (because panics are unfriendly). I use <code>debug_assert</code> a bit to help encode assumptions and catch bugs in development. Charlie doesn't do that. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-04 21:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-04 21:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-configuration/src/dev.rs</code>:174 on 2025-02-04 21:23</div>
+            <div class="timeline-body"><p>Is this blocking merge? Why wouldn't it add dev to the list?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-04 21:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-configuration/src/dev.rs</code>:174 on 2025-02-04 21:25</div>
+            <div class="timeline-body"><p>Ah this is used to warn if a group is missing? Does the <code>dev</code> group always exist since it's special-cased?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-04 23:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:2735 on 2025-02-04 23:47</div>
+            <div class="timeline-body"><p>In general, I'd say a breaking change here would not be ideal. I'd suggest PR'ing some tests for edge-cases to <code>main</code> first so we can see if they change here? If it seems hard to avoid a regression, then I guess we should wait for 0.6?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-04 23:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/mod.rs</code>:285 on 2025-02-04 23:49</div>
+            <div class="timeline-body"><p>As an aside <code>dev: DevGroupsManifest</code> can be renamed — I think <code>dev</code> / <code>prod</code> is the wrong split there. It should be <code>groups</code> / <code>project</code> or similar e.g., <code>dependency-groups</code> / <code>project-dependencies</code>. Alas the standardized names are a little confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-04 23:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-configuration/src/dev.rs</code>:13 on 2025-02-04 23:53</div>
+            <div class="timeline-body"><p>I think this was called <code>DevGroups</code> because it included <code>dev</code> and <code>groups</code>? Also could be a leftover from the <code>dev</code> / <code>prod</code> split. Regardless, we can rename to <code>DependencyGroupsSpecification</code> or something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-04 23:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/run.rs</code>:254 on 2025-02-04 23:54</div>
+            <div class="timeline-body"><p>This looks a little weird?</p>
+<p>Related https://github.com/astral-sh/uv/pull/11224/files#r1942059001</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-04 23:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-configuration/src/dev.rs</code>:138 on 2025-02-04 23:55</div>
+            <div class="timeline-body"><p>It's a bit surprising this returns a new type? I'd expect <code>with_...</code> to return <code>Self</code>. Perhaps it just needs to be renamed?</p>
+<p>Related https://github.com/astral-sh/uv/pull/11224/files#r1942058015</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-02-05 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-configuration/src/dev.rs</code>:13 on 2025-02-05 14:14</div>
+            <div class="timeline-body"><p>I'd prefer to do those kinds of renames in a followup PR, otherwise this one will be horribly merge-conflicty with non-trivial changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-02-05 14:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-configuration/src/dev.rs</code>:174 on 2025-02-05 14:33</div>
+            <div class="timeline-body"><p>I went back and checked and yeah if we try to complain about <code>--dev</code> being passed with no defined dev group it breaks some tests. Updated the comment to reflect this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-02-05 14:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-configuration/src/dev.rs</code>:31 on 2025-02-05 14:33</div>
+            <div class="timeline-body"><p>NB there's already other convenience constructors but yeah making this non-pub is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-configuration/src/dev.rs</code>:20 on 2025-02-05 14:51</div>
+            <div class="timeline-body"><p>I clarified the comments, I agree more followup renames would be good here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-02-05 14:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-05 14:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-configuration/src/dev.rs</code>:13 on 2025-02-05 14:52</div>
+            <div class="timeline-body"><p>Yep no problem</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-02-05 15:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-configuration/src/dev.rs</code>:60 on 2025-02-05 15:14</div>
+            <div class="timeline-body"><p>the current code and this PR ban <code>--all-groups --only-group</code> at the CLI level. However current code allows <code>--all-groups --only-dev</code> (which is supposed to be sugar for the former), which sets DevMode::Only and IncludeGroups::All</p>
+<p>I am semi-confident that this combination is not well-defined in the current code, and things will act inconsistently between the different APIs (i think it probably ends up behaving a lot like the mythical <code>--only-all-groups</code>)</p>
+<p>i would be comfortable with denying that being regarded as a bug fix. Added a comment noting this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-02-05 15:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/src/commands/project/mod.rs</code>:285 on 2025-02-05 15:15</div>
+            <div class="timeline-body"><p>More renaming for a followup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-02-05 15:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-configuration/src/dev.rs</code>:138 on 2025-02-05 15:17</div>
+            <div class="timeline-body"><p>Hmm maybe <code>manifest_defaults</code> (more renaming for later...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-02-05 15:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/src/commands/project/run.rs</code>:254 on 2025-02-05 15:18</div>
+            <div class="timeline-body"><p>I agree it's a bit weird, but on the other hand I do kind of like that it's really hammering in &quot;there were two different things I was theoretically supposed to be inputting and I'm doing Neither of them&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-02-05 15:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-cli/src/lib.rs</code>:2735 on 2025-02-05 15:55</div>
+            <div class="timeline-body"><p>Ok cool so this is the Final Potential Breakage to hash out (collapsed a few others that I regard as Equivalent).</p>
+<p>Looking closer, the current code:</p>
+<ul>
+<li>Hard panics(!) on <code>--group --only-dev</code> and <code>--dev --only-group</code></li>
+<li>CLI conflicts  <code>--group --only-group</code></li>
+<li>CLI conflicts <code>--dev --only-dev</code></li>
+<li>Saturates <code>--only-dev --dev</code> to <code>--only-dev</code></li>
+<li>CLI conflicts <code>--only-dev --no-dev</code></li>
+<li>Positionally Overrides <code>--dev --no-dev --dev ...</code></li>
+</ul>
+<p>So overall the current code hard rejects trying to mix <code>--only-*</code> with <code>--group</code>/<code>--dev</code>, except in the exact case of <code>--only-dev --dev</code>, which it turns into <code>--only-dev</code>. Which is fair enough, if a bit inconsistent. It's interesting that there's no overriding between <code>--only-dev and --no-dev</code> but I don't want to poke that bear in this PR.</p>
+<p>I've adjusted things to preserve this behaviour, although the hard panics are now CLI conflicts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-05 20:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/sync.rs</code>:1981 on 2025-02-05 20:08</div>
+            <div class="timeline-body"><p>Weird to allow this but not <code>// --group and --only-group should error if they name same things</code> but... eh.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-02-05 20:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-02-05 20:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/tests/it/sync.rs</code>:1981 on 2025-02-05 20:08</div>
+            <div class="timeline-body"><p>Preserving previous behaviour :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Gankra on 2025-02-05 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> removed by @Gankra on 2025-02-05 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Rewrite DevGroupSpecification and DevGroupManifest" to "fix handling of --all-group and --no-default-groups flags" by @Gankra on 2025-02-05 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "fix handling of --all-group and --no-default-groups flags" to "fix handling of `--all-groups` and `--no-default-groups` flags" by @Gankra on 2025-02-05 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-02-05 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-02-05 20:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-05 20:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:19 UTC
+    </footer>
+</body>
+</html>

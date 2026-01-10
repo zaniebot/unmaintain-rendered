@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF005 turns multiline into single line - astral-sh/ruff #9024</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF005 turns multiline into single line</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9024">#9024</a>
+        opened by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a>
+        on 2023-12-06 16:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a> on 2023-12-06 16:45</div>
+            <div class="timeline-body"><p><code>RUF005</code></p>
+<p>takes</p>
+<pre><code class="language-python">import pytest
+
+EMPTY_LIST = pytest.param([], id=&quot;empty list&quot;)
+EMPTY_DICT = pytest.param({}, id=&quot;empty dict&quot;)
+
+EMPTY_STR = pytest.param(&quot;&quot;, id=&quot;empty str&quot;)
+
+EMPTY_BASICS = (EMPTY_LIST, EMPTY_DICT, EMPTY_STR)
+
+@pytest.mark.parametrize(
+        &quot;page&quot;,
+        EMPTY_BASICS
+        + (
+            pytest.param([1], id=&quot;list of single int&quot;),
+            pytest.param([1, 2], id=&quot;list of multiple ints&quot;),
+            pytest.param(1.5, id=&quot;float&quot;),
+            pytest.param(generate_uuid(), id=&quot;string&quot;),
+            pytest.param(True, id=&quot;True&quot;),
+            pytest.param(False, id=&quot;False&quot;),
+            pytest.param(&quot;None&quot;, id=&quot;None&quot;),
+            pytest.param(&quot;&quot;, id=&quot;empty string&quot;),
+        ),
+    )
+def test_resource_types():
+        pass # empty example
+</code></pre>
+<p>and turns the detail into</p>
+<pre><code class="language-python">import pytest
+
+EMPTY_LIST = pytest.param([], id=&quot;empty list&quot;)
+EMPTY_DICT = pytest.param({}, id=&quot;empty dict&quot;)
+
+EMPTY_STR = pytest.param(&quot;&quot;, id=&quot;empty str&quot;)
+
+EMPTY_BASICS = (EMPTY_LIST, EMPTY_DICT, EMPTY_STR)
+
+@pytest.mark.parametrize(
+        &quot;page&quot;,
+        (*EMPTY_BASICS, pytest.param([1], id=&quot;list of single int&quot;), pytest.param([1, 2], id=&quot;list of multiple ints&quot;), pytest.param(1.5, id=&quot;float&quot;), pytest.param(generate_uuid(), id=&quot;string&quot;), pytest.param(True, id=&quot;True&quot;), pytest.param(False, id=&quot;False&quot;), pytest.param(&quot;None&quot;, id=&quot;None&quot;), pytest.param(&quot;&quot;, id=&quot;empty string&quot;)),
+    )
+def test_resource_types():
+        pass # empty example
+</code></pre>
+<p>the issue can be verifyed on the playground
+the builtin formatter autofixes it as well, however the fix should try to keep indents</p>
+<p>a more pathological example with the same behaviour is</p>
+<pre><code class="language-python">import pytest
+
+EMPTY_LIST = pytest.param([], id=&quot;empty list&quot;)
+EMPTY_DICT = pytest.param({}, id=&quot;empty dict&quot;)
+
+EMPTY_STR = pytest.param(&quot;&quot;, id=&quot;empty str&quot;)
+
+EMPTY_BASICS = (EMPTY_LIST, EMPTY_DICT, EMPTY_STR)
+
+@pytest.mark.parametrize(
+        &quot;page&quot;,
+        (
+            pytest.param([1], id=&quot;list of single int&quot;),
+            pytest.param([1, 2], id=&quot;list of multiple ints&quot;),
+            pytest.param(1.5, id=&quot;float&quot;),
+            pytest.param(generate_uuid(), id=&quot;string&quot;), 
+            ) + EMPTY_BASICS + (
+            pytest.param(True, id=&quot;True&quot;),
+            pytest.param(False, id=&quot;False&quot;),
+            pytest.param(&quot;None&quot;, id=&quot;None&quot;),
+            pytest.param(&quot;&quot;, id=&quot;empty string&quot;),
+        ),
+    )
+def test_resource_types():
+        pass # empty example
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-12-07 03:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @charliermarsh on 2023-12-07 03:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:10 UTC
+    </footer>
+</body>
+</html>

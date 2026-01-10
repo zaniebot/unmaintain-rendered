@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whether an import is treated as ThirdParty or FirstParty depends on whether the SAME config file is explicitly specified or implicitly discovered - astral-sh/ruff #14036</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Whether an import is treated as ThirdParty or FirstParty depends on whether the SAME config file is explicitly specified or implicitly discovered</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14036">#14036</a>
+        opened by <a href="https://github.com/tnahm">@tnahm</a>
+        on 2024-11-01 09:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tnahm">@tnahm</a> on 2024-11-01 09:56</div>
+            <div class="timeline-body"><p>I am calling ruff in two different ways, once explicitly specifiying the config file as  /home/torsten/src/service-digital-agent/.ruff.toml, once having it autodiscovered via parent.</p>
+<p><code>ruff check --config /home/torsten/src/service-digital-agent/.ruff.toml --verbose knowledge_retrieval/__init__.py</code></p>
+<p>vs.</p>
+<p><code>ruff check --verbose knowledge_retrieval/__init__.py</code></p>
+<p>In both cases, exactly the same configuration file is used (see debug logs below).</p>
+<p>In the first case, the import of the (local) data module is correctly identified as &quot;FirstParty&quot;, in the second case it is incorrectly identified as &quot;ThirdParty&quot; (see debug logs below):</p>
+<blockquote>
+<p>[2024-11-01][10:52:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'data' as Known(<strong>FirstParty</strong>) (SourceMatch(&quot;/home/torsten/src/service-digital-agent/core&quot;))</p>
+</blockquote>
+<p>vs.</p>
+<blockquote>
+<p>[2024-11-01][10:52:25][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'data' as Known(<strong>ThirdParty</strong>) (NoMatch)</p>
+</blockquote>
+<p>This leads to a different treatment of the import statement, with an error of &quot;I001 [*] Import block is un-sorted or un-formatted&quot; in the second case.</p>
+<p>I am using ruff 0.7.1</p>
+<pre><code>torsten$ ruff check --config /home/torsten/src/service-digital-agent/.ruff.toml --verbose knowledge_retrieval/__init__.py | head -1
+[2024-11-01][10:52:16][ruff::resolve][DEBUG] Using user-specified configuration file at: /home/torsten/src/service-digital-agent/.ruff.toml
+[2024-11-01][10:52:16][ruff::commands::check][DEBUG] Identified files to lint in: 4.979152ms
+[2024-11-01][10:52:16][ruff::diagnostics][DEBUG] Checking: /home/torsten/src/service-digital-agent/core/knowledge_retrieval/__init__.py
+[2024-11-01][10:52:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'typing' as Known(StandardLibrary) (KnownStandardLibrary)
+[2024-11-01][10:52:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'threading' as Known(StandardLibrary) (KnownStandardLibrary)
+[2024-11-01][10:52:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'pandas' as Known(ThirdParty) (NoMatch)
+[2024-11-01][10:52:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'tiktoken' as Known(ThirdParty) (NoMatch)
+[2024-11-01][10:52:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'pathlib' as Known(StandardLibrary) (KnownStandardLibrary)
+[2024-11-01][10:52:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'os' as Known(StandardLibrary) (KnownStandardLibrary)
+[2024-11-01][10:52:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'data' as Known(FirstParty) (SourceMatch(&quot;/home/torsten/src/service-digital-agent/core&quot;))
+[2024-11-01][10:52:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized '.evaluate' as Known(LocalFolder) (NonZeroLevel)
+[2024-11-01][10:52:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'loguru' as Known(ThirdParty) (NoMatch)
+[2024-11-01][10:52:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized '.dense' as Known(LocalFolder) (NonZeroLevel)
+[2024-11-01][10:52:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'app.utils' as Known(FirstParty) (SourceMatch(&quot;/home/torsten/src/service-digital-agent/core&quot;))
+[2024-11-01][10:52:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized '.sparse' as Known(LocalFolder) (NonZeroLevel)
+[2024-11-01][10:52:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'app.settings' as Known(FirstParty) (SourceMatch(&quot;/home/torsten/src/service-digital-agent/core&quot;))
+[2024-11-01][10:52:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized '.mix' as Known(LocalFolder) (NonZeroLevel)
+[2024-11-01][10:52:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'da_common.schemas' as Known(ThirdParty) (NoMatch)
+[2024-11-01][10:52:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized '.base' as Known(LocalFolder) (NonZeroLevel)
+[2024-11-01][10:52:16][ruff_linter::rules::isort::categorize][DEBUG] Categorized '.rrf' as Known(LocalFolder) (NonZeroLevel)
+[2024-11-01][10:52:16][ruff::commands::check][DEBUG] Checked 1 files in: 22.135574ms
+All checks passed!
+torsten$ ruff check --verbose knowledge_retrieval/__init__.py | head -1
+[2024-11-01][10:52:25][ruff::resolve][DEBUG] Using configuration file (via parent) at: /home/torsten/src/service-digital-agent/.ruff.toml
+[2024-11-01][10:52:25][ruff::commands::check][DEBUG] Identified files to lint in: 3.510834ms
+[2024-11-01][10:52:25][ruff::diagnostics][DEBUG] Checking: /home/torsten/src/service-digital-agent/core/knowledge_retrieval/__init__.py
+[2024-11-01][10:52:25][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'typing' as Known(StandardLibrary) (KnownStandardLibrary)
+[2024-11-01][10:52:25][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'threading' as Known(StandardLibrary) (KnownStandardLibrary)
+[2024-11-01][10:52:25][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'pandas' as Known(ThirdParty) (NoMatch)
+[2024-11-01][10:52:25][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'tiktoken' as Known(ThirdParty) (NoMatch)
+[2024-11-01][10:52:25][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'pathlib' as Known(StandardLibrary) (KnownStandardLibrary)
+[2024-11-01][10:52:25][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'os' as Known(StandardLibrary) (KnownStandardLibrary)
+[2024-11-01][10:52:25][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'data' as Known(ThirdParty) (NoMatch)
+[2024-11-01][10:52:25][ruff_linter::rules::isort::categorize][DEBUG] Categorized '.evaluate' as Known(LocalFolder) (NonZeroLevel)
+[2024-11-01][10:52:25][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'loguru' as Known(ThirdParty) (NoMatch)
+[2024-11-01][10:52:25][ruff_linter::rules::isort::categorize][DEBUG] Categorized '.dense' as Known(LocalFolder) (NonZeroLevel)
+[2024-11-01][10:52:25][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'app.utils' as Known(ThirdParty) (NoMatch)
+[2024-11-01][10:52:25][ruff_linter::rules::isort::categorize][DEBUG] Categorized '.sparse' as Known(LocalFolder) (NonZeroLevel)
+[2024-11-01][10:52:25][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'app.settings' as Known(ThirdParty) (NoMatch)
+[2024-11-01][10:52:25][ruff_linter::rules::isort::categorize][DEBUG] Categorized '.mix' as Known(LocalFolder) (NonZeroLevel)
+[2024-11-01][10:52:25][ruff_linter::rules::isort::categorize][DEBUG] Categorized 'da_common.schemas' as Known(ThirdParty) (NoMatch)
+[2024-11-01][10:52:25][ruff_linter::rules::isort::categorize][DEBUG] Categorized '.base' as Known(LocalFolder) (NonZeroLevel)
+[2024-11-01][10:52:25][ruff_linter::rules::isort::categorize][DEBUG] Categorized '.rrf' as Known(LocalFolder) (NonZeroLevel)
+[2024-11-01][10:52:25][ruff::commands::check][DEBUG] Checked 1 files in: 16.135841ms
+knowledge_retrieval/__init__.py:1:1: I001 [*] Import block is un-sorted or un-formatted
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-02 20:29</div>
+            <div class="timeline-body"><p>If you use <code>--config</code>, then Ruff resolves configuration relative to the current working directory. If you don't use <code>--config</code>, then Ruff resolves configuration relative to the &quot;project root&quot;. I suspect that's the source of the difference it's intentional. (Ruff will then look in <code>{project_root}/src</code> and <code>{project_root}</code> for a module named <code>data</code>.)</p>
+<p>This is all documented here: https://docs.astral.sh/ruff/faq/#how-does-ruff-determine-which-of-my-imports-are-first-party-third-party-etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-11-02 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tnahm">@tnahm</a> on 2024-11-04 16:20</div>
+            <div class="timeline-body"><p>Hi Charlie, thanks for your comment! I looked at the documentation and indeed this looks intentional. That being said, it does feel more like a bug than a feature, and I (and several colleagues) found it quite unintuitive that specifying a particular config file via --config changes how ruff selects the project root as a side effect. Also the help string for <code>--config</code></p>
+<pre><code>--config &lt;CONFIG_OPTION&gt;  Either a path to a TOML configuration file (`pyproject.toml` or `ruff.toml`), or a TOML `&lt;KEY&gt; = &lt;VALUE&gt;`
+                          pair (such as you might find in a `ruff.toml` configuration file) overriding a specific configuration
+                          option. Overrides of individual settings using this option always take precedence over all configuration
+                          files, including configuration files that were also specified using `--config`
+</code></pre>
+<p>doesn't mention anything that might lead a user to suspect this behavior.</p>
+<p>Therefore I am leaving this open with the hope that the maintainers reconsider this unintuitive side effect, or at least make it clearer in the documentation and console output. Even a log message to the effect of which project root is used would have helped in this case.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:35 UTC
+    </footer>
+</body>
+</html>

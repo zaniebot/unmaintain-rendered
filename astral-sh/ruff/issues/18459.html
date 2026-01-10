@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N805 fix should be suppressed when another variable is using the recommended name - astral-sh/ruff #18459</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>N805 fix should be suppressed when another variable is using the recommended name</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18459">#18459</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-06-04 13:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-06-04 13:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/invalid-first-argument-name-for-method/"><code>invalid-first-argument-name-for-method</code> (N805)</a> should be suppressed when the recommended parameter name is already taken by another variable used within that scope.</p>
+<pre><code class="language-console">$ cat &gt;n805.py &lt;&lt;'# EOF'
+class C:
+    def f(this):
+        self = type(this).__name__
+        print(self, this.__sizeof__())
+C().f()
+# EOF
+
+$ python n805.py
+C 16
+
+$ ruff --isolated check n805.py  --select N805 --unsafe-fixes --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat n805.py
+class C:
+    def f(self):
+        self = type(self).__name__
+        print(self, self.__sizeof__())
+C().f()
+
+$ python n805.py
+C 42
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.11.12 (aee3af0f7 2025-05-29)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-06-04 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-06-04 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-06-04 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-11 05:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:36 UTC
+    </footer>
+</body>
+</html>

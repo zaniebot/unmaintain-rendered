@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `memchr` for wheel parsing - astral-sh/uv #10620</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use <code>memchr</code> for wheel parsing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10620">#10620</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-01-15 00:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-15 00:18</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Before:</p>
+<pre><code>wheelname_parsing/numpy-compatible
+                        time:   [106.90 ns 107.86 ns 108.86 ns]
+                        thrpt:  [402.97 MiB/s 406.71 MiB/s 410.39 MiB/s]
+                 change:
+                        time:   [-4.5360% -3.7694% -2.9179%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [+3.0056% +3.9170% +4.7515%]
+                        Performance has improved.
+wheelname_parsing/flyte-short-incompatible
+                        time:   [81.439 ns 82.209 ns 83.015 ns]
+                        thrpt:  [390.59 MiB/s 394.42 MiB/s 398.15 MiB/s]
+                 change:
+                        time:   [+6.2344% +7.5385% +8.8928%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-8.1666% -7.0101% -5.8685%]
+                        Performance has regressed.
+wheelname_parsing/flyte-short-compatible
+                        time:   [78.909 ns 79.456 ns 80.031 ns]
+                        thrpt:  [357.49 MiB/s 360.08 MiB/s 362.57 MiB/s]
+                 change:
+                        time:   [+3.2653% +4.1733% +5.1062%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-4.8582% -4.0061% -3.1620%]
+                        Performance has regressed.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high mild
+wheelname_parsing/flyte-long-incompatible
+                        time:   [353.35 ns 357.49 ns 361.77 ns]
+                        thrpt:  [340.06 MiB/s 344.13 MiB/s 348.17 MiB/s]
+                 change:
+                        time:   [+1.4846% +2.0228% +2.6504%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-2.5820% -1.9827% -1.4629%]
+                        Performance has regressed.
+Found 10 outliers among 100 measurements (10.00%)
+  5 (5.00%) high mild
+  5 (5.00%) high severe
+wheelname_parsing/flyte-long-compatible
+                        time:   [256.47 ns 258.12 ns 260.17 ns]
+                        thrpt:  [417.88 MiB/s 421.20 MiB/s 423.90 MiB/s]
+                 change:
+                        time:   [+0.4079% +1.8252% +3.6270%] (p = 0.02 &lt; 0.05)
+                        thrpt:  [-3.5001% -1.7925% -0.4063%]
+                        Change within noise threshold.
+Found 1 outliers among 100 measurements (1.00%)
+  1 (1.00%) high severe
+</code></pre>
+<p>After:</p>
+<pre><code>wheelname_parsing_fastest/numpy-compatible
+                        time:   [61.500 ns 61.904 ns 62.350 ns]
+                        thrpt:  [703.60 MiB/s 708.66 MiB/s 713.32 MiB/s]
+                 change:
+                        time:   [+0.9879% +1.4542% +1.9311%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-1.8945% -1.4334% -0.9782%]
+                        Change within noise threshold.
+Found 8 outliers among 100 measurements (8.00%)
+  6 (6.00%) high mild
+  2 (2.00%) high severe
+wheelname_parsing_fastest/flyte-short-incompatible
+                        time:   [49.341 ns 49.538 ns 49.769 ns]
+                        thrpt:  [651.50 MiB/s 654.54 MiB/s 657.16 MiB/s]
+                 change:
+                        time:   [+5.8750% +6.3656% +6.8338%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-6.3967% -5.9847% -5.5490%]
+                        Performance has regressed.
+Found 17 outliers among 100 measurements (17.00%)
+  5 (5.00%) low severe
+  1 (1.00%) low mild
+  6 (6.00%) high mild
+  5 (5.00%) high severe
+wheelname_parsing_fastest/flyte-short-compatible
+                        time:   [49.425 ns 49.789 ns 50.193 ns]
+                        thrpt:  [570.01 MiB/s 574.63 MiB/s 578.86 MiB/s]
+                 change:
+                        time:   [+5.1267% +5.7418% +6.3476%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-5.9687% -5.4300% -4.8767%]
+                        Performance has regressed.
+Found 7 outliers among 100 measurements (7.00%)
+  7 (7.00%) high mild
+wheelname_parsing_fastest/flyte-long-incompatible
+                        time:   [295.81 ns 298.01 ns 301.04 ns]
+                        thrpt:  [408.66 MiB/s 412.82 MiB/s 415.89 MiB/s]
+                 change:
+                        time:   [+0.5553% +1.0842% +1.7059%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-1.6772% -1.0726% -0.5523%]
+                        Change within noise threshold.
+Found 4 outliers among 100 measurements (4.00%)
+  3 (3.00%) high mild
+  1 (1.00%) high severe
+wheelname_parsing_fastest/flyte-long-compatible
+                        time:   [214.80 ns 216.10 ns 217.50 ns]
+                        thrpt:  [499.87 MiB/s 503.10 MiB/s 506.15 MiB/s]
+                 change:
+                        time:   [+0.9003% +1.3207% +1.8268%] (p = 0.00 &lt; 0.05)
+                        thrpt:  [-1.7940% -1.3035% -0.8923%]
+                        Change within noise threshold.
+Found 8 outliers among 100 measurements (8.00%)
+  7 (7.00%) high mild
+  1 (1.00%) high severe
+</code></pre>
+<p>(Ignore the percent changes; they're not relative to one another.)</p>
+<p>So it's like &gt;40% faster for the small case and &gt;15% faster for the large case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2025-01-15 00:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2025-01-15 00:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-distribution-filename/src/splitter.rs</code>:23 on 2025-01-15 16:29</div>
+            <div class="timeline-body"><p>Haha. Oh golly Clippy would hate me...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-01-15 16:32</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-01-15 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-15 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-15 16:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:18 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: Error on dependency object specifier - astral-sh/uv #12811</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: Error on dependency object specifier</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12811">#12811</a>
+        opened by <a href="https://github.com/kiran-4444">@kiran-4444</a>
+        on 2025-04-10 16:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/kiran-4444">@kiran-4444</a> on 2025-04-10 16:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR errors out when an Unknown Dependency Object Specifier is used in dependency groups.</p>
+<p>Fixes #12638</p>
+<h2>Test Plan</h2>
+<p>The current behaviour is as follows:</p>
+<pre><code class="language-bash">➜  example git:(12638/dependency-object-specifier) ✗ cargo run -- sync
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.21s
+     Running `/home/luna/Documents/uv/target/debug/uv sync`
+error: Failed to generate package metadata for `example==0.1.0 @ virtual+.`
+  Caused by: Group `bar` contains a Dependency Object Specifier, which is not supported by uv
+</code></pre>
+<p>And the pyproject.toml to produce this is:</p>
+<pre><code class="language-toml">[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13.2&quot;
+dependencies = []
+
+[dependency-groups]
+foo = [&quot;pyparsing&quot;]
+bar = [{set-phasers-to = &quot;stun&quot;}]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @Gankra on 2025-04-10 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-workspace/src/dependency_groups.rs</code>:158 on 2025-04-10 19:42</div>
+            <div class="timeline-body"><p>Can you make this take and print out the map? (Also I wonder if this should be less jargony...)</p>
+<pre><code class="language-suggestion">    #[error(&quot;Group `{0}` contains an unknown dependency object specifier: {1:?}&quot;)]
+    DependencyObjectSpecifierNotSupported(GroupName, BTreeMap&lt;String, String&gt;),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-04-10 19:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @Gankra on 2025-04-10 19:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @Gankra on 2025-04-10 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-10 20:56</div>
+            <div class="timeline-body"><p>Rad, thanks! (Gonna just land this, if we want to bikeshed the error message more I'm willing to do that followup)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-04-10 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-04-10 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @Gankra on 2025-04-10 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> removed by @Gankra on 2025-04-10 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @Gankra on 2025-04-10 20:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.7.0" by @Gankra on 2025-04-10 20:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-10 20:59</div>
+            <div class="timeline-body"><p>Just realized this is technically breaking and should probably be delayed for 0.7.0 -- I'll handle the revert/reland if so.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:22 UTC
+    </footer>
+</body>
+</html>

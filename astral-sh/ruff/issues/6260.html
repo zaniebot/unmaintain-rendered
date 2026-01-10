@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>type-comparison (E721) doesn't work when comparing against an actual type - astral-sh/ruff #6260</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>type-comparison (E721) doesn't work when comparing against an actual type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6260">#6260</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2023-08-02 00:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2023-08-02 00:38</div>
+            <div class="timeline-body"><pre><code class="language-py">foo = 1
+if type(foo) is int: # no error
+    ...
+if type(foo) is type(1): # error
+    ...
+</code></pre>
+<p>the pylint rule <code>unidiomatic-typecheck</code> catches both cases</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2023-08-02 03:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2023-08-02 03:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-08-03 23:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2023-08-04 02:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-04 02:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2023-08-04 03:12</div>
+            <div class="timeline-body"><p>@charliermarsh Could you please clarify if the change here applies to only builtin types? And if so why, because in pylint it applies to any type, not just builtins:</p>
+<pre><code class="language-py">class A: ...
+a = A()
+type(a) == A  # C0123: Use isinstance() rather than type() for a typecheck. (unidiomatic-typecheck)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-04 03:25</div>
+            <div class="timeline-body"><p>I believe that allowing arbitrary expressions on the right-hand side will lead to false positives for legitimate usages, as in: https://github.com/PyCQA/pycodestyle/issues/882#issuecomment-588480243.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2023-08-04 03:44</div>
+            <div class="timeline-body"><p>Oh, is this because Ruff isn't able to tell if the expression on the rhs is a <code>type</code> or not?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-04 03:49</div>
+            <div class="timeline-body"><p>Yes that's correct. E.g., this is contrived but seems reasonable?</p>
+<pre><code class="language-python">type_of_b = type(b)
+type(a) is type_of_b
+</code></pre>
+<p>Pylint flags this under <code>unidiomatic-typecheck</code>, but it seems fine to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2023-08-04 04:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Yes that's correct.</p>
+</blockquote>
+<p>If Ruff can't determine if the rhs is a <code>type</code> then I understand that it's better to be less strict here.</p>
+<blockquote>
+<p>E.g., this is contrived but seems reasonable?</p>
+<pre><code class="language-python">type_of_b = type(b)
+type(a) is type_of_b
+</code></pre>
+<p>Pylint flags this under <code>unidiomatic-typecheck</code>, but it seems fine to me.</p>
+</blockquote>
+<p>I would write:</p>
+<pre><code class="language-py">type_of_b = type(b)
+isinstance(a, type_of_b)
+</code></pre>
+<p>Assuming the context is that I'm just dealing with some kind of usual operation where what I really want is a compatible subtype, and that I don't want to be checking for the exact same type.</p>
+<p>Isn't the whole point of the inspection to encourage <code>isinstance</code> over <code>==</code>/<code>is</code> for types because <code>isinstance</code> is aware of subtypes but <code>==</code>/<code>is</code> isn't?</p>
+<pre><code class="language-py">class A: ...
+class B(A): ...
+b = B()
+isinstace(b, A)  # True
+type(b) == A  # False
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2023-08-08 22:48</div>
+            <div class="timeline-body"><p>Would you accept a PR with the naive autofix for this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-08 22:58</div>
+            <div class="timeline-body"><p>Yeah, we can make it a suggested fix.</p>
+<p>(Also open to further refinements on the rule logic itself, I’m not certain that our criteria is optimal given above discussion.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:53 UTC
+    </footer>
+</body>
+</html>

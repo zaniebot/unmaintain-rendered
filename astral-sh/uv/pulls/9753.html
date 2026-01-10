@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retry on tar extraction errors - astral-sh/uv #9753</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Retry on tar extraction errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9753">#9753</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-12-09 22:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-09 22:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>So the error here is:</p>
+<pre><code class="language-rust">ExtractError(&quot;cpython-3.11.11%2B20241206-aarch64-apple-darwin-install_only_stripped.tar.gz&quot;, Io(Custom { kind: UnexpectedEof, error: TarError { desc: &quot;failed to unpack `/Users/crmarsh/.local/share/uv/python/.cache/.tmpkqFzqE/python/lib/libpython3.11.dylib`&quot;, io: Custom { kind: UnexpectedEof, error: TarError { desc: &quot;failed to unpack `python/lib/libpython3.11.dylib` into `/Users/crmarsh/.local/share/uv/python/.cache/.tmpkqFzqE/python/lib/libpython3.11.dylib`&quot;, io: Custom { kind: UnexpectedEof, error: &quot;unexpected end of file&quot; } } } } }))
+</code></pre>
+<p>This isn't a Reqwest error, so we miss it in <code>is_extended_transient_error</code>.</p>
+<p>We could add <code>TarError</code> or <code>ExtractError</code> here, but... should we? This PR just extends it to any error that has an IO source. I don't see much of a downside.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/9747.</p>
+<h2>Test Plan</h2>
+<p>First, ran: <code>uv run ./scripts/create-python-mirror.py --name cpython --arch aarch64 --os darwin</code>.</p>
+<p>Then, dropped this into <code>./scripts/mirror/server.py</code>:</p>
+<pre><code class="language-python">import os
+import random
+from http.server import SimpleHTTPRequestHandler, HTTPServer
+
+
+class GlitchyStaticServer(SimpleHTTPRequestHandler):
+    def do_GET(self):
+        &quot;&quot;&quot;Handle GET request.&quot;&quot;&quot;
+        file_path = self.translate_path(self.path)
+        
+        if not os.path.exists(file_path):
+            self.send_error(404, &quot;File not found&quot;)
+            return
+        
+        try:
+            with open(file_path, 'rb') as f:
+                file_content = f.read()
+
+            # Introduce an &quot;unexpected end of file&quot; glitch randomly
+            if random.random() &lt; 0.75:  # 75% chance of glitch
+                glitch_point = random.randint(1, len(file_content) - 1)
+                file_content = file_content[:glitch_point]
+
+            self.send_response(200)
+            self.send_header(&quot;Content-type&quot;, self.guess_type(file_path))
+            self.send_header(&quot;Content-Length&quot;, len(file_content))
+            self.end_headers()
+            self.wfile.write(file_content)
+        
+        except Exception as e:
+            self.send_error(500, f&quot;Internal Server Error: {e}&quot;)
+        
+
+def run(server_class=HTTPServer, handler_class=GlitchyStaticServer, port=8080):
+    &quot;&quot;&quot;Run the server.&quot;&quot;&quot;
+    server_address = ('', port)
+    httpd = server_class(server_address, handler_class)
+    print(f&quot;Serving on port {port} with glitchy behavior&quot;)
+    httpd.serve_forever()
+
+
+if __name__ == &quot;__main__&quot;:
+    run()
+</code></pre>
+<p>Then ran <code>python server.py</code> from that directory.</p>
+<p>From there, ran <code>UV_PYTHON_INSTALL_MIRROR=&quot;http://localhost:8080&quot; cargo run python install 3.11 --reinstall --verbose</code> to reliably test retries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-12-09 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-12-09 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-09 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">network</span> added by @charliermarsh on 2024-12-09 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-12-10 08:47</div>
+            <div class="timeline-body"><p>nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-12-10 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-10 12:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-10 12:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:15 UTC
+    </footer>
+</body>
+</html>

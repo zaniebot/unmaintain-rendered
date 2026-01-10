@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] False-positive errors in `finally` suites when all other branches of the `try` block have terminal statements - astral-sh/ruff #17016</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] False-positive errors in <code>finally</code> suites when all other branches of the <code>try</code> block have terminal statements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17016">#17016</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-03-27 17:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-27 17:10</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Red-knot currently doesn't recognise any symbols in <code>finally</code> suites as having visible definitions if the <code>try</code> suite has a terminal statement and there either is no <code>except</code> suite OR the <code>except</code> suite also has terminal statements. This causes quite a few false positives when running red-knot on Black (for example).</p>
+<pre><code class="language-py">def a():
+    try:
+        return
+    except:
+        return
+    finally:
+        f = &quot;foo&quot;
+        print(f)  # error: Name `f` is not defined
+
+def b():
+    try:
+        return
+    except:
+        return
+    finally:
+        f = &quot;foo&quot;
+        print(f)  # error: Name `f` is not defined
+
+
+def c():
+    try:
+        return
+    else:
+        pass
+    finally:
+        f = &quot;foo&quot;
+        print(f)  # error: Name `f` is not defined
+
+
+def d():
+    try:
+        return
+    except:
+        return
+    else:
+        pass
+    finally:
+        f = &quot;foo&quot;
+        print(f)  # error: Name `f` is not defined
+</code></pre>
+<p>There are no false positives on any of these:</p>
+<pre><code class="language-py">def e():
+    try:
+        pass
+    except:
+        return
+    finally:
+        f = &quot;foo&quot;
+        print(f)
+
+def f():
+    try:
+        return
+    except:
+        pass
+    finally:
+        f = &quot;foo&quot;
+        print(f)
+
+def g():
+    try:
+        pass
+    except:
+        pass
+    else:
+        return
+    finally:
+        f = &quot;foo&quot;
+        print(f)
+
+def h():
+    try:
+        return
+    except:
+        pass
+    else:
+        return
+    finally:
+        f = &quot;foo&quot;
+        print(f)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-03-27 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-03-27 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-03-27 19:27</div>
+            <div class="timeline-body"><p>This is purely a combination of https://github.com/astral-sh/ruff/issues/15797 and https://github.com/astral-sh/ty/issues/233.</p>
+<p>A <code>finally</code> suite can run either as a result of an exception, or as a result of fall-through from <code>try</code> or <code>except</code> blocks. We currently model only the latter possibility.</p>
+<p>And in the cases shown here, the latter possibility is unreachable, so this triggers our currently-suboptimal handling of unreachable code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-27 19:42</div>
+            <div class="timeline-body"><p>Hmm, I see. I suppose this simply validates our decision to treat astral-sh/ruff#15797 as high priority, then :-) I'll close this out in favour of those two issues.</p>
+<p>FWIW: this appears to cause about 20 false-positive diagnostics when running red-knot on Black</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-03-27 19:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:04 UTC
+    </footer>
+</body>
+</html>

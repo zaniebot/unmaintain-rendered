@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F821 (Undefined name) triggered when using assingment operator in all - astral-sh/ruff #997</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F821 (Undefined name) triggered when using assingment operator in all</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/997">#997</a>
+        opened by <a href="https://github.com/schoennenbeck">@schoennenbeck</a>
+        on 2022-12-02 14:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/schoennenbeck">@schoennenbeck</a> on 2022-12-02 14:49</div>
+            <div class="timeline-body"><p>When using <code>all</code> (or <code>any</code>) one can use the assignment (walrus) operator <code>:=</code> to get the first witness of some boolean expression breaking the <code>all</code>-call.</p>
+<p>For example:</p>
+<pre><code class="language-python">allowed_prefixes = {&quot;a&quot;, &quot;b&quot;, &quot;c&quot;}
+
+def handle_list(x):
+    assert all((w:=elt[0]) in allowed_prefixes for elt in x), f&quot;Witness: {w}&quot;
+
+handle_list([&quot;a1&quot;, &quot;c2&quot;]) # -&gt; works
+handle_list([&quot;a1&quot;, &quot;d4&quot;]) # -&gt; Raises AssertionError with message &quot;Witness: d&quot;
+</code></pre>
+<p>In the above <code>assert</code>-expression whenever an AssertionError is actually raised <code>w</code> will have a value since otherwise (in the case of an empty list) the assertion would go through. However, ruff complains &quot;F821 Undefined name 'w'&quot; which in my eyes is a false positive.</p>
+<p>This is probably a very annoying edge case since pretty much anywhere outside this <code>all</code>-<code>assert</code>-combination <code>w</code> could actually be undefined.</p>
+<p>Tested with python version 3.10.7 and ruff version 0.0.151.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-12-02 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-02 15:36</div>
+            <div class="timeline-body"><p>Haha wow, that is indeed a hard case :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/schoennenbeck">@schoennenbeck</a> on 2022-12-02 16:45</div>
+            <div class="timeline-body"><p>I am not even 100% sure this neccessarily should be 'fixed' or if I am overlooking an even weirder edge cases in which the <code>AssertionError</code> is raised without <code>w</code> being set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-02 16:48</div>
+            <div class="timeline-body"><p>I honestly didn't think that <code>w</code> would be available in the parent scope like that! I think this is unlikely to be fixed unfortunately but I do appreciate you filing such a clear issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-02 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/schoennenbeck">@schoennenbeck</a> on 2022-12-02 19:25</div>
+            <div class="timeline-body"><p>Yeah, that makes sense. It is definitely a controversial use of the assignment operator and I doubt too many people will ever run into this. Thanks a lot for providing the community with this tool; I really enjoy working with it so far.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rhkleijn">@rhkleijn</a> on 2022-12-03 15:20</div>
+            <div class="timeline-body"><p>I would  like to note that <a href="https://peps.python.org/pep-0572/#scope-of-the-target">PEP 572: Assignment expressions</a> explicitly mentions witness capturing as a motivating use case for these scoping rules when using the walrus operator within comprehensions and generator expressions.</p>
+<p>The second use case enabled by these scoping rules is updating mutable state from a comprehension. PEP 572 gives this  example:</p>
+<pre><code class="language-python"># Compute partial sums in a list comprehension
+total = 0
+partial_sums = [total := total + v for v in values]
+print(&quot;Total:&quot;, total)
+</code></pre>
+<p>And also (quoting the PEP): <em>However, an assignment expression target name cannot be the same as a for-target name appearing in any comprehension containing the assignment expression.</em></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:10:15 UTC
+    </footer>
+</body>
+</html>

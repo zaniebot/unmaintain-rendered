@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N818 ErrorSuffixOnExceptionName should apply recursively to sub-subclasses of Exception - astral-sh/ruff #783</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>N818 ErrorSuffixOnExceptionName should apply recursively to sub-subclasses of Exception</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/783">#783</a>
+        opened by <a href="https://github.com/andersk">@andersk</a>
+        on 2022-11-17 09:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/andersk">@andersk</a> on 2022-11-17 09:00</div>
+            <div class="timeline-body"><p>This triggers <code>N818 exception name 'Bar' should be named with an Error suffix</code> in pep8-naming but not in Ruff:</p>
+<pre><code class="language-python">class FooError(Exception):
+    pass
+
+class Bar(FooError):
+    pass
+</code></pre>
+<p>pep8-naming checks this by <a href="https://github.com/PyCQA/pep8-naming/blob/b3492eeede12a26d35c0ee9e6b9c37a7e5484bf6/src/pep8ext_naming.py#L283-L293">recursively searching</a> all ancestor classes, although it may be nearly as effective to just check whether an immediate parent class has a name ending in <code>Error</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-11-17 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-17 17:08</div>
+            <div class="timeline-body"><p>Yeah let's do the latter for now (checking parent names) as a heuristic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-17 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maltevesper">@maltevesper</a> on 2025-10-16 09:48</div>
+            <div class="timeline-body"><p>@charliermarsh I would kindly ask to reconsider this. Currently the lint wont fire for the following:</p>
+<pre><code>pydantic.ValidationErrr(ValueError): # typo missing O
+</code></pre>
+<p>or for projects defining their own Exception base class on which they base all other exceptions, one example would be <a href="https://github.com/python-gitlab/python-gitlab/blob/3859aa0ff3a77b31651b770585f5cfe81c9d244a/gitlab/exceptions.py#L37">gitlab-python</a>.</p>
+<pre><code>class GitlabAuthenticationError(GitlabError):
+    pass
+
+
+class RedirectError(GitlabError):
+    pass
+</code></pre>
+<p>If it is not in the cards it would be nice to have a rational like prohibitve performance statet for reference.
+If you can point me to another lint already recursively inspecting bases I <em>might</em> have a go at a PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-16 13:00</div>
+            <div class="timeline-body"><p>@maltevesper Could you open a separate issue? I think it would be better to discuss this in a new thread.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maltevesper">@maltevesper</a> on 2025-10-17 10:09</div>
+            <div class="timeline-body"><p>@ntBre done: #20936</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:28:28 UTC
+    </footer>
+</body>
+</html>

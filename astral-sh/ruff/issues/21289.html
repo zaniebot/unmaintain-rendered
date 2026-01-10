@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLE1141 fix is suppressed for empty `dict` - astral-sh/ruff #21289</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLE1141 fix is suppressed for empty <code>dict</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21289">#21289</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-11-05 21:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-11-05 21:19</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/dict-iter-missing-items/"><code>dict-iter-missing-items</code> (PLE1141)</a> is suppressed when the relevant <code>dict</code>’s keys are all 2-tuples in its initial binding. This usually makes sense, but it doesn’t make sense when the <code>dict</code> is defined as empty. In that case, there is no reason to assume that any keys added later will be 2-tuples, and that is a rare pattern so they probably won’t be, so PLE1141 should allow the fix. If the empty <code>dict</code> is annotated to have 2-tuple keys, as in <code>dict[tuple[int, str], bool]</code>, though, it is still appropriate to suppress the fix. <a href="https://play.ruff.rs/e6181e08-ba24-4009-a49d-33a13ad03e0e">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;ple1141.py &lt;&lt;'# EOF'
+data = {}
+data[&quot;x&quot;] = 1
+for k, v in data:
+    print(f&quot;{k=} {v=}&quot;)
+# EOF
+
+$ ruff --isolated check ple1141.py --select PLE1141 --preview
+All checks passed!
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.14.3 (8737a2d5f 2025-10-30)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-11-05 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-11-05 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-05 22:20</div>
+            <div class="timeline-body"><p>I think it makes sense to try being a bit more aggressive here, especially since the rule is in preview. We should just double check the ecosystem report to make sure there aren't too many new false positives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-11-21 22:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:41 UTC
+    </footer>
+</body>
+</html>

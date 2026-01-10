@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unnecessary `list()` or comprehension in `Counter()` - astral-sh/ruff #21588</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unnecessary <code>list()</code> or comprehension in <code>Counter()</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21588">#21588</a>
+        opened by <a href="https://github.com/injust">@injust</a>
+        on 2025-11-23 10:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/injust">@injust</a> on 2025-11-23 10:32</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><code>Counter</code> (as a dict subclass) should have a rule similar to https://docs.astral.sh/ruff/rules/unnecessary-comprehension-in-call/ and https://docs.astral.sh/ruff/rules/unnecessary-list-comprehension-dict/:</p>
+<pre><code class="language-python">Counter([(x, f(x)) for x in foo])
+Counter([x.id for x in foo])
+
+# above lines should be rewritten to:
+Counter((x, f(x)) for x in foo)
+Counter(x.id for x in foo)
+</code></pre>
+<p>As well as https://docs.astral.sh/ruff/rules/unnecessary-comprehension/:</p>
+<pre><code class="language-python">Counter([x for x in foo])
+# above line is rewritten to:
+Counter(list(foo))
+# but it should really be rewritten to:
+Counter(foo)
+# this should be rewritten too:
+Counter(x for x in foo)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`unnecessary-list-comprehension-dict` (C404) for `Counter`" to "`unnecessary-comprehension-in-call` (C419) for `Counter`" by @injust on 2025-11-23 10:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`unnecessary-comprehension-in-call` (C419) for `Counter`" to "Unnecessary comprehensions in `Counter()`" by @injust on 2025-11-23 10:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Unnecessary comprehensions in `Counter()`" to "Unnecessary `list()` or comprehension in `Counter()`" by @injust on 2025-11-23 10:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @amyreese on 2025-11-24 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @amyreese on 2025-11-24 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-11-24 19:27</div>
+            <div class="timeline-body"><p>Feels like a reasonable extension of the existing rules to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-25 07:52</div>
+            <div class="timeline-body"><p>I think the challenge here will be to infer whether <code>Counter</code> is a dict subclass or not and this requires multifile analysis to do reliable. Only supporting this pattern in the same file as the class is defined seems to limited to me and gives users a false sense of safety.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2025-11-25 07:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-11-25 21:49</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the challenge here will be to infer whether <code>Counter</code> is a dict subclass or not and this requires multifile analysis to do reliable. Only supporting this pattern in the same file as the class is defined seems to limited to me and gives users a false sense of safety.</p>
+</blockquote>
+<p><code>Counter</code> is <a href="https://docs.python.org/3/library/collections.html#collections.Counter">part of the stdlib</a>, so we should always know that it's a subtype of dict.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> removed by @MichaReiser on 2025-11-26 07:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-12-03 05:24</div>
+            <div class="timeline-body"><p>On my phone right now so I can't validate, but wouldn't this have the same issues as https://github.com/astral-sh/ruff/issues/12912 ?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:46 UTC
+    </footer>
+</body>
+</html>

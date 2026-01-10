@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate environment variables doc from code - astral-sh/uv #8493</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Generate environment variables doc from code</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/8493">#8493</a>
+        opened by <a href="https://github.com/j178">@j178</a>
+        on 2024-10-23 09:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/j178">@j178</a> on 2024-10-23 09:09</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #8417</p>
+<p>I've just begun learning procedural macros, so this PR is more of a proof of concept. It's still a work in progress, and I welcome any assistance or feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-10-30 01:43</div>
+            <div class="timeline-body"><p>Nice! I was planning to do this at some point, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-10-30 01:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-macros/src/lib.rs</code>:67 on 2024-10-30 01:48</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">pub fn attribute_env_vars_metadata(_attr: TokenStream, input: TokenStream) -&gt; TokenStream {
+</code></pre>
+<p>Maybe rename this to align with the naming of the other macros and be more explicit that this is for env var metadata?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-macros/src/lib.rs</code>:79 on 2024-11-01 01:09</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            ImplItem::Const(item)
+                if !item.attrs.iter().any(|attr| attr.path().is_ident(&quot;attr_hidden&quot;)) =&gt;
+            {
+                let name = item.ident.to_string();
+                let doc = item
+                    .attrs
+                    .iter()
+                    .find_map(get_doc_comment)
+                    .expect(&quot;Missing doc comment&quot;);
+                Some((name, doc))
+            }
+</code></pre>
+<p>This is likely useful to allow <code>#[attr_hidden]</code> on an env var to prevent it being rendered in the docs using below.</p>
+<pre><code class="language-rust">#[proc_macro_attribute]
+pub fn attr_hidden(_attr: TokenStream, item: TokenStream) -&gt; TokenStream {
+    item
+}
+</code></pre>
+<p>Which would allow you to do</p>
+<pre><code class="language-rust">    ...
+    /// Used to set the spawning/parent interpreter when using --system in the test suite.
+    #[attr_hidden]
+    pub const UV_INTERNAL__PARENT_INTERPRETER: &amp;'static str = &quot;UV_INTERNAL__PARENT_INTERPRETER&quot;;
+    ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-11-01 01:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/j178">@j178</a> reviewed on 2024-11-01 01:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/j178">@j178</a> on <code>crates/uv-macros/src/lib.rs</code>:79 on 2024-11-01 01:38</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-macros/src/lib.rs</code>:80 on 2024-11-01 01:48</div>
+            <div class="timeline-body"><p>Another cool idea is to handle the functions as well with return env var patterns.</p>
+<pre><code class="language-suggestion">            ImplItem::Fn(item)
+                if !item.attrs.iter().any(|attr| attr.path().is_ident(&quot;attr_hidden&quot;)) =&gt;
+	            {
+                // Extract the environment variable patterns
+                if let Some(pattern) = get_env_var_pattern_from_attr(&amp;item.attrs) {
+                    let doc = item
+                        .attrs
+                        .iter()
+                        .find_map(get_doc_comment)
+                        .unwrap_or_else(|| &quot;No documentation provided.&quot;.to_string());
+                    Some((pattern, doc))
+                } else {
+                    None // Skip if pattern extraction fails
+                }
+            }
+            _ =&gt; None,
+</code></pre>
+<p>Using this extractor</p>
+<pre><code class="language-rust">fn get_env_var_pattern_from_attr(attrs: &amp;[Attribute]) -&gt; Option&lt;String&gt; {
+    attrs
+        .iter()
+        .find(|attr| attr.path().is_ident(&quot;attr_env_var_pattern&quot;))
+        .and_then(|attr| attr.parse_args::&lt;LitStr&gt;().ok())
+        .map(|lit_str| lit_str.value())
+}
+
+#[proc_macro_attribute]
+pub fn attr_env_var_pattern(_attr: TokenStream, item: TokenStream) -&gt; TokenStream {
+    item
+}
+</code></pre>
+<p>That way, these will also now be in the docs</p>
+<pre><code class="language-rust">    #[attr_env_var_pattern(&quot;UV_INDEX_{name}_USERNAME&quot;)]
+    pub fn index_username(name: &amp;str) -&gt; String {
+        format!(&quot;UV_INDEX_{name}_USERNAME&quot;)
+    }
+
+    /// Generates the environment variable key for the HTTP Basic authentication password.
+    #[attr_env_var_pattern(&quot;UV_INDEX_{name}_PASSWORD&quot;)]
+    pub fn index_password(name: &amp;str) -&gt; String {
+        format!(&quot;UV_INDEX_{name}_PASSWORD&quot;)
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-11-01 01:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @j178 on 2024-11-01 05:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Generate environment variables doc" to "Generate environment variables doc from code" by @j178 on 2024-11-01 05:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-11-02 01:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>Cargo.toml</code>:153 on 2024-11-02 01:08</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">syn = { version = &quot;2.0.77&quot; }
+</code></pre>
+<p>I don't think <code>features = [&quot;full&quot;]</code> is needed here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/j178">@j178</a> reviewed on 2024-11-02 03:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/j178">@j178</a> on <code>Cargo.toml</code>:153 on 2024-11-02 03:14</div>
+            <div class="timeline-body"><p>Good catch, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-static/src/env_vars.rs</code>:124 on 2024-11-02 14:13</div>
+            <div class="timeline-body"><p>I'm curious why all these changes? I kind of liked the docs here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-11-02 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/j178">@j178</a> reviewed on 2024-11-03 02:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/j178">@j178</a> on <code>crates/uv-static/src/env_vars.rs</code>:124 on 2024-11-03 02:25</div>
+            <div class="timeline-body"><p>It is copied from the original <code>docs/configuration/enviroment.md</code> file. I think it's more user friendly for a document intended for end-users, rather than a developer facing docstring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-11-03 14:31</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2024-11-03 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-11-03 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-11-03 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-03 15:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:13 UTC
+    </footer>
+</body>
+</html>

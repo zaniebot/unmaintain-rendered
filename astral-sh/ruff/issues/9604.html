@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is PLR6201 technically incorrect? - astral-sh/ruff #9604</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Is PLR6201 technically incorrect?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9604">#9604</a>
+        opened by <a href="https://github.com/trag1c">@trag1c</a>
+        on 2024-01-22 00:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/trag1c">@trag1c</a> on 2024-01-22 00:44</div>
+            <div class="timeline-body"><p>From <a href="https://docs.astral.sh/ruff/rules/literal-membership/">the docs</a>:</p>
+<blockquote>
+<p>When testing for membership in a static sequence, prefer a <code>set</code> literal over a <code>list</code> or <code>tuple</code>, as Python optimizes <code>set</code> membership tests.</p>
+</blockquote>
+<p>This optimization isn't significant when using literals—while <code>set</code>s do have faster membership checks, doing <code>1 in (1, 2, 3)</code> is faster than <code>1 in {1, 2, 3}</code> as it takes 4–5x as much time to just construct a <code>set</code> compared to a <code>tuple</code> (see benchmarks below).</p>
+<details>
+<summary>Benchmarks</summary>
+
+<h3>Creating an object with elements <code>1, 2, 3</code></h3>
+<table>
+<tr>
+ <th>Version</th>
+ <th>tuple</th>
+ <th>set</th>
+ <th>list</th>
+ <th>tuple vs set</th>
+ <th>list vs set</th>
+</tr>
+<tr>
+ <td>3.12</td>
+ <td>10.28ns</td>
+ <td>48.71ns</td>
+ <td>42.37ns</td>
+ <td>+374%</td>
+ <td>+15%</td>
+</tr>
+<tr>
+ <td>3.11</td>
+ <td>8.24ns</td>
+ <td>39.88ns</td>
+ <td>25.55ns</td>
+ <td>+384%</td>
+ <td>+56%</td>
+</tr>
+<tr>
+ <td>3.10</td>
+ <td>7.98ns</td>
+ <td>40.73ns</td>
+ <td>26.86ns</td>
+ <td>+410%</td>
+ <td>+52%</td>
+</tr>
+<tr>
+ <td>3.9</td>
+ <td>8.73ns</td>
+ <td>40.00ns</td>
+ <td>26.03ns</td>
+ <td>+358%</td>
+ <td>+54%</td>
+</tr>
+<tr>
+ <td>3.8</td>
+ <td>9.43ns</td>
+ <td>39.84ns</td>
+ <td>27.38ns</td>
+ <td>+322%</td>
+ <td>+46%</td>
+</tr>
+</table>
+
+<h3>Checking whether <code>1</code> is a member of the object (w/ a literal)</h3>
+<table>
+<tr>
+ <th>Version</th>
+ <th>tuple</th>
+ <th>set</th>
+ <th>list</th>
+ <th>tuple vs set</th>
+ <th>list vs set</th>
+</tr>
+<tr>
+ <td>3.12</td>
+ <td>15.19ns</td>
+ <td>16.54ns</td>
+ <td>15.20ns</td>
+ <td>+9%</td>
+ <td>+9%</td>
+</tr>
+<tr>
+ <td>3.11</td>
+ <td>13.47ns</td>
+ <td>14.74ns</td>
+ <td>14.14ns</td>
+ <td>+9%</td>
+ <td>+4%</td>
+</tr>
+<tr>
+ <td>3.10</td>
+ <td>13.83ns</td>
+ <td>15.20ns</td>
+ <td>13.83ns</td>
+ <td>+10%</td>
+ <td>+10%</td>
+</tr>
+<tr>
+ <td>3.9</td>
+ <td>15.66ns</td>
+ <td>16.94ns</td>
+ <td>15.61ns</td>
+ <td>+8%</td>
+ <td>+9%</td>
+</tr>
+<tr>
+ <td>3.8</td>
+ <td>17.83ns</td>
+ <td>19.00ns</td>
+ <td>17.81ns</td>
+ <td>+7%</td>
+ <td>+7%</td>
+</tr>
+</table>
+</details>
+
+<p>Therefore (even though the difference isn't that substantial) I think it would make more sense for the rule to suggest</p>
+<ul>
+<li>using a <code>tuple</code> when checking against a literal, e.g. <code>1 in (1, 2, 3)</code>, and</li>
+<li>using a <code>set</code> when checking against a constant, e.g. <code>S = {1, 2, 3}; 1 in S</code> (although I suspect literals may be faster than constants for small objects (because of variable lookup?), in which case tuples would be the way).</li>
+</ul>
+<p>Hopefully I haven't made any mistakes with my reasoning 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-22 00:57</div>
+            <div class="timeline-body"><p>I think this was discussed a bit in https://github.com/astral-sh/ruff/issues/8758. Do you mind reading that issue first?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trag1c">@trag1c</a> on 2024-01-22 01:10</div>
+            <div class="timeline-body"><p>I somehow missed this specific one, my bad—seems like I missed a lot of details here, so I guess it's fine to keep it the way it is in most cases 🙂</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @trag1c on 2024-01-22 01:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:31 UTC
+    </footer>
+</body>
+</html>

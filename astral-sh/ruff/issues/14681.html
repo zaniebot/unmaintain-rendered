@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Metadata Version on ruff-0.8.1-py3-none-linux_armv6l.whl - astral-sh/ruff #14681</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>New Metadata Version on ruff-0.8.1-py3-none-linux_armv6l.whl</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14681">#14681</a>
+        opened by <a href="https://github.com/matthewakram">@matthewakram</a>
+        on 2024-11-29 16:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/matthewakram">@matthewakram</a> on 2024-11-29 16:30</div>
+            <div class="timeline-body"><p>It seems that there is an issue with latest wheel. The metadata version on is at 2.4. The pkginfo package support only metadata versions up to 2.3. This is pretty important since this is a crucial part of how Poetry resolved the package to install. Would it be possible to roll that back, ensuring that none of the released wheels have metadata version &gt;2.3? I am not sure what the metadata versions of all the other wheels are, but I am getting the error for ruff-0.8.1-py3-none-linux_armv6l.whl.</p>
+<p>here is the exact error:</p>
+<pre><code>C:\Users\\...\.venv\Lib\\site-packages\pkginfo\\distribution.py:175: NewMetadataVersion: New metadata version (2.4) higher than latest supported version: parsing as 2.3
+  warnings.warn(NewMetadataVersion(self.metadata_version))
+
+Unable to determine package info for path: C:\Users\...\AppData\Local\Temp\2\tmpivaox21p\ruff-0.8.1-py3-none-linux_armv6l.whl
+
+Unknown metadata version: 2.4
+</code></pre>
+<p>Steps to recreate.</p>
+<ol>
+<li>windows machine</li>
+<li>start a poetry project</li>
+<li>add ruff = &quot;0.8.1&quot; to the dependencies</li>
+<li>run poetry update</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-29 16:49</div>
+            <div class="timeline-body"><p>What version of poetry are you using? I just tried installing Ruff with Poetry 1.8.4 and it was successful:</p>
+<pre><code>❯ uvx poetry add ruff --python 3.10
+Using version ^0.8.1 for ruff
+
+Updating dependencies
+Resolving dependencies... (0.1s)
+
+Package operations: 1 install, 0 updates, 0 removals
+
+  - Installing ruff (0.8.1)
+
+Writing lock file
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dmcauslan">@dmcauslan</a> on 2024-11-29 20:52</div>
+            <div class="timeline-body"><p>Maybe it depends on how poetry is installed? I'm seeing the same issue with poetry 1.8.4 installed via pipx.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-29 21:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe it depends on how poetry is installed? I'm seeing the same issue with poetry 1.8.4 installed via pipx.</p>
+</blockquote>
+<p>I hope not. That would be rather surprising. Can you share what platform your on and run <code>poetry --version</code>? I now verified that adding ruff works on macos and windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mohsen-rahmati-dev">@mohsen-rahmati-dev</a> on 2024-11-30 11:47</div>
+            <div class="timeline-body"><p>I have the same issue:</p>
+<pre><code>OS: Ubuntu 22.04.5 LTS 64-bit
+Poetry: 1.8.4 (Installed via vendor-specific installation script)
+Python: 3.12.7 (Installed via `pyenv 2.4.19-2-g61406193`)
+</code></pre>
+<pre><code>Downloading ...pypi/packages/packages/a2/d6/1a6314e568db88acdbb5121ed53e2c52cebf3720d3437a76f82f923bf171/ruff-0.8.1-py3-none-linux_armv6l.whl#sha256=fae0805bd514066f20309f6742f6ee7904a773eb9e6c17c45d6b1600ca65c9b5  96% (14.7s).../.local/share/pypoetry/venv/lib/python3.12/site-packages/pkginfo/distribution.py:175: NewMetadataVersion: New metadata version (2.4) higher than latest supported version: parsing as 2.3
+  warnings.warn(NewMetadataVersion(self.metadata_version))
+
+Unable to determine package info for path: /tmp/tmpv0nhj4py/ruff-0.8.1-py3-none-linux_armv6l.whl
+
+Unknown metadata version: 2.4
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-30 12:28</div>
+            <div class="timeline-body"><p>I suggest reporting this to poetry because downgrading the metadata version is not in our control (managed by maturin)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-30 14:09</div>
+            <div class="timeline-body"><p>To give some more context on why we bumped the metadata version.</p>
+<p>We tried publishing Ruff 0.8 with the old metadata version but pypi rejected the wheel (unlike previous releases where this just worked)</p>
+<pre><code>error: Failed to publish `wheels/ruff-0.8.1-py3-none-linux_armv6l.whl` to https://upload.pypi.org/legacy/
+  Caused by: Upload failed with status code 400 Bad Request. Server says: 400 license-file introduced in metadata version 2.4, not 2.3. See https://packaging.python.org/specifications/core-metadata for more information.
+</code></pre>
+<p>That's why I don't think we can do anything at our end.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @MichaReiser on 2024-12-02 08:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bigpick">@bigpick</a> on 2024-12-02 15:02</div>
+            <div class="timeline-body"><blockquote>
+<p>I hope not. That would be rather surprising. Can you share what platform your on and run poetry --version? I now verified that adding ruff works on macos and windows.</p>
+</blockquote>
+<p>FWIW, I'm seeing this on macOS, with poetry (installed via <code>pip install</code>) <code>1.8.4</code> and <code>Python 3.11.10</code>) on our existing projects</p>
+<hr />
+<p>Though, in a completely fresh environment...</p>
+<pre><code class="language-bash">mkdir /tmp/test_ruff_poetry
+
+cd /tmp/test_ruff_poetry
+
+mkdir -p src/test
+
+touch src/test/__init__.py
+
+python3.11 -m venv .venv
+
+source .venv/bin/activate
+
+python --version
+# Python 3.11.10
+
+pip install poetry
+
+which poetry
+# &lt;in the venv in curr dir&gt;
+
+poetry --version
+# Poetry (version 1.8.4)
+
+cat &lt;&lt; EOF &gt; pyproject.toml
+[tool.poetry]
+name=&quot;test&quot;
+authors=[]
+version=&quot;0.0.0&quot;
+description=&quot;&quot;
+packages=[
+   { include = &quot;test&quot;, from=&quot;src&quot;}
+]
+
+[tool.poetry.dependencies]
+python = &quot;&gt;=3.11,&lt;4&quot;
+ruff = &quot;0.8.1&quot;
+EOF 
+
+poetry install
+</code></pre>
+<p>works.</p>
+<hr />
+<p>Of note: We usually pull our deps through an internal Artifactory; the above (without the artifactory source) works, but keeping the same thing but attempting to use the internal repository encounters the error</p>
+<pre><code class="language-toml">[[tool.poetry.source]]
+name = &quot;Private Internal Artifactory Source&quot;
+url =  &quot;...&quot;
+priority = &quot;primary&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bigpick">@bigpick</a> on 2024-12-02 16:41</div>
+            <div class="timeline-body"><blockquote>
+<p>I suggest reporting this to poetry ...</p>
+</blockquote>
+<p>Related to this: https://github.com/python-poetry/poetry/issues/9670</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-02 17:39</div>
+            <div class="timeline-body"><p>Could you try updating the <code>pkginfo</code> dependency. The newest released version (which poetry uses) adds support for 2.4. This also explains why running poetry with <code>uvx</code> works because it installs the latest <code>pkginfo</code> version but might not work in your project where you use an older verison.</p>
+<p>https://pypi.org/project/pkginfo/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @MichaReiser on 2024-12-02 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bigpick">@bigpick</a> on 2024-12-02 17:47</div>
+            <div class="timeline-body"><blockquote>
+<p>The newest released version (which poetry uses) adds support for 2.4. This also explains why running poetry with uvx works because it installs the latest pkginfo version but might not work in your project where you use an older verison.</p>
+</blockquote>
+<p>Trying the above again, looks like it does get the newest <code>pkginfo</code> version (<code>1.12.0</code>, that was released <em>12 minutes ago</em>) and works for me for both the public and Artifactory example</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-02 18:00</div>
+            <div class="timeline-body"><p>I'll close this because there's now a known fix on the poetry side (upgrade <code>pkginfo</code>). Let me know if it doesn't resolve your problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-02 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sagnik">@sagnik</a> on 2025-06-09 22:00</div>
+            <div class="timeline-body"><p>I am just going to leave a comment that I had to upgrade poetry that I had installed through pipx for this to work, so both <code>pipx upgrade poetry</code> and <code>poetry run pip install --upgrade pkginfo</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:55 UTC
+    </footer>
+</body>
+</html>

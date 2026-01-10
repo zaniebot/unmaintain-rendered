@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Fix error]: Ruff UP007 fix introduces syntax error with nested string type annotations - astral-sh/ruff #14132</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Fix error]: Ruff UP007 fix introduces syntax error with nested string type annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14132">#14132</a>
+        opened by <a href="https://github.com/Paillat-dev">@Paillat-dev</a>
+        on 2024-11-06 12:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Paillat-dev">@Paillat-dev</a> on 2024-11-06 12:37</div>
+            <div class="timeline-body"><p>When running Ruff's auto-fix for UP007 (non-pep604-annotation), it introduces a syntax error when handling nested quotes in type annotations. The specific case occurs when using string literals for forward references that contain quotes within quotes.</p>
+<h2>Minimal Reproducible Example</h2>
+<pre><code class="language-python">from typing import Union
+
+class AClass:
+    ...
+
+def myfunc(param: &quot;tuple[Union[int, 'AClass', None], str]&quot;):
+    print(param)
+</code></pre>
+<h2>Current Behavior</h2>
+<p>Running <code>ruff check . --fix</code> produces:</p>
+<pre><code>error: Fix introduced a syntax error. Reverting all changes.
+This indicates a bug in Ruff.
+</code></pre>
+<p>The code itself is valid Python and works correctly with type checkers. The nested quote structure (<code>'AClass'</code> inside <code>&quot;tuple[...]&quot;</code>) is a legitimate pattern for forward references in type annotations, even tough the quotes are redundant.</p>
+<h2>Expected Behavior</h2>
+<p>Ruff should either:</p>
+<ol>
+<li>Correctly handle the nested quotes when applying UP007 fixes, or</li>
+<li>Skip applying UP007 fixes for complex nested quote cases to avoid introducing syntax errors</li>
+</ol>
+<h2>Environment</h2>
+<ul>
+<li>Ruff version: 0.7.2</li>
+<li>Command: <code>ruff check . --fix</code></li>
+</ul>
+<h2>Configuration</h2>
+<pre><code class="language-toml">[tool.ruff]
+select = [&quot;ALL&quot;]
+# (other settings omitted for brevity)
+</code></pre>
+<h2>Additional Context</h2>
+<p>This appears to be an edge case in quote handling for type annotations. While the syntax may look unusual, it's valid Python and is correctly interpreted by type checkers. The UP007 fixer might need to be more careful when handling nested quotes in type annotation strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-06 13:19</div>
+            <div class="timeline-body"><p>Wow, nice write up!</p>
+<p>This is related to https://github.com/astral-sh/ruff/issues/13934</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @MichaReiser on 2024-11-06 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-11-06 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-11-06 13:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-07 04:51</div>
+            <div class="timeline-body"><p>I <em>think</em> this is related to https://github.com/astral-sh/ruff/issues/10586 instead. When the checker is visiting the <code>Union[...]</code> which is inside a string annotation, the <code>Generator</code> is not considering the outer quote. The rule mentioned here (<code>UP007</code>) doesn't use the <code>quote_annotation</code> function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ntBre by @ntBre on 2025-01-26 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-01-27 18:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:38 UTC
+    </footer>
+</body>
+</html>

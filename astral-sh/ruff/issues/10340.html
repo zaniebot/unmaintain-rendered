@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F821: false negatives when a file has `from __future__ import annotations` - astral-sh/ruff #10340</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F821: false negatives when a file has <code>from __future__ import annotations</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10340">#10340</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-03-11 14:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-11 14:10</div>
+            <div class="timeline-body"><p>Ruff currently emits no F821 errors on this <code>.py</code> file, but the lines marked with <code>XXX</code> all fail at runtime due to undefined names:</p>
+<pre><code class="language-py">from __future__ import annotations
+
+from typing import TypeAlias, Optional, Union
+
+MaybeCStr: TypeAlias = Optional[CStr]  # XXX
+MaybeCStr2: TypeAlias = Optional[&quot;CStr&quot;]  # always okay
+CStr: TypeAlias = Union[C, str]  # XXX
+CStr2: TypeAlias = Union[&quot;C&quot;, str]  # always okay
+
+class C: ...
+
+class Leaf: ...
+class Tree(list[Tree | Leaf]): ...  # XXX
+class Tree2(list[&quot;Tree | Leaf&quot;]): ...  # always okay
+</code></pre>
+<p>Note:</p>
+<ul>
+<li>Ruff correctly emits three errors on this file when <code>from __future__ import annotations</code> is not included</li>
+<li>Ruff correctly emits no errors on this file if it's a <code>.pyi</code> stub file.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-03-11 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2024-03-11 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> added by @zanieb on 2024-03-11 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-03-12 17:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-03-21 16:48</div>
+            <div class="timeline-body"><p>The PR fixing this was reverted in #10513</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @AlexWaygood on 2024-03-21 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-03-22 18:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:06 UTC
+    </footer>
+</body>
+</html>

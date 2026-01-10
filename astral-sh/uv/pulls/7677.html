@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add a `uv-python` shim executable - astral-sh/uv #7677</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add a <code>uv-python</code> shim executable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7677">#7677</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-09-24 22:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-24 22:31</div>
+            <div class="timeline-body"><p>Adds a minimal <code>uv-python</code> binary to our distributions, which uses <code>uv python find</code> to determine which Python executable to use then invokes it with all the arguments.</p>
+<p>Some notes:</p>
+<ul>
+<li>We call this <code>uv-python</code> instead of <code>python</code> so we don't replace <code>python</code> on the <code>PATH</code> when uv is installed.</li>
+<li>Respects virtual environments, but we might want to skip virtual environments by default? We have a flag to opt-out per invocation, at least.</li>
+<li>We copy (or link) this into the user's bin as <code>python</code> during <code>uv python install</code>. We'll probably want more ways to manage the shim?</li>
+<li>We add an environment variable to <code>Interpreter::query</code> calls to avoid recursive queries once a shim is installed</li>
+<li>Adds <code>--shim</code> / <code>--no-shim</code> flags to <code>uv python install</code>. By default, we only install a shim if a CPython variant is installed and preview is enabled.</li>
+</ul>
+<p>Supports a few options, which can be used together:</p>
+<ul>
+<li>Version requests e.g. <code>uv-python +3.12 ...</code>.</li>
+<li>Only use a managed interpreter e.g. <code>uv-python +managed ...</code>.</li>
+<li>Ignore virtual environments e.g. <code>uv-python +system ...</code>.</li>
+<li>Enable verbose output e.g., <code>uv-python +v ...</code></li>
+</ul>
+<p>Unlike <code>uvx</code>, we use <code>which</code> to find the uv binary instead of only looking next to the file. This is because we need this to be copyable into the user's path. Unfortunately this makes it hard for us to guarantee that we are finding the correct version of uv if multiple are installed, but that seems like an edge-case. We could add some sort of <code>UV_REQUIRED_VERSION</code> variable or something that tells the uv binary to bail if it's not the right version. We prefer a binary that we find next to <code>uv-python</code> which could help alleviate this — I'll need to look at what happens with symlinks and such.</p>
+<p>An alternative implementation is something like <code>uvx</code> where we add a <code>uv python run</code> command and then create aliases to it. That route is powerful because we can have advanced behaviors and rely on other crates without increasing the size of our installation. However, the constraints of this approach may be a good thing.</p>
+<p>Unfortunately we need to invoke uv to find the Python interpreter to use and uv queries Python interpreters so this probably adds some significant overhead to a <code>python</code> invocation. I'll benchmark this before moving out of draft.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">no-build</span> added by @zanieb on 2024-09-25 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2024-10-06 20:03</div>
+            <div class="timeline-body"><p>Cool! would it be possible to call the executable <code>uvpy</code> so it behaves similarly to <code>py</code> on windows and is easier to type?</p>
+<p>FYI you can do things like this on Windows:</p>
+<pre><code>py -3.10
+</code></pre>
+<p>It is something I miss when using mac</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rtaycher">@rtaycher</a> on 2024-12-17 21:09</div>
+            <div class="timeline-body"><p>Would be nice to run sync or at least have the option to run sync(with uv specific key in pyproject.toml). Could help teams maintain a consistent environment (especially if some users don't know as much about package management).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:13 UTC
+    </footer>
+</body>
+</html>

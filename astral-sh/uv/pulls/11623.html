@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Return error when running uvx with a .py script - astral-sh/uv #11623</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Return error when running uvx with a .py script</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11623">#11623</a>
+        opened by <a href="https://github.com/jtfmumm">@jtfmumm</a>
+        on 2025-02-19 15:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-02-19 15:32</div>
+            <div class="timeline-body"><p>If we see <code>uvx script.py</code>, we exit early, giving a hint to use <code>uv run script.py</code> if the script exists. If it does not exist, we suggest running <code>uv run</code> with a normalized package name.</p>
+<p>This PR includes a snapshot test for each of these scenarios.</p>
+<p>An alternative approach would be to wait until we encounter an error, and then add the hint. But if there happens to be a malicious package called <code>script-py</code>, this would be run unintentionally (a point raised by @zanieb).</p>
+<p>Closes #10784</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:111 on 2025-02-19 15:38</div>
+            <div class="timeline-body"><p>We probably need to support <code>pyw</code> here too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-19 15:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:115 on 2025-02-19 15:39</div>
+            <div class="timeline-body"><p>We usually do &quot;Did you mean&quot;, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-19 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:117 on 2025-02-19 15:40</div>
+            <div class="timeline-body"><p>Often, we just do a sub-format, e.g.</p>
+<pre><code>format!(&quot;uv run {}&quot;, possible_path...).cyan()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-19 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:113 on 2025-02-19 15:42</div>
+            <div class="timeline-body"><p>Should we error if we can't read the path? (earnestly not sure here)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-19 15:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-19 15:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:121 on 2025-02-19 15:43</div>
+            <div class="timeline-body"><p>It seems nice to include the script name, maybe like</p>
+<blockquote>
+<p>It looks like you're trying to run a script (<code>{}</code>) but it does not exist.</p>
+</blockquote>
+<p>Not in love with that, but don't have a better idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-19 15:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:121 on 2025-02-19 15:45</div>
+            <div class="timeline-body"><p>In the &quot;Did you mean&quot; message, should we clarify what <code>uvx &lt;name&gt;</code> would do? Like &quot;Did you mean to run a tool with <code>uvx {}</code>&quot;?</p>
+<p>I'm not sure if I prefer it, but wanted to put it out there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-19 15:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:108 on 2025-02-19 15:49</div>
+            <div class="timeline-body"><p>If <code>--from</code> is provided, e.g, <code>uvx --from &lt;package&gt; foo.py</code> we should probably not perform this check as they've opted-in to loading a specific source.</p>
+<p>We probably want to have this logic for <code>uvx --from foo.py &lt;command&gt;</code> though? We can't give a good suggestion though since we don't support like <code>uv run --with-requirements foo.py &lt;command&gt;</code> yet — see https://github.com/astral-sh/uv/issues/6542</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/tool/run.rs</code>:121 on 2025-02-19 15:51</div>
+            <div class="timeline-body"><p>Yeah, I think adding that context is helpful</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-02-19 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-02-19 16:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/tool/run.rs</code>:108 on 2025-02-19 16:32</div>
+            <div class="timeline-body"><p>Updated to reflect your suggestion</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-02-19 16:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/tool/run.rs</code>:113 on 2025-02-19 16:51</div>
+            <div class="timeline-body"><p>It's a good question. We could treat that as the &quot;doesn't exist case&quot; if we'd prefer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:114 on 2025-02-19 18:13</div>
+            <div class="timeline-body"><p>Why not use the same suggestion as below? (but with <code>--from &lt;package&gt;</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-19 18:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-19 18:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:114 on 2025-02-19 18:15</div>
+            <div class="timeline-body"><p>We can't suggest <code>uv run ...</code> but we can suggest <code>uvx --from script-py ...</code> instead</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-19 18:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:130 on 2025-02-19 18:16</div>
+            <div class="timeline-body"><p>Sorry I missed this initially, you need to use <code>invocation_source</code> here instead of hard-coding <code>uvx</code> because that's an alias for <code>uv tool run</code> (and we want to match what the user used)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @jtfmumm by @jtfmumm on 2025-02-20 07:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @jtfmumm by @jtfmumm on 2025-02-20 07:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-02-20 08:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/tool/run.rs</code>:130 on 2025-02-20 08:55</div>
+            <div class="timeline-body"><p>Updated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-02-20 08:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/tool/run.rs</code>:114 on 2025-02-20 08:56</div>
+            <div class="timeline-body"><p>Updated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-20 20:26</div>
+            <div class="timeline-body"><p>This looks good to me, thanks for addressing the feedback. I want to do one final pass on the messaging, since this is ostensibly breaking (though I really hope nobody is relying on this behavior). I'll do that on Monday.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:113 on 2025-03-03 19:14</div>
+            <div class="timeline-body"><p>We try to avoid single letter variables names</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:120 on 2025-03-03 19:14</div>
+            <div class="timeline-body"><p>I think we can probably just the original <code>from</code> string instead of going from String -&gt; Path -&gt; String.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:129 on 2025-03-03 19:16</div>
+            <div class="timeline-body"><p>Did you mean to display the absolute path here? <code>user_display</code> is generally preferable, which handles display of paths in the working directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/tool_run.rs</code>:1907 on 2025-03-03 19:17</div>
+            <div class="timeline-body"><p>This looks superfluous</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/run.rs</code>:120 on 2025-03-03 19:22</div>
+            <div class="timeline-body"><p>Minor note, rustfmt chokes on macros so you need to format those manually sometimes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-03 19:45</div>
+            <div class="timeline-body"><p>Sorry again about the delay here. I pushed a commit (https://github.com/astral-sh/uv/pull/11623/commits/41bbf8cc5e34e13e86a81287cc9b34eaed9fc69e) with some tweaks and left some notes via review for context.</p>
+<p>My focus here was being a bit more verbose and consistent with the error messages, but I made some nit-changes at the same time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-03 19:51</div>
+            <div class="timeline-body"><p>If you think any of the error messages are worse for some reason please let me know so we can align on the best message</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-03-04 13:14</div>
+            <div class="timeline-body"><blockquote>
+<p>If you think any of the error messages are worse for some reason please let me know so we can align on the best message</p>
+</blockquote>
+<p>Your changes look good to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-03-04 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-03-04 14:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-04 14:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

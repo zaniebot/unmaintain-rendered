@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Q001` incorrectly treats attribute docstrings as plain multiline strings - astral-sh/ruff #5975</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>Q001</code> incorrectly treats attribute docstrings as plain multiline strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/5975">#5975</a>
+        opened by <a href="https://github.com/vpoverennov">@vpoverennov</a>
+        on 2023-07-22 12:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vpoverennov">@vpoverennov</a> on 2023-07-22 12:08</div>
+            <div class="timeline-body"><p><a href="https://peps.python.org/pep-0257/">PEP-0257</a> defines attribute docstrings</p>
+<blockquote>
+<p>String literals occurring elsewhere in Python code may also act as documentation. They are not recognized by the Python bytecode compiler and are not accessible as runtime object attributes (i.e. not assigned to <code>__doc__</code>), but two types of extra docstrings may be extracted by software tools:</p>
+</blockquote>
+<p>String literals occurring immediately after a simple assignment at the top level of a module, class, or <code>__init__</code> method are called “attribute docstrings”.</p>
+<pre><code>class Test:
+    &quot;&quot;&quot;
+    class docstring
+    &quot;&quot;&quot;
+
+    x = 42
+    &quot;&quot;&quot;attribute docstring&quot;&quot;&quot;
+
+    def __init__(self):
+        &quot;&quot;&quot;method docstring&quot;&quot;&quot;
+        pass
+</code></pre>
+<p>with the following config</p>
+<pre><code>select = [
+ &quot;Q&quot;
+]
+
+[flake8-quotes]
+inline-quotes = &quot;single&quot;
+multiline-quotes = &quot;single&quot;
+docstring-quotes = &quot;double&quot;
+</code></pre>
+<p>results in</p>
+<pre><code># ruff main.py
+main.py:7:5: Q001 [*] Double quote multiline found but single quotes preferred
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+</code></pre>
+<p>Ruff follows the behavior of flake8-quotes here, but I still think this might be an issue which was never discovered in flake8</p>
+<pre><code># flake8 main.py
+main.py:7:5: Q001 Double quote multiline found but single quotes preferred
+</code></pre>
+<p>here's a <a href="https://github.com/vpoverennov/ruff_quotes_repro">repo </a> with the full setup
+I'm using the latest ruff 0.0.280
+Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "attribute docstrings are recognised as multiline strings instead by Q001" to "Q001 incorrectly treats attribute docstrings as plain multiline strings" by @vpoverennov on 2023-07-22 12:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Q001 incorrectly treats attribute docstrings as plain multiline strings" to "`Q001` incorrectly treats attribute docstrings as plain multiline strings" by @vpoverennov on 2023-07-22 12:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-22 14:13</div>
+            <div class="timeline-body"><p>Thanks for the clear issue. A little tricky because AFAIK attribute docstrings were explicitly rejected in <a href="https://peps.python.org/pep-0224/">PEP 224</a>, so it's arguably incorrect to treat them as docstrings for the purpose of this rule, but I know they're used in practice in a variety of places and projects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-07-22 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-07-22 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vpoverennov">@vpoverennov</a> on 2023-07-23 14:31</div>
+            <div class="timeline-body"><p>I'm not familiar with the history of the mentioned PEPs, I've only recently learned about attribute docstrings myself. Pycharm and VSCode support them though.</p>
+<p><a href="https://peps.python.org/pep-0224/">PEP-0224</a> and <a href="https://peps.python.org/pep-0258/#attribute-docstrings">PEP-0258</a> are both rejected but seem to be talking about the runtime implementation.
+<a href="https://peps.python.org/pep-0257/">PEP-0257</a> is active and discusses only semantics of the attribute docstrings</p>
+<p>Here's what I found on this topic:
+<a href="https://github.com/microsoft/vscode-python/discussions/16736">a dicsussion in vscode-python</a>
+<a href="https://stackoverflow.com/a/9558703">SO discussion</a> mentions that <a href="https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#directive-autoattribute">Sphinx supports them as well</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tibdex">@tibdex</a> on 2024-03-11 22:07</div>
+            <div class="timeline-body"><p>Related to #10347.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:46 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`non-pep695-type-alias` (`UP040`) - fix should be marked as unsafe when a type comes from an import - astral-sh/ruff #12980</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>non-pep695-type-alias</code> (<code>UP040</code>) - fix should be marked as unsafe when a type comes from an import</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12980">#12980</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2024-08-19 07:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-08-19 07:35</div>
+            <div class="timeline-body"><p>normally the fix will detect whether a type used in a type alias is a <code>TypeVar</code> and fix it like so:</p>
+<pre><code class="language-py"># before:
+
+from typing import TypeVar, TypeAlias
+
+T = TypeVar(&quot;T&quot;)
+
+Foo: TypeAlias = list[T]
+</code></pre>
+<pre><code class="language-py"># after:
+
+from typing import TypeVar, TypeAlias
+
+T = TypeVar(&quot;T&quot;)
+
+type Foo[T] = list[T]
+</code></pre>
+<p>but in my project, i often import <code>TypeVar</code>s from other files, usually to prevent the boilerplate of having to define them over and over again:</p>
+<pre><code class="language-py"># before:
+
+from typing import TypeAlias
+from foo import T
+
+Foo: TypeAlias = list[T]
+</code></pre>
+<p>since ruff doesn't have multi-file analysis (#7447) and has no way to determine whether an imported type is a <code>TypeVar</code>, it incorrectly assumes it's not, and fixes it incorrectly:</p>
+<pre><code class="language-py"># after:
+
+from typing import TypeAlias
+from foo import T
+
+type Foo = list[T]
+</code></pre>
+<p>this is invalid and causes a type error in both <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;flags=show-error-codes%2Cstrict%2Ccheck-untyped-defs%2Cdisallow-any-decorated%2Cdisallow-any-expr%2Cdisallow-any-explicit%2Cdisallow-any-generics%2Cdisallow-any-unimported%2Cdisallow-incomplete-defs%2Cdisallow-subclassing-any%2Cdisallow-untyped-calls%2Cdisallow-untyped-decorators%2Cdisallow-untyped-defs%2Cno-implicit-reexport%2Clocal-partial-types%2Cwarn-redundant-casts%2Cwarn-return-any%2Cwarn-unreachable%2Cwarn-unused-configs%2Cwarn-unused-ignores&amp;gist=c39a289031e20e8716b12fc9b93ff76e">mypy</a> and <a href="https://basedpyright.com/?typeCheckingMode=all&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoAqiApgGoCGIAUFQVALyEkUgAUARAewJQ3wLEoAMTBgGUADZIAzjADaBALpA">pyright</a>:</p>
+<pre><code>Type parameter &quot;T&quot; is not included in the type parameter list for &quot;Foo&quot;
+</code></pre>
+<p><a href="https://play.ruff.rs/e33cf71f-da75-4ddd-9ba6-479716c62c71">playground</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2024-08-21 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-triage</span> added by @MichaReiser on 2024-08-21 06:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:49 UTC
+    </footer>
+</body>
+</html>

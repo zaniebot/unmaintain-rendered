@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider deprecating lint rules that correspond to syntax errors - astral-sh/ruff #19122</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider deprecating lint rules that correspond to syntax errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/19122">#19122</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-07-03 15:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-03 15:13</div>
+            <div class="timeline-body"><p>Now that we stabilized the semantic syntax errors in 0.12, we could consider deprecating, and eventually removing, the current lint rules that correspond to <code>SyntaxError</code>s in CPython. These currently include <code>SemanticSyntaxError</code>s:</p>
+<ul>
+<li><a href="https://docs.astral.sh/ruff/rules/late-future-import/#late-future-import-f404">late-future-import (F404)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/load-before-global-declaration/#load-before-global-declaration-ple0118">load-before-global-declaration (PLE0118)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/yield-outside-function/#yield-outside-function-f704">yield-outside-function (F704)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/return-outside-function/#return-outside-function-f706">return-outside-function (F706)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/await-outside-async/#await-outside-async-ple1142">await-outside-async (PLE1142)</a></li>
+</ul>
+<p>As seen <a href="https://github.com/astral-sh/ruff/blob/1b813cd5f1933ab05ba7b96ace798199429c0bd6/crates/ruff_linter/src/checkers/ast/mod.rs#L625">here</a>.</p>
+<p>As well as rules that overlap with <code>ParseError</code>s:</p>
+<ul>
+<li><a href="https://docs.astral.sh/ruff/rules/no-indented-block/#no-indented-block-e112">no-indented-block (E112)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unexpected-indentation/#unexpected-indentation-e113">unexpected-indentation (E113)</a></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.13" by @ntBre on 2025-07-03 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-07-03 15:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-07-07 22:13</div>
+            <div class="timeline-body"><p>I found a couple more while working on #18972:</p>
+<ul>
+<li><a href="https://docs.astral.sh/ruff/rules/no-indented-block/#no-indented-block-e112">no-indented-block (E112)</a></li>
+<li><a href="https://docs.astral.sh/ruff/rules/unexpected-indentation/#unexpected-indentation-e113">unexpected-indentation (E113)</a></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-08 02:30</div>
+            <div class="timeline-body"><p>I think those are a bit different, at least from what I had in mind here, because we haven't re-implemented them as <code>SemanticSyntaxError</code>s (I guess these would actually become <code>ParseError</code>s). But that's a good reminder that there are other rules with this property!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-07-08 03:58</div>
+            <div class="timeline-body"><p>I guess I don't understand, since those rules raise both a SyntaxError and the lint if you enable them, which to me says they've been re-implemented. https://play.ruff.rs/57648a41-214d-44cb-9c08-8069dfc9c484</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-08 13:18</div>
+            <div class="timeline-body"><p>You're right, I should have tested the examples first. I didn't realize we emitted both a lint and a syntax error. I'll add them to the body of the issue!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CodeMan62">@CodeMan62</a> on 2025-07-10 01:40</div>
+            <div class="timeline-body"><p>@ntBre  should we deprecate all these lint rules in one PR or different different PR's ??</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-07-10 09:03</div>
+            <div class="timeline-body"><p>I know you're aware of this, but just for visibility on this issue -- we need to be careful about making PLE1142 non-suppressible, because it's not always a syntax error (it almost always is for <code>.py</code> files, but in notebook contexts it very often isn't). See https://github.com/astral-sh/ruff/issues/17395.</p>
+<p>If a user has preview mode enabled, Ruff will issue a hard error if a deprecated rule is selected in their Ruff configuration (https://github.com/astral-sh/ruff/pull/19249#issuecomment-3055045708). But eventually we want to make it so that it's impossible to opt <em>out</em> of these rules rather than impossible to opt <em>into</em> them, which makes it a bit different from a normal deprecation. For preview users, would these rules be enabled by default (and reported as syntax errors) whether or not they had selected them by their deprecated lint-rule names in their configuration file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-10 12:34</div>
+            <div class="timeline-body"><p>Good point Alex!</p>
+<p>I meant the &quot;Consider&quot; in the title pretty literally. I think it would be good to collect more discussion and design plans before strongly considering this deprecation. 0.13 might even be too soon for that, I expected we might kick this between a couple of milestones but wanted to track the idea somewhere.</p>
+<p>I think there are more lint rules related to <code>nonlocal</code>, for example, that we might want to include in this batch, and they aren't even implemented as syntax errors yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.13" by @ntBre on 2025-09-05 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.14" by @ntBre on 2025-09-05 13:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.14" by @ntBre on 2025-10-02 12:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.15" by @ntBre on 2025-10-02 12:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:54 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F402 is triggered by `__future__.annotations` - astral-sh/ruff #15747</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F402 is triggered by <code>__future__.annotations</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15747">#15747</a>
+        opened by <a href="https://github.com/mattmess1221">@mattmess1221</a>
+        on 2025-01-26 02:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mattmess1221">@mattmess1221</a> on 2025-01-26 02:25</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>F402 is being triggered by <code>__future__</code> imports. These imports can probably be safely ignored.</p>
+<p>Searched terms: F402, annotations, future</p>
+<h3>Reproduction</h3>
+<pre><code class="language-py">from __future__ import annotations
+
+for annotations in [[&quot;anno1&quot;, &quot;anno2&quot;]]:
+    print(annotations)
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-console">% ruff --version
+ruff 0.9.3
+% ruff check --select F
+f.py:3:5: F402 Import `annotations` from line 1 shadowed by loop variable
+  |
+1 | from __future__ import annotations
+2 |
+3 | for annotations in [[&quot;anno1&quot;, &quot;anno2&quot;]]:
+  |     ^^^^^^^^^^^ F402
+4 |     print(annotations)
+  |
+
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-26 03:59</div>
+            <div class="timeline-body"><p>This seems to be by design, considering what Pyflakes does:</p>
+<pre><code class="language-python"># https://github.com/PyCQA/pyflakes/blob/d9e32c4c/pyflakes/checker.py#L971
+if isinstance(existing, Importation) and isinstance(parent_stmt, FOR_TYPES):
+    self.report(messages.ImportShadowedByLoopVar,
+                node, value.name, existing.source)
+
+# https://github.com/PyCQA/pyflakes/blob/d9e32c4c/pyflakes/checker.py#L415
+class FutureImportation(ImportationFrom):
+    &quot;&quot;&quot;
+    A binding created by a from `__future__` import statement.
+
+    `__future__` imports are implicitly used.
+    &quot;&quot;&quot;
+    ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-26 10:24</div>
+            <div class="timeline-body"><p>Yes, putting <code>from __future__ import annotations</code> in a module does actually insert an <code>annotations</code> symbol into the module's namespace:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from __future__ import annotations
+&gt;&gt;&gt; annotations
+_Feature((3, 7, 0, 'beta', 1), None, 16777216)
+</code></pre>
+<p>This is documented at <a href="https://docs.python.org/3/library/__future__.html">https://docs.python.org/3/library/__future__.html</a>.</p>
+<p>I appreciate that most people don't ever use the symbol that's inserted as a result of these <code>import</code> statements -- the main use case is the &quot;side effect&quot; the import statement has that causes the module to be parsed in a different way. However, your code still might be more readable if you used a different variable name to differentiate your loop variable from the symbol inserted by the import statement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @AlexWaygood on 2025-01-26 10:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-02 11:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:26 UTC
+    </footer>
+</body>
+</html>

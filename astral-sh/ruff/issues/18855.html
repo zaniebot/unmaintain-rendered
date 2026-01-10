@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`RUF`] `RUF056` false negative on shadowed bindings - astral-sh/ruff #18855</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>RUF</code>] <code>RUF056</code> false negative on shadowed bindings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18855">#18855</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-06-21 20:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-21 20:35</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Like #18777, <a href="https://docs.astral.sh/ruff/rules/falsy-dict-get-fallback/#falsy-dict-get-fallback-ruf056">falsy-dict-get-fallback (RUF056)</a> has a false negative when the name is a shadowed binding. <a href="https://play.ruff.rs/393aed06-5ef5-420d-9152-12f92affe66a">playground</a></p>
+<pre><code class="language-py">dict = {}
+if dict.get(key, False):  # No error
+    ...
+</code></pre>
+<h3>Version</h3>
+<p>playground</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-06-22 03:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`Ruff-specific rules`] `RUF056` false negative on shadowed bindings" to "[`RUF`] `RUF056` false negative on shadowed bindings" by @MichaReiser on 2025-06-23 06:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-24 06:16</div>
+            <div class="timeline-body"><p>Using <code>resolve_name</code> over <code>only_binding</code> can lead to new false positives when control flow is involved:</p>
+<pre><code class="language-py">def demonstrate_false_positive():
+    if True:
+        a= set()
+    else:
+        a = {}
+
+
+    # dict is now a string, should NOT trigger RUF056
+    if a.get(key, False):  # But this DOES trigger - FALSE POSITIVE
+        pass
+</code></pre>
+<p>That's why the fix is more complicated than replacing one with the other. I think the proper fix is to change <code>only_binding</code> to return <code>Some</code> if the last visible binding is visible regardless of the control flow graph taken. This would still leave some false positives (e.g the example above) but it would be an improvement over what we have today.</p>
+<p>The most comprehensive solution would be to enhance our type inference to verify that all potentially visible bindings resolve to a dictionary.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:48 UTC
+    </footer>
+</body>
+</html>

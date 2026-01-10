@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stabilize `uv publish` - astral-sh/uv #11032</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Stabilize <code>uv publish</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11032">#11032</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-01-28 18:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-01-28 18:41</div>
+            <div class="timeline-body"><p><code>uv publish</code> has not changed for some time, it has <a href="https://github.com/search?q=%22uv+publish%22&amp;type=code">notable production usage</a> and there are no outstanding blockers, it is time to stabilize it with the 0.6 release.</p>
+<h2>Introduction</h2>
+<p>Publishing is only usable through <code>uv publish</code>. You need to build source distributions and wheels ahead of time, usually with <code>uv build</code>.</p>
+<p>By default, <code>uv publish</code> will upload all source distributions and wheels in the <code>dist/</code> folder, ignoring all non-matching filenames. By default, <code>uv build</code> and most other build frontend write their artifacts to <code>dist/</code>. Together, we can build a publish workflow including a smoke test that all relevant files have actually been included in the wheel:</p>
+<pre><code>uv build
+uv venv
+uv pip install --find-links dist ...
+uv run smoke_test.py
+uv publish
+</code></pre>
+<h2>Project configuration</h2>
+<p>There are 3 options supported in configuration files:</p>
+<ul>
+<li><code>tool.uv.publish-url</code></li>
+<li><code>tool.uv.trusted-publishing</code></li>
+<li><code>tool.uv.check-url</code></li>
+</ul>
+<h2>Index configuration</h2>
+<p>Options support on the CLI and through environment variables for index configuration:</p>
+<pre><code>      --index &lt;INDEX&gt;
+          The name of an index in the configuration to use for publishing [env: UV_PUBLISH_INDEX=]
+      --publish-url &lt;PUBLISH_URL&gt;
+          The URL of the upload endpoint (not the index URL) [env: UV_PUBLISH_URL=]
+      --check-url &lt;CHECK_URL&gt;
+          Check an index URL for existing files to skip duplicate uploads [env: UV_PUBLISH_CHECK_URL=]
+</code></pre>
+<p>There are two ways to configure <code>uv publish</code>: Passing options individually or using the index API.</p>
+<p>For the individual options, there <code>--publish-url</code> and <code>--check-url</code>, and their configuration counterparts, <code>tool.uv.publish_url</code> and <code>tool.uv.check_url</code>. <code>--publish-url</code> is named this way to be clearly different from the simple index URL, since uploading to the index URL leads to unclear errors, or worse a 200 OK with no effect. While we intend to keep supporting this configuration, the index API is better integrated.</p>
+<p>In the index API, the user specifies <code>[[tool.uv.index]]</code>, with an index name, the simple index URL and the publish URL. The <code>publish-url</code> and <code>url</code> are equivalent to <code>--publish-url</code> and <code>--check-url</code>. The <code>url</code> being mandatory makes for a better upload behavior (next paragraph).</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;pypi&quot;
+url = &quot;https://pypi.org/simple&quot;
+publish-url = &quot;https://upload.pypi.org/legacy/&quot;
+</code></pre>
+<h2>Existing files and API limitations</h2>
+<p>A version of a package contains multiple files, for pure-python packages usually a source distribution and a wheel, for native packages usually many, larger wheels and a source distributions. Uploads in the not officially specified Upload API 1.0 are file based: Once you upload a file, the version is created, even though most files are still missing. When uploading a series of files fails in the middle (e.g. the CI server breaks), the release is only half uploaded. For such cases, you want to re-try the upload. The response of an index when re-uploading a file is implementation defined. Notably, PyPI accepts uploads of the same file again with status 200, but rejects uploads of a file with the same name but different contents with status 400. Other indexes reject all attempts at re-uploads with different status codes and messages. Twine handles this with <code>--skip-existing</code>, which allows ignoring errors due to files with the same name as an existing file being uploaded, however this does also not error when uploading a file with different contents but the same name, which indicates a problem with the publish pipeline.</p>
+<p>To properly solve this, we need the ability to stage releases: Files of a version are uploaded to a staging area, and only when all files are uploaded, we atomically publish the release. When an upload breaks or CI fails, we can discard or overwrite the staging area and try again. This will only be properly solved by PEP 694 &quot;Upload 2.0 API for Python Package Indexes&quot;, with unclear progress. For local publishing, it would also be convenient to be able to check which files exist and what their hashes are from only the publish URL, so files in the <code>dist/</code> folder from a previous release can be ignored.</p>
+<p>In the Upload API 1.0, we need to upload transformed METADATA fields along with the file as form-data. We currently upload only recognized metadata fields, where we know how to translate the field name to the form-data name. This means when a user adds unknown, wrong or future-PEP metadata we miss it. To me best knowledge no index currently verifies that the form-data and the METADATA file in the wheel match.</p>
+<p>Upload API 2.0 will be an entirely new protocol. It is unclear how we will decide whether to use Upload API 1.0 or Upload API 2.0 once the latter is released. Upload API 2.0 will remove the need for a check URL. This means no changes for <code>--index</code>, but <code>--check-url</code> will be incompatible with Upload API 2.0.</p>
+<h2>Authentication</h2>
+<p>Options support on the CLI and through environment variables for authentication:</p>
+<pre><code>  -u, --username &lt;USERNAME&gt;
+          The username for the upload [env: UV_PUBLISH_USERNAME=]
+  -p, --password &lt;PASSWORD&gt;
+          The password for the upload [env: UV_PUBLISH_PASSWORD=]
+  -t, --token &lt;TOKEN&gt;
+          The token for the upload [env: UV_PUBLISH_TOKEN=]
+      --trusted-publishing &lt;TRUSTED_PUBLISHING&gt;
+          Configure using trusted publishing through GitHub Actions [possible values: automatic, always,
+          never]
+      --keyring-provider &lt;KEYRING_PROVIDER&gt;
+          Attempt to use `keyring` for authentication for remote requirements files [env:
+          UV_KEYRING_PROVIDER=] [possible values: disabled, subprocess]
+</code></pre>
+<p>We need credentials for the publish URL, and we may need credentials for the check URL.</p>
+<p>We support credentials from environment variables, the CLI, the URL, the keyring, trusted publishing or a prompt.</p>
+<p>The username can come from, in order:</p>
+<ul>
+<li>Mutually exclusive:<ul>
+<li><code>--username</code> or <code>UV_PUBLISH_USERNAME</code>. The CLI option overrides the environment variable</li>
+<li>The username field in the publish URL</li>
+<li>If <code>--token</code> or <code>UV_PUBLISH_TOKEN</code> are used, it is <code>__token__</code>. The CLI option overrides the environment variable</li>
+</ul>
+</li>
+<li>If trusted publishing is available, it is <code>__token__</code></li>
+<li>(We currently do not read the username from the keyring)</li>
+<li>If stderr is a tty, prompt the user</li>
+</ul>
+<p>The password can come from, in order:</p>
+<ul>
+<li>Mutually exclusive:<ul>
+<li><code>--password</code> or <code>UV_PUBLISH_PASSWORD</code>. The CLI option overrides the environment variable</li>
+<li>The password field in the publish URL</li>
+<li>If <code>--token</code> or <code>UV_PUBLISH_TOKEN</code> are used, it is the token value. The CLI option overrides the environment variable</li>
+</ul>
+</li>
+<li>If the keyring is enabled, the keyring entry for the URL and username</li>
+<li>If trusted publishing is available, the trusted publishing token</li>
+<li>If stderr is a tty, prompt the user</li>
+</ul>
+<p>If no credentials are found, we do a final check in the auth middleware cache and otherwise error without sending the request.</p>
+<p>Trusted publishing is only supported in GitHub Actions. By default, we try to retrieve a token from it in GitHub Actions (<code>GITHUB_ACTIONS</code> is <code>true</code>) but continue even it this fails. Trusted publishing can be forced with <code>--trusted-publishing always</code>, to error on misconfiguration, or deactivated with <code>--trusted-publishing never</code>. The option can also be configured through <code>tool.uv.trusted-publishing</code>.</p>
+<p>When <code>--check-url</code> or <code>--index</code> are used, we may need credentials for the index URL, too. These are handle separately by the same rules as using the index anywhere else. The <code>--keyring-provier</code> option is however shared between them, turning the keyring on for either turns it on for both.</p>
+<p>As future option, we could read <code>UV_INDEX_USERNAME</code> and <code>UV_INDEX_PASSWORD</code> as fallbacks for the publish credentials (https://github.com/astral-sh/uv/issues/9845). This however would clash with prompting: When index credentials and upload credentials are not the same (they usually should be different, since regular uv operations should have less privileges than publish), we would then instead of prompting use the wrong credentials from <code>UV_INDEX_*</code> and fail.</p>
+<p>A major UX problem is that there is no standard for the username when using a token (or rather, there is no standard for just sending a token without a username). PyPI uses <code>__token__</code>, Cloudsmith used to use your username or <code>token</code>, but now also supports <code>__token__</code> (https://github.com/astral-sh/uv/issues/8221), while Google Cloud Artifacts always uses <code>oauth2accesstoken</code> (https://github.com/astral-sh/uv/issues/9778). This means the index documentation may say you're getting a token for authentication, but you must not use <code>--token</code>, you must instead set username and password. This is something that we can hopefully fix with Upload API 2.0.</p>
+<p>An unsolved problem with the keyring is that you it's best practice to use publish tokens scoped to projects and store tokens in a secure location such as the keyring, but the keyring saves a single password per publish URL and username combination. That means that it can't natively store separate passwords for publishing multiple packages. The current hack around this is using the package name as query parameter, e.g. <code>https://test.pypi.org/legacy/?astral-test-keyring</code>, as PyPI ignores this query parameter. This is however only applicable when publishing locally and not from CI.</p>
+<p>Another problem is that the keyring implementation currently relies on the <code>keyring</code> pypi package, which needs to be installed in PATH together with its plugins and is comparatively slow. This would be improved by native keyring support (https://github.com/astral-sh/uv/issues/10867), with the same caveats such as keyring plugins that shared with the simple index API.</p>
+<h2>Missing and unsupported features</h2>
+<p>We currently don't upload attestations (PEP 740). Attestations are an additional field in the form-data, so we should be able to add them transparently without any changes to the API, unless we want to add a switch to deactivate even when trusted publishing is used. See also https://trailofbits.github.io/are-we-pep740-yet/.</p>
+<p>Setuptools is writing an invalid combination of Metadata-Version and used metadata fields in some cases, which PyPI correctly rejects (https://github.com/astral-sh/uv/issues/9513).</p>
+<p>We set a 15min overall timeout since reqwest is missing a write timeout option (https://github.com/seanmonstar/reqwest/issues/2403).</p>
+<p>https://github.com/astral-sh/uv/issues/8641 and https://github.com/astral-sh/uv/issues/8774: We build artifact checking in some capacity. This should be done ideally by the build backend or at latest as part of <code>uv build</code>, doing it as part of publish is too late.</p>
+<p>Closes #7839</p>
+<hr />
+<p>Let me know if i missed anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">benchmarks</span> added by @konstin on 2025-01-28 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.6.0" by @konstin on 2025-01-28 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-30 01:33</div>
+            <div class="timeline-body"><p>Nice summary.</p>
+<p>(Nit: I think there's an unfinished sentence:)</p>
+<pre><code>since uploading to the index URL leads to unclear errors, or worse a .
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-01-30 01:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-02-11 16:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-02-11 16:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-11 16:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:19 UTC
+    </footer>
+</body>
+</html>

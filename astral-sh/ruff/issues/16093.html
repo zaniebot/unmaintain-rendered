@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff mangles f-string to exceed line length (format &amp; check, E501) - astral-sh/ruff #16093</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff mangles f-string to exceed line length (format &amp; check, E501)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16093">#16093</a>
+        opened by <a href="https://github.com/vytas7">@vytas7</a>
+        on 2025-02-11 06:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/vytas7">@vytas7</a> on 2025-02-11 06:39</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>I searched for: f-string, format &amp; check, E501.</p>
+<p>The issue seems to be caused by the newly introduced ability to format code inside f-strings.</p>
+<p>Consider the following file (<code>test.py</code>):</p>
+<pre><code class="language-python">variable = 1
+items = (
+    f&quot;-- This is a format string to demonstrate a Ruff issue: {variable/variable}. --&quot;,
+)
+</code></pre>
+<p>It passes all the checks (I'm also checking line length):</p>
+<pre><code>$ ruff check test.py 
+All checks passed!
+$ ruff check --select E501 test.py 
+All checks passed!
+</code></pre>
+<p>It is not reformatted with an older <code>ruff</code> either:</p>
+<pre><code>$ ruff format test.py
+1 file left unchanged
+</code></pre>
+<p>Now, using <code>ruff 0.9.6</code>:</p>
+<pre><code>$ ruff format test.py
+1 file reformatted
+
+$ ruff check --select E501 test.py 
+test.py:3:89: E501 Line too long (89 &gt; 88)
+  |
+1 | variable = 1
+2 | items = (
+3 |     f&quot;-- This is a format string to demonstrate a Ruff issue: {variable / variable}. --&quot;,
+  |                                                                                         ^ E501
+4 | )
+  |
+
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vytas7">@vytas7</a> on 2025-02-11 06:55</div>
+            <div class="timeline-body"><p>Note that #15874 mentions many other issues with f-strings, but not specifically this discrepancy. Also, these issues in #15874 only arise when choosing a specific update rule, this one happens with the default settings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-02-11 07:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2025-02-11 07:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-11 07:20</div>
+            <div class="timeline-body"><p>Thanks for opening this issue and the detailed write-up. It made it very easy for me to reproduce your problem.</p>
+<p>From our docs</p>
+<blockquote>
+<p>While the <a href="https://docs.astral.sh/ruff/rules/line-too-long/">line-too-long</a> (E501) rule can be used alongside the formatter, the formatter only makes a best-effort attempt to wrap lines at the configured <a href="https://docs.astral.sh/ruff/settings/#line-length">line-length</a>. As such, formatted code may exceed the line length, leading to <a href="https://docs.astral.sh/ruff/rules/line-too-long/">line-too-long</a> (E501) errors. (<a href="https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules">source</a>)</p>
+</blockquote>
+<p>This is one such situation where the formatter requires manual intervention to stay within the configured line length because it doesn't support splitting strings. You can manually rewrite this to:</p>
+<pre><code class="language-py">variable = 1
+items = (
+    f&quot;-- This is a format string to demonstrate a Ruff issue: &quot;
+    f&quot;{variable / variable}. --&quot;,
+)
+</code></pre>
+<p>or</p>
+<pre><code class="language-py">variable = 1
+items = (
+    f&quot;-- This is a format string to demonstrate a Ruff issue: {
+        variable / variable
+    }. --&quot;,
+)
+</code></pre>
+<p>There are other known instances where the formatter may produce code that conflicts with E501, for example:</p>
+<pre><code class="language-py">if True:
+    if False:
+        if True:
+            if False:
+                aaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaa = &quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;
+</code></pre>
+<p>The way we see the relation between the formatter and <code>E501</code> is that the formatter makes its best effort at fitting your code into the configured line length, but you can use <code>E501</code> to be warned about instances where the formatter fails to do so and require manual rearranging.</p>
+<blockquote>
+<p>Note that https://github.com/astral-sh/ruff/issues/15874 mentions many other issues with f-strings, but not specifically this discrepancy. Also, these issues in https://github.com/astral-sh/ruff/issues/15874 only arise when choosing a specific update rule, this one happens with the default settings.</p>
+</blockquote>
+<p>These issues are unrelated. They're about lint rules. What you describe here is specific to the formatter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vytas7">@vytas7</a> on 2025-02-11 07:38</div>
+            <div class="timeline-body"><p>Hi @MichaReiser!
+That is fair that the formatter is not always able to fit strings into the requested line length until (if ever?) the full string rewriting is in place.</p>
+<p>However, in this case I would still like to argue this is a bug, because my code was passing the format-check loop without any issues on an older version of <code>ruff</code>. Also, the code is passing <code>ruff check</code> <strong>before</strong> formatting, but it is not passing <strong>after</strong> <code>ruff format</code>.</p>
+<p>To give a more practical user story (why I'm filing this at all 😅): we have adopted <code>ruff</code> for some repositories, and when a new version of <code>ruff</code> is released, the formatting standard sometimes changes, but since automatic reformatting fixes it, one cannot really complain much. However, in this specific case, manual intervention was needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-11 08:08</div>
+            <div class="timeline-body"><p>I understand that this case is frustrating and thanks again for opening an issue for it.</p>
+<blockquote>
+<p>However, in this case I would still like to argue this is a bug, because my code was passing the format-check loop without any issues on an older version of ruff</p>
+</blockquote>
+<p>That's expected because we did release a new formatting style with Ruff 0.9 (<a href="https://astral.sh/blog/ruff-v0.9.0#the-ruff-2025-style-guide">announcement blog post</a>). The new style now formats f-strings which Ruff didn't do before. Existing code being reformatted (even to something that now exceeds the line length) is, therefore, expected.</p>
+<p>We do plan to integrate the formatter into <code>ruff check</code> (see https://github.com/astral-sh/ruff/issues/8232) but formatting is currently not checked when running <code>ruff check</code>.</p>
+<blockquote>
+<p>To give a more practical user story (why I'm filing this at all 😅): we have adopted ruff for some repositories, and when a new version of ruff is released, the formatting standard sometimes changes, but since automatic reformatting fixes it, one cannot really complain much. However, in this specific case, manual intervention was needed</p>
+</blockquote>
+<p>We're aware that breaking formatter changes to create churn for users. That's why we try to limit them to once a year (with the exception of bug fixes). We are considering alternatives to give users more control over when they apply the breaking style guide changes by e.g introducing formatting editions. However, it is important that breaking changes remain possible for the formatter style guide to improve.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vytas7">@vytas7</a> on 2025-02-11 09:12</div>
+            <div class="timeline-body"><p>I agree that breaking changes are fair given Ruff hasn't even reached 1.0 yet (regardless of the official SemVer policy).</p>
+<p>I do, however, still think this issue is different from the documented examples or the one that you brought up, where Ruff is unable to satisfy the requested line length. Because, to reiterate, in this case, the code passes <code>ruff check</code> just fine before <code>ruff format</code>, but not after. In other examples that I have seen, the lines are too long to start with too.</p>
+<p>I understand this edge case may not be the highest priority on the roadmap, but I would still love to see making <code>check</code> and <code>format</code> consistent, i.e., that running <code>format</code> does not introduce new violations for <code>check</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-11 09:48</div>
+            <div class="timeline-body"><p>Here's an example where this happened already before:</p>
+<pre><code class="language-py">if True:
+    if False:
+        if True:
+            if False:
+                aaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaa = (
+&quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;
+                )
+</code></pre>
+<p>Get's formatted to</p>
+<pre><code class="language-py">if True:
+    if False:
+        if True:
+            if False:
+                aaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaa = &quot;aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa&quot;
+</code></pre>
+<p>While this is less likely because I doubt many write the above to begin with, it is the same kind of problem.</p>
+<blockquote>
+<p>I understand this edge case may not be the highest priority on the roadmap, but I would still love to see making check and format consistent, i.e., that running format does not introduce new violations for check.</p>
+</blockquote>
+<p>That's our overall goal and is true for almost all rules, except the rules listed in the documentation.</p>
+<p>While I see how this might be desirable, I still consider this as working as intended. It's something we'll look into as part of #8232.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-11 09:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:37 UTC
+    </footer>
+</body>
+</html>

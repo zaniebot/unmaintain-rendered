@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix an issue where conflict markers could instigate a very large lock file - astral-sh/uv #11293</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix an issue where conflict markers could instigate a very large lock file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11293">#11293</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-02-06 19:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-06 19:58</div>
+            <div class="timeline-body"><p>This PR fixes a problem where re-running <code>uv lock</code> could, in some
+cases, exponentially expand the contents of a lock file with more and
+more resolution markers. This can only happen when conflict markers are
+enabled.</p>
+<p>The problem here is a bit in the weeds, but basically, during
+resolution, we only use conflict <em>exclusions</em>. That's because, during
+resolution, we don't really have state that tells us whether a
+particular extra (or group) is enabled at this point in the graph (and
+I'm not sure such a thing is possible). Instead, we simply do <em>not</em>
+follow edges corresponding to a package and an extra/group that have
+been marked as an exclusion for the current fork. However, we do keep
+track of inclusion rules as we go.</p>
+<p>Once resolution completes, we translate our inclusion and exclusion
+rules for each fork into our &quot;universal&quot; marker that combines standard
+PEP 508 markers with conflict markers (the result is still purpotedly
+valid PEP 508, but somewhat of a bastardization).</p>
+<p>Now, if you then change your <code>pyproject.toml</code> in a way that causes
+resolution to run again, we read the markers serialized in the lock
+file as input to resolution. This helps retain stability (which is
+not a concern specific to conflict markers). However, this caused
+resolution to work with both inclusion and exclusion rules inside the
+marker itself. Which... kinda works, but it's inconsistent with only
+respecting exclusion rules. The end result is that we end up producing
+extra forks that aren't technically possible, but this isn't known
+until all of the constraints are combined at the end of resolution. In
+reality, we should never create these forks in the first place.</p>
+<p>The conflict forking logic does take impossible forks into account, but
+because of how conflict markers were filtering back into resolution,
+this wasn't working properly.</p>
+<p>So in this PR, we fix the problem by deserializing the conflict marker
+back into conflicting inclusion/exclusion rules. Resolution then starts
+with these rules in the first place and our logic for not visiting
+impossible forks (which were manifesting as <code>python_version &lt; '0'</code> in
+the lock file) applies.</p>
+<p>Fixes #9735</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ag/fix 9735" to "fix an issue where conflict markers could instigate a very large lock file" by @BurntSushi on 2025-02-06 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2025-02-06 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pep508/src/marker/tree.rs</code>:1197 on 2025-02-06 20:00</div>
+            <div class="timeline-body"><p>@ibraheemdev Is this the best way to do this? And is it even right? I spent an embarrassing amount of time on just this part. (I originally wrote it by walking the internal representation, but that ended up being wrong in a way that I didn't understand.)</p>
+<p>Basically, the essential challenge I faced here was figuring out whether I was looking at <code>extra == '...'</code> or <code>extra != '...'</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-06 20:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-02-06 21:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-pep508/src/marker/tree.rs</code>:1197 on 2025-02-06 21:53</div>
+            <div class="timeline-body"><p>I guess it really depends what expressions you are looking for.</p>
+<p>Consider the expressions <code>extra != 'x' or (extra == 'x' and b)</code> and <code>extra != 'x' or b</code>. Both have equivalent truth tables. So what does it really mean for the expression <code>extra == 'x'</code> to be in the tree?</p>
+<p>A more meaningful question would be to ask, is <code>extra == 'x'</code> a <em>solution</em> to the expression. Or, is <code>extra == 'x'</code> <em>required</em> in every solution to the expression. Just looking for the expression itself doesn't seem very useful, because it depends on the internal tree representation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-02-06 21:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-pep508/src/marker/tree.rs</code>:1197 on 2025-02-06 21:58</div>
+            <div class="timeline-body"><p>I think the way you have it written now will visit <code>extra == 'x'</code> if there is no possible solution to the tree when <code>extra != 'x'</code>. And it will visit <code>extra != 'x'</code> when the tree has a potential solution when <code>extra != 'x'</code>. I'm not sure whether you meant for those checks to be mutually exclusive. Should <code>(extra == 'x' and a) or (extra != 'x' and b)</code> visit both <code>extra == 'x'</code> and <code>extra != 'x'</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-06 22:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pep508/src/marker/tree.rs</code>:1197 on 2025-02-06 22:19</div>
+            <div class="timeline-body"><p>Yeah this is tricky. I'm not quite sure how to solve this. My <em>suspicion</em> is that those types of expressions don't actually appear in this context. Because it would imply that there's a fork that sometimes <em>includes</em> <code>x</code> and sometimes <em>excludes</em> <code>x</code>. I believe that by construction that can't happen.</p>
+<p>That's a somewhat precarious invariant to rely on, but I'm not quite sure how to fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">lock</span> added by @BurntSushi on 2025-02-07 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2025-02-07 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-02-14 21:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-02-18 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-02-18 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-18 12:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:19 UTC
+    </footer>
+</body>
+</html>

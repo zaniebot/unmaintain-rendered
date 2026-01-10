@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Feature request] Support Github output for `ruff format` - astral-sh/ruff #10430</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Feature request] Support Github output for <code>ruff format</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10430">#10430</a>
+        opened by <a href="https://github.com/henribru">@henribru</a>
+        on 2024-03-16 10:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/henribru">@henribru</a> on 2024-03-16 10:09</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>It would be neat if <code>ruff format</code> supported <code>--output-format github</code> like <code>ruff check</code> does so that you can get annotations if you're running <code>ruff format --check</code> in Github Actions. It's not that hard to work around the lack of this with a problem matcher, but it's pretty clunky compared to the built-in support in <code>ruff check</code>:</p>
+<pre><code>      - name: Register problem matcher
+        run: echo &quot;::add-matcher::.github/workflows/matchers/ruff.json&quot;
+
+      - name: Run ruff format
+        run: poetry run ruff format --check .
+</code></pre>
+<pre><code># ruff.json
+{
+  &quot;problemMatcher&quot;: [
+    {
+      &quot;owner&quot;: &quot;ruff&quot;,
+      &quot;pattern&quot;: [
+        {
+          &quot;regexp&quot;: &quot;^(Would reformat): (.+)$&quot;,
+          &quot;message&quot;: 1,
+          &quot;file&quot;: 2
+        }
+      ]
+    }
+  ]
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @AlexWaygood on 2024-03-16 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2024-03-18 07:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-01-11 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mschoettle">@mschoettle</a> on 2025-03-11 19:37</div>
+            <div class="timeline-body"><p>I wanted to create the same issue. Ran into this on GitHub and found it via the <code>ruff-action</code> issue tracker.</p>
+<p>@AlexWaygood I might be able to take a stab at this. What would be the correct design for this fix? Taking a quick look at the code (I've never used Rust before) I wonder if it would be sufficient to add <code>--output-format</code> to <code>format</code>. It seems that the output format influences the behaviour of <code>writeln!</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @AlexWaygood by @AlexWaygood on 2025-03-11 19:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-12 08:06</div>
+            <div class="timeline-body"><p>Hi @mschoettle</p>
+<p>Yes, we'd have to add an <code>--output-format</code> option. Our UX concern here is that the formatter and linter won't support the output formats which might be sort of confusing.</p>
+<p>@BurntSushi is currently working on a new diagnostic infrastructure, and we're getting close to using it in Ruff, too. It should allow us to use the same diagnostics for the formatter and linter, and we should then get <code>--output-format</code> for free in the formatter. That's why I'm inclined to wait for @BurntSushi's refactor before adding this option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alicederyn">@alicederyn</a> on 2025-04-30 08:59</div>
+            <div class="timeline-body"><p>JSON output would also be very helpful for other integrations!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-30 16:04</div>
+            <div class="timeline-body"><p>I just merged https://github.com/astral-sh/ruff/pull/20443, which adds support for all of the <code>--output-format</code> options in the linter to the formatter, in preview for now. It should be out in the next release on Thursday! Please give it a try and let us know if you run into any issues :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-09-30 16:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:10 UTC
+    </footer>
+</body>
+</html>

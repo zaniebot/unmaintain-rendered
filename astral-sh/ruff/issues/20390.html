@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ban-while-true - astral-sh/ruff #20390</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ban-while-true</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20390">#20390</a>
+        opened by <a href="https://github.com/Richienb">@Richienb</a>
+        on 2025-09-15 00:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Richienb">@Richienb</a> on 2025-09-15 00:46</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This rule would ban the <code>while True</code>/<code>break</code> pattern.</p>
+<p>This is part of a style guide.
+I presume the reason is to avoid accidental crashes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-09-15 01:40</div>
+            <div class="timeline-body"><blockquote>
+<p>This is part of a style guide.</p>
+</blockquote>
+<p>Which style guide? I checked <a href="https://peps.python.org/pep-0008/">PEP 8</a> but <code>while True</code>s are not mentioned, so is this part of an existing style guide? Or an existing linter? Or would it be part of a new style guide in ruff itself?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Richienb">@Richienb</a> on 2025-09-15 01:50</div>
+            <div class="timeline-body"><blockquote>
+<p>Which style guide?</p>
+</blockquote>
+<p>The one for the university I attend.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-09-15 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-09-15 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mscheifer">@mscheifer</a> on 2025-09-15 15:43</div>
+            <div class="timeline-body"><p>Can you link to the style guide?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2025-09-15 19:37</div>
+            <div class="timeline-body"><blockquote>
+<p>I presume the reason is to avoid accidental crashes.</p>
+</blockquote>
+<p>Which crashes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Richienb">@Richienb</a> on 2025-09-16 01:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you link to the style guide?</p>
+</blockquote>
+<p>@mscheifer Unfortunately, I don't think the style guide is published</p>
+<blockquote>
+<p>Which crashes?</p>
+</blockquote>
+<p>@eli-schwartz What I mean is that I think the purpose is to make it easier to avoid accidentally writing infinitely looping code if the condition is not <code>True</code>, but something actually falsifiable.</p>
+<p>The encouraged pattern is:</p>
+<pre><code class="language-py">condition = do()
+while condition:
+    condition = do()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2025-09-16 02:03</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/eli-schwartz">@eli-schwartz</a> What I mean is that I think the purpose is to make it easier to avoid accidentally writing infinitely looping code if the condition is not <code>True</code>, but something actually falsifiable.</p>
+</blockquote>
+<p>That's all fine and well, but &quot;crash&quot; has a fairly specific meaning. Using it to refer to infinitely looping code feels wrong.</p>
+<p>Plus, infinitely looping code isn't necessarily wrong. It could be the main event loop of an application, which gets exited by:</p>
+<pre><code class="language-python">while True:
+    if not do():
+        print('finished')
+        sys.exit(0)
+</code></pre>
+<p>Your &quot;encouraged pattern&quot; doesn't provide a mechanism for detecting whether <code>def do():</code> is capable of yielding a falsy value, which would be vital for breaking out of the loop...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-09-16 07:13</div>
+            <div class="timeline-body"><p>If the goal is to prevent hangs from infinite loops, then just banning <code>while True</code>s seems very limited to me. You can just as easily crash programs with a <code>while stack:</code>  loop if your stack grows infinitely. Why are they not considered a hazard, while <code>while True</code> is?</p>
+<p>One place I could see this being useful is instead checking for a specific pattern. This may be what OP intended, but just wasn't clear on. It would be specifically targeting this pattern:</p>
+<pre><code class="language-py">while True:
+    if not condition:
+        break
+    ...
+</code></pre>
+<p>Since that should be turned into</p>
+<pre><code class="language-py">while condition:
+    ...
+</code></pre>
+<p>There could also be an equivalent transformation for loops that look like</p>
+<pre><code class="language-py">while True:
+    x = some_function_or_method_call()
+    if not x:
+        break
+    ...
+</code></pre>
+<p>Turning them into</p>
+<pre><code class="language-py">while (x :=some_function_or_method_call()):
+    ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-16 07:46</div>
+            <div class="timeline-body"><p>I agree that outright banning <code>while True</code> doesn't seem to be a very useful rule (other than enforcing a very specific style guide of which Ruff only has few rules).</p>
+<p>The clippy counterparts seem more useful to me:</p>
+<ul>
+<li><a href="https://rust-lang.github.io/rust-clippy/stable/index.html#never_loop"><code>never_loop</code></a>: Loops that always exit in the first iteration</li>
+<li><a href="https://rust-lang.github.io/rust-clippy/stable/index.html#never_loop"><code>while_let_loop</code></a> Nested <code>while .. loop</code> that can be simplified to a single <code>while</code></li>
+<li><a href="https://rust-lang.github.io/rust-clippy/stable/index.html#never_loop"><code>infinite_loop</code></a> loop that never exits</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:22 UTC
+    </footer>
+</body>
+</html>

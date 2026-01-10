@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add minimal Python API and task runner (#5903) - astral-sh/uv #9955</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add minimal Python API and task runner (#5903)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9955">#9955</a>
+        opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a>
+        on 2024-12-17 03:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-12-17 03:48</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This introduces an ultra-minimal uv API and the concept of Tasks.</p>
+<h3>uv API</h3>
+<p>The intent of the uv API is to provide the ability to use uv programmatically from Python. It consists of a single function <code>uv()</code> that shells out a string to the uv binary. The goal here is to generally support every conceivable uv command, option, and argument without a maintenance burden.</p>
+<h3>Tasks API</h3>
+<p>What is a task? I think that it can be better understood as a user-defined command. The intent of the Tasks API is to allow a user to conveniently run their tasks in the context of their uv-managed project. It consists of a decorator <code>@task</code> to mark functions as tasks and a function <code>run_tasks</code> to autogenerate a CLI that can run their tasks.</p>
+<h4><code>@task</code></h4>
+<p>The <code>@task</code> decorator registers task names and functions in a dictionary. It optionally takes dependencies as a string using the first positional arg or <code>needs</code> kwarg.</p>
+<p>The decorator can be written multiple ways:</p>
+<ul>
+<li><code>@task</code></li>
+<li><code>@task()</code></li>
+<li><code>@task(&quot;...&quot;)</code></li>
+<li><code>@task(needs=&quot;...&quot;)</code></li>
+</ul>
+<p>The optional <code>needs</code> argument can help to ensure that task dependencies are available in the uv-managed project before the task is run. It supports the same range of arguments and options as the <code>uv add</code> command. It can be used to add development dependencies, which most task dependencies probably should be, but the Tasks API does not make this assumption for the user.</p>
+<p>I considered additional support for unpacking the args tuple and <code>Sequence</code> types (like <code>list</code> and <code>tuple</code>), but I felt that this provided too many ways to specify dependencies and those ways are visually noisier. I wanted using <code>@task()</code> and <code>uv()</code> to look and feel as natural as using the command line, and that can only be replicated with strings.</p>
+<h4><code>run_tasks</code></h4>
+<p>The <code>run_tasks</code> function inspects and uses properties of the decorated task functions to generate a CLI that can execute the tasks as subcommands.</p>
+<p>Tasks are converted to CLI commands in the following fashion:</p>
+<ul>
+<li>Function docstrings are converted to command help/description text</li>
+<li>Function parameters without default values are converted to command arguments</li>
+<li>Function parameters with default values are converted to command options</li>
+<li>Function parameter type hints are converted to command option/argument type. <strong>Note: It might be better to just default to strings here since there are a lot of edge cases to handle like union types and custom types.</strong></li>
+</ul>
+<h2>Test Plan</h2>
+<details>
+  <summary>tasks.py</summary>
+
+<pre><code class="language-python">from uv import run_tasks, task, uv
+
+
+@task(&quot;ruff&quot;)
+def check():
+    &quot;&quot;&quot;Run static analysis checks.&quot;&quot;&quot;
+    uv(&quot;run ruff check&quot;)
+
+
+@task
+def test():
+    &quot;&quot;&quot;Run unit tests.&quot;&quot;&quot;
+    uv(&quot;run pytest&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    run_tasks()
+</code></pre>
+</details>
+
+<h2>Roadmap</h2>
+<h3>Task autodiscovery</h3>
+<p>On the roadmap could be the automatic discovery of user-created tasks to expose them as top-level uv commands.</p>
+<details>
+  <summary>Example task discovery</summary>
+
+<pre><code class="language-bash">An extremely fast Python package manager.
+
+Usage: uv [OPTIONS] &lt;COMMAND&gt;
+
+Commands:
+  run      Run a command or script
+  init     Create a new project
+  add      Add dependencies to the project
+  remove   Remove dependencies from the project
+  sync     Update the project's environment
+  lock     Update the project's lockfile
+  export   Export the project's lockfile to an alternate format
+  tree     Display the project's dependency tree
+  tool     Run and install commands provided by Python packages
+  python   Manage Python versions and installations
+  pip      Manage Python packages with a pip-compatible interface
+  venv     Create a virtual environment
+  build    Build Python packages into source distributions and wheels
+  publish  Upload distributions to an index
+  cache    Manage uv's cache
+  self     Manage the uv executable
+  version  Display uv's version
+  help     Display documentation for a command
+
+Tasks:
+  check    Run static analysis checks [from: ./tasks.py]
+  test     Run unit tests [from: ./tasks.py]
+...
+</code></pre>
+</details>
+
+<p>Currently the user is free to name and place their task module(s) however they'd like, but if autodiscovery is considered, a standardized name and place within the project structure might be beneficial for performance optimization. Configuration through environment variable or TOML is another option.</p>
+<p>For security purposes, a user-defined task that shadows a uv command should:</p>
+<ul>
+<li>be forbidden</li>
+<li>print a warning</li>
+<li>not be executed by uv</li>
+</ul>
+<h2>What about tasks in <code>pyproject.toml</code>?</h2>
+<p>Specifying tasks in <code>pyproject.toml</code> is not precluded with these changes,      but careful thought should be given to such a feature. Various properties might be desired to do things such as to stopping or continuing tasks on first failure, displaying task help text or descriptions, or composing multiple tasks.</p>
+<h2>Availability</h2>
+<p>These features are only available to users if <code>UV_PREVIEW</code> is set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-12-17 04:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-12-17 04:43</div>
+            <div class="timeline-body"><p>Didn't see python tests in the codebase, were those something that you guys wanted to add at some point?</p>
+<p>I wouldn't mind helping to set some up if you're open to it! I'm partial to pytest but can use whatever.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-17 15:32</div>
+            <div class="timeline-body"><p>Thanks for exploring a concrete implementation! I'm going to move this to a draft, since we're not aligned on a design we aren't likely to be able to merge this in the short-term.</p>
+<p>Regarding Python tests, they seem necessary for this approach — though I don't know if you should spend time on them yet. We don't have many now because we don't really have a Python API.</p>
+<p>One concrete concern that comes to mind about this approach, if the tasks are defined in Python we're putting a pretty high floor on the overhead of executing tasks since we need to invoke a Python interpreter to discover them. This is a bit of a bummer, e.g., if we invoke <code>ruff</code> in a task defined in Python we'd significantly increase its runtime. This also makes things like &quot;automatic discovery of user-created tasks to expose them as top-level uv commands&quot; pretty infeasible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @zanieb on 2024-12-17 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/chrisrodrigue">@chrisrodrigue</a> on 2024-12-17 22:42</div>
+            <div class="timeline-body"><p>Thanks! I totally agree here.</p>
+<p>For simple tasks and 80% of the use cases, defining tasks in TOML would probably be superior. Being able to read and cache tasks from a <code>pyproject.toml</code> section like <code>[tool.uv.tasks]</code> could provide the blazing performance that Astral is known for, even just to pass strings to <code>uv run</code>. <code>uv run</code> can call any other uv command and it can even call itself recursively without issues.</p>
+<p>For the other 20% of use cases that require more complex tasks or workflows, I would still recommend Python. uv doesn’t manage the system packages or shell interpreter(s), but it does manage Python packages and interpreters. We know without a doubt that Python should be available on a system where uv is being used, but we can’t say the same for any other language or tool in which tasks can be defined. Inventing a new one seems like it would be way out of scope for uv.</p>
+<p><em>POV: You are a uv-managed Python project that was just born with <code>uv init</code>. All you know about the outside world is that uv is your mommy and that you speak Python. The world beyond your directory tree is foreign, but you’re allowed to have as many friends as you want visit your virtual environment nest. Life in here is pretty sweet, and you think you’ll stay forever.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @chrisrodrigue on 2024-12-19 10:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:16 UTC
+    </footer>
+</body>
+</html>

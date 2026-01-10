@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D102 not silent for `overrides.overrides` or `overrides.override` - astral-sh/ruff #12942</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>D102 not silent for <code>overrides.overrides</code> or <code>overrides.override</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12942">#12942</a>
+        opened by <a href="https://github.com/lengau">@lengau</a>
+        on 2024-08-16 19:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lengau">@lengau</a> on 2024-08-16 19:31</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>On ruff version 0.6.1, this file:</p>
+<pre><code class="language-python">import typing
+import overrides
+
+class Base:
+    &quot;Sample class&quot;
+
+    def do_thing(self) -&gt; None:
+        &quot;Do a thing.&quot;
+        pass
+
+
+class First(Base):
+    &quot;Success with typing.override&quot;
+
+    @typing.override
+    def do_thing(self) -&gt; None:
+        pass
+
+
+class FailueA(Base):
+    &quot;Failure with overrides.override&quot;
+
+    @overrides.override
+    def do_thing(self) -&gt; None:
+        pass
+
+
+class FailureB(Base):
+    &quot;Success with overrides.overrides&quot;
+
+    @overrides.overrides
+    def do_thing(self) -&gt; None:
+        pass
+</code></pre>
+<p>gets flagged twice with <code>D102</code>:</p>
+<pre><code>$ ruff check sample.py --extend-select D102
+sample.py:24:9: D102 Missing docstring in public method
+   |
+23 |     @overrides.override
+24 |     def do_thing(self) -&gt; None:
+   |         ^^^^^^^^ D102
+25 |         pass
+   |
+
+sample.py:32:9: D102 Missing docstring in public method
+   |
+31 |     @overrides.overrides
+32 |     def do_thing(self) -&gt; None:
+   |         ^^^^^^^^ D102
+33 |         pass
+   |
+
+Found 2 errors.
+</code></pre>
+<p>and I don't see a way <a href="https://docs.astral.sh/ruff/rules/undocumented-public-method/">in the docs</a> to extend D102 to treat these decorators from <code>overrides</code> like <code>typing.override</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @charliermarsh on 2024-08-18 22:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-18 22:19</div>
+            <div class="timeline-body"><p>Is that library still relevant with the advent of <code>typing.override</code>? (I'm not familiar with it, just confirming before we do anything about it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lengau">@lengau</a> on 2024-08-19 17:29</div>
+            <div class="timeline-body"><p>Valid question! The <code>overrides</code> library offers certain runtime capabilities that can't be done with static typing. For example, it has a metaclass that enforces the use of <code>override</code> decorators on child classes, even from other packages. The two use cases:</p>
+<ol>
+<li>If you use a library that uses the enforcement metaclass, you'd have to do a double decorator (typing.override and overrides.override) in order to please both ruff and <code>overrides</code></li>
+<li>If you're providing a library that provides base classes, you may want to use this to ensure that people aren't accidentally overriding your methods on new versions, even if they don't use linters like ruff.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lengau">@lengau</a> on 2024-08-19 19:10</div>
+            <div class="timeline-body"><p>Actually, this works:</p>
+<pre><code class="language-toml">[tool.ruff.lint.pydocstyle]
+ignore-decorators = [  # Functions with these decorators don't have to have docstrings.
+    &quot;typing.overload&quot;,  # Default configuration
+    # The next four are all variations on override, so child classes don't have to repeat parent classes' docstrings.
+    &quot;overrides.override&quot;,
+    &quot;overrides.overrides&quot;,
+    &quot;typing.override&quot;,
+    &quot;typing_extensions.override&quot;,
+]
+</code></pre>
+<p>so the issue is probably then just that the docs should mention that configuration option :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-20 06:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:47 UTC
+    </footer>
+</body>
+</html>

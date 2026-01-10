@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature request: TCH003 - divide typing-only imports from typing module - astral-sh/ruff #6650</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature request: TCH003 - divide typing-only imports from typing module</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6650">#6650</a>
+        opened by <a href="https://github.com/tlambert03">@tlambert03</a>
+        on 2023-08-17 12:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tlambert03">@tlambert03</a> on 2023-08-17 12:45</div>
+            <div class="timeline-body"><p>This may well be seen as too magical/special-cased, but here goes my pitch :)</p>
+<p>I <em>looove</em> the autofix features in <code>TCH</code>.<br />
+Like many of us, I develop for multiple versions of python, and also use auto-import in my IDE.  So, for example, if I use <code>typing.TypeGuard</code>, it will get auto-imported from <code>typing</code> and I end up with the following code:</p>
+<pre><code class="language-python">from __future__ import annotations
+from typing import Any, TypeGuard
+
+def is_a_thing(obj: Any) -&gt; TypeGuard[object]:
+    ...
+</code></pre>
+<p>That's all fine and good, but then that breaks on earlier versions of python (where TypeGuard wasn't available) and I have to follow up with a new PR to prevent the import error either by importing from <code>typing_extensions</code> or moving the import to a TYPE_CHECKING block:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING
+    from typing import Any, TypeGuard
+
+def is_a_thing(obj: Any) -&gt; TypeGuard[object]:
+    ...
+</code></pre>
+<p><strong>the pitch</strong>
+The request is to &quot;autofix&quot; example A to example B.</p>
+<p>I recognize that <em>splitting</em> imports like this (i.e. when you're already importing from a module like <code>typing</code>, perhaps even with some imports that you must have a runtime, like <code>cast</code> or <code>overload</code>) might be a fully new feature on top of what TCH003 does.  For example, if <code>cast</code> was used, this would need to be the final result:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from typing import TYPE_CHECKING, cast  # cast stays up here
+
+if TYPE_CHECKING
+    from typing import Any, TypeGuard  # type-checking only types go down here
+
+def is_a_thing(obj: Any) -&gt; TypeGuard[object]:
+    return cast(object, obj)
+</code></pre>
+<p>but for me at least, this would save quite a few follow up commits, and I think the <code>typing</code> module specifically is one where this case arises all the time.</p>
+<p>feel free to unceremoniously close this as &quot;will-not-implement&quot; if you think it's out of scope :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tlambert03">@tlambert03</a> on 2023-08-17 12:53</div>
+            <div class="timeline-body"><p>alternatively ...</p>
+<p>It occurs to me that what I'm requesting is just the inverse of many of the python-version-aware features in the <code>UP</code> module (a &quot;<code>DOWN</code>&quot; feature if you will).  Is it possible that something like this is already supported and I just don't have my config setup correctly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tlambert03">@tlambert03</a> on 2023-08-17 13:04</div>
+            <div class="timeline-body"><p>ah, actually... I guess this is a duplicate of https://github.com/astral-sh/ruff/issues/2302?</p>
+<p>(closing, cause I think it likely is)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @tlambert03 on 2023-08-17 13:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:01 UTC
+    </footer>
+</body>
+</html>

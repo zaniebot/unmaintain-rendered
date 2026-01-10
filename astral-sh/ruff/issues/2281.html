@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Infinite loop] - astral-sh/ruff #2281</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Infinite loop]</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2281">#2281</a>
+        opened by <a href="https://github.com/jackdesert">@jackdesert</a>
+        on 2023-01-28 00:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jackdesert">@jackdesert</a> on 2023-01-28 00:02</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+- A minimal code snippet that reproduces the bug.
+- The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+- The current Ruff settings (any relevant sections from your `pyproject.toml`).
+- The current Ruff version (`ruff --version`).
+-->
+
+<p>Version: ruff 0.0.236</p>
+<p>Command: <code>ruff clean_logs.py --fix</code></p>
+<p>Contents of <code>clean_logs.py</code>:</p>
+<pre><code>def main(original_prefix):
+    &quot;&quot;&quot;
+    Delete all log streams in all log groups starting with `prefix`.
+
+    This is called by handler.handler
+
+    Questions: How is this triggered?
+    When is this triggered?
+    Does it only work on certain log groups?
+    Does it check whether the log group is empty before deleting it?
+
+    Parameters
+    ----------
+        original_prefix &lt;str&gt; : Which log prefix to clean
+    &quot;&quot;&quot;
+    print(f'Received prefix {original_prefix}')
+
+    prefixes = DEFAULT_PREFIXES if original_prefix == 'all' else [original_prefix]
+
+    for prefix in prefixes:
+        print(f'starting prefix {prefix}')
+        groups = get_groups(prefix)
+        print(f'Found {len(groups)} groups')
+        print('\n'.join([x['logGroupName'] for x in groups]))
+        for group in groups:
+            _delete_streams_older_than_retention_period(group)
+    print('Done')
+
+
+if __name__ == '__main__':
+    main(sys.argv[1])</code></pre>
+<p>Output:</p>
+<pre><code>warning: Failed to converge after 100 iterations.
+
+This likely indicates a bug in `ruff`. If you could open an issue at:
+
+https://github.com/charliermarsh/ruff/issues/new?title=%5BInfinite%20loop%5D
+
+quoting the contents of `clean_logs.py`, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+clean_logs.py:1:1: D100 Missing docstring in public module
+clean_logs.py:2:1: D417 Missing argument description in the docstring: `original_prefix`
+clean_logs.py:3:5: D212 Multi-line docstring summary should start at the first line
+clean_logs.py:19:16: F821 Undefined name `DEFAULT_PREFIXES`
+clean_logs.py:23:18: F821 Undefined name `get_groups`
+clean_logs.py:27:13: F821 Undefined name `_delete_streams_older_than_retention_period`
+clean_logs.py:32:10: F821 Undefined name `sys`
+Found 107 errors (100 fixed, 7 remaining).</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-28 00:19</div>
+            <div class="timeline-body"><p>Do you mind including your <code>pyproject.toml</code> or other configuration file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jackdesert">@jackdesert</a> on 2023-01-28 02:04</div>
+            <div class="timeline-body"><p>Here's the pyproject.toml:</p>
+<pre><code>[tool.black]
+skip-string-normalization = 1
+
+[tool.ruff]
+# Enable Pyflakes `E` and `F` codes by default.
+select = [&quot;ALL&quot;]
+
+# It appears that a single &quot;Q&quot; ignores all codes that start with Q
+# but you could also disable single errors instead of classes of errors
+ignore = [&quot;INP001&quot;, # implicit-namespace-package
+          &quot;ANN&quot;,    # type annotations
+          &quot;T20&quot;,    # flake8-print (warns when there are print statements)
+          #&quot;D211&quot;,   # no-blank-lines-before-class (See https://github.com/charliermarsh/ruff/issues/2281 )
+]
+
+
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+fixable = [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;]
+unfixable = []
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    &quot;.bzr&quot;,
+    &quot;.direnv&quot;,
+    &quot;.eggs&quot;,
+    &quot;.git&quot;,
+    &quot;.hg&quot;,
+    &quot;.mypy_cache&quot;,
+    &quot;.nox&quot;,
+    &quot;.pants.d&quot;,
+    &quot;.ruff_cache&quot;,
+    &quot;.svn&quot;,
+    &quot;.tox&quot;,
+    &quot;.venv&quot;,
+    &quot;__pypackages__&quot;,
+    &quot;_build&quot;,
+    &quot;buck-out&quot;,
+    &quot;build&quot;,
+    &quot;dist&quot;,
+    &quot;node_modules&quot;,
+    &quot;venv&quot;,
+]
+per-file-ignores = {}
+
+# Same as Black.
+line-length = 88
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = &quot;^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$&quot;
+
+# Assume Python 3.10.
+target-version = &quot;py310&quot;
+
+[tool.ruff.mccabe]
+# Unlike Flake8, default to a complexity level of 10.
+max-complexity = 10
+
+# This is how you tell Q000 errors to prefer single quotes
+[tool.ruff.flake8-quotes]
+inline-quotes = &quot;single&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-28 02:08</div>
+            <div class="timeline-body"><p>You'll need to disable one of <code>D203</code> and <code>D211</code>, and one of <code>D212</code> and <code>D213</code>, since they represent conflicting settings for docstrings</p>
+<pre><code class="language-rust">/// Pairs of checks that shouldn't be enabled together.
+pub const INCOMPATIBLE_CODES: &amp;[(Rule, Rule, &amp;str)] = &amp;[
+    (
+        Rule::OneBlankLineBeforeClass,
+        Rule::NoBlankLineBeforeClass,
+        &quot;`one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are \
+         incompatible. Consider ignoring `one-blank-line-before-class`.&quot;,
+    ),
+    (
+        Rule::MultiLineSummaryFirstLine,
+        Rule::MultiLineSummarySecondLine,
+        &quot;`multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are \
+         incompatible. Consider ignoring one.&quot;,
+    ),
+];
+</code></pre>
+<p>You can set:</p>
+<pre><code class="language-toml">[tool.ruff.pydocstyle]
+convention = &quot;numpy&quot;  # Or &quot;google&quot;, or &quot;pep-257&quot;
+</code></pre>
+<p>...to enforce an internally-consistent configuration.</p>
+<p>Let me know if you keep seeing this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-28 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-28 02:23</div>
+            <div class="timeline-body"><p>Maybe the message <code>This likely indicates a bug in ruff. If you could open an issue at:</code> could be prevented in the case conflicting rules are selected?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-28 02:28</div>
+            <div class="timeline-body"><p>I'm kind of tempted to remove these conflicts rules, and just choose one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jackdesert">@jackdesert</a> on 2023-01-28 03:13</div>
+            <div class="timeline-body"><p>Do you mean to say that there are inherent issues with choosing <code>select = [&quot;ALL&quot;]</code> ?</p>
+<p>I wanted to familiarize myself with all that ruff had to offer, so I turned on <code>select = [&quot;ALL&quot;]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-28 03:20</div>
+            <div class="timeline-body"><p>Yeah. I re-added a disclaimer to the README:</p>
+<blockquote>
+<p>As a special-case, Ruff also supports the ALL code, which enables all rules. Note that some of the pydocstyle rules conflict (e.g., D203 and D211) as they represent alternative docstring formats. Enabling ALL without further configuration may result in suboptimal behavior, especially for the pydocstyle plugin.</p>
+</blockquote>
+<p>It's really just that you need to turn off <code>D203</code> and <code>D213</code>. I'm going to fix this. It's such an easy trap to fall into.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:04 UTC
+    </footer>
+</body>
+</html>

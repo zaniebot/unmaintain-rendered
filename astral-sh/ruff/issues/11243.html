@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT006 breaks test by removing tuple from parametrize - astral-sh/ruff #11243</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PT006 breaks test by removing tuple from parametrize</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11243">#11243</a>
+        opened by <a href="https://github.com/Pebin">@Pebin</a>
+        on 2024-05-02 08:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Pebin">@Pebin</a> on 2024-05-02 08:46</div>
+            <div class="timeline-body"><p>PT006 breaks test, removes tuple just from argnames but not from argvalues</p>
+<pre><code>@pytest.mark.parametrize((&quot;thresholds&quot;,), [([0.6, 0.3],), ([],)])
+</code></pre>
+<p>is replaced as</p>
+<pre><code>@pytest.mark.parametrize(&quot;thresholds&quot;, [([0.6, 0.3],), ([],)])
+</code></pre>
+<p>so now thresholds contains tuple of list. Shouldn't the fix remove also the brackets inside so the result would be:</p>
+<pre><code>@pytest.mark.parametrize(&quot;thresholds&quot;, [[0.6, 0.3], []])
+</code></pre>
+<p>command:
+<code>ruff tests/test.py --fix</code></p>
+<p>ruff 0.4.2, no special settings needed, python 3.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-05-02 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @charliermarsh on 2024-05-02 14:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jhbuhrman">@jhbuhrman</a> on 2024-09-18 13:45</div>
+            <div class="timeline-body"><p>This is a serious breakage; <code>ruff --fix</code> introduces an error.</p>
+<p>The <code>--fix</code> option should also &quot;fix&quot; (i.e. de-tuple) the parameter value if it de-tuples the <code>argnames</code> parameter in case of a single parameter.</p>
+<p>Apart from that, I find the obligatory (non-configurable) special case of tuple/list-less <code>argnames</code> in case of a single parameter quite questionable (if you later on would like to extend your test case with an additional parameter, you suddenly have to tuplify everything). I would prefer yet another configuration item that controls this quite opiniated preference for single parameter cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @dylwil3 on 2024-11-10 03:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @dylwil3 on 2024-11-10 03:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-09 08:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:43 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP031: ruff 0.4.2 generated invalid fix it code - astral-sh/ruff #11166</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP031: ruff 0.4.2 generated invalid fix it code</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11166">#11166</a>
+        opened by <a href="https://github.com/Skylion007">@Skylion007</a>
+        on 2024-04-26 17:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-04-26 17:44</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<pre><code class="language-python">                msg=&quot;\n&quot;.join(
+                    [
+                        &quot;alpha = alpha_c + %.2g&quot; % shift,
+                        &quot;expected_grad: %.5g&quot; % expected_grad,
+                        &quot;actual_grad: %.5g&quot; % actual_grad,
+                        &quot;error = %.2g&quot; % torch.abs(expected_grad - actual_grad).max(),
+                    ]
+</code></pre>
+<p>became</p>
+<pre><code class="language-python">                msg=&quot;\n&quot;.join(
+                    [
+                        f&quot;alpha = alpha_c + {shift:.2g}&quot;,
+                        f&quot;expected_grad: {expected_grad:.5g}&quot;,
+                        f&quot;actual_grad: {actual_grad:.5g}&quot;,
+                        f&quot;error = {torch.abs(expected_grad - actual_grad).max():.2g}&quot;,
+                    ]
+</code></pre>
+<p>which throws an error. I know it's an unsafe fix, but unsafe fixes should not generate invalid code. Specifically:</p>
+<pre><code>Traceback (most recent call last):
+  File &quot;/var/lib/jenkins/workspace/test/distributions/test_distributions.py&quot;, line 4658, in test_dirichlet_multivariate
+    f&quot;expected_grad: {expected_grad:.5g}&quot;,
+  File &quot;/opt/conda/envs/py_3.10/lib/python3.10/site-packages/torch/_tensor.py&quot;, line 989, in __format__
+    return object.__format__(self, format_spec)
+TypeError: unsupported format string passed to Tensor.__format__
+</code></pre>
+<p>from this PR: https://github.com/pytorch/pytorch/pull/125031/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-04-26 17:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2024-04-26 17:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-04-26 17:54</div>
+            <div class="timeline-body"><p>Guessing this is due to <a href="https://github.com/astral-sh/ruff/pull/11019">the recent change to UP031</a>? Cc. @plredmond</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-26 18:01</div>
+            <div class="timeline-body"><p>Why can't tensors be passed-in there, but can be formatted with <code>%</code> formatting?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-04-26 18:09</div>
+            <div class="timeline-body"><p>@charliermarsh I think it's related to classes overriding <code>object.__format__</code> magic method. Does the '%' method cast it to a string before calling <code>__format__</code> on it or something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-04-26 18:15</div>
+            <div class="timeline-body"><p>@charliermarsh Ah, apparently in the first code, it's implicitly converted before: &quot;Here, you're using the old-style string formatting (%-formatting), where shift, a PyTorch tensor, is implicitly converted to a numeric type (float or integer) when it's formatted. This conversion happens before the formatting is applied, so the process doesn't raise any issues.&quot;</p>
+<pre><code class="language-python">import torch
+x = torch.tensor([1.0])
+print(&quot;Value: %.5g&quot; % x)  # Works because x is cast as a float before __format__ is called
+print(f&quot;Value: {x:.5g}&quot;) # fails because Tensor.__format__ is called
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Ruff: 0.4.2 generated invalid fix it code" to "UP031: ruff 0.4.2 generated invalid fix it code" by @Skylion007 on 2024-04-26 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-04-28 17:00</div>
+            <div class="timeline-body"><p>I think explicitly casting to float in all float specific f-string fixits could solve this issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-28 18:18</div>
+            <div class="timeline-body"><p>I think that makes sense. E.g., when there's a <code>:.5g</code> specifier?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-04-28 18:26</div>
+            <div class="timeline-body"><p>There are probably other specifies that do this casting f (or maybe some to int for d) etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/plredmond">@plredmond</a> on 2024-05-03 16:16</div>
+            <div class="timeline-body"><p>@charliermarsh perhaps we could add this kind of explicit-conversion to the UP031 rule after we can infer the types of the expressions? alternatively, since we parse the format string we could use that information to select an explicit-conversion function?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:40 UTC
+    </footer>
+</body>
+</html>

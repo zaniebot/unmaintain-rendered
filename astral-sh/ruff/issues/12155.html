@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider extending `PLR2004` to cover iterables with magic values - astral-sh/ruff #12155</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider extending <code>PLR2004</code> to cover iterables with magic values</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12155">#12155</a>
+        opened by <a href="https://github.com/kgleba">@kgleba</a>
+        on 2024-07-02 18:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kgleba">@kgleba</a> on 2024-07-02 18:29</div>
+            <div class="timeline-body"><p>Keywords: <code>PLR2004</code>, <code>magic-value-comparison</code></p>
+<p>Here's a suggestion regarding <code>PLR2004</code>, although I don't quite understand the final optimal form it should take (I've found a <a href="https://github.com/astral-sh/ruff/issues/1949#issuecomment-1387004942">comment</a> that Ruff tries to be a &quot;faithful implementation of the Pylint rule&quot; in this case, so I do not insist on changing the behavior of the original rule).</p>
+<p>Imagine that a developer wants to check if the <code>status_code</code> of some request is in a redirect group (e.g., <code>301</code>, <code>302</code>).</p>
+<p>A naive approach is to simply check for equality:</p>
+<pre><code class="language-python">if status_code == 301 or status_code == 302:
+    ...
+</code></pre>
+<p>The developer immediately receives 3 errors: <code>PLR1714</code> (<code>repeated-equality-comparison</code>) and 2 instances of <code>PLR2004</code>.</p>
+<p>More advanced Python developers will skip the step above and just write:</p>
+<pre><code class="language-python">if status_code in (301, 302):
+    ...
+</code></pre>
+<p>And all 3 errors will disappear, even though the problem with magic value comparison still remains.</p>
+<p>The code above is also the default suggestion from <code>PLR1714</code>, and copy-pasting the solution (which mysteriously removed 2 more warnings) can be misleading for inexperienced developers.</p>
+<p>As I mentioned above, I'm not sure how to properly address this issue and I'm obviously unaware of some implementational pitfalls, but I believe that forcing this check even for homogeneous iterables (such as <code>list[int]</code> or <code>tuple[int]</code>) would be a pretty good step in the right direction.</p>
+<p>Hoping to get some feedback! :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-07-03 06:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:17 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enforce correctness of self-dependencies - astral-sh/uv #9705</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enforce correctness of self-dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9705">#9705</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-12-07 14:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-07 14:10</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>As far as I can tell, this was added in https://github.com/astral-sh/uv/pull/319, but it seems <em>incorrect</em> to ignore these.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/9693.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-07 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-07 15:40</div>
+            <div class="timeline-body"><p>Hm I'm a little worried about the implications of this. Will it break people with dynamic versions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-07 15:59</div>
+            <div class="timeline-body"><p>Why would it break people with dynamic versions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-07 16:03</div>
+            <div class="timeline-body"><p>(This only affects packages that declare dependencies on themselves, which is itself almost always a mistake.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-07 16:04</div>
+            <div class="timeline-body"><p>I'm imagining you have a self-dependency with a version constraint that.. works in production but fails locally due some weird dynamic development version scheme? Perhaps I'm overthinking it. Dynamic versions stood out to me as a case where there are weird local versions, but I don't think that's the only case where there could be a mismatch.</p>
+<p>More broadly, what happens with a self-dependency in production i.e. published to PyPI?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-07 16:07</div>
+            <div class="timeline-body"><blockquote>
+<p>More broadly, what happens with a self-dependency in production i.e. published to PyPI?</p>
+</blockquote>
+<p>Can you expand on this? If you install the package from PyPI, and it declares a dependency on itself, they will just resolve to the same package. The same is true if you clone the package and install it locally. Both would work fine.</p>
+<p>The case we would fail is: you declare a self-dependency, but at a version that is incompatible with the current package version. I think that should fail! Check out the linked issue where we silently succeed with a broken resolution.</p>
+<p>(I don’t know that there’s even a real, valid use-case for a self-dependency.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-07 16:10</div>
+            <div class="timeline-body"><p>I did read the linked issue :) just trying to understand the problem more broadly since it turns something that's currently allowed into a firm error.</p>
+<blockquote>
+<p>The case we would fail is: you declare a self-dependency, but at a version that is incompatible with the current package version. I think that should fail!</p>
+</blockquote>
+<p>I guess the clarifying question is: would this fail at publish or install time to / from PyPI? (entirely separately from uv)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-07 16:27</div>
+            <div class="timeline-body"><p>By “publish time”, do you mean, if you ran uv lock locally prior to publishing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-07 16:32</div>
+            <div class="timeline-body"><p>I mean.. if you weren't using uv at all, i.e., some lower-level tools like <code>python -m build</code> and <code>twine</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-07 16:33</div>
+            <div class="timeline-body"><p>Hmm, none of those tools have to resolve dependencies though. There’s no dependency validation. They just have to construct the metadata. They don’t have to solve the graph.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-07 16:52</div>
+            <div class="timeline-body"><p>Yeah so then when you install with <code>pip</code> later what would happen? Perhaps there would be a failure then?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-07 17:01</div>
+            <div class="timeline-body"><p>Yeah it would fail then. Though I think that’s the same as if, e.g., the package declared dependencies on both flask==3.0.0 and flask==2.0.0? It would fail on install, but not on publish.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-07 17:03</div>
+            <div class="timeline-body"><p>Okay, thanks for going through it with me. I'm not quite sure where this change could cause problems 👍</p>
+<blockquote>
+<p>(I don’t know that there’s even a real, valid use-case for a self-dependency.)</p>
+</blockquote>
+<p>I guess it'd let you declare a default extra that.. you can't turn off? 😬</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-12-07 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-12-07 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-12-07 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-12-07 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/lock.rs</code>:19255 on 2024-12-07 18:03</div>
+            <div class="timeline-body"><p>Gah, need to fix this error message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-07 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-07 18:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/lock.rs</code>:19255 on 2024-12-07 18:26</div>
+            <div class="timeline-body"><p>I thought we already had a hint for self dependencies 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-07 18:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/snapshots/it__ecosystem__transformers-lock-file.snap</code>:4455 on 2024-12-07 18:27</div>
+            <div class="timeline-body"><p>We could choose to omit these? This is a useless self-dependency. I retained them but we could omit them when converting from PubGrub resolution to our own graph.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-07 18:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/lock.rs</code>:19255 on 2024-12-07 18:27</div>
+            <div class="timeline-body"><p>Kind of weak.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-07 18:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/lock.rs</code>:19765 on 2024-12-07 18:28</div>
+            <div class="timeline-body"><p>Kind of weak.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-07 18:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/lock.rs</code>:19255 on 2024-12-07 18:41</div>
+            <div class="timeline-body"><p>I was thinking of https://github.com/astral-sh/uv/pull/7505 (which may help guide the messaging here?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-07 18:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/lock.rs</code>:19255 on 2024-12-07 18:43</div>
+            <div class="timeline-body"><p>I'd include the specifier and the version maybe?</p>
+<pre><code class="language-suggestion">      ╰─▶ Because your project depends on itself (project==0.2.0) at an incompatible version (currently 0.1.0), we can conclude that your project's requirements are unsatisfiable.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-07 19:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/lock.rs</code>:19255 on 2024-12-07 19:18</div>
+            <div class="timeline-body"><p>I actually don't think I can get the version here right now :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-07 19:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/lock.rs</code>:19255 on 2024-12-07 19:18</div>
+            <div class="timeline-body"><p>I added hints!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-12-07 21:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-12-08 04:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-08 04:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-08 04:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw-gts">@notatallshaw-gts</a> on 2024-12-09 15:40</div>
+            <div class="timeline-body"><p>Just want to check this doesn't break the real use case of using extras to depend on other extras of your own project? e.g.</p>
+<pre><code class="language-toml">[project]
+name = &quot;spam-eggs&quot;
+version = &quot;2020.0.0&quot;
+requires-python = &quot;&gt;=3.8&quot;
+
+[project.optional-dependencies]
+tests = [&quot;pytest&quot;]
+dev = [&quot;pdb&quot;, &quot;memray&quot;]
+all = [
+  &quot;spam-eggs[tests]&quot;,
+  &quot;spam-eggs[dev]&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-09 15:41</div>
+            <div class="timeline-body"><p>No, that remains totally fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-09 15:41</div>
+            <div class="timeline-body"><p>It <em>would</em> error if you did:</p>
+<pre><code class="language-toml">[project]
+name = &quot;spam-eggs&quot;
+version = &quot;2020.0.0&quot;
+requires-python = &quot;&gt;=3.8&quot;
+
+[project.optional-dependencies]
+tests = [&quot;pytest&quot;]
+all = [
+  # Incompatible version!
+  &quot;spam-eggs[tests]==2021.0.0&quot;,
+]
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:15 UTC
+    </footer>
+</body>
+</html>

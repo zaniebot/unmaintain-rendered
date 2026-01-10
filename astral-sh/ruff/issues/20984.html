@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOC102: false positive - astral-sh/ruff #20984</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>DOC102: false positive</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20984">#20984</a>
+        opened by <a href="https://github.com/mhindery">@mhindery</a>
+        on 2025-10-20 07:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mhindery">@mhindery</a> on 2025-10-20 07:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I noticed two false positives after upgrading ruff to 0.14.1 on the DOC rules:</p>
+<p>Having a function like this:</p>
+<pre><code class="language-python">def foo(bar: int) -&gt; bool:
+    &quot;&quot;&quot;
+    Do something.
+    Args:
+        bar: some argument
+    Returns:
+        bool: some return value
+    &quot;&quot;&quot;
+    return bar &gt; 0
+</code></pre>
+<p>ruff raises two violations:</p>
+<pre><code class="language-shell">mathieu@Mac website % uv run ruff check --select DOC ~/Desktop/false_positive.py
+DOC201 `return` is not documented in docstring
+ --&gt; /Users/mathieu/Desktop/false_positive.py:2:5
+  |
+1 |   def foo_1(bar: int) -&gt; bool:
+2 | /     &quot;&quot;&quot;
+3 | |     Do something.
+4 | |     Args:
+5 | |         bar: some argument
+6 | |     Returns:
+7 | |         bool: some return value
+8 | |     &quot;&quot;&quot;
+  | |_______^
+9 |       return bar &gt; 0
+  |
+help: Add a &quot;Returns&quot; section to the docstring
+
+DOC102 Documented parameter `bool` is not in the function's signature
+ --&gt; /Users/mathieu/Desktop/false_positive.py:7:9
+  |
+5 |         bar: some argument
+6 |     Returns:
+7 |         bool: some return value
+  |         ^^^^
+8 |     &quot;&quot;&quot;
+9 |     return bar &gt; 0
+  |
+help: Remove the extraneous parameter from the docstring
+
+Found 2 errors.
+</code></pre>
+<p>Both are a false positive, as the returns section is present and the signature is correct following the docstring. The issue lies with the whitespace that is missing before the returns section; after adding that it no longer flags. However the raised errors are wrong in my opinion, as both messages are not true.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-20 13:31</div>
+            <div class="timeline-body"><p>Thanks for the report! Yeah, hopefully  we can do better with  our section detection here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-20 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @ntBre on 2025-10-20 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mhindery">@mhindery</a> on 2025-10-20 13:47</div>
+            <div class="timeline-body"><p>I do like that it flags a bad docstring style/formatting, just not coincidently under the wrong category :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-20 13:54</div>
+            <div class="timeline-body"><p>I think the spacing should be caught by one of the D400 rules like <a href="https://docs.astral.sh/ruff/rules/no-blank-line-before-section/#no-blank-line-before-section-d411">no-blank-line-before-section (D411)</a>, even if we suppress these two DOC rules. But that will be a good thing to test!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:37 UTC
+    </footer>
+</body>
+</html>

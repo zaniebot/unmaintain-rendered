@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PD011 in random code - astral-sh/ruff #2229</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PD011 in random code</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2229">#2229</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-01-26 21:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-26 21:47</div>
+            <div class="timeline-body"><p>I had a function such as:</p>
+<pre><code>$ cat foo.py
+def foo(parser):
+        parser.values.foo
+
+$ ruff --select PD011 --fix foo.py
+foo.py:2:2: PD011 Use `.to_numpy()` instead of `.values`
+Found 1 error.
+</code></pre>
+<p>I don't use pandas.
+I don't know the details of this check. Maybe further access can be checked? Or if <code>pandas</code> is imported in the code?
+Otherwise just close the issue and I add this to the ignore list.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-26 21:48</div>
+            <div class="timeline-body"><p>I thought we did do something like this (check if Pandas is imported). Let me check...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-26 21:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-26 22:03</div>
+            <div class="timeline-body"><p>I'd recommend disabling <code>PD</code> altogether... It's kind of tough to condition these on the presence of <code>import pandas</code> statements, since it's not required to import Pandas in a module in order for any given variable to be a DataFrame.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-26 22:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mmdanziger">@mmdanziger</a> on 2023-09-18 09:09</div>
+            <div class="timeline-body"><p>Ran into this problem with <a href=""><code>torch.max</code></a> when you do multi-dimensional max you get a namedtuple with attrs <code>indices</code> and <code>values</code> as in the example code:</p>
+<pre><code>&gt;&gt;&gt; a = torch.randn(4, 4)
+&gt;&gt;&gt; a
+tensor([[-1.2360, -0.2942, -0.1222,  0.8475],
+        [ 1.1949, -1.1127, -2.2379, -0.6702],
+        [ 1.5717, -0.9207,  0.1297, -1.8768],
+        [-0.6172,  1.0036, -0.6060, -0.2432]])
+&gt;&gt;&gt; torch.max(a, 1)
+torch.return_types.max(values=tensor([0.8475, 1.1949, 1.5717, 1.0036]), indices=tensor([3, 0, 0, 1]))
+</code></pre>
+<p>In our code-base, this was picked up by <code>PD011</code>. Perhaps there can be logic for cases where the use of <code>.values</code> are not pandas related, such as this.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:03 UTC
+    </footer>
+</body>
+</html>

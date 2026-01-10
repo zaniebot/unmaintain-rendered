@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add fix to remove unused standard library imports from `__init__.py` files - astral-sh/ruff #10390</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add fix to remove unused standard library imports from <code>__init__.py</code> files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10390">#10390</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-03-13 17:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-13 17:55</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/ruff/issues/10365#issuecomment-1995132836</p>
+<p>We currently do not offer any fixes for unused imports in <code>__init__.py</code> files.</p>
+<p>This issue is to fix standard library imports by removing them from the file. We should probably label this fix as unsafe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @zanieb on 2024-03-13 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @zanieb on 2024-03-13 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2024-03-13 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @plredmond by @plredmond on 2024-04-22 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @AlexWaygood by @plredmond on 2024-04-22 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/plredmond">@plredmond</a> on 2024-04-24 21:44</div>
+            <div class="timeline-body"><p>For the purposes of this check, I'm going to consider <code>from __future__ import ...</code> style imports to be &quot;standard library&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 00:00</div>
+            <div class="timeline-body"><p>I think <code>from __future__</code> imports can just be ignored entirely, since they should never be removed as &quot;unused&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/plredmond">@plredmond</a> on 2024-04-25 00:17</div>
+            <div class="timeline-body"><p>Considered together with #10391, does this summary of behaviors seem right?</p>
+<details><summary>Old table</summary>
+
+<pre><code>for some unused import... 
+
+future                            → no diagnostic or fix
+stdlib ∧  in_init                 → unsafe, remove
+stdlib ∧ ¬in_init                 → safe,   remove
+1stpty ∧  in_init                 → safe,   move to __all__ or convert to explicit-import
+1stpty ∧ ¬in_init                 → safe,   remove
+3rdpty ∧  in_init ∧  ignore_init  → no diagnostic or fix
+3rdpty ∧  in_init ∧ ¬ignore_init  → unsafe, remove
+3rdpty ∧ ¬in_init                 → safe,   remove
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 00:26</div>
+            <div class="timeline-body"><p>My impression was that for <code>3rdpty ∧  in_init</code>, we never offered a fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-04-25 00:48</div>
+            <div class="timeline-body"><p>That summary looks reasonable to me, with the addition that we should probably deprecate and remove the <code>ignore_init</code> option and remove third-party imports by default?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-25 00:50</div>
+            <div class="timeline-body"><p>Yeah I revise my comment -- what Zanie says sounds right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/plredmond">@plredmond</a> on 2024-04-25 16:21</div>
+            <div class="timeline-body"><p>Ok, I've collapsed the table above. Here's an edited version without the <code>ignore_init</code> bit. I'll implement this, and try to make it flexible enough that I can PR #10390 separately from #10391 and so that we can more easily make changes to it in the future if desired.</p>
+<pre><code>for some unused import... 
+
+future             → no diagnostic or fix
+stdlib ∧  in_init  → unsafe, remove
+stdlib ∧ ¬in_init  → safe,   remove
+1stpty ∧  in_init  → safe,   move to __all__ or convert to explicit-import
+1stpty ∧ ¬in_init  → safe,   remove
+3rdpty ∧  in_init  → unsafe, remove
+3rdpty ∧ ¬in_init  → safe,   remove
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @plredmond on 2024-05-02 23:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:08 UTC
+    </footer>
+</body>
+</html>

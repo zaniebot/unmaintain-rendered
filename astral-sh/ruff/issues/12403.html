@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF013 does not check usage of implicit None in class constructors - astral-sh/ruff #12403</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF013 does not check usage of implicit None in class constructors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12403">#12403</a>
+        opened by <a href="https://github.com/mikeweltevrede">@mikeweltevrede</a>
+        on 2024-07-19 07:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mikeweltevrede">@mikeweltevrede</a> on 2024-07-19 07:18</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>I noticed that rule <a href="https://docs.astral.sh/ruff/rules/implicit-optional/">RUF013</a> did not check usage of implicit optionals in the class constructors <code>__init__()</code>. I would expect to see <code>RUF013 PEP 484 prohibits implicit 'Optional'</code>, but instead, it passes the checks.</p>
+<h1>List of keywords you searched for before creating this issue</h1>
+<ul>
+<li>RUF013</li>
+<li>Optional</li>
+</ul>
+<h1>A minimal code snippet that reproduces the bug</h1>
+<pre><code class="language-python">class MyClass:
+    def __init__(self, a: int = None): ...
+</code></pre>
+<h1>The command you invoked</h1>
+<ul>
+<li><code>ruff check --select RUF013</code></li>
+<li><code>pre-commit run --all-files</code></li>
+</ul>
+<h1>The current Ruff settings</h1>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 120
+target-version = &quot;py39&quot;
+
+[tool.ruff.lint]
+extend-select = [
+    ...,
+    &quot;RUF&quot;,
+    ...,
+]
+</code></pre>
+<h1>The current Ruff version</h1>
+<p><code>0.5.3</code> but also tried with earlier versions <code>0.3.0</code> and <code>0.4.0</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-19 13:30</div>
+            <div class="timeline-body"><p>This actually is flagged for me in the playground: https://play.ruff.rs/ed0f6c85-acdf-4e74-a3de-c17deb79f0ef</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-19 13:31</div>
+            <div class="timeline-body"><p>And on the command-line too:</p>
+<pre><code>❯ ruff check foo.py --select RUF --isolated
+foo.py:2:27: RUF013 PEP 484 prohibits implicit `Optional`
+  |
+1 | class MyClass:
+2 |     def __init__(self, a: int = None): ...
+  |                           ^^^ RUF013
+  |
+  = help: Convert to `Optional[T]`
+</code></pre>
+<p>Maybe something else going on? Is that the exact MRE you used?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @charliermarsh on 2024-07-19 13:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeweltevrede">@mikeweltevrede</a> on 2024-07-19 14:30</div>
+            <div class="timeline-body"><p>Thanks @charliermarsh, I will go through our situation with a fine-tooth comb and see if something else might be interfering with this. If it works well in the ruff playground for you, then it must be something on our side that I am not seeing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-19 14:46</div>
+            <div class="timeline-body"><p>We have some logic in there to detect annotations that implicitly allow <code>None</code> (like <code>Any</code>). If you find a concrete example, I might be able to map it back to that logic (and figure out whether it's intended or not).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeweltevrede">@mikeweltevrede</a> on 2024-07-22 14:05</div>
+            <div class="timeline-body"><p>Hi @charliermarsh, I tried to reproduce again but could not. Must have been some other setting in our project that got updated. Thanks for your quick response.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mikeweltevrede on 2024-07-22 14:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:24 UTC
+    </footer>
+</body>
+</html>

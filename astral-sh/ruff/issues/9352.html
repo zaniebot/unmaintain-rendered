@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ANN001` and `ANN201` for override methods? - astral-sh/ruff #9352</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>ANN001</code> and <code>ANN201</code> for override methods?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9352">#9352</a>
+        opened by <a href="https://github.com/ReubenFrankel">@ReubenFrankel</a>
+        on 2024-01-02 03:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ReubenFrankel">@ReubenFrankel</a> on 2024-01-02 03:36</div>
+            <div class="timeline-body"><p>When overriding a method from a parent class, is it required to define the entire original method signature with its argument and return types? I'm not sure if this is a personal preference thing, but I don't really want to have to redefine or import any non-builtin types if I don't have to (especially for more complex methods) - VS Code IntelliSense seems to pick these up already without any type hints.</p>
+<p>Given the following example</p>
+<p><code>example.py</code></p>
+<pre><code class="language-py">&quot;&quot;&quot;Example module.&quot;&quot;&quot;
+
+from singer_sdk.streams.rest import RESTStream
+from typing_extensions import override
+
+
+class MyRESTStream(RESTStream):
+    &quot;&quot;&quot;My RESTStream implementation.&quot;&quot;&quot;
+
+    @override
+    def prepare_request(self, context, next_page_token):
+        return super().prepare_request(context, next_page_token)
+
+</code></pre>
+<p>where <code>RESTStream.prepare_request</code> is a fully-annotated method...</p>
+<h3>Expected</h3>
+<p>No errors</p>
+<h3>Actual</h3>
+<pre><code>example.py:11:9: ANN201 Missing return type annotation for public function `prepare_request`
+example.py:11:31: ANN001 Missing type annotation for function argument `context`
+example.py:11:40: ANN001 Missing type annotation for function argument `next_page_token`
+Found 3 errors.
+</code></pre>
+<p>This is the code that fixes the above 3 errors and some others after importing:</p>
+<p><code>example.py</code></p>
+<pre><code class="language-py">&quot;&quot;&quot;Example module.&quot;&quot;&quot;
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
+from singer_sdk.streams.rest import RESTStream
+from typing_extensions import override
+
+if TYPE_CHECKING:
+    from requests.models import PreparedRequest
+
+
+class MyRESTStream(RESTStream):
+    &quot;&quot;&quot;My RESTStream implementation.&quot;&quot;&quot;
+
+    @override
+    def prepare_request(
+        self,
+        context: dict | None,
+        next_page_token: Any | None,
+    ) -&gt; PreparedRequest:
+        return super().prepare_request(context, next_page_token)
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-01-02 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-02 18:14</div>
+            <div class="timeline-body"><p>I'd be interested to get more opinions on this, I can see both sides.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2024-09-24 19:48</div>
+            <div class="timeline-body"><p>I came searching for this because after adding <code>ANN201</code>, I have to add <code>Response</code> to every single one of my overridden Django ViewSet methods when the type-checker already knows they always have to return a <code>Response</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-24 19:59</div>
+            <div class="timeline-body"><p>cc @AlexWaygood / @MichaReiser</p>
+<p>Do our plans for red-knot make this clearer? I basically think we should not enforce annotations for overrides with these rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-25 06:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Do our plans for red-knot make this clearer? I basically think we should not enforce annotations for overrides with these rules.</p>
+</blockquote>
+<p>I don't think the decision here is red knot specific. Red knot will provide better means to reason about overrides but it's a non-goal for the first release to improve any lint rules.</p>
+<p>I do agree that requiring type annotations on overrides is overly strict but not requiring them has its own downsides, unless Ruff has other rules that fill the gaps:</p>
+<ul>
+<li>Error about methods annotated with <code>@override</code> that don't override a base method</li>
+<li>Error about methods that have an incompatible signature with an override method</li>
+<li>Error when the function's body isn't compatible with the type's from the base method</li>
+</ul>
+<p>I could see us going middle ground here where a method decorated with <code>override</code> should either be fully annotated or not annotated at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2024-09-25 13:29</div>
+            <div class="timeline-body"><p>All three of those bullet points will be covered by the type-checker. I wouldn't expect a linter to have an opinion on them.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:19 UTC
+    </footer>
+</body>
+</html>

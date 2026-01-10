@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make `uv init` resilient against broken git - astral-sh/uv #12895</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make <code>uv init</code> resilient against broken git</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12895">#12895</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-04-15 10:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-04-15 10:48</div>
+            <div class="timeline-body"><p>Currently, <code>uv init</code> works without a <code>git</code> executable, and with a working <code>git</code> executable, but not with a broken <code>git</code>, be it from GitHub Action's Windows CI or from the shim we insert.</p>
+<p><code>uv init</code> calls git twice: Once <code>git rev-parse</code> to check whether a git repo already exists, and then <code>git init</code> (if there is no git repository yet and no <code>--vcs none</code>).</p>
+<p>By separately handling the cases where git failed during <code>git rev-parse</code> doesn't work vs. where the is no repository when checking for an existing repo work tree, we can avoid calling <code>git init</code> for broken git and erroring. We have to hardcode the expected git command outputs to be able to check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-04-15 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-16 13:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/init.rs</code>:1212 on 2025-04-16 13:27</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            &quot;`git rev-parse --is-inside-work-tree` failed for `{}`&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/init.rs</code>:1212 on 2025-04-16 13:27</div>
+            <div class="timeline-body"><p>Actually, I might prefer it as-is 🤔 do what you prefer!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-16 13:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-16 13:28</div>
+            <div class="timeline-body"><p>The main questions here are: a) Are we ok with parsing git text output? b) Do we want to ignore broken git installation? c) Does that interact properly with the <code>git</code> test feature?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-04-16 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-16 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/init.rs</code>:3778 on 2025-04-16 13:30</div>
+            <div class="timeline-body"><p>What's the behavior if without <code>--vcs</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-16 14:34</div>
+            <div class="timeline-body"><blockquote>
+<p>GitHub Action's Windows CI</p>
+</blockquote>
+<p>...what on earth is happening here??</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-04-16 14:37</div>
+            <div class="timeline-body"><p>I'm definitely suspicious of this but I doubt these outputs change much and other tools are liable to freakout if they do.</p>
+<p>And this is pretty narrowly scoped so if it's an issue it's unlikely to cause massive breakage for people.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-16 23:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/init.rs</code>:1212 on 2025-04-16 23:25</div>
+            <div class="timeline-body"><p>I like the current versions for pointing out that this isn't case of a non-successful exist status, but one where <code>git</code> failed to spawn as a subprocess.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-16 23:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/init.rs</code>:3778 on 2025-04-16 23:27</div>
+            <div class="timeline-body"><p>That's tested above with <code>context.init().arg(&quot;working&quot;).assert().success();</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-16 23:28</div>
+            <div class="timeline-body"><p>Since we seem to be aligned on doing this I've polished the PR into a mergeable state</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-04-17 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-04-17 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-17 15:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:23 UTC
+    </footer>
+</body>
+</html>

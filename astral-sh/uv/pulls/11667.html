@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display path separators as backslashes on Windows - astral-sh/uv #11667</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Display path separators as backslashes on Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11667">#11667</a>
+        opened by <a href="https://github.com/jtfmumm">@jtfmumm</a>
+        on 2025-02-20 14:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-02-20 14:42</div>
+            <div class="timeline-body"><p>Currently, <code>uv tool list --show-paths</code> will show backslashes as path separators for packages but not entrypoints. This PR changes this to be consistent.</p>
+<p>Closes #10426.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-20 16:17</div>
+            <div class="timeline-body"><p>What's the root cause of this? Is this because they're stored with Unix-style paths in the tool receipt?</p>
+<p>https://github.com/astral-sh/uv/blob/c30f53b295130408adba0054a00e598b93add2dc/crates/uv-tool/src/tool.rs#L289-L293</p>
+<p>Should we just deserialize these into the appropriate platform-specific type? Or perhaps we should implement <code>Display</code> for <code>ToolEntrypoint</code>?</p>
+<p>Otherwise, I feel like we'll just be playing whack-a-mole with places these are displayed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-02-20 16:24</div>
+            <div class="timeline-body"><blockquote>
+<p>What's the root cause of this? Is this because they're stored with Unix-style paths in the tool receipt?</p>
+<p>https://github.com/astral-sh/uv/blob/c30f53b295130408adba0054a00e598b93add2dc/crates/uv-tool/src/tool.rs#L289-L293</p>
+<p>Should we just deserialize these into the appropriate platform-specific type? Or perhaps we should implement <code>Display</code> for <code>ToolEntrypoint</code>?</p>
+<p>Otherwise, I feel like we'll just be playing whack-a-mole with places these are displayed.</p>
+</blockquote>
+<p>Yeah, implementing <code>Display</code> on <code>ToolEntrypoint</code> might be the right choice here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-20 19:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/common/mod.rs</code>:254 on 2025-02-20 19:27</div>
+            <div class="timeline-body"><p>We should use this in <code>new_with_versions</code> too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-02-20 19:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/common/mod.rs</code>:254 on 2025-02-20 19:33</div>
+            <div class="timeline-body"><p>You mean remove the existing temp dir filter from <code>new_with_versions</code> and close the method with:</p>
+<pre><code>        let context = Self {
+            root: ChildPath::new(root.path()),
+            temp_dir,
+            cache_dir,
+            python_dir,
+            home_dir,
+            bin_dir,
+            venv,
+            workspace_root,
+            python_version,
+            python_versions,
+            filters,
+            extra_env: vec![],
+            _root: root,
+        };
+        context.with_filtered_temp_dir()
+</code></pre>
+<p>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-20 19:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/common/mod.rs</code>:254 on 2025-02-20 19:39</div>
+            <div class="timeline-body"><p>I did mean that, but hm, that could break the ordering.</p>
+<p>We might need to move all of the filters out into utilities like this so we can do so without changing our default ordering. I think it's fine to pursue separately — can you open an issue to track? No need to block this pull request on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-02-20 19:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-02-20 20:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/common/mod.rs</code>:254 on 2025-02-20 20:14</div>
+            <div class="timeline-body"><p>Turns out this needs to be specialized for Windows. I've updated and renamed to <code>with_filtered_windows_temp_dir()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @jtfmumm on 2025-02-20 20:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @jtfmumm on 2025-02-20 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-02-20 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-20 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @jtfmumm on 2025-02-28 09:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow local version mismatches when validating lockfile - astral-sh/uv #12285</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow local version mismatches when validating lockfile</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12285">#12285</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-03-18 14:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-18 14:58</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes https://github.com/astral-sh/uv/issues/12282.</p>
+<h2>Test Plan</h2>
+<p>Given:</p>
+<pre><code class="language-toml">[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13.0&quot;
+dependencies = [&quot;flash-attn&quot;]
+
+[tool.uv]
+environments = [&quot;sys_platform == 'darwin'&quot;, &quot;sys_platform == 'linux'&quot;]
+constraint-dependencies = [&quot;torch==2.5.1&quot;]
+
+[tool.uv.sources]
+flash_attn = [
+  { url = &quot;https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.3/flash_attn-2.7.3+cu12torch2.5cxx11abiFalse-cp310-cp310-linux_x86_64.whl&quot;, marker = &quot;sys_platform == 'linux' and python_version == '3.10'&quot;},
+  { url = &quot;https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.3/flash_attn-2.7.3+cu12torch2.5cxx11abiFalse-cp311-cp311-linux_x86_64.whl&quot;, marker = &quot;sys_platform == 'linux' and python_version == '3.11'&quot;},
+  { url = &quot;https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.3/flash_attn-2.7.3+cu12torch2.5cxx11abiFalse-cp312-cp312-linux_x86_64.whl&quot;, marker = &quot;sys_platform == 'linux' and python_version == '3.12'&quot;},
+  { url = &quot;https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.3/flash_attn-2.7.3+cu12torch2.5cxx11abiFalse-cp313-cp313-linux_x86_64.whl&quot;, marker = &quot;sys_platform == 'linux' and python_version == '3.13'&quot;}
+]
+</code></pre>
+<p>Ran <code>uv lock</code> on <code>v0.6.5</code>. Then verified that <code>uv lock</code> fails on <code>v0.6.6</code> on the same lockfile, but this commit succeeds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-03-18 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:2877 on 2025-03-18 14:59</div>
+            <div class="timeline-body"><p>nit: <code>if version.without_local() != &amp;wheel.filename.version.without_local()</code> to be fully permissive?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-03-18 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-18 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/lock/mod.rs</code>:2877 on 2025-03-18 15:00</div>
+            <div class="timeline-body"><p>I don't <em>think</em> we want to allow mismatching locals -- we don't do that elsewhere, at least? I think it would error elsewhere, like when we install.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2025-03-18 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-03-18 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-18 15:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-18 15:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:22 UTC
+    </footer>
+</body>
+</html>

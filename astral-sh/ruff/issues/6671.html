@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notebooks: Inconsistent diagnostics between cached/uncached runs - astral-sh/ruff #6671</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Notebooks: Inconsistent diagnostics between cached/uncached runs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6671">#6671</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-08-18 08:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-18 08:14</div>
+            <div class="timeline-body"><h2>Input</h2>
+<p>Notebook:</p>
+<pre><code class="language-ipynb">{
+ &quot;cells&quot;: [
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;import random\n&quot;,
+    &quot;import math&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;markdown&quot;,
+   &quot;metadata&quot;: {},
+   &quot;source&quot;: [
+    &quot;## Some explanation\n&quot;,
+    &quot;\n&quot;,
+    &quot;See below&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;try:\n&quot;,
+    &quot;    print()\n&quot;,
+    &quot;except ValueError:\n&quot;,
+    &quot;    pass&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;markdown&quot;,
+   &quot;metadata&quot;: {},
+   &quot;source&quot;: []
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;import random\n&quot;,
+    &quot;import pprint\n&quot;,
+    &quot;\n&quot;,
+    &quot;random.randint(10, 20)&quot;
+   ]
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: []
+  },
+  {
+   &quot;cell_type&quot;: &quot;code&quot;,
+   &quot;execution_count&quot;: null,
+   &quot;metadata&quot;: {},
+   &quot;outputs&quot;: [],
+   &quot;source&quot;: [
+    &quot;foo = 1\n&quot;,
+    &quot;if foo is 2:\n&quot;,
+    &quot;    raise ValueError(f\&quot;Invalid foo: {foo is 1}\&quot;)&quot;
+   ]
+  }
+ ],
+ &quot;metadata&quot;: {
+  &quot;language_info&quot;: {
+   &quot;name&quot;: &quot;python&quot;
+  },
+  &quot;orig_nbformat&quot;: 4
+ },
+ &quot;nbformat&quot;: 4,
+ &quot;nbformat_minor&quot;: 2
+}
+</code></pre>
+<h2>Actual Behavior</h2>
+<p><strong>No cache</strong></p>
+<pre><code class="language-bash"> cargo run --bin ruff -- check ../test/test-notebook.ipynb --no-cache
+    Finished dev [unoptimized + debuginfo] target(s) in 0.10s
+     Running `target/debug/ruff check ../test/test-notebook.ipynb --no-cache`
+/home/micha/astral/test/test-notebook.ipynb:cell 1:2:8: F401 [*] `math` imported but unused
+/home/micha/astral/test/test-notebook.ipynb:cell 5:1:8: F811 Redefinition of unused `random` from line 1
+/home/micha/astral/test/test-notebook.ipynb:cell 5:2:8: F401 [*] `pprint` imported but unused
+/home/micha/astral/test/test-notebook.ipynb:cell 7:2:4: F632 [*] Use `==` to compare constant literals
+/home/micha/astral/test/test-notebook.ipynb:cell 7:3:38: F632 [*] Use `==` to compare constant literals
+Found 5 errors.
+[*] 4 potentially fixable with the --fix option.
+</code></pre>
+<p><strong>Cached</strong></p>
+<pre><code class="language-bash">cargo run --bin ruff -- check ../test/test-notebook.ipynb 
+    Finished dev [unoptimized + debuginfo] target(s) in 0.10s
+     Running `target/debug/ruff check ../test/test-notebook.ipynb`
+warning: Detected debug build without --no-cache.
+/home/micha/astral/test/test-notebook.ipynb:2:8: F401 [*] `math` imported but unused
+/home/micha/astral/test/test-notebook.ipynb:7:8: F811 Redefinition of unused `random` from line 1
+/home/micha/astral/test/test-notebook.ipynb:8:8: F401 [*] `pprint` imported but unused
+/home/micha/astral/test/test-notebook.ipynb:13:4: F632 [*] Use `==` to compare constant literals
+/home/micha/astral/test/test-notebook.ipynb:14:38: F632 [*] Use `==` to compare constant literals
+Found 5 errors.
+[*] 4 potentially fixable with the --fix option.
+</code></pre>
+<p>Notice how the uncached uses <code>cell: </code> positions whereas the cached run uses row/colum only.</p>
+<h2>Expected Behavior</h2>
+<p>The output between cached and uncached runs is identical.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2023-08-18 08:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @MichaReiser on 2023-08-18 08:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Notebooks: Cached diagnostics use row/col instead of cell numbers" to "Notebooks: Inconsistent diagnostics between cached/uncached runs" by @MichaReiser on 2023-08-18 08:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-09-12 12:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:02 UTC
+    </footer>
+</body>
+</html>

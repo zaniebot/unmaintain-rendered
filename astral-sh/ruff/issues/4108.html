@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP007 rule is not catching type aliases defined without the `TypeAlias` annotation - astral-sh/ruff #4108</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP007 rule is not catching type aliases defined without the <code>TypeAlias</code> annotation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4108">#4108</a>
+        opened by <a href="https://github.com/ericbn">@ericbn</a>
+        on 2023-04-26 00:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ericbn">@ericbn</a> on 2023-04-26 00:32</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Hi! 👋</p>
+<p>The UP007 rule is not catching the scenarios where a type alias is defined without the <code>TypeAlias</code> annotation, which is likely to happen when upgrading from py39 to py310.</p>
+<h4>test.py</h4>
+<p>Minimal code snipped that reproduces the bug:</p>
+<pre><code>from typing import Literal, Optional, TypeAlias, Union
+
+YesNo = Literal[&quot;yes&quot;, &quot;no&quot;]
+OptionalYesNo = Optional[YesNo]
+OptionalBlankYesNo = Union[OptionalYesNo, Literal[&quot;&quot;]]
+OptionalYesNoAlias: TypeAlias = Optional[YesNo]
+OptionalBlankYesNoAlias: TypeAlias = Union[OptionalYesNo, Literal[&quot;&quot;]]
+</code></pre>
+<h4>Ruff output</h4>
+<p>The command I've invoked: <code>ruff --isolated --select UP --target-version py310 test.py</code></p>
+<pre><code>test.py:6:33: UP007 [*] Use `X | Y` for type annotations
+test.py:7:38: UP007 [*] Use `X | Y` for type annotations
+Found 2 errors.
+[*] 2 potentially fixable with the --fix option.
+</code></pre>
+<p>I was expecting UP007 to have reported lines 4 and 5 too. When using <code>--fix</code> I was expecting the fixed code to be:</p>
+<pre><code>from typing import Literal, TypeAlias
+
+YesNo = Literal[&quot;yes&quot;, &quot;no&quot;]
+OptionalYesNo = YesNo | None
+OptionalBlankYesNo = OptionalYesNo | Literal[&quot;&quot;]
+OptionalYesNoAlias: TypeAlias = YesNo | None
+OptionalBlankYesNoAlias: TypeAlias = OptionalYesNo | Literal[&quot;&quot;]
+</code></pre>
+<h4>ruff --version</h4>
+<pre><code>ruff 0.0.262
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-04-26 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-26 00:48</div>
+            <div class="timeline-body"><p>Hmm yeah, I was confused too here, but looking back at the code, I think this is by design... We have to be somewhat careful about transforming runtime unions as those transformations can lead to subtle bugs. This was one example: https://github.com/charliermarsh/ruff/issues/3215. It also came up here: https://github.com/charliermarsh/ruff/issues/2981.</p>
+<p>I need to see whether this is safe to do in more contexts. We could also consider flagging those usages even if we don't autofix them.</p>
+<p>(We explicitly special-case the RHS of an assignment annotated with <code>TypeAlias</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericbn">@ericbn</a> on 2023-04-26 01:09</div>
+            <div class="timeline-body"><p>Fair enough. I cannot even start to wonder all the possible edge cases were transforming type aliases can lead to bugs after looking at the issues you've mentioned.</p>
+<p>Sorry, I should have researched more on past issues before opening this one.</p>
+<p>Unless you still want to consider researching on possible safe scenarios, this issue can be closed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ericbn">@ericbn</a> on 2023-04-26 01:11</div>
+            <div class="timeline-body"><p>FYI I didn't check pyupgrade's behavior before opening this issue and doing <code>pyupgrade --py310-plus test.py</code> actually does not affect the file, not even lines 6 and 7. (which is kind of plot twist to the original issue I've reported)  :- )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-26 17:14</div>
+            <div class="timeline-body"><p>Haha yeah, I think we take slightly more liberties when <code>TypeAlias</code> is added explicitly. I'm going to close for now, though I would like to revisit this at some point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-26 17:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:56 UTC
+    </footer>
+</body>
+</html>

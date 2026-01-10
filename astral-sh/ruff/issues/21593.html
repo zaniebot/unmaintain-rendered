@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`manual-list-copy` rule description says it works on existing lists, but it triggers on any iterable - astral-sh/ruff #21593</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>manual-list-copy</code> rule description says it works on existing lists, but it triggers on any iterable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21593">#21593</a>
+        opened by <a href="https://github.com/injust">@injust</a>
+        on 2025-11-23 12:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/injust">@injust</a> on 2025-11-23 12:04</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>On https://docs.astral.sh/ruff/rules/manual-list-copy/, the description says:</p>
+<blockquote>
+<p>When creating a copy of an existing list using a for-loop, prefer <code>list</code> or <code>list.copy</code> instead.</p>
+</blockquote>
+<p>And the example suggests:</p>
+<pre><code class="language-python">original = list(range(10000))
+filtered = list(original)
+</code></pre>
+<p>In Zed, Ruff surfaces this messaging:</p>
+<blockquote>
+<p>Use <code>list</code> or <code>list.copy</code> to create a copy of a list</p>
+</blockquote>
+<hr />
+<p><code>lst.copy()</code> should be preferred over <code>list(lst)</code> so the intention is more explicit (copying vs converting a non-list iterable to a list).</p>
+<p>I think the example should be updated to use <code>list.copy()</code>, and either:</p>
+<ul>
+<li>Order <code>list.copy()</code> before <code>list()</code>, or</li>
+<li>Only suggest <code>list.copy()</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-11-24 22:54</div>
+            <div class="timeline-body"><p>My main concern with <code>data.copy()</code> this is that you need to know that <code>data</code> is an actual list type that implements the copy method, while <code>list(data)</code> works regardless of the type of <code>data</code> — the latter feels more &quot;pythonic&quot;, and its performance is roughly the same[1], so IMO should be the preferred suggestion.</p>
+<p>1:</p>
+<pre><code>amethyst@lunatone ~/scratch » uvx python -m timeit -s 'data = list(range(10000))' 'f = list(data)'
+20000 loops, best of 5: 12.8 usec per loop
+
+amethyst@lunatone ~/scratch » uvx python -m timeit -s 'data = list(range(10000))' 'f = data.copy()'
+20000 loops, best of 5: 12.2 usec per loop
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @amyreese on 2025-11-24 22:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/injust">@injust</a> on 2025-11-25 08:27</div>
+            <div class="timeline-body"><p>The rule's description really needs to be updated. It says it's for making copies of existing lists, but it triggers for any iterable.</p>
+<blockquote>
+<p>Checks for <code>for</code> loops that can be replaced by a making a copy of a list.</p>
+</blockquote>
+<p>This should be something like:</p>
+<blockquote>
+<p>Checks for <code>for</code> loops that can be replaced with <code>list()</code>.</p>
+</blockquote>
+<p>And &quot;Why is this bad?&quot; needs to be updated to remove mentions of an &quot;existing list&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`manual-list-copy` rule should prefer `lst.copy()` over `list(lst)` to be more explicit" to "`manual-list-copy` rule description says it works on existing lists, but it triggers on any iterable" by @injust on 2025-11-25 08:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2025-11-25 18:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @MichaReiser on 2025-11-25 18:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:46 UTC
+    </footer>
+</body>
+</html>

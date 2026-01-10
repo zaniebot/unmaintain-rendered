@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A001 and A003 should ignore variables like `__doc__` - astral-sh/ruff #16373</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>A001 and A003 should ignore variables like <code>__doc__</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16373">#16373</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-02-25 15:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-02-25 15:01</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/"><code>builtin-variable-shadowing</code> (A001)</a> and <a href="https://docs.astral.sh/ruff/rules/builtin-attribute-shadowing/"><code>builtin-attribute-shadowing</code> (A003)</a> should not report violations for variables that match the names of module attributes.</p>
+<p>For example, even though <code>builtins.__doc__</code> exists, setting <code>__doc__</code> in a module does not shadow it, because every module already has its own <code>__doc__</code> whether you set it explicitly or not.</p>
+<pre><code class="language-console">$ cat &gt;a001.py &lt;&lt;'# EOF'
+from importlib.machinery import SourceFileLoader
+__doc__ = &quot;...&quot;
+__name__ = &quot;a001&quot;
+__loader__ = SourceFileLoader(__file__, __name__)
+__package__ = None
+__spec__ = None
+# EOF
+
+$ ruff --isolated check --select A001 a001.py --output-format concise
+a001.py:2:1: A001 Variable `__doc__` is shadowing a Python builtin
+a001.py:3:1: A001 Variable `__name__` is shadowing a Python builtin
+a001.py:4:1: A001 Variable `__loader__` is shadowing a Python builtin
+a001.py:5:1: A001 Variable `__package__` is shadowing a Python builtin
+a001.py:6:1: A001 Variable `__spec__` is shadowing a Python builtin
+Found 5 errors.
+</code></pre>
+<p>Getting a false positive for A003 is more contrived but still possible. In the following example, <code>C.__doc__</code> is not shadowing <code>builtins.__doc__</code>. (It does shadow <code>a003.__doc__</code> but that is okay because classes are allowed to have docstrings.)</p>
+<pre><code class="language-console">$ cat &gt;a003.py &lt;&lt;'# EOF'
+class C:
+    __doc__ = &quot;None&quot;
+    def f() -&gt; __doc__: ...
+# EOF
+
+$ ruff --isolated check --select A003 a003.py --output-format concise
+a003.py:3:16: A003 Python builtin is shadowed by class attribute `__doc__` from line 2
+Found 1 error.
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.9.7 (54fccb3ee 2025-02-20)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-25 16:35</div>
+            <div class="timeline-body"><p>These are arguably still antipatterns (I wouldn't recommend for users to shadow these implicit module globals either; it seems ~as bad as shadowing a builtin). But I agree that at the very least, the diagnostic message here is incorrect, since it's not really a builtin symbol being shadowed in these code snippets.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-02-25 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-25 16:37</div>
+            <div class="timeline-body"><p>I'm undecided on whether we should</p>
+<ol>
+<li>Say that shadowing <code>__doc__</code>, <code>__name__</code> etc. is just outside the purview of these rules (and that it should be reported by another (new) rule), or</li>
+<li>Continue to flag these globals being shadowed with these rules, just change the error message when these globals are shadowed so that we don't mention a &quot;builtin&quot; being shadowed</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-02-25 22:27</div>
+            <div class="timeline-body"><p>I support option 1: I don’t think these attributes are within the purview of these rules. <a href="https://docs.astral.sh/ruff/rules/builtin-variable-shadowing/#why-is-this-bad">The rationale for A001</a> says:</p>
+<blockquote>
+<p>Reusing a builtin name for the name of a variable increases the difficulty of reading and maintaining the code, and can cause non-obvious errors, as readers may mistake the variable for the builtin and vice versa.</p>
+</blockquote>
+<p>That rationale does not apply to these 5 attributes. A reader wouldn’t mistakenly think <code>__doc__</code> means <code>builtins.__doc__</code>. Even if a module doesn’t explicitly set <code>__doc__</code> or use a docstring, it still has a <code>__doc__</code> that shadows <code>builtins.__doc__</code>. Reusing a builtin name doesn’t increase the difficulty of reading or maintaining the code when the builtin isn’t readily accessible anyway. If it’s still an antipattern to assign to them, I’d make a new rule for that, because the rationale is different.</p>
+<p>It might not an antipattern to assign to all of them though. Although it’s better to use a docstring if possible, it’s fine to dynamically compute it and assign it to <code>__doc__</code> explicitly if necessary. Assigning to <code>__name__</code> <a href="https://github.com/search?q=language%3APython+%2F%5E__name__+%3D+%2F&amp;type=code">seems common in setup.py</a>, though I don’t know if that’s considered a good idea. The other ones don’t seem useful to set as globals; if there is ever a rule made against that, it should include the similar module attributes that <code>builtins</code> doesn’t provide: <code>__file__</code>, <code>__cached__</code>, and <code>__path__</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-25 23:01</div>
+            <div class="timeline-body"><p>Fair enough, that's all pretty convincing!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-03-01 22:15</div>
+            <div class="timeline-body"><p>Hey,
+I opened a <a href="https://github.com/astral-sh/ruff/pull/16454">PR</a> to fix the issue for rule <code>A001</code>. Let me know if I correctly understood the final outcome of the discussion! :-)</p>
+<p>Also, should this apply to rule <code>A003</code> as well?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-03-02 02:04</div>
+            <div class="timeline-body"><p>I have sometimes assigned directly to <code>__doc__</code> to change its type in type-checkers from <code>str | None</code> to <code>str</code>, without also having to assert it: https://github.com/microsoft/pyright/issues/9404</p>
+<p>I guess there's an argument to be made about Python being run in optimized mode removing docstrings. But that also feels out of scope for A001's reasoning and could be mentioned in a replacement rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-03 10:06</div>
+            <div class="timeline-body"><p>Makes sense to me. We could have a separate rule that warns if you assign to <code>__doc__</code> that let's you know that this doesn't change the module's doc comment.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:45 UTC
+    </footer>
+</body>
+</html>

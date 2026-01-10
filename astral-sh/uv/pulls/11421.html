@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>retry local clones without hardlinks if they fail - astral-sh/uv #11421</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>retry local clones without hardlinks if they fail</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11421">#11421</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-02-11 14:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-02-11 14:47</div>
+            <div class="timeline-body"><p>Fixes #11420</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-02-11 14:48</div>
+            <div class="timeline-body"><p>I need to setup BeeGFS to check that this really works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Gankra on 2025-02-11 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PhilipVinc">@PhilipVinc</a> on 2025-02-11 18:47</div>
+            <div class="timeline-body"><p>If you give me a built linux executable I can try for you, if you want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-02-11 19:09</div>
+            <div class="timeline-body"><p>Oh great! The PR CI already built one:</p>
+<p>https://github.com/astral-sh/uv/actions/runs/13266446923/artifacts/2572423342</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PhilipVinc">@PhilipVinc</a> on 2025-02-11 21:12</div>
+            <div class="timeline-body"><p>Dammit. Unfortunately on my system I have only GLIBC 2.17 available, but you require 2.18...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PhilipVinc">@PhilipVinc</a> on 2025-02-11 21:15</div>
+            <div class="timeline-body"><p>@Gankra I managed to use the musl builds.</p>
+<p>It seems there is a typo:</p>
+<pre><code class="language-bash">  Caused by: process didn't exit successfully: `/usr/bin/git clone --no-hard-links /mnt/beegfs/home/CPHT/filippo.vicentini/.cache/uv/git-v0/db/292f78b3ecf26bf6 /mnt/beegfs/home/CPHT/filippo.vicentini/.cache/uv/git-v0/checkouts/292f78b3ecf26bf6/f1db6bb` (exit status: 129)
+--- stderr
+error: unknown option `no-hard-links'
+usage: git clone [options] [--] &lt;repo&gt; [&lt;dir&gt;]
+
+    -v, --verbose         be more verbose
+    -q, --quiet           be more quiet
+    --progress            force progress reporting
+    -n, --no-checkout     don't create a checkout
+    --bare                create a bare repository
+    --mirror              create a mirror repository (implies bare)
+    -l, --local           to clone from a local repository
+    --no-hardlinks        don't use local hardlinks, always copy
+    -s, --shared          setup as shared repository
+</code></pre>
+<p>It should be <code>--no-hardlinks</code> but you specified <code>--no-hard-links</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-11 21:15</div>
+            <div class="timeline-body"><p>You can use the musl wheel, hopefully? It's under https://github.com/astral-sh/uv/actions/runs/13266446923/artifacts/2572463068.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/PhilipVinc">@PhilipVinc</a> reviewed on 2025-02-11 21:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/PhilipVinc">@PhilipVinc</a> on <code>crates/uv-git/src/git.rs</code>:440 on 2025-02-11 21:17</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                .arg(&quot;--no-hardlinks&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-11 21:20</div>
+            <div class="timeline-body"><p>Thanks. I triggered a rebuild.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-11 21:44</div>
+            <div class="timeline-body"><p>The updated musl version is https://github.com/astral-sh/uv/actions/runs/13272737821/artifacts/2574639236.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PhilipVinc">@PhilipVinc</a> on 2025-02-11 22:03</div>
+            <div class="timeline-body"><p>tested. It works. thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-02-11 22:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-11 22:16</div>
+            <div class="timeline-body"><p>Great, thanks! I'll leave to @Gankra to merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2025-02-12 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-02-12 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-12 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-12 00:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-12 00:42</div>
+            <div class="timeline-body"><p>(Confirmed in Discord.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

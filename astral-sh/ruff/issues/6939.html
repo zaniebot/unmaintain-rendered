@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter: Nested if expression formatting - astral-sh/ruff #6939</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter: Nested if expression formatting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6939">#6939</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-08-28 12:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-08-28 12:06</div>
+            <div class="timeline-body"><p>What I can tell from the Django diff is that Black uses newlines to separate all <code>if</code> and <code>else</code> branches if any <code>ExprIf</code> in the chain breaks:</p>
+<pre><code class="language-python"># Black
+_check_for_duplicates(
+    &quot;bases&quot;,
+    (
+        base._meta.label_lower
+        if hasattr(base, &quot;_meta&quot;)
+        else base.lower()
+        if isinstance(base, str)
+        else base
+        for base in self.bases
+    ),
+)
+        
+clone._iterable_class = (
+    NamedValuesListIterable
+    if named
+    else FlatValuesListIterable
+    if flat
+    else ValuesListIterable
+)
+
+# Ruff
+
+_check_for_duplicates(
+    &quot;bases&quot;,
+    (
+        base._meta.label_lower
+        if hasattr(base, &quot;_meta&quot;)
+        else base.lower() if isinstance(base, str) else base
+        for base in self.bases
+    ),
+)
+
+clone._iterable_class = (
+    NamedValuesListIterable
+    if named
+    else FlatValuesListIterable if flat else ValuesListIterable
+)
+</code></pre>
+<p>Notice how ruff &quot;flattens&quot; the nested else clauses.</p>
+<p>The fix for this is likely to special case the formatting of the <code>else</code> clause if it contains a nested <code>ExprIf</code> and pass a custom layout that doesn't introduce a new <code>group</code> (it should reuse the group of the parent to ensure that either both of them expand). This is similar to the <code>BoolOp</code> formatting</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-08-28 12:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Beta" by @MichaReiser on 2023-08-28 12:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2023-08-28 12:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LaBatata101">@LaBatata101</a> on 2023-08-28 12:15</div>
+            <div class="timeline-body"><p>I would like to work on this one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @LaBatata101 by @MichaReiser on 2023-08-28 12:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-30 04:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:09 UTC
+    </footer>
+</body>
+</html>

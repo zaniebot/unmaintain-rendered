@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parsing error when using `match` as variable name - astral-sh/ruff #3337</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Parsing error when using <code>match</code> as variable name</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3337">#3337</a>
+        opened by <a href="https://github.com/qarmin">@qarmin</a>
+        on 2023-03-04 14:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qarmin">@qarmin</a> on 2023-03-04 14:04</div>
+            <div class="timeline-body"><pre><code>event = 12
+match = lambda query: query == event
+print(match(12))
+print(match(2))
+</code></pre>
+<p>prints with python 3.10 True, False, but ruff not wants to parse it due</p>
+<pre><code>error: Failed to parse aa.py: invalid syntax. Got unexpected token '=' at line 2 column 7
+aa.py:2:8: E999 SyntaxError: invalid syntax. Got unexpected token '='
+</code></pre>
+<p>Ruff 0.0.254
+Config</p>
+<pre><code>select = [&quot;A&quot;, &quot;B&quot;, &quot;C&quot;, &quot;E&quot;, &quot;F&quot;]
+
+exclude = [
+]
+
+line-length = 140
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/qarmin">@qarmin</a> on 2023-03-04 14:07</div>
+            <div class="timeline-body"><p>Similar problems with other builtin names</p>
+<pre><code>Lookup.async = None
+</code></pre>
+<p>cause</p>
+<pre><code>invalid syntax. Got unexpected token 'async' at line 43 column 10
+</code></pre>
+<p>or</p>
+<pre><code>case = lambda re, **kwargs: (re, TypeError, kwargs)
+</code></pre>
+<pre><code>invalid syntax. Got unexpected token 'case' at line 485 column 5
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-03-04 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-04 15:02</div>
+            <div class="timeline-body"><p>Thanks, that’s surprising, I’ll take a look!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-03-04 16:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-04 16:50</div>
+            <div class="timeline-body"><p>Hmm, I don't think <code>Lookup.async = None</code> is valid Python. <code>async</code> and <code>await</code> became reserved keywords in Python 3.7.</p>
+<p>The main issue here is the handling of <code>match</code> and <code>case</code> with lambda assignments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-04 17:09</div>
+            <div class="timeline-body"><p>Fixed by https://github.com/RustPython/RustPython/pull/4623 in RustPython.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-04 17:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:33 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expand environment variables in user-provided index URLs - astral-sh/uv #13879</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Expand environment variables in user-provided index URLs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13879">#13879</a>
+        opened by <a href="https://github.com/msabramo">@msabramo</a>
+        on 2025-06-06 04:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/msabramo">@msabramo</a> on 2025-06-06 04:05</div>
+            <div class="timeline-body"><p>Fixes: GH-5734</p>
+<!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This PR adds support for environment variable expansion in <code>[[tool.uv.index]]</code> configuration URLs, enabling dynamic and secure index configuration.</p>
+<p><strong>What it does:</strong></p>
+<ul>
+<li>Expands environment variables in <code>url</code> and <code>publish-url</code> fields using <code>${VARIABLE}</code> and <code>${VARIABLE:-default}</code> syntax</li>
+<li>Supports tilde (<code>~</code>) expansion for home directory paths</li>
+<li>Enables secure credential injection without storing sensitive information in plaintext configuration files</li>
+<li>Allows for environment-specific configuration (dev/staging/prod) using the same <code>pyproject.toml</code></li>
+</ul>
+<p><strong>Implementation details:</strong></p>
+<ul>
+<li>Added <code>shellexpand</code> crate dependency for robust environment variable and tilde expansion</li>
+<li>Implemented custom <code>Deserialize</code> for the <code>Index</code> struct to perform expansion during TOML parsing</li>
+<li>Added comprehensive error handling with descriptive messages for missing variables or expansion failures</li>
+<li>Maintains backward compatibility with existing configurations</li>
+</ul>
+<p><strong>Example usage:</strong></p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;artifactory&quot;
+url = &quot;https://${ARTIFACTORY_USER}:${ARTIFACTORY_API_TOKEN}@artifactory.company.com/simple&quot;
+</code></pre>
+<h2>Test Plan</h2>
+<p><strong>Unit tests:</strong></p>
+<ul>
+<li><code>test_index_environment_variable_expansion</code>: Verifies <code>${VAR}</code> syntax expansion with set environment variables</li>
+<li><code>test_index_without_environment_variables</code>: Ensures existing configurations without env vars continue to work</li>
+<li><code>test_index_missing_environment_variable</code>: Tests error handling when required environment variables are missing</li>
+<li><code>test_index_tilde_expansion</code>: Verifies <code>~</code> home directory expansion works correctly</li>
+</ul>
+<p><strong>Integration testing:</strong></p>
+<ul>
+<li>Ran <code>/Users/abramowi/Code/OpenSource/uv/target/release/uv sync</code> in a project that had something like:<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;artifactory&quot;
+url = &quot;https://${ARTIFACTORY_USER}:${ARTIFACTORY_API_TOKEN}@artifactory.company.com/artifactory/api/pypi/pypi-colorado-tools-snapshot/simple&quot;
+</code></pre>
+</li>
+<li>Ran a normal <code>uv sync</code> which failed:</li>
+</ul>
+<pre><code>$ uv sync -v | grep artifactory
+...
+  × Failed to download `vortex-sdk==0.0.35`
+  ├─▶ Failed to fetch:
+  │   `https://artifactory.company.com/artifactory/api/pypi/pypi-colorado-tools-snapshot/vortex-sdk/0.0.35/vortex_sdk-0.0.35-py3-none-any.whl`
+  ╰─▶ HTTP status client error (401 Unauthorized) for url
+      (https://artifactory.company.com/artifactory/api/pypi/pypi-colorado-tools-snapshot/vortex-sdk/0.0.35/vortex_sdk-0.0.35-py3-none-any.whl)
+</code></pre>
+<ul>
+<li>Built uv from this branch with <code>cargo build --release</code></li>
+<li>Ran <code>$ /Users/abramowi/Code/OpenSource/uv/target/release/uv sync -v | grep artifactory</code> and got:</li>
+</ul>
+<pre><code>DEBUG No cache entry for: https://artifactory.company.com/artifactory/api/pypi/pypi-colorado-tools-snapshot/vortex-sdk/0.0.35/vortex_sdk-0.0.35-py3-none-any.whl
+Prepared 1 package in 469ms
+Installed 1 package in 3ms
+ + vortex-sdk==0.0.35
+</code></pre>
+<p><strong>Compatibility testing:</strong></p>
+<ul>
+<li>All existing <code>cargo test -p uv-distribution-types</code> tests pass<pre><code>abramowi at marcs-mbp-3 in ~/Code/OpenSource/uv (env-vars-in-index-urls●)
+$ cargo test -p uv-distribution-types
+...
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+</code></pre>
+</li>
+<li>No breaking changes to existing index configurations</li>
+<li>Error messages are clear and actionable when environment variables are missing</li>
+</ul>
+<p><strong>Documentation:</strong></p>
+<ul>
+<li>Updated <code>docs/concepts/indexes.md</code> with environment variable expansion section and examples</li>
+<li>Enhanced <code>docs/guides/integration/alternative-indexes.md</code> with env var examples for Azure, GCP, and AWS</li>
+<li>Updated <code>docs/reference/settings.md</code> with comprehensive examples and feature description</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @msabramo on 2025-06-06 05:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @msabramo on 2025-06-06 05:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @msabramo on 2025-06-06 05:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/msabramo">@msabramo</a> on 2025-06-06 12:32</div>
+            <div class="timeline-body"><p>Windows test failed with what looks to be an intermittent failure downloading Python:</p>
+<pre><code>    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Snapshot: python_install_preview-10
+    Source: D:\uv:463
+    ───────────────────────────────────────────────────────────────────────────────
+    Expression: snapshot
+    ───────────────────────────────────────────────────────────────────────────────
+    -old snapshot
+    +new results
+    ────────────┬──────────────────────────────────────────────────────────────────
+        0       │-success: true
+        1       │-exit_code: 0
+              0 │+success: false
+              1 │+exit_code: 1
+        2     2 │ ----- stdout -----
+        3     3 │ 
+        4     4 │ ----- stderr -----
+        5       │-Installed 2 versions in [TIME]
+        6       │- + cpython-3.12.6-[PLATFORM]
+        7       │- + cpython-3.12.8-[PLATFORM] (python3.12)
+              5 │+Installed Python 3.12.6 in [TIME]
+              6 │+ + cpython-3.12.6-[PLATFORM] (python3.12)
+              7 │+error: Failed to install cpython-3.12.8-[PLATFORM]
+              8 │+  Caused by: Failed to download https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.12.8%2B20250115-x86_64-pc-windows-msvc-install_only_stripped.tar.gz
+              9 │+  Caused by: HTTP status server error (500 Internal Server Error) for url (https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.12.8%2B20250115-x86_64-pc-windows-msvc-install_only_stripped.tar.gz)
+    ────────────┴──────────────────────────────────────────────────────────────────
+    Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+    test python_install::python_install_preview ... FAILED
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @msabramo on 2025-06-06 12:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/msabramo">@msabramo</a> on 2025-06-06 12:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Windows test failed with what looks to be an intermittent failure downloading Python:</p>
+<pre><code>    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    Snapshot: python_install_preview-10
+    Source: D:\uv:463
+    ───────────────────────────────────────────────────────────────────────────────
+    Expression: snapshot
+    ───────────────────────────────────────────────────────────────────────────────
+    -old snapshot
+    +new results
+    ────────────┬──────────────────────────────────────────────────────────────────
+        0       │-success: true
+        1       │-exit_code: 0
+              0 │+success: false
+              1 │+exit_code: 1
+        2     2 │ ----- stdout -----
+        3     3 │ 
+        4     4 │ ----- stderr -----
+        5       │-Installed 2 versions in [TIME]
+        6       │- + cpython-3.12.6-[PLATFORM]
+        7       │- + cpython-3.12.8-[PLATFORM] (python3.12)
+              5 │+Installed Python 3.12.6 in [TIME]
+              6 │+ + cpython-3.12.6-[PLATFORM] (python3.12)
+              7 │+error: Failed to install cpython-3.12.8-[PLATFORM]
+              8 │+  Caused by: Failed to download https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.12.8%2B20250115-x86_64-pc-windows-msvc-install_only_stripped.tar.gz
+              9 │+  Caused by: HTTP status server error (500 Internal Server Error) for url (https://github.com/astral-sh/python-build-standalone/releases/download/20250115/cpython-3.12.8%2B20250115-x86_64-pc-windows-msvc-install_only_stripped.tar.gz)
+    ────────────┴──────────────────────────────────────────────────────────────────
+    Stopped on the first failure. Run `cargo insta test` to run all snapshots.
+    test python_install::python_install_preview ... FAILED
+</code></pre>
+</blockquote>
+<p>Adding an empty commit to force a rerun fixed this temporary issue, though maybe it might be good to add retry logic for this?</p>
+<p>Anyway, all tests passing now! 🎉</p>
+<p><img src="https://github.com/user-attachments/assets/a1c89563-e9d6-43e8-80ee-e8437b57ae77" alt="Screenshot 2025-06-06 at 5 57 43 AM" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2025-06-06 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-06 13:47</div>
+            <div class="timeline-body"><p>Thanks for the pull request.</p>
+<p>As a brief note, we do not have consensus on a design for this and are very unlikely to accept a pull request without reaching that consensus first. We may be able to use this proposal to help drive consensus forward, but I want to set the right expectations here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/msabramo">@msabramo</a> on 2025-06-06 14:11</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks for the pull request.</p>
+<p>As a brief note, we do not have consensus on a design for this and are very unlikely to accept a pull request without reaching that consensus first. We may be able to use this proposal to help drive consensus forward, but I want to set the right expectations here.</p>
+</blockquote>
+<p>@zanieb</p>
+<p>Yeah understood, I know this is kind of controversial. I was just composing a comment on the issue with a proposal about how to solve some of the concerns. That proposal is not implemented in this PR, but if by discussion we come to some solution that people are happy with, then I could add it to this PR.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:25 UTC
+    </footer>
+</body>
+</html>

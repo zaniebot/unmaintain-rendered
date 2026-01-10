@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `--marker` flag to `uv add` - astral-sh/uv #12012</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>--marker</code> flag to <code>uv add</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12012">#12012</a>
+        opened by <a href="https://github.com/thejchap">@thejchap</a>
+        on 2025-03-06 18:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/thejchap">@thejchap</a> on 2025-03-06 18:01</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add a <code>--marker</code> flag to <code>uv add</code> which applies a marker to all given requirements.</p>
+<p>Example:</p>
+<pre><code>$ uv-debug add --marker &quot;platform_machine == 'x86_64'&quot; \
+    &quot;anyio&gt;=2.31.0&quot; \
+    &quot;iniconfig&gt;=2; sys_platform != 'win32'&quot; \
+    &quot;numpy&gt;1.19; sys_platform == 'win32'&quot;
+</code></pre>
+<pre><code class="language-toml">[project]
+name = &quot;project&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12.0&quot;
+dependencies = [
+    &quot;anyio&gt;=2.31.0 ; platform_machine == 'x86_64'&quot;,
+    &quot;iniconfig&gt;=2 ; platform_machine == 'x86_64' and sys_platform != 'win32'&quot;,
+    &quot;numpy&gt;1.19 ; platform_machine == 'x86_64' and sys_platform == 'win32'&quot;,
+]
+</code></pre>
+<p>Fixes https://github.com/astral-sh/uv/issues/11987</p>
+<h2>Test Plan</h2>
+<p>Added snapshot tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "add --marker flag to  command (#11987)" to "add --marker flag to `add` command (#11987)" by @thejchap on 2025-03-06 18:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thejchap">@thejchap</a> reviewed on 2025-03-06 18:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thejchap">@thejchap</a> on <code>crates/uv/src/commands/project/add.rs</code>:894 on 2025-03-06 18:35</div>
+            <div class="timeline-body"><p>should this be <code>and</code>-ed with an existing marker? is there a more elegant way to do this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-06 19:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/project/add.rs</code>:894 on 2025-03-06 19:23</div>
+            <div class="timeline-body"><p>Ah that's an interesting question. I think so?</p>
+<p>I think the proper idiom is like <code>marker.map(|inner| inner.and(marker)).or(marker)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-06 19:23</div>
+            <div class="timeline-body"><p>If you add some test cases it'll help me tell if this looks right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "add --marker flag to `add` command (#11987)" to "[WIP] Add --marker flag to `add` command (#11987)" by @thejchap on 2025-03-10 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-03-10 15:25</div>
+            <div class="timeline-body"><p>@zanieb added a couple <a href="https://github.com/astral-sh/uv/pull/12012/files#diff-120ba84554abf504ef6d44e89e1dd7c9caa37f81842074fe70daf981bc393b71R4741">tests</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @thejchap on 2025-03-10 15:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @konstin on 2025-03-10 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2025-03-10 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[WIP] Add --marker flag to `add` command (#11987)" to "Add --marker flag to `add` command (#11987)" by @thejchap on 2025-03-10 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-03-11 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add --marker flag to `add` command (#11987)" to "Add `--marker` flag to `uv add`" by @konstin on 2025-03-11 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-03-11 14:40</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-03-11 14:59</div>
+            <div class="timeline-body"><p>@konstin thanks for the help on the tests + docs 🙏</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-03-11 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-03-11 15:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:21 UTC
+    </footer>
+</body>
+</html>

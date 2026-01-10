@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF054 checks only the first form feed on a physical line - astral-sh/ruff #16139</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF054 checks only the first form feed on a physical line</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16139">#16139</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-02-13 15:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-02-13 15:16</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>In Ruff 0.9.6, <a href="https://docs.astral.sh/ruff/rules/indented-form-feed/"><code>indented-form-feed</code> (RUF054)</a> only checks the first form feed on a line. If the first form feed is okay, but a later one appears within the leading white space, there is a false negative.</p>
+<pre><code class="language-console">$ printf 'if True:\n\f \f print(&quot;!&quot;)\n' | ruff --isolated check --preview - --select RUF054
+All checks passed!
+$ printf 'if True:\n\f\f print(&quot;!&quot;)\n' | ruff --isolated check --preview - --select RUF054
+All checks passed!
+</code></pre>
+<p>RUF054 checks physical lines. The restriction on form feeds only applies within indentation, so the relevant lines are logical lines. If a form feed appears within leading white space after a line continuation, there is a false positive.</p>
+<pre><code class="language-console">$ printf 'if True:\\\n    \fprint(&quot;!&quot;)\n' | ruff --isolated check --preview - --select RUF054 --output-format concise
+-:2:5: RUF054 Indented form feed
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-02-13 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2025-02-13 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-02-23 22:21</div>
+            <div class="timeline-body"><p>Can i give a shot?;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @VascoSch92 by @ntBre on 2025-02-24 00:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-02-24 19:02</div>
+            <div class="timeline-body"><p>@dscorbett I have just a couple of questions to be sure that I understand good the problems.</p>
+<ol>
+<li><code>'if True:\n\f \f print(&quot;!&quot;)\n'</code> -&gt; this should raise a violation as there is a white space before the second<code> \f</code>. Correct?</li>
+<li><code>'if True:\n\f\f print(&quot;!&quot;)\n'</code> -&gt; this should not raise a violation as there is a <code>\f </code>before the second <code>\f</code>. Correct?</li>
+<li><code>'if True:\\\n    \fprint(&quot;!&quot;)\n'</code> Why is this a False Positive? The <code>\\\n</code> means a logical line, but the <code>\f</code> has a white space before, so it should raise a violation. Right?</li>
+</ol>
+<p>Thanks :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-02-24 19:42</div>
+            <div class="timeline-body"><ol>
+<li>Correct.</li>
+<li>This should raise a violation. The Python Language Reference says “A formfeed character may be present at the start of the line; it will be ignored for the indentation calculations above. Formfeed characters occurring elsewhere in the leading whitespace have an undefined effect”. The first form feed is at the start of the line, so it fine. The second form feed is <em>not</em> at the start of the line, because it follows the first form feed, which is leading white space. I admit this is an edge case and I am not sure what the original intent was for a case like this, but it seems safest to warn against it. If someone really needs two consecutive form feeds they can interpose a newline.</li>
+<li>This code is two physical lines but one logical line, equivalent to <code>'if True:    \fprint(&quot;!&quot;)\n'</code>. The form feed does not follow indentation, so it is a false positive. Spaces are only indentation at the start of a logical line.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-02-25 13:35</div>
+            <div class="timeline-body"><p>@dscorbett Thank you very much for your answer. Now is much clear.</p>
+<p>So a situation where I have:<code> 'if True:    \t\fprint(&quot;!&quot;)\n'</code> should rise an error as the form feed comes after a tab.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-02-25 14:00</div>
+            <div class="timeline-body"><p>No, <code>'if True:    \t\fprint(&quot;!&quot;)\n'</code> should not get an error: the form feed does not appear after leading white space. A form feed is only problematic after leading white space, not just any white space.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-02-25 15:03</div>
+            <div class="timeline-body"><p>I think that the two bugs</p>
+<pre><code>$ printf 'if True:\n\f \f print(&quot;!&quot;)\n' | ruff --isolated check --preview - --select RUF054
+All checks passed!
+$ printf 'if True:\n\f\f print(&quot;!&quot;)\n' | ruff --isolated check --preview - --select RUF054
+All checks passed!
+</code></pre>
+<p>are easily fixable, but the problem with logical lines is much harder and require changes outside the crate (or at least I think). Let take as example the snippet</p>
+<pre><code class="language-python">if True:\
+    print(&quot;!&quot;)
+</code></pre>
+<p>which is the third example provided in the first post of the issue, i.e., 'if True:\\n    \fprint(&quot;!&quot;)'.
+In the current setting: this will be always a False Positive.</p>
+<p>Why ?
+The <code>pub(crate) fn indented_form_feed(line: &amp;Line)</code> will receive first the line <code>Line { text: &quot;if True:\\\n&quot;, offset: 519 }</code> and then the line <code>Line { text: &quot;    \u{c}print(\&quot;!\&quot;)\n&quot;, offset: 529 }</code> separately. So it is not possible to assert that the second line is valid without knowing the first one. (Note that the second line alone is not valid, i.e., will raise a violation).</p>
+<p>What do you think? I'm missing something or ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-02-25 21:57</div>
+            <div class="timeline-body"><p>Could you fix the third example by moving the rule from physical_lines.rs to logical_lines.rs, and making it follow the pattern of the other rules in logical_lines.rs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-02-26 07:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Could you fix the third example by moving the rule from physical_lines.rs to logical_lines.rs, and making it follow the pattern of the other rules in logical_lines.rs?</p>
+</blockquote>
+<p>Ah yes... nice... still not so familiar with the code base and how really the Ruff works under the hood :-) Thanks for the idea.</p>
+<p>@MichaReiser I need some guidance: I moved the rule from <code>physical_lines.rs</code> to <code>logical_lines.rs</code>. Should I also change something to make the tests work correctly, or I have just to do that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-26 16:53</div>
+            <div class="timeline-body"><p>I think <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/ruff/mod.rs#L437">the test</a> should still work. The one thing to watch out for is that some functions, and it looks like <code>check_logical_lines</code> is one of them, have a <code>settings.rules.any_enabled([...])</code> check at the top in addition to specific rule checks farther down.</p>
+<p>You could also add a test case that you expect to fail and make sure it fails when you run the tests, just to be sure. That's what I usually do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-02-28 15:17</div>
+            <div class="timeline-body"><p>I cannot trigger the test in <code>logical_lines.rs</code>.</p>
+<p>Precisely, I left the tests as they are as suggested and I moved the rule from <code>check_physical_lines</code> in <code>physical_lines.rs</code> to <code>check_logical_lines</code> in <code>logical_lines.rs</code>. Moreover, I enabled the rule at the top of the method with : <code>let enforce_indented_form_feed = settings.rules.any_enabled(&amp;[Rule::IndentedFormFeed]);</code>. But when I ran the tests, the rule is not enabled. It seems that the rules in preview are not enabled in <code>check_logical_lines</code>.</p>
+<p>Is it possible? or I'm doing something wrong?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-28 19:04</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems that the rules in preview are not enabled in <code>check_logical_lines</code>.</p>
+</blockquote>
+<p>Hmm, it could be something to do with this. Otherwise I'm not sure. Could you open a draft PR so that I can have a look? Or a link to a branch in a fork would work too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-03-01 16:55</div>
+            <div class="timeline-body"><p>You can find the draft <a href="https://github.com/astral-sh/ruff/pull/16452">here</a>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:39 UTC
+    </footer>
+</body>
+</html>

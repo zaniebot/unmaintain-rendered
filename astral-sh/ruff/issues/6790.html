@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rules ANN204, EM101, W293 causes autofix error - astral-sh/ruff #6790</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rules ANN204, EM101, W293 causes autofix error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6790">#6790</a>
+        opened by <a href="https://github.com/qarmin">@qarmin</a>
+        on 2023-08-22 18:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qarmin">@qarmin</a> on 2023-08-22 18:44</div>
+            <div class="timeline-body"><p>Ruff 0.0.285 (latest changes from main branch)</p>
+<pre><code>ruff  *.py --select ALL --no-cache
+</code></pre>
+<p>file content:</p>
+<pre><code>class IXXATBus(BusABC):
+
+    @deprecated_args_alias(
+        UniqueHardwareId=&quot;unique_hardware_id&quot;,
+        rxFifoSize=&quot;rx_fifo_size&quot;,
+        txFifoSize=&quot;tx_fifo_size&quot;,
+    )
+    def __init__(
+        self,
+        channel: int,
+        can_filters=None,
+        receive_own_messages: bool = False,
+        unique_hardware_id: Optional[int] = None,
+        extended: bool = True,
+        rx_fifo_size: int = 16,
+        tx_fifo_size: int = 16,
+        bitrate: int = 500000,
+        **kwargs,
+    ):
+        
+        if _canlib is None:
+            raise CanInterfaceNotImplementedError(
+                &quot;The IXXAT VCI library has not been initialized. Check the logs for more details.&quot;
+            )
+
+</code></pre>
+<p>error:</p>
+<pre><code>error: Autofix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in `ruff`. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BAutofix%20error%5D
+
+...quoting the contents of `PY_FILE_TEST_8101205674.py`, the rule codes ANN204, EM101, W293, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+</code></pre>
+<p><a href="https://github.com/astral-sh/ruff/files/12411956/PY_FILE_TEST_8101205674.py.zip">PY_FILE_TEST_8101205674.py.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-08-22 19:25</div>
+            <div class="timeline-body"><p>Thanks for reporting!</p>
+<p>It seems that we're adding the return annotation in the wrong place because of the way we've defined the lexing rules to find the position.</p>
+<p>Using a minimal repro:</p>
+<pre><code class="language-python">class Foo:
+    @decorator()
+    def __init__(self, channel: int):
+        pass
+</code></pre>
+<p>And the reason is that the decorator is considered as part of the statement range which means the rules (lpar, rpar, colon, now add return annotation) doesn't work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2023-08-22 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @dhruvmanila on 2023-08-22 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2023-08-22 19:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-08-23 03:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:05 UTC
+    </footer>
+</body>
+</html>

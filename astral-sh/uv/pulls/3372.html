@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: Refactor `Dockerfile` - astral-sh/uv #3372</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: Refactor <code>Dockerfile</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/3372">#3372</a>
+        opened by <a href="https://github.com/polarathene">@polarathene</a>
+        on 2024-05-04 09:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/polarathene">@polarathene</a> on 2024-05-04 09:43</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p><strong>TL;DR:</strong></p>
+<ul>
+<li>4GB disk usage down to 1.7GB (<em>some extra weight externalized via cache mounts</em>).</li>
+<li>68MB binary now builds to smaller 24MB size.</li>
+<li>Layer invalidation concerns reduced, especially with use of cache mounts (<em>less meaningful to CI, but good for local use</em>).</li>
+<li>Additional changes detailed below.</li>
+</ul>
+<hr />
+<ul>
+<li>The first commit introduces the larger diff as adopting HereDoc feature introduces indents and merging of some <code>RUN</code> layers.<ul>
+<li>I've also relocated and grouped some directives where appropriate, minimizing layer invalidation.</li>
+<li>HereDoc usage brings the added benefit of better formatting for multi-line <code>RUN</code> content.</li>
+<li>There doesn't seem to be a need for the early <code>--target</code> until explicitly adding the target triple.</li>
+</ul>
+</li>
+<li>2nd commit (will follow shortly) addresses excess disk weight for the builder image layers that's less obvious from the multi-stage build.<ul>
+<li><p>When ignoring the final stage, the total disk usage for the builder image is about 4GB.</p>
+<details>
+<summary>Expand to see breakdown (4.11GB image)</summary>
+
+<ul>
+<li><strong>80MB</strong> =&gt; Ubuntu base image (~116MB after apt update)</li>
+<li><strong>+450MB</strong> =&gt; apt update + system deps</li>
+<li><strong>+13MB</strong> =&gt; pip <code>/root/.venv</code> creation</li>
+<li><strong>+390MB</strong> =&gt; pip install cargo-zigbuild<ul>
+<li>306MB <code>/root/.venv/lib/python3.12/site-packages/ziglang</code></li>
+<li>79MB <code>/root/.cache/pip/http-v2</code> (<em>can be skipped with <code>pip install --no-cache-dir</code></em>)</li>
+<li>2.7MB <code>/root/.venv/bin/cargo-zigbuild</code></li>
+</ul>
+</li>
+<li><strong>+1.3GB</strong> =&gt; rustup + toolchain + target setup<ul>
+<li>15MB rustup install</li>
+<li>1.3GB <code>rust toolchain target add</code>, (<em>Over 600MB is from toolchain installing docs at <code>~/.rustup/toolchains/1.78-x86_64-unknown-linux-gnu/share/doc/rust/html</code>, the <code>minimal</code> rustup profile doesn't apply due to <code>rust-toolchain.toml</code></em>)</li>
+</ul>
+</li>
+<li><strong>+1.8GB</strong> =&gt; Build cache for <code>uv</code>:<ul>
+<li>270MB <code>/root/.cache/zig from cargo-zigbuild</code></li>
+<li>300MB <code>/root/.cargo/registry/</code> (<em>51MB <code>cache/</code>, 21MB <code>index/</code>, 225MB <code>src</code></em>)</li>
+<li>1.2GB <code>target/</code> dir<ul>
+<li>360MB <code>target/release/{build,deps}</code> (<em>180MB each</em>)</li>
+<li>835MB <code>target/&lt;triple&gt;/release/</code> (<em>168MB <code>build/</code>, 667MB <code>deps/</code></em>)</li>
+</ul>
+</li>
+<li>68MB <code>uv</code> (<em>copied from target build dir</em>)</li>
+</ul>
+</li>
+</ul>
+<hr />
+</details>
+
+</li>
+<li><p>The <code>RUN --mount</code> usage allows for caching useful data locally that would otherwise be invalidated across builds when you'd rather have it available. It also minimizes the impact of unused layers from past builds piling up until a prune is run. This is mostly a benefit for local usage rather than CI runners.</p>
+</li>
+<li><p>With the fix for the rustup profile and proper handling of cacheable content, the image size falls below 1.6GB and iterative builds of the image are much faster.</p>
+</li>
+</ul>
+</li>
+<li>The 3rd / 4th commits simplify the cross-platform build. There isn't a need for the conditional block to install a target.<ul>
+<li>Since the image is to be built from the same build host (<code>FROM --platform=${BUILDPLATFORM}</code>), you can just install both targets in advance? Then use <code>TARGETPLATFORM</code> ARG to implicitly get the preferred platform  binary build.</li>
+<li>Now the <code>builder</code> stage shares all the same common layers, instead of diverging at the <code>TARGETPLATFORM</code> ARG. This is viable due to <code>cargo-zigbuild</code> supporting cross-platform builds easily.</li>
+</ul>
+</li>
+<li>The 5th commit tackles the inline comment about optimizing the build size of the binary, reducing it from the current 68MB to 24MB, better than the current <code>uv</code> binary distributed via other install methods. You can use UPX to reduce this furth from 23.6MB to 6.7MB (<em>&lt;10% current published size for the image</em>), at the expense of 300ms startup latency and potentially false positive to AV scanners.</li>
+</ul>
+<h2>Test Plan</h2>
+<p>I've built the image locally, you still get the binary output successfully. Let me know if you'd like me to test something specific?</p>
+<pre><code class="language-console"># Using Docker v25 on Windows 11 via WSL2, with docker-container driver builder:
+$ docker buildx create --name=container --driver=docker-container --use --bootstrap
+
+# Excess platforms omitted:
+$ docker buildx ls
+NAME/NODE     DRIVER/ENDPOINT             STATUS  BUILDKIT PLATFORMS
+container *   docker-container
+  container0  unix:///var/run/docker.sock running v0.13.2  linux/amd64, linux/arm64
+
+# Building with both platforms and outputting the image contents from both platforms:
+$ docker buildx build --builder=container --platform=linux/arm64,linux/amd64 --tag local/uv --output type=local,dest=/tmp/uv .
+# ... Build output ...
+ =&gt; exporting to client directory
+ =&gt; =&gt; copying files linux/arm64 20.98MB
+ =&gt; =&gt; copying files linux/amd64 23.67MB
+
+# Exported contents:
+$ ls /tmp/uv/*
+/tmp/uv/linux_amd64:
+io  uv
+/tmp/uv/linux_arm64:
+io  uv
+
+# AMD64:
+$ du -h /tmp/uv/linux_amd64/uv
+23M     /tmp/uv/linux_amd64/uv
+$ file /tmp/uv/linux_amd64/uv
+/tmp/uv/linux_amd64/uv: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, stripped
+
+# ARM64:
+$ du -h /tmp/uv/linux_arm64/uv
+20M     /tmp/uv/linux_arm64/uv
+$ file /tmp/uv/linux_arm64/uv
+/tmp/uv/linux_arm64/uv: ELF 64-bit LSB executable, ARM aarch64, version 1 (SYSV), statically linked, stripped
+</code></pre>
+<pre><code class="language-console"># Equivalent output to running `docker run --rm -it local/uv`
+$ /tmp/uv/linux_arm64/uv
+Usage: uv [OPTIONS] &lt;COMMAND&gt;
+
+Commands:
+  pip      Resolve and install Python packages
+  venv     Create a virtual environment
+  cache    Manage the cache
+  version  Display uv's version
+  help     Print this message or the help of the given subcommand(s)
+
+Options:
+  -q, --quiet                  Do not print any output
+  -v, --verbose...             Use verbose output
+      --color &lt;COLOR_CHOICE&gt;   Control colors in output [default: auto] [possible values: auto, always, never]
+      --native-tls             Whether to load TLS certificates from the platform's native certificate store [env: UV_NATIVE_TLS=]
+  -n, --no-cache               Avoid reading from or writing to the cache [env: UV_NO_CACHE=]
+      --cache-dir &lt;CACHE_DIR&gt;  Path to the cache directory [env: UV_CACHE_DIR=]
+  -h, --help                   Print help (see more with '--help')
+  -V, --version                Print version
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @polarathene on 2024-05-04 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-05-04 21:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-04 21:51</div>
+            <div class="timeline-body"><p>Tagging @konstin for this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/polarathene">@polarathene</a> on <code>Dockerfile</code>:63 on 2024-05-05 00:58</div>
+            <div class="timeline-body"><p>I've used the <code>RUSTFLAGS</code> ENV here, although you can configure these in <code>Cargo.toml</code> + <code>.cargo/config.toml</code> (<em><code>relocation-model</code> and <code>target-feature</code> would still be rustflags IIRC</em>). Presumably this is only relevant to the CI / Docker builds, so they're probably better managed here?</p>
+<ul>
+<li>I'm not sure if <code>opt-level</code> with <code>z</code> (best size) is ideal? It should probably be compared/benched against a build for performance, since that is a focus of <code>uv</code> I doubt a little size savings is worth it if the performance regresses quite a bit. I'm not familiar with this project to know how you'd want to verify the impact.</li>
+<li><code>+crt-static</code> isn't necessary at the moment for the <code>musl</code> targets being built, but there has been talk about future changes for these targets to default to dynamic linking, so I've included it as more of a precaution, it also better communicates the desire for a static linked build.</li>
+<li><code>relocation-model=static</code> tends to help save on binary size, I think this is ok. The default AFAIK is more of a security feature for memory layout, but I'm not sure if that's a concern for <code>uv</code> as an attack vector (<em>some attacker with access to read memory</em>). It's related to PIE if you're familiar with that.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/polarathene">@polarathene</a> on <code>Dockerfile</code>:76 on 2024-05-05 01:24</div>
+            <div class="timeline-body"><p>The cache mounting here is a bit excessive, I've added some context with comments. You're not really going to need to maintain much here AFAIK, so it's mostly out of sight/mind in practice.</p>
+<p>If you're not familiar with this feature, the default <code>sharing</code> type is <code>shared</code>, which allows other concurrent builds to share the same data for each mount by matching <code>id</code>, if no <code>id</code> is configured it implicitly uses the <code>target</code> path.</p>
+<p>We have 3 caches here, <code>zig</code>, <code>cargo</code>, and the project specific <code>target/</code> directory.</p>
+<ul>
+<li><code>zig</code> I'm not familiar with it's cache system. I assume it's a global cache from the path and that it's fine for concurrent writers (<em>aka <code>sharing=shared</code>, the implicit default</em>).</li>
+<li><code>cargo</code> mounts the entire cargo home location as it doesn't yet have an isolated cache location.<ul>
+<li>This does mean if any other <code>Dockerfile</code> used the <code>id</code> of <code>cargo-cache</code> they'd both be sharing the same contents, including whatever is installed in <code>bin/</code>.</li>
+<li>It'd normally not be safe for concurrent writers AFAIK, but due to the lock files cargo manages here, it's a non-issue.</li>
+</ul>
+</li>
+<li>The <code>target/</code> location has an <code>id</code> assigned per <code>TARGETPLATFORM</code>, and is also isolated by <code>APP_NAME</code> (<code>uv</code>) as this is not useful to share with other <code>Dockerfile</code> unrelated to <code>uv</code> project.<ul>
+<li>While there shouldn't be any concurrent writers, if someone was to to do several parallel builds with <code>RUSTFLAGS</code> arg being changed, the <code>sharing=locked</code> will block them as they'd all want to compile the dependencies again (<em>making the cache a bit less useful, but not as wasteful as individual caches via <code>sharing=private</code> which aren't deterministic for repeat builds</em>).</li>
+<li>A previous commit did take a different approach, where the build process was part of the original builder stage and built both targets together, instead of relying on <code>TARGETPLATFORM</code>. If you don't mind always building for both targets, they could share a bit of a common <code>target/release/</code> cache contents AFAIK. The logic for the two commands below was complicated a bit more with a bash loop (<em>since static builds require and explicit <code>--target</code> AFAIK, even when multiple targets are configured via <code>rust-toolchain.toml</code> / <code>.cargo/config.toml</code>?</em>), so I opted for keeping the logic below simple to grok by using separate <code>TARGETPLATFORM</code> caches (<em>these can still build concurrently as I demo'd in the PR description</em>).</li>
+</ul>
+</li>
+</ul>
+<p>The last two <code>tmpfs</code> mounts are rather self-explanatory. There is no value in caching these to disk.</p>
+<p>If you do want something that looks simpler, Earthly has tooling to simplify rust builds and cache management. However <code>Dockerfile</code> is more common knowledge to have and troubleshoot/maintain, adding another tool/abstraction didn't seem worthwhile to contribute.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/polarathene">@polarathene</a> on <code>Dockerfile</code>:80 on 2024-05-05 01:26</div>
+            <div class="timeline-body"><p>This is using <code>--release</code>, but I noticed in your <code>Cargo.toml</code> you have a custom release profile that uses <code>lto = &quot;thin&quot;</code>, it could be changed to use that profile instead, otherwise LTO should implicitly default to thin-local.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/polarathene">@polarathene</a> on <code>Dockerfile</code>:55 on 2024-05-05 01:36</div>
+            <div class="timeline-body"><p>This is effectively what you were doing earlier with the bash conditional statement on <code>TARGETPLATFORM</code> arg. But instead of writing to a file (<code>rust_target.txt</code>), a new intermediary stage is introduced and sets the expected target as an appropriate ENV.</p>
+<p>This actually removes the need for the <code>--target</code> option when building, but I kept it for clarity.</p>
+<p>The next stage (<code>builder-app</code>) refers to the <code>TARGETARCH</code> implicit arg from BuildKit. Thus when building the <code>Dockerfile</code> the stage selection here is determined from the final stage being built.</p>
+<p>It'll remain as being built from the same <code>BUILDPLATFORM</code> above, but diverge at this point. Due to the cache mounts used in <code>builder-app</code>, this isn't a big concern, you really only have a few MB repeated from the <code>COPY</code> instruction, followed by the binary <code>cp</code> (<em>since the <code>target/</code> cache mount excludes the original binary from the image</em>).</p>
+<p>A prior commit in this PR history had an alternative approach where both targets were built, and these separate stages were located at the end of the <code>Dockerfile</code>, where they instead used <code>COPY --from</code> with the location to their respective target binary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/polarathene">@polarathene</a> on <code>Dockerfile</code>:48 on 2024-05-05 01:46</div>
+            <div class="timeline-body"><p>When installing <code>rustup</code> in the first line, as the commit history notes (and the PR description), setting <code>--target</code> was redundant, it emits a warning that it will ignore it.</p>
+<p>Likewise there was a mishap with the <code>--profile minimal</code> being ignored when <code>rust-toolchain.toml</code> exists and doesn't define it's own <code>profile</code> key. If you'd like that file could add this line instead? I've raised an issue upstream to get the regression in <code>rustup</code> fixed.</p>
+<p>The next line added to <code>rust-toolchain.toml</code> is probably not something you'd want to add to the actual file, since both targets aren't mandatory 🤷‍♂️</p>
+<ul>
+<li>I could instead add them individually with <code>rustup target add ...</code> in their respective stages that come afterwards</li>
+<li>Due to the <code>--default-toolchain none</code> this ~~still requires the <code>rustup show</code> workaround~~ (<em><strong>UPDATE:</strong> Since Aug 2024, you can use <a href="https://github.com/rust-lang/rustup/pull/3983#issuecomment-2275736111"><code>rustup toolchain install</code></a> instead of <code>rustup show</code></em>), otherwise you'd install the toolchain twice. An alternative is to use an ARG directive for passing in the toolchain version to use for <code>--default-toolchain</code>, that way you could just build with the current stable release, but if you really need to install a toolchain that matches <code>rust-toolchain.toml</code>, provide that via the ARG instead?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/polarathene">@polarathene</a> on <code>Dockerfile</code>:22 on 2024-05-05 01:48</div>
+            <div class="timeline-body"><p>The cache mount here (<em>and workaround for <code>docker-clean</code> in this base image used</em>), doesn't bring any savings to disk usage of this layer. It does however keep the cache external instead of the automatic clean, which is useful when the layer is invalidated, as it speeds up the build time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/polarathene">@polarathene</a> reviewed on 2024-05-05 01:51</div>
+            <div class="timeline-body"><p>Some contextual feedback, apologies for the verbosity. It's roughly what I've already covered in the PR description, but targeted, along with some additional insights if helpful.</p>
+<p>Might help ease reviewing the diff directly 😎</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>Dockerfile</code>:66 on 2024-05-06 01:10</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">  --mount=type=cache,target=&quot;$HOME/.cache/zig&quot;,id=&quot;zig-cache&quot; \
+</code></pre>
+<p>Worth using <code>$HOME</code> to be explicit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-05-06 01:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-05-06 10:42</div>
+            <div class="timeline-body"><p>Hi, and thanks for looking into our dockerfile! I have two main concerns with the changes:</p>
+<p>Docker is a secondary target for us (most users are using the curl, powershell or pip installer), so we'd like to keep it simple to maintain. The main audience are projects with a fully dockerized CI pipeline who want to run ruff or uv as a docker step; to people creating docker images we recommend the pip or curl installers inside the dockerfile. We don't intend for users to build the uv container themselves, so we haven't optimized for builder size. There is one big exception though: Building the image for the release job is the bottleneck in our release process, if that could be improved that would be amazing!</p>
+<p>Performance is crucial for us, and we optimize performance over binary size.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2024-05-06 10:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/polarathene">@polarathene</a> on 2024-05-10 07:57</div>
+            <div class="timeline-body"><p><strong>TL;DR:</strong> I'm happy to adjust the <code>Dockerfile</code> if you'd still like to keep the build process in there.</p>
+<p>I can look into optimizing the workflow to bring down that bottleneck time with compilation, but I suspect the pragmatic approach might just be to take an existing <code>uv</code> build from CI and publish an image with that?</p>
+<hr />
+<blockquote>
+<p>so we'd like to keep it simple to maintain.</p>
+</blockquote>
+<p>Sure! I can make an adjustment that prioritizes that over the other optimizations 👍</p>
+<blockquote>
+<p>There is one big exception though: Building the image for the release job is the bottleneck in our release process, if that could be improved that would be amazing!</p>
+</blockquote>
+<p>~~Could you please elaborate a bit more here? Is it with Github Actions and the time it takes to build the image?~~</p>
+<p>I looked at the recent workflow runs and see the bulk of the time is spent compiling <code>amd64</code> + <code>arm64</code> stages concurrently, taking about 20+ minutes to complete.</p>
+<p>As long as future runs wouldn't trigger compiling everything all over again if you had the <code>target/</code> dir for each platform cached, that'd speed up that step quite a bit.</p>
+<p>However, you're already building <code>uv</code> with these binaries outside of Docker in CI? Why not just use <code>FROM scratch</code> + <code>COPY</code> like the final stage of the current <code>Dockerfile</code>, skipping the bottleneck concern?</p>
+<p>I prefer having a <code>Dockerfile</code> as an easy way to build a project and not worry about dependencies or other setup, but since you don't seem to have an audience for that and the build step is purely for your CI... might as well skip all this since you want to prioritize keeping maintenance simple? (<em>unless the build stage is useful to maintainers or users outside of CI?</em>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-05-10 17:15</div>
+            <div class="timeline-body"><blockquote>
+<p>However, you're already building uv with these binaries outside of Docker in CI? Why not just use FROM scratch + COPY like the final stage of the current Dockerfile, skipping the bottleneck concern?</p>
+</blockquote>
+<p>We would like to retain the isolation of the Dockerfile for building the image. The build stage isn't used by us otherwise, we just want to publish the final image, everything else goes through <code>cargo build --release</code> or <code>maturin build --release</code>. Anything that makes the build faster (incl. caching) would be great. Note that we update dependencies often, so <code>Cargo.lock</code> doesn't work as a cache key unfortunately</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/polarathene">@polarathene</a> on 2024-05-11 01:15</div>
+            <div class="timeline-body"><p>I've tried to summarize the considerations in the TLDR, let me know which direction you'd like to take.</p>
+<p><strong>TL;DR:</strong></p>
+<ul>
+<li>The build stage in the <code>Dockerfile</code> could be kept for potential use elsewhere, but an alternative stage that is easy to maintain could be used purely by the release CI to provide existing release binaries already built, completely removing the bottleneck.</li>
+<li>Otherwise, to optimize the cache you need to only cache what is relevant but presently you cache image layers that aren't helping that much and cannot cache the data of interest due to layer invalidation. You will need the cache mount syntax or similar approach to restore <code>target/</code> from cache.</li>
+<li><code>sccache</code> is probably needed for the above cache optimization until <code>cargo</code> moves away from <code>mtime</code> based invalidation (<em>which makes <code>target/</code> cache likely ignored</em>).</li>
+<li>Splitting the image builds by target to separate runners and caching the final output is an alternative approach. It'll shift the maintenance complexity to the GH workflow where it needs to merge the two final images into a single multi-platform image manifest (<em>which is currently done implicitly</em>).</li>
+</ul>
+<hr />
+<blockquote>
+<p>We would like to retain the isolation of the Dockerfile for building the image.
+Anything that makes the build faster (incl. caching) would be great.</p>
+</blockquote>
+<p>Just to confirm that isolation isn't serving any real purpose though? You could use the CI binaries you already built for AMD64/ARM64 if you wanted to right?</p>
+<p>If you just want the build stage to remain in the <code>Dockerfile</code> as a useful isolated build environment for reproductions / documentation or something like that, that's fine 👍</p>
+<ul>
+<li>You could still use that stage for testing PRs or anything else in CI if you find a use for it. However for the release workflow, where it's not really needed, you could have an alternative stage that does take an external binary as input.</li>
+<li>As you stated you don't really have any actual need or value with the build stage for the release as you're only publishing an image with the binary, you might as well use the same one that you distribute elsewhere?</li>
+</ul>
+<p>At least that is just the more pragmatic / simple approach to take and doesn't complicate maintenance. To optimize the build stage for CI will require cache optimizations such as with the cache mounts I showed earlier, otherwise the layer that creates <code>target/</code> during build is invalidated and this data is discarded... which has no benefit to cache import/export like you presently do.</p>
+<hr />
+<blockquote>
+<p>Anything that makes the build faster (incl. caching) would be great. Note that we update dependencies often, so Cargo.lock doesn't work as a cache key unfortunately</p>
+</blockquote>
+<p><code>Cargo.lock</code> doesn't matter much here, it's the <code>target/</code> dir you want to cache, not the crates source. You can optionally create a cache by any content/input you'd like to, and when that has no cache hit GH will use the latest cache item instead IIRC.</p>
+<p>You're looking at 1GB roughly after compilation. That can be compressed fairly quickly with zstd down to 300MB, there isn't much value in higher compression levels (<em>the tradeoff is barely worth it for 50MB-ish less</em>). So 600MB for both targets to build with. There is little value in caching anything else in the image itself, the toolchain and crates all install fairly fast that you're just wasting the 10GB cache storage available by doing that. I would only cache what is useful and would assist with the speedup.</p>
+<p>I haven't tried <code>sccache</code>, but this might be worthwhile to look into. A key problem with builds in CI is that <code>git clone</code> doesn't preserve <code>mtime</code> attribute on files, yet <code>cargo</code> relies on that for it's own &quot;cache key&quot;, thus even with the <code>target/</code> restored, since the source files have different mtime I think it'll still perform quite a bit of unnecessary compilation. By leveraging <code>sccache</code> instead, I think we can avoid the overhead that introduces.</p>
+<p>Finally one other trick you can use is to split it across two runners, one for each target. In your case this works quite well due to the minimal image you actually care about. If the cache upload is only your final scratch image with just the binary, then you can quite easily leverage cache to retrieve both platforms (using the release tag as the cache key for example) and have these two separate images combined into a multi-platform manifest (<em>which is what's already happening implicitly</em>). The added complexity here splits the bottleneck of 20+ min build time in half, so that it more closely aligns with the other jobs running. You may not need this optimization though if that <code>sccache</code> approach works well enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-05-14 15:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Splitting the image builds by target to separate runners and caching the final output is an alternative approach. It'll shift the maintenance complexity to the GH workflow where it needs to merge the two final images into a single multi-platform image manifest (which is currently done implicitly).</p>
+</blockquote>
+<p>Splitting into two separate jobs would be a good idea.</p>
+<p>I don't have experience with caching docker builds beyond layer caching, if you know a way i'm happy to use that.</p>
+<blockquote>
+<p>You could still use that stage for testing PRs or anything else in CI if you find a use for it. However for the release workflow, where it's not really needed, you could have an alternative stage that does take an external binary as input.</p>
+</blockquote>
+<p>We only build the docker container for release, we don't use those images ourselves otherwise.</p>
+<blockquote>
+<p>You're looking at 1GB roughly after compilation. That can be compressed fairly quickly with zstd down to 300MB, there isn't much value in higher compression levels (the tradeoff is barely worth it for 50MB-ish less). So 600MB for both targets to build with. There is little value in caching anything else in the image itself, the toolchain and crates all install fairly fast that you're just wasting the 10GB cache storage available by doing that. I would only cache what is useful and would assist with the speedup.</p>
+</blockquote>
+<p>The github docs [says]:</p>
+<blockquote>
+<p>GitHub will remove any cache entries that have not been accessed in over 7 days. There is no limit on the number of caches you can store, but the total size of all caches in a repository is limited to 10 GB. Once a repository has reached its maximum cache storage, the cache eviction policy will create space by deleting the oldest caches in the repository.</p>
+</blockquote>
+<p>If we get into a release cadence of once a week the cache will already be evicted by then, i'm afraid this wouldn't work for us.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/polarathene">@polarathene</a> on 2024-05-16 00:04</div>
+            <div class="timeline-body"><p><strong>TL;DR:</strong></p>
+<ul>
+<li>You can build and cache on a schedule (daily) or when <code>main</code> branch is pushed to. Since it's only intended for releases, daily builds might work well? (<em>ideally minimizing cache storage use to not impact other workflows usage</em>)</li>
+<li>Your GH Actions cache is somehow at <strong>50GB from the past 2 days</strong>, despite the 10GB limit it's meant to impose 🤷‍♂️</li>
+<li>Splitting the build to separate runners should be simple enough I think.</li>
+<li>Cache mounts to speed up the build may be viable, I'll look into trying it with a test repo this weekend.</li>
+<li>You could alternatively consider <a href="https://depot.dev"><code>depot.dev</code></a> as they seem to have an open-source tier which may like other services equate to free use. They're apparently quite simple to switch to and claim to speed up image builds considerably (<em>especially ARM64 due to native build nodes</em>).</li>
+</ul>
+<hr />
+<blockquote>
+<p>If we get into a release cadence of once a week the cache will already be evicted by then, i'm afraid this wouldn't work for us.</p>
+</blockquote>
+<p>Technically you could probably have a scheduled build job that just builds and caches the image, or triggers when the main branch is updated (<em>something we have at <code>docker-mailserver</code>, except we publish a preview/beta image</em>). You don't have to publish that way, but it should keep the cache available for an actual release.</p>
+<p>That said, I don't know if there's any nice ways to partition/manage the CI cache... and wow, I just looked at <a href="https://github.com/astral-sh/uv/actions/caches">your current cache use</a>:</p>
+<p><img src="https://github.com/astral-sh/uv/assets/5098581/9af19e63-4e8e-4e6f-9c60-0d949d7f170a" alt="image" /></p>
+<p><img src="https://github.com/astral-sh/uv/assets/5098581/08efb3da-ef5b-4488-96bc-ba26787d4b64" alt="image" /></p>
+<p>Your largest cache items are about 1GB of which multiple were uploaded within the same hours. So not quite sure what's happening there, perhaps a bit of a bug on GH side. You have one item (2MB) from almost a week ago, while everything else is within the past 2 days, so it's not like it's evicting the old items regularly when exceeding the 10GB capacity limit 🤔</p>
+<hr />
+<blockquote>
+<p>Splitting into two separate jobs would be a good idea.</p>
+</blockquote>
+<p>The way this is handled for <code>docker-mailserver</code> I explained <a href="https://github.com/squidfunk/mkdocs-material/pull/6191#issuecomment-2089962754">here</a> with some rough examples demonstrated. We have it modularized into separate build and publish workflows, which a much smaller and simpler workflow(s) can then call (<em>GH Actions calls these &quot;re-usable&quot; workflows</em>).</p>
+<p>That way you can separately build and cache the two images on a schedule or when commits are pushed to main branch like described above, with the separate publishing workflow triggered only on tagging new releases?</p>
+<p>You wanted to keep the <code>Dockerfile</code> simple to maintain, so I'm not sure how you feel about this kind of change for the CI?</p>
+<hr />
+<blockquote>
+<p>I don't have experience with caching docker builds beyond layer caching, if you know a way i'm happy to use that.</p>
+</blockquote>
+<p>I don't have any workflow examples to cite for this as I haven't done it yet myself. There is a GHA cache exporter for BuildKit that can be used.. oh you're already using it here:</p>
+<p>https://github.com/astral-sh/uv/blob/0a055b79420fdf1342c278e97d0c78cc487df89b/.github/workflows/build-docker.yml#L64-L65</p>
+<p>It was experimental when I implemented the workflows for <code>docker-mailserver</code>. There's a separate action that allows leveraging that cache method when building a <code>Dockerfile</code> that uses cache mounts. Seems <a href="https://github.com/astral-sh/uv/pull/995#issuecomment-1899617504">like there was a related effort for this approach 4 months ago</a>. <a href="https://github.com/reproducible-containers/buildkit-cache-dance">This is the action</a> I had in mind for using to support cache mounts.</p>
+<hr />
+<p>Alternatively, you could apply to <a href="https://depot.dev"><code>depot.dev</code></a> for an open-source plan to be granted for UV? They claim to be considerably faster at builds, automate the cache for you and offer native ARM64 hosts instead of slower QEMU emulation we presently are limited with on GH.</p>
+<p>So from a maintenance point of view, <code>depot.dev</code> may be a simpler option available to you (<em>assuming like other services like Netlify and DockerHub that offer similar plans that haven't cost <code>docker-mailserver</code> anything to adopt</em>):</p>
+<p><img src="https://github.com/astral-sh/uv/assets/5098581/4a33ae71-2373-4cab-92b9-ff9f8fe05170" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-05-17 01:41</div>
+            <div class="timeline-body"><p>The cache mounts seem nice to have but yeah per my earlier attempt in #995 probably not worth it in GitHub Actions. I did consider https://github.com/reproducible-containers/buildkit-cache-dance but it didn't seem worth the dependency and complexity for us. It seems like the ecosystem is lagging a bit here and I've just been waiting for those upstream issues to be fixed. We could consider <code>depot.dev</code>, I'm not sure if we'd get a discount since we're VC funded but the project is open source 🤷‍♀️ I'm hesitant to administer an external service for something that's not causing us problems right now, but perhaps that's the simplest path forward.</p>
+<p>Sorry about the back and forth and hesitant here. This is a tough pull request to review, we appreciate that you're investing time into it but the release artifacts are a critical part of our software. And, since we're a small team, we're careful about taking on more maintenance and services to manage.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/polarathene">@polarathene</a> on 2024-05-22 12:13</div>
+            <div class="timeline-body"><p>This was written last week to respond on the same day but I didn't seem to send it (<em>just came across the tab</em>), I've still got this on my backlog and hopefully can tackle it this weekend instead 👍</p>
+<hr />
+<h1>Original response</h1>
+<blockquote>
+<p>Sorry about the back and forth and hesitant here. This is a tough pull request to review, we appreciate that you're investing time into it but the release artifacts are a critical part of our software. And, since we're a small team, we're careful about taking on more maintenance and services to manage.</p>
+</blockquote>
+<p>No worries! If you'd prefer to leave the <code>Dockerfile</code> as it is, we can close the PR - or I can improve only the <code>Dockerfile</code> and not bother with the caching improvement for the CI in this PR👍</p>
+<p>When I revisit this in the weekend I'll take this approach:</p>
+<ol>
+<li>Build the image for each platform (AMD64 + ARM64) on separate runners.</li>
+<li>Upload the final image output only as cache (<em>subsequent builds won't be sped up, but only relevant if you release again within 7 days</em>)</li>
+<li>Next job depends on the prior two completing, brings in their output and publishes the multi-platform image.</li>
+</ol>
+<hr />
+<p>Alternatively (<em>reduced complexity, minimal time to publish</em>):</p>
+<ol>
+<li>The CI could verify the build stage is successful, without depending upon it for the binary to publish? This avoids any bottleneck on publish time for the actual image since publishing an image for release doesn't need to block on verifying a build via the <code>Dockerfile</code>?</li>
+<li>A separate <code>release.Dockerfile</code> (<a href="https://docs.docker.com/build/building/packaging/#filename">naming convention</a>) could be equivalent to the final <code>scratch</code> stage but with <code>COPY</code> adding CI build artifact for their respective image and publish that for a quick release?</li>
+<li>This wouldn't change the value of the <code>Dockerfile</code> which still builds self-contained by default. Just a difference in how the CI uses it. Although I could understand wanting the officially published images to actually match the <code>Dockerfile</code> in the repo.</li>
+</ol>
+<hr />
+<h2>Cache Mounts + CI Action</h2>
+<blockquote>
+<p>I did consider https://github.com/reproducible-containers/buildkit-cache-dance but it didn't seem worth the dependency and complexity for us.</p>
+</blockquote>
+<p>Anything in particular about the complexity? It adds one additional step into the mix (<em>technically two since you don't have <code>actions/cache</code> in this workflow</em>):</p>
+<pre><code class="language-yaml">      - name: inject cache into docker
+        uses: reproducible-containers/buildkit-cache-dance@v3.1.0
+        with:
+          cache-map: |
+            {
+              &quot;var-cache-apt&quot;: &quot;/var/cache/apt&quot;,
+              &quot;var-lib-apt&quot;: &quot;/var/lib/apt&quot;
+            }
+          skip-extraction: ${{ steps.cache.outputs.cache-hit }}
+</code></pre>
+<p>All that's being configured is 1 or more locations in a container to cache, with a cache key to skip if an exact match (<em><code>actions/cache</code> will download the latest relevant cache found if not an exact match</em>).</p>
+<p>On the <code>Dockerfile</code> side, yes their example is more complicated:</p>
+<pre><code class="language-Dockerfile">FROM ubuntu:22.04
+ENV DEBIAN_FRONTEND=noninteractive
+RUN \
+  --mount=type=cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,target=/var/lib/apt,sharing=locked \
+  rm -f /etc/apt/apt.conf.d/docker-clean &amp;&amp; \
+  echo 'Binary::apt::APT::Keep-Downloaded-Packages &quot;true&quot;;' &gt;/etc/apt/apt.conf.d/keep-cache &amp;&amp; \
+  apt-get update &amp;&amp; \
+  apt-get install -y gcc
+</code></pre>
+<p>This is because they're:</p>
+<ul>
+<li>Using two separate cache mounts.</li>
+<li>Ubuntu images have a post-hook for <code>apt-install</code> to clean up that cache, thus you need to disable that and adjust configuration.</li>
+</ul>
+<p>With ubuntu images sometimes the <code>apt update</code> command can be slow, and for <code>apt install</code> it varies. Easily remedied by using an alternative base image like Fedora, but in your CI this isn't where the bottleneck is.</p>
+<hr />
+<p>I can look into this as a follow-up, but I think just caching the <code>sccache</code> directory may help a fair amount? So the <code>Dockerfile</code> adjustment would be in the build stage and look something like this:</p>
+<pre><code class="language-Dockerfile">RUN \
+  --mount=type=cache,target=&quot;/path/to/cache&quot;,id=&quot;cache-dirs&quot; \
+  &lt;&lt;HEREDOC
+    cargo zigbuild --release --bin &quot;${APP_NAME}&quot; --target &quot;${CARGO_BUILD_TARGET}&quot;
+    cp &quot;target/${CARGO_BUILD_TARGET}/release/${APP_NAME}&quot; &quot;/${APP_NAME}&quot;
+HEREDOC
+</code></pre>
+<p>or as two separate <code>RUN</code> (<em>if that's easier to grok without the HereDoc</em>):</p>
+<pre><code class="language-Dockerfile">RUN --mount=type=cache,target=&quot;/path/to/cache&quot;,id=&quot;cache-dirs&quot; \
+    cargo zigbuild --release --bin &quot;${APP_NAME}&quot; --target &quot;${CARGO_BUILD_TARGET}&quot;
+
+RUN cp &quot;target/${CARGO_BUILD_TARGET}/release/${APP_NAME}&quot; &quot;/${APP_NAME}&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-28 12:25</div>
+            <div class="timeline-body"><p>I'm closing this since we're currently unlikely to make that big changes to our Dockerfile currently, see also #11106 for a smaller approach that adds caching to the docker builds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-04-28 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/polarathene">@polarathene</a> on 2025-04-29 09:39</div>
+            <div class="timeline-body"><blockquote>
+<p>for a smaller approach that adds caching to the docker builds.</p>
+</blockquote>
+<p>I've gone over that PR and left a review. It seems to have the bulk of worthwhile changes I proposed + better <code>RUN --mount</code> setup 👍</p>
+<hr />
+<blockquote>
+<p>unlikely to make that big changes to our Dockerfile</p>
+</blockquote>
+<p>My PR here does have a few extra changes and some more granular cargo cache mounts but other than that the PR diff itself looks much larger in changeset than it is (<em>since I used HereDoc + shuffled some parts around as an optimization</em>).</p>
+<p>The other PR builds a 40MB executable. I haven't checked how my PR compares today, but I'm aware that <code>opt-level=z</code> was discussed as not desirable. This PR at the time was producing binaries that were only 24MB though, I don't have any comments saying that I built with LTO beyond default implicit thin-local LTO, presumably with the now current release profile <code>lto=&quot;fat&quot;</code> it would build for even less 😅</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:12 UTC
+    </footer>
+</body>
+</html>

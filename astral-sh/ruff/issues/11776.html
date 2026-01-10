@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`# isort: split` ignored if in trailing comment - astral-sh/ruff #11776</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code># isort: split</code> ignored if in trailing comment</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11776">#11776</a>
+        opened by <a href="https://github.com/ndevenish">@ndevenish</a>
+        on 2024-06-06 14:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ndevenish">@ndevenish</a> on 2024-06-06 14:04</div>
+            <div class="timeline-body"><p>test.py:</p>
+<pre><code class="language-python">import x
+import y
+
+import f # isort: split
+
+import a
+import b
+</code></pre>
+<p>isort is a noop:</p>
+<pre><code>% isort --version
+                 _                 _
+                (_) ___  ___  _ __| |_
+                | |/ _/ / _ \/ '__  _/
+                | |\__ \/\_\/| |  | |_
+                |_|\___/\___/\_/   \_/
+
+      isort your imports, so you don't have to.
+
+                    VERSION 5.13.2
+% isort --diff test.py
+%
+</code></pre>
+<p>ruff ignores the marker:</p>
+<pre><code class="language-diff">% ruff --version
+ruff 0.4.8
+% ruff check --select=I --diff test.py
+--- test.py
++++ test.py
+@@ -1,8 +1,7 @@
+
+-import x
+-import y
+-
+-import f # isort: split
++import f  # isort: split
+
+ import a
+ import b
++import x
++import y
+
+Would fix 3 errors.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @MichaReiser on 2024-06-06 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 02:46</div>
+            <div class="timeline-body"><p>I find it a bit confusing. How should the <code>import f</code> be treated in such a case? Is it &quot;before&quot; or &quot;after&quot; the split, or neither?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-07 02:48</div>
+            <div class="timeline-body"><p>I'm tempted to call this unsupported. Do you have a use-case for the inline split?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ndevenish">@ndevenish</a> on 2024-06-07 07:35</div>
+            <div class="timeline-body"><blockquote>
+<p>I find it a bit confusing. How should the <code>import f</code> be treated in such a case? Is it &quot;before&quot; or &quot;after&quot; the split, or neither?</p>
+</blockquote>
+<p>It's effectively treated as</p>
+<pre><code class="language-python">import x
+import y
+
+# isort: split
+import f
+# isort: split
+
+import a
+import b
+</code></pre>
+<p>This is explicitly documented in isort: https://pycqa.github.io/isort/docs/configuration/action_comments.html#isort-split</p>
+<blockquote>
+<p>You can also use it inline to keep an import from having imports above or below it swap position:</p>
+</blockquote>
+<hr />
+<blockquote>
+<p>I'm tempted to call this unsupported. Do you have a use-case for the inline split?</p>
+</blockquote>
+<p>We've used this in the past for cases where upstream dependencies have not handled arbitrary-import-order very well, and so a specific import needs to be &quot;First&quot;. We can work around by using normal split/on/off features.</p>
+<p>Perhaps the fact that we're the only ones to notice this in so long is perhaps evidence that supporting it isn't very important.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/seproDev">@seproDev</a> on 2024-06-12 22:02</div>
+            <div class="timeline-body"><p>I am not sure if this is 100% related, but we also ran in to differences with trailing <code># isort: split</code>. This is a noop in isort 5.13.2:</p>
+<pre><code class="language-python">from x import a  # isort: split
+from x import b
+</code></pre>
+<p>While ruff 0.4.8 changes it to:</p>
+<pre><code class="language-python">from x import a  # isort: split
+
+from x import b
+</code></pre>
+<p>When running</p>
+<pre><code>ruff check --select I --fix --isolated
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-13 01:26</div>
+            <div class="timeline-body"><p>Yeah I think we just don't really support inline <code># isort: split</code> right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/XuehaiPan">@XuehaiPan</a> on 2024-08-09 11:17</div>
+            <div class="timeline-body"><p>From the <code>isort</code> documentation: https://pycqa.github.io/isort/docs/configuration/action_comments.html#isort-split</p>
+<blockquote>
+<p>isort split is exactly the same as placing an <code># isort: on</code> immediately below an <code># isort: off</code></p>
+</blockquote>
+<p>Originally posted at https://github.com/pytorch/pytorch/pull/132574#discussion_r1703287249:</p>
+<ul>
+<li>https://github.com/pytorch/pytorch/pull/132574#discussion_r1703287249</li>
+</ul>
+<blockquote>
+<p><code>ruff check --select=I --fix</code> do not respect <code># isort: split</code> for asterisk imports. This is a bug.</p>
+<pre><code class="language-python">from xxx.b import *  # isort: split
+from xxx.a import *  # isort: split  # avoid circular imports
+</code></pre>
+<p>will be format to:</p>
+<pre><code class="language-python">from xxx.a import *  # isort: split  # avoid circular imports
+from xxx.b import *  # isort: split
+</code></pre>
+</blockquote>
+<p>The <code># isort: split</code> inline comment should be equivalent to:</p>
+<pre><code class="language-python"># isort: off
+from xxx.b import *
+# isort: on
+# isort: off
+from xxx.a import *  # avoid circular imports
+# isort: on
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:07 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOC502: False positive if following text contains a colon - astral-sh/ruff #18959</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>DOC502: False positive if following text contains a colon</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18959">#18959</a>
+        opened by <a href="https://github.com/dargueta">@dargueta</a>
+        on 2025-06-26 14:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dargueta">@dargueta</a> on 2025-06-26 14:24</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Possibly related to https://github.com/astral-sh/ruff/issues/16578 but somewhat different: Text after the <code>Raises</code> block triggers a false positive for DOC502 if that text contains a colon.</p>
+<p>In my case, the relevant part of the docstring contains Sphinx directives, properly unindented:</p>
+<pre><code>Raises:
+    ExtraneousDataError:
+        ``exact`` is True and there's data left over at the end of the byte
+        string.
+
+.. versionadded:: 0.7.0
+    The ``init_kwargs`` argument.
+</code></pre>
+<p>This results in a false positive:</p>
+<pre><code>Raised exception is not explicitly raised: `. versionadded` (DOC502) [Ln 7, Col 5]
+</code></pre>
+<p>Note the line number is also wrong; it's line 27 of the docstring, line 6 of the <code>Raises</code> section if you include the line with &quot;Raises&quot; on it.</p>
+<p>It seems like Ruff thinks <code>versionadded:</code> is part of the <code>Raises</code> block, even though it's unindented. Interestingly, removing both colons from <code>versionadded</code> makes the issue go away. Adding just one back triggers the bug again.</p>
+<p>Playground link: https://play.ruff.rs/2f264f7b-d661-4af3-83e0-2db04e30ced8</p>
+<h3>Version</h3>
+<p>0.12.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Ruff treats text after `Raises` section as part of it if it contains a colon" to "DOC-502: False positive if following text contains a colon" by @dargueta on 2025-06-26 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "DOC-502: False positive if following text contains a colon" to "DOC502: False positive if following text contains a colon" by @dargueta on 2025-06-26 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-06-26 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @ntBre on 2025-06-26 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-26 14:57</div>
+            <div class="timeline-body"><p>Thanks for the report! It does look similar to #16578, but it's hard to tell if it's exactly the same. Here's a slightly shorter reproduction based on your very helpful example:</p>
+<pre><code class="language-python">def foo():
+    &quot;&quot;&quot;First line.
+
+   Raises:
+        ValueError:
+            some text
+
+    .. versionadded:: 0.7.0
+        The ``init_kwargs`` argument.
+    &quot;&quot;&quot;
+    raise ValueError
+</code></pre>
+<p><a href="https://play.ruff.rs/2ae561af-f337-41aa-8b0a-c228b404df54">playground</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dargueta">@dargueta</a> on 2025-09-23 13:38</div>
+            <div class="timeline-body"><p>This is still happening on 0.13.1 with the same settings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-11-12 21:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:50 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff --fix on SIM118 introducing TypeError  - astral-sh/ruff #4481</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff --fix on SIM118 introducing TypeError</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4481">#4481</a>
+        opened by <a href="https://github.com/fennerm">@fennerm</a>
+        on 2023-05-17 21:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fennerm">@fennerm</a> on 2023-05-17 21:27</div>
+            <div class="timeline-body"><p>(Running a large repo through ruff --fix today, so might have a few of these tickets for you 😬)</p>
+<p>Ruff --fix on the SIM118 rule is introducing a bug in our code (ruff=v0.0.267). The rule seems to flag any case where a <code>keys()</code> method is used. This works for dicts but doesn't work for classes with a <code>keys()</code> method but no <code>__iter__</code>.</p>
+<p>Minimal example:</p>
+<pre><code>class Foo:
+    def __init__(self) -&gt; None:
+        self._keys = [1,2,3]
+
+    def keys(self) -&gt; list[int]:
+        return self._keys
+
+
+foo = Foo()
+
+for k in foo.keys():
+    print(k)
+</code></pre>
+<p>Ruff error: <code>SIM118 [*] Use k in foo instead of k in foo.keys()</code></p>
+<p><code>ruff --fix</code> converts this to <code>for k in foo:</code> which is a TypeError.</p>
+<p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-17 21:28</div>
+            <div class="timeline-body"><p>Haha no worries :)</p>
+<p>We don't have a reliable way to avoid this right now, other than to make this a suggested (and not an automatic) fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-05-17 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @charliermarsh on 2023-05-17 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/owenlamont">@owenlamont</a> on 2024-06-05 02:42</div>
+            <div class="timeline-body"><p>I ran into this case too. Thanks for raising this issue. Shame the rule can't be designed to only match Python dictionaries.</p>
+<p>In my case the class implemented <code>keys()</code> and <code>__iter__()</code> but the <code>__iter__()</code> iterated the values of the object, not the key values.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LordAro">@LordAro</a> on 2025-06-13 13:00</div>
+            <div class="timeline-body"><p>To give an actual example &quot;in the wild&quot;, <a href="https://docs.python.org/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.keys"><code>xml.etree.ElementTree.Element.keys</code></a> &amp; <a href="https://lxml.de/api/lxml.etree._Element-class.html#keys"><code>lxml.etree._Element.keys</code></a> methods exist, and the objects are otherwise very un-dict-like</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bradezard131">@bradezard131</a> on 2025-07-25 07:22</div>
+            <div class="timeline-body"><p>The rule in the docs states that it is marked a safe fix <a href="https://docs.astral.sh/ruff/rules/in-dict-keys/">when the object is known to be a dict</a>. Can we have configuration to only have this same control for the lint itself? i.e. only warn when it is known to be a dict</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-28 09:45</div>
+            <div class="timeline-body"><p>We could use ruff's limited type inference here. That means trading false positives with false negatives but this is an approach we've taken before. The ecosystem changes will show us if this is a feasible approach for SIM118 or not</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-07-28 09:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:07 UTC
+    </footer>
+</body>
+</html>

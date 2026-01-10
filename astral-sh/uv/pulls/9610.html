@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build backend: Add `--list` option - astral-sh/uv #9610</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Build backend: Add <code>--list</code> option</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9610">#9610</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-12-03 16:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-12-03 16:32</div>
+            <div class="timeline-body"><p>Add the <code>uv build --list</code>, a &quot;subcommand&quot; to list the files that would be included when building a distribution. It does not build the distribution, except when a source dist is required for source dist -&gt; wheel. This is an important debugging tool for the include and exclude options: Did i actually include the files I wanted, or am i shipping a broken distribution? Are there any temporary files I still need to exclude?</p>
+<p>Cargo offers this as <code>cargo package --list</code>.</p>
+<p><code>--list</code> is preview-exclusive, since it requires the fast path, which I also put into preview.</p>
+<p>Examples:</p>
+<p><img src="https://github.com/user-attachments/assets/55e3f169-3051-4217-987d-0cb01ae5050e" alt="image" /></p>
+<p><img src="https://github.com/user-attachments/assets/1da75245-358d-4bee-9199-f720089f0a70" alt="image" /></p>
+<p><img src="https://github.com/user-attachments/assets/4d97a893-552e-43a1-9c22-78fc67f1e9f5" alt="image" /></p>
+<p>I'll fix the error handling in a follow-up.</p>
+<p>Tagging as enhancement because it changes the stable output slightly (two lines instead of one).</p>
+<p>CC @charliermarsh for uv-wide consistency in the stdout/stderr handling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-12-03 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-12-03 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2024-12-03 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> removed by @konstin on 2024-12-03 16:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-12-03 16:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-12-03 16:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-cli/src/lib.rs</code>:2181 on 2024-12-03 17:09</div>
+            <div class="timeline-body"><p>Should you mention in the docs here that this conflicts with <code>--force-pep517</code>? I might even spare a sentence or two saying why that conflict exists. (I'm guessing that in the fast path, it's easier to have a side channel asking the build backend to emit extra output? I haven't read the rest of the PR yet.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-12-03 17:11</div>
+            <div class="timeline-body"><p>I think this makes sense to me. Although I am not sure I have enough knowledge to understand why <code>--list</code> requires the fast path. Will there be other options that also require the fast path?</p>
+<p>(It occurs to me that &quot;fast path&quot; may be a misnomer, or at least, selling itself short. Because it isn't <em>just</em> a fast path but a required mode in order to access additional functionality.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-12-03 19:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cli/src/lib.rs</code>:2181 on 2024-12-03 19:02</div>
+            <div class="timeline-body"><p>I added an explanation about how this doesn't go through PEP 517.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-12-03 20:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Although I am not sure I have enough knowledge to understand why --list requires the fast path. Will there be other options that also require the fast path?</p>
+</blockquote>
+<p>Potentially - We may grow more uv build backend only features in the future that don't work through the limited set of PEP 517 hooks. &quot;direct build&quot; is a better term now than fast path. We need to explain to users that uv build can be both the PEP 517 generic source dist and wheel builder (<code>python -m build</code>, <code>pip wheel</code>, etc.) and the CLI command to the uv build system (<code>poetry build</code>, <code>hatch build</code>, <code>maturin build</code>). The latter has more options than the former (<code>maturin build</code> is a good example), while the former is the &quot;official&quot; way, there is some agreement that <code>python -m build</code> is the &quot;official&quot; way to build. By default, uv will be the latter for the uv build backend, but we allow switching to the former with <code>--force-pep517</code>, since this is what your package's users will experience.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-03 20:24</div>
+            <div class="timeline-body"><p>I think it's correct for the output to go to <code>stderr</code> in general, and then <code>stdout</code> with <code>--list</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-12-04 08:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-12-04 08:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-04 08:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-12-04 12:50</div>
+            <div class="timeline-body"><p>Yeah I like &quot;direct build&quot; a lot better. :-) Otherwise makes sense, thank you for explaining!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:15 UTC
+    </footer>
+</body>
+</html>

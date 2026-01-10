@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enable support for arbitrary git transports - astral-sh/uv #8769</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enable support for arbitrary git transports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/8769">#8769</a>
+        opened by <a href="https://github.com/rdeaton">@rdeaton</a>
+        on 2024-11-03 03:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/rdeaton">@rdeaton</a> on 2024-11-03 03:37</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Allows arbitrary git protocols through https://git-scm.com/docs/gitremote-helpers</p>
+<h2>Test Plan</h2>
+<p>I ran the test suite, which hits this path and still succeeds, and I tested quickly locally with a dummy transport. Since this just passes through to the git cli it was fairly straightforward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/FishAlchemist">@FishAlchemist</a> on 2024-11-03 06:06</div>
+            <div class="timeline-body"><p>As a Windows user, I would like to offer my perspective on your PR, even though I am not a member of the review team.</p>
+<p>It seems like <code>git version 2.47.0.windows.2</code> only supports ftp, ftps, http, and https. If you want to widely support multiple protocols using git, I don't think it's a good choice.</p>
+<p>Path: <code>C:\Program Files\Git\mingw64\libexec\git-core</code>
+<img src="https://github.com/user-attachments/assets/3a149ef1-8555-4754-8507-9e579fd51c04" alt="image" /></p>
+<p>But perhaps you could try to get all the tests to pass first?
+<img src="https://github.com/user-attachments/assets/a1d0708c-264d-4755-a944-45c588becd9f" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rdeaton">@rdeaton</a> on 2024-11-03 10:28</div>
+            <div class="timeline-body"><p>@FishAlchemist you misunderstand, please read the linked git manpage, additional protocols are supported on Windows as well, but that's a local environment configuration outside the scope of <code>uv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rdeaton">@rdeaton</a> on 2024-11-03 10:34</div>
+            <div class="timeline-body"><p>The test failures seem to be a flake or broken on main. They fail on 2ed94745a2cba996c617ffbb686a2d99baf7fecc on my machine as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-03 15:44</div>
+            <div class="timeline-body"><p>The test failures are unrelated, https://github.com/astral-sh/uv/pull/8776 fixes them.</p>
+<p>@rdeaton Can you explain why you need arbitrary git transports?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rdeaton">@rdeaton</a> on 2024-11-03 15:53</div>
+            <div class="timeline-body"><p>They're useful, and used in corporate environments with extra security requirements around exposing git repositories, especially in &quot;zero-trust&quot; like models. There are also a handful of interesting applications of them in various OSS tools.</p>
+<p>https://github.com/glandium/git-cinnabar
+https://github.com/Git-Mediawiki/Git-Mediawiki/blob/master/docs/Remote-Helpers.md
+https://github.com/felipec/git-remote-bzr
+https://github.com/git/git/blob/master/contrib/remote-helpers/git-remote-hg
+https://docs.gosh.sh/working-with-gosh/git-remote-helper/
+https://www.npmjs.com/package/@protocol.land/git-remote-helper</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rdeaton">@rdeaton</a> on 2024-11-03 15:55</div>
+            <div class="timeline-body"><p>And fwiw, poetry made this possible in 1.2.0 through https://python-poetry.org/docs/configuration/#experimentalsystem-git-client</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/corleyma">@corleyma</a> on 2024-11-04 19:10</div>
+            <div class="timeline-body"><p>@konstin  Here's an example of how a git remote helper might be used in a corporate environment for security purposes (e.g., dealing with an authenticating proxy like Google's Identity Aware Proxy that might be sitting in front of your VCS): https://github.com/adohkan/git-remote-https-iap</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2024-11-04 20:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-05 07:26</div>
+            <div class="timeline-body"><p>Thanks @corleyma that's a great example</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @konstin on 2024-11-05 07:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-11-05 07:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-11-05 07:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-11-05 07:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-11-05 07:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add an optional authentication policy to [index] configuration - astral-sh/uv #11896</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add an optional authentication policy to [index] configuration</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11896">#11896</a>
+        opened by <a href="https://github.com/jtfmumm">@jtfmumm</a>
+        on 2025-03-02 18:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-03-02 18:55</div>
+            <div class="timeline-body"><p>Adds a new optional key <code>auth-policy</code> to <code>[tool.uv.index]</code> that sets the authentication policy for the index URL.</p>
+<p>The default is <code>&quot;auto&quot;</code>, which attempts to authenticate when necessary. <code>&quot;always&quot;</code> always attempts to authenticate and fails if the endpoint is unauthenticated. <code>&quot;never&quot;</code> never attempts to authenticate.</p>
+<p>These policy address two kinds of cases:</p>
+<ul>
+<li>Some indexes don’t fail on unauthenticated requests; instead they just forward to the public PyPI. This can leave the user confused as to why their package is missing. The &quot;always&quot; policy prevents this.</li>
+<li>&quot;never&quot; allows users to ensure their credentials couldn't be leaked to an unexpected index, though it will only allow for successful requests on an index that doesn't require credentials.</li>
+</ul>
+<p>Closes #11600</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-03-03 13:59</div>
+            <div class="timeline-body"><p>@zanieb One question @konstin brought up: should we be popping the &quot;/simple&quot; fragment of the URL (if found) as you currently do with <code>Index::root_url</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @jtfmumm on 2025-03-03 14:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/settings.rs</code>:2476 on 2025-03-03 17:37</div>
+            <div class="timeline-body"><p>In general (not a hard rule) I have a mild preference for <code>From</code> because it makes the types more obvious. For example, as a reader here, I actually don't know what type this is being converted into? Whereas <code>UrlAuthPolicies::from</code> tells you that immediately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/middleware.rs</code>:81 on 2025-03-03 17:37</div>
+            <div class="timeline-body"><p>Nit: &quot;an an&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/build_frontend.rs</code>:525 on 2025-03-03 17:39</div>
+            <div class="timeline-body"><p>Nit: unnecessary parens here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution-types/src/index_url.rs</code>:399 on 2025-03-03 17:42</div>
+            <div class="timeline-body"><p>There are a few unnecessary allocations here. You're cloning all the data here, and then collecting it into a <code>Vec</code>, but then in <code>UrlAuthPolicies::from_tuples</code>, you're again cloning all the data because it takes a slice.</p>
+<p>Compare to this:</p>
+<pre><code class="language-diff">diff --git a/crates/uv-auth/src/middleware.rs b/crates/uv-auth/src/middleware.rs
+index c59e20a86..762fde4a8 100644
+--- a/crates/uv-auth/src/middleware.rs
++++ b/crates/uv-auth/src/middleware.rs
+@@ -70,10 +70,10 @@ impl UrlAuthPolicies {
+ 
+     /// Create a new `UrlAuthPolicies` from a list of URL and `AuthPolicy`
+     /// tuples.
+-    pub fn from_tuples(tuples: &amp;[(Url, AuthPolicy)]) -&gt; Self {
+-        let mut auth_policies = UrlAuthPolicies::new();
++    pub fn from_tuples(tuples: impl IntoIterator&lt;Item = (Url, AuthPolicy)&gt;) -&gt; Self {
++        let mut auth_policies = Self::new();
+         for (url, auth_policy) in tuples {
+-            auth_policies.add_policy(url.clone(), *auth_policy);
++            auth_policies.add_policy(url, auth_policy);
+         }
+         auth_policies
+     }
+diff --git a/crates/uv-distribution-types/src/index_url.rs b/crates/uv-distribution-types/src/index_url.rs
+index 639dc84c0..ddf46a921 100644
+--- a/crates/uv-distribution-types/src/index_url.rs
++++ b/crates/uv-distribution-types/src/index_url.rs
+@@ -393,10 +393,9 @@ impl&lt;'a&gt; IndexLocations {
+ impl From&lt;&amp;IndexLocations&gt; for UrlAuthPolicies {
+     fn from(index_locations: &amp;IndexLocations) -&gt; UrlAuthPolicies {
+         UrlAuthPolicies::from_tuples(
+-            &amp;(index_locations
++            index_locations
+                 .indexes()
+                 .map(|index| (index.url().url().clone(), index.auth_policy.into()))
+-                .collect::&lt;Vec&lt;_&gt;&gt;()),
+         )
+     }
+ }
+</code></pre>
+<p>Now you're only cloning the URL once (rather than twice), and you can avoid allocating into a <code>Vec</code> altogether.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/middleware.rs</code>:76 on 2025-03-03 17:43</div>
+            <div class="timeline-body"><p>As a rule of thumb, if you're taking unowned data but cloning all of it, I would often suggest taking an owned value. Otherwise, you're kind of hiding the allocations from the caller.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/middleware.rs</code>:86 on 2025-03-03 17:44</div>
+            <div class="timeline-body"><p>Nit: wrap <code>AuthPolicy</code> in brackets? Same for all the other references. That way, editors will enable go-to definition for those references.</p>
+<p><img src="https://github.com/user-attachments/assets/b72b308a-4536-4b45-9661-dc15107404e7" alt="Screenshot 2025-03-03 at 12 44 12 PM" />
+<img src="https://github.com/user-attachments/assets/a311237c-b4ef-4135-8849-f871b0dc0fc9" alt="Screenshot 2025-03-03 at 12 44 22 PM" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/settings.rs</code>:2486 on 2025-03-03 17:45</div>
+            <div class="timeline-body"><p>Why store this on the settings type at all, rather than create it from <code>index_locations</code> wherever we initialize the network client?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/middleware.rs</code>:88 on 2025-03-03 17:46</div>
+            <div class="timeline-body"><p>We tend to use the <code>TODO(name)</code> style in uv, where <code>name</code> indicates the author (i.e., the individual with context on the TODO -- not necessarily the individual response for resolving it).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution-types/src/index.rs</code>:87 on 2025-03-03 17:46</div>
+            <div class="timeline-body"><p>Nit: &quot;URL&quot; rather than &quot;url&quot;. (This is also user-facing documentation.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-03 17:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-03 17:47</div>
+            <div class="timeline-body"><p>(My review only considered the implementation. I defer to @zanieb on the user-facing API.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-03 18:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/settings.rs</code>:2486 on 2025-03-03 18:39</div>
+            <div class="timeline-body"><p>This was just leftover from different approaches to threading this through. I've updated it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-03 19:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:54 on 2025-03-03 19:53</div>
+            <div class="timeline-body"><p>We should probably be more detailed here. Like, we try an unauthenticated request and if that fails we'll try an authenticated request?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-03 19:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:64 on 2025-03-03 19:55</div>
+            <div class="timeline-body"><p>Can we remove this entirely in favor of <code>url_auth_policies</code>? (could be a follow-up refactor)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-03 19:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:66 on 2025-03-03 19:58</div>
+            <div class="timeline-body"><p>Nit: I'd put this and related in a <code>uv-auth::policy</code> module instead of adding it to the <code>middleware</code> module (mostly to match the existing level of granularity). Kind of weird the NetrcMode is in here already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-03 19:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:1 on 2025-03-03 19:58</div>
+            <div class="timeline-body"><p>Can you add cases for this new behavior to the unit tests in this module?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-03 20:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:277 on 2025-03-03 20:01</div>
+            <div class="timeline-body"><p>Above... should we be doing anything in particular when the policy is &quot;Never&quot; but there are credentials attached to the URL already? Right now, it looks like we'll still look for credentials in the cache if there's a username? which seems quite surprising.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-03 20:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:281 on 2025-03-03 20:04</div>
+            <div class="timeline-body"><p>I would prefer if this remained immutable for reasoning purposes. Could we just assign a value conditionally?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-03 20:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/base_client.rs</code>:327 on 2025-03-03 20:09</div>
+            <div class="timeline-body"><p>Perhaps I'm missing something, but I'm confused by this signature change. Shouldn't this read <code>self.url_auth_policies</code> directly like all the other configuration is handled here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-03 20:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index.rs</code>:88 on 2025-03-03 20:12</div>
+            <div class="timeline-body"><p>I think we'll need to expand on this quite a bit for it to be user-facing. It's not clear when or how to use this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-03 20:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index.rs</code>:107 on 2025-03-03 20:14</div>
+            <div class="timeline-body"><p>We may want to avoid repeating all of this if they're exactly equivalent. I've been hesitant to add <code>schemars</code> etc. as a dependency to the <code>uv-auth</code> crate, but I think we do that all over the place anyway.</p>
+<p>If we <em>do</em> retain these duplicates, the internal <code>uv_auth</code> type should refer to this type in the rustdoc so we don't need to maintain documentation in two places.</p>
+<p>Also seems like this type might go in <code>uv-configuration::authentication</code> if we were going to expose a separate configuration-specific type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-03 20:15</div>
+            <div class="timeline-body"><blockquote>
+<p>... should we be popping the &quot;/simple&quot; fragment of the URL (if found) as you currently do with Index::root_url?</p>
+</blockquote>
+<p>I think you'd need to do this, yeah. You can just use <code>root_url</code>, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-03 20:25</div>
+            <div class="timeline-body"><p>We should also talk about this in</p>
+<ul>
+<li>https://docs.astral.sh/uv/configuration/authentication/</li>
+<li>and/or https://docs.astral.sh/uv/configuration/indexes/</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-03 20:26</div>
+            <div class="timeline-body"><p>I wonder if we can do something smart if a user has <code>keyring-provider = subprocess</code> and we have an <code>always</code> authentication mode without a username — this will not successfully use keyring for authentication because we require a username to query its CLI. Perhaps this would just be useful in the &quot;Failed to query an index&quot; error hints.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-03 20:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/edit.rs</code>:10335 on 2025-03-03 20:28</div>
+            <div class="timeline-body"><p>We should probably warn if these are set and <code>never</code> is used, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-03 20:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/edit.rs</code>:10327 on 2025-03-03 20:29</div>
+            <div class="timeline-body"><p>What about <code>never</code> when there are credentials hard-coded in the URL?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-auth/src/middleware.rs</code>:64 on 2025-03-04 09:02</div>
+            <div class="timeline-body"><p><code>only_authenticated</code> is at the level of the client as a whole. The auth policies are per URL. I think the whole picture here could be cleaner, but perhaps better as a follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-04 09:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-04 09:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-auth/src/middleware.rs</code>:277 on 2025-03-04 09:43</div>
+            <div class="timeline-body"><p>I've refactored this method so that we no longer look at the credentials when policy is &quot;Never&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-04 09:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-client/src/base_client.rs</code>:327 on 2025-03-04 09:44</div>
+            <div class="timeline-body"><p>Yes, that was an oversight. Fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-03-04 09:51</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>... should we be popping the &quot;/simple&quot; fragment of the URL (if found) as you currently do with Index::root_url?</p>
+</blockquote>
+<p>I think you'd need to do this, yeah. You can just use <code>root_url</code>, right?</p>
+</blockquote>
+<p>We often only have an <code>IndexUrl</code> at the point of use. I've moved the <code>Index::root_url</code> logic to a new method on <code>IndexUrl</code> and called through to that from <code>Index::root_url</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-04 11:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index.rs</code>:107 on 2025-03-04 11:11</div>
+            <div class="timeline-body"><p>I had originally tried that but following the pattern I saw elsewhere, I ended up getting a <code>the trait </code>JsonSchema<code> is not implemented for AuthPolicy</code> compiler error despite deriving it. However, I ended up abandoning it when investigating further because I thought we might want to keep these <code>JsonSchema</code> structs in <code>uv-configuration</code>.</p>
+<p>However, if you'd prefer, we can look into why that wasn't compiling so we can update.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-04 12:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-auth/src/middleware.rs</code>:1 on 2025-03-04 12:01</div>
+            <div class="timeline-body"><p>Added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-04 14:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:64 on 2025-03-04 14:12</div>
+            <div class="timeline-body"><p>Yeah but I don't think we need <code>only_authenticated</code> long-term, we can just set an auth policy for the publish URL (which is the one place it's used)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-04 14:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index.rs</code>:107 on 2025-03-04 14:17</div>
+            <div class="timeline-body"><p>Oh, weird. Given the types are identical, it sounds like it's worth understanding why the derive wasn't working. I don't feel particularly strongly otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-04 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution-types/src/index.rs</code>:107 on 2025-03-04 14:38</div>
+            <div class="timeline-body"><p>Is it because <code>schemars</code> is an optional feature? You may need to enable it wherever you pull in the relevant <code>uv-*</code> crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/edit.rs</code>:10214 on 2025-03-04 14:46</div>
+            <div class="timeline-body"><p>What motivates this user-facing name? I think it's rare for us to have &quot;policy&quot; be user-facing, even if we're using it internally.</p>
+<p>My only concern for something short like <code>auth = &quot;always&quot;</code> is that we may want to use that key to select a specific authentication method in the future, e.g., <code>auth = &quot;keyring&quot;</code> /  <code>auth = &quot;netrc&quot;</code> / <code>auth = &quot;env&quot;</code>? I guess that'd be equivalent to &quot;always&quot; with a specific source? Do we need separate options for those?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-04 14:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-06 15:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index.rs</code>:107 on 2025-03-06 15:10</div>
+            <div class="timeline-body"><p>Yeah that was it. Updated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-07 10:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/edit.rs</code>:10214 on 2025-03-07 10:54</div>
+            <div class="timeline-body"><p>We've decided to go with <code>authentication</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-07 14:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/edit.rs</code>:10214 on 2025-03-07 14:20</div>
+            <div class="timeline-body"><p>vs <code>authenticate</code>? (which is what I sent in Discord)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution-types/src/index.rs</code>:106 on 2025-03-07 16:42</div>
+            <div class="timeline-body"><p>Could we alias <code>auth</code> here, or did we explicitly decide against that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution-types/src/index.rs</code>:144 on 2025-03-07 16:42</div>
+            <div class="timeline-body"><p>These could feasibly use <code>AuthPolicy::default()</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution-types/src/index_url.rs</code>:422 on 2025-03-07 16:42</div>
+            <div class="timeline-body"><p>I wonder if this should be done via <code>CanonicalUrl</code>...? That would handle other forms of normalization, but then we'd probably also need to go through <code>CanonicalUrl</code> when matching against the policies later on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-03-07 16:44</div>
+            <div class="timeline-body"><p>Looks good to me! Defer to @zanieb on the docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index.rs</code>:106 on 2025-03-07 16:47</div>
+            <div class="timeline-body"><p>We only decided on using <code>authentication</code> as the field. I'm ok with aliasing <code>auth</code> if @zanieb is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-07 16:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-07 16:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index.rs</code>:144 on 2025-03-07 16:49</div>
+            <div class="timeline-body"><p>Yeah I like that better. Updated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-07 16:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index.rs</code>:106 on 2025-03-07 16:52</div>
+            <div class="timeline-body"><p>I had suggested <code>authenticate = always | never | auto</code> leaving room for another option in the future that would specify a specific authentication provider, e.g., <code>keyring | netrc | env</code>.</p>
+<p>It looks like https://github.com/astral-sh/uv/pull/11896#discussion_r1985138948 got resolved but I'm not sure we're entirely settled on a name.</p>
+<p><code>authentication = always | never | auto</code> doesn't read clearly to me. I think it's ~equivalent to <code>auth</code> though (and it seems good to allow an alias if we support it).</p>
+<p>On that note, we can do <code>auth = always | never | auto</code> if we think <code>keyring | netrc | env</code> would be compatible options in the future? Which I think would be equivalent to <code>always</code> but with a specific provider. We could also split into <code>auth-policy</code> and <code>auth-provider</code>. I just don't love <code>auth-policy</code> as a user-facing name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-07 16:57</div>
+            <div class="timeline-body"><p>@konstin we actually have an interesting opportunity here to fix some of the keyring behavior! If the authentication mode is <code>always</code> and there's not a username, we might as well <em>try</em> the new keyring interface.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-07 16:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index.rs</code>:106 on 2025-03-07 16:59</div>
+            <div class="timeline-body"><p>(that John and I got mixed up on <code>authenticate</code> might be a sign it's not a good option)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index_url.rs</code>:422 on 2025-03-07 17:16</div>
+            <div class="timeline-body"><p>Just as a note, in the <code>UrlTrie</code> we use for credentials, we just iterate on <code>path_segments</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-07 17:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-07 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/policy.rs</code>:47 on 2025-03-07 17:18</div>
+            <div class="timeline-body"><p>In case you didn't see it, we do have a <code>UrlTrie</code> implementation — it'd just be making the inner type generic? kind of interesting but not worried about the performance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-07 18:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index.rs</code>:106 on 2025-03-07 18:34</div>
+            <div class="timeline-body"><p>Okay from our extensive chat in Discord... my take-away is:</p>
+<ul>
+<li>An <code>auth-</code> prefix is the most forward-looking, so we can group authentication related settings</li>
+<li><code>auth-required = true | false | auto</code> is the most user-friendly option I can think of</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-08 10:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index.rs</code>:106 on 2025-03-08 10:17</div>
+            <div class="timeline-body"><p>I think <code>auth-required</code> won't work for the <code>never</code> case since you can be permitted to do something that's not required.</p>
+<p>What about <code>auth-condition = always | never | fallback</code> (fallback is default)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-08 14:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index.rs</code>:106 on 2025-03-08 14:28</div>
+            <div class="timeline-body"><p>I think <code>condition</code> suffers from the same problem as many of the other flags, in that the name does not make it clear what it does.</p>
+<blockquote>
+<p>since you can be permitted to do something that's not required.</p>
+</blockquote>
+<p>I think it'd be fine to say if <code>auth-required = false</code> and there are credentials then we can error and say &quot;You tried to provide credentials to an index that does not require authentication&quot;.</p>
+<p>I agree this is the most awkward part of <code>auth-required</code>, but I don't think <code>false</code> is the critical or common use-case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-08 14:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution-types/src/index.rs</code>:106 on 2025-03-08 14:37</div>
+            <div class="timeline-body"><p>Personally I prefer <code>auth-policy</code> over <code>auth-condition</code> or <code>auth-required</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-08 18:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-auth/src/policy.rs</code>:47 on 2025-03-08 18:13</div>
+            <div class="timeline-body"><p>Yeah, I noticed that. Could be worth looking at but for now I think the simpler approach is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-08 18:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index.rs</code>:106 on 2025-03-08 18:14</div>
+            <div class="timeline-body"><p>That's what I had originally. I'm happy to revert to that. @zanieb thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-08 18:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index.rs</code>:106 on 2025-03-08 18:22</div>
+            <div class="timeline-body"><p>I made the change, but it's straightforward to change to something else if need be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-08 18:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index.rs</code>:106 on 2025-03-08 18:48</div>
+            <div class="timeline-body"><p>I'm opposed to <code>auth-policy</code> as it is not self-explanatory. I'm left wondering what the policy refers to. I don't think it's clearly related to requiring credentials upfront / searching for credentials / or never searching for credentials. I also think we don't currently use &quot;policy&quot; elsewhere in user-facing configuration.</p>
+<p>@charliermarsh can you say why you think it's preferable to <code>auth-required</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-08 18:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index.rs</code>:106 on 2025-03-08 18:54</div>
+            <div class="timeline-body"><p>I thought we wanted to provide a way to ensure credentials weren't leaked (the &quot;never&quot; case). I think we're dropping that case if we go with <code>auth-required</code>. We can delay merging this if there's a larger conversation about what functionality we really want to support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-08 19:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution-types/src/index.rs</code>:106 on 2025-03-08 19:26</div>
+            <div class="timeline-body"><p>I'm not really worried about that because the values are so self-explanatory? Like I find <code>auth-policy = &quot;always&quot;</code> and <code>auth-policy = &quot;never&quot;</code> to be very clear, whereas <code>auth-required = false</code> (assuming that's equivalent to <code>auth-policy = &quot;never&quot;</code>) is not obvious. To me, that just means &quot;auth isn't required&quot;, not &quot;we should never attempt to authenticate the index&quot;.</p>
+<p>I'm also fine with <code>authentication</code> or <code>authenticate</code>. In fact that might be my preference? I <em>do</em> think we can make <code>keyring</code> etc. compatible with that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-08 20:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index.rs</code>:106 on 2025-03-08 20:28</div>
+            <div class="timeline-body"><blockquote>
+<p>I thought we wanted to provide a way to ensure credentials weren't leaked (the &quot;never&quot; case). I think we're dropping that case if we go with auth-required.</p>
+</blockquote>
+<p>I don't see why we wouldn't be able to error if someone tries to provide to credentials to an index that &quot;does not require authentication&quot;. I'll admit, that's a weakness of the proposal though. I think optimizing for the &quot;true&quot; case is more important to me.</p>
+<blockquote>
+<p>I find auth-policy = &quot;always&quot; and auth-policy = &quot;never&quot; to be very clear</p>
+</blockquote>
+<p>I'm not sure where the mismatch is, but I don't find it clear at all. &quot;always&quot; what? Perhaps you read that as &quot;always authenticate&quot; but I think &quot;auth&quot; is more intuitively short for &quot;authentication&quot; and &quot;always authentication&quot; reads weird to me?</p>
+<p>My only qualm with <code>authenticate</code> is I'm not sure how it fits with other options in the future?</p>
+<pre><code>authenticate = always | never | auto
+authentication-providers = [keyring, netrc, ...]
+authentication-method = basic | ...
+</code></pre>
+<p>But <code>authentication = always | never | auto</code> feels awkward to me there too. That's why I'm reaching for something else that fits in the group.</p>
+<p>Something like <code>authentication-required</code> makes sense to me in a context where if we don't find it any of the providers, we should fail.</p>
+<p>I think we're reaching a point where we're going back and forth on this too much. It doesn't feel like we're moving towards consensus. (which is not to say that we should just go with what I'm saying, but that we're reaching the point where we should make a decision without full consensus)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-08 21:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index.rs</code>:106 on 2025-03-08 21:14</div>
+            <div class="timeline-body"><p>If nobody is into the <code>-required</code> variant and Charlie prefers <code>authenticate</code>, my inclination is to just go with that (as was my original intuition) and we can deal with the future interface if/when that becomes a problem — there's just too much unknown there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-03-09 10:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index.rs</code>:106 on 2025-03-09 10:05</div>
+            <div class="timeline-body"><p>I'm happy with that. I've made the change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-03-10 17:19</div>
+            <div class="timeline-body"><p>Thanks for your patience on all the back and forth here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-03-10 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-03-10 17:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-10 17:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:21 UTC
+    </footer>
+</body>
+</html>

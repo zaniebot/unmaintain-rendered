@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In-line ruff: noqa ignores entire file - astral-sh/ruff #6157</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>In-line ruff: noqa ignores entire file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6157">#6157</a>
+        opened by <a href="https://github.com/roganartu">@roganartu</a>
+        on 2023-07-28 16:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/roganartu">@roganartu</a> on 2023-07-28 16:35</div>
+            <div class="timeline-body"><p>I'm not sure if this is expected behaviour or not. After reading the docs at https://beta.ruff.rs/docs/configuration/#error-suppression I could see it being interpreted both ways so I thought it was worth raising an issue to confirm.</p>
+<p>Given the following file:</p>
+<pre><code>from typing import Optional
+
+import bar  # ruff: noqa
+import baz
+
+class Foo:
+    x: Optional[str] = None
+</code></pre>
+<p>And the following ruff invocation:</p>
+<pre><code>❯ ruff --version                                                                                               
+ruff 0.0.280
+
+❯ ruff --fix --exit-non-zero-on-fix foo.py --show-fixes --select F,E,I,UP,RUF --target-version py311 --isolated
+</code></pre>
+<p>ruff does nothing.</p>
+<p>If the <code>noqa</code> line changes to this:</p>
+<pre><code>import bar  # ruff: noqa: F401
+</code></pre>
+<p>We see something closer to what I would've intuitively expected an in-line directive to do, but it still applies <code>F401</code> to the whole file:</p>
+<pre><code>❯ ruff --fix --exit-non-zero-on-fix foo.py --show-fixes --select F,E,I,UP,RUF --target-version py311 --isolated              
+
+Fixed 2 errors:
+- foo.py:
+    1 × UP007 (non-pep604-annotation)
+    1 × I001 (unsorted-imports)
+
+Found 2 errors (2 fixed, 0 remaining).
+
+✗❯ cat foo.py
+from typing import Optional
+
+import bar  # ruff: noqa: F401
+import baz
+
+
+class Foo:
+    x: str | None = None
+</code></pre>
+<p>And finally, if we instead remove the <code>ruff:</code> prefix from the <code>noqa</code> line, it only applies to the line it's suffixed to:</p>
+<pre><code>❯ cat foo.py          
+from typing import Optional
+
+import bar  # noqa
+import baz
+
+class Foo:
+    x: Optional[str] = None
+
+❯ ruff --fix --exit-non-zero-on-fix foo.py --show-fixes --select F,E,I,UP,RUF --target-version py311 --isolated
+
+Fixed 4 errors:
+- foo.py:
+    2 × F401 (unused-import)
+    1 × UP007 (non-pep604-annotation)
+    1 × I001 (unsorted-imports)
+
+Found 4 errors (4 fixed, 0 remaining).
+
+✗❯ cat foo.py
+
+import bar  # noqa
+
+
+class Foo:
+    x: str | None = None
+</code></pre>
+<p>Reviewing the docs, the in-line examples all omit the <code>ruff:</code> prefix, while the file-scope examples all include the <code>ruff:</code> prefix so perhaps this is intended. If so, I think the docs could make this behaviour clearer with an explicit callout, though absent some constraint I'm not aware of I'd argue that it's quite surprising for an in-line directive to apply to the whole file. I am very used to using eg <code>isort:skip</code> in-line to ignore single lines, so naturally reached for <code>ruff: noqa: &lt;code&gt;</code> for the same after migrating our projects to ruff, not realising I was quietly ignoring errors for the entire file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-28 16:37</div>
+            <div class="timeline-body"><p>Ah yeah, this is intended, and the behavior comes from Flake8, where <code># flake8: noqa</code> is used as a file-wide suppression and <code># noqa</code> is used as an inline suppression. So we use <code># ruff: noqa</code> as a file-wide exception.</p>
+<p>I can think of two useful things to do here:</p>
+<ol>
+<li>Clarify this in the docs further.</li>
+<li>Ignore-and-warn when <code># ruff: noqa</code> is used at the end of a line.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">noqa</span> added by @charliermarsh on 2023-07-28 16:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/roganartu">@roganartu</a> on 2023-07-28 21:06</div>
+            <div class="timeline-body"><p>An ignore-and-warn sounds great, thanks.</p>
+<p>If anyone stumbles across this and is looking for a pre-commit rule to protect themselves against this in the interim, someone on my team came up with this simple one:</p>
+<pre><code>    - id: inline ruff noqa
+      name: Checks that ruff noqa is not used inline.
+      language: pygrep
+      types: [python]
+      entry: &quot; # ruff: noqa&quot;
+      pass_filenames: true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-29 12:02</div>
+            <div class="timeline-body"><p>Fixed in the next release: https://github.com/astral-sh/ruff/pull/6160</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-29 12:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:51 UTC
+    </footer>
+</body>
+</html>

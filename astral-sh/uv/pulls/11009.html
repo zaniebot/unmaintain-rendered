@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve SIGINT handling in `uv run` - astral-sh/uv #11009</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve SIGINT handling in <code>uv run</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11009">#11009</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-01-28 00:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-28 00:36</div>
+            <div class="timeline-body"><p>There should be two functional changes here:</p>
+<ul>
+<li>If we receive SIGINT twice, forward it to the child process</li>
+<li>If the <code>uv run</code> child process changes its PGID, then forward SIGINT</li>
+</ul>
+<p>Previously, we never forwarded SIGINT to a child process. Instead, we
+relied on shell to do so.</p>
+<p>On Windows, we still do nothing but eat the Ctrl-C events we receive.
+I cannot see an easy way to send them to the child.</p>
+<p>The motivation for these changes should be explained in the comments.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/10952 (in which Ray changes its PGID)
+Replaces the (much simpler) #10989 with a more comprehensive approach.</p>
+<p>See https://github.com/astral-sh/uv/pull/6738#issuecomment-2315451358 for some previous context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-28 00:40</div>
+            <div class="timeline-body"><p>Frankly, I'm still not entirely sure why we wouldn't forward <em>all</em> signals in the same way that we do with SIGTERM. If it wasn't a huge pain, I would probably do it today? But since it is I might just wait until someone complains that something isn't working?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-28 16:05</div>
+            <div class="timeline-body"><p>A downside of forwarding Ctrl-C on the second send is that a process can receive it <em>three</em> times... but I don't know of programs that have special-casing for that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-28 17:00</div>
+            <div class="timeline-body"><p>The first SIGINT is not forwarded (but is received because the shell sends it directly). The second SIGINT is forwarded</p>
+<pre><code class="language-python">import signal, os; 
+
+print(f'PID: {os.getpid()}');
+print(f'GPID: {os.getpgid(os.getpid())}');
+
+# We display a newline before SIGINT to separate from ^C in shells
+signal.signal(signal.SIGINT, lambda s, _: print(f'{signal.Signals(s).name}', flush=True))
+signal.signal(signal.SIGTERM, lambda s, _: print(f'{signal.Signals(s).name}', flush=True))
+
+signal.valid_signals
+
+# Hang until we receive an input, e.g., Ctrl-D
+try:
+    input()
+except EOFError:
+    pass
+
+</code></pre>
+<pre><code>❯ uv run -v example.py
+DEBUG uv 0.5.24+8 (adf534009 2025-01-27)
+DEBUG Found project root: `/Users/zb/workspace/uv`
+DEBUG Project `uv` is marked as unmanaged
+DEBUG No project found; searching for Python interpreter
+DEBUG Reading Python requests from version file at `/Users/zb/workspace/uv/.python-version`
+DEBUG Searching for Python 3.12 in virtual environments, managed installations, or search path
+DEBUG Found `cpython-3.12.8-macos-aarch64-none` at `/Users/zb/workspace/uv/.venv/bin/python3` (virtual environment)
+DEBUG Using Python 3.12.8 interpreter at: /Users/zb/workspace/uv/.venv/bin/python3
+DEBUG Running `python example.py`
+PID: 84848
+GPID: 84847
+^CSIGINT
+DEBUG Received SIGINT, assuming the child received it as part of the process group
+^CSIGINT
+DEBUG Received SIGINT, forwarding to child at 84848
+SIGINT
+</code></pre>
+<p>SIGTERM is forwarded immediately (and only received once)</p>
+<pre><code>❯ uv run -v example.py
+DEBUG uv 0.5.24+8 (adf534009 2025-01-27)
+DEBUG Found project root: `/Users/zb/workspace/uv`
+DEBUG Project `uv` is marked as unmanaged
+DEBUG No project found; searching for Python interpreter
+DEBUG Reading Python requests from version file at `/Users/zb/workspace/uv/.python-version`
+DEBUG Searching for Python 3.12 in virtual environments, managed installations, or search path
+DEBUG Found `cpython-3.12.8-macos-aarch64-none` at `/Users/zb/workspace/uv/.venv/bin/python3` (virtual environment)
+DEBUG Using Python 3.12.8 interpreter at: /Users/zb/workspace/uv/.venv/bin/python3
+DEBUG Running `python example.py`
+PID: 85335
+GPID: 85334
+DEBUG Received SIGTERM, forwarding to child at 85335
+SIGTERM
+</code></pre>
+<p>When the PGID of the child is changed, we forward the first SIGINT</p>
+<pre><code class="language-python">import signal, os; 
+
+print(f'PID: {os.getpid()}');
+
+# Change PGID
+os.setpgid(0, 0)
+
+print(f'GPID: {os.getpgid(os.getpid())}');
+
+signal.signal(signal.SIGINT, lambda s, _: print(f'{signal.Signals(s).name}', flush=True))
+signal.signal(signal.SIGTERM, lambda s, _: print(f'{signal.Signals(s).name}', flush=True))
+
+# Sleep for 20s; we can't use `input()` or it breaks output for some reason
+try:
+    import time
+    time.sleep(20)
+except EOFError:
+    pass
+</code></pre>
+<pre><code>❯ uv run -v example.py
+DEBUG uv 0.5.24+8 (adf534009 2025-01-27)
+DEBUG Found project root: `/Users/zb/workspace/uv`
+DEBUG Project `uv` is marked as unmanaged
+DEBUG No project found; searching for Python interpreter
+DEBUG Reading Python requests from version file at `/Users/zb/workspace/uv/.python-version`
+DEBUG Searching for Python 3.12 in virtual environments, managed installations, or search path
+DEBUG Found `cpython-3.12.8-macos-aarch64-none` at `/Users/zb/workspace/uv/.venv/bin/python3` (virtual environment)
+DEBUG Using Python 3.12.8 interpreter at: /Users/zb/workspace/uv/.venv/bin/python3
+DEBUG Running `python example.py`
+PID: 84317
+GPID: 84317
+^CDEBUG Received SIGINT, forwarding to child at 84317
+SIGINT
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2025-01-28 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-28 17:38</div>
+            <div class="timeline-body"><p>Test coverage pretty painful to add here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @zanieb on 2025-01-28 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2025-01-28 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/commands/run.rs</code>:17 on 2025-01-28 19:44</div>
+            <div class="timeline-body"><p>Ah now I get it. Thanks for explaining this here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/commands/run.rs</code>:104 on 2025-01-28 19:47</div>
+            <div class="timeline-body"><p>Does it make sense to log an error here if one occurs?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/commands/run.rs</code>:123 on 2025-01-28 19:49</div>
+            <div class="timeline-body"><p>Does the signal actually get sent to the child? Or maybe my general question here is, will <code>^C</code> still work to terminate the child?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-01-28 19:50</div>
+            <div class="timeline-body"><p>Nice comment. I buy this. I'm unsure about Windows though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/run.rs</code>:104 on 2025-01-28 19:56</div>
+            <div class="timeline-body"><p>Probably yeah. This is the existing behavior so I prefer to retain but we could add logging in a separate patch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-01-28 19:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-01-28 19:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/run.rs</code>:123 on 2025-01-28 19:57</div>
+            <div class="timeline-body"><p>Yeah so this should retain our existing behavior — it's just moved from a platform-wide block to a Windows-specific block. The note is just that we can't implement the more complicated behavior we do above for Unix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-01-28 19:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/run.rs</code>:123 on 2025-01-28 19:58</div>
+            <div class="timeline-body"><p>I also had Aria test this assumption in PowerShell and the initial change adding the Ctrl-C handling fixed various bugs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-01-28 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-28 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-28 20:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-01-28 20:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/commands/run.rs</code>:123 on 2025-01-28 20:04</div>
+            <div class="timeline-body"><p>Ah nice! On the ball.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:19 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migrate to `zlib-rs` - astral-sh/uv #9184</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Migrate to <code>zlib-rs</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9184">#9184</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-11-18 01:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 01:51</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I've tried this a few times; just curious if it passes tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 04:18</div>
+            <div class="timeline-body"><p>I'm somewhat inclined to make this change? It doesn't look like <code>zlib-rs</code> is widely used yet, but rustls does use it for certificate decompression. And in local benchmarking, I can't find a clear difference between <code>zlib-rs</code> and <code>zlib-ng</code>...  Like, sometimes one is faster, sometimes the other is faster (though they're generally both faster than the default flate2 backend). It's really hard to benchmark this, since it only applies to remote wheels that we unzip as we stream, so network IO is also mixed in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 04:22</div>
+            <div class="timeline-body"><p>Ok, running against a local HTTP server.</p>
+<p>First run:</p>
+<pre><code>Benchmark 1: ../../target/release/main (install-cold)
+  Time (mean ± σ):      1.880 s ±  0.075 s    [User: 1.004 s, System: 0.803 s]
+  Range (min … max):    1.806 s …  2.015 s    10 runs
+
+Benchmark 2: ../../target/release/zlib-rs (install-cold)
+  Time (mean ± σ):      1.816 s ±  0.176 s    [User: 0.885 s, System: 0.842 s]
+  Range (min … max):    1.727 s …  2.310 s    10 runs
+
+  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet system without any interferences from other programs.
+
+Benchmark 3: ../../target/release/default (install-cold)
+  Time (mean ± σ):      2.035 s ±  0.171 s    [User: 1.100 s, System: 0.862 s]
+  Range (min … max):    1.949 s …  2.517 s    10 runs
+
+  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet system without any interferences from other programs.
+
+Summary
+  ../../target/release/zlib-rs (install-cold) ran
+    1.04 ± 0.11 times faster than ../../target/release/main (install-cold)
+    1.12 ± 0.14 times faster than ../../target/release/default (install-cold)
+</code></pre>
+<p>Second run:</p>
+<pre><code>Benchmark 1: ../../target/release/main (install-cold)
+  Time (mean ± σ):      1.869 s ±  0.058 s    [User: 0.996 s, System: 0.796 s]
+  Range (min … max):    1.816 s …  1.982 s    10 runs
+
+Benchmark 2: ../../target/release/zlib-rs (install-cold)
+  Time (mean ± σ):      1.887 s ±  0.427 s    [User: 0.889 s, System: 0.919 s]
+  Range (min … max):    1.718 s …  3.097 s    10 runs
+
+  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet system without any interferences from other programs.
+
+Benchmark 3: ../../target/release/default (install-cold)
+  Time (mean ± σ):      2.238 s ±  0.541 s    [User: 1.114 s, System: 1.036 s]
+  Range (min … max):    1.945 s …  3.277 s    10 runs
+
+  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet system without any interferences from other programs.
+
+Summary
+  ../../target/release/main (install-cold) ran
+    1.01 ± 0.23 times faster than ../../target/release/zlib-rs (install-cold)
+    1.20 ± 0.29 times faster than ../../target/release/default (install-cold)
+</code></pre>
+<p><code>main</code> is <code>libz-ng</code>, <code>zlib-rs</code> is this branch, and <code>default</code> is the default <code>flate2</code> backend.</p>
+<p>So, anyway, this seems like a good change? And we get to remove a dependency that has caused a lot of trouble.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-11-18 04:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-11-18 04:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-11-18 04:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2024-11-18 04:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-11-18 04:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 04:23</div>
+            <div class="timeline-body"><p>I think the biggest counterargument is just that it isn't widely adopted right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-11-18 09:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-18 15:25</div>
+            <div class="timeline-body"><p>I've confirmed that this removes the cmake build dep on windows</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 15:28</div>
+            <div class="timeline-body"><p>That's a big win.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-18 15:32</div>
+            <div class="timeline-body"><p>I'm for it, easy to revert if we need to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-11-18 15:43</div>
+            <div class="timeline-body"><p>SGTM</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-11-18 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-18 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-18 15:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:14 UTC
+    </footer>
+</body>
+</html>

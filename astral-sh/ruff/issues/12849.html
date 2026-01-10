@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule request: enforce setting name=None when raising AttributeError/NameError with a custom error message on py310+ - astral-sh/ruff #12849</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule request: enforce setting name=None when raising AttributeError/NameError with a custom error message on py310+</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12849">#12849</a>
+        opened by <a href="https://github.com/arnaud-ma">@arnaud-ma</a>
+        on 2024-08-12 18:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/arnaud-ma">@arnaud-ma</a> on 2024-08-12 18:32</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Given this code where the 'bar' attribute has been deprecated for 'new_bar':</p>
+<pre><code class="language-python3">class Foo:
+    def __init__(self):
+        self._bar = &quot;other_bar&quot;
+        self.new_bar = &quot;new_bar&quot;
+
+    def __getattr__(self, name):
+        if name == &quot;bar&quot;:
+            msg = &quot;Use 'new_bar' instead.&quot;
+            raise AttributeError(msg)
+        return super().__getattribute__(name)
+</code></pre>
+<p>In Python &gt;= 3.10, the error message is:</p>
+<pre><code class="language-python3">AttributeError: Use 'new_bar' instead.. Did you mean: '_bar'?
+</code></pre>
+<p>The &quot;Did you mean&quot; part (called name suggestions) is not revelant, or even misleading.
+The workaround is simply to specify the 'name' parameter to None, e.g. <code>AttributeError(msg, name=None)</code> (see the <a href="https://docs.python.org/3/library/exceptions.html#AttributeError">python doc</a>).</p>
+<p>What I'm still not sure about is: are there times when it is really relevant when writing our own AttributeError or NameError, in addition of the message ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-08-13 08:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @dhruvmanila on 2024-08-13 08:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-14 07:27</div>
+            <div class="timeline-body"><p>@AlexWaygood any thoughts on this? Are there legitimate cases where not specifying the name on an <code>AttributeError</code> is correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Rule request: Parameter name=None on AttribureError and NameError" to "Rule request: Parameter name=None on AttributeError and NameError" by @AlexWaygood on 2024-08-14 07:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-14 11:53</div>
+            <div class="timeline-body"><p>This is clever! I haven't seen this technique before for suppressing the &quot;Did you mean...?&quot; suggestions in the error messages for <code>AttributeError</code>s and <code>NameError</code>s.</p>
+<p>As to whether it's a good idea: the <code>name</code> attribute on <code>AttributeError</code> instances is documented, so it's guaranteed not to be removed (unless there's a <code>DeprecationWarning</code> for 2 years, which seems unlikely). However, I can't see anything in the docs that says anything about using this as a technique to suppress the &quot;Did you mean...?&quot; error messages with <code>AttributeError</code>.</p>
+<p>@pablogsal, sorry to ping you -- would you be able to provide any context here, as the author of this CPython feature? Do you think this a dependable way to suppress these suggestion messages on <code>AttributeError</code>s, that's guaranteed not to break in future Python versions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-14 12:11</div>
+            <div class="timeline-body"><p>I guess I'm not actually sure what the specific rule request is, re-reading this issue. @arnaud-ma -- are you asking for a rule that complains if you set <code>name=None</code>? Or are you asking for a rule that complains if you <em>don't</em> set <code>name=None</code> when you're manually raising <code>AttributeError</code> with a custom error message?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arnaud-ma">@arnaud-ma</a> on 2024-08-14 12:24</div>
+            <div class="timeline-body"><p>A rule that complains if we don't set. Sorry I may have expressed myself badly. But my doubt in my last sentence was to know if there were cases where the name suggestions were relevant. Of course for an <code>AttributeError</code> thrown by Python itself it is, since it has no other information. But otherwise in most cases, I think the error should be fully explained in the error message. And the author of the error message probably does not know that the &quot;Did you mean...?&quot; could be added at the end of the message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-14 12:26</div>
+            <div class="timeline-body"><p>Great, thanks @arnaud-ma. That's what I thought, but it's good to check that we're on the same page :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Rule request: Parameter name=None on AttributeError and NameError" to "Rule request: enforce setting name=None when raising AttributeError/NameError with a custom error message on py310+" by @AlexWaygood on 2024-08-14 12:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pablogsal">@pablogsal</a> on 2024-08-14 13:29</div>
+            <div class="timeline-body"><blockquote>
+<p>@pablogsal, sorry to ping you -- would you be able to provide any context here, as the author of this CPython feature? Do you think this a dependable way to suppress these suggestion messages on <code>AttributeError</code>s, that's guaranteed not to break in future Python versions?</p>
+</blockquote>
+<p>As you said the attribute itself won't disappear, but how it's used by the suggestions machinery is an implementation detail and I would not recommend depending on that if we ever need to change. We are quite constrained upstream to emmit this messages in ways that won't hurt performance for the happy case so I don't want to shoot ourselves in the foot with backwards compatibility promises.</p>
+<p>Pragmatically speaking I don't think this will change at all, so it's not crazy to depend on that.</p>
+<p>The other thing I notice is that this is suggesting a name that starts with an underscore and maybe we should change this upstream to skip these.... 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-14 13:38</div>
+            <div class="timeline-body"><blockquote>
+<p>The other thing I notice is that this is suggesting a name that starts with an underscore and maybe we should change this upstream to skip these.... 🤔</p>
+</blockquote>
+<p>Oh, I think that's already been improved in Python 3.13+, via https://github.com/python/cpython/issues/116871 / https://github.com/python/cpython/pull/116930!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arnaud-ma">@arnaud-ma</a> on 2024-08-14 13:49</div>
+            <div class="timeline-body"><p>It ignores but only when the error is not raised manually (tried my example in Python 3.14 with and without the <code>__getattr__</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pablogsal">@pablogsal</a> on 2024-08-14 15:23</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>The other thing I notice is that this is suggesting a name that starts with an underscore and maybe we should change this upstream to skip these.... 🤔</p>
+</blockquote>
+<p>Oh, I think that's already been improved in Python 3.13+, via <a href="https://github.com/python/cpython/issues/116871">python/cpython#116871</a> / <a href="https://github.com/python/cpython/pull/116930">python/cpython#116930</a>!</p>
+</blockquote>
+<p>Ah thanks for the heads up! Somehow I missed Serhi’s PR</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:42 UTC
+    </footer>
+</body>
+</html>

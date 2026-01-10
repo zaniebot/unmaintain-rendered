@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `uv sync --check` flag - astral-sh/uv #12342</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>uv sync --check</code> flag</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12342">#12342</a>
+        opened by <a href="https://github.com/blueraft">@blueraft</a>
+        on 2025-03-20 16:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/blueraft">@blueraft</a> on 2025-03-20 16:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes #12338</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-20 17:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:3287 on 2025-03-20 17:52</div>
+            <div class="timeline-body"><p>We should probably add another line saying like &quot;uv will exit with a non-zero code if the environment is not up to date&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-20 17:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/sync.rs</code>:373 on 2025-03-20 17:53</div>
+            <div class="timeline-body"><p>Should this be exit code 2 or 1? I think we probably should use 1.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-20 17:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/sync.rs</code>:383 on 2025-03-20 17:55</div>
+            <div class="timeline-body"><p>I think we don't want <code>error: </code> here, modeling after Ruff</p>
+<pre><code>❯ uvx ruff format --check
+Installed 1 package in 2ms
+51 files already formatted
+❯ echo &quot;import  bar&quot; &gt; test.py
+❯ uvx ruff format --check
+Would reformat: test.py
+1 file would be reformatted, 51 files already formatted
+❯ echo $?
+1
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-03-20 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2025-03-20 19:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/uv/tests/it/sync.rs</code>:383 on 2025-03-20 19:27</div>
+            <div class="timeline-body"><p><code>uv sync --locked</code> already uses error: (exit code 2). Should we change both, or is it too risky due to potential breakage for users relying on the <code>--locked</code> exit code?</p>
+<pre><code>❯ uv sync --locked
+Resolved 14 packages in 4ms
+error: The lockfile at `uv.lock` needs to be updated, but `--locked` was provided. To update the lockfile, run `uv lock`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-20 20:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/sync.rs</code>:383 on 2025-03-20 20:51</div>
+            <div class="timeline-body"><p>Hm.. I'm not sure.</p>
+<p>I think of the difference as: <code>--check</code> is asking uv to &quot;check if my sync would do anything&quot; whereas the other is asking uv to &quot;sync but fail if the lockfile is outdated&quot;. In the first, it's not an error if sync would do something — that's the intent of the invocation. Whereas in the second, it's a failure to sync?</p>
+<p>Unfortunately <code>uv lock --check</code> destroys my carefully constructed logic:</p>
+<pre><code>❯ uv lock --check
+Using CPython 3.13.0
+Resolved 4 packages in 86ms
+error: The lockfile at `uv.lock` needs to be updated, but `--locked` was provided. To update the lockfile, run `uv lock`.
+❯ echo $?
+2
+</code></pre>
+<p>I'd honestly be partial to changing that one specifically (in a separate PR), I think it's wrong. I think it's probably breaking to change though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-20 20:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/sync.rs</code>:383 on 2025-03-20 20:52</div>
+            <div class="timeline-body"><p>I could be convinced to keep what you have here and change them both together in a future release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-20 20:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/sync.rs</code>:383 on 2025-03-20 20:52</div>
+            <div class="timeline-body"><p>@charliermarsh ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2025-03-21 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/uv/tests/it/sync.rs</code>:383 on 2025-03-21 14:43</div>
+            <div class="timeline-body"><p>Yeah makes sense, I'm okay with either option, lmk. Happy to make a follow up PR fixing that!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:3289 on 2025-03-21 15:28</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// If the environment is not up to date, uv will exit with an error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-21 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-21 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/reference/cli.md</code>:1518 on 2025-03-21 15:28</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">&lt;p&gt;If the environment is not up to date, uv will exit with an error.&lt;/p&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-21 15:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:868 on 2025-03-21 15:29</div>
+            <div class="timeline-body"><p>What do you think about something more like</p>
+<pre><code class="language-suggestion">    #[error(&quot;The environment is outdated; run `{}` to update the environment&quot;, &quot;uv sync&quot;.cyan())]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-21 15:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:869 on 2025-03-21 15:30</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    OutdatedEnvironment,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-21 15:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/sync.rs</code>:383 on 2025-03-21 15:30</div>
+            <div class="timeline-body"><p>Let's stick with consistency to <code>uv lock</code> for now and open an issue to track a broader change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-03-21 15:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-03-21 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-03-21 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-21 16:55</div>
+            <div class="timeline-body"><p>If you're ever interested in some guidance on places we could use your help, feel free to reach out on Discord. Always appreciate your contributions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-03-22 00:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/sync.rs</code>:383 on 2025-03-22 00:04</div>
+            <div class="timeline-body"><p>Yeah seems fine to ship this as-is and re-consider in a future release.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:22 UTC
+    </footer>
+</body>
+</html>

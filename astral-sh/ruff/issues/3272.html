@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parser error and Rule violation on syntax error breaks Emacs integration - astral-sh/ruff #3272</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Parser error and Rule violation on syntax error breaks Emacs integration</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3272">#3272</a>
+        opened by <a href="https://github.com/biscanli">@biscanli</a>
+        on 2023-02-28 11:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/biscanli">@biscanli</a> on 2023-02-28 11:31</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Whenever ruff detects a syntax error that falls under rule <code>E999</code>, it also gives a parser error. A simple example for this is just starting a file (lets say <code>a.py</code>), typing <code>def</code> and saving. Once you run <code>ruff check a.py</code>. You receive two lines</p>
+<pre><code>error: Failed to parse a.py: invalid syntax. Got unexpected token Newline at line 1 column 4
+a.py:1:5: E999 SyntaxError: invalid syntax. Got unexpected token Newline
+Found 1 error.
+</code></pre>
+<p>This is not optimal because:</p>
+<ul>
+<li><code>ruff</code> did give the proper rule violation, so on a semantic level it feels weird to also provide an error</li>
+<li>The combination of parser error and rule violation breaks integration with Emacs's <code>flymake</code>, which is the default package to integrate linters.</li>
+</ul>
+<p>I tested the latter by turning off the rule, which solves the error out issue, but that is also not optimal because then you cannot see the errors.</p>
+<p>I use a config with all rules turned on, but the default config also gave the same result, and the ruff version is <code>0.0.253</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-28 16:35</div>
+            <div class="timeline-body"><p>Can you tell me more about how this impacts <code>flymake</code>? I would expect that the <code>error:</code> output goes to <code>stderr</code>, and that tooling built atop <code>ruff</code> would rely on <code>stdout</code>, but I'm guessing I'm wrong :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-02-28 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/biscanli">@biscanli</a> on 2023-02-28 18:59</div>
+            <div class="timeline-body"><p>Yes. First of all, I should clarify that <code>flymake</code> uses a bit of a different command, namely <code>ruff --quiet --stdin-filename=stdin -</code>. I do believe <code>flymake</code> is gathering the output from <code>stdout</code> and working with it, but my emacs-fu is not strong enough to prove it 100%. <code>flymake</code> is an on the fly syntax checker so as you type the error below keeps popping up:</p>
+<pre><code>error in process sentinel: flymake--highlight-line: Wrong type argument: integer-or-marker-p, nil
+error in process sentinel: Wrong type argument: integer-or-marker-p, nil
+</code></pre>
+<p>I did try getting more debugging information out of Emacs, which got me this:</p>
+<pre><code>Debugger entered--Lisp error: (wrong-type-argument integer-or-marker-p nil)
+  make-overlay(nil nil)
+  flymake--highlight-line(#s(flymake--diag :locus #&lt;buffer a2.py&gt; :beg nil :end nil :type :error :text &quot;E999 SyntaxError: invalid syntax. Got unexpected t...&quot; :backend python-flymake :data nil :overlay-properties nil :overlay nil :orig-beg nil :orig-end nil))
+  flymake--publish-diagnostics((#s(flymake--diag :locus #&lt;buffer a2.py&gt; :beg nil :end nil :type :error :text &quot;E999 SyntaxError: invalid syntax. Got unexpected t...&quot; :backend python-flymake :data nil :overlay-properties nil :overlay nil :orig-beg nil :orig-end nil)) :backend python-flymake :state #s(flymake--state :running backend-token18 :reported-p nil :disabled nil :diags (#s(flymake--diag :locus #&lt;buffer a2.py&gt; :beg nil :end nil :type :error :text &quot;E999 SyntaxError: invalid syntax. Got unexpected t...&quot; :backend python-flymake :data nil :overlay-properties nil :overlay nil :orig-beg nil :orig-end nil)) :foreign-diags #&lt;hash-table eql 0/65 0x156a0ba34beb&gt;) :region nil)
+  flymake--handle-report(python-flymake backend-token18 (#s(flymake--diag :locus #&lt;buffer a2.py&gt; :beg nil :end nil :type :error :text &quot;E999 SyntaxError: invalid syntax. Got unexpected t...&quot; :backend python-flymake :data nil :overlay-properties nil :overlay nil :orig-beg nil :orig-end nil)))
+  apply(flymake--handle-report python-flymake backend-token18 (#s(flymake--diag :locus #&lt;buffer a2.py&gt; :beg nil :end nil :type :error :text &quot;E999 SyntaxError: invalid syntax. Got unexpected t...&quot; :backend python-flymake :data nil :overlay-properties nil :overlay nil :orig-beg nil :orig-end nil)))
+  #f(compiled-function (&amp;rest args) #&lt;bytecode -0x11abfd71816a6476&gt;)((#s(flymake--diag :locus #&lt;buffer a2.py&gt; :beg nil :end nil :type :error :text &quot;E999 SyntaxError: invalid syntax. Got unexpected t...&quot; :backend python-flymake :data nil :overlay-properties nil :overlay nil :orig-beg nil :orig-end nil)))
+  python--flymake-parse-output(#&lt;buffer a2.py&gt; #&lt;process python-flymake&gt; #f(compiled-function (&amp;rest args) #&lt;bytecode -0x11abfd71816a6476&gt;))
+  #f(compiled-function (proc event) #&lt;bytecode 0xbff79c6a0c2e8d9&gt;)(#&lt;process python-flymake&gt; &quot;exited abnormally with code 1\n&quot;)
+</code></pre>
+<p>Since the <code>--quite</code> option is there it should not be a problem of reporting the error, but from what I can tell from reading on <a href="https://www.gnu.org/software/emacs/manual/html_node/elisp/Sentinels.html">sentinels</a>, it seems that when there is a parser error and a linting error the ruff subprocess changes state/gets interrupted abruptly. So to sum up</p>
+<ul>
+<li>Just linting error: fine</li>
+<li>Just parser error: fine</li>
+<li>Linting and parser error: sentinel chaos</li>
+</ul>
+<p>P.S. Great package, and appreciate the fast reply :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-28 19:39</div>
+            <div class="timeline-body"><p>That's really interesting, thank you for following up with all this additional info. Hard for me to say what's going on without digging in a bit more, the exit codes <em>should</em> be the same in both cases.</p>
+<p>We could suppress the error message as long as the <code>E999</code> error is &quot;expected&quot; to be surfaced to the user. The reason we introduced this separate error message is that if you did something like <code>ruff --select F841 /path/to/file.py</code>, and <code>file.py</code> contained a syntax error, Ruff would fail silently: we wouldn't be able to lint the file, but you wouldn't know, because <code>E999</code> wouldn't be surfaced to you.</p>
+<blockquote>
+<p>P.S. Great package, and appreciate the fast reply :)</p>
+</blockquote>
+<p>Thank you so much :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/biscanli">@biscanli</a> on 2023-02-28 21:57</div>
+            <div class="timeline-body"><blockquote>
+<p>That's really interesting, thank you for following up with all this additional info. Hard for me to say what's going on without digging in a bit more, the exit codes should be the same in both cases.</p>
+</blockquote>
+<p>That is my experience as well. I tested this with two files, one as</p>
+<pre><code>def
+</code></pre>
+<p>and the other as</p>
+<pre><code>import b
+import a
+</code></pre>
+<p>to get some import errors. I ran <code>ruff check --quiet &lt;filename.py&gt;</code> on both, saw the proper rule violations. Both returned status code <code>1</code> when I checked with <code>echo $?</code> afterwards. Would there be any other information that <code>ruff</code> returns during the process that a sentinel or any other process watcher can observer? My thought was maybe the error triggers something <em>before</em> the rules are returned when it is listening for <code>stdin</code> with <code>--stdin-filename=stdin -</code>. Or maybe when it acts as a stream like this, it terminates before the <code>flymake</code> process can collect the rule violation and process it? I couldn't find how to test this theory via <code>bash</code>, nor how to send EOF to a running <code>ruff --quiet --stdin-filename=stdin -</code> instance.</p>
+<blockquote>
+<p>The reason we introduced this separate error message is that if you did something like ruff --select F841 /path/to/file.py, and file.py contained a syntax error, Ruff would fail silently: we wouldn't be able to lint the file, but you wouldn't know, because E999 wouldn't be surfaced to you.</p>
+</blockquote>
+<p>I think this makes sense. I guess another alternative would be to not return it if rule <code>E999</code> is on, but it does feel like patching the symptom rather than fixing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/biscanli">@biscanli</a> on 2023-03-13 12:04</div>
+            <div class="timeline-body"><p>FYI I wanted to drop an update here:</p>
+<p>After digging around on the Emacs side of things, I found a <a href="https://github.com/erickgnavar/flymake-ruff">package</a> that implements <code>ruff</code> different than how I did it. This fixed the problem of constant error outs. Now, there is another issue with the process sometimes silently dying with the scenario I mentioned above, where there is a syntax error and a ruff parsing error. However, I did not experience the same issue on a fresh Emacs install so its probably something within my config messing up, and is not relevant to this project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @biscanli on 2023-03-13 12:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/doolio">@doolio</a> on 2023-10-30 17:14</div>
+            <div class="timeline-body"><p>@biscanli Just to say I only get the following error reported by ruff v0.1.3 using the simple test case suggested in your OP and simply configuring ruff as follows i.e. not using any (Emacs) LSP client and Emacs 27.1/flymake v1.3.6:</p>
+<pre><code class="language-emacs-lisp"> (setq python-flymake-command '(&quot;ruff&quot; &quot;--quiet&quot; &quot;--stdin-filename=stdin&quot; &quot;-&quot;))
+</code></pre>
+<pre><code>a.py 1 error   E999 SyntaxError: Expected 'name', but got Newline
+</code></pre>
+<p>The error message is slightly different so perhaps some changes to ruff improved the situation since you raised this issue.</p>
+<p>@charliermarsh The <code>setq</code> above is a setting within the Emacs built-in <code>python.el</code> mode. So there is no need for users to use the third party <code>flymake-ruff</code> package you mention <a href="https://docs.astral.sh/ruff/integrations/#emacs-unofficial">here</a> if they don't want to. Though it may offer other niceties. IIUC (I'm just learning to program), the intention of that third party package is to use <code>ruff</code> via <code>flymake</code> when not using an LSP client/server. I believe (but still need to test myself) the different Emacs LSP clients have mechanisms to utilise <code>ruff</code> even if not using the <code>ruff-lsp</code> server. Happy to submit a PR for consideration to improve the docs.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:31 UTC
+    </footer>
+</body>
+</html>

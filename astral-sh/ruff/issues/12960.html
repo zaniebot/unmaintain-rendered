@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`config`'s default output format might not render as expected - astral-sh/ruff #12960</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>config</code>'s default output format might not render as expected</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12960">#12960</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2024-08-18 02:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-08-18 02:23</div>
+            <div class="timeline-body"><p>Currently, the output of a <code>config</code> command is something like this:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; subprocess.getoutput(['ruff', 'config', 'lint.preview'])
+'Whether to enable preview mode. When preview mode is enabled, Ruff will\nuse unstable rules and fixes.\n\nDefault value: false\nType: bool\nExample usage:\n```toml\n# Enable preview features.\npreview = true\n```'
+</code></pre>
+<p>In the terminal, this looks nice:</p>
+<pre><code class="language-markdown">Whether to enable preview mode. When preview mode is enabled, Ruff will
+use unstable rules and fixes.
+
+Default value: false
+Type: bool
+Example usage:
+```toml
+# Enable preview features.
+preview = true
+```
+</code></pre>
+<p>However, when rendered, the &quot;Default value&quot;, &quot;Type&quot; and &quot;Example usage&quot; lines are collapsed into a single <code>&lt;p&gt;</code> (<a href="https://spec.commonmark.org/dingus/?text=Whether%20to%20enable%20preview%20mode.%20When%20preview%20mode%20is%20enabled%2C%20Ruff%20will%0Ause%20unstable%20rules%20and%20fixes.%0A%0ADefault%20value%3A%20false%0AType%3A%20bool%0AExample%20usage%3A%0A%60%60%60toml%0A%23%20Enable%20preview%20features.%0Apreview%20%3D%20true%0A%60%60%60">Commonmark dingus</a>):</p>
+<pre><code class="language-html">&lt;p&gt;Whether to enable preview mode. When preview mode is enabled, Ruff will
+use unstable rules and fixes.&lt;/p&gt;
+&lt;p&gt;Default value: false
+Type: bool
+Example usage:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-toml&quot;&gt;# Enable preview features.
+preview = true
+&lt;/code&gt;&lt;/pre&gt;
+</code></pre>
+<p>For example, here's how PyCharm renders it:</p>
+<p><img src="https://github.com/user-attachments/assets/cd768c9e-a0c1-4302-ab8a-868b3206c238" alt="" /></p>
+<p>A possible fix is to append two spaces to the end of the first two lines in question (<a href="https://spec.commonmark.org/dingus/?text=Whether%20to%20enable%20preview%20mode.%20When%20preview%20mode%20is%20enabled%2C%20Ruff%20will%0Ause%20unstable%20rules%20and%20fixes.%0A%0ADefault%20value%3A%20false%20%20%0AType%3A%20bool%20%20%0AExample%20usage%3A%0A%60%60%60toml%0A%23%20Enable%20preview%20features.%0Apreview%20%3D%20true%0A%60%60%60">Commonmark dingus</a>):</p>
+<pre><code class="language-python">'...Default value: false  \nType: bool  \nExample usage:...'
+</code></pre>
+<p>Also, default values and types should be surrounded in backticks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-08-18 05:07</div>
+            <div class="timeline-body"><p>Note: Backslashes also work as markdown newline indicators (and are more obvious than double spaces) <a href="https://spec.commonmark.org/dingus/?text=Whether%20to%20enable%20preview%20mode.%20When%20preview%20mode%20is%20enabled%2C%20Ruff%20will%0Ause%20unstable%20rules%20and%20fixes.%0A%0ADefault%20value%3A%20false%5C%0AType%3A%20bool%5C%0AExample%20usage%3A%0A%60%60%60toml%0A%23%20Enable%20preview%20features.%0Apreview%20%3D%20true%0A%60%60%60">demo</a>. But if the goal is to also display the same string in a terminal, then yeah two spaces is probably the best.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`config`'s default output format doesn't render very nicely" to "`config`'s default output format might not render as expected" by @InSyncWithFoo on 2024-08-18 05:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-18 07:42</div>
+            <div class="timeline-body"><p>Thanks for opening this issue. I agree, the output in PyCharm isn't ideal.</p>
+<p>I assume that the hover text in PyCharm comes from the JSON schema. If that's the case, I would prefer a local change in the schema generation to use <code>\</code> over the somewhat obscure use of two spaces at the end of the line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-08-18 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-08-18 17:19</div>
+            <div class="timeline-body"><p>It wasn't the schema (it would have been great <a href="https://youtrack.jetbrains.com/issue/PY-66325">if that was the case</a>, though); I triggered the renderer semi-manually. (Yes, I could have asked for the JSON and put it together myself, too, but that's beside the point.)</p>
+<p>Submitting a PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> removed by @MichaReiser on 2024-08-18 17:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-18 22:33</div>
+            <div class="timeline-body"><p>@MichaReiser -- Is there still something to do here given the PR was closed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-19 07:47</div>
+            <div class="timeline-body"><p><code>ruff config</code> only supports the output format <code>text</code> and <code>json</code>. The ask in this issue is to add a <code>markdown</code> output format.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2024-08-19 07:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-08-21 19:30</div>
+            <div class="timeline-body"><p>It turned out that the format wasn't as nice compared to other popups of the same kind, so I rendered it manually anyway. It took more efforts than I expected, but behold the result:</p>
+<p><img src="https://github.com/user-attachments/assets/5a5ac71f-502f-42d7-a24c-aabec5e19a5a" alt="" /></p>
+<p>I'll keep this issue open, though, since someone else might need it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-22 07:43</div>
+            <div class="timeline-body"><p>This looks great!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:48 UTC
+    </footer>
+</body>
+</html>

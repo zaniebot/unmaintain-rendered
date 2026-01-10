@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F821: false positive if variable is defined in a loop - astral-sh/ruff #12451</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F821: false positive if variable is defined in a loop</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12451">#12451</a>
+        opened by <a href="https://github.com/JaRoSchm">@JaRoSchm</a>
+        on 2024-07-22 11:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JaRoSchm">@JaRoSchm</a> on 2024-07-22 11:29</div>
+            <div class="timeline-body"><p>Hi,</p>
+<p>this examples raises F821 in ruff 0.5.4 although it clearly is working:</p>
+<pre><code class="language-python">for i in range(3):
+    if i == 0:
+        x = 0
+    else:
+        x = y
+
+    y = x + 2
+</code></pre>
+<p>This happens if the variable is defined inside of the loop body.
+Searching through the many issues where F821 is mentioned I couldn't find this issue yet.
+Output of <code>ruff check --select F821 --preview</code>:</p>
+<pre><code>test.py:5:13: F821 Undefined name `y`
+  |
+3 |         x = 0
+4 |     else:
+5 |         x = y
+  |             ^ F821
+6 | 
+7 |     y = x + 2
+  |
+
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-07-23 07:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-23 07:13</div>
+            <div class="timeline-body"><p>I think this is hard for ruff to get right at the moment without type inference because Ruff can't reason about that <code>i</code> starts with <code>0</code> and that the first branch is guaranteed to be taken because of that before ever taking the other branch.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:25 UTC
+    </footer>
+</body>
+</html>

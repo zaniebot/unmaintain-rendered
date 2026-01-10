@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report the queried executable path in `uv python list` - astral-sh/uv #12628</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Report the queried executable path in <code>uv python list</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12628">#12628</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-04-02 16:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 16:05</div>
+            <div class="timeline-body"><p>In an attempt to avoid reporting shims as their resolved <code>sys.executable</code> path, we report the queried executable path instead. This seems more correct for this command, broadly? Interestingly, it changes the reported paths for Homebrew Python</p>
+<p><img width="1430" alt="Screenshot 2025-04-02 at 11 05 18 AM" src="https://github.com/user-attachments/assets/0e1600e8-fb07-40c7-a6d6-56eaeb4b9293" /></p>
+<p>Closes #9979</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2025-04-02 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @zanieb on 2025-04-02 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 16:09</div>
+            <div class="timeline-body"><p>I can try to add some test coverage here, but it seems kind of tricky.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 16:10</div>
+            <div class="timeline-body"><p>@Gankra would you try this out on your bespoke Windows setup?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-02 17:25</div>
+            <div class="timeline-body"><p>Confirmed this is working the way you want:</p>
+<pre><code>cpython-3.13.2-windows-x86_64-none                   C:\ProgramData\chocolatey\bin\python3.13.exe
+cpython-3.13.2-windows-x86_64-none                   C:\Users\gankra\AppData\Roaming\uv\python\cpython-3.13.2-windows-x86_64-none\python.exe
+cpython-3.12.9-windows-x86_64-none                   &lt;download available&gt;
+cpython-3.11.11-windows-x86_64-none                  C:\Users\gankra\AppData\Roaming\uv\python\cpython-3.11.11-windows-x86_64-none\python.exe
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2025-04-02 17:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-04-02 19:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-02 19:16</div>
+            <div class="timeline-body"><p>Hmm wait does this change whether we actually invoke the shim? The &quot;bug&quot; was purely display?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 19:24</div>
+            <div class="timeline-body"><p>Can you say more? Interpreter discovery invokes each executable it finds. Previously, we reported <code>sys.executable</code> (which for a shim, is the resolved path) — now, we report the invoked executable (i.e., the path we discovered).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2025-04-02 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-04-02 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-02 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-02 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-02 20:41</div>
+            <div class="timeline-body"><p>The detail I was unclear on was whether we <em>kept</em> invoking through that executable once we found it, or if we cached the sys.executable path and used that directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 20:45</div>
+            <div class="timeline-body"><p>Well.. we keep invoking through <code>sys.executable</code> in general, because we never tracked the original path. In <code>uv python list</code>, we don't invoke the interpreter again.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:22 UTC
+    </footer>
+</body>
+</html>

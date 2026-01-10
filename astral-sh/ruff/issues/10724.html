@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`Q000`, `Q001`, `Q002` can't be ignored in Ruff 0.3.5 - astral-sh/ruff #10724</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>Q000</code>, <code>Q001</code>, <code>Q002</code> can't be ignored in Ruff 0.3.5</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10724">#10724</a>
+        opened by <a href="https://github.com/hinohi">@hinohi</a>
+        on 2024-04-02 01:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hinohi">@hinohi</a> on 2024-04-02 01:19</div>
+            <div class="timeline-body"><p>In Ruff 0.3.5, if specifying to ignore one or two of the Q000, Q001, Q002 rules, they are not ignored.
+However, if specifying to ignore all three of those rules, then it works as expected.</p>
+<p>Reproduction code:</p>
+<pre><code class="language-python">'''
+bad docsting
+'''
+a = 'single'
+b = '''
+bad multi line
+'''
+</code></pre>
+<p>Running:</p>
+<pre><code>ruff check . --isolated --select Q --ignore Q000
+ruff check . --isolated --select Q --ignore Q001
+ruff check . --isolated --select Q --ignore Q002
+ruff check . --isolated --select Q --ignore Q000,Q001
+ruff check . --isolated --select Q --ignore Q000,Q002
+ruff check . --isolated --select Q --ignore Q001,Q002
+</code></pre>
+<p>Output  is:</p>
+<pre><code>a.py:1:1: Q002 [*] Single quote docstring found but double quotes preferred
+a.py:4:5: Q000 Single quotes found but double quotes preferred
+a.py:5:5: Q001 [*] Single quote multiline found but double quotes preferred
+Found 3 errors.
+[*] 2 fixable with the `--fix` option.
+</code></pre>
+<p>If specifying to ignore all three of those rules, then it works as expected:</p>
+<pre><code>$ ruff check . --isolated --select Q --ignore Q000,Q001,Q002
+All checks passed!
+</code></pre>
+<ul>
+<li>In 0.3.4, it correctly shows <code>All checks passed!</code>.</li>
+<li>I've tested this with Python versions 3.12.0 and 3.9.18, and the behavior is the same on both.</li>
+<li>I've observed this on both macOS 13.6 and Ubuntu 22.04.</li>
+<li>The issue persists whether configuring via the pyproject.toml file or command line arguments.</li>
+</ul>
+<p>Please let me know if you need any clarification or have additional details to provide.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ignore `Q000x` not working in Ruff 0.3.5" to "ignore `Q00x` not working in Ruff 0.3.5" by @hinohi on 2024-04-02 01:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/averykhoo">@averykhoo</a> on 2024-04-02 01:58</div>
+            <div class="timeline-body"><p>+1, facing the same issue</p>
+<p>my <code>ruff.toml</code> includes:</p>
+<pre><code class="language-toml">[lint]
+select = [
+    ...
+    &quot;Q&quot;, # flake8-quotes
+    ...
+]
+ignore = [
+    ...
+    &quot;Q000&quot;, # don't be pedantic about 'string' / &quot;string&quot;
+    &quot;Q001&quot;, # don't be pedantic about '''string''' / &quot;&quot;&quot;string&quot;&quot;&quot;
+    ...
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/averykhoo">@averykhoo</a> on 2024-04-02 02:21</div>
+            <div class="timeline-body"><p>was testing the config, the following flags <code>Q000</code> when it clearly shouldn't:</p>
+<pre><code class="language-toml">[lint]
+select = [
+    &quot;Q002&quot;, # flake8-quotes:bad-quotes-docstring
+]
+</code></pre>
+<p>but the following doesn't flag <code>Q000</code></p>
+<pre><code class="language-toml">[lint]
+select = [
+    ...
+    #&quot;Q&quot;, # flake8-quotes
+    &quot;Q000&quot;,
+    &quot;Q001&quot;,
+    &quot;Q003&quot;,
+    &quot;Q004&quot;,
+    ...
+]
+ignore = [
+    ...
+    &quot;Q000&quot;, # don't be pedantic about 'string' / &quot;string&quot;
+    &quot;Q001&quot;, # don't be pedantic about '''string''' / &quot;&quot;&quot;string&quot;&quot;&quot;
+    ...
+]
+</code></pre>
+<p>so it doesn't seem to be a problem with ignore, just with <code>Q002</code> specifically</p>
+<p>hope this helps you narrow down the issue!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-02 02:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-04-02 02:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-02 02:54</div>
+            <div class="timeline-body"><p>I think it's just an oversight in where we apply the ignores for those rules. I'll fix it now. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-02 03:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-02 03:44</div>
+            <div class="timeline-body"><p>Fixed in the next release, sorry about that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ignore `Q00x` not working in Ruff 0.3.5" to "`Q000`, `Q001`, `Q002` can't be ignored in Ruff 0.3.5" by @AlexWaygood on 2024-04-04 08:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:23 UTC
+    </footer>
+</body>
+</html>

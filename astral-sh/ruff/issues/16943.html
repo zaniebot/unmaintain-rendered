@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive for starred arguments with Python 3.10 - astral-sh/ruff #16943</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive for starred arguments with Python 3.10</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16943">#16943</a>
+        opened by <a href="https://github.com/je-cook">@je-cook</a>
+        on 2025-03-24 08:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/je-cook">@je-cook</a> on 2025-03-24 08:33</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I was trying to update my local ruff to 0.11.2 and I ran into a false positive for a syntax with starred expansion on Python 3.10. Below is a minimal example that raised the error <code>SyntaxError: Cannot use star expression in index on Python 3.10 (syntax was added in Python 3.11)</code>:</p>
+<pre><code class="language-python">Python 3.10.10 (main, Mar 28 2023, 14:51:24) [GCC 11.3.0] on linux
+Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt; ind = (0, 1)
+&gt;&gt;&gt; out = np.zeros((2, 2, 2, 3))
+&gt;&gt;&gt; out[(*(slice(None) for _ in range(2)), *ind)] = 1
+&gt;&gt;&gt; out
+array([[[[0., 1., 0.],
+         [0., 0., 0.]],
+
+        [[0., 1., 0.],
+         [0., 0., 0.]]],
+
+
+       [[[0., 1., 0.],
+         [0., 0., 0.]],
+
+        [[0., 1., 0.],
+         [0., 0., 0.]]]])
+</code></pre>
+<p>Thanks!</p>
+<h3>Version</h3>
+<p>ruff 0.11.2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-03-24 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ntBre by @ntBre on 2025-03-24 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-03-24 13:51</div>
+            <div class="timeline-body"><p>Thanks for the report! It looks like <em>unparenthesized</em> starred arguments are new in 3.11, but with parentheses it's okay in 3.10 too.</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; out[(*(slice(None) for _ in range(2)), *ind)]
+array([[1., 1.],
+       [1., 1.]])
+&gt;&gt;&gt; out[*(slice(None) for _ in range(2)), *ind]
+  File &quot;&lt;stdin&gt;&quot;, line 1
+    out[*(slice(None) for _ in range(2)), *ind]
+        ^
+SyntaxError: invalid syntax
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-03-24 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-03-24 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/je-cook">@je-cook</a> on 2025-03-24 14:36</div>
+            <div class="timeline-body"><p>Thanks very much!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:02 UTC
+    </footer>
+</body>
+</html>

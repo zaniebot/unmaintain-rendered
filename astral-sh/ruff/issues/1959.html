@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D400 / D415 breaks doctest - astral-sh/ruff #1959</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>D400 / D415 breaks doctest</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1959">#1959</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-01-18 15:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-18 15:28</div>
+            <div class="timeline-body"><pre><code class="language-python">#!/usr/bin/python3
+def calculate_ipv6_reverse(network):
+    &quot;&quot;&quot;Return reversed network part of IPv4 network.
+    &gt;&gt;&gt; calculate_ipv6_reverse(False)
+    'False'
+    &gt;&gt;&gt; calculate_ipv6_reverse(True)
+    'True'
+    &quot;&quot;&quot;
+    return str(network)
+</code></pre>
+<p><code>ruff --isolated --select D --fix foo.py</code> turns that into:</p>
+<pre><code class="language-python">#!/usr/bin/python3
+def calculate_ipv6_reverse(network):
+    &quot;&quot;&quot;Return reversed network part of IPv4 network.
+    &gt;&gt;&gt; calculate_ipv6_reverse(False)
+    'False'
+    &gt;&gt;&gt; calculate_ipv6_reverse(True)
+    'True'.
+    &quot;&quot;&quot;
+    return str(network)
+</code></pre>
+<p>which then cause a failing doctest:</p>
+<pre><code>$ python3 -m doctest foo.py
+**********************************************************************
+File &quot;foo.py&quot;, line 6, in foo.calculate_ipv6_reverse
+Failed example:
+    calculate_ipv6_reverse(True)
+Expected:
+    'True'.
+Got:
+    'True'
+**********************************************************************
+1 items had failures:
+   1 of   2 in foo.calculate_ipv6_reverse
+***Test Failed*** 1 failures.
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-18 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @charliermarsh on 2023-01-18 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-18 16:41</div>
+            <div class="timeline-body"><p>I think you should add a blank line between the summary and the doc tests. The <a href="https://docs.python.org/3/library/doctest.html">doctest docs</a> do the same thing, and it's the safest way to avoid this false positive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-18 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-18 20:22</div>
+            <div class="timeline-body"><p>ok, I can adjust the new line.</p>
+<p>This also happens for:</p>
+<pre><code>def calculate_ipv6_reverse(network):
+    &quot;&quot;&quot;
+    &gt;&gt;&gt; calculate_ipv6_reverse(False)
+    'False'
+    &quot;&quot;&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-01-18 20:47</div>
+            <div class="timeline-body"><p>Maybe a new check which detects the missing blank line could be added?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:28:56 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `D:` drive for Windows CI - astral-sh/uv #10180</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use <code>D:</code> drive for Windows CI</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10180">#10180</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-12-26 19:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-26 19:58</div>
+            <div class="timeline-body"><p>When using the standard Windows runners (as opposed to the <em>larger</em> GitHub runners), an undocumented <code>D:</code> drive is available and performant. We can save some money on by using this on a standard runner instead of a larger runner with an ReFS drive. Switching to the <code>D:</code> drive was not acceptable for <code>cargo test</code> &gt;25m runtime.</p>
+<p>Inspired by https://github.com/pypa/pip/pull/13129
+See https://github.com/actions/runner-images/issues/8755</p>
+<p>Timings (grain of salt — GitHub is super noisy):</p>
+<ul>
+<li>clippy: 2m 18s -&gt; 2m 11s</li>
+<li>build binary: 2m 3s -&gt; 2m 35s</li>
+<li>trampoline check (x86-64): 2m 32s -&gt; 1m 50s (other architectures similar)</li>
+<li>trampoline test (x86-64): 4m 12s -&gt; 6m 7s</li>
+<li>trampoline test (i686): 6m 44s -&gt; 5m 35s</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2024-12-26 19:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-01-04 00:57</div>
+            <div class="timeline-body"><p>Interesting, I did a similar benchmark originally (not with TEMP) and found ReFS was much faster with uv than D drive. One thing we can definitely improve is moving the actual dev drive vhdx file to D: rather than C:</p>
+<p>We can also try a mix of Dev Drive but keep TEMP in D: rather than in the Dev Drive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-04 01:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Interesting, I did a similar benchmark originally (not with TEMP) and found ReFS was much faster with uv than D drive. One thing we can definitely improve is moving the actual dev drive vhdx file to D: rather than C:</p>
+</blockquote>
+<p>Interesting, <code>pip</code>'s recent benchmarking showed otherwise and the numbers here are honestly pretty promising for some of the jobs?</p>
+<blockquote>
+<p>We can also try a mix of Dev Drive but keep TEMP in D: rather than in the Dev Drive.</p>
+</blockquote>
+<p>Unfortunately there is no <code>D:</code> drive on the larger runners. So it's sort of looking like <code>D:</code> drive on a small runner or <code>ReFS</code> on a large runner.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-01-04 01:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Unfortunately there is no D: drive on the larger runners</p>
+</blockquote>
+<p>Ah, I didn't realize that. I haven't tried the larger runners on my personal runs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-04 02:14</div>
+            <div class="timeline-body"><p>It took me a while to figure out too :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2025-01-15 19:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @samypr100 by @zanieb on 2025-01-15 21:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-15 21:41</div>
+            <div class="timeline-body"><p>@samypr100 if you're interested, this seems good to go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-01-16 00:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>.github/workflows/setup-dev-drive.ps1</code>:18 on 2025-01-16 00:41</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    $OSVersion = [Environment]::OSVersion.Version
+    $Partition = New-VHD -Path C:/uv_dev_drive.vhdx -SizeBytes 20GB |
+        Mount-VHD -Passthru |
+        Initialize-Disk -Passthru |
+        New-Partition -AssignDriveLetter -UseMaximumSize
+    if ($OSVersion -ge (New-Object 'Version' 10.0.22621)) {
+        $Volume = ($Partition | Format-Volume -DevDrive -Confirm:$false -Force)
+    } else {
+        $Volume = ($Partition | Format-Volume -FileSystem ReFS -Confirm:$false -Force)
+    }
+</code></pre>
+<p>Possibly worthwhile, I would add the logic from https://github.com/pypa/pip/commit/483859b240109f9c149d7dbf32f4c7f858821e55 to take advantage of native dev drive functionality on the new 2025 preview runners.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> approved on 2025-01-16 00:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-01-16 02:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>.github/workflows/setup-dev-drive.ps1</code>:18 on 2025-01-16 02:20</div>
+            <div class="timeline-body"><p>I'm doing that in #10651 (though not conditional right now) and it doesn't look promising. I haven't tried not using ReFS though 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-01-17 19:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-17 19:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-17 19:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:16 UTC
+    </footer>
+</body>
+</html>

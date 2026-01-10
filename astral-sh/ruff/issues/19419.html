@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule suggestion: suspicious usage of `len()` - astral-sh/ruff #19419</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule suggestion: suspicious usage of <code>len()</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/19419">#19419</a>
+        opened by <a href="https://github.com/kaddkaka">@kaddkaka</a>
+        on 2025-07-18 09:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-07-18 09:37</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Calls to len that will have a constant return value are likely a mistake, see these examples:</p>
+<pre><code class="language-py">len(())
+len([])
+len({})
+len([[x for x in range(5)]])  # accidental 2 pairs of brackets, see real life example below [1]
+</code></pre>
+<ol>
+<li>https://github.com/chipsalliance/riscv-dv/blob/7e54b678ab7499040336255550cdbd99ae887431/pygen/pygen_src/isa/riscv_cov_instr.py#L365</li>
+</ol>
+<p>Building a list to count, could instead recommend <code>sum()</code>:</p>
+<pre><code class="language-py">len([1 for  item in big_container if item.is_common()])
+
+# replace with below to avoid creating a list
+sum(1 for  item in big_container if item.is_common())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Strange usage of `len()`" to "Rule suggestion: suspicious usage of `len()`" by @kaddkaka on 2025-07-18 09:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-07-18 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2025-07-18 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-07-23 04:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Building a list to count, could instead recommend <code>sum()</code>:</p>
+<pre><code class="language-py">len([1 for  item in big_container if item.is_common()])
+
+# replace with below to avoid creating a list
+sum(1 for  item in big_container if item.is_common())
+</code></pre>
+</blockquote>
+<p>So I initially thought the same, but I wrote a small benchmark:</p>
+<pre><code class="language-py">from timeit import timeit
+
+big_list = list(range(10_000))
+
+print(
+    &quot;len          &quot;,
+    timeit(lambda: len([e for e in big_list if e % 2]), number=10_000),
+)
+print(
+    &quot;len bool     &quot;,
+    timeit(lambda: len([True for e in big_list if e % 2]), number=10_000),
+)
+print(
+    &quot;sum list     &quot;,
+    timeit(lambda: sum([1 for e in big_list if e % 2]), number=10_000),
+)
+print(
+    &quot;sum generator&quot;,
+    timeit(lambda: sum(1 for e in big_list if e % 2), number=10_000),
+)
+</code></pre>
+<p>Results:
+<code>uvx --python=3.9 python test.py</code></p>
+<pre><code>len           1.7165404000000002
+len bool      1.6241272000000002
+sum list      1.8865444000000005
+sum generator 2.4472100999999995
+</code></pre>
+<p><code>uvx --python=3.13 python test.py</code></p>
+<pre><code>len           2.3589852999975847
+len bool      2.3424118000002636
+sum list      2.4642254000027606
+sum generator 2.8652036000021326
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-07-28 13:36</div>
+            <div class="timeline-body"><blockquote>
+<p>So I initially thought the same, but I wrote a small benchmark:</p>
+</blockquote>
+<p>Thanks for the benchmark, that is interesting 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-07-28 21:51</div>
+            <div class="timeline-body"><p>Apparently it's related to that a generator expression will repeatedly start and pause a code object.</p>
+<p>Similar generator expression together with any/all/tuple has been optimized with this PR to cpython: https://github.com/python/cpython/issues/131738</p>
+<p>ruff has a discussion related to performance around similar code: https://github.com/astral-sh/ruff/issues/16904</p>
+<p>I'm not sure what this entails exactly..</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:00 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to make peace with needed nested import statements for Ruff E402? - astral-sh/ruff #9091</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>How to make peace with needed nested import statements for Ruff E402?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9091">#9091</a>
+        opened by <a href="https://github.com/alanwilter">@alanwilter</a>
+        on 2023-12-11 09:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alanwilter">@alanwilter</a> on 2023-12-11 09:47</div>
+            <div class="timeline-body"><p>I use this lines a lot in several projects.</p>
+<pre><code class="language-python">import matplotlib
+import numpy as np
+
+matplotlib.use(&quot;Agg&quot;)
+
+from matplotlib import pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
+</code></pre>
+<p>There's no other way that I know to set the matplotlib backend. But by doing so this will trigger <a href="https://docs.astral.sh/ruff/rules/module-import-not-at-top-of-file/">E402</a>.</p>
+<p><code>isort</code> has some ways of handling that (see <a href="https://pycqa.github.io/isort/docs/configuration/action_comments.html">here</a>).</p>
+<p>Of course I can fill lots of <code># noqa: E402</code> but this is so ugly.</p>
+<p>Ideally, Ruff/isort should be smart enough to know these cases.</p>
+<p>Also, perhaps, page <a href="https://docs.astral.sh/ruff/rules/module-import-not-at-top-of-file/">E402</a> (and all others when reasonable) should show how to silence this warning if the user knows what's doing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-12-11 13:47</div>
+            <div class="timeline-body"><p>Could you share more details why <code>matplotlib.use</code> fails if it's after the other imports? https://matplotlib.org/stable/api/matplotlib_configuration_api.html#matplotlib.use reads like it should be possible.</p>
+<blockquote>
+<p>isort has some ways of handling that (see <a href="https://pycqa.github.io/isort/docs/configuration/action_comments.html">here</a>).</p>
+<p>Of course I can fill lots of # noqa: E402 but this is so ugly.</p>
+</blockquote>
+<p>isort action comments look similar to the <code>noqa</code> comments to me, could you give an example of how they are different?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alanwilter">@alanwilter</a> on 2023-12-11 14:27</div>
+            <div class="timeline-body"><p>If I load <code>from matplotlib import pyplot as plt</code> <em>before</em> <code>matplotlib.use(&quot;Agg&quot;)</code> it will be in interactive mode no matter what I do after. (ok, I can use <code>matplotlib.pyplot.ioff()</code>), but it will be slower to start and, if running remotely, it will start X11 service on my mac.</p>
+<p>Another solution would be:</p>
+<pre><code class="language-python">import matplotlib
+import numpy as np
+
+from matplotlib.backends.backend_pdf import PdfPages
+from matplotlib import pyplot as plt # need to be after the line above, but Ruff isort doesn't let
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-11 15:21</div>
+            <div class="timeline-body"><p>I've run into this <code>matplotlib</code> pattern before. I think it's actually reasonable for us to allow <code>matplotlib.use</code> calls to intersperse imports... In practice, I suspect it will strictly reduce false positives, with no false negatives.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-11 15:21</div>
+            <div class="timeline-body"><p>I'll PR it and see what the ecosystem checks say.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-12-11 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-12-11 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-11 17:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alanwilter">@alanwilter</a> on 2023-12-14 08:30</div>
+            <div class="timeline-body"><p>You guys are amazing. Father Xmas won't forget you ;-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/district10">@district10</a> on 2025-07-21 10:49</div>
+            <div class="timeline-body"><p>So what's the solution?</p>
+<p>I have a similar problem, <code>matplotlib.use(&quot;Agg&quot;)</code> -&gt; <code>load_dotenv()</code>.
+I don't want to &lt;<em>fill lots of <code># noqa: E402</code></em>&gt; (this is so ugly).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-21 13:21</div>
+            <div class="timeline-body"><p>Looking at the linked PR, <code>matplotlib.use</code> was added as a special case, so I don't think there's a similar fix for <code>load_dotenv</code>. We do support the mentioned <a href="https://pycqa.github.io/isort/docs/configuration/action_comments.html">isort</a> action comments in <a href="https://docs.astral.sh/ruff/linter/#action-comments">Ruff</a> now, so that's one option. Otherwise it might make sense to open a separate, more general issue for discussion.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:12 UTC
+    </footer>
+</body>
+</html>

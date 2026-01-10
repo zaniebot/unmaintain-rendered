@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect flake8-comprehension fixits (C401,C402) in fstring - astral-sh/ruff #2770</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect flake8-comprehension fixits (C401,C402) in fstring</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2770">#2770</a>
+        opened by <a href="https://github.com/Skylion007">@Skylion007</a>
+        on 2023-02-11 16:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-02-11 16:42</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>One annoying false positive change in this flake8-comprehensions are set/dict conversions to literals in f'strings.</p>
+<pre><code class="language-python">b = list(range(10))
+print(f'{set(a if a &lt; 6 else 0  for a in b)}')
+</code></pre>
+<p>which prints: <code>{0, 1, 2, 3, 4, 5}</code></p>
+<p>becomes</p>
+<pre><code class="language-python">b = list(range(10))
+print(f'{{a if a &lt; 6 else 0  for a in b}}')
+</code></pre>
+<p>which is actually wrong if it's in a fstring since it actually just escapes the innermost curly brace. This results in the printing of <code>{a if a &lt; 6 else 0 for a in b}</code></p>
+<p>It should fixit as</p>
+<pre><code class="language-python">b = list(range(10))
+print(f'{ {a if a &lt; 6 else 0  for a in b} }')
+</code></pre>
+<p>The space will prevent the curly brace from being escaped and is deleted when the fstring resolves which should provide identical behavior to the original code snippit. See this Stackoverflow post: https://stackoverflow.com/questions/49120113/dictionary-set-comprehensions-inside-of-f-string</p>
+<p>I suspect you wound find similar behavior for C402 with dict comprehensions.</p>
+<p>Command, Version Info, and Settings</p>
+<pre><code>ruff --select C401,C402 example.py --fix
+ruff 0.0.244
+no ruff pyproject.toml ruff settings specified
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-02-11 16:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-11 16:58</div>
+            <div class="timeline-body"><p>Ahh thank you! Good catch. I guess arguably we should avoid flagging this at all in f-strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-11 16:58</div>
+            <div class="timeline-body"><p>\cc @sbrugman if you're interested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-02-11 17:15</div>
+            <div class="timeline-body"><p>@charliermarsh It's not a bad change in fstrings, and it is potentially more performant, just need to be careful to do it properly :P . Another option is just to add an extra space around the inserted braces unconditionally and let black or whatever formatter you use deal with it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-11 17:17</div>
+            <div class="timeline-body"><p>Yeah I could see either being &quot;correct&quot;. Regardless sorry for the breakage!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-12 16:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:19 UTC
+    </footer>
+</body>
+</html>

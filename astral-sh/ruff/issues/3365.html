@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write a script to aggregate OSS data on Ruff configuration - astral-sh/ruff #3365</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Write a script to aggregate OSS data on Ruff configuration</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3365">#3365</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-03-06 19:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-06 19:27</div>
+            <div class="timeline-body"><p>Right now, it's hard for us to make data-informed decisions. It'd be nice to leverage our open-source usage to help understand questions like:</p>
+<ul>
+<li>Which rules are commonly turned on?</li>
+<li>Which rules are commonly turned off?</li>
+<li>Which rules are commonly <code># noqa</code> ignored (i.e., false positives)?</li>
+</ul>
+<p>This is good prior art (\ht @konstin): https://github.com/rust-lang/rust-clippy/issues/7666</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2023-03-06 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2023-03-06 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-06 19:27</div>
+            <div class="timeline-body"><p>Labeling this as &quot;good first issue&quot;, not because it's well-scoped, but because it's a relatively independent project (and could be done without writing any Rust, if anyone is eager to help out).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-03-08 13:58</div>
+            <div class="timeline-body"><p>I could take a look – https://github.com/search?q=path%3A**%2Fpyproject.toml+ruff&amp;type=code seems like a good starting point (along with  <code>**/ruff.toml</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-03-08 14:12</div>
+            <div class="timeline-body"><p>fwiw it seems that github doesn't expose an api to their dependency graph, so i'd also go with that code search (or something api friendlier if github has too tight query limits)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-03-08 14:18</div>
+            <div class="timeline-body"><p>@konstin Dependency graph probably wouldn't directly pick up e.g. <code>ruff-pre-commit</code> in a pre-commit config file (which is how I tend to use ruff). Anyway, I have a skeleton of an aggregator up already 🔧</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-03-08 17:35</div>
+            <div class="timeline-body"><p>Alright, here goes with some initial data 😁</p>
+<ul>
+<li>Results: https://gist.github.com/akx/de1fddb5950d763c9d9d934e5522e6f0#file-results-md<ul>
+<li>JSON: https://gist.github.com/akx/de1fddb5950d763c9d9d934e5522e6f0#file-results-json</li>
+</ul>
+</li>
+<li>Code: https://github.com/akx/ruff-usage-aggregate</li>
+</ul>
+<p>The GitHub Search API doesn't seem to be using the <a href="https://github.blog/changelog/2023-02-23-no-more-waitlist-code-search-and-code-view-are-available-to-all-in-public-beta/">new Code Search stuff</a> and is heavily rate-limited, so the dataset may not be great just yet (PRs welcome, of course). Let me know if you want the files I have so far!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-08 18:13</div>
+            <div class="timeline-body"><p>What about the <code>ALL</code> data?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-03-08 18:15</div>
+            <div class="timeline-body"><blockquote>
+<p>What about the <code>ALL</code> data?</p>
+</blockquote>
+<p>If you mean the <code>ALL</code> selector, it's enabled in 23/306 files seen. (You can see it in the &quot;Other values&quot; list in the Select section.) It would probably be interesting to see if those repos also have lots of <code>ignore</code>s.</p>
+<p>Similarly, I guess a more holistic view (that knew about all of the codes Ruff knows about) would be an interesting next step!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-09 02:56</div>
+            <div class="timeline-body"><p>Oooh this is so useful! Thank you @akx! The other piece of data that would be really useful to see, though not sure whether it can fit into this paradigm, is how often various codes are used in <code># noqa</code>, since a <code># noqa</code> is often indicative of a false positive.</p>
+<p>Another question I'd have (though not your responsibility to answer, only if you're curious): I know the data is based on 306 TOML files. I'd be interested to know how often various fields are set vs. unset. (E.g., the <code>.md</code> version says 200 files enable <code>E</code> and <code>F</code>. Are the remaining 306 omitting them? Or do they use the default config, and so they're enabled anyway?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-03-09 07:26</div>
+            <div class="timeline-body"><p>@charliermarsh Sure! I updated the gist with <a href="https://gist.github.com/akx/de1fddb5950d763c9d9d934e5522e6f0#fields-set-in-configuration">&quot;Fields set in configuration&quot;</a> (since I already had that data anyway, it just wasn't aggregated). It's also based on a slightly larger dataset (I realized I didn't process <code>ruff.toml</code>s correctly before).</p>
+<p>Finding noqas will require a bit more magic, but now that I do have a good starter dataset of which repos may have Ruff enabled, we can go from there (but not right now since I have 9% laptop battery left 😂)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-03-10 09:07</div>
+            <div class="timeline-body"><p>I updated the gist with a bigger dataset (1352 files!) – and since the JSON data was getting unwieldy, had to remove it from there. If someone needs it for analysis, let me know... though that said, everything should now be recreatable with just running <code>make</code> in <code>ruff-usage-aggregate</code> :)</p>
+<p>The numbers remain roughly the same:</p>
+<ul>
+<li>empty <code>select</code>/<code>extend-select</code>: 61%</li>
+<li>empty <code>ignore</code>/<code>extend-ignore</code>: 69%</li>
+<li>empty <code>fixable</code>: 95%</li>
+<li>empty <code>unfixable</code>: 88%</li>
+<li>most-configured field: <code>line-length</code></li>
+<li>median configured line-length: 100</li>
+<li>most popular configured line-length: 120</li>
+<li>most popular configured Python version: py310</li>
+<li>top unfixable by far: F401 (unused import)</li>
+<li>top ignore: E501 (line length), D203 (blank line before class docstring), D213 (multi-line docstring summary should start at 2nd line)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-03-10 11:33</div>
+            <div class="timeline-body"><p>Welp, turns out there was a bug or two that conflated &quot;unset&quot; with &quot;empty set&quot; 🙄  – I <em>think</em> this data is now more or less correct:</p>
+<p>| Name | Value |
+| --- | --- |
+| Total TOML files | 1613 |
+| Unique TOML files | 1352 |
+| Deduplicated TOML files | 261 |
+| No select | 28.7% |
+| No ignore | 35.3% |
+| No fixable | 94.8% |
+| No unfixable | 84.2% |
+| Most popular configured Python version | py310 |
+| Median configured line length | 100 |
+| Most common unfixable | F401 |
+| Most common ignore | E501 |
+| Most common select | F |</p>
+<p>Also updated into the gist, with all of the details...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-03-21 08:45</div>
+            <div class="timeline-body"><p>Updated with some 90+ new repos in a fortnight: https://gist.github.com/akx/211308a4d2b31aaf4412558af6fe62a1</p>
+<p>| Name | Value |
+| --- | --- |
+| Total TOML files | 1846 |
+| Unique TOML files | 1577 |
+| Deduplicated TOML files | 269 |
+| No select | 29.4% |
+| No ignore | 36.0% |
+| No fixable | 94.2% |
+| No unfixable | 84.6% |
+| Most popular configured Python version | py310 |
+| Median configured line length | 100.0 |
+| Most common unfixable | F401 |
+| Most common ignore | E501 |
+| Most common select | F |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-22 02:13</div>
+            <div class="timeline-body"><p>Awesome, thank you for this! (Gonna close issue :))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-22 02:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-03-28 12:21</div>
+            <div class="timeline-body"><p>https://gist.github.com/akx/817f5dc5663b80ae1315e108393b11a5</p>
+<p>126 new unique configuration files in a week 🎉</p>
+<p>| Name | Value |
+| --- | --- |
+| Total TOML files | 1982 |
+| Unique TOML files | 1703 |
+| Deduplicated TOML files | 279 |
+| No select | 29.8% |
+| No ignore | 36.1% |
+| No fixable | 94.2% |
+| No unfixable | 85.1% |
+| Most popular configured Python version | py310 |
+| Median configured line length | 100.0 |
+| Most common unfixable | F401 |
+| Most common ignore | E501 |
+| Most common select | F |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-28 12:30</div>
+            <div class="timeline-body"><p>I love these updates. Thank you @akx, for updating them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-04-27 11:50</div>
+            <div class="timeline-body"><p>https://gist.github.com/akx/291e96a3cb4f085d86e4830eecb5375e</p>
+<p>| Name | Value |
+| --- | --- |
+| Total TOML files | 3143 |
+| Unique TOML files | 2628 |
+| Deduplicated TOML files | 515 |
+| No select | 29.6% |
+| No ignore | 35.8% |
+| No fixable | 92.3% |
+| No unfixable | 85.1% |
+| Most popular configured Python version | py310 |
+| Median configured line length | 100 |
+| Most common unfixable | F401 |
+| Most common ignore | E501 |
+| Most common select | F |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-05-10 09:27</div>
+            <div class="timeline-body"><p>https://gist.github.com/akx/01c0d37eedd921c0b88d06262812413a</p>
+<p>| Name | Value |
+| --- | --- |
+| Total TOML files | 3812 |
+| Unique TOML files | 3230 |
+| Deduplicated TOML files | 582 |
+| No select | 29.8% |
+| No ignore | 35.3% |
+| No fixable | 91.9% |
+| No unfixable | 84.9% |
+| Most popular configured Python version | py310 |
+| Median configured line length | 100.0 |
+| Most common unfixable | F401 |
+| Most common ignore | E501 |
+| Most common select | F |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-05-11 20:07</div>
+            <div class="timeline-body"><p>Thank you for the continued data collection! Would it be feasible to filter out forks? i think we're seeing quite a bit of duplication in the dataset from them, there's e.g. 111 OpenBBTerminal in https://github.com/akx/ruff-usage-aggregate/blob/master/data/known-github-tomls.jsonl .</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-05-11 20:09</div>
+            <div class="timeline-body"><p>@konstin Forks might be hard to find without consulting the GitHub API more, but we're already only considering unique TOMLs:</p>
+<p>https://github.com/akx/ruff-usage-aggregate/blob/47a3db9be5a03d5f107a9001831bb2caf6620843/ruff_usage_aggregate/models.py#L19-L29</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:34 UTC
+    </footer>
+</body>
+</html>

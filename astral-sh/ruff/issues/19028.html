@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INT rules have false negatives for other ways to use gettext functions - astral-sh/ruff #19028</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>INT rules have false negatives for other ways to use gettext functions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/19028">#19028</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-06-29 15:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-06-29 15:55</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/f-string-in-get-text-func-call/"><code>f-string-in-get-text-func-call</code> (INT001)</a>, <a href="https://docs.astral.sh/ruff/rules/format-in-get-text-func-call/"><code>format-in-get-text-func-call</code> (INT002)</a>, and <a href="https://docs.astral.sh/ruff/rules/printf-in-get-text-func-call/"><code>printf-in-get-text-func-call</code> (INT003)</a> do not recognize internalization functions when written as attribute references, e.g. <code>gettext.ngettext</code> instead of <code>ngettext</code>. This is a false negative because tools like xgettext recognize attribute references too.</p>
+<p>These rules do not recognize internalization functions when bound to different names, e.g. <code>gettext.ngettext</code> imported as <code>N_</code> instead of <code>ngettext</code>. This is a false negative because if someone writes such a binding, they probably also specify it as a gettext keyword, e.g. with <code>xgettext -kN_:1,2</code>, even if they don’t configure Ruff with <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-gettext_function-names"><code>function-names</code></a> or <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-gettext_extend-function-names"><code>extend-function-names</code></a> explicitly.</p>
+<p><a href="https://play.ruff.rs/d54ecf1a-f020-4294-823a-d33ebcccaffb">False negatives</a>:</p>
+<pre><code class="language-python">import builtins
+import gettext
+from gettext import gettext as _gettext
+gettext.install(&quot;int_fn&quot;)
+name = &quot;world&quot;
+
+print(builtins._(f&quot;Hello, {name}!&quot;))
+print(gettext.gettext(f&quot;Hello, {name}!&quot;))
+print(_gettext(f&quot;Hello, {name}!&quot;))
+
+print(builtins._(&quot;Hello, {}!&quot;.format(name)))
+print(gettext.gettext(&quot;Hello, {}!&quot;.format(name)))
+print(_gettext(&quot;Hello, {}!&quot;.format(name)))
+
+print(builtins._(&quot;Hello, %s!&quot; % name))
+print(gettext.gettext(&quot;Hello, %s!&quot; % name))
+print(_gettext(&quot;Hello, %s!&quot; % name))
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.1 (32c54189c 2025-06-26)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-06-29 23:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-06-29 23:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-06-29 23:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-29 23:44</div>
+            <div class="timeline-body"><p>It looks like these rules just check for a <code>Name</code> expression and compare the name directly instead of matching the qualified name, for example:</p>
+<p>https://github.com/astral-sh/ruff/blob/e7aadfc28b5a1447c45d39017a37f1acd1001f14/crates/ruff_python_semantic/src/analyze/imports.rs#L73-L77</p>
+<p>That means we also have <a href="https://play.ruff.rs/01fe174e-1a25-4c4e-b8cd-1b708af0d548">false positives</a> for any function with the same name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-06-30 00:36</div>
+            <div class="timeline-body"><p>Checking for unqualified names is necessary to support <a href="https://docs.python.org/3/library/gettext.html#deferred-translations">deferred translations</a>. Though the <code>gettext</code> in your example is not the real <code>gettext.gettext</code> at runtime, a tool like xgettext will still try to extract strings from its calls, so it is still helpful for Ruff to warn about it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-30 00:45</div>
+            <div class="timeline-body"><p>Oh, thank you, that's good to know! We'll have to be a bit more careful here than I thought.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robsdedude">@robsdedude</a> on 2025-06-30 10:55</div>
+            <div class="timeline-body"><p>@dscorbett I sympathize with all but the <code>builtins</code> examples. Why should</p>
+<pre><code class="language-python">print(builtins._(f&quot;Hello, {name}!&quot;))
+</code></pre>
+<p>trigger the lint? The <code>builtins</code> module has not attribute <code>_</code>. And I don't think many people would be assigning it dynamically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-06-30 12:10</div>
+            <div class="timeline-body"><p><code>builtins._</code> should trigger the lint for two reasons. In general, anything matching a name in <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-gettext_function-names">function-names</a> (which includes <code>_</code> by default) should be considered a gettext function, either because it really is at runtime, or to support deferred translations. In particular, people <em>do</em> dynamically assign <code>builtins._</code> using the standard library’s <a href="https://docs.python.org/3/library/gettext.html#gettext.install"><code>gettext.install</code></a>. People also <a href="https://github.com/search?q=language%3APython+%2F%5Cbbuiltins%5C..*%5Cb_%5Cb.*+%3D+.*gettext%2F&amp;type=code">set it dynamically to various third-party gettext implementations.</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/robsdedude">@robsdedude</a> on 2025-06-30 21:19</div>
+            <div class="timeline-body"><blockquote>
+<p>In general, anything matching a name in <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-gettext_function-names">function-names</a> (which includes _ by default) should be considered a gettext function, either because it really is at runtime, or to support deferred translations</p>
+</blockquote>
+<p>The deferred translation example in the Python docs, does not actually bind <code>_</code> to <code>builtins</code>, just as a local/global variable.</p>
+<blockquote>
+<p>In particular, people do dynamically assign builtins._ using the standard library’s <a href="https://docs.python.org/3/library/gettext.html#gettext.install">gettext.install</a>. People also <a href="https://github.com/search?q=language%3APython+%2F%5Cbbuiltins%5C..*%5Cb_%5Cb.*+%3D+.*gettext%2F&amp;type=code">set it dynamically to various third-party gettext implementations.</a></p>
+</blockquote>
+<p>Now that's a very compelling argument 😅 seems quite idiomatic then. Not sure I like the design, but that's not relevant here =)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-10-20 22:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:53 UTC
+    </footer>
+</body>
+</html>

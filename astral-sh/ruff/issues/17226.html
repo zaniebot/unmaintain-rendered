@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`FAST003` false positive when path parameter is included inside a `BaseModel` dependency - astral-sh/ruff #17226</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>FAST003</code> false positive when path parameter is included inside a <code>BaseModel</code> dependency</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17226">#17226</a>
+        opened by <a href="https://github.com/biellSilva">@biellSilva</a>
+        on 2025-04-05 23:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/biellSilva">@biellSilva</a> on 2025-04-05 23:16</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I’ve noticed that the rule <code>FAST003</code> (<code>fast-api-unused-path-parameter</code>) is reporting false positives when the path parameter is provided via a <code>BaseModel</code> using <code>Depends</code>.</p>
+<p>For example, consider the following code:</p>
+<pre><code class="language-py">from fastapi import APIRouter, Depends
+from pydantic import BaseModel
+from typing import Annotated
+
+router = APIRouter()
+
+class MyParams(BaseModel):
+    my_id: int
+
+@router.get(&quot;/{my_id}&quot;)
+async def get_id(params: Annotated[MyParams, Depends()]):
+    return {&quot;my_id&quot;: params.my_id}
+</code></pre>
+<p>In this case, <code>my_id</code> is being used correctly via the <code>params</code> dependency, but the linter still raises:
+<em>Parameter <code>my_id</code> appears in route path, but not in <code>get_id</code> signature <strong>Ruff [<a href="https://docs.astral.sh/ruff/rules/fast-api-unused-path-parameter">FAST003</a>]</strong></em></p>
+<p>However, this is a valid and common FastAPI pattern, where parameters are parsed from <code>Depends()</code> into a Pydantic model.</p>
+<h3>Expected behavior</h3>
+<p>No warning should be raised when the path parameter is being handled inside a <code>BaseModel</code> via dependency injection.</p>
+<h3>Actual behavior</h3>
+<p>The linter raises <code>FAST003</code> even though the parameter is properly used.</p>
+<h3>Additional notes</h3>
+<ul>
+<li>This pattern is especially useful for grouping parameters together.</li>
+<li>The rule might need to inspect <code>Depends()</code> models to detect path parameters coming from annotated dependencies.</li>
+</ul>
+<h3>Versions</h3>
+<p>Ruff: 0.11.3
+FastAPI: 0.115.12
+Pydantic: 2.11.2</p>
+<h3>Version</h3>
+<p>0.11.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2025-04-07 08:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-07 08:25</div>
+            <div class="timeline-body"><p>Thank's for reporting. We could improve our detection here for params that are defined in the same file but we won't be able to support this pattern when the param is defined elsewhere (see https://github.com/astral-sh/ruff/issues/16795)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-04-07 08:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-04-07 08:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-06-02 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-02 18:35</div>
+            <div class="timeline-body"><p>Oops, reopening this for more robust support with type inference, but the same-file case should now be resolved!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @ntBre on 2025-06-02 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phi-friday">@phi-friday</a> on 2025-08-11 12:29</div>
+            <div class="timeline-body"><p>It seems that this case is also a false positive.</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from typing import Annotated, Any
+
+from fastapi import APIRouter, Depends, Path
+
+router = APIRouter()
+
+
+async def find_item(id: Annotated[str, Path()]) -&gt; str:  # noqa: A002
+    &quot;&quot;&quot;Find an item by its ID.&quot;&quot;&quot;
+    return f&quot;Item with ID: {id}&quot;
+
+
+FindItem = Depends(find_item)
+
+
+@router.get(&quot;/{id}&quot;)
+async def get_item(item: Annotated[str, FindItem]) -&gt; dict[str, Any]:
+    &quot;&quot;&quot;Get an item by its ID.&quot;&quot;&quot;
+    return {&quot;item&quot;: item}
+
+</code></pre>
+<pre><code class="language-zsh">❯ uv run ruff check test.py
+test.py:18:15: FAST003 Parameter `id` appears in route path, but not in `get_item` signature
+   |
+18 | @router.get(&quot;/{id}&quot;)
+   |               ^^^^ FAST003
+19 | async def get_item(item: Annotated[str, FindItem]) -&gt; dict[str, Any]:
+20 |     &quot;&quot;&quot;Get an item by its ID.&quot;&quot;&quot;
+   |
+   = help: Add `id` to function signature
+
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:10 UTC
+    </footer>
+</body>
+</html>

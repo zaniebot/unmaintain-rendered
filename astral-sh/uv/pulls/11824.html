@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warn when duplicate index names found in single file - astral-sh/uv #11824</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Warn when duplicate index names found in single file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11824">#11824</a>
+        opened by <a href="https://github.com/sou1118">@sou1118</a>
+        on 2025-02-27 07:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sou1118">@sou1118</a> on 2025-02-27 07:09</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>This pull request introduces validation for unique index names in the <code>tool.uv.index</code> field and adds corresponding tests to ensure the functionality. The most important changes include adding a custom deserializer function, updating the <code>ToolUv</code> struct to use the new deserializer, and adding tests to verify the behavior.</p>
+<p>Validation and deserialization:</p>
+<ul>
+<li><a href="diffhunk://#diff-e12cd255985adfd45ab06f398cb420d2f543841ccbeea4175ccf827aa9215b9dR283-R311"><code>crates/uv-workspace/src/pyproject.rs</code></a>: Added a custom deserializer function <code>deserialize_index_vec</code> to validate that index names in the <code>tool.uv.index</code> field are unique.</li>
+<li><a href="diffhunk://#diff-e12cd255985adfd45ab06f398cb420d2f543841ccbeea4175ccf827aa9215b9dR374"><code>crates/uv-workspace/src/pyproject.rs</code></a>: Updated the <code>ToolUv</code> struct to use the <code>deserialize_index_vec</code> function for the <code>index</code> field.</li>
+</ul>
+<p>Testing:</p>
+<ul>
+<li><a href="diffhunk://#diff-82edd36151736f44055f699a34c8b19a63ffc4cf3c86bf5fb34d69f8ac88a957R15336"><code>crates/uv/tests/it/lock.rs</code></a>: Added a test <code>lock_repeat_named_index</code> to verify that duplicate index names result in an error. <a href="diffhunk://#diff-82edd36151736f44055f699a34c8b19a63ffc4cf3c86bf5fb34d69f8ac88a957R15336">[1]</a> <a href="diffhunk://#diff-82edd36151736f44055f699a34c8b19a63ffc4cf3c86bf5fb34d69f8ac88a957R15360-R15402">[2]</a></li>
+<li><a href="diffhunk://#diff-82edd36151736f44055f699a34c8b19a63ffc4cf3c86bf5fb34d69f8ac88a957R15360-R15402"><code>crates/uv/tests/it/lock.rs</code></a>: Added a test <code>lock_unique_named_index</code> to verify that unique index names result in successful lock file generation.</li>
+</ul>
+<p>Schema update:</p>
+<ul>
+<li><a href="diffhunk://#diff-c669473b258a19ba6d3557d0369126773b68b27171989f265333a77bc5cb935bR205"><code>uv.schema.json</code></a>: Updated the schema to set the default value of the <code>index</code> field to <code>null</code>.</li>
+</ul>
+<p>Fixes #11804</p>
+<h2>Test Plan</h2>
+<h3>Steps to reproduce and verify the fix:</h3>
+<ol>
+<li><p>Clone the repository and checkout the feature branch</p>
+<pre><code class="language-bash">git clone https://github.com/astral-sh/uv.git
+cd uv
+git checkout feature/warn-duplicate-index-names
+</code></pre>
+</li>
+<li><p>Build the modified binary</p>
+<pre><code class="language-bash">cargo build
+</code></pre>
+</li>
+<li><p>Create a test project using the system installed uv</p>
+<pre><code class="language-bash">uv init uv-test
+cd uv-test
+</code></pre>
+</li>
+<li><p>Manually edit pyproject.toml to add duplicate index names</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;alpha_b&quot;
+url = &quot;&lt;omitted&gt;&quot;
+
+[[tool.uv.index]]
+name = &quot;alpha_b&quot;
+url = &quot;&lt;omitted&gt;&quot;
+</code></pre>
+</li>
+<li><p>Try to add a package using the modified binary</p>
+<pre><code class="language-bash">../target/debug/uv add numpy
+</code></pre>
+</li>
+</ol>
+<h3>Results</h3>
+<p>Before: use release binary
+<img src="https://github.com/user-attachments/assets/2823a4b4-b3ba-40aa-aa41-e593d35c3f3b" alt="スクリーンショット 2025-02-27 15 52 28" /></p>
+<p>After: use self build binary
+<img src="https://github.com/user-attachments/assets/9ac773a9-58cd-4d4b-8685-148bf6dc85fb" alt="スクリーンショット 2025-02-27 15 51 58" /></p>
+<p>Now when attempting to use a pyproject.toml with duplicate index names, the modified binary correctly detects the issue and produces an error message:</p>
+<pre><code>error: Failed to parse: `pyproject.toml`
+  Caused by: TOML parse error at line 9, column 1
+  |
+9 | [[tool.uv.index]]
+  | ^^^^^^^^^^^^^^^^^
+duplicate index name `alpha_b`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @sou1118 on 2025-02-27 07:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sou1118 on 2025-02-27 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2025-02-27 09:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2025-02-27 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2025-02-27 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-02-27 21:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-27 21:24</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-02-27 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-27 21:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-28 08:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:21 UTC
+    </footer>
+</body>
+</html>

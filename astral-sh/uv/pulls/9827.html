@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fork version selection based on `requires-python` requirements - astral-sh/uv #9827</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fork version selection based on <code>requires-python</code> requirements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9827">#9827</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-12-11 23:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-11 23:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR addresses a significant limitation in the resolver whereby we avoid choosing the latest versions of packages when the user supports a wider range.</p>
+<p>For example, with NumPy, the latest versions only support Python 3.10 and later. If you lock a project with <code>requires-python = &quot;&gt;=3.8&quot;</code>, we pick the last NumPy version that supported Python 3.8, and use that for <em>all</em> Python versions. So you get <code>1.24.4</code> for all versions, rather than <code>2.2.0</code>. And we'll never upgrade you unless you bump your <code>requires-python</code>. (Even worse, those versions don't have wheels for Python 3.12, etc., so you end up building from source.)</p>
+<p>(As-is, this is intentional. We optimize for minimizing the number of selected versions, and the current logic does that well!)</p>
+<p>Instead, we know recognize when a version has an elevated <code>requires-python</code> specifier and fork. This is a new fork point, since we need to fork once we have the package metadata, as opposed to when we see the dependencies.</p>
+<p>In this iteration, I've made this behavior the default. I'm sort of undecided on whether I want to push on that... Previously, I'd suggested making it opt-in via a setting (https://github.com/astral-sh/uv/pull/8686).</p>
+<p>Closes https://github.com/astral-sh/uv/issues/8492.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-12-11 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @konstin removed by @charliermarsh on 2024-12-11 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-12-11 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @BurntSushi removed by @charliermarsh on 2024-12-11 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-12-11 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-12-11 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-12-11 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-12-11 23:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-11 23:17</div>
+            <div class="timeline-body"><p>I suggest taking a look at the changes in the <code>lock.rs</code> tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fork version selection based on requires-python requirements" to "Fork version selection based on `requires-python` requirements" by @charliermarsh on 2024-12-11 23:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-12 03:50</div>
+            <div class="timeline-body"><p>Is this breaking as a default behavior? Or will it not invalidate existing lockfiles?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-12 03:55</div>
+            <div class="timeline-body"><p>No, it wouldn't invalidate existing lockfiles.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-12 04:05</div>
+            <div class="timeline-body"><p>From the test changes, I think this behavior is actually a bit more intuitive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution-types/src/prioritized_distribution.rs</code>:67 on 2024-12-12 10:25</div>
+            <div class="timeline-body"><p>Can't we read the requires python from disk for it, or is that irrelevant here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:327 on 2024-12-12 10:36</div>
+            <div class="timeline-body"><p>This should get a comment that we're allowed to skip unit propagation because we just forked after package prioritization but before (at least in the fork it's before) version selection.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:358 on 2024-12-12 10:37</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                        // Choose a package.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/lock.rs</code>:3452 on 2024-12-12 10:46</div>
+            <div class="timeline-body"><p>imo we should only split at <code>major.minor</code> and ignore patch levels (see also https://discuss.python.org/t/requires-python-and-pre-release-python-versions/62959/24).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/lock.rs</code>:4941 on 2024-12-12 10:58</div>
+            <div class="timeline-body"><p>Note to self: the cp313 wheels aren't missing, this is just our exclude newer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1129 on 2024-12-12 11:05</div>
+            <div class="timeline-body"><p>maybe something that we handle implicitly, but wouldn't we always return at least one fork (because union(left, right) is the entire requires-python of the fork we're in, so partitioning it at least one partition must overlap), so when we get one fork we should also continue implicitly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-12-12 11:10</div>
+            <div class="timeline-body"><p>This is elegant!</p>
+<p>I do like this as a default. I'm unsure if it's the right default when there is a universal wheel, but it's definitely better for packages with platform specific wheels such as numpy, where it solves a class of problems that is otherwise hard to understand and fix for the user with convenient defaults.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/requires_python.rs</code>:113 on 2024-12-12 14:08</div>
+            <div class="timeline-body"><p>A few unit tests for this routine might be worthwhile. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:460 on 2024-12-12 14:11</div>
+            <div class="timeline-body"><p>How come this isn't just a free function?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:467 on 2024-12-12 14:12</div>
+            <div class="timeline-body"><p>Is it worth a <code>TRACE</code>-level log message here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1129 on 2024-12-12 14:16</div>
+            <div class="timeline-body"><p>I had a similar thought here. But I find it somewhat difficult to reason about invariants that are always true. For example, if the fork has a marker that always evaluates to <code>false</code>, then <code>VersionForker::fork</code> could return an empty set of forks. But... I think it's impossible at this point to have such a marker?</p>
+<p>Other than that, I think I agree with you. We could add an <code>assert!</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-12-12 14:18</div>
+            <div class="timeline-body"><p>I'm a little uneasy about making this the default (I see that the markers get a fair bit more complicated), but I do agree that this does seem to work well in the Python ecosystem. I trust your judgment. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-12-12 14:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:467 on 2024-12-12 14:42</div>
+            <div class="timeline-body"><p>Would also be helpful to have a debug log when we hit the <code>return Ok(Some(ResolverVersion::Forked(forks)));</code> branch so we log that we fork due to requires python</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-12-12 15:07</div>
+            <div class="timeline-body"><p>We should add a sentence or two about this new behavior in <code>resolver-internals.md</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1129 on 2024-12-12 21:30</div>
+            <div class="timeline-body"><p>Both of the forks need to be non-empty when splitting the Python requirement. We then filter out forks that are disjoint with the markers, because it's subtly different... We could have a project with <code>requires-python = &quot;&gt;=3.9&quot;</code>, and then be in a fork with <code>python_version &lt; '3.8' or python_version &gt; '3.11</code>.</p>
+<p>If we then split at Python 3.10, we'd split the requires-python into <code>&gt;=3.9, &lt;3.10</code> and <code>&gt;=3.10</code>.</p>
+<p>If we intersect <code>&gt;=3.9, &lt;3.10</code> with <code>python_version &lt; '3.8' or python_version &gt; '3.11</code>, that's empty, so we need to drop that piece.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-12 21:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-13 01:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution-types/src/prioritized_distribution.rs</code>:67 on 2024-12-13 01:22</div>
+            <div class="timeline-body"><p>I believe it's irrelevant here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/requires_python.rs</code>:113 on 2024-12-13 02:50</div>
+            <div class="timeline-body"><p>Good call!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-13 02:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-13 04:14</div>
+            <div class="timeline-body"><p>Current thinking is to make this the default, but add a setting such that users can opt-out if necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-12-13 20:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-13 20:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-13 20:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-12-13 21:05</div>
+            <div class="timeline-body"><p>Minor comment on the PR summary: NumPy now only supports 3.11+, no longer 3.10+ (following SPEC 0). ;)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:16 UTC
+    </footer>
+</body>
+</html>

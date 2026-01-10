@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bugfix relative path glob walking for cache-keys - astral-sh/uv #12888</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bugfix relative path glob walking for cache-keys</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12888">#12888</a>
+        opened by <a href="https://github.com/stonier">@stonier</a>
+        on 2025-04-15 00:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/stonier">@stonier</a> on 2025-04-15 00:04</div>
+            <div class="timeline-body"><h2>Description</h2>
+<p>Being able to specify relative paths for <code>cache-keys</code> is useful, but it is currently broken. This PR fixes that.</p>
+<h2>Background</h2>
+<h3>Use Case</h3>
+<p>Building a python project from maturin on a cargo workspace (i.e. it's not just the local package to trigger rebuilds from). e.g.</p>
+<pre><code>[tool.uv]
+# Rebuild package when any rust files change
+cache-keys = [
+    { file = &quot;pyproject.toml&quot; },
+    { file = &quot;Cargo.toml&quot; },
+    { file = &quot;.cargo/config.toml&quot; },
+    { file = &quot;**/*.rs&quot; },
+    { file = &quot;../sv2_behaviors/**/*.rs&quot; },
+    { file = &quot;../sv2_collisions/**/*.rs&quot; },
+    ...
+]
+</code></pre>
+<h3>Why it's broken</h3>
+<p>The previous tool, <code>globwalker</code>, cannot handle relative paths - it just silently passed over them. It's a long standing issue (5+ years) that's not likely to be fixed given that it's in maintenance mode.</p>
+<ul>
+<li>https://github.com/Gilnaa/globwalk/issues/28.</li>
+</ul>
+<h2>Solution</h2>
+<p>Plain old <code>glob</code> can handle relative paths. It is obsessed with working from <code>cwd</code> though, so this PR provides some assistance to redirect the relative paths to that rather than the directory that the toml file is in though.</p>
+<h2>Test Plan</h2>
+<p>I have a unit test in place to check for the relative path lookups.</p>
+<hr />
+<p>First time contributing here, please do point out where and how I might better integrate this contribution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2025-04-15 09:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2025-04-15 09:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-15 12:28</div>
+            <div class="timeline-body"><p>I <em>think</em> the technique here is sound, but I'm not certain. @charliermarsh How good is our test coverage here? IIRC, another concern here was perf. This PR I think is changing it to a world where every glob results in its own distinct directory traversal, which seems like it might be an issue. It might be better to just use <code>globset</code> with <code>walkdir</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-15 12:44</div>
+            <div class="timeline-body"><p>Our test coverage here is not particularly good.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:23 UTC
+    </footer>
+</body>
+</html>

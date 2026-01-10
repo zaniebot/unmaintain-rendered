@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeVar special handling doesn't recognize ** for ARG001 - astral-sh/ruff #22178</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>TypeVar special handling doesn't recognize ** for ARG001</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/22178">#22178</a>
+        opened by <a href="https://github.com/henryiii">@henryiii</a>
+        on 2025-12-24 16:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/henryiii">@henryiii</a> on 2025-12-24 16:40</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This example produces a false positive:</p>
+<pre><code class="language-python">import typing
+
+def f(
+    *args: object,
+    default: object = None,  # noqa: ARG001
+    **kwargs: object,
+) -&gt; None:
+    typing.TypeVar(*args, **kwargs)
+
+__all__ = [&quot;f&quot;]
+</code></pre>
+<pre><code class="language-console">$ ruff check --isolated --select=ARG tmp.py
+ARG001 Unused function argument: `kwargs`
+ --&gt; tmp.py:6:7
+  |
+4 |     *args: object,
+5 |     default: object = None,  # noqa: ARG001
+6 |     **kwargs: object,
+  |       ^^^^^^
+7 | ) -&gt; None:
+8 |     typing.TypeVar(*args, **kwargs)
+  |
+
+Found 1 error.
+</code></pre>
+<p>To handle Python 3.13's new <code>default=</code> argument to <code>TypeVar</code>, a pattern including the above is helpful. See https://github.com/scikit-build/scikit-build-core/pull/1202.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-24 17:31</div>
+            <div class="timeline-body"><p>Thanks for the report! It looks like we indeed don't visit variadic keyword arguments at all in <code>TypeVar</code>s, which seems like a bug for sure.</p>
+<p>https://github.com/astral-sh/ruff/blob/e3498121b4700f5a9dce9bf6d72af4bc411e262d/crates/ruff_linter/src/checkers/ast/mod.rs#L1863-L1877</p>
+<p>I think we should visit this, and possibly some of  our other <code>typing::Callable</code> variants here, as <code>non_type_definition</code>s so that references to their bindings are actually recorded. This seems analogous to our change for <code>NamedTuple</code> in https://github.com/astral-sh/ruff/pull/8810.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-12-24 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-12-24 17:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ValdonVitija">@ValdonVitija</a> on 2025-12-26 14:02</div>
+            <div class="timeline-body"><p>@ntBre Is anyone working on this, if not I would for sure like to give this one a try!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-26 14:56</div>
+            <div class="timeline-body"><p>Not that I know of, go for it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ValdonVitija by @ntBre on 2025-12-26 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-12-31 16:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:52 UTC
+    </footer>
+</body>
+</html>

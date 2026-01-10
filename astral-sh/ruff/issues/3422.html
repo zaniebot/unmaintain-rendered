@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`UP024` removes non-`OSError` exception - astral-sh/ruff #3422</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>UP024</code> removes non-<code>OSError</code> exception</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3422">#3422</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-03-09 19:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-09 19:13</div>
+            <div class="timeline-body"><p>Found a false positive one:</p>
+<p>My code:</p>
+<pre><code class="language-python">import socket
+...
+from kombu import Connection, exceptions
+
+...
+
+try:
+    conn = Connection(settings.CELERY_BROKER_URL)
+    conn.ensure_connection(max_retries=2)
+    conn._close()
+except (socket.error, exceptions.OperationalError):
+    return HttpResponseServerError(&quot;cache: cannot connect to broker.&quot;)
+</code></pre>
+<p>their MROs:</p>
+<pre><code class="language-python">exceptions.OperationalError.__mro__
+(&lt;class 'kombu.exceptions.OperationalError'&gt;, &lt;class 'kombu.exceptions.KombuError'&gt;, &lt;class 'Exception'&gt;, &lt;class 'BaseException'&gt;, &lt;class 'object'&gt;)
+
+socket.error.__mro__
+(&lt;class 'OSError'&gt;, &lt;class 'Exception'&gt;, &lt;class 'BaseException'&gt;, &lt;class 'object'&gt;)
+</code></pre>
+<p>ruff suggests:</p>
+<pre><code class="language-python">try:
+    conn = Connection(settings.CELERY_BROKER_URL)
+    conn.ensure_connection(max_retries=2)
+    conn._close()
+except OSError:
+    return HttpResponseServerError(&quot;cache: cannot connect to broker.&quot;)
+</code></pre>
+<p>Seems like ruff ignores the second one's MRO. Thank you!</p>
+<p><em>Originally posted by @deliro in https://github.com/charliermarsh/ruff/issues/1568#issuecomment-1462531574</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-03-10 05:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-03-11 19:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-11 20:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:35 UTC
+    </footer>
+</body>
+</html>

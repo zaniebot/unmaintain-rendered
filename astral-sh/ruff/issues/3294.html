@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rule for detecting format error in gettext translations - astral-sh/ruff #3294</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rule for detecting format error in gettext translations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3294">#3294</a>
+        opened by <a href="https://github.com/spaceone">@spaceone</a>
+        on 2023-03-01 19:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/spaceone">@spaceone</a> on 2023-03-01 19:25</div>
+            <div class="timeline-body"><pre><code class="language-python">import gettext
+_ = gettext.NullTranslations().gettext # ugettext, ngettext
+var = 'baz'
+# incorrect:
+_('foo %s bar' % var)
+_('foo {} bar'.format(var))
+_(f'foo {var} bar')
+# correct:
+_('foo %s bar') % var
+_('foo {} bar').format(var)
+</code></pre>
+<p>those 3 cases should be detected in a new rule:
+→ calls to <code>_</code> (the conventional name of gettext) should only be done with a contant string as argument.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-01 21:53</div>
+            <div class="timeline-body"><p>Is the error that you're <em>supposed</em> to leave the parameters unfilled?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-03-01 23:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-01 23:08</div>
+            <div class="timeline-body"><p>(Seems like a reasonable rule, I'm just not familiar with the API.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jackenmen">@Jackenmen</a> on 2023-03-02 08:32</div>
+            <div class="timeline-body"><p>The error is that you're supposed to use constant strings, not dynamic ones as that passed string is used as a key during the lookup in message catalog.</p>
+<p>I think that ideally this should support not just the most basic gettext call accepting a single argument but also calls to gettext, ngettext, and so on:
+https://docs.python.org/3/library/gettext.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-03-02 08:42</div>
+            <div class="timeline-body"><p>thanks for the feedback, I clarified the initial description.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-02 15:26</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2023-03-02 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-03-02 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-27 18:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Could UP035 also catch uses of `typing.Iterable`? - astral-sh/ruff #21314</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Could UP035 also catch uses of <code>typing.Iterable</code>?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21314">#21314</a>
+        opened by <a href="https://github.com/mdickinson">@mdickinson</a>
+        on 2025-11-07 13:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mdickinson">@mdickinson</a> on 2025-11-07 13:51</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>tl;dr: UP035 catches use of the deprecated <code>Iterable</code> alias in <code>typing</code> in <code>from typing import Iterable; Iterable[int]</code>, but doesn't catch it in <code>import typing; typing.Iterable[int]</code>.</p>
+<p>With the following Python code (stolen from the ruff tutorial), ruff extended with the python-upgrade <code>UP</code> rules complains about the use of the deprecated <code>Iterable</code> alias, and suggests replacing with <code>collections.abc</code>.</p>
+<pre><code class="language-python"># calculate.py
+
+from typing import Iterable
+
+
+def sum_even_numbers(numbers: Iterable[int]) -&gt; int:
+    &quot;&quot;&quot;Given an iterable of integers, return the sum of all even numbers in the iterable.&quot;&quot;&quot;
+    return sum(num for num in numbers if num % 2 == 0)
+</code></pre>
+<p>Here are the results on my machine:</p>
+<pre><code class="language-console">~/Desktop % uvx ruff check --extend-select UP calculate.py
+UP035 [*] Import from `collections.abc` instead: `Iterable`
+ --&gt; calculate.py:3:1
+  |
+1 | # calculate.py
+2 |
+3 | from typing import Iterable
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+help: Import from `collections.abc`
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p>However, if I do <code>import typing</code> instead and then use <code>typing.Iterable</code> instead of <code>Iterable</code>, there's no complaint:</p>
+<pre><code class="language-python"># calculate_alt.py
+
+import typing
+
+
+def sum_even_numbers(numbers: typing.Iterable[int]) -&gt; int:
+    &quot;&quot;&quot;Given an iterable of integers, return the sum of all even numbers in the iterable.&quot;&quot;&quot;
+    return sum(num for num in numbers if num % 2 == 0)
+</code></pre>
+<pre><code class="language-console">~/Desktop % uvx ruff check --extend-select UP calculate_alt.py
+All checks passed!
+</code></pre>
+<p>Is it possible for rule <code>UP035</code> (or some other rule) to complain about this second case, too?</p>
+<p>Of course, <code>Iterable</code> is just an example here; there are several other deprecated <code>typing</code> aliases to types in <code>collections.abc</code>.</p>
+<p>Version:</p>
+<pre><code>~/Desktop % uvx ruff --version                                
+ruff 0.14.4
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mdickinson">@mdickinson</a> on 2025-11-07 14:05</div>
+            <div class="timeline-body"><p>Looks like this might be a duplicate: #3936, #7526 and #10955 are related (though #3936 is closed).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-10 12:25</div>
+            <div class="timeline-body"><p>Yes, I think this is a duplicate of https://github.com/astral-sh/ruff/issues/7526 and flagging full qualified usages does make sense to me (commented on the other issue)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-10 12:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:42 UTC
+    </footer>
+</body>
+</html>

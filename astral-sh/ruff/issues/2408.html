@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query with TCH00[1-3] and `if False` - astral-sh/ruff #2408</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Query with TCH00[1-3] and <code>if False</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2408">#2408</a>
+        opened by <a href="https://github.com/AA-Turner">@AA-Turner</a>
+        on 2023-01-31 18:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2023-01-31 18:58</div>
+            <div class="timeline-body"><p>Ruff version 0.0.238.</p>
+<p>Sometimes in runtime code I use <code>if False</code> to avoid importing from <code>typing</code> if I would only be using <code>TYPE_CHECKING</code>. (All three forms pass MyPy.)</p>
+<p>Ruff reports this as a TCH003 issue, I wonder if <code>if False</code> or <code>if 0</code> could be added to the detection heuristic currently used for <code>if TYPE_CHECKING</code>?</p>
+<p>If you'd prefer not to, no worries -- this is easy to add a <code># NoQA: TCH00X</code> comment to.</p>
+<pre><code class="language-powershell">(sphinx) PS I:\Development\sphinx&gt; ruff --isolated --select TCH bug.py
+bug.py:4:23: TCH003 Move standard library import `types.TracebackType` into a type-checking block
+Found 1 error.
+(sphinx) PS I:\Development\sphinx&gt; type bug.py                                   
+from __future__ import annotations
+
+if False:
+    from types import EllipsisType
+
+spam: EllipsisType = ...
+(sphinx) PS I:\Development\sphinx&gt; ruff --isolated --select TCH bug.py
+bug.py:4:23: TCH003 Move standard library import `types.EllipsisType` into a type-checking block
+Found 1 error.
+(sphinx) PS I:\Development\sphinx&gt; ruff --version                     
+ruff 0.0.238
+(sphinx) PS I:\Development\sphinx&gt; 
+</code></pre>
+<p>A</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-31 19:10</div>
+            <div class="timeline-body"><p>Woah, that works?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-31 19:10</div>
+            <div class="timeline-body"><p>Let me think on it :joy:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-31 23:04</div>
+            <div class="timeline-body"><p>I'm <a href="https://github.com/davidhalter/jedi/issues/1472">reading</a> that <code>if False</code> was the convention in older Python versions (like 3.5.0).</p>
+<p>I try not to support anything pre-3.7 but I guess in this case it costs me ~nothing to support it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-31 23:05</div>
+            <div class="timeline-body"><p>Can you verify for me that at least one other type checker (like Pyright or Pyre) respects this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-02-01 04:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2023-02-01 09:04</div>
+            <div class="timeline-body"><p>Pyre passes on <code>if False</code> and <code>if 0</code> (through WSL, only <code>if False</code> shown here):</p>
+<pre><code class="language-bash">(venv) adam:/mnt/i/Development/Sphinx$ cat bug/bug.py
+from __future__ import annotations
+
+if False:
+    from types import EllipsisType
+
+spam: EllipsisType = ...
+(venv) adam:/mnt/i/Development/Sphinx$ pyre --source-directory bug/ check
+ƛ No type errors found
+(venv311) adam@Gyrostats:/mnt/i/Development/Sphinx$
+</code></pre>
+<p>Pyright passes only with <code>if 0</code>:</p>
+<pre><code class="language-powershell">PS I:\Development\sphinx&gt; type bug.py
+from __future__ import annotations
+
+if 0:
+    from types import EllipsisType
+
+spam: EllipsisType = ...
+PS I:\Development\sphinx&gt; pyright bug.py
+[...elided...]
+pyright 1.1.292
+0 errors, 0 warnings, 0 informations
+Completed in 0.777sec
+</code></pre>
+<p>A</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-02 17:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:09 UTC
+    </footer>
+</body>
+</html>

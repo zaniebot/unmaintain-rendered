@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unify cargo features - astral-sh/uv #9267</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unify cargo features</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9267">#9267</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-11-20 09:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-11-20 09:30</div>
+            <div class="timeline-body"><p>When building only a single crate in the workspace to run its tests, we often recompile a lot of other, unrelated crates. Whenever cargo has a different set of crate features, it needs to recompile. By moving some features (non-exhaustive for now) to the workspace level, we always activate them an avoid recompiling.</p>
+<p>The cargo docs mismatch the behavior of cargo around default-deps, so I filed that upstream and left most <code>default-features</code> mismatches: https://github.com/rust-lang/cargo/issues/14841.</p>
+<p>Reference script:</p>
+<pre><code class="language-python">import tomllib
+from collections import defaultdict
+from pathlib import Path
+
+uv = Path(&quot;/home/konsti/projects/uv&quot;)
+skip_list = [&quot;uv-trampoline&quot;, &quot;uv-dev&quot;, &quot;uv-performance-flate2-backend&quot;, &quot;uv-performance-memory-allocator&quot;]
+
+root_feature_map = defaultdict(set)
+root_default_features = defaultdict(bool)
+cargo_toml = tomllib.loads(uv.joinpath(&quot;Cargo.toml&quot;).read_text())
+for dep, declaration in cargo_toml[&quot;workspace&quot;][&quot;dependencies&quot;].items():
+    root_default_features[dep] = root_default_features[dep] or declaration.get(&quot;default-features&quot;, True)
+    root_feature_map[dep].update(declaration.get(&quot;features&quot;, []))
+
+feature_map = defaultdict(set)
+default_features = defaultdict(bool)
+for crate in uv.joinpath(&quot;crates&quot;).iterdir():
+    if crate.name in skip_list:
+        continue
+    if not crate.joinpath(&quot;Cargo.toml&quot;).is_file():
+        continue
+    cargo_toml = tomllib.loads(crate.joinpath(&quot;Cargo.toml&quot;).read_text())
+    for dep, declaration in cargo_toml.get(&quot;dependencies&quot;, {}).items():
+        # If any item uses default features, they are used everywhere
+        default_features[dep] = default_features[dep] or declaration.get(&quot;default-features&quot;, True)
+        feature_map[dep].update(declaration.get(&quot;features&quot;, []))
+
+for dep, features in sorted(feature_map.items()):
+    features = features - root_feature_map.get(dep, set())
+    if not features and default_features[dep] == root_default_features[dep]:
+        continue
+    print(dep, default_features[dep], sorted(features))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @konstin on 2024-11-20 09:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-11-20 14:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-11-20 14:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-11-20 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-11-20 15:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-20 15:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:14 UTC
+    </footer>
+</body>
+</html>

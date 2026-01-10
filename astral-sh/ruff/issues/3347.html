@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff and Flake8's McCabe complexity differs - astral-sh/ruff #3347</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff and Flake8's McCabe complexity differs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3347">#3347</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-03-04 21:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-04 21:06</div>
+            <div class="timeline-body"><p>From Discord: https://gitlab.com/ppentchev/temp-20230302-ruff-complexity</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-03-04 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-04 21:26</div>
+            <div class="timeline-body"><p>Reproduced.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-04 22:07</div>
+            <div class="timeline-body"><p>Here's a more minimal repro -- Ruff calls this 3, Flake8 calls this 2:</p>
+<pre><code class="language-py">def process_detect_lines():
+    try:
+        pass
+    finally:
+        if res:
+            errors.append(f&quot;Non-zero exit code {res}&quot;)
+</code></pre>
+<p>I may have to actually learn how this works, because I thought that would've been 3.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-04 22:09</div>
+            <div class="timeline-body"><p>I guess it makes sense that it's 2 if you say that the <code>finally</code> has to trigger, but then why is this 2 also?</p>
+<pre><code class="language-py">def process_detect_lines():
+    try:
+        pass
+    finally:
+        pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-04 22:30</div>
+            <div class="timeline-body"><p>Maybe this is a bug in flake8.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashwinrajeev">@ashwinrajeev</a> on 2023-03-09 04:43</div>
+            <div class="timeline-body"><blockquote>
+<p>I guess it makes sense that it's 2 if you say that the <code>finally</code> has to trigger, but then why is this 2 also?</p>
+<pre><code class="language-python">def process_detect_lines():
+    try:
+        pass
+    finally:
+        pass
+</code></pre>
+</blockquote>
+<p>I think this is a bug in flake8. This is supposed to be 1, not 2. <a href="https://pypi.org/project/radon/">Radon</a> give this code 1 cc.</p>
+<p>https://radon.readthedocs.io/en/latest/intro.html#cyclomatic-complexity</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-09 04:47</div>
+            <div class="timeline-body"><p>Oh cool, I'll take another look at our implementation with those guidelines in mind.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-03-10 08:53</div>
+            <div class="timeline-body"><p>I also noticed this when adding Ruff to HA – didn't think to report it back then though! https://github.com/home-assistant/core/blob/fde205c158b704683650cec1d5832ca0858bbd21/pyproject.toml#L293-L302</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-14 18:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:33 UTC
+    </footer>
+</body>
+</html>

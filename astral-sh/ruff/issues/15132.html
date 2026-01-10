@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`PIE796` false-positives on enum member cast in pyi files - astral-sh/ruff #15132</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>PIE796</code> false-positives on enum member cast in pyi files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15132">#15132</a>
+        opened by <a href="https://github.com/Avasam">@Avasam</a>
+        on 2024-12-24 17:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Avasam">@Avasam</a> on 2024-12-24 17:01</div>
+            <div class="timeline-body"><p>Found this whilst applying various Ruff groups on typeshed out of curiosity.</p>
+<p>According to the updated typing spec for typing enums (see <a href="https://mypy-lang.blogspot.com/2024/12/mypy-114-released.html">Mypy: Change to Enum Membership Semantics</a> and https://typing.readthedocs.io/en/latest/spec/enums.html#defining-members, this is the recommended way to type an enum in stubs where the type is known but the value isn't:</p>
+<pre><code class="language-py">class Key(enum.Enum):
+    alt = cast(KeyCode, ...)
+    alt_l = cast(KeyCode, ...)
+    alt_r = cast(KeyCode, ...)
+    alt_gr = cast(KeyCode, ...)
+    # ...
+</code></pre>
+<p>This will trigger <code>PIE796</code></p>
+<p>However I think that a fix could be simpler than that: This rule probably shouldn't apply to stubs as it's out of the control of a stub's author (ref https://github.com/astral-sh/ruff/issues/14535 )</p>
+<p>ruff 0.8.4
+command: ruff check --select=PIE --isolated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2024-12-24 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2024-12-24 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-12-25 10:32</div>
+            <div class="timeline-body"><p>Rather than disabling the entire rule, I think the pattern should simply be ignored for stub files when checking for duplicates. It is possible that a stub author might add two members with the same value by mistake (say, via a copy and paste error).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-30 14:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:06 UTC
+    </footer>
+</body>
+</html>

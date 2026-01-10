@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import-sorting (a `ruff` approximation of `isort`) - astral-sh/ruff #465</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Import-sorting (a <code>ruff</code> approximation of <code>isort</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/465">#465</a>
+        opened by <a href="https://github.com/thejcannon">@thejcannon</a>
+        on 2022-10-25 15:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thejcannon">@thejcannon</a> on 2022-10-25 15:44</div>
+            <div class="timeline-body"><p><code>isort</code> does have some wacky heuristics to determine first v third party, but ultimately I'd love to elide the import-sorting it does with <code>ruff</code> :zap:</p>
+<p>To me, doesn't have to be 1:1, so long as the behavior is there for import sorting/grouping I'm happy :smile:</p>
+<p>If we want to keep this in the realm of <code>flake8</code>, it'd be <a href="https://pypi.org/project/flake8-import-order/">flake8-import-order</a> with a fixer :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejcannon">@thejcannon</a> on 2022-10-25 15:45</div>
+            <div class="timeline-body"><p>(I continually dip my toe into Rust and even a little PyO3 as I work on <a href="https://github.com/pantsbuild/pants">pantsbuild</a>) Perhaps one day I'll pick this up myself :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-10-25 16:30</div>
+            <div class="timeline-body"><p>Yes! I want to do this. I've been a little intimidated by the sheer amount of functionality that's packaged with <code>isort</code>, but we don't need to cover every possible setting right from the start.</p>
+<p>I'm not certain if this will fit into the same &quot;autofixable lint error&quot; pattern, or if it will be its own sub-command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2022-10-26 01:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2022-10-26 16:18</div>
+            <div class="timeline-body"><p>A potential first approximation that delays dealing with the first vs. third party heuristic would be to sort only within import groups separated by existing blank lines. This would be <code>isort</code>-compatible in that it preserves a superset of the possible <code>isort</code> outputs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-11-01 02:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tiangolo">@tiangolo</a> on 2022-11-03 21:11</div>
+            <div class="timeline-body"><p>I like this idea! In my case it's just Isort with the Black profile, that's pretty much what I would like. :nerd_face:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-04 00:55</div>
+            <div class="timeline-body"><p>👍 I'm thinking that this should be a separate subcommand (<code>ruff isort</code>). I've been meaning to introduce subcommands anyway (such that the current <code>ruff</code> call becomes <code>ruff check</code>; and maybe <code>ruff --fix</code> becomes a standalone <code>ruff fix</code>?) since it opens the door to bundling a lot more functionality into <code>ruff</code>. The downside is that this will likely be a breaking change in the CLI API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejcannon">@thejcannon</a> on 2022-11-04 00:58</div>
+            <div class="timeline-body"><p>Can you explain a little why you think it'd need its own subcommand and not be folded (optionally, config-enabled) into <code>ruff fix</code> or <code>ruff</code>?</p>
+<p>From my perspective seems like I'd need to run two commands when one would be sufficient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-04 01:17</div>
+            <div class="timeline-body"><p>You're probably right that it could be folded into <code>ruff</code> or <code>ruff fix</code>. I will aim for that outcome. My main concern is that in order to model this as an autofixable error under the current autofix API, I'll likely need to treat the entire unordered import section as a single violation with a single fix. And if there are unused imports in the import block, there will be conflicting fixes for that chunk of code, and we'll fail to autofix one of them due to the conflicting source code ranges (that is, we'll either fail to remove the import, or fail to reorder the block).</p>
+<p>However, these are really deficiencies in the autofix API and not essential blockers to adding import-sorting as a &quot;fixable lint error&quot;. And moving <code>isort</code> out to its own subcommand is arguably just a hack to get around these problems.</p>
+<p>(One solution to this problem, which I don't love but is arguably already needed, is to iteratively re-check and autofix errors until there are no more fixable errors. So, e.g., you'd run <code>ruff fix</code> once, then internally, we'd check the file, find the unused import and the unsorted import block, and remove the unused import; we'd then re-check the modified source code, find the unsorted import block, fix that, etc.)</p>
+<p>(Another solution is to try and develop a more semantically-aware fix API, or maybe something based on CRDTs (???), that lets you apply both &quot;Reorder these statements&quot; and &quot;Remove this one statement&quot; in a single pass.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejcannon">@thejcannon</a> on 2022-11-04 01:20</div>
+            <div class="timeline-body"><p>I have a suspicion that if you start with the slow-but-correct way, your bar-chart of performance will still hold very relevant.</p>
+<p>And then when you figure out the fast-and-correct, everyone rejoices :smile:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-06 03:14</div>
+            <div class="timeline-body"><p>(I've started work on this tonight.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-09 03:40</div>
+            <div class="timeline-body"><p>Still a bunch of edge-cases to handle + proper line-length wrapping, but starting to come together:</p>
+<p><img src="https://user-images.githubusercontent.com/1309177/200732675-703e7f4b-019b-4f6d-809a-e03c098a8339.png" alt="Screen Shot 2022-11-08 at 10 39 42 PM" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lithammer">@lithammer</a> on 2022-11-09 09:27</div>
+            <div class="timeline-body"><p>Not that my opinion matters much. But I have to admit that I'm not a big fan of how isort sorts out-of-the-box. And prefer something like this:</p>
+<pre><code class="language-toml">[tool.isort]
+profile = &quot;black&quot;
+force_sort_within_sections = true  # Don't group `from` imports separately
+order_by_type = true  # Order by CONSTANT, CamelCase, snake_case
+</code></pre>
+<p>Mostly because it reduces noise in diffs when going back and forth between <code>import foo</code> and <code>from foo import bar</code> since the import would remain on the same line.</p>
+<p>It's also bit jarring to make such a change, save, and then the line moves 10 lines up/down when you have &quot;format on save&quot; enabled in your editor.</p>
+<p>But maybe that's just me 🤷‍♂️ People seems to like separating <code>import</code> and <code>from</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-10 15:40</div>
+            <div class="timeline-body"><p>I noticed that <code>isort</code> seems to avoid merging <code>from</code> imports intentionally (this is the <a href="https://pycqa.github.io/isort/docs/configuration/options.html#combine-as-imports"><code>combine-as-imports</code></a> setting).</p>
+<p>That is, <code>isort</code> doesn't modify this block:</p>
+<pre><code class="language-py">from .param_functions import Body as Body
+from .param_functions import Cookie as Cookie
+</code></pre>
+<p>Whereas, if you omit the <code>as</code> alias, like so:</p>
+<pre><code class="language-py">from .param_functions import Body
+from .param_functions import Cookie
+</code></pre>
+<p>Then <code>isort</code> gives you:</p>
+<pre><code class="language-py">from .param_functions import Body, Cookie
+</code></pre>
+<p>Here's an example from FastAPI (\cc @tiangolo):</p>
+<p><img src="https://user-images.githubusercontent.com/1309177/201138255-78bef6b4-ab49-4f28-9fd6-665cd61a67ac.png" alt="Screen Shot 2022-11-10 at 10 30 20 AM" /></p>
+<p>There are some issues in isort suggesting that they wanted to make this the default (https://github.com/PyCQA/isort/issues/1305, https://github.com/PyCQA/isort/issues/1812).</p>
+<p>I'm partial to making this Ruff's default, but curious if others feel strongly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejcannon">@thejcannon</a> on 2022-11-10 15:47</div>
+            <div class="timeline-body"><p>As long as</p>
+<pre><code class="language-python">from .param_functions import Body as Body
+from .param_functions import Cookie as Cookie
+</code></pre>
+<p>became</p>
+<pre><code class="language-python">from .param_functions import (
+    Body as Body,
+    Cookie as Cookie,
+)
+</code></pre>
+<p>and that still is kosher from <code>mypy</code>'s <a href="https://mypy.readthedocs.io/en/latest/command_line.html?highlight=reexport#cmdoption-mypy-no-implicit-reexport">&quot;reexport&quot;</a> stance, I'd +1 the change.</p>
+<hr />
+<p>(I usually see in our codebase)</p>
+<pre><code class="language-python">from .param_functions import Body as Body  # re-export
+from .param_functions import Cookie
+</code></pre>
+<p>which I'd kinda prefer:</p>
+<pre><code class="language-python">from .param_functions import (
+    Body as Body,  # re-export
+    Cookie
+)
+</code></pre>
+<p>but I understand if that's prohibitively difficult to get right :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-10 15:49</div>
+            <div class="timeline-body"><p>Yeah that's what happens with the current implementation I have going -- you get:</p>
+<pre><code class="language-py">from .param_functions import (
+    Body as Body,
+    Cookie as Cookie,
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-10 15:51</div>
+            <div class="timeline-body"><p>The main unsolved thing with my current implementation is that it removes and disregards comments. Comment handling is tricky (by this, I mean it's hard to know what the best behavior is, not that it's hard to implement).</p>
+<p>You can see how <code>isort</code> handles comments -- if you start with this:</p>
+<pre><code class="language-py"># comment 1a
+# comment 1b
+from .param_functions import (
+	Body,  # comment 1c
+	Header,  # comment 1d
+)
+# comment 2a
+# comment 2b
+from .param_functions import Cookie
+from .param_functions import Request
+</code></pre>
+<p>...it becomes:</p>
+<pre><code class="language-py"># comment 1a
+# comment 1b
+# comment 2a
+# comment 2b
+from .param_functions import Body  # comment 1c
+from .param_functions import Header  # comment 1d
+from .param_functions import Cookie, Request
+</code></pre>
+<p>(So, they move any line-level comments to the top of the import block, retain any end-of-line comments, and avoid merging statements with end-of-line comments.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tiangolo">@tiangolo</a> on 2022-11-10 16:20</div>
+            <div class="timeline-body"><p>I don't feel strongly about this, what would matter to me the most would be compatibility with mypy, Black, and minimization of diffs, but apart from that, I'm fine with anything. 🚀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-10 22:30</div>
+            <div class="timeline-body"><p>At the point now where I'm finishing all the test cases, so an initial version of this should go out in the next day or so. There will be a few limitations that I'll document and resolve later (e.g., doesn't preserve comments).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-11 00:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-11 00:28</div>
+            <div class="timeline-body"><p>The first version of this is going out in <a href="https://github.com/charliermarsh/ruff/releases/tag/v0.0.110">v0.0.110</a>. Feedback and Issues welcome!</p>
+<p>There are two main limitations that I want to address in future PRs:</p>
+<ol>
+<li>We don't preserve comments.</li>
+<li>If you have unused <em>and</em> unsorted imports, Ruff will only fix one of those two problems in the first invocation, and you have to run <code>ruff</code> again to fix the remaining issue. (See: #660.)</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-11 00:32</div>
+            <div class="timeline-body"><p>If you're <em>just</em> using Ruff to sort imports, it's about 30x faster than single-threaded isort, and 10x faster than multi-threaded isort.</p>
+<p>But... if you're already using Ruff for linting, the performance hit for adding import sorting <em>on top</em> of that existing workflow should be extremely negligible (in the 5s or 10s of milliseconds for CPython), since the majority of execution is spent on parsing the AST.</p>
+<p>In other words: if you already use Ruff for linting, then using Ruff for import sorting should be basically &quot;free&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2022-11-11 00:56</div>
+            <div class="timeline-body"><p>Nice! I’ve opened these issues I ran into:</p>
+<ul>
+<li>#673</li>
+<li>#674</li>
+<li>#675</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-11 00:57</div>
+            <div class="timeline-body"><p>Much appreciated!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tiangolo">@tiangolo</a> on 2022-11-11 08:28</div>
+            <div class="timeline-body"><p>So awesome! Amazing to see you build these things! 🚀🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-16 03:26</div>
+            <div class="timeline-body"><p><a href="https://github.com/charliermarsh/ruff/releases/tag/v0.0.122">v0.0.122</a> (which just hit PyPI) contains a bunch of compatibility improvements, including comment preservation, respecting <code>isort: skip</code>, and more. It's also about 10% faster than reported above.</p>
+<p>If you're able to test it out on your projects, would love feedback, issues, etc.!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tekumara">@tekumara</a> on 2022-11-16 07:06</div>
+            <div class="timeline-body"><p>Fantastic thank you!</p>
+<p>I noticed ruff will insert an empty line before comments (unlike isort), eg:</p>
+<pre><code class="language-python">import yaml
+
+# use importlib_resources backport for compatibility with python &lt; 3.9
+from importlib_resources import files
+</code></pre>
+<p>I presume this is a deliberate change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2022-11-16 07:31</div>
+            <div class="timeline-body"><p>It’s deliberate. <code>isort --profile=black</code>  inserts the same empty line, as does <code>black</code> itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/timabbott">@timabbott</a> on 2022-11-16 17:35</div>
+            <div class="timeline-body"><p>I just integrated the zulip/zulip pull request to use this. <code>ruff</code> is amazing, thanks so much for building this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-17 17:04</div>
+            <div class="timeline-body"><p>That's awesome! Thanks @timabbott! Made my day :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MehulBatra">@MehulBatra</a> on 2023-09-11 17:37</div>
+            <div class="timeline-body"><p>I saw Ruff insert a line between  import and from import statements:</p>
+<pre><code>import Cython.Compiler.Options  
+
+from Cython.Build import build_ext, cythonize 
+</code></pre>
+<p>How can this be avoided, I am on version <strong>v0.0.286</strong></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-09-11 17:40</div>
+            <div class="timeline-body"><p>@MehulBatra perhaps you're looking for <a href="https://beta.ruff.rs/docs/settings/#isort-lines-between-types"><code>isort-lines-between-types</code></a>? I'd suggest reading the isort settings documentation there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samuela">@samuela</a> on 2023-10-28 03:29</div>
+            <div class="timeline-body"><p>How does one enable ruff's isort support? I have a project in which <code>ruff format .</code> works fine in general, but imports are not being sorted. I'm running ruff v0.1.3. <code>ruff .</code> also detects no issues.</p>
+<p>Even import blocks as gross as</p>
+<pre><code class="language-py">import jax
+import copy
+from typing import Optional
+import jax.numpy as jnp
+import jax.dlpack
+import torch
+
+import math
+
+import functools
+</code></pre>
+<p>are immune to ruff's import formatting. OTOH, running <code>isort --dont-follow-links .</code> works just fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-28 03:37</div>
+            <div class="timeline-body"><p>@samuela - Import sorting is currently part of the linter (<code>ruff check --fix</code>) rather than the formatter. So in this case, you'd want to add the following to your <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+# Enable the isort rules.
+extend-select = [&quot;I&quot;]
+</code></pre>
+<p>Or, e.g., <code>ruff check --select I --fix /path/to/file.py</code>.</p>
+<p>(We're continuing to discuss whether import sorting should be part of the formatter (<code>ruff format</code>), but it's a little tricky because -- unlike the rest of the formatter -- import sorting can actually change the behavior of your code.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samuela">@samuela</a> on 2023-10-28 04:00</div>
+            <div class="timeline-body"><p>Thanks so much @charliermarsh ! Using <code>[tool.ruff.linter]</code>, gave me an error: <code>unknown field 'linter'</code>, but</p>
+<pre><code class="language-toml">[tool.ruff]
+# Enable the isort rules.
+extend-select = [&quot;I&quot;]
+</code></pre>
+<p>did the trick for me.</p>
+<p>Thanks for all your hard work on ruff! 🏄‍♀️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-28 04:04</div>
+            <div class="timeline-body"><p>Oof, sorry, it's <code>tool.ruff.lint</code> (but <code>tool.ruff</code> also works for compatibility -- so either is fine). Will edit my original message. Really glad to get this working for you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nshern">@nshern</a> on 2023-10-29 21:38</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks so much @charliermarsh ! Using <code>[tool.ruff.linter]</code>, gave me an error: <code>unknown field 'linter'</code>, but</p>
+<pre><code class="language-toml">[tool.ruff]
+# Enable the isort rules.
+extend-select = [&quot;I&quot;]
+</code></pre>
+<p>did the trick for me.</p>
+<p>Thanks for all your hard work on ruff! 🏄‍♀️</p>
+</blockquote>
+<p>Sorry if I am asking a dumb question, but where in the documentation can I find an explanation of this behaviour and why it works?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-29 21:45</div>
+            <div class="timeline-body"><p>Not dumb at all. The generated documentation for that field is here: https://docs.astral.sh/ruff/settings/#extend-select. And a prose write-up on rule selection is here: https://docs.astral.sh/ruff/linter/#rule-selection.</p>
+<p>(<code>extend-select</code> is like <code>select</code>, except it adds to the list rather than replacing it -- so <code>extend-select = [&quot;I&quot;]</code> enables the isort rules on top of the default rules, while <code>select = [&quot;I&quot;]</code> would enable <em>only</em> the isort rules.)</p>
+<p>(You can use either <code>[tool.ruff.lint]</code> or <code>[tool.ruff]</code> right now. We're moving towards the former, but the latter is still supported and appears in all the docs at the moment.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nshern">@nshern</a> on 2023-10-30 11:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Not dumb at all. The generated documentation for that field is here: https://docs.astral.sh/ruff/settings/#extend-select. And a prose write-up on rule selection is here: https://docs.astral.sh/ruff/linter/#rule-selection.</p>
+<p>(<code>extend-select</code> is like <code>select</code>, except it adds to the list rather than replacing it -- so <code>extend-select = [&quot;I&quot;]</code> enables the isort rules on top of the default rules, while <code>select = [&quot;I&quot;]</code> would enable <em>only</em> the isort rules.)</p>
+<p>(You can use either <code>[tool.ruff.lint]</code> or <code>[tool.ruff]</code> right now. We're moving towards the former, but the latter is still supported and appears in all the docs at the moment.)</p>
+</blockquote>
+<p>Thank you for you thorough response. Can I also run the isort functionality from the command line?
+Something like:</p>
+<pre><code>ruff --fix -[&quot;I&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Insighttful">@Insighttful</a> on 2024-01-14 01:22</div>
+            <div class="timeline-body"><p>Any chance we might implement isort's <a href="https://pycqa.github.io/isort/docs/configuration/custom_sections_and_ordering.html">Auto-comment import sections</a>?</p>
+<blockquote>
+<p>Some projects prefer to have import sections uniquely titled to aid in identifying the sections quickly when visually scanning. isort can automate this as well. To do this simply set the <code>import_heading_{section_name}</code> setting for each section you wish to have auto commented - to the desired comment.</p>
+</blockquote>
+<blockquote>
+<p>For Example:</p>
+<pre><code class="language-ini">import_heading_stdlib=Standard Library
+import_heading_firstparty=My Stuff
+</code></pre>
+</blockquote>
+<p>Trying with ruff:</p>
+<pre><code class="language-toml">[tool.ruff.lint.isort]
+import_heading_stdlib = &quot;Standard Library&quot;
+</code></pre>
+<pre><code class="language-bash">ruff check . --fix
+ruff failed
+  Cause: Failed to parse /Users/***/***/***/pyproject.toml
+  Cause: TOML parse error at line 61, column 1
+   |
+61 | [tool.ruff.lint]
+   | ^^^^^^^^^^^^^^^^
+unknown field `import_heading_stdlib`, expected one of ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nik-hil">@nik-hil</a> on 2024-06-12 10:50</div>
+            <div class="timeline-body"><p>If somebody is wondering how to add this in pre-commit, use this</p>
+<pre><code>-   repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.2.0
+    hooks:
+    -   id: ruff
+        args: [&quot;check&quot;, &quot;--select&quot;, &quot;I&quot;, &quot;--fix&quot;]
+    -   id: ruff-format
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Testla">@Testla</a> on 2024-06-15 14:38</div>
+            <div class="timeline-body"><blockquote>
+<pre><code class="language-toml">[tool.ruff.lint]
+# Enable the isort rules.
+extend-select = [&quot;I&quot;]
+</code></pre>
+</blockquote>
+<p>This works for both <a href="https://github.com/astral-sh/ruff-pre-commit">ruff-pre-commit</a> with example configuration and <a href="https://github.com/astral-sh/ruff-vscode">ruff-vscode</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Alex-ley-scrub">@Alex-ley-scrub</a> on 2024-08-29 21:58</div>
+            <div class="timeline-body"><p>@Insighttful see this issue for tracking: https://github.com/astral-sh/ruff/issues/6371</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rosmur">@rosmur</a> on 2024-11-29 14:24</div>
+            <div class="timeline-body"><p>@nik-hil I think that format is now updated? I get an error:</p>
+<p><code>warning: The top-level linter settings are deprecated in favour of their counterparts in the </code>lint<code>section. Please update the following options in</code>pyproject.toml`:</p>
+<ul>
+<li>'per-file-ignores' -&gt; 'lint.per-file-ignores'
+I:1:1: E902 No such file or directory (os error 2)
+Found 1 error.`</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:28:24 UTC
+    </footer>
+</body>
+</html>

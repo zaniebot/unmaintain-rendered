@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Non-PyPI/Pip Ruff distribution for Windows - astral-sh/ruff #8834</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Non-PyPI/Pip Ruff distribution for Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8834">#8834</a>
+        opened by <a href="https://github.com/swaldhoer">@swaldhoer</a>
+        on 2023-11-24 22:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/swaldhoer">@swaldhoer</a> on 2023-11-24 22:19</div>
+            <div class="timeline-body"><h2>Problem to be solved</h2>
+<p><code>Ruff</code> is a standalone executable on all platforms and does not require Python to be installed.
+For Linux and macOS <code>Ruff</code> is then also installable without requiring a Python/pip through the expected package managers of the OS, e.g., with Homebrew, pacman.</p>
+<p>On Windows, Chocolatey is supported. I do not know how the build recipe for the Chocolatey package works, but anyhow I think the following suggestion would improve the developer experience on Windows for shipping and adapting <code>Ruff</code>.</p>
+<h2>Abstract Idea</h2>
+<p><code>Ruff</code> should provide some typical Windows installer, e.g., MicroSoft Installer (MSI), Nullsoft Scriptable Install System (NSIS) or just a zip file with the executable.
+If the project provides this, any of the the chosen installer methods (MSI, NSIS, zip) could be used for the common Windows package managers (Chocolatey, winget, even conda - although  that use case is of course nonsense) to package <code>Ruff</code> without requiring Python to be installed.</p>
+<p>This would have the great benefit that Windows users</p>
+<ul>
+<li>could have one global <code>Ruff</code> installation. And it just works independently of the currently active Python environment.</li>
+<li>could have the side-by-side-version thing - see the exact suggestion below. Everything could be very simply reproducible, as different versions can be used side-by-side.</li>
+<li>do not need to create an additional venv/conda environment for <code>Ruff</code> or at least don't need to make the make dependency list of the project longer than needed - we all know how annoying long dependency lists in the Python ecosystem are. Of course, it's just one non-Python dependency, but anyhow, the less the better.</li>
+</ul>
+<h2>Actual Plan/Suggestion</h2>
+<ul>
+<li><p>The project should provide a ruff installer for Windows.</p>
+</li>
+<li><p>This installer should not require elevate privileges.</p>
+<ul>
+<li>Running the installer as user should, e.g., install to: <code>%LOCALAPPDATA%\Programs\ruff\</code></li>
+<li>Running the installer as administrator should, e.g., install to: <code>%PROGRAMFILES%\ruff\</code></li>
+</ul>
+</li>
+<li><p>This installer should support side-by-side installations <code>ruff.exe</code> pointing to the latest version, e.g., for a user installation as follows</p>
+<pre><code class="language-pwsh">C:\Users\user\AppData\Local\Programs\ruff
+├───ruff.exe
+├───ruff-0.0.1.exe
+├───# and so on
+└───ruff-0.0.6.exe # same as 'ruff.exe'
+</code></pre>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Non-Pypi/Pip Ruff distribution for Windows" to "Non-PyPI/Pip Ruff distribution for Windows" by @swaldhoer on 2023-11-24 22:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2023-11-25 08:09</div>
+            <div class="timeline-body"><blockquote>
+<p>or just a zip file with the executable.</p>
+</blockquote>
+<p>Do you mean what's provided in <a href="https://github.com/astral-sh/ruff/releases">GH Releases</a>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/swaldhoer">@swaldhoer</a> on 2023-11-25 21:39</div>
+            <div class="timeline-body"><p>Ah I didn't see that - thanks.</p>
+<p>We could then provide an Inno Setup installer and build the installer as follows</p>
+<pre><code class="language-pwsh">cd /build/dir/where/ruff.exe/exists
+copy path/to/repo/LICENSE LICENSE
+ISCC.exe ruff.iss /DVersion=0.1.6
+</code></pre>
+<p>It installs to</p>
+<ul>
+<li><code>%LOCALAPPDATA%\Programs\Ruff</code> (user changeable)</li>
+<li><code>%PROGRAMFILES%\Ruff</code> (user changeable)</li>
+</ul>
+<p>If I polish this up, is this something you would be willing to provide to users?</p>
+<details>
+  <summary>ruff.iss</summary>
+
+<pre><code class="language-ini">; Script generated by the Inno Setup Script Wizard.
+; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
+
+#define AppName &quot;Ruff&quot;
+#define Publisher &quot;ASTRAL SOFTWARE INC.&quot;
+#define Url &quot;https://astral.sh/ruff&quot;
+#define ExecutableBaseName &quot;ruff&quot;
+#define ExecutableExtension &quot;exe&quot;
+#define Executable ExecutableBaseName + &quot;-&quot; + Version + &quot;.&quot; + ExecutableExtension
+
+[Setup]
+; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
+; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
+AppId={{3C4AAAD5-ACCF-4438-A678-8C97F13B022C}
+AppName={#AppName}
+AppVersion={#Version}
+AppVerName={#AppName} {#Version}
+AppPublisher={#Publisher}
+AppPublisherURL={#Url}
+AppSupportURL={#Url}
+AppUpdatesURL={#Url}
+ArchitecturesInstallIn64BitMode=x64
+DefaultDirName={autopf}\{#AppName}
+DefaultGroupName={#AppName}
+DisableProgramGroupPage=yes
+LicenseFile=LICENSE
+PrivilegesRequired=lowest
+PrivilegesRequiredOverridesAllowed=dialog
+OutputBaseFilename={#ExecutableBaseName}-{#Version}-installer
+Compression=lzma
+SolidCompression=yes
+WizardStyle=modern
+SetupIconFile={#ExecutableBaseName}.ico
+
+[Languages]
+Name: &quot;english&quot;; MessagesFile: &quot;compiler:Default.isl&quot;
+
+[Files]
+Source: &quot;{#Executable}&quot;; DestDir: &quot;{app}&quot;; Flags: ignoreversion
+
+[UninstallDelete]
+Type: files; Name: &quot;{app}\{#ExecutableBaseName}.{#ExecutableExtension}&quot;
+
+[Icons]
+Name: &quot;{group}\{#AppName}&quot;; Filename: &quot;{app}\{#Executable}&quot;
+Name: &quot;{group}\{cm:UninstallProgram,{#AppName}}&quot;; Filename: &quot;{uninstallexe}&quot;
+
+[Run]
+Filename: &quot;{cmd}&quot;; Parameters: &quot;/C copy &quot;&quot;{app}\{#Executable}&quot;&quot; &quot;&quot;{app}\{#ExecutableBaseName}.{#ExecutableExtension}&quot;&quot;&quot;
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2023-11-26 06:26</div>
+            <div class="timeline-body"><p>If you want to Ruff to be accessible globally, I'd recommend add it to PATH environment. Then you can also use it with all system users.</p>
+<p>I think Ruff is cross-platform Python tool, not OS application, so I don't think it will add support OS-Installer packaging.</p>
+<p>But I agree that documentation could be improved at here. because Ruff is python independent, so different python envs could target same Ruff without installing it via pip.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/swaldhoer">@swaldhoer</a> on 2023-11-26 09:52</div>
+            <div class="timeline-body"><blockquote>
+<p>If you want to Ruff to be accessible globally, I'd recommend add it to PATH environment. Then you can also use it with all system users.</p>
+</blockquote>
+<p>I never said, that it is about global accessibility of <code>Ruff</code>. It's about the way <code>Ruff</code> is distributed across different platforms and how it should be improved on Windows.</p>
+<p>Anyhow, your suggestion <em>adding it to PATH</em> is currently not a real solution. Why? Because there is no standard way <code>Ruff</code> is distributed on Windows other than PyPI. <strong>That is exactly the point for this issue</strong>. What should the user <em>xy</em> add to PATH?</p>
+<ul>
+<li><code>C:\Users\xy\Ruff</code> because he copied the executable there?</li>
+<li><code>C:\Users\xy\Miniconda3\Scripts</code> because he installed it in his conda base environment (bad for several reasons, but anyhow) and so clutters his whole path with other stuff?</li>
+<li><code>path/to/some/repo\.venv\Scripts</code> because he works on this project that requires this <code>Ruff</code> version? What does he do for other projects?</li>
+<li><code>path/to/some/other/.venv\Scripts</code> because...because every Python developer has fifty environments and that's the magic one?</li>
+</ul>
+<p>I could go on forever, I think my point is clear.</p>
+<blockquote>
+<p>I think Ruff is cross-platform Python tool, not OS application, so I don't think it will add support OS-Installer packaging.</p>
+</blockquote>
+<p>I don't see, how your comment is related to my suggestion.
+My suggestion, that there is a standard non-PyPI distribution of <code>Ruff</code> on Windows, is exactly what is done on other platforms in their standard version. You can check that in the documentation<a href="https://docs.astral.sh/ruff/installation">^1</a>. I'll attach a screenshot below of the current status for the different packaging solutions[^2].</p>
+<blockquote>
+<p>But I agree that documentation could be improved at here. because <code>Ruff</code> is python independent, so different python envs could target same <code>Ruff</code> without installing it via pip.</p>
+</blockquote>
+<p>Again, this thing is <strong>not</strong> about documentation, it is about the distribution.</p>
+<p>I emphasize my point again:
+Currently, there is <strong>no other installation method</strong> (we are talking about installation - not copying things around) for <code>Ruff</code> on Windows than PyPI. This is bad for several reasons (e.g., you should work with environments when working with Python. Why should I install <code>Ruff</code> in every environment? Typically I don't need 50 copies of the same executable across my machine.).</p>
+<p>I want to have a standard way you can (silently and unattended) install <code>Ruff</code> on Windows in an OS-standard directory not related to Python specific directories/directory layouts (i.e., <code>Ruff</code> shall be placed in <code>%LOCALAPPDATA%\Programs\Ruff</code> or <code>%PROGRAMFILES%\Ruff</code>). This installer should be supported by the tool maintainer. This way other tools like e.g., IDEs could rely on these paths when searching whether <code>Ruff</code> is available and in what version.</p>
+<p>Why should this installer (and by that its default installation directories) maintained by the tool maintainer? So that there is an official, documented way to do it, and others can point to it when they request other tools to rely on this behavior. This is even more true on Windows as there are no derivatives (like .e.g, there are/could be on Linux). If <code>Ruff</code> decides, this is the way to distribute it on Windows (aside from PyPI), then we have <strong>one</strong>, <strong>true</strong> solution and everyone can work and be happy with that.</p>
+<p>[^2]: Packaging Status<br><img src="https://github.com/astral-sh/ruff/assets/34184299/0f86152e-f363-45ea-bf6f-4084dfbf3f33" alt="ruff-python-linter" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2023-11-26 10:30</div>
+            <div class="timeline-body"><p>I think you are looking for <code>choco install ruff</code> on Windows. Did you try that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/swaldhoer">@swaldhoer</a> on 2023-11-26 10:41</div>
+            <div class="timeline-body"><blockquote>
+<p>I think you are looking for <code>choco install ruff</code> on Windows. Did you try that?</p>
+</blockquote>
+<p>I know (and even use) Chocolatey, but no, I am not looking for Chocolatey. You are really missing the point of this discussion: It's about the OS-native distribution and installation of <code>Ruff</code>.</p>
+<p>Regarding your Chocolatey comment:</p>
+<ul>
+<li>First, this is third party supported, and not by the tool maintainer/vendor. They can/could do however they think the packaging for <code>Ruff</code> is correct, whether <code>Ruff</code> likes this or not (side note: and of course they are allowed to do it).</li>
+<li>Second, and way more important, Chocolatey is not something that is natively supported. It's just an additional package manager. I don't want to complicate the installation for others (by requiring the installation of a package manager and then finding out how it works), I want to simplify it. Anyhow, if we provide an Inno Script, that installer could be consumed also by Chocolatey and Chocolatey would then automatically adhere to the <code>Ruff</code> supported way of installation <code>Ruff</code> on Windows.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-11-26 16:43</div>
+            <div class="timeline-body"><p>Generally, we recommend to make ruff a dependency of your project so the ruff version is tracked together with the project, ensuring that every developers machine and CI are in sync. I agree that it's annoying that having ruff as a dependency on n projects installs the same file n times, but that is something that i believe should be fixed on the packaging side, since it affects all python packages, not just ruff (the problem is much bigger when e.g. installing torch multiple times).</p>
+<p>If you still want a global installation, have you considered <a href="https://pypa.github.io/pipx/">pipx</a>? It's the de-facto standard for installing python tools and applications system wide. Unlike native installers, it supports more features including  multi versions (by using prefixes such as <code>black@23.10.0</code>), updating tools and skipping installation <code>pipx run ruff .</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/swaldhoer">@swaldhoer</a> on 2023-11-30 22:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Generally, we recommend to make ruff a dependency of your project so the ruff version is tracked together with the project, ensuring that every developers machine and CI are in sync. I agree that it's annoying that having ruff as a dependency on n projects installs the same file n times, but that is something that i believe should be fixed on the packaging side, since it affects all python packages, not just ruff (the problem is much bigger when e.g. installing torch multiple times).</p>
+</blockquote>
+<ul>
+<li><p>If I pin in my CI</p>
+<pre><code class="language-bash">pip install ruff==a.b.c
+</code></pre>
+<p>or</p>
+<pre><code class="language-bash">curl https://github.com/astral-sh/ruff/releases/download/va.b.c/ruff-x86_64-pc-windows-msvc-installer.exe
+ruff-x86_64-pc-windows-msvc-installer.exe
+</code></pre>
+<p>does not really make a difference.</p>
+</li>
+<li><p>Yes, but e.g., for torch does not working without Python (because of its package requirements), so the workflow is obvious and basically the only way to use it meaningful.</p>
+</li>
+</ul>
+<blockquote>
+<p>If you still want a global installation, have you considered <a href="https://pypa.github.io/pipx/">pipx</a>? It's the de-facto standard for installing python tools and applications system wide. Unlike native installers, it supports more features including multi versions (by using prefixes such as <code>black@23.10.0</code>), updating tools and skipping installation <code>pipx run ruff .</code>.</p>
+</blockquote>
+<p>But why would I want to have the overhead of a Python environment (doesn't matter pipx, conda venv, poetry, ...), when I just want to use a native executable?</p>
+<p>Anyhow, I wonder why are you providing - let's call it - &quot;global&quot; non-python installers for Linux and macOS, but adding it as feature parity for Windows is a debatable thing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-30 22:39</div>
+            <div class="timeline-body"><blockquote>
+<p>Anyhow, I wonder why are you providing - let's call it - &quot;global&quot; non-python installers for Linux and macOS, but adding it as feature parity for Windows is a debatable thing?</p>
+</blockquote>
+<p>We do not maintain the distributions of Ruff across the other operating systems you have mentioned i.e. the various Linux distributions and macOS. These are maintained by volunteers in the relevant packaging ecosystems.</p>
+<p>Given the complexity of managing platform-specific installers, I do not think this is something we can take on. I don't see a strong justification to make Windows the exception, as it is usually more difficult to work with.</p>
+<p>Thanks for raising this, I think this discussion will be helpful for other users and for us in the future if we decide to take this on. For now, I'm going to close this as unplanned work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-11-30 22:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/swaldhoer">@swaldhoer</a> on 2023-12-04 20:15</div>
+            <div class="timeline-body"><p>Thanks for your feedback.</p>
+<p>Anyhow, I still think one major plus of ruff is, that it is for the Python eco system, without the need of Python. Based on my experience people will <strong>not</strong> update their complex venv/conda/poetry/what soever environment, just to get the latest (potentially better) static code analysis tool. An installer, that adds a single binary somewhere on the system, would solve this issue and would make it easy to always use the latest version.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:05 UTC
+    </footer>
+</body>
+</html>

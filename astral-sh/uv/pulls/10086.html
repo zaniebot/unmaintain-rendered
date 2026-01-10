@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use dynamic dispatch to simplify reporters - astral-sh/uv #10086</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use dynamic dispatch to simplify reporters</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10086">#10086</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-12-21 23:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-21 23:12</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Sort of undecided on this. These are already stored as <code>dyn Reporter</code> in each struct, so we're already using dynamic dispatch in that sense. But all the methods take <code>impl Reporter</code>. This is sometimes nice (the callsites are simpler?), but it also means that in practice, you often <em>can't</em> pass <code>None</code> to these methods that accept <code>Option&lt;impl Reporter&gt;</code>, because Rust can't infer the generic type.</p>
+<p>Anyway, this adds more consistency and simplifies the setup by using <code>Arc&lt;dyn Reporter&gt;</code> everywhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2024-12-21 23:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-12-21 23:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-21 23:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/source/mod.rs</code>:1425 on 2024-12-21 23:57</div>
+            <div class="timeline-body"><p>I'm really annoyed by this whole <code>Facade</code> setup... I want to be able to do something like:</p>
+<pre><code class="language-rust">impl &lt;T: Reporter&gt; uv_distribution::Reporter for Arc&lt;dyn T&gt; {
+    fn on_build_start(&amp;self, source: &amp;BuildableSource) -&gt; usize {
+        self.on_build_start(source)
+    }
+
+    fn on_build_complete(&amp;self, source: &amp;BuildableSource, id: usize) {
+        self.on_build_complete(source, id);
+    }
+
+    fn on_checkout_start(&amp;self, url: &amp;Url, rev: &amp;str) -&gt; usize {
+        self.on_checkout_start(url, rev)
+    }
+
+    fn on_checkout_complete(&amp;self, url: &amp;Url, rev: &amp;str, id: usize) {
+        self.on_checkout_complete(url, rev, id);
+    }
+}
+</code></pre>
+<p>But I run into orphan trait problems.</p>
+<p>The general problem here is that I have multiple <code>Reporter</code> traits. And if you implement one of them, then you should get some others &quot;for free&quot;. But for now, I have to do this:</p>
+<pre><code class="language-rust">/// A facade for converting from [`Reporter`] to [`uv_git::Reporter`].
+pub(crate) struct Facade {
+    reporter: Arc&lt;dyn Reporter&gt;,
+}
+
+impl From&lt;Arc&lt;dyn Reporter&gt;&gt; for Facade {
+    fn from(reporter: Arc&lt;dyn Reporter&gt;) -&gt; Self {
+        Self { reporter }
+    }
+}
+
+impl uv_git::Reporter for Facade {
+    fn on_checkout_start(&amp;self, url: &amp;Url, rev: &amp;str) -&gt; usize {
+        self.reporter.on_checkout_start(url, rev)
+    }
+
+    fn on_checkout_complete(&amp;self, url: &amp;Url, rev: &amp;str, id: usize) {
+        self.reporter.on_checkout_complete(url, rev, id);
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-01-06 15:49</div>
+            <div class="timeline-body"><p>I'm a believer in using dynamic dispatch for stuff like this. We don't need the monomorphization benefits, I think, here, so it probably helps compile times to use dynamic dispatch. (Whether this specific change moves the needle much is unlikely, but I think the philosophy applied more universally might.)</p>
+<p>I think your approach here is fine-ish. I did do a force push to this PR that tweaks it a bit to make the call sites a fair bit less annoying (although still a little more annoying than what they were before in the <code>Some</code> case). It uses the same basic idea as your approach, but cleans it up a little with an <code>impl dyn Reporter { ... }</code> block. (One of the many tricks to get around the straight jacket of dyn safety.)</p>
+<p>I think with more time there's probably a cleaner refactoring lurking here, but I didn't want to burn too much more time on it. My <em>instinct</em> is to encapsulate the dynamic dispatch somehow so that we aren't leaking the <code>Arc&lt;dyn Trait&gt;</code> out everywhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-01-06 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-06 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-06 17:04</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-06 17:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:16 UTC
+    </footer>
+</body>
+</html>

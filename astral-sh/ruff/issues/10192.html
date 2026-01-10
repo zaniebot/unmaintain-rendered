@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support range in required-version setting - astral-sh/ruff #10192</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support range in required-version setting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10192">#10192</a>
+        opened by <a href="https://github.com/kujenga">@kujenga</a>
+        on 2024-03-02 00:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kujenga">@kujenga</a> on 2024-03-02 00:46</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Currently, it appears that the <code>required-version</code> [1] setting allows just a single specific version to be specified. When a version of ruff is present that differs from this version, the ruff tool errors, preventing checks from running.</p>
+<p>The ask here is to allow range syntax, e.g. <code>&gt;=</code>, <code>~</code>, etc., or perhaps treat the <code>required-version</code> as a minimum similar to <code>target-version</code>, so that ruff does not fail to run in the scenario that e.g. a developer upgrades ruff in their environment but is working within a repo that wants to ensure that everyone is on some minimum version of ruff.</p>
+<pre><code>$ ruff --version
+ruff 0.3.0
+
+$ cat ruff.toml
+required-version = &quot;0.2.2&quot;
+
+$ ruff check ./src/example/file.py
+ruff failed
+  Cause: Required version `0.2.2` does not match the running version `0.3.0`
+</code></pre>
+<p>[1] https://docs.astral.sh/ruff/settings/#required-version</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-02 01:31</div>
+            <div class="timeline-body"><p>I think it'd be reasonable to support <code>&gt;=</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-03-02 01:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-02 01:31</div>
+            <div class="timeline-body"><p>(We just need to make it backwards-compatible such that <code>&quot;0.2.2&quot;</code> means <code>&quot;==0.2.2&quot;</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2024-03-02 01:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-02 13:04</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it'd be reasonable to support <code>&gt;=</code> here.</p>
+</blockquote>
+<p>I think we would need to support a full semver syntax similar to <a href="https://docs.npmjs.com/cli/v10/configuring-npm/package-json#engines">package.json engines</a> or it might be surprising that e.g. `&lt;= isn't supported which, IMO, is entirely reasonable too</p>
+<p>A first step before a PR is to spec out the exact behavior of that field with the supported syntax to avoid long discussions on the PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> removed by @MichaReiser on 2024-03-02 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-03-02 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-02 13:13</div>
+            <div class="timeline-body"><p>Correct, that’s what I meant — we should use Python’s PEP 440 and PEP 508 specifiers since they’re already native, standardized, used in the same TOML file, and we have parsers for them. I don’t think there needs to be any more decision-making than that, personally!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-02 13:42</div>
+            <div class="timeline-body"><p>Seems reasonable, although PEP440 is probably more flexible than what we need (local versions). PEP508 seems unrelated because we don't need a name portion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-02 13:48</div>
+            <div class="timeline-body"><p>👍 The gist of it is: it should just function identically to <code>requires-python</code> which is a standardized field that we already parse and support (see: <code>crates/ruff_workspace/src/pyproject.rs</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @MichaReiser on 2024-03-02 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-03 20:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-03 23:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:59 UTC
+    </footer>
+</body>
+</html>

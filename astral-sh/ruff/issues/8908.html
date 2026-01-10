@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>docstring code formatter: decide whether doctests should end with a empty PS2 prompt line or not - astral-sh/ruff #8908</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>docstring code formatter: decide whether doctests should end with a empty PS2 prompt line or not</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8908">#8908</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2023-11-29 13:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-11-29 13:18</div>
+            <div class="timeline-body"><p>(This issue is forked off from discussion beginning at https://github.com/astral-sh/ruff/issues/7146#issuecomment-1829264623.)</p>
+<p>Currently, the way code snippet formatting in docstrings works is by collecting all of the lines in a single code snippet, feeding them into a recursive call to the formatter and then printing the resulting lines back into the docstring. For doctests in particular, the first line in a code snippet is always a PS1 prompt (starts with <code>&gt;&gt;&gt; </code>) and all subsequent lines (if any) are always PS2 prompts (starts with <code>... </code>). <a href="https://github.com/BurntSushi/polars/commit/559b9d683bce3d4fd48d7946359fbdaeea1afccc#diff-7a25a2e8cd476e7265a2fc04c76d36c7f30fc288600119595fbf1caba75618c4L1262">For example</a>:</p>
+<pre><code class="language-python">&gt;&gt;&gt; with pl.Config(trim_decimal_zeros=False):
+...     print(df)
+...
+</code></pre>
+<p>This particular example contains a trailing empty line. This trailing empty line is collected as part of the code snippet and fed into the formatter. The formatter, as one might expect, trims this empty line. The end result is that the reformatted code snippet looks like this:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; with pl.Config(trim_decimal_zeros=False):
+...     print(df)
+</code></pre>
+<p>The point of this issue is to decide whether this is desirable behavior or not. It came up in feedback from @stinodego after I <a href="https://github.com/BurntSushi/polars/commit/559b9d683bce3d4fd48d7946359fbdaeea1afccc">reformatted the code snippets in polars</a>. If one looks at the diff carefully, you can see some examples where there was an empty PS2 prompt line at the end of a code snippet (and got trimmed). But there are also plenty of code snippets that do not have an empty PS2 prompt line at the end of it. It therefore seems clear that we cannot unconditionally add an empty PS2 prompt line at the end of every reformatted doctest code snippet.</p>
+<p>For example, it seems at least clear that a code snippet with only a PS1 prompt line should not have an empty line added after it. That is, we wouldn't want a reformatted code snippet to look like this:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; foo(x)
+...
+</code></pre>
+<p>I say this because I've looked at a number of real doctests in the wild and I don't think I've ever seen one written like this.</p>
+<p>But if the code snippet does contain at least one non-empty PS2 prompt line, then I think it's less clear whether we should add a trailing empty line or not. Namely, if you look at the <a href="https://github.com/BurntSushi/polars/commit/559b9d683bce3d4fd48d7946359fbdaeea1afccc">diff to polars</a> closely, not all code snippets with non-empty PS2 prompt lines contain a trailing empty line. That is, we can't really discern a consistent pattern from existing practice from this one example.</p>
+<p>Another data point is a <a href="https://github.com/BurntSushi/cpython/commit/19d1c85db9c862172f0cffd0872a942aef26d934#diff-f67a8b5be6bdc48383d2ab907325a4c75ef998fa7cd0bba382ec2efa7e4f00b5R204-R205">diff from applying code snippet reformatting to CPython</a>. I can't discern a consistent rule there either. Some code snippets with non-empty PS2 prompt lines have a trailing empty line and others don't.</p>
+<hr />
+<p>Speaking for me personally, I favor following the existing formatting rules and trimming the new line. But this might be something we want to collect user feedback on.</p>
+<p>Pinging folks involved in the discussion in #7146: @stinodego @MichaReiser @ofek @pawamoy</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @BurntSushi on 2023-11-29 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @BurntSushi on 2023-11-29 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @BurntSushi on 2023-11-29 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Stable" by @BurntSushi on 2023-11-29 13:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-11-29 13:34</div>
+            <div class="timeline-body"><p>I think trimming such new lines is the correct behavior 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pawamoy">@pawamoy</a> on 2023-11-29 14:04</div>
+            <div class="timeline-body"><p>Agree with @ofek here, IMO it should trim the new line. Copying the snippet and pasting it in a REPL demands interaction anyway, so even if the user has to hit enter after paste, it's fine. The trailing PS2 empty line is just a consequence of how the REPL works, and shouldn't be replicated in snippets (even though these snippets legitimately try to mimic the input/output of the REPL). Depending on the rendering method/generator, and/or <a href="https://mkdocstrings.github.io/recipes/#prevent-selection-of-prompts-and-output-in-python-code-blocks">client side customization of the selection behavior</a>, the prompts might even be left out of the selected content, so the trailing new line would make even less sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/stinodego">@stinodego</a> on 2023-11-29 15:20</div>
+            <div class="timeline-body"><blockquote>
+<p>But if the code snippet does contain at least one non-empty PS2 prompt line, then I think it's less clear whether we should add a trailing empty line or not. Namely, if you look at the <a href="https://github.com/BurntSushi/polars/commit/559b9d683bce3d4fd48d7946359fbdaeea1afccc">diff to polars</a> closely, not all code snippets with non-empty PS2 prompt lines contain a trailing empty line. That is, we can't really discern a consistent pattern from existing practice from this one example.</p>
+</blockquote>
+<p>I think there is actually a consistent way to determine when there should be a trailing <code>...</code>. It occurs in the Python console when an indentation decrease happens, i.e. after defining a function or using a context manager. But not after a simple statement like <code>foo(x)</code>.</p>
+<p>That being said, I'm completely fine with these being trimmed. Humans writing doc examples also naturally leave them out. They are currently enforced and added by <code>blackdoc</code> in our code base.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/keewis">@keewis</a> on 2023-12-07 22:11</div>
+            <div class="timeline-body"><p>adding a trailing <code>...</code> after the end of block statements like <code>if</code> or <code>with</code> is a code-style choice, so this is very subjective (see keewis/blackdoc#52): it makes the code example a appear little less dense. Obviously, trailing empty lines should be removed for anything that is not a block statement.</p>
+<p>Following the argument that <code>doctest</code> is basically a copy-pasted REPL cell would actually mean that you'd have to remove the trailing empty line after a block statement (which is what <code>blacken-docs</code> does, AFAIR). However, this appears to be changing in <code>python=3.13</code> (unfortunately, I can't remember where I got that bit of information).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-12-22 06:12</div>
+            <div class="timeline-body"><p>@BurntSushi from what I understand is that we currently strip the empty line. I'm fine with leaving it as is because we haven't received any feedback that clearly shows that it should be the other way round. The &quot;worst&quot; outcome is that we have to add an option controlling whether it should be stripped or not, which I think would be fine. So I would recommend closing this for now and re-visit when it comes up as an issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2023-12-23 12:38</div>
+            <div class="timeline-body"><p>SGTM!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2023-12-23 12:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:07 UTC
+    </footer>
+</body>
+</html>

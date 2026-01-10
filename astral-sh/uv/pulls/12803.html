@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build backend: Add reference docs and schema - astral-sh/uv #12803</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Build backend: Add reference docs and schema</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12803">#12803</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-04-10 10:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-04-10 10:40</div>
+            <div class="timeline-body"><p>Add reference documentation and schema integration for the uv build backend. The reference documentation comes with a preview note upfront.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @konstin on 2025-04-10 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2025-04-10 10:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-10 10:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pypi-types/src/identifier.rs</code>:111 on 2025-04-10 10:41</div>
+            <div class="timeline-body"><p>I didn't find a good resource for proper ECMA script regex validation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-workspace/src/build_backend.rs</code>:33 on 2025-04-10 10:45</div>
+            <div class="timeline-body"><p>We had bug reports caused by this exact problem, but unfortunately it's a somewhat popular feature (scikit-learn -&gt; sklearn, Pillow -&gt; PIL, etc.). It also allows users to pick their preferred package name even if it is already taken on PyPI by only renaming the installation name to something free while docs and <code>import &lt;...&gt;</code> can have any name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-10 10:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-10 10:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-workspace/src/build_backend.rs</code>:94 on 2025-04-10 10:52</div>
+            <div class="timeline-body"><p>There isn't good documentation for this, the data feature is somewhat implementation defined.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-10 10:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/reference/settings.md</code>:384 on 2025-04-10 10:57</div>
+            <div class="timeline-body"><p>I wouldn't know why you would use them for a pure Python project, but they exist in the spec so they exist on the build backend config:</p>
+<ul>
+<li>scripts: This feature is used to ship compiled binaries (including ruff and uv), but platform specific binaries don't match with universal wheels</li>
+<li>headers: Afaik only used for extension modules</li>
+<li>data: Writes directly into the venv root, it's better to isolate data files into the module. For communicating with other packages such as for plugin interfaces, entrypoints should be used.</li>
+<li>purelib and platlib: No production usage known</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-10 16:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-pypi-types/src/identifier.rs</code>:111 on 2025-04-10 16:01</div>
+            <div class="timeline-body"><p>cc @Gankra perhaps you could review this part</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-pypi-types/src/identifier.rs</code>:111 on 2025-04-10 18:16</div>
+            <div class="timeline-body"><p>This syntax seems to do the validation you want. You can test this out in e.g. vscode with the &quot;even better toml&quot; extension with the following <code>uv.toml</code>s.</p>
+<p>This one errors:</p>
+<pre><code class="language-toml">&quot;$schema&quot; = &quot;https://raw.githubusercontent.com/astral-sh/uv/f6e2bbdec7b53a6ce380e9ec27566e88a9144eda/uv.schema.json&quot;
+
+[build-backend]
+module-name = &quot;0abc&quot;
+</code></pre>
+<p>This one passes:</p>
+<pre><code class="language-toml">&quot;$schema&quot; = &quot;https://raw.githubusercontent.com/astral-sh/uv/f6e2bbdec7b53a6ce380e9ec27566e88a9144eda/uv.schema.json&quot;
+
+[build-backend]
+module-name = &quot;abc123&quot;
+</code></pre>
+<p>(For local testing you can use <code>&quot;$schema&quot; = &quot;file://./uv.schema.json&quot;</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-workspace/src/build_backend.rs</code>:120 on 2025-04-10 18:48</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            data = { &quot;headers&quot;: &quot;include/headers&quot;, &quot;scripts&quot;: &quot;bin&quot; }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-workspace/src/build_backend.rs</code>:145 on 2025-04-10 18:50</div>
+            <div class="timeline-body"><p>NB this is a future-proofing hazard for schema users (if the schema is ever out of date it will freak out about the field being missing -- I think that's fine here, especially if we make the schema in schemastore hotlinked to our github repo).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-04-10 18:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-11 09:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-workspace/src/build_backend.rs</code>:145 on 2025-04-11 09:22</div>
+            <div class="timeline-body"><p>I'm making a bet here that wheels won't get another data field (the list has been the same since 2012) and it's more likely that users mistype one of the data names (that's why it's the only type with <code>deny_unknown_fields</code> in the build backend).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-04-16 16:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-04-21 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-04-21 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-21 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cthoyt">@cthoyt</a> on 2025-04-21 11:45</div>
+            <div class="timeline-body"><p>thank you @konstin!!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:22 UTC
+    </footer>
+</body>
+</html>

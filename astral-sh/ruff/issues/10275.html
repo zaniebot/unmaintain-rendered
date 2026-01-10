@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff format removes trailing whitespace in doctests - astral-sh/ruff #10275</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff format removes trailing whitespace in doctests</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10275">#10275</a>
+        opened by <a href="https://github.com/peterjc">@peterjc</a>
+        on 2024-03-07 15:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/peterjc">@peterjc</a> on 2024-03-07 15:06</div>
+            <div class="timeline-body"><p>Testing under Linux, using <code>test_case.py</code> based on a real world example:</p>
+<p><a href="https://github.com/astral-sh/ruff/files/14525985/test_case.py.txt">test_case.py.txt</a></p>
+<pre><code class="language-python">&quot;&quot;&quot;Silly example using whitespace in doctests.
+
+This defines a function returning a string with trailing space:
+
+&gt;&gt;&gt; pad(&quot;X&quot;, 3)
+'   X   '
+
+This can be used directly in doctests like so:
+
+&gt;&gt;&gt; print(pad(&quot;X&quot;, 3))
+   X   
+
+You can't see it, but there should be three trailing spaces
+after the X, and if an editor removes them it breaks the test.
+&quot;&quot;&quot;
+
+
+def pad(text, spaces=1):
+    &quot;&quot;&quot;Add the given string with spaces before and after.
+
+    Example:
+
+    &gt;&gt;&gt; print(pad(&quot;Barry&quot;))
+     Barry 
+    &gt;&gt;&gt; pad(&quot;John&quot;, 2)
+    '  John  '
+
+    That's it.
+    &quot;&quot;&quot;
+    return &quot; &quot; * spaces + text + &quot; &quot; * spaces
+
+
+if __name__ == &quot;__main__&quot;:
+    import doctest
+
+    print(&quot;Running doctests...&quot;)
+    doctest.testmod(verbose=True)
+    print(&quot;Done&quot;)
+</code></pre>
+<p>Using the current version of black, the module docstring is unchanged (good), but the function doctest is broken (bad):</p>
+<pre><code>$ black --version &amp;&amp; black --diff test_case.py
+black, 24.2.0 (compiled: yes)
+Python (CPython) 3.10.12
+--- test_case.py        2024-03-07 14:54:01.979428+00:00
++++ test_case.py        2024-03-07 14:57:08.562391+00:00
+@@ -19,11 +19,11 @@
+     &quot;&quot;&quot;Add the given string with spaces before and after.
+
+     Example:
+
+     &gt;&gt;&gt; print(pad(&quot;Barry&quot;))
+-     Barry 
++     Barry
+     &gt;&gt;&gt; pad(&quot;John&quot;, 2)
+     '  John  '
+
+     That's it.
+     &quot;&quot;&quot;
+would reformat test_case.py
+
+All done! ✨ 🍰 ✨
+1 file would be reformatted.
+</code></pre>
+<p>This seems to be a long standing bug in black https://github.com/psf/black/issues/1654 although the difference in module level versus function level docstrings might be new.</p>
+<p>However with ruff, <em>both</em> the module docstring and the function docstring are broken (two doctests fail):</p>
+<pre><code>$ ruff --version &amp;&amp; ruff format --diff test_case.py
+ruff 0.3.1
+--- test_case.py
++++ test_case.py
+@@ -8,7 +8,7 @@
+ This can be used directly in doctests like so:
+
+ &gt;&gt;&gt; print(pad(&quot;X&quot;, 3))
+-   X   
++   X
+
+ You can't see it, but there should be three trailing spaces
+ after the X, and if an editor removes them it breaks the test.
+@@ -21,7 +21,7 @@
+     Example:
+
+     &gt;&gt;&gt; print(pad(&quot;Barry&quot;))
+-     Barry 
++     Barry
+     &gt;&gt;&gt; pad(&quot;John&quot;, 2)
+     '  John  '
+
+
+1 file would be reformatted
+</code></pre>
+<p>I agree that it is better to avoid meaningful trailing white space, but it can result in some ugly workarounds (assuming the code cannot be changed due to backward compatibility).</p>
+<p>Indeed the GitHub editor remove the trailing spaces too when pasting in the code! I have restored them by hand.</p>
+<p>I would like both ruff format and black not to touch trailing whitespace in the output section of a doctest.</p>
+<p>Separately flake8 or ruff lint can warn about W291, and the real examples this is based on use <code>  # noqa: W291</code> on the docstring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2024-03-07 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-03-08 08:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-08 08:04</div>
+            <div class="timeline-body"><blockquote>
+<p>I would like both ruff format and black not to touch trailing whitespace in the output section of a doctest.</p>
+</blockquote>
+<p>That makes sense to me and we do have the infrastructure to support when using <a href="https://docs.astral.sh/ruff/settings/#format_docstring-code-format"><code>docstring-code-format</code></a>. @BurntSushi do you know how where / how complicated it would be to preserve trailing whitespace in doctest assertion lines?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-08 12:51</div>
+            <div class="timeline-body"><p>I took a couple minutes to look, but it's not obvious to me where the issue is. One thing that I'd wonder about is, if we're reformatting docstring code snippets and reformatting itself will strip whitespace, then I'm not sure we can preserve trailing whitespace while <code>docstring-code-format</code> is enabled.</p>
+<p>Otherwise, when <code>docstring-code-format</code> is disabled, I'm not sure I see any explicit stripping of trailing whitespace from a line in a docstring before printing it. So I'd wonder if this is being done at a lower level of the formatter? But I'm not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-08 12:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Otherwise, when docstring-code-format is disabled, I'm not sure I see any explicit stripping of trailing whitespace from a line in a docstring before printing it. So I'd wonder if this is being done at a lower level of the formatter? But I'm not sure.</p>
+</blockquote>
+<p>Oh yeah, that could be it, depending on how we print the trailing space. The Printer doesn't print any whitespace. It defers it until you print the next (non whitespace) character. Although that only applies for <code>space()</code> not when writing a string.</p>
+<p>Edit: Nope, not it. You can see how the trailing whitespace is missing in the written IR after the <code>X</code>. So it must be happening somewhere :laughing:  https://play.ruff.rs/ded4925d-c8be-408e-951d-c51e18c52a9b</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-08 14:32</div>
+            <div class="timeline-body"><p>@BurntSushi I believe it's coming from this <code>trim_end</code> call https://github.com/astral-sh/ruff/blob/fe79798c12b4771cee0b0c59964ad7bd751c3779/crates/ruff_python_formatter/src/string/docstring.rs#L382-L392</p>
+<p>We would probably need a way for the <code>line</code> to inform whether the trailing whitespace should be trimmed or not and we would set this to false for the prompt output. But I'm a bit at a loss of where that would have to happen.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-08 16:00</div>
+            <div class="timeline-body"><p>I investigated this a little more. We would need to extend our doctest formatting also to handle the expected output and print that as verbatim instead of using <code>print_one</code>. I don't think doing this would be very complicated, but is probably a day or two effort.</p>
+<p>Links:</p>
+<ul>
+<li><a href="https://docs.python.org/3/library/doctest.html#how-are-docstring-examples-recognized">Doctest format</a></li>
+<li><a href="https://github.com/astral-sh/ruff/blob/fe79798c12b4771cee0b0c59964ad7bd751c3779/crates/ruff_python_formatter/src/string/docstring.rs#L874-L908"><code>add_code_line</code></a> needs to handle expected output</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:03 UTC
+    </footer>
+</body>
+</html>

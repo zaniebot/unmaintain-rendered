@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enable reading `uv.toml` from venv - astral-sh/uv #9935</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enable reading <code>uv.toml</code> from venv</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9935">#9935</a>
+        opened by <a href="https://github.com/JonneDatanen">@JonneDatanen</a>
+        on 2024-12-16 13:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/JonneDatanen">@JonneDatanen</a> on 2024-12-16 13:38</div>
+            <div class="timeline-body"><p>Resolves: https://github.com/astral-sh/uv/issues/8107</p>
+<!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Sometimes I would like to have per-venv <code>uv.toml</code> so that there could be e.g. multiple venv's with different constraints where different projects are run/tested. System/user wide configuration forbids doing many venv's and project settings doesn't allow running with different set of constraints.</p>
+<p>Having configuration files within the venv is also a feature that pip supports: https://pip.pypa.io/en/stable/topics/configuration/#location</p>
+<h2>Test Plan</h2>
+<p>Manually tested by creating venv and adding <code>uv.toml</code> there -&gt; constraints were resolved correctly.</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2024-12-17 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-17 15:46</div>
+            <div class="timeline-body"><p>I think we're pretty hesitant to do this. When we recreate a virtual environment, we delete the entire directory. It doesn't seem like a good place for additional state, like settings.</p>
+<p>What does</p>
+<blockquote>
+<p>project settings doesn't allow running with different set of constraints</p>
+</blockquote>
+<p>mean?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonneDatanen">@JonneDatanen</a> on 2024-12-17 16:03</div>
+            <div class="timeline-body"><blockquote>
+<p>What does</p>
+<blockquote>
+<p>project settings doesn't allow running with different set of constraints</p>
+</blockquote>
+<p>mean?</p>
+</blockquote>
+<p>We have some &quot;fixed&quot; python production environments. E.g.:</p>
+<ul>
+<li>prod-env0 -&gt; python==3.8, numpy==1.17.0, pandas==0.24.0, ...</li>
+<li>prod-env1 -&gt; python==3.10, numpy==1.24.4, pandas==1.4.4, ...</li>
+<li>prod-env2 -&gt; python==3.12, numpy==2.13.0, pandas==2.2.2, ...</li>
+<li>etc...</li>
+</ul>
+<p>And then we have e.g. python package <code>foo</code> that we ci-test and guarantee to run smoothly in e.g. env1 and env2.</p>
+<p>That means that we want to give some set of hard constraints while installing <code>foo</code>, but:</p>
+<ul>
+<li>They cannot be in <code>pyproject.toml</code> as the constraints are different based on the env we are testing/running the package</li>
+<li>They cannot be in <code>~/.config/uv.toml</code> as the same user might want to test in different venv's</li>
+</ul>
+<p>So for our use case it is better to have venv-specific configs, that can be generated (with script, <code>prod-env init 0</code>) after I create new venv. Currently we have that kind of script for <code>pip</code>, but I would definitely like to switch to <code>uv pip</code> if pip-like venv specific uv.toml would be possible.</p>
+<p>Of course this doesn't maybe fit nicely to <code>uv sync</code>/<code>uv lock</code> way of working, but having this in <code>uv pip</code> would be nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonneDatanen">@JonneDatanen</a> on 2025-02-25 06:46</div>
+            <div class="timeline-body"><p>@zanieb Any updates on the decision? I'm looking forward to implementing uv in our workflows once this is approved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-26 22:36</div>
+            <div class="timeline-body"><p>I don't think we want to do this, it's a core principle that virtual environments are ephemeral and disposable. Maybe we can find some other way for you to override settings per target environment. It sort of overlaps with #5903</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/larstiq">@larstiq</a> on 2025-02-27 12:17</div>
+            <div class="timeline-body"><blockquote>
+<p>it's a core principle that virtual environments are ephemeral and disposable</p>
+</blockquote>
+<p>Is the problem then that as <code>uv</code> may delete and recreate the virtual environment at any time there is no guarantee that the constraints will be recreated at the right time and thus considered when doing installs?</p>
+<p>Our current steps are:</p>
+<ul>
+<li>create venv</li>
+<li>install package with all possible environmental constraints</li>
+<li>run <code>initialize environment X</code></li>
+<li>pip install the rest of the packages</li>
+</ul>
+<p>Whereas with <code>uv</code> that's all one step?  https://github.com/astral-sh/uv/issues/5903 looks quite different to me. Although there is mention of <code>environment</code> people seem to focus on running scripts. What we are looking for is more like composing constraints from different environments with project specific constraints.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:16 UTC
+    </footer>
+</body>
+</html>

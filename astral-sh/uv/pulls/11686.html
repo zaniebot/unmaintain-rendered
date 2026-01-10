@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add pip-compatible `--group` flag to `uv pip install` and `uv pip compile` - astral-sh/uv #11686</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add pip-compatible <code>--group</code> flag to <code>uv pip install</code> and <code>uv pip compile</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11686">#11686</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-02-21 05:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-02-21 05:02</div>
+            <div class="timeline-body"><p>This is a minimal redux of #10861 to be compatible with <code>uv pip</code>.</p>
+<p>This implements the interface described in: https://github.com/pypa/pip/pull/13065#issuecomment-2544000876 for <code>uv pip install</code> and <code>uv pip compile</code>. Namely <code>--group &lt;[path:]name&gt;</code>, where <code>path</code> when not defined defaults to <code>pyproject.toml</code>.</p>
+<p>In that interface they add <code>--group</code> to <code>pip install</code>, <code>pip download</code>, and <code>pip wheel</code>. Notably we do not define <code>uv pip download</code> and <code>uv pip wheel</code>, so for parity we only need to implement <code>uv pip install</code>. However, we also support <code>uv pip compile</code> which is not part of pip itself, and <code>--group</code> makes sense there too.</p>
+<hr />
+<p>The behaviour of <code>--group</code> for <code>uv pip</code> commands makes sense for the cases upstream pip supports, but has confusing meanings in cases that only we support (because reading pyproject.tomls is New Tech to them but heavily supported by us). <strong>Specifically case (h) below is a concerning footgun, and case (e) below may get complaints from people who aren't well-versed in dependency-groups-as-they-pertain-to-wheels.</strong></p>
+<h2>Only Group Flags</h2>
+<p>Group flags on their own work reasonably and uncontroversially, except perhaps that they don't do very clever automatic project discovery.</p>
+<p>a) <code>uv pip install --group path/to/pyproject.toml:mygroup</code> pulls up <code>path/to/project.toml</code> and installs all the packages listed by its <code>mygroup</code> dependency-group (essentially treating it like another kind of requirements.txt). In this regard it functions similarly to <code>--only-group</code> in the rest of uv's interface.</p>
+<p>b) <code>uv pip install --group mygroup</code> is just sugar for <code>uv pip install --group pyproject.toml:mygroup</code> (<strong>note that no project discovery occurs</strong>, upstream pip simply hardcodes the path &quot;pyproject.toml&quot; here and we reproduce that.)</p>
+<p>c) <code>uv pip install --group a/pyproject.toml:groupx --group b/pyproject.toml:groupy</code>, and any other instance of multiple <code>--group</code> flags, can be understood as completely independent requests for the given groups at the given files.</p>
+<h2>Groups With Named Packages</h2>
+<p>Groups being mixed with named packages also work in a fairly unsurprising way, especially if you understand that things like dependency-groups are not really supposed to exist on pypi, they're just for local development.</p>
+<p>d) <code>uv pip install mypackage --group path/to/pyproject.toml:mygroup</code> much like multiple instances of <code>--group</code> the two requests here are essentially completely independent: pleases install <code>mypackage</code>, and please also install <code>path/to/pyproject.toml:mygroup</code>.</p>
+<p>e) <code>uv pip install mypackage --group mygroup</code> is exactly the same, but this is where it becomes possible for someone to be a little confused, as you might think <code>mygroup</code> is supposed to refer to <code>mypackage</code> in some way (it can't). But no, it's sourcing <code>pyproject.toml:mygroup</code> from the current working directory.</p>
+<h2>Groups With Requirements/Sourcetrees/Editables</h2>
+<p>Requirements and sourcetrees are where I expect users to get confused. It behaves <em>exactly</em> the same as it does in the previous sections but you would absolutely be forgiven for expecting a different behaviour. <em>Especially</em> because <code>--group</code> with the rest of uv <em>does</em> do something different.</p>
+<p>f) <code>uv pip install -r a/pyproject.toml --group b/pyproject.toml:mygroup</code> is again just two independent requests (install <code>a/pyproject.toml</code>'s dependencies, and <code>b/pyproject.toml</code>'s <code>mygroup</code>).</p>
+<p>g) <code>uv pip install -r pyproject.toml --group mygroup</code> is exactly like the previous case but <em>incidentally</em> the two requests refer to the same file. What the user wanted to happen is almost certainly happening, but they are likely getting &quot;lucky&quot; here that they're requesting something simple.</p>
+<p>h) <code>uv pip install -r a/pyproject.toml --group mygroup</code> is again exactly the same but the user is likely to get surprised and upset as this invocation actually sources two different files (install <code>a/pyproject.toml</code>'s dependencies, and <code>pyproject.toml</code>'s <code>mygroup</code>)! I would expect most people to assume the <code>--group</code> flag here is covering all applicable requirements/sourcetrees/editables, but no, it continues to be a totally independent reference to a file with a hardcoded relative path.</p>
+<hr />
+<p>Fixes https://github.com/astral-sh/uv/issues/8590
+Fixes https://github.com/astral-sh/uv/issues/8969</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-02-21 15:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:77 on 2025-02-21 15:35</div>
+            <div class="timeline-body"><p>I started doing a cleanup pass to compute a <code>BTreeMap&lt;PathBuf, Vec&lt;GroupName&gt;&gt;</code> that would be used by subsequent steps but it was just more code and value threading for no real benefit over the current impl that just does a <code>filter(group.path == path)</code> later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2025-02-23 14:25</div>
+            <div class="timeline-body"><p>FYI, pip support was merged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-24 20:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:1592 on 2025-02-24 20:05</div>
+            <div class="timeline-body"><p>Are these conflicts present in the <code>pip</code> implementation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-24 20:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:1592 on 2025-02-24 20:07</div>
+            <div class="timeline-body"><p>(it doesn't really look like it?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-cli/src/lib.rs</code>:1592 on 2025-02-24 20:08</div>
+            <div class="timeline-body"><p>I thought <code>-r</code> was exclusive to our CLI (I didn't check the others though).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-02-24 20:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-24 20:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:1592 on 2025-02-24 20:12</div>
+            <div class="timeline-body"><p>Yeah <code>-r</code> is exclusive to us, but I'd expect <code>pip install -e . --group foo</code> and <code>pip install anyio --group foo</code> to work unless they explicitly choose for it not to upstream.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-24 20:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:1592 on 2025-02-24 20:12</div>
+            <div class="timeline-body"><p>(Whether <code>-r</code> should have the same semantics as these other options, I'm not sure)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-24 20:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:1592 on 2025-02-24 20:14</div>
+            <div class="timeline-body"><p>One problem is that <code>uv pip install -r pyproject.toml --extra foo</code> is the &quot;correct&quot; use of <code>--extra</code> but <code>uv pip install -r pyproject.toml --group foo</code> would be invalid? Even more confusing, if we allow it, <code>uv pip install -r foo/pyproject.toml --group bar</code> would install <code>bar</code> from <code>./pyproject.toml</code> instead of <code>foo/pyproject.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-02-24 20:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-cli/src/lib.rs</code>:1592 on 2025-02-24 20:20</div>
+            <div class="timeline-body"><p>Yeah that's part of why I opted to disallow it. The upstream pip semantics are <em>really</em> confusing to pair with anything else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-24 20:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:1592 on 2025-02-24 20:22</div>
+            <div class="timeline-body"><p>I think it's important that we're compatible with pip on whether <code>--group</code> can be used with <code>&lt;package&gt;</code> and <code>--editable</code> though, which introduces all the same complexities.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-02-27 04:53</div>
+            <div class="timeline-body"><p>I implemented/pushed the following changes, because I needed to wrap my head around them in code/tests to think them through semantically:</p>
+<ul>
+<li>totally unrestrict <code>--group</code> from all other sources in <code>uv-pip-install</code><ul>
+<li>semantically i still have it that <code>--group</code> just installs that group in a pyproject.toml (still hardcoded ./pyproject.toml default for now, see below). All the following cases are accepted:<ul>
+<li>&quot;unrelated&quot;: <code>uv pip install somepackage --group bar</code> (essentially sugar for two separate <code>uv pip install</code> invocations as it is in upstream <code>pip install</code>)</li>
+<li>&quot;nice&quot;: <code>uv pip install -r pyproject.toml --group bar</code> (installs both the package's deps and its group bar) (but this is the user of the cli potentially getting &quot;lucky&quot;)</li>
+<li>&quot;confusing&quot;: <code>uv pip install -r foo/project.toml --group bar</code> (installs <code>foo/pyproject.toml</code>'s deps and <code>./pyproject.toml:bar</code>)</li>
+</ul>
+</li>
+<li>implementation-wise this was a bit hairy as we have to kind of detect if we're doing <code>--group</code> or <code>--only-group</code> by looking at all the other inputs, but it ends up making sense (really it's always <code>--only-group-but-additive-only</code>... it's just an artifact of the internal source_tree stuff and wanting to dedupe files that we need to do anything complex).</li>
+</ul>
+</li>
+<li>enable the same semantics for <code>uv-pip-compile</code><ul>
+<li>...this one I &quot;implemented&quot; and then I went to test it and realized that the semantics for pip-install are absolute nonsense here, i think? i think the old-old-old impl from last month where the --group just applies to every selected source is what you want here..? I'm not totally sure, I don't have a good intuition of what uses of this would look like... but I get the impression that <code>uv pip compile --group pyproject.toml:foo</code> is essentially gibberish? Or am I wrong?</li>
+</ul>
+</li>
+<li>did not add project discovery in lieu of hardcoding <code>pyproject.toml</code> -- I was <em>going</em> to do this but then I realized that nowhere in the pip interface do we ever seem to invoke project discovery? Which was surprising. This seems like a big semantic departure if we start doing that? At very least needs to be discussed more.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-02-27 15:59</div>
+            <div class="timeline-body"><p>Zanie convinced me that pip-compile is fine actually, so I just loosened the CLI restriction to make it accepted.</p>
+<p>I'm just adding more tests now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "add pip-compatible `--group` flag to `uv pip install`" to "add pip-compatible `--group` flag to `uv pip install` and `uv pip compile`" by @Gankra on 2025-02-27 21:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-03 20:21</div>
+            <div class="timeline-body"><p>Can you share the current state of this?  It looks like you updated the PR summary to cover the behavior we discussed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-03-04 03:46</div>
+            <div class="timeline-body"><p>I believe the PR is in the final state I'd like. Possibly it could have Even More tests but I'm not sure it would add much. (Just rebased)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:9064 on 2025-03-04 20:46</div>
+            <div class="timeline-body"><p>I have a personal preference (which is not matched by all of the test suite) to prefix test cases with the command e.g., <code>pip_install_dependency_group</code> so you can just use name matching for running a subset of tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:1026 on 2025-03-04 20:46</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Install the specified dependency group from a `pyproject.toml`.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:1028 on 2025-03-04 20:47</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// If no path is provided, the`pyproject.toml` in the working directory is used.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-normalize/src/group_name.rs</code>:87 on 2025-03-04 20:47</div>
+            <div class="timeline-body"><p>nit:</p>
+<pre><code class="language-suggestion">/// The pip-compatible variant of a [`GroupName`]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-normalize/src/group_name.rs</code>:94 on 2025-03-04 20:49</div>
+            <div class="timeline-body"><p>It seems better to use <code>Option&lt;PathBuf&gt;</code> here so</p>
+<ol>
+<li>We can distinguish between the explicit <code>pyproject.toml</code> and the inferred one, e.g., for error messages</li>
+<li>We can do more advanced project discovery later</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-normalize/src/group_name.rs</code>:111 on 2025-03-04 20:51</div>
+            <div class="timeline-body"><p>This isn't particularly consistent with our styling.</p>
+<p>I might say...</p>
+<blockquote>
+<p>The <code>--group</code> path is required to end in <code>pyproject.toml</code> for compatibility with <code>pip</code>; got: {path}`</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-normalize/src/group_name.rs</code>:128 on 2025-03-04 20:51</div>
+            <div class="timeline-body"><p>nit: I'd err towards moving this out of the if/else?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-normalize/src/group_name.rs</code>:150 on 2025-03-04 20:54</div>
+            <div class="timeline-body"><p>Another reason that <code>Option</code> may be helpful here? Though I think it's fine either way, it'd be confusing to show a different thing than the user provided in subsequent messaging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-requirements/src/source_tree.rs</code>:132 on 2025-03-04 20:56</div>
+            <div class="timeline-body"><p>Should this use <code>{name}</code> for consistency with elsewhere? Should we use <code>path.user_display()</code> to show relative paths to the working directory?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-settings/src/settings.rs</code>:1131 on 2025-03-04 20:58</div>
+            <div class="timeline-body"><p>I find this description confusing. Isn't this just</p>
+<blockquote>
+<p>Include the following dependency groups.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:15311 on 2025-03-04 21:01</div>
+            <div class="timeline-body"><p>It might be nice to have a comment before these test cases about what you're covering? Like</p>
+<blockquote>
+<p>// Compile the project dependencies and a dependency group</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:15283 on 2025-03-04 21:02</div>
+            <div class="timeline-body"><p>This could be separate, but... should we be emitting annotations for this? e.g.</p>
+<pre><code class="language-suggestion">    iniconfig==2.0.0
+        # via group (pyproject.toml:bar)
+    typing-extensions==4.10.0
+        # via project (pyproject.toml)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:15283 on 2025-03-04 21:04</div>
+            <div class="timeline-body"><p>As an aside, these would be so helpful for reading these test cases :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:15988 on 2025-03-04 21:06</div>
+            <div class="timeline-body"><p>I think this test is missing coverage for <code>uv pip compile subdir/pyproject.toml --group bar</code> and <code>uv pip compile pyproject.toml --group subdir/pyproject.toml:bar</code></p>
+<p>We also probably want test coverage for <code>uv pip compile subdir/pyproject.toml --group bar</code> where <code>bar</code> is present in <code>subdir/pyproject.toml</code> but not <code>pyproject.toml</code> — that's a good case for us to have a special-cased error message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:9274 on 2025-03-04 21:09</div>
+            <div class="timeline-body"><p>I would probably omit the hyphen here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:9274 on 2025-03-04 21:09</div>
+            <div class="timeline-body"><p>(I might also say &quot;was not found in&quot;, though I don't really have a strong preference there)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:1600 on 2025-03-04 21:12</div>
+            <div class="timeline-body"><p>Does this respect <code>--project</code>? It seems important that it does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-requirements/src/specification.rs</code>:250 on 2025-03-04 21:13</div>
+            <div class="timeline-body"><p>Any concern about these additional hidden clones?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:9211 on 2025-03-04 21:15</div>
+            <div class="timeline-body"><p>There's not test coverage for <code>pip install . --group bar</code>, <code>pip install -e . --group bar</code>, or <code>pip install subdir --group bar</code>, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-requirements/src/specification.rs</code>:241 on 2025-03-04 21:15</div>
+            <div class="timeline-body"><p>I'm pretty sure this makes sense, but it might be relevant for Charlie to take a look at before merging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-04 21:20</div>
+            <div class="timeline-body"><p>This looks pretty good. I have mostly minor comments, though the <code>--project</code> bit might be blocking?</p>
+<p>We should add this to the documentation at</p>
+<ul>
+<li>https://docs.astral.sh/uv/pip/compile/</li>
+<li>https://docs.astral.sh/uv/pip/packages/</li>
+</ul>
+<p>We may want to mark <code>--group</code> on <code>uv pip compile</code> as &quot;in preview&quot; until support lands in <code>pip-tools</code>. See https://github.com/jazzband/pip-tools/issues/2062. It looks like they're just considering using <code>::</code> instead of <code>:</code> as a separator? Moving this to preview would involve a runtime warning and a note in the doc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-04 21:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:1600 on 2025-03-04 21:24</div>
+            <div class="timeline-body"><p>We should also probably call out that <code>-r .../pyproject.toml</code> and <code>&lt;path&gt;</code> do not affect this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-03-06 15:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/tests/it/pip_install.rs</code>:9064 on 2025-03-06 15:16</div>
+            <div class="timeline-body"><p>Ah heh, I had actively noticed the opposite convention (and the module name can be matched on if you want this). But I'm fine with moving to your preference (I don't really have one myself).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-03-06 15:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-normalize/src/group_name.rs</code>:128 on 2025-03-06 15:30</div>
+            <div class="timeline-body"><p>I actually agreed with this but when I first wrote it I realized it actually makes the code longer and less clear to do so.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:9064 on 2025-03-06 15:47</div>
+            <div class="timeline-body"><p>Me against the world :D</p>
+<p>How do you match on a module name in nextest? Perhaps I'm just doing it wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-06 15:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-03-06 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-requirements/src/source_tree.rs</code>:132 on 2025-03-06 15:50</div>
+            <div class="timeline-body"><p>Could you rephrase that first part? Not sure what you mean.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-03-06 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-settings/src/settings.rs</code>:1131 on 2025-03-06 15:51</div>
+            <div class="timeline-body"><p>Oh good catch, copy-paste error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-03-06 15:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:15283 on 2025-03-06 15:53</div>
+            <div class="timeline-body"><p>...interesting I'll look if that's easy or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-03-06 15:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-cli/src/lib.rs</code>:1600 on 2025-03-06 15:58</div>
+            <div class="timeline-body"><p>From the docs on <code>--project</code>:</p>
+<blockquote>
+<p>Run the command within the given project directory.</p>
+<p>Other command-line arguments (such as relative paths) will be resolved relative
+to the current working directory.</p>
+</blockquote>
+<p>So by &quot;respect&quot; here do you actually mean &quot;doesn't get affected by&quot;? Oh I guess the specific case of the default path is an interesting one where it might be defensible to lean on --project... hmm</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-03-06 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-requirements/src/specification.rs</code>:250 on 2025-03-06 15:59</div>
+            <div class="timeline-body"><p>None, it happens only once per <code>uv</code> invocation and it's like... 0-10 strings realistically (which if non-zero are the prelude to some file i/o).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-requirements/src/specification.rs</code>:250 on 2025-03-06 16:00</div>
+            <div class="timeline-body"><p>My qualm is more that they're hidden from the caller than anything else, but 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-06 16:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-03-06 19:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/tests/it/pip_install.rs</code>:9064 on 2025-03-06 19:39</div>
+            <div class="timeline-body"><p>aiui the module name is part of the test id: <code>uv::it pip_compile::missing_editable_directory</code></p>
+<p>so <code>cargo nextest run -- pip_compile</code> (or <code>pip_compile::</code> if you really want to avoid false positives) Just Works for me?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-03-06 19:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:15283 on 2025-03-06 19:42</div>
+            <div class="timeline-body"><p>Ok I have an implementation but worth noting here that <code>project</code> is not the literal string &quot;project&quot; but is the actual name of the project (we just call our test projects &quot;project&quot; lol). So changing that to mycoolproj we currently print:</p>
+<pre><code>   # via mycoolproj (path/to/pyproject.toml)
+</code></pre>
+<p>Your proposal would naively be:</p>
+<pre><code>   # via mycoolproj (path/to/pyproject.toml:bar)
+</code></pre>
+<p>I can do that, but lmk if you want something Different.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-06 19:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:15283 on 2025-03-06 19:53</div>
+            <div class="timeline-body"><p>(ugh, we should <em>not</em> call our test projects &quot;project&quot; lol)</p>
+<p>It's not a dependency of the package, so... I'm not sure we want to say the project name.</p>
+<p>Anyway I don't think we need to bikeshed this. Let's do something vaguely sensible and we can change it in the future? cc @charliermarsh</p>
+<p>Can you also cross-post whatever we land on / or prod for discussion now upstream in the <code>pip-tools</code> issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-06 19:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:1600 on 2025-03-06 19:54</div>
+            <div class="timeline-body"><p>I feel strongly that the default path should be relative to <code>--project</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:1600 on 2025-03-06 19:54</div>
+            <div class="timeline-body"><p>(and <code>--directory</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-06 19:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-03-06 20:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:15283 on 2025-03-06 20:14</div>
+            <div class="timeline-body"><p>Oh geez is the exact syntax of this comment load-bearing to something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-03-06 20:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:15283 on 2025-03-06 20:16</div>
+            <div class="timeline-body"><p>Or is this just a &quot;let's not needlessly deviate from the other tool's output, even for comments&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-06 20:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:9064 on 2025-03-06 20:45</div>
+            <div class="timeline-body"><p>Oh interesting, that does work... that's... surprising. I wonder if it didn't used to work via insta?</p>
+<p>Thanks! Ignore this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-03-08 00:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:15283 on 2025-03-08 00:28</div>
+            <div class="timeline-body"><p>Left a message with them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-03-08 00:42</div>
+            <div class="timeline-body"><p>Ooookay I think that's all review feedback addressed!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-10 19:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-requirements/src/source_tree.rs</code>:132 on 2025-03-10 19:16</div>
+            <div class="timeline-body"><p>Sorry like</p>
+<pre><code>`{name}`
+</code></pre>
+<p>not</p>
+<pre><code>'{name}'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-10 19:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/pip/compile.md</code>:79 on 2025-03-10 19:19</div>
+            <div class="timeline-body"><p>We should also mention <code>--project</code> here, especially for multiple groups.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-10 19:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/pip/compile.md</code>:68 on 2025-03-10 19:20</div>
+            <div class="timeline-body"><p>&quot;To lock a dependency group... For example, to lock the group <code>foo</code>&quot;?</p>
+<p>We also use backticks for <code>pyproject.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-10 19:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/pip/packages.md</code>:110 on 2025-03-10 19:21</div>
+            <div class="timeline-body"><p>My above comments for <code>pip compile</code> apply here too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-10 19:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/pip/packages.md</code>:121 on 2025-03-10 19:21</div>
+            <div class="timeline-body"><p>We need to talk about how <code>--group</code> does not apply to other sources, like <code>-e .</code> etc. here. Maybe under an <code>!!! note</code> admonition? We could track this separately, but this is an important thing to teach in the docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-10 19:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:9497 on 2025-03-10 19:23</div>
+            <div class="timeline-body"><p>Should we quote 'pyproject.toml' for consistency with the rest?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-10 19:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:9510 on 2025-03-10 19:23</div>
+            <div class="timeline-body"><p>--group should be wrapped in backticks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-10 19:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:9526 on 2025-03-10 19:24</div>
+            <div class="timeline-body"><p>Probably want &quot;in the <code>pyproject.toml</code>&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-03-10 19:26</div>
+            <div class="timeline-body"><p>I <em>think</em> this is ready. It's hard to keep track of everything with the scope of the changes.</p>
+<p>I have a few stylistic nits remaining and want to see more user-facing documentation explaining how <code>--group</code> interacts with other options and how it differs from the rest of the uv interface. We can push that into a separate pull request, but it's very important. I'm happy to help with that if you need it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-10 19:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/pip/compile.md</code>:79 on 2025-03-10 19:28</div>
+            <div class="timeline-body"><p>We may want to add a !!! note admonition noting that this is not yet implemented in <code>pip-tools</code> yet and link to the issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-03-17 14:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/tests/it/pip_install.rs</code>:9526 on 2025-03-17 14:21</div>
+            <div class="timeline-body"><p>This is actually a path we're displaying, maybe &quot;was not found: {path}&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-17 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:9526 on 2025-03-17 17:17</div>
+            <div class="timeline-body"><p>You could say &quot;The dependency group 'bar' was not found in the project at <code>{}</code>&quot;</p>
+<p>It's a little weird for the working directory, maybe we'd want a <code>./</code> there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-03-17 17:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/tests/it/pip_install.rs</code>:9526 on 2025-03-17 17:55</div>
+            <div class="timeline-body"><p>If we wanna do that I'd make it a change to path.user_display() across the board (I think it's fine as is...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-17 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:9526 on 2025-03-17 17:58</div>
+            <div class="timeline-body"><p>I don't think it makes sense to do it across the board.  &quot;in the project at pyproject.toml&quot; reads pretty weird. A little better if it's in backticks though. We can always special case that though, &quot;in the project in the working directory&quot; or something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-03-17 18:00</div>
+            <div class="timeline-body"><p>Rebased and addressed review in latest commit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-17 18:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-requirements/src/source_tree.rs</code>:138 on 2025-03-17 18:00</div>
+            <div class="timeline-body"><p>Backticks on the path?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-03-17 18:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-requirements/src/source_tree.rs</code>:138 on 2025-03-17 18:01</div>
+            <div class="timeline-body"><p>Oh I assumed we purposefully avoided that in our style so the path was easy to copy/alt-click in terminals</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-17 18:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/pip/compile.md</code>:88 on 2025-03-17 18:04</div>
+            <div class="timeline-body"><p>I would not say &quot;This is an attempt&quot; in public facing copy. I'd just omit that whole sentence.</p>
+<p>I think the second bit is a separate note? I'd use <code>!!! note</code> for the first part. Then add a separate <code>!!! important</code> that says</p>
+<blockquote>
+<p>A <code>--group</code> flag has not yet been implemented in <code>pip-tools</code> and we may change our semantics to match the upstream behavior when it is finalized. The upstream behavior can be tracked in ...</p>
+</blockquote>
+<p>I'd move this to the first use of <code>pip compile --group</code> above a bit so there's not two admonitions in a row.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-03-17 18:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-requirements/src/source_tree.rs</code>:138 on 2025-03-17 18:05</div>
+            <div class="timeline-body"><p>(This is why I suggested the <code>: {path}</code> approach)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-17 18:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/pip/packages.md</code>:134 on 2025-03-17 18:06</div>
+            <div class="timeline-body"><p>I wouldn't say &quot;This matches the behaviour that <code>pip install</code> is shipping.&quot; — it'll be stale once they ship it and is a bit superfluous here as the assumption is we match pip's behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/pip/packages.md</code>:131 on 2025-03-17 18:06</div>
+            <div class="timeline-body"><p>You could say, &quot;As in pip, &quot; if you want to mention that it is done to match pip's behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-17 18:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>docs/pip/compile.md</code>:88 on 2025-03-17 18:13</div>
+            <div class="timeline-body"><p>heh, yeah I wanted two separate notes but got stuck on the back-to-backness. adding distance between them is a fine compromise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-03-17 18:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-requirements/src/source_tree.rs</code>:138 on 2025-03-17 18:14</div>
+            <div class="timeline-body"><p>We either do <code>: {path}</code> or use backticks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-17 18:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-03-17 18:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>docs/pip/packages.md</code>:131 on 2025-03-17 18:15</div>
+            <div class="timeline-body"><p>Ooh I like that. I felt the need to specify that because I don't think we would have picked that behaviour in a vacuum and I expect some people will want to suggest changing it. Maybe too defensive 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-03-17 18:36</div>
+            <div class="timeline-body"><p>Done for reals?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-17 18:43</div>
+            <div class="timeline-body"><p>Yeah let's go :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-03-17 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-03-17 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-17 18:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>idea: Add rule for flattening nested `Literal`s - astral-sh/ruff #7881</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>idea: Add rule for flattening nested <code>Literal</code>s</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7881">#7881</a>
+        opened by <a href="https://github.com/diceroll123">@diceroll123</a>
+        on 2023-10-10 01:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/diceroll123">@diceroll123</a> on 2023-10-10 01:34</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>From <a href="https://peps.python.org/pep-0586/#legal-parameters-for-literal-at-type-check-time">PEP 586</a>, <code>Literal[Literal[Literal[1, 2, 3], &quot;foo&quot;], 5, None]</code> is equivalent to <code>Literal[1, 2, 3, &quot;foo&quot;, 5, None]</code></p>
+<p>Currently there's no rule I know of that would unfurl/flatten a literal structure like this. Would be neat!</p>
+<p>I came across this while fiddling with #7880.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2023-10-10 03:05</div>
+            <div class="timeline-body"><p>++ <code>Union</code> and <code>Annotated</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-13 01:25</div>
+            <div class="timeline-body"><p>Could this not be part of PYI030 itself (https://docs.astral.sh/ruff/rules/unnecessary-literal-union/)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-10-13 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-10-13 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2023-10-13 01:49</div>
+            <div class="timeline-body"><blockquote>
+<p>Could this not be part of PYI030 itself (https://docs.astral.sh/ruff/rules/unnecessary-literal-union/)?</p>
+</blockquote>
+<p>As its name says that is <code>Unnecessery union</code> but here I think we need <code>Unnecessery nested</code>.
+For <code>Unnecessery union</code>, types get joined:</p>
+<pre><code class="language-py">field: Literal[1] | Literal[2]  # FIX: Literal[1, 2] 
+</code></pre>
+<p>For <code>Unnecessery nested</code>, types get unpacked:</p>
+<pre><code class="language-py">field: Literal[1, Literal[2]]  # FIX: Literal[1, 2]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/diceroll123">@diceroll123</a> on 2023-10-14 23:35</div>
+            <div class="timeline-body"><blockquote>
+<p>Could this not be part of PYI030 itself (<a href="https://docs.astral.sh/ruff/rules/unnecessary-literal-union/">docs.astral.sh/ruff/rules/unnecessary-literal-union</a>)?</p>
+</blockquote>
+<p>I've implemented this in as part of #7934, but of course this is strictly for literals.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2023-11-22 15:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Could this not be part of PYI030 itself (https://docs.astral.sh/ruff/rules/unnecessary-literal-union/)?</p>
+</blockquote>
+<p>It could. But can also be a new code. It was not implemented in flake8-pyi for the sole reason it was not deemed worth the effort for typeshed. https://github.com/PyCQA/flake8-pyi/issues/425</p>
+<p>Also note the existence of Y061 https://github.com/PyCQA/flake8-pyi/pull/435
+Which prefers <code>Literal[0] | None</code> over <code>Literal[0, None]</code> and is an opinionated and purely aesthetic rule (flake8-pyi doesn't need to support enforcing the second form because they are their own users at typeshed)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-02-11 20:18</div>
+            <div class="timeline-body"><p>Just tested on Ruff 0.9.6 and <a href="https://docs.astral.sh/ruff/rules/unnecessary-nested-literal/#unnecessary-nested-literal-ruf041">unnecessary-nested-literal (RUF041)</a> does the job.</p>
+<p>OP's example is autofixed from</p>
+<pre><code class="language-py">Literal[Literal[Literal[1, 2, 3], &quot;foo&quot;], 5, None]
+</code></pre>
+<p>to</p>
+<pre><code class="language-py">test: Literal[1, 2, 3, &quot;foo&quot;, 5, None]
+</code></pre>
+<p>and even, with <a href="https://docs.astral.sh/ruff/rules/redundant-none-literal/#redundant-none-literal-pyi061">redundant-none-literal (PYI061)</a></p>
+<pre><code class="language-py">test: Literal[1, 2, 3, &quot;foo&quot;, 5] | None
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-11 20:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:33 UTC
+    </footer>
+</body>
+</html>

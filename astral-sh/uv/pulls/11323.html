@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix a case of duplicate `torch` packages when using conflicting extras - astral-sh/uv #11323</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix a case of duplicate <code>torch</code> packages when using conflicting extras</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11323">#11323</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-02-07 17:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-07 17:19</div>
+            <div class="timeline-body"><p>The underlying cause here, I believe, was that we weren't accounting
+for the case where an edge could be visited <em>without</em> any extras
+enabled. Because of that, we got into situations where we thought there
+was only one path to an edge when there were actually more paths. This
+in turn lead to us erroneously doing simplification where it actually
+isn't justified. And in turn lead to duplicate versions of the same
+package being installed in the same environment.</p>
+<p>The fix for this ends up being really simple: in the case where we
+don't add any conflict items for a package during graph traversal,
+we materialize an empty set of conflicts to mark the case of no
+extras being enabled when visiting the child edges. This is enough to
+propagate the knowledge of multiple paths to the same edge and causes
+us to avoid doing improper simplifications.</p>
+<p>This does fix the problem in the snapshot, but it does also I think
+lead to other cases where simplifications are no longer possible (hence
+the changes to the airflow snapshot). But this seems expected, since
+we are doing strictly less simplification than we were before. It's
+unclear if all of those cases were actual bugs or not though.</p>
+<p>The first commit in this PR adds a regression test so that reviewers
+can more easily see the diff to the lock file as a result of the fix.</p>
+<p>Fixes #11133</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-02-08 01:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-08 01:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/lock_conflict.rs</code>:5284 on 2025-02-08 01:33</div>
+            <div class="timeline-body"><p>I'm having some trouble figuring out why the <code>2.6.0</code> version of Airflow doesn't have these on it... I guess it's because that's the &quot;default&quot; version that gets installed if no extras are enabled?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-10 14:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/it/lock_conflict.rs</code>:5284 on 2025-02-10 14:17</div>
+            <div class="timeline-body"><p>Yeah I think so. There is a non-optional dependency on <code>quickpath-airflow-operator</code>, and the lock entry for that package is this:</p>
+<pre><code class="language-toml">[[package]]
+name = &quot;quickpath-airflow-operator&quot;
+version = &quot;1.0.2&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+dependencies = [
+    { name = &quot;apache-airflow&quot;, version = &quot;2.5.0&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, marker = &quot;extra == 'extra-3-pkg-x1'&quot; },
+    { name = &quot;apache-airflow&quot;, version = &quot;2.6.0&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, marker = &quot;extra == 'extra-3-pkg-x2' or extra != 'extra-3-pkg-x1'&quot; },
+]
+</code></pre>
+<p>I think that conflict marker on <code>2.6.0</code> could be further simplified to <code>extra != 'extra-3-pkg-x1'</code>. (A good example of how conflict marker simplification is not perfect.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-02-10 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-02-10 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-10 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2025-02-18 12:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">lock</span> added by @BurntSushi on 2025-02-18 12:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:19 UTC
+    </footer>
+</body>
+</html>

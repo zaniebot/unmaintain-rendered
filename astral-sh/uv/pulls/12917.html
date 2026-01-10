@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check dist name to handle bogus redirect - astral-sh/uv #12917</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Check dist name to handle bogus redirect</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12917">#12917</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-04-16 13:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-04-16 13:20</div>
+            <div class="timeline-body"><p>When an index performs a bogus redirect or otherwise returns a different distribution name than expected, uv currently hangs.</p>
+<p>In the example case, requesting the simple index page for any package returns the page for anyio. This mean querying the sniffio version map returns only anyio entries, and the version maps resolves to an anyio version. When the resolver makes a query for sniffio and waits for it to resolve, the main thread finds an anyio and resolves only that in the wait map, causing the hang.</p>
+<p>We fix this by checking the name of the returned distribution against the name of the requested distribution. For good measure, we add the same check in <code>Request::Dist</code> and <code>Request::Installed</code>. For performance and complexity reasons, we don't perform this check in the version map itself, but only after a candidate distribution has been selected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-04-16 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-16 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:10362 on 2025-04-16 14:50</div>
+            <div class="timeline-body"><p>Should we include the URL in this error message? It's not clear to me what's going on here as a user.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-16 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_install.rs</code>:10362 on 2025-04-16 14:50</div>
+            <div class="timeline-body"><p>Should we include the URL in this error message? It's not clear to me what's going on here as a user.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-16 21:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/pip_install.rs</code>:10362 on 2025-04-16 21:04</div>
+            <div class="timeline-body"><p>At the point where we're observing the mismatch, we don't have the offending URL anymore (it's not the dist URL, it's the index page URL that list the dist for the wrong package). I don't think it's worth the effort adding it given that this has not been reported for any real index (we only observed this in a bogus test case) and it's not user fixable but an index problem. The usual better approach, eager checking after receiving an index page, would be prohibitively expensive in the version map as it's incompatible with the lazy parsing. We could perform this check in the version map selector, but then would need to start tracking the index page URL for each <code>VersionMap</code> instance, which is imho too much complexity and performance risk to be worthwhile here.</p>
+<p>I've added a sentence about this being an index problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-16 22:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/error.rs</code>:127 on 2025-04-16 22:25</div>
+            <div class="timeline-body"><p>nit</p>
+<pre><code class="language-suggestion">    #[error(&quot;The index returned metadata for the wrong package: expected {request} for {expected}, got {request} for {actual}&quot;)]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-04-16 22:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-04-22 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-04-22 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-22 15:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:23 UTC
+    </footer>
+</body>
+</html>

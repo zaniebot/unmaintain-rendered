@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unset `SCRIPT_PATH` in relocatable activation script - astral-sh/uv #12672</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Unset <code>SCRIPT_PATH</code> in relocatable activation script</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12672">#12672</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-04-04 12:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-04 12:53</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Restore it if it was previously set, etc.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/12662.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @charliermarsh on 2025-04-04 12:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-04 12:54</div>
+            <div class="timeline-body"><p>This <em>might</em> be breaking? I have to trace it...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> removed by @charliermarsh on 2025-04-04 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2025-04-04 13:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-04 13:01</div>
+            <div class="timeline-body"><p>Okay, I think this <em>isn't</em> breaking because it's all confined to the activation script. So existing scripts will continue to work, and new scripts will use the new variables consistently.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zsimic">@zsimic</a> reviewed on 2025-04-04 18:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zsimic">@zsimic</a> on <code>crates/uv-virtualenv/src/activator/activate</code>:27 on 2025-04-04 18:00</div>
+            <div class="timeline-body"><p>I'm not sure how the variable is actually used, but I think &quot;for good measure&quot;, you should also unset it in <code>deactivate()</code> function, as in <code>unset _UV_VENV_ACTIVATOR</code>.</p>
+<p>Otherwise, a de-activated venv could fool the Rust code below, it could make things look as if the venv is still active (based on the existence and value of the shell variable)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @zanieb on 2025-04-04 23:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2025-04-04 23:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-07 12:39</div>
+            <div class="timeline-body"><p>Can we do a <code>unset SCRIPT_PATH</code> at the end of the script? I could be missing something, but grepping for <code>SCRIPT_PATH</code> I didn't find any usages outside of the script or any delayed evaluation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-07 13:04</div>
+            <div class="timeline-body"><p>Yeah, I think we probably can unset it. I will try.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zsimic by @charliermarsh on 2025-04-07 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Use `_UV_VENV_ACTIVATOR` instead of `SCRIPT_PATH` in relocatable activation script" to "Unset `SCRIPT_PATH` in relocatable activation script" by @charliermarsh on 2025-04-07 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-07 14:25</div>
+            <div class="timeline-body"><p>Okay, using @zsimic script, I think this just sets the var locally, then unsets and restores it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-07 17:48</div>
+            <div class="timeline-body"><p>In case anyone else is wondering about env variable vs. local variable: bash (at least) is using a local variable if it isn't defined as an env var, and overrides the env var otherwise:</p>
+<pre><code class="language-bash">$ env | grep VAR
+$ source a.sh 
+$ env | grep VAR
+VAR_A2=bar
+$ export VAR_A1=&quot;value&quot;
+$ env | grep VAR
+VAR_A1=value
+VAR_A2=bar
+$ source a.sh 
+$ env | grep VAR
+VAR_A1=foo
+VAR_A2=bar
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-04-07 17:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-04-07 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-07 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-07 18:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:22 UTC
+    </footer>
+</body>
+</html>

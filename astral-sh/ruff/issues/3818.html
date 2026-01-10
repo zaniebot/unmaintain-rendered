@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIE802 Autofix Breaks Code when List Comprehensions consume Async Generators - astral-sh/ruff #3818</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PIE802 Autofix Breaks Code when List Comprehensions consume Async Generators</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3818">#3818</a>
+        opened by <a href="https://github.com/so-rose">@so-rose</a>
+        on 2023-03-30 16:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/so-rose">@so-rose</a> on 2023-03-30 16:47</div>
+            <div class="timeline-body"><h1>General Information</h1>
+<p>Relevant system info:</p>
+<pre><code class="language-bash">$ ruff --version
+ruff 0.0.259
+$ python --version
+Python 3.11.2
+# mypy --version # This catches the bug
+mypy 1.1.1 (compiled: yes)
+</code></pre>
+<p>I was on a journey to discovering <a href="https://docs.python.org/3/library/asyncio-task.html#asyncio.gather"><code>asyncio.gather</code></a>, when I stumbled upon a case where PIE802's autofix actually breaks my code.</p>
+<p>The breakage specifically happens when a consumer of generators like <code>all()</code> contains a list comprehension, which itself gets each element from an  <code>AsyncGenerator</code> (each element <code>await</code>ed). PIE802 will incorrectly assume the comprehension can be simplified into a generator in <code>all()</code>, resulting in <code>all()</code> being directly given an <code>AsyncGenerator</code> - which it cannot handle.</p>
+<h2>Before PIE802 Autofix</h2>
+<p>Here's an example snippet, where <code>all()</code> is given a list comprehension:</p>
+<pre><code class="language-python">async def greetings() -&gt; list[str]:
+	return [&quot;good morning&quot;, &quot;good afternoon&quot;, &quot;bad day&quot;, &quot;good night&quot;]
+
+async def is_greeting_okay(greeting) -&gt; bool:
+	max_words = 2
+	return len(greeting.split(&quot; &quot;)) == max_words
+
+async def are_the_good_greetings_okay() -&gt; bool :
+	return all([
+		await is_greeting_okay(greeting)
+		for greeting in await greetings()
+		if greeting.startswith(&quot;good&quot;)
+	])
+</code></pre>
+<p>All is as expected (if painfully synchronous):</p>
+<pre><code class="language-python">&gt;&gt;&gt; asyncio.run(are_the_good_greetings_okay())
+True
+</code></pre>
+<h2>After PIE802 Autofix</h2>
+<p>The list comprehension in <code>all()</code> looks, to PIE802, redundant. It is thus removed:</p>
+<pre><code class="language-python">async def greetings() -&gt; list[str]:
+	return [&quot;good morning&quot;, &quot;good afternoon&quot;, &quot;bad day&quot;, &quot;good night&quot;]
+
+async def is_greeting_okay(greeting) -&gt; bool:
+	max_words = 2
+	return len(greeting.split(&quot; &quot;)) == max_words
+
+async def are_the_good_greetings_okay() -&gt; bool :
+	return all(
+		await is_greeting_okay(greeting)
+		for greeting in await greetings()
+		if greeting.startswith(&quot;good&quot;)
+	)
+</code></pre>
+<p>Unfortunately, <code>all()</code> cannot consume an <code>AsyncGenerator</code>:</p>
+<pre><code class="language-python">&gt;&gt;&gt; asyncio.run(are_the_good_greetings_okay())
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;/usr/local/lib/python3.11/asyncio/runners.py&quot;, line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File &quot;/usr/local/lib/python3.11/asyncio/runners.py&quot;, line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File &quot;/usr/local/lib/python3.11/asyncio/base_events.py&quot;, line 653, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File &quot;&lt;stdin&gt;&quot;, line 2, in are_the_good_greetings_okay
+TypeError: 'async_generator' object is not iterable
+</code></pre>
+<p><code>mypy</code> agrees:</p>
+<pre><code class="language-bash">file:line: error: Argument 1 to &quot;all&quot; has incompatible type &quot;AsyncGenerator[bool, None]&quot;; expected &quot;Iterable[object]&quot;  [arg-type]
+</code></pre>
+<h1>Possible Solutions</h1>
+<p>The case above is, of course, <strong>an anti-pattern</strong>; perhaps <code>ruff</code> <em>should</em> be complaining, but for a different reason! Synchronously <code>await</code>ing one element at a time kind of defeats the whole point of <code>async</code>; see https://stackoverflow.com/questions/65175036/asyncio-gather-vs-list-comprehension for more.</p>
+<p>If one uses <code>asyncio.gather</code> like one is supposed to, PIE802 doesn't bother anybody:</p>
+<pre><code class="language-python">async def greetings() -&gt; list[str]:
+	return [&quot;good morning&quot;, &quot;good afternoon&quot;, &quot;bad day&quot;, &quot;good night&quot;]
+
+async def is_greeting_okay(greeting: str) -&gt; bool:
+	max_words = 2
+	return len(greeting.split(&quot; &quot;)) == max_words
+
+async def are_the_good_greetings_okay() -&gt; bool :
+	return all(
+		await asyncio.gather(*[
+			is_greeting_okay(greeting)
+			for greeting in await greetings()
+			if greeting.startswith(&quot;good&quot;)
+		])
+	)
+</code></pre>
+<p>My 2c (please take it with a grain of salt, I'm very new to <code>ruff</code>):</p>
+<ul>
+<li>Some <em>new</em> <code>ruff</code> rule could explain that <strong>comprehensions with per-element <code>await</code> are bad practice</strong>, just on a &quot;code quality&quot; level.</li>
+<li>PIE802's autofix shouldn't break working code, even if that code is quite suboptimal. Thus, in the case of a per-element <code>await</code>, it should leave the comprehension alone.</li>
+</ul>
+<p>I hope this report can be of help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-03-30 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-30 16:49</div>
+            <div class="timeline-body"><p>Ah interesting, and very helpful! We definitely should not break working code, so at the very least, we should avoid trying to fix these (and I think for now we should avoid flagging them at all).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/so-rose">@so-rose</a> on 2023-03-30 16:52</div>
+            <div class="timeline-body"><p>Thanks for the quick response! I am, by the way, absolutely adoring the project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-30 18:15</div>
+            <div class="timeline-body"><p>Thank you so much, that's so nice to hear!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-30 18:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:48 UTC
+    </footer>
+</body>
+</html>

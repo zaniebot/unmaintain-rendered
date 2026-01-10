@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FURB129 fix should add spaces between tokens - astral-sh/ruff #17683</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>FURB129 fix should add spaces between tokens</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17683">#17683</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-04-28 15:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-04-28 15:34</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/readlines-in-for/"><code>readlines-in-for</code> (FURB129)</a> can introduce a syntax error when <code>.readlines()</code> is followed immediately by a keyword without white space.</p>
+<pre><code class="language-console">$ cat &gt;furb129.py &lt;&lt;'# EOF'
+with open(&quot;furb129.py&quot;) as f:
+    print([line for line in f.readlines()if True])
+# EOF
+
+$ ruff --isolated check --select FURB129 --unsafe-fixes --diff furb129.py 2&gt;&amp;1 | grep error:
+error: Fix introduced a syntax error. Reverting all changes.
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.11.7 (f7b48510b 2025-04-24)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-04-28 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-28 18:11</div>
+            <div class="timeline-body"><p>This kind of issue has popped up in a couple different places recently. I wonder if there's some way to tackle this at the <code>Edit</code> or other infrastructural level.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-28 20:41</div>
+            <div class="timeline-body"><p>Doing edits at the ast level would help with this but it has the downside that we loose source formatting</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-28 20:43</div>
+            <div class="timeline-body"><p>Related https://github.com/astral-sh/ruff/issues/14293</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-04-29 02:05</div>
+            <div class="timeline-body"><p><code>Edit</code> could run something like <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/fix/edits.rs#L538"><code>ruff_linter::fix::edits::pad</code></a> automatically if it detects that the inserted text needs padding relative to its surroundings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-06-08 16:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:20 UTC
+    </footer>
+</body>
+</html>

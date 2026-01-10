@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixes for PERF401 and PERF403 should parenthesize lambdas and ternary expressions - astral-sh/ruff #18405</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fixes for PERF401 and PERF403 should parenthesize lambdas and ternary expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18405">#18405</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-05-31 15:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-05-31 15:17</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The fixes for <a href="https://docs.astral.sh/ruff/rules/manual-list-comprehension/"><code>manual-list-comprehension</code> (PERF401)</a> and <a href="https://docs.astral.sh/ruff/rules/manual-dict-comprehension/">manual-dict-comprehension (PERF403)</a> should insert parentheses around the condition when it is a lambda expression or a ternary conditional expression. See #15050, which fixed the same issue for assignment expressions.</p>
+<pre><code class="language-console">$ cat &gt;perf401.py &lt;&lt;'# EOF'
+src = [1]
+dst = []
+for i in src:
+    if True if True else False:
+        dst.append(i)
+for i in src:
+    if lambda: 0:
+        dst.append(i)
+# EOF
+
+$ ruff --isolated check perf401.py --select PERF401 --preview --unsafe-fixes --diff 2&gt;&amp;1 | grep error:
+error: Fix introduced a syntax error. Reverting all changes.
+
+$ cat &gt;perf403.py &lt;&lt;'# EOF'
+src = ((&quot;x&quot;, 1),)
+dst = {}
+for k, v in src:
+    if True if True else False:
+        dst[k] = v
+for k, v in src:
+    if lambda: 0:
+        dst[k] = v
+# EOF
+
+$ ruff --isolated check perf403.py --select PERF403 --preview --unsafe-fixes --diff 2&gt;&amp;1 | grep error:
+error: Fix introduced a syntax error. Reverting all changes.
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.11.12 (aee3af0f7 2025-05-29)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-05-31 20:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-05-31 20:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-05-31 20:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-06-05 14:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:34 UTC
+    </footer>
+</body>
+</html>

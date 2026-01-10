@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `pyenv-virtualenv` compatybility - astral-sh/uv #7935</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>pyenv-virtualenv</code> compatybility</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7935">#7935</a>
+        opened by <a href="https://github.com/Czaki">@Czaki</a>
+        on 2024-10-04 21:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Czaki">@Czaki</a> on 2024-10-04 21:23</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>I'm using pyenv with pyenv-virtualenv for my daily workflow.
+Currently, <code>uv pip</code> nice works as a replacement of pip, however, try to use <code>uvx</code> or <code>uv build</code> it ends with error message</p>
+<pre><code>error: No interpreter found for executable name `partsegcore` in virtual environments, managed installations, or system path
+</code></pre>
+<p>Where <code>partsegcore</code> is the name of virtualenv.</p>
+<p>This PR is fixing this</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>I tested it locally.</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Czaki">@Czaki</a> reviewed on 2024-10-04 21:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Czaki">@Czaki</a> on <code>crates/uv-python/src/version_files.rs</code>:73 on 2024-10-04 21:24</div>
+            <div class="timeline-body"><p><code>pyenv</code> allows providing multiple versions in one line.
+especially when one uses <code>pyenv local list_of_python_versions</code> all will be put in one line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-04 21:25</div>
+            <div class="timeline-body"><p>Hi! Does <code>pyenv-virtualenv</code> not set <code>VIRTUAL_ENV</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Czaki">@Czaki</a> reviewed on 2024-10-04 21:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Czaki">@Czaki</a> on <code>crates/uv-python/src/discovery.rs</code>:1342 on 2024-10-04 21:25</div>
+            <div class="timeline-body"><p><code>pyenv</code> sets both <code>PYENV_VIRTUAL_ENV</code> and <code>VIRTUAL_ENV</code> to the same value. Maybe should here <code>VIRTUAL_ENV</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-04 21:26</div>
+            <div class="timeline-body"><p>I'm not sure if we'll accept this functionality yet, but I think you'd want to add it at https://github.com/astral-sh/uv/blob/bf3286cd2d22f775107b807ac2e15d636bc334b7/crates/uv-python/src/discovery.rs#L225-L242</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2024-10-04 21:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Hi! Does <code>pyenv-virtualenv</code> not set <code>VIRTUAL_ENV</code>?</p>
+</blockquote>
+<p>Yes. It set. I put a comment in meantime.</p>
+<blockquote>
+<p>I'm not sure if we'll accept this functionality yet, but I think you'd want to add it at</p>
+</blockquote>
+<p>Based on my tries, this code is not reached if the <code>.python-version</code> file is present. <code>uv</code> fails when cannot find an executable with the name same as the provided virtualenv name in the <code>.python-version</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/discovery.rs</code>:1342 on 2024-10-04 21:39</div>
+            <div class="timeline-body"><p>We already read <code>VIRTUAL_ENV</code> — is it not working for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-04 21:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-04 21:40</div>
+            <div class="timeline-body"><p>I see. The <code>.python-version</code> file shouldn't contain the name of an environment for use with uv — does pyenv support that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Czaki">@Czaki</a> reviewed on 2024-10-04 21:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Czaki">@Czaki</a> on <code>crates/uv-python/src/discovery.rs</code>:1342 on 2024-10-04 21:41</div>
+            <div class="timeline-body"><p>No. It do not work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2024-10-04 21:45</div>
+            <div class="timeline-body"><blockquote>
+<p>I see. The .python-version file shouldn't contain the name of an environment for use with uv — does pyenv support that?</p>
+</blockquote>
+<p>No. This is default location where pyenv store which python use:</p>
+<p>https://github.com/pyenv/pyenv/blob/master/COMMANDS.md#pyenv-local</p>
+<p>Seting python version using pyenv cli will be put in this file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-04 21:47</div>
+            <div class="timeline-body"><p>In the same way we let you put versions in that file, but not the name of an environment. It sounds like you put an environment name in there which will break uv as we'll try to find it as an executable name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2024-10-04 22:07</div>
+            <div class="timeline-body"><blockquote>
+<p>In the same way we let you put versions in that file, but not the name of an environment. It sounds like you put an environment name in there which will break uv as we'll try to find it as an executable name.</p>
+</blockquote>
+<p>If I put only Python versions in this file, it will lead to work in a global Python installation, not isolated per context.</p>
+<p>As far as I know, the <code>pyenv</code> is a tool that introduced <code>.python-version</code> as a file to save information about used python environment and storing name of any valid pyenv environments is a valid use of this file.</p>
+<p>Because of this, it is recommended to not store <code>.python-version</code> in git repository, as it may be machine-specific.</p>
+<p>And <code>uv</code> does not fully support <code>.python-version</code> (check only the working directory, without checking parents), and does not allow ignoring it (only <code>--no-config</code> option that means much more).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-04 23:15</div>
+            <div class="timeline-body"><p>I don't see using an environment name in the version file in the pyenv documentation. Regardless, I don't think it's a use-case we can support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2024-10-05 06:45</div>
+            <div class="timeline-body"><p>Using of named virtualenv is described in documentation of <code>pyenv-virtualenv</code> https://github.com/pyenv/pyenv-virtualenv?tab=readme-ov-file#activate-virtualenv</p>
+<blockquote>
+<p>If eval &quot;$(pyenv virtualenv-init -)&quot; is configured in your shell, pyenv-virtualenv will automatically activate/deactivate virtualenvs on entering/leaving directories which contain a .python-version file that contains the name of a valid virtual environment as shown in the output of pyenv virtualenvs (e.g., venv34 or 3.4.3/envs/venv34 in example above) . .python-version files are used by pyenv to denote local Python versions and can be created and deleted with the <a href="https://github.com/pyenv/pyenv/blob/master/COMMANDS.md#pyenv-local">pyenv local</a> command.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-05 14:53</div>
+            <div class="timeline-body"><p>I see, thanks. It sounds like this is an extension of <code>.python-version</code> files as defined by <code>pyvenv</code> specifically for <code>pyvenv-virtualenv</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2024-10-05 20:45</div>
+            <div class="timeline-body"><p>I'm pyenv user, not a maintainer.</p>
+<p>I think that this part of pyenv documentation is valid part of specyfication:</p>
+<blockquote>
+<p>Locating Pyenv-provided Python installations</p>
+<p>Once pyenv has determined which version of Python your application has specified, it passes the command along to the corresponding Python installation.</p>
+<p>Each Python version is installed into its own directory under <code>$(pyenv root)/versions</code>.</p>
+<p>For example, you might have these versions installed:</p>
+<pre><code>$(pyenv root)/versions/2.7.8/
+$(pyenv root)/versions/3.4.2/
+$(pyenv root)/versions/pypy-2.4.0/</code></pre>
+<p>As far as Pyenv is concerned, version names are simply directories under <code>$(pyenv root)/versions</code>.</p>
+</blockquote>
+<p>So <code>pyenv-virtualenv</code> is creating a directory named as virtualenv under <code>$(pyenv root)/versions</code> directory.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-10-06 19:34</div>
+            <div class="timeline-body"><blockquote>
+<p>I see, thanks. It sounds like this is an extension of <code>.python-version</code> files as defined by <code>pyvenv</code> specifically for <code>pyvenv-virtualenv</code>?</p>
+</blockquote>
+<p>This is correct and somewhat the historical use of <code>.python-version</code> by pyenv-virtualenv.</p>
+<p>To illustrate, say you have <code>pyenv</code> and <code>pyenv-virtualenv</code> installed with 3.12.7, 3.13.0rc3.</p>
+<pre><code class="language-shell">&gt;$ mkdir myproject
+
+&gt;$ cd myproject
+
+myproject&gt;$ echo 'testenv3.12' &gt; .python-version
+
+myproject&gt;$ pyenv virtualenv 3.12.7 testenv3.12
+
+(testenv3.12) myproject&gt;$ python -c 'import sys; print(sys.prefix)'
+/home/dev/.pyenv/versions/testenv3.12
+
+(testenv3.12) myproject&gt;$ echo '3.12.7' &gt; .python-version
+
+myproject&gt;$ python --version
+Python 3.12.7
+
+myproject&gt;$ python -c 'import sys; print(sys.prefix)'
+/home/dev/.pyenv/versions/3.12.7
+
+myproject&gt;$ echo '3.13.0rc3' &gt; .python-version
+
+myproject&gt;$ python --version
+Python 3.13.0rc3
+
+myproject&gt;$ python -c 'import sys; print(sys.prefix)'
+/home/dev/.pyenv/versions/3.13.0rc3
+
+myproject&gt;$ pyenv virtualenv 3.13.0rc3 testenv3.13
+
+myproject&gt;$ echo 'testenv3.13' &gt; .python-version
+
+(testenv3.13) myproject&gt;$ python -c 'import sys; print(sys.prefix)'
+/home/dev/.pyenv/versions/testenv3.13
+
+(testenv3.13) myproject&gt;$ cd ..
+
+&gt;$ 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2024-10-06 21:49</div>
+            <div class="timeline-body"><p>I do not understand why tests fail. Could you hint me?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-06 22:36</div>
+            <div class="timeline-body"><p>The test is failing because you changed version file parsing to split on within-line whitespace so something such <code>&gt;3.8, &lt;3.11</code> is parsed as <code>&gt;3.8,</code> which changes the snapshot:</p>
+<pre><code>    3       │-Updated `.python-version` from `&gt;3.8, &lt;3.11` -&gt; `3.11`
+          3 │+Updated `.python-version` from `&gt;3.8,` -&gt; `3.11`
+</code></pre>
+<p>I'll repeat that I'm pretty unsure that we'll accept this change though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Czaki">@Czaki</a> on <code>crates/uv-python/src/version_files.rs</code>:73 on 2024-10-07 06:31</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+<p>I have tested again, and it looks like the current release of pyenv put each entry in a separate line.</p>
+<p>Even if it works with space separated list in file, it should be enough to call <code>pyenv local list_of_pytho_vrsion</code> again to get it working</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Czaki">@Czaki</a> reviewed on 2024-10-07 06:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2024-10-16 16:19</div>
+            <div class="timeline-body"><p>Hm.
+Maybe I should change to use <code>PYENV_ROOT</code> environment variable and check <code>$PYENV_ROOT/versiosn/{value}</code> directory if exists?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2024-10-21 18:33</div>
+            <div class="timeline-body"><p>What should I update/motivate here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-21 18:38</div>
+            <div class="timeline-body"><p>I'm still not excited about making this change. It relies on some specific third-party behavior and we generally try not to integrate with third-party Python discovery mechanisms here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2024-10-21 18:46</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm still not excited about making this change. It relies on some specific third-party behavior and we generally try not to integrate with third-party Python discovery mechanisms here.</p>
+</blockquote>
+<p>Maybe some other change, to make uv not crash if someone is using <code>pyenv</code> with <code>pyenv-virtualenv</code>?</p>
+<p>When I now call <code>uvx</code> or <code>uv build</code> I currently do not need to use the same python as in the current virtual environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-19 16:17</div>
+            <div class="timeline-body"><p>I believe https://github.com/astral-sh/uv/pull/12909 should cover the use-case you have here, without encoding knowledge of <code>pyenv-virtualenv</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:13 UTC
+    </footer>
+</body>
+</html>

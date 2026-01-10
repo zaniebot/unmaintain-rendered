@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid deserialization error for paths above the root - astral-sh/uv #10789</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid deserialization error for paths above the root</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10789">#10789</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-01-20 21:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-20 21:02</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes https://github.com/astral-sh/uv/issues/10777</p>
+<h2>Test Plan</h2>
+<p>Copied over this lockfile:</p>
+<pre><code class="language-toml">version = 1
+requires-python = &quot;&gt;=3.12&quot;
+resolution-markers = [
+    &quot;sys_platform == 'win32'&quot;,
+    &quot;sys_platform != 'win32'&quot;,
+]
+
+[[package]]
+name = &quot;pyasn1&quot;
+version = &quot;0.6.1&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+sdist = { url = &quot;https://files.pythonhosted.org/packages/ba/e9/01f1a64245b89f039897cb0130016d79f77d52669aae6ee7b159a6c4c018/pyasn1-0.6.1.tar.gz&quot;, hash = &quot;sha256:6f580d2bdd84365380830acf45550f2511469f673cb4a5ae3857a3170128b034&quot;, size = 145322 }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/c8/f1/d6a797abb14f6283c0ddff96bbdd46937f64122b8c925cab503dd37f8214/pyasn1-0.6.1-py3-none-any.whl&quot;, hash = &quot;sha256:0d632f46f2ba09143da3a8afe9e33fb6f92fa2320ab7e886e2d0f7672af84629&quot;, size = 83135 },
+]
+
+[[package]]
+name = &quot;pyasn1-modules&quot;
+version = &quot;0.4.1&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+dependencies = [
+    { name = &quot;pyasn1&quot; },
+]
+sdist = { url = &quot;https://files.pythonhosted.org/packages/1d/67/6afbf0d507f73c32d21084a79946bfcfca5fbc62a72057e9c23797a737c9/pyasn1_modules-0.4.1.tar.gz&quot;, hash = &quot;sha256:c28e2dbf9c06ad61c71a075c7e0f9fd0f1b0bb2d2ad4377f240d33ac2ab60a7c&quot;, size = 310028 }
+wheels = [
+    { url = &quot;https://files.pythonhosted.org/packages/77/89/bc88a6711935ba795a679ea6ebee07e128050d6382eaa35a0a47c8032bdc/pyasn1_modules-0.4.1-py3-none-any.whl&quot;, hash = &quot;sha256:49bfa96b45a292b711e986f222502c1c9a5e1f4e568fc30e2574a6c7d07838fd&quot;, size = 181537 },
+]
+
+[[package]]
+name = &quot;python-ldap&quot;
+version = &quot;3.4.4&quot;
+source = { registry = &quot;https://pypi.org/simple&quot; }
+resolution-markers = [
+    &quot;sys_platform != 'win32'&quot;,
+]
+dependencies = [
+    { name = &quot;pyasn1&quot;, marker = &quot;sys_platform != 'win32'&quot; },
+    { name = &quot;pyasn1-modules&quot;, marker = &quot;sys_platform != 'win32'&quot; },
+]
+sdist = { url = &quot;https://files.pythonhosted.org/packages/fd/8b/1eeb4025dc1d3ac2f16678f38dec9ebdde6271c74955b72db5ce7a4dbfbd/python-ldap-3.4.4.tar.gz&quot;, hash = &quot;sha256:7edb0accec4e037797705f3a05cbf36a9fde50d08c8f67f2aef99a2628fab828&quot;, size = 377889 }
+
+[[package]]
+name = &quot;python-ldap&quot;
+version = &quot;3.4.4&quot;
+source = { path = &quot;../../../uti/Python/python_ldap-3.4.4-cp312-cp312-win_amd64.whl&quot; }
+resolution-markers = [
+    &quot;sys_platform == 'win32'&quot;,
+]
+dependencies = [
+    { name = &quot;pyasn1&quot;, marker = &quot;sys_platform == 'win32'&quot; },
+    { name = &quot;pyasn1-modules&quot;, marker = &quot;sys_platform == 'win32'&quot; },
+]
+wheels = [
+    { filename = &quot;python_ldap-3.4.4-cp312-cp312-win_amd64.whl&quot;, hash = &quot;sha256:94d2ca2b3ced81c9d89aa5c79d4965d03053e1ffdcfae73e9fac85d25b692e85&quot; },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = &quot;pyasn1&quot;, specifier = &quot;&gt;=0.3.7&quot; },
+    { name = &quot;pyasn1-modules&quot;, specifier = &quot;&gt;=0.1.5&quot; },
+]
+
+[[package]]
+name = &quot;uv-test&quot;
+version = &quot;1.0&quot;
+source = { virtual = &quot;.&quot; }
+dependencies = [
+    { name = &quot;python-ldap&quot;, version = &quot;3.4.4&quot;, source = { registry = &quot;https://pypi.org/simple&quot; }, marker = &quot;sys_platform != 'win32'&quot; },
+    { name = &quot;python-ldap&quot;, version = &quot;3.4.4&quot;, source = { path = &quot;../../../uti/Python/python_ldap-3.4.4-cp312-cp312-win_amd64.whl&quot; }, marker = &quot;sys_platform == 'win32'&quot; },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = &quot;python-ldap&quot;, marker = &quot;sys_platform != 'win32'&quot; },
+    { name = &quot;python-ldap&quot;, marker = &quot;sys_platform == 'win32'&quot;, path = &quot;../../../../../../../../../../../../uti/Python/python_ldap-3.4.4-cp312-cp312-win_amd64.whl&quot; },
+]
+</code></pre>
+<p>Verified that <code>cargo run sync --frozen</code> installs <code>python-ldap</code> from PyPI, without erroring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-01-20 21:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-01-20 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-20 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-20 21:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:18 UTC
+    </footer>
+</body>
+</html>

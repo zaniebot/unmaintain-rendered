@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduce a `--multi-version` preference mode - astral-sh/uv #8686</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Introduce a <code>--multi-version</code> preference mode</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/8686">#8686</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-10-29 20:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-29 20:56</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>By default, we try to minimize the number of versions selected for each package when forking. This PR adds <code>--multi-version latest</code> which instead optimizes for choosing the <em>latest</em> version in each fork, and automatically forks over the set of supported Python minor versions.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/7190.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-10-29 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2024-10-29 20:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-10-29 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-10-29 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-10-29 21:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-29 21:17</div>
+            <div class="timeline-body"><p>To make this work &quot;as intended&quot;, I guess we'd have to fork when we notice that a package has a <code>requires-python</code> on it that's higher than the current minimum?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-10-29 21:23</div>
+            <div class="timeline-body"><p>I like it!</p>
+<p>We can add a reference to this in https://docs.astral.sh/uv/reference/build_failures/#fixes-and-workarounds, since this fixes one of the numpy bullet points better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-29 21:26</div>
+            <div class="timeline-body"><p>Do you think we should do this &quot;automatically&quot;, without the need to repeat the dependency declarations? I don't know how we could, it seems extremely hard, since we'd then need to fork <em>after</em> we get distribution metadata.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-29 21:27</div>
+            <div class="timeline-body"><p>@konstin -- Perhaps, in addition to this... when <code>--multi-version latest</code> is selected, should we &quot;automatically&quot; fork for each Python minor?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-29 21:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you think we should do this &quot;automatically&quot;, without the need to repeat the dependency declarations? I don't know how we could, it seems extremely hard, since we'd then need to fork after we get distribution metadata.</p>
+</blockquote>
+<p>I think we could, with that exact caveat you mentioned that we first have to look at the wheels and then fork afterwards which changes some assumptions we currently have (fwiw requires-python doesn't help us here https://github.com/astral-sh/uv/issues/8492#issuecomment-2437194019).</p>
+<blockquote>
+<p>Perhaps, in addition to this... when --multi-version latest is selected, should we &quot;automatically&quot; fork for each Python minor?</p>
+</blockquote>
+<p>Good question.</p>
+<p>As an example, each numpy release seems to support 4 Python minor versions, so when trying to make as few forks as possible and seeing a wider range than 4 Python minor versions from oldest to latest supported, we could do with two fork. E.g. with <code>requires-python = &quot;&gt;=3.7&quot;</code>, we could pick a version that support 3.7 - 3.10 in one fork and one that supports 3.9 - 3.13 in another fork (3.11 to 3.15 would be ideal, but there's no version that supports a higher than 3.13 yet).</p>
+<p>Personally, I'm a fan of fewer version (less error surface, less to test) and fewer forks (less versions and better performance), but that's not universal. There can be users that explicitly want that behavior, since they test any Python minor anyway and want to get as much dependency-version coverage as possible. If their users use <code>[uv] pip install &lt;package&gt;</code> a lot, this may be more desirable than a small lockfile. CC @henryiii @cbrnr @hoechenberger you have more insight into scientific package authoring than me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-10-29 22:21</div>
+            <div class="timeline-body"><p>This is a bit of conflict between projects and libraries. For a project, I could see a universal solve being preferred (might not truly be best, as fixes for newer Python versions - or just in general - are often introduced in newer versions!  But someone <em>might</em> want to find a single set of compatible versions). But for a library, they will almost universally <em>want</em> to test on the latest versions of packages, as anyone <em>using</em> the package will get the latest versions when they install. If library X updates and breaks you, you'd not know because you'd have an older version of X that supported an old Python, while your users on newer versions of Python would get broken.</p>
+<p>NumPy and the core Scientific Python libraries support Python for 36 months, following <a href="https://scientific-python.org/specs/spec-0000/">SPEC 0</a> (used to be 42 months when it was NEP 29). They can do that because they are fairly stable. Most smaller projects support a wider range, since 3.7-3.9 is heavily used in practice, and while old versions of NumPy and such work fine on older Pythons, if you are writing a new or changing library, there is no old stable version to rely on.</p>
+<p>Couldn't you either solve once per Python version then merge identical solutions, or only fork on the highest minimum bound found? The last 3-5 Python versions will usually have a single resolution, then the older ones will have unique per-Python resolutions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-10-29 22:25</div>
+            <div class="timeline-body"><p>An important point is a forked resolution is never &quot;broken&quot; - it's just a little bigger, but a universal install can be. At best, you might be protected against a new breaking change from a library (but only due to your minimum Python version!), but you'll never get old packages on new Pythons that don't work even after a fix has been released.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbrnr">@cbrnr</a> on 2024-10-30 07:28</div>
+            <div class="timeline-body"><p>In my opinion, this issue is not unique to the scientific package ecosystem or tied to whether you package an app or a library. I think the main question here is: how do we interpret requirements as specified in <code>pyproject.toml</code>?</p>
+<p>Taking my example from #8492:</p>
+<pre><code>[project]
+name = &quot;example&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.9&quot;
+dependencies = [
+    &quot;scipy &gt;= 1.13.1&quot;,
+]
+</code></pre>
+<p>I have always interpreted this to mean &quot;take the highest possible version of <code>scipy</code> available for any given Python version&quot;. For uv, this currently means &quot;take the highest possible version of <code>scipy</code> available <em>across</em> all supported Python versions&quot;, which means that uv will use <code>1.13.1</code> for all Python versions &gt;=3.9. This implies that for newer Python versions, where no wheels are available, uv will have to build the package from source.</p>
+<p>As far as I know, pip has always used the first strategy, so I am pretty sure that most Python users will expect that to be the &quot;correct&quot; behavior. So even though I do see the value of having the exact same set of package versions across all Python versions, this is probably not what people expect (at least if they have been using pip, which is still the standard and official package manager in Python).</p>
+<p>I'm not sure if I'm qualified to advise on how to implement this behavior or if it should be the default, but I like the idea of resolving everything separately per Python version (and then merging where possible). And if that was not already clear, I think this should be the default behavior simply because people will be expecting it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoechenberger">@hoechenberger</a> on 2024-10-30 07:40</div>
+            <div class="timeline-body"><p>I'd like to second everything @cbrnr has said. FWIW I'm pretty sure conda and mamba behave in the same way (always retrieve the newest possible version for any combination of Python and required packages).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/RazerM">@RazerM</a> reviewed on 2024-10-30 10:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/RazerM">@RazerM</a> on <code>crates/uv-settings/src/settings.rs</code>:472 on 2024-10-30 10:25</div>
+            <div class="timeline-body"><p>sorry for the drive by comment, but should this be <code>multi-version-mode = &quot;latest&quot;</code>? <code>settings.md</code> uses <code>resolution</code> in the examples too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-30 12:39</div>
+            <div class="timeline-body"><p>I don't anticipate making this the default. <code>uv lock</code> and <code>pip install</code> (or <code>uv pip install</code>, which behaves the same way) are solving different problems. <code>pip install</code> is resolving for the single Python version and platform that you're using at time of execution. <code>uv lock</code> is resolving for all supported platforms and Python versions. In that context, you generally want to minimize the differences between environments to maximize consistency and reproducibility across users and developers (ideally you'd only have a single consistent environment, but that's often not possible). In that sense, the current behavior is the right default!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-30 12:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-settings/src/settings.rs</code>:472 on 2024-10-30 12:48</div>
+            <div class="timeline-body"><p>Thank you yeah, this is wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbrnr">@cbrnr</a> on 2024-10-30 12:51</div>
+            <div class="timeline-body"><p>I'm happy if we get a per-Python resolution with <code>uv lock</code> even if it won't be the default!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-30 12:51</div>
+            <div class="timeline-body"><p>Yeah this PR sort of does it but I'm not happy with the result yet, still too much work for users :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hoechenberger">@hoechenberger</a> on 2024-10-30 13:27</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm happy if we get a per-Python resolution with <code>uv lock</code> even if it won't be the default!</p>
+</blockquote>
+<p>+1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-10-30 13:48</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't anticipate making this the default. <code>uv lock</code></p>
+</blockquote>
+<p>The problem is that it's shared with <code>uv run</code>. I've really grown fond of using <code>uv run pytest</code> on every package, regardless of whether they have special uv configuration or not. By using dependency-groups and making sure there is a dev group, it just works, except for two problems: it makes a uv.lock file that ideally needs to be ignored (minor issue), and it resolves across the whole range, not just the Python I'm using, which has the problems above - and as noted, it's not unique to scientific packages, though it hits those a bit harder. But otherwise, it's almost what I've always wanted - a way to avoid fiddling with a virtual environment and activating it. Maybe if <em>locking</em> itself was opt-in; it could be opt-out for projects (no build-system) and opt-in for packages (a build-system)?  People wanting locking could add <code>tool.uv.autolock = True/False</code>? The problem is that setting <code>requires-python</code> is fundamentally <em>different</em> then setting the range you want to lock over. Often that's just &quot;current-version&quot; unless you are trying to distribute the lock file! Maybe <code>tool.uv.lock-current-only</code>, for example? Again, since there's no reason to set <code>python-requires</code> on a &quot;project&quot; except to specify the locking range, it would make sense to have the default depend on <code>[build-system]</code> being present. But just because you have <code>&gt;=3.8</code> doesn't mean you want dependencies that supported 3.8 only. Libraries <em>must</em> support a range of dependency versions anyway, while projects don't need to.</p>
+<p>Also, again, finding a unique set of packages that &quot;works&quot; over the whole range doesn't help if you get an old version of a package that's actually broken on newer Python versions but you don't know it. It's quite common that packages ship fixes for newer Python versions! Personally, in the Python ecosystem at least, I believe it's best to assume newer versions of packages are better, most library authors try to have reasonable backward compatibility and deprecation periods/warnings, and mostly ship fixes and improvements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbrnr">@cbrnr</a> on 2024-10-30 14:00</div>
+            <div class="timeline-body"><p>I agree with @henryiii, as I'm also using <code>uv run</code> instead of <code>uv pip</code>, but I was assuming that there would be a flag that can be set for <code>uv run</code>, <code>uv sync</code>, <code>uv lock</code>, and wherever else it might make sense. Would that not solve the issue (provided that all of this forking happens automatically without any additional user input, which is still required even after this PR is merged)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-30 14:02</div>
+            <div class="timeline-body"><p>Yeah the current iteration of this PR is such that (1) we'll solve for each Python minor automatically, no additional user input required; and (2) you can set this as an environment variable or in your <code>uv.toml</code> or whatever.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-30 14:03</div>
+            <div class="timeline-body"><blockquote>
+<p>The problem is that setting requires-python is fundamentally different then setting the range you want to lock over. Often that's just &quot;current-version&quot; unless you are trying to distribute the lock file!</p>
+</blockquote>
+<p>Do you just want a way to specify the locking range separately from the <code>requires-python</code> range?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-10-30 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-30 14:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/requires_python.rs</code>:486 on 2024-10-30 14:08</div>
+            <div class="timeline-body"><p>@konstin -- Re-requesting review as I changed this setting to <em>also</em> automatically solve for each Python minor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-10-30 14:27</div>
+            <div class="timeline-body"><p>I've always wanted that, and I've argued that tools like Poetry should support a way to specify the locking range separately. But we already have this in uv:</p>
+<pre><code class="language-toml">[tool.uv]
+environments = [&quot;python_version &gt;= '3.10'&quot;]
+</code></pre>
+<p>But I'm really hoping here is that there will be some sort of reasonable default that will be friendly toward libraries, at least in library mode. Most tools with locking solvers optimize really heavily on the project case, and have hidden issues for the very common case of working on libraries. I do a ton of teaching of python packaging, and it would be nice if the defaults were reasonable and I don't have to spend 10 or 20 minutes teaching them what a locking solver is, how to set better defaults, and why old buggy versions of dependencies are suddenly popping up.</p>
+<p>Regardless of what the solution might be, it would be very nice if depending on a package like NumPy or Sphinx worked out of the box and didn't resolve old versions on newer pythons when working on libraries!</p>
+<p>(Also, for anything that supports a Python range, I think you need to test at least at the lowest and highest versions of that range, I don't think you can get away with saying a single set of dependencies was found so it all will work.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-30 14:31</div>
+            <div class="timeline-body"><p>@henryiii -- I'm just trying to understand -- are you arguing that we should have defaults that are framed around library usage? Or you want straightforward <em>settings</em> that work well for libraries?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-10-30 14:33</div>
+            <div class="timeline-body"><p>I'd like both. :) Having a setting would be good, good defaults would be fantastic. :)</p>
+<p>The fact you know the difference due to the presence of build-system gives me hope on the defaults.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-31 15:17</div>
+            <div class="timeline-body"><p>Sharing an alternative pitch of what we could do:</p>
+<p>The goal is to use the latest version of each package for each python (minor) version.</p>
+<p>Whether we would use a different version of a package depends on the requires-python of the packages. We can use this by forking each time we didn't select a package due to the requires python bound being to high, forking with the python version we didn't select.
+Example:
+We have requires python &gt;=3.8 and a plain numpy requirement. We have to select 1.24.4 since this is the latest version matching our constraint. We know there's a new version with &gt;=3.9 we ignored, so we create a fork for 3.9. In the &gt;=3.9 fork, we select numpy 2.0.2, and create a fork for &gt;=3.10. In the 3.10 fork, we select 2.1.2 (latest) and are done: We know covered all python versions, each newer python version would only select the same versions again. With this method, we let the actual requires python bound determine the forks.</p>
+<p>Assuming that newer versions only increase the upper bound of python versions supported (by having built wheels for later versions), and us selecting the latest version, we get the most python version support possible. (For simplicity, i'm ignoring the no source dist cases here)</p>
+<p>Implementation-wise, we would add a second fork point. Currently, we're only forking after retrieving and before adding dependencies, now we also fork in the version selection. Version selection is a hot path, so we need to be efficient in tracking whether we skipped a version due to requires python.</p>
+<p>numpy requires python reference: https://gist.github.com/konstin/4d97de8458999f874912d628e88a0c49</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-04 13:51</div>
+            <div class="timeline-body"><p>I think what we have here is &quot;fine&quot; though it has the major disadvantage that we have to encode the maximum &quot;known&quot; Python version. Konsti's solution is definitely better, though more work to implement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ryanhiebert">@ryanhiebert</a> on 2024-11-10 11:38</div>
+            <div class="timeline-body"><p>I'd also really like to see this mode be the default, particularly for libraries. But I think it wouldn't be a big problem if it was the default for applications as well, because applications have a couple other tools to avoid unintentional forking: upper bounds and checked-in lockfiles.</p>
+<p>If an application wants to support fewer (or no) version forks, they can restrict the python version upper bound. Unless the application is being packaged up for consumers to run themselves, or is in the middle of a transition between Python versions and needs to support both for a little while, I'd <em>highly</em> encourage restricting the Python version in an application as much as possible.</p>
+<p>Applications also should check in their lockfiles. If the resolver prefers to avoid upgrading versions in the lockfile unless explicitly instructed to (the intended behavior, if I've understood correctly), then it will generally stay on an older version, which in many cases (like a new version of a library having a higher minimum Python version) will avoid forking for a newer Python.</p>
+<p>Given those two capabilities together, I feel that this behavior could reasonably be not just the default, but the only option: if forking minimization weren't already implemented I think it would likely be a low priority to add it as an option. That said, I can imagine some application authors preferring this resolution strategy, and many having no preference. So unless you had a strong desire to limit the code paths, I think it would make sense to have some tool configuration in the <code>pyproject.toml</code> to instruct the resolver to minimize forking.</p>
+<p>Perhaps that could be a setting that tells <code>uv</code> whether this is an application or a library. Maybe we can autodetect it from the presence of a <code>build-system</code> as @henryiii suggested. Or perhaps based on the presence of the <code>uv.lock</code> in the <code>.gitignore</code> if we want to have a little bit of magic around the VCS.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbrnr">@cbrnr</a> on 2024-11-18 12:57</div>
+            <div class="timeline-body"><p>Until the new feature becomes available, would someone have a quick look at https://github.com/MIT-LCP/wfdb-python/pull/511 and help me figure out how to implement a per-Python-version resolution strategy using <code>uv venv</code> and <code>uv pip</code>? I tried some things, but couldn't make it work 😢...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ryanhiebert">@ryanhiebert</a> on 2024-11-18 14:29</div>
+            <div class="timeline-body"><p>For my purposes, Django's version restrictions were causing me to be on an old version of Django with my library. To accomodate that, I updated the <code>dependencies</code> array in my <code>pyproject.toml</code> to match the python version restrictions from Django, and that forced the <code>uv</code> resolver to fork for each of these different paths and lock and install the latest Django.</p>
+<pre><code class="language-toml">[project]
+dependencies = [
+  &quot;Django&gt;=4.1 ; python_version &gt;= '3.8'&quot;,
+  &quot;Django&gt;=4.2 ; python_version &gt;= '3.9'&quot;,
+  &quot;Django&gt;=5.0 ; python_version &gt;= '3.10'&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbrnr">@cbrnr</a> on 2024-11-18 14:40</div>
+            <div class="timeline-body"><p>Thanks @ryanhiebert, I'll try that! However, I was hoping to avoid cluttering my <code>pyproject.toml</code> just because uv does not resolve versions like pip. Therefore, I thought that using <code>uv pip</code> would somehow solve the issue, but I couldn't figure out how. Anyway, in the meantime I'll try your suggestion!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-13 14:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rework log verbosity (`-vvv`) - astral-sh/uv #11758</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rework log verbosity (<code>-vvv</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11758">#11758</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-02-24 21:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-02-24 21:43</div>
+            <div class="timeline-body"><p>Reworks how log verbosity flags work.</p>
+<ul>
+<li><code>&lt;no argument&gt;</code> is the same, equivalent to <code>RUST_LOG=off</code></li>
+<li><code>-v</code> is the same, equivalent to <code>RUST_LOG=uv=debug</code></li>
+<li><code>-vv</code> is now equivalent to <code>RUST_LOG=uv=trace</code> (previously it only enabled more log message context)</li>
+<li><code>-vvv</code> is now equivalent to <code>RUST_LOG=trace</code> (previously it was equivalent to <code>-vv</code>)</li>
+</ul>
+<p>The &quot;more context&quot; that <code>-vv</code> had has been moved to an orthogonal setting via an environment variable. Setting  <code>UV_LOG_CONTEXT=1</code> will add the extra context that <code>-vv</code> did.</p>
+<p>In the future we may make these more granular as we try to use <code>info!/warn!</code> more.</p>
+<p>Fixes #1569</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @Gankra on 2025-02-24 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @Gankra on 2025-02-24 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-24 21:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-static/src/env_vars.rs</code>:552 on 2025-02-24 21:48</div>
+            <div class="timeline-body"><p>Curious, why this name? Should it be <code>UV_LOG_TREE</code> and/or <code>UV_LOG_DURATIONS</code>? Are these separable concepts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-static/src/env_vars.rs</code>:552 on 2025-02-24 21:51</div>
+            <div class="timeline-body"><p>The two modes in the code make several random format changes, and the best I could come up with to describe them all was &quot;more context&quot;. This extra granularity seemed a bit excessive?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-02-24 21:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-static/src/env_vars.rs</code>:552 on 2025-02-24 22:08</div>
+            <div class="timeline-body"><p>I guess while we're touching it I'd rather have extra granularity with clear purpose than a catch-all flag that is mysterious. @konstin may have some thoughts, as he added that initial configuration.</p>
+<p>Also cc @MichaReiser as I imagine we'll want a shared experience across the tools long-term.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-24 22:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-25 07:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-static/src/env_vars.rs</code>:552 on 2025-02-25 07:50</div>
+            <div class="timeline-body"><p>The behavior is already different:</p>
+<ul>
+<li>no args: info</li>
+<li><code>-v</code>: info</li>
+<li><code>-vv</code>: debug</li>
+<li>-vvv`: trace (but Red Knot / Ruff only). Also changes the output format</li>
+<li>Use <code>KNOT_LOG</code> for getting non ruff/Red Knot debug information</li>
+</ul>
+<p>We also strip trace from release builds.</p>
+<p>Regarding the option. I don't have a strong opinion on its name. The main difference to me between the tree/flat layout and how we use it in Red Knot is that the tree layout not only logs messages but also includes the spans (with enter and exit events).</p>
+<p>I'd also consider this env var to be outside our versioning policy (unlike <code>UV_LOG</code>) so that we can iterate on naming design. E.g. should it be different env vars to switch between tree/flat but have a different env var that enables span logging for the flat layout? Or does the env var use some form of DSL?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-static/src/env_vars.rs</code>:552 on 2025-02-25 13:08</div>
+            <div class="timeline-body"><p>My overall ideal for the log levels is:</p>
+<ul>
+<li>Default: You get information about your project only, concisely, so you can actually follow it.</li>
+<li><code>-v</code>: You get information about uv and what actions it performs, e.g. uv version, current platform, steps such as lock/sync/install. This information is understandable after read the docs, you could turn this on e.g. by default on CI.</li>
+<li><code>-vv</code> (or <code>RUST_LOG=uv=debug</code>): You get debug messages. These are detailed information that expose some internals from uv, but usually written in a way that users can understand. It's the &quot;user serviceable&quot; level. You would run <code>uv ... -vv ...</code> and share the gist when creating a bug report</li>
+<li><code>RUST_LOG=...=trace</code> you want to get detailed, very verbose output for a specific area of uv. Requires understanding the uv codebase to interpret, targeted at developers.</li>
+</ul>
+<p>I like the proposed changes in shifting us towards that, though I'd skip on exposing <code>RUST_LOG=trace</code> to the CLI, some non-uv crates tend to get really noisy at that level and we've barely ever needed that information.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-02-25 13:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-25 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-static/src/env_vars.rs</code>:552 on 2025-02-25 14:32</div>
+            <div class="timeline-body"><p>@MichaReiser</p>
+<blockquote>
+<p>no args: info
+-v: info</p>
+</blockquote>
+<p>So <code>-v</code> doesn't do anything?</p>
+<blockquote>
+<p>-vvv`: trace (but Red Knot / Ruff only). Also changes the output format</p>
+</blockquote>
+<p>Why this decision?</p>
+<blockquote>
+<p>We also strip trace from release builds.</p>
+</blockquote>
+<p>This seems dubious to me, we do need <em>our</em> trace logs fairly often for debugging user issues. That said, we don't have an <code>info</code> layer :)</p>
+<blockquote>
+<p>we've barely ever needed that information</p>
+</blockquote>
+<p>I don't know if I agree with this, I need these pretty often for debugging network problems. That said, it is noisy and ideally we'd improve our logging coverage instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-25 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-static/src/env_vars.rs</code>:552 on 2025-02-25 14:38</div>
+            <div class="timeline-body"><blockquote>
+<p>So -v doesn't do anything?</p>
+</blockquote>
+<p>It enables <code>info</code>. We only show warnings by default. The ideal Red Knot output is only diagnostics or a simple &quot;Done&quot; if there are no diagnostics. We use the <code>info</code> to explain what python version we inferred etc but that doesn't seem useful to show by default.</p>
+<blockquote>
+<p>Why this decision?</p>
+</blockquote>
+<p>Because we don't support <code>UV_LOG_CONTEXT</code> and we've found the tree layout useful. But it has come up in the past that we want a dedicated way to switch between how the logs are represented that's independent from the verbosity</p>
+<blockquote>
+<p>This seems dubious to me, we do need our trace logs fairly often for debugging user issues. That said, we don't have an info layer :)</p>
+</blockquote>
+<p>Yeah, we'll see if we need it for Red Knot, but the trace level logs are extremely detailed, and we want to avoid the perf cost.</p>
+<p>A side note. We haven't fully figured this out on our side. But that's where we're currently at.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-25 14:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-static/src/env_vars.rs</code>:552 on 2025-02-25 14:49</div>
+            <div class="timeline-body"><blockquote>
+<p>It enables info. We only show warnings by default. The ideal Red Knot output is only diagnostics or a simple &quot;Done&quot; if there are no diagnostics</p>
+</blockquote>
+<p>This makes sense. I think you wrote the wrong thing in the initial post.</p>
+<blockquote>
+<p>Because we don't support UV_LOG_CONTEXT and we've found the tree layout useful. But it has come up in the past that we want a dedicated way to switch between how the logs are represented that's independent from the verbosity</p>
+</blockquote>
+<p>This is helpful. We don't support <code>UV_LOG_CONTEXT</code> either today, it's toggled by the verbosity right now. I think it makes sense for us to move towards a separate option. Do you have opinions on how that's done or named? i.e., comments on my suggestions at the top?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-25 16:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-static/src/env_vars.rs</code>:552 on 2025-02-25 16:13</div>
+            <div class="timeline-body"><blockquote>
+<p>This makes sense. I think you wrote the wrong thing in the initial post.</p>
+</blockquote>
+<p>Oh right</p>
+<blockquote>
+<p>Do you have opinions on how that's done or named? i.e., comments on my suggestions at the top?</p>
+</blockquote>
+<p>Not really beyond what I mentioned in my original reply. But @sharkdp has worked with it more than I did, maybe he has some more thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-26 09:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/uv-static/src/env_vars.rs</code>:552 on 2025-02-26 09:23</div>
+            <div class="timeline-body"><p>Not sure I understand the full picture here. I found the tree-like output very useful when working on red knot, mostly because type inference is a deeply recursive and it's often useful to see the full call stack. I'm not sure if I would find it equally useful in other code bases, but I don't really mind the auto-change in format when going from <code>-vv</code> to <code>-vvv</code>. I never felt the need to see tracing logs without the tree-like format. So I guess I would recommend to go with just one &quot;control parameter&quot; first, and add a second later, if needed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-26 15:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-static/src/env_vars.rs</code>:552 on 2025-02-26 15:21</div>
+            <div class="timeline-body"><p>I look at the tracing logs a lot and never in the tree format —  but that's because <code>-vvv</code> doesn't enable tracing here 🤷‍♀️. I don't have strong feelings here. It's easy to iterate on this (the formatting) too so we should bias towards just merging something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-26 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-static/src/env_vars.rs</code>:552 on 2025-02-26 15:24</div>
+            <div class="timeline-body"><p>I think Konsti has a fair point about <code>-vvv</code>, but I don't know what else we'd do with that level until we have a proper <code>info</code> layer and it seems fine to just have it be extremely verbose unless we start getting lots of user reports with too much logs. Since most users don't even share output with <code>-v</code>, I'm not too worried.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-02-26 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-26 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-static/src/env_vars.rs</code>:551 on 2025-02-26 15:25</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Add additional context and structure to log messages.
+    /// If logging is not enabled, e.g., with `RUST_LOG` or `-v`, this has no effect.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-02-26 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-02-26 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-static/src/env_vars.rs</code>:552 on 2025-02-26 15:40</div>
+            <div class="timeline-body"><p>Personally, I've never used the tree output, I think @charliermarsh found it helpful?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-02-26 15:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/logging.rs</code>:186 on 2025-02-26 15:42</div>
+            <div class="timeline-body"><p>Sometimes, I sometimes find timestamps very helpful (it's direct performance information), but it's probably not worth adding a flag for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-02-28 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-02-28 23:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-28 23:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add option to move module level dunders to top of file - astral-sh/ruff #9324</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add option to move module level dunders to top of file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9324">#9324</a>
+        opened by <a href="https://github.com/nstarman">@nstarman</a>
+        on 2023-12-30 21:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nstarman">@nstarman</a> on 2023-12-30 21:47</div>
+            <div class="timeline-body"><p>In https://pep8.org/#module-level-dunder-names it says that <code>__all__</code> &quot;should be placed after the module docstring but before any import statements except from <code>__future__</code> imports&quot;.
+It would be great to have an isort-style rule that implements the PEP8 suggestion.
+There are definitely cases when <code>__all__</code> shouldn't be moved to above the imports, e.g. when it is dynamically defined from the imports, but if <code>__all__</code> contains only strings then it should be safe to move.</p>
+<pre><code class="language-python">import x, y, z
+
+__all__ = [&quot;x&quot;, &quot;y&quot;, &quot;z&quot;]  # safe to move
+</code></pre>
+<pre><code class="language-python">from x import *
+from . import x
+
+__all__ = x.__all__  # not safe to move
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-12-31 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-12-31 16:20</div>
+            <div class="timeline-body"><p>For reference, isort already has this an option so we might just be able to add it to the isort rules: https://github.com/PyCQA/isort/commit/44e3b5d179da5033ce23f796b014e74f3a3259cd</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-31 16:48</div>
+            <div class="timeline-body"><p>Does that open sort the <em>members</em> of <code>__all__</code>, or move the <code>__all__</code> itself? I couldn't tell from the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alchzh">@alchzh</a> on 2023-12-31 16:50</div>
+            <div class="timeline-body"><blockquote>
+<p>For reference, isort already has this an option so we might just be able to add it to the isort rules: <a href="https://github.com/PyCQA/isort/commit/44e3b5d179da5033ce23f796b014e74f3a3259cd">PyCQA/isort@44e3b5d</a></p>
+</blockquote>
+<p>That is a different rule that is tracked by #1198. The title of this issue is a bit confusing. <code>--srx</code> sorts the strings inside of <code>__all__</code>, while this request is about moving the <code>__all__</code> (and <code>__version__</code>, <code>__author__</code>, etc.) <em>assignment statements</em> to the top of the file, e.g.</p>
+<p>Bad:</p>
+<pre><code class="language-py">&quot;&quot;&quot;Dummy module&quot;&quot;&quot;
+
+from __future__ import annotations
+
+import os
+
+__all__ = [&quot;foo&quot;]
+</code></pre>
+<p>Good:</p>
+<pre><code class="language-py">&quot;&quot;&quot;Dummy module&quot;&quot;&quot;
+
+from __future__ import annotations
+
+__all__ = [&quot;foo&quot;]
+
+import os
+</code></pre>
+<p>@nstarman , I think the title of this issue should be changed to something like &quot;Add option to move module level dunders to top of file&quot;</p>
+<blockquote>
+<p>Does that open sort the <em>members</em> of <code>__all__</code>, or move the <code>__all__</code> itself? I couldn't tell from the PR.</p>
+</blockquote>
+<p>The former.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alchzh">@alchzh</a> on 2023-12-31 17:08</div>
+            <div class="timeline-body"><p>It's worth noting that before 2016 the PEP8 mandated the opposite,</p>
+<blockquote>
+<p>Put any relevant <code>__all__</code> specification after the imports.</p>
+</blockquote>
+<p>This was changed to the current text in
+https://bugs.python.org/issue27187 (<a href="https://bugs.python.org/file43132/issue-27187-patch1.txt">patch</a>)
+https://github.com/python/peps/commit/0aa70aebf102d352b8476f04509a369bf3db276c</p>
+<p>but the style checkers only relaxed the previous rule instead of implementing the new one https://github.com/PyCQA/pycodestyle/pull/523 https://github.com/PyCQA/pycodestyle/issues/615 , so there's been no pressure to change it in existing codebases. It seems like most Python code follows the older convention still, since people tend to go by whatever their style checker / formatter says instead of reading PEP8 themselves.</p>
+<p>I don't know if there's any other PEP8 suggestion that so wildly differs from what's done in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add option to sort `__all__` according to PEP8" to "Add option to move module level dunders to top of file" by @nstarman on 2023-12-31 17:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:19 UTC
+    </footer>
+</body>
+</html>

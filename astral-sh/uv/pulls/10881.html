@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use Hashbrown's raw entry API to reduce hashes and clone in priority - astral-sh/uv #10881</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use Hashbrown's raw entry API to reduce hashes and clone in priority</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10881">#10881</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-01-23 02:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-23 02:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I'm open to not merging this -- I was kind of just interested in what the API looked like. But the idea is: we can avoid hashing values twice and unnecessarily cloning within the priority map by using the raw entry API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2025-01-23 02:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2025-01-23 02:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-01-23 04:57</div>
+            <div class="timeline-body"><p>I don't find this hard to read</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/pubgrub/priority.rs</code>:58 on 2025-01-23 09:54</div>
+            <div class="timeline-body"><p>What about using the <code>EntryRef</code> API?</p>
+<pre><code class="language-rust">        let len = self.virtual_package_tiebreaker.len();
+        self.virtual_package_tiebreaker
+            .entry_ref(package)
+            .or_insert_with(|| {
+                PubGrubTiebreaker::from(u32::try_from(len).expect(&quot;Less than 2**32 packages&quot;))
+            });
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-01-23 09:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-23 13:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/priority.rs</code>:58 on 2025-01-23 13:10</div>
+            <div class="timeline-body"><p>That doesn’t work unless PubGrubPackage implements From&lt;&amp;PubGrubPackage&gt; for PubGrubPackage.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-01-23 13:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/pubgrub/priority.rs</code>:58 on 2025-01-23 13:28</div>
+            <div class="timeline-body"><p>A bit annoying that they use <code>From</code> instead of <code>ToOwned</code>, but treating it as clone works</p>
+<blockquote>
+<p>The relationships I use between the key <code>K</code> and borrowed key <code>Q</code> is <code>K: Borrow&lt;Q&gt; + From&lt;&amp;Q&gt;</code>. The reason for not using <code>Q: ToOwned&lt;K&gt;</code> is to support key types like <code>Rc&lt;str&gt;</code> (which is used in a couple of the doctests), which would not be possible with <code>to_owned()</code>.</p>
+</blockquote>
+<p>(from https://github.com/rust-lang/hashbrown/pull/301)</p>
+<pre><code class="language-rust">impl From&lt;&amp;PubGrubPackage&gt; for PubGrubPackage {
+    fn from(package: &amp;PubGrubPackage) -&gt; Self {
+        package.clone()
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-23 13:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/priority.rs</code>:58 on 2025-01-23 13:56</div>
+            <div class="timeline-body"><p>Ok, we can do that instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-01-23 14:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-01-23 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-23 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-23 14:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:19 UTC
+    </footer>
+</body>
+</html>

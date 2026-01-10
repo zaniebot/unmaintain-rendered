@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter undocumented deviation: comment line wrapping inside lists - astral-sh/ruff #7448</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter undocumented deviation: comment line wrapping inside lists</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7448">#7448</a>
+        opened by <a href="https://github.com/m-richards">@m-richards</a>
+        on 2023-09-17 05:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/m-richards">@m-richards</a> on 2023-09-17 05:52</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Hi, thanks for building ruff, it's a great tool, and I've been watching eargerly for auto-formatter support for a while now. Have just tried it out and wanted to report a few formatting deviations - at least as far as I can tell from reading the readme. Apologies if any of these are duplicates, I've had a quick scan of the open issues and I can't seem to see these exact cases.</p>
+<pre><code class="language-python"># before / with black
+def test_to_wkb(self):
+    wkbs0 = [
+        (
+            b&quot;\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00&quot;
+            b&quot;\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00&quot;
+        ),  # POINT (0 0)
+    ]
+</code></pre>
+<pre><code class="language-python"># after running `ruff format`
+def test_to_wkb(self):
+    wkbs0 = [
+        (
+            b&quot;\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00&quot;
+            b&quot;\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00&quot;  # POINT (0 0)
+        ),
+    ]
+
+</code></pre>
+<p>I don't know if this is related to the pragma comment rules? The difference is super minor but black's behaviour is preferable as it is the entire binary sequence inside the parentheses that is the binary encoding of a Point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-17 13:22</div>
+            <div class="timeline-body"><p>This sounds similar to https://github.com/astral-sh/ruff/pull/7269</p>
+<p>Although implementing a generic solution could be challenging. But it may be worth special casing it for implicit concatenated strings.</p>
+<p>My recommendation would be to make this a leading comment instead. leading comments tend to work better than trailing comments</p>
+<pre><code class="language-python">def test_to_wkb(self):
+    wkbs0 = [
+		 # POINT (0 0)
+        (
+            b&quot;\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00&quot;
+            b&quot;\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00&quot;
+        )
+    ]
+</code></pre>
+<p>Although Ruff get's this wrong too (for the same reasons):</p>
+<pre><code class="language-python">def test_to_wkb(self):
+    wkbs0 = [
+        (
+			# POINT (0 0)
+            b&quot;\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00&quot;
+            b&quot;\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00&quot;
+        )
+    ]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-09-17 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2023-09-17 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Beta" by @MichaReiser on 2023-09-17 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-17 17:20</div>
+            <div class="timeline-body"><p>For comparison, Prettier always moves comments out of the parentheses. This would work well in the second example I made, but prevents you from e.g. documenting the first item.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @MichaReiser on 2023-09-27 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-27 16:12</div>
+            <div class="timeline-body"><p>For now, our priority is gonna be to fix the suggested alternative:</p>
+<pre><code class="language-python">def test_to_wkb(self):
+    wkbs0 = [
+        # POINT (0 0)
+        (
+            b&quot;\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00&quot;
+            b&quot;\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00&quot;
+        ),
+        (1)
+    ]
+</code></pre>
+<p>Which we currently format as:</p>
+<pre><code class="language-python">def test_to_wkb(self):
+    wkbs0 = [
+        (
+            # POINT (0 0)
+            b&quot;\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00&quot;
+            b&quot;\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00&quot;
+        ),
+        (1),
+    ]
+</code></pre>
+<p>We want this to be part of the Beta.</p>
+<p>It'd be nice to fix the trailing comment case here, but we see it as lower-priority. It may fall out of the same solution.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-09-27 16:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2023-09-27 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-01 03:34</div>
+            <div class="timeline-body"><p>(This probably requires rethinking how we handle parenthesized comments in general.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2023-10-09 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-10-19 09:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:22 UTC
+    </footer>
+</body>
+</html>

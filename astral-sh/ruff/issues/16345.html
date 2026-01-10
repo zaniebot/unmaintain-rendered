@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C419 is marked as stable but only checked in preview mode - astral-sh/ruff #16345</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>C419 is marked as stable but only checked in preview mode</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16345">#16345</a>
+        opened by <a href="https://github.com/Slarag">@Slarag</a>
+        on 2025-02-24 12:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Slarag">@Slarag</a> on 2025-02-24 12:28</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>Rule C419 is marked as stable in the docs, but silently ignored unless <code>preview</code> flag is set (in cli or <code>pyproject.toml</code>.)</p>
+<p>No warning is shown if C419 is selected, but preview mode is not enabled.</p>
+<ul>
+<li><code>ruff check test.py --select C,C4,C419</code>:<pre><code class="language-python">All checks passed!
+</code></pre>
+</li>
+<li><code>ruff check test.py --select C,C4,C419 --preview</code>: C419 error found<pre><code class="language-python">test.py:7:16: C419 Unnecessary list comprehension
+   |
+5 |     &quot;&quot;&quot;My test function.&quot;&quot;&quot;
+6 |     y = [1, 2, 3, 4, 5]
+7 |     return min([abs(x) for x in y])
+  |                ^^^^^^^^^^^^^^^^^^^ C419
+  |
+  = help: Remove unnecessary comprehension
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+
+</code></pre>
+</li>
+</ul>
+<p>test.py:</p>
+<pre><code class="language-python">&quot;&quot;&quot;Test module.&quot;&quot;&quot;
+
+
+def hello():
+    &quot;&quot;&quot;My test function.&quot;&quot;&quot;
+    y = [1, 2, 3, 4, 5]
+    return min([abs(x) for x in y])
+
+</code></pre>
+<ul>
+<li>Empty <code>pyproject.toml</code></li>
+<li>Ruff version: 0.9.7</li>
+<li>Python version: 3.11.9</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-24 12:31</div>
+            <div class="timeline-body"><p>You're right, the rule is stable but we extended its scope in preview (only for now) to also cover <code>min</code>, <code>max</code> and <code>sum</code>.</p>
+<blockquote>
+<p>Many builtin functions (this rule currently covers <code>any</code> and <code>all</code> in stable, along with <code>min</code>, <code>max</code>, and <code>sum</code> in <a href="https://docs.astral.sh/ruff/preview/">preview</a>) accept any iterable, including a generator</p>
+</blockquote>
+<p>That's why this behavior is expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-02-24 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Slarag">@Slarag</a> on 2025-02-24 12:42</div>
+            <div class="timeline-body"><p>Ah ok, thanks for the quick response! Should have read the docs more thoroughly...</p>
+<p>My original problem was the following: I want to enable checks for E302/E303.
+Therefore I set <code>preview = true</code> in my <code>pyproject.toml</code>, but this changed the behavior of C419.</p>
+<p>So I set <code>explicit-preview-rules = true</code> and <code>select = [&quot;C&quot;, &quot;E&quot;, &quot;E303&quot;]</code> explicitly.  But preview features of C419 are still enabled.
+I would expect preview features of C419 not be be enabled in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-24 12:43</div>
+            <div class="timeline-body"><blockquote>
+<p>Ah ok, thanks for the quick response! Should have read the docs more thoroughly...</p>
+</blockquote>
+<p>Yeah, it's a bit hard to spot.</p>
+<blockquote>
+<p>So I set explicit-preview-rules = true and select = [&quot;C&quot;, &quot;E&quot;, &quot;E303&quot;] explicitly. But preview features of C419 are still enabled.
+I would expect preview features of C419 not be be enabled in this case.</p>
+</blockquote>
+<p>We, unfortunately, don't support such granular preview selection today</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Slarag">@Slarag</a> on 2025-02-24 12:58</div>
+            <div class="timeline-body"><p>Ok, thank you!</p>
+<p>To me as a user, it was not clear why I can explicitly enable E303 (a rule in preview mode), but not explicitly enable/disable preview mode for new features of an already stable rule when <code>explicit-preview-rules = true</code> is set.</p>
+<p>Is it a good idea to enable those experimental features only if the rule is explicitly selected when <code>explicit-preview-rules = true</code> is set? From my point of view this would be a more consistent behavior, but I might be missing some important other considerations.</p>
+<pre><code class="language-python">[tool.ruff.lint]
+preview = true
+
+# Use explicit-preview-rules for a more granular selection
+explicit-preview-rules = true
+
+# This would not enable E303 and keep default behavior of C419
+# Currently it does not enable E303, but experimental features of C419 are enabled
+select = [&quot;C&quot;, &quot;E&quot;]
+
+#  This would enable E303 and experimental features of C419
+select = [&quot;C&quot;, &quot;E&quot;, &quot;E303&quot;, &quot;C419&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-24 13:16</div>
+            <div class="timeline-body"><p>Our motivation for preview is to give users a possibility to use new features early but it's also in our interest that we get feedback early. But it's not the first time that this has come up and there's some more context in https://github.com/astral-sh/ruff/issues/12343#issuecomment-2230633910.</p>
+<p>I'll close this issue in favor of the one I just linked because they're about the same preview-behavior confusion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-24 13:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:44 UTC
+    </footer>
+</body>
+</html>

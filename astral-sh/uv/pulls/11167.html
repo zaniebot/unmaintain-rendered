@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Fix cross-drive script installation - astral-sh/uv #11167</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix cross-drive script installation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11167">#11167</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-02-02 16:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-02-02 16:08</div>
+            <div class="timeline-body"><p>Fallback to copy if renaming a script doesn't work, similar to the site packages installation.</p>
+<p>Fixes #11163</p>
+<p><strong>Test Plan</strong></p>
+<p>Failing:</p>
+<pre><code>docker volume rm -f gh11163_usr_local_bin
+docker run -v gh11163_usr_local_bin:/usr/local/bin -e UV_LINK_MODE=copy -v $(pwd):/io -it --rm ghcr.io/astral-sh/uv:0.5-python3.11-bookworm-slim uv pip install --system ruff
+</code></pre>
+<p>Passing:</p>
+<pre><code>cargo build --target x86_64-unknown-linux-musl
+docker volume rm -f gh11163_usr_local_bin
+docker run -v gh11163_usr_local_bin:/usr/local/bin -e UV_LINK_MODE=copy -v $(pwd):/io -it --rm ghcr.io/astral-sh/uv:0.5-python3.11-bookworm-slim /io/target/x86_64-unknown-linux-musl/debug/uv pip install --system ruff
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-02-02 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-02-02 16:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:504 on 2025-02-02 16:09</div>
+            <div class="timeline-body"><p>:/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-04 00:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:832 on 2025-02-04 00:22</div>
+            <div class="timeline-body"><p>Are these parts just moved? Could you consider doing that in a separate PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-04 00:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:825 on 2025-02-04 00:22</div>
+            <div class="timeline-body"><p>Nit: Debug, Copy, Clone?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-04 00:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:847 on 2025-02-04 00:23</div>
+            <div class="timeline-body"><p>Nit: can we put this in the <code>err</code> branch instead of early return?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-04 00:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:468 on 2025-02-04 00:25</div>
+            <div class="timeline-body"><p>I think this change is incorrect... If we have to change the permissions, we <em>must</em> copy the file. Check out the Git history on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-11 02:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:504 on 2025-02-11 02:32</div>
+            <div class="timeline-body"><p>Should we do <code>copy_with_retry_sync</code> here, in the inner loop?</p>
+<p>Also, does <code>rename_with_retry_sync</code> retry if the error is due to different drives? Hopefully not?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-02-11 02:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-02-11 10:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:504 on 2025-02-11 10:51</div>
+            <div class="timeline-body"><p>Do we have a <code>copy_with_retry_sync</code>?</p>
+<p>This is mostly guess work, my idea was the security checkers would make the `rename_with_retry_sync loop fail and then the copy would succeed first try, but we can make this more defensive if we have a good way to.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-11 13:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:504 on 2025-02-11 13:54</div>
+            <div class="timeline-body"><p>I was suggesting we create it? I think the more important question here though is whether we can catch the &quot;different drive&quot; error, or whether we need this catch-all <code>Err(err)</code> branch. Do you know?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-11 13:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:851 on 2025-02-11 13:55</div>
+            <div class="timeline-body"><p>Same question here: can we make this branch exclusive to &quot;different drive&quot;? Is there an error kind for it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-12 03:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:504 on 2025-02-12 03:04</div>
+            <div class="timeline-body"><p>Ok, I looked into it myself, and <code>CrossesDevices</code> is unstable. Please add a TODO here to catch that error when it stabilizes. Then decide whether you want to add a <code>copy_with_retry_sync</code> method (I would suggest doing so, but it's up to you) and go ahead with the merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-02-12 17:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:504 on 2025-02-12 17:59</div>
+            <div class="timeline-body"><p>Ah now I get what you were getting at.</p>
+<p>I now implemented the more defensive version where we retry in both rename or copy. The callback version is kinda ugly but it's only used in this one place.</p>
+<p>I didn't realize there was a dedicated error code for cross drive, i had initially assumed that this is part of some other platform-specific error code. Once it stabilized we can upgrade this code path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-02-12 17:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:504 on 2025-02-12 17:59</div>
+            <div class="timeline-body"><p>If you have suggestions for a prettier version of <code>with_retry_sync</code> i'll follow up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-02-12 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-02-12 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-12 18:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:19 UTC
+    </footer>
+</body>
+</html>

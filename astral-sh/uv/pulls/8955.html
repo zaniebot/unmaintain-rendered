@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compute superset of existing and required hashes when healing cache - astral-sh/uv #8955</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Compute superset of existing and required hashes when healing cache</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/8955">#8955</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-11-08 19:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-08 19:59</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The basic issue here is that <code>uv add</code> will compute and store a hash for each package. But if you later run <code>uv pip install</code> <em>after</em> <code>uv cache prune --ci</code>, we need to re-download the source distribution. After re-downloading, we compare the hashes before and after. But <code>uv pip install</code> doesn't compute any hashes by default. So the hashes &quot;differ&quot; and we error.</p>
+<p>Instead, we need to compute a superset of the already-existing and newly-requested hashes when performing this re-download. (In practice, this will always be SHA-256.)</p>
+<p>Closes https://github.com/astral-sh/uv/issues/8929.</p>
+<h2>Test Plan</h2>
+<pre><code class="language-shell">export UV_CACHE_DIR=&quot;$PWD/cache&quot;
+
+rm -rf &quot;$UV_CACHE_DIR&quot; .venv .venv-2 pyproject.toml uv.lock
+
+echo $(uv --version)
+
+uv init --name uv-cache-issue
+cargo run add --python 3.13 &quot;pycairo&quot;
+
+uv cache prune --ci
+
+rm -rf .venv .venv-2
+
+uv venv --python python3.11 .venv-2
+. .venv-2/bin/activate
+cargo run pip install &quot;pycairo&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-11-08 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cache</span> added by @charliermarsh on 2024-11-08 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-08 20:05</div>
+            <div class="timeline-body"><p>I might be able to add an automated test for this, will try...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-11-08 20:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-08 20:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-08 20:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-08 20:12</div>
+            <div class="timeline-body"><p>Mm hard because you need to build a wheel from source that isn't pure Python...</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:14 UTC
+    </footer>
+</body>
+</html>

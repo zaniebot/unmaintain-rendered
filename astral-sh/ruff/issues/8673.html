@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add python binding / support input text - astral-sh/ruff #8673</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add python binding / support input text</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8673">#8673</a>
+        opened by <a href="https://github.com/ArthurZucker">@ArthurZucker</a>
+        on 2023-11-14 09:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ArthurZucker">@ArthurZucker</a> on 2023-11-14 09:55</div>
+            <div class="timeline-body"><p>Hey! 🤗 <code>transformers</code> core maintainer here, great work everyone! 🔥</p>
+<p>We are trying to switch from <code>black</code> to <code>ruff</code> for the formatter now! See this <a href="https://github.com/huggingface/transformers/pull/27144">PR</a>.
+I humbly have 2 feature requests! (This might be a bit selfish 😓 )</p>
+<ul>
+<li>having some python bindings: allowing us to do something like <code>from ruff import format; formatted_code = format(code)</code></li>
+<li>support directly passing text as an input to avoid having to write it to files. So `ruff format &quot;Class Blob:\n....&quot;</li>
+</ul>
+<p>🤗</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Wauplin">@Wauplin</a> on 2023-11-14 10:08</div>
+            <div class="timeline-body"><p>Adding also a use case for the <a href="https://github.com/huggingface/huggingface_hub">huggingface_hub</a> repo. We generate some Python code automatically and need to format it once generated.</p>
+<p>What we do <a href="https://github.com/huggingface/huggingface_hub/blob/b054006d7582914df458a3e5595414a97f1aedeb/utils/check_static_imports.py#L82C1-L84C84">here</a> is to spawn a process to run ruff (using <code>ruff.__main__.find_ruff_bin</code>):</p>
+<pre><code class="language-py">        ruff_bin = find_ruff_bin()
+        os.spawnv(os.P_WAIT, ruff_bin, [&quot;ruff&quot;, &quot;format&quot;, str(filepath), &quot;--quiet&quot;])
+        os.spawnv(os.P_WAIT, ruff_bin, [&quot;ruff&quot;, str(filepath), &quot;--fix&quot;, &quot;--quiet&quot;])
+</code></pre>
+<p>A Python-binding would seem less hacky than this current solution :smile: (but totally understand if not a priority, I already love the work you've done on <code>ruff</code>!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-14 19:58</div>
+            <div class="timeline-body"><p>Thank you for the kind words :)</p>
+<p>There's been some discussion to expose a Python API in https://github.com/astral-sh/ruff/issues/659 -- I'm definitely interested in doing it, but it isn't something we're actively working on right now (just to set expectations around timeline). In the <a href="https://github.com/charliermarsh/ruff-lsp">ruff-lsp</a> (which is written in Python right now), we also interop with Ruff via <code>subprocess</code>, so it <em>is</em> the suggested way to use Ruff as a library right now, though we'd really like to have a first-class API.</p>
+<p>Separately...</p>
+<blockquote>
+<p>support directly passing text as an input to avoid having to write it to files</p>
+</blockquote>
+<p>This actually <em>should</em> be supported -- the linter and the formatter both accept input from <code>stdin</code>:</p>
+<pre><code class="language-shell">❯ echo &quot;x=1&quot; | ruff format -
+x = 1
+</code></pre>
+<p>(You can also set a <code>--stdin-filename</code> there to ensure that we respect <code>.pyi</code> differences, etc.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Wauplin">@Wauplin</a> on 2023-11-15 09:10</div>
+            <div class="timeline-body"><p>Thanks for the context and confirming that using <code>subprocess</code> is the good strategy here!
+And sorry for the duplicate with https://github.com/astral-sh/ruff/issues/659, I guess we can close this one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ArthurZucker">@ArthurZucker</a> on 2023-11-15 09:10</div>
+            <div class="timeline-body"><p>Yep thanks a lot for the tip, applying this to <code>transformers</code>! 🤗</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ArthurZucker on 2023-11-15 09:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-11-20 07:29</div>
+            <div class="timeline-body"><p>If it helps, I wrote a more full-fledged &quot;format this bit&quot; example for just the same usecase in https://github.com/astral-sh/ruff/issues/8401#issuecomment-1788806462</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:58 UTC
+    </footer>
+</body>
+</html>

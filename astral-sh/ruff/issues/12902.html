@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISC001: False positive for comma-separated strings - astral-sh/ruff #12902</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ISC001: False positive for comma-separated strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12902">#12902</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-08-15 09:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-15 09:53</div>
+            <div class="timeline-body"><p>Not sure if this is the right thread (maybe this should be a new issue), but there is a conflict between ISC001 and Ruff format if the string has a method associated with it.</p>
+<pre><code>parcels/tools/exampledata_utils.py:135:13: ISC001 Implicitly concatenated string literals on one line
+    |
+133 |     if dataset not in example_data_files:
+134 |         raise ValueError(
+135 |             f&quot;Dataset {dataset!r} not found. Available datasets are: &quot; &quot;, &quot;.join(example_data_files.keys())
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ISC001
+136 |         )
+</code></pre>
+<p>Of course, those string literals can't be combined because of the join.</p>
+<p><em>Originally posted by @VeckoTheGecko in https://github.com/astral-sh/ruff/issues/8272#issuecomment-2290988399</em></p>
+<p>Very basic example:</p>
+<pre><code class="language-python">ValueError(&quot;Dataset {dataset!r} not found. Available datasets are: &quot; &quot;, &quot;.join(example_data_files.keys()))
+</code></pre>
+<p>Flags ISC001 but there's no implicit string concatenation because a comma separates the strings (<a href="https://play.ruff.rs/d7a58ca4-23ab-4fff-a69c-105eabd02f2d">playground</a>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-08-15 09:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VeckoTheGecko">@VeckoTheGecko</a> on 2024-08-15 09:54</div>
+            <div class="timeline-body"><p>Hey thanks! I was just going to make a issue for this :D</p>
+<pre><code>ruff --version
+ruff 0.5.6
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2024-08-15 09:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-15 09:58</div>
+            <div class="timeline-body"><p>@VeckoTheGecko the rule seems correct to me. At least, I don't think your code produces what you want.</p>
+<p>Here a more simple example:</p>
+<pre><code class="language-python">&gt;&gt;&gt; &quot;Dataset not found. Available datasets are: &quot; &quot;, &quot;.join([&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])
+'aDataset not found. Available datasets are: , bDataset not found. Available datasets are: , c'
+</code></pre>
+<p>I don't think that's what you want.</p>
+<p>The problem is that the <code>,</code> is inside of a string. That means, your code contains two strings that are implicitly concatenated.:</p>
+<pre><code class="language-python">f&quot;Dataset {dataset!r} not found. Available datasets are: &quot; &quot;, &quot;.join(example_data_files.keys())
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ^^^^
+string 1                                                   string 2
+</code></pre>
+<p>You probably want:</p>
+<pre><code class="language-python">f&quot;Dataset not found. Available datasets are: '{&quot;, &quot;.join([&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])}'&quot;
+</code></pre>
+<p>(Only works with Python 3.12 or newer)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-15 09:59</div>
+            <div class="timeline-body"><p>I agree with @MichaReiser; I think Ruff is accurately flagging here that your code isn't doing quite what you thought it did. Another thing that also demonstrates that Ruff's interpretation of the code here is correct is that CPython eagerly merges the two adjacent strings when parsing the AST -- the <code>.join()</code> call is a method called on the merged string formed by the implicit concatenation:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; import ast
+&gt;&gt;&gt; source = '''ValueError(&quot;Dataset {dataset!r} not found. Available datasets are: &quot; &quot;, &quot;.join(example_data_files.keys()))'''
+&gt;&gt;&gt; print(ast.dump(ast.parse(source), indent=2))
+Module(
+  body=[
+    Expr(
+      value=Call(
+        func=Name(id='ValueError', ctx=Load()),
+        args=[
+          Call(
+            func=Attribute(
+              value=Constant(value='Dataset {dataset!r} not found. Available datasets are: , '),
+              attr='join',
+              ctx=Load()),
+            args=[
+              Call(
+                func=Attribute(
+                  value=Name(id='example_data_files', ctx=Load()),
+                  attr='keys',
+                  ctx=Load()),
+                args=[],
+                keywords=[])],
+            keywords=[])],
+        keywords=[]))],
+  type_ignores=[])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VeckoTheGecko">@VeckoTheGecko</a> on 2024-08-15 10:07</div>
+            <div class="timeline-body"><p>Yes, it's a bug on my end. Thanks for the reply, didn't know implicit concatenation worked like that. Need to be a bit more careful with my multiline implicit concats</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-08-15 10:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/steve-mavens">@steve-mavens</a> on 2024-08-15 11:31</div>
+            <div class="timeline-body"><p>@VeckoTheGecko: Honestly, implicit string concatenation is a horrible feature best avoided. But https://peps.python.org/pep-3126/ was rejected, so we have to put up with it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:45 UTC
+    </footer>
+</body>
+</html>

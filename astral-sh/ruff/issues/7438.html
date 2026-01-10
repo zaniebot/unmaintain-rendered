@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[New Rule] Match positional argument name - astral-sh/ruff #7438</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[New Rule] Match positional argument name</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7438">#7438</a>
+        opened by <a href="https://github.com/jd-solanki">@jd-solanki</a>
+        on 2023-09-16 14:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jd-solanki">@jd-solanki</a> on 2023-09-16 14:44</div>
+            <div class="timeline-body"><p>Hi 👋🏻</p>
+<blockquote>
+<p><strong>Note</strong>
+Except issue title I might have interchanged the arguments &amp; parameters</p>
+</blockquote>
+<h2>Problem</h2>
+<p>ATM, if we pass arguments to function it's error-prone:</p>
+<pre><code class="language-py">def greet(name: str, greeting: str):
+    print(f'{greeting}, {name}')
+
+name = 'john'
+greeting = 'Hello'
+
+greet(name, greeting) # Hello, john
+
+# Issue 1: Passing arguments in the wrong order
+greet(greeting, name) # john, Hello
+
+# Issue 2: Have to be explicit
+greet(name=name, greeting=greeting) # Hello, john
+</code></pre>
+<p>To avoid passing wrong arguments best way is to be explicit, but with three arguments code is less readable. For example here's FastAPI example:</p>
+<pre><code class="language-py"># Issue 1: Due to positional args we can pass wrong arguments
+crud.create_user(db, user, fn_hash_pwd=hash.hash_pwd)
+
+# Issue 2A: With keyword arguments we have to be explicit (more code) &amp; less readable (one big line)
+# Issue 2B: If we change single arg name or fn name, we get git diff for all arguments &amp; function
+crud.create_user(db=db, user=user, fn_hash_pwd=hash.hash_pwd)
+
+# Issue 3: Perfect but more lines of code
+crud.create_user(
+    db=db,
+    user=user,
+    fn_hash_pwd=hash.hash_pwd
+)
+</code></pre>
+<h2>Solution</h2>
+<p>We can implement a rule that checks passed argument must match the name of the function argument. If they don't match, we get an error.</p>
+<pre><code class="language-py"># Benefit 1: With this can be sure that we are passing arguments in the right order
+# Benefit 2: Don't have to be explicit to avoid error
+# Benefit 3: We can ensure function definition and function call are in sync
+greet(name, greeting)
+
+# If we pass arguments in the wrong order we get an error
+greet(greeting, name) # Error: Passed argument name doesn't match function argument
+
+# 
+greet(user_name, greeting) # Error: Argument name doesn't match function argument
+# Solution: greet(name=user_name, greeting=greeting)
+</code></pre>
+<p>With FastAPI example:</p>
+<pre><code class="language-py"># We are sure that db is the first argument and user is the second argument
+crud.create_user(db, user, fn_hash_pwd=hash.hash_pwd)
+
+# Even if author didn't provided the types, we can still catch the error
+crud.create_user(user, db, fn_hash_pwd=hash.hash_pwd) # Error
+</code></pre>
+<p>We can catch more errors like if author of the function changes the name of the argument due to implementation changes with the same type.</p>
+<pre><code class="language-py">def greet(name: str, surname: str):
+    print(f'Welcome {name} {surname}')
+
+# With rule =&gt; We can catch this error and update our code
+greet(name, greeting) # Error: Passed argument surname doesn't match function argument
+
+# Without rule =&gt; We don't get any error and our code behaves unexpectedly
+greet(name, greeting) # Welcome john Hello
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-19 03:42</div>
+            <div class="timeline-body"><p>Hey! I appreciate the clear and thorough issue. While not unreasonable, my take here is that this best solved by using keyword-only arguments, even if the resulting call feels less readable to you than using positional arguments. Requiring that positional arguments exactly match the name of the parameter feels like a highly specific and pedantic rule, and for us to implement it as a first-class rule in Ruff, we'd want to have some confidence that it would be useful to a large proportion of the community. Separately, it's probably hard for us to implement this reliably right now, since we don't support tracing functions calls across files and across third-party dependencies.</p>
+<p>I'm going to close as we're unlikely to implement this as-is -- sorry to disappoint but hopefully my reasoning is clear.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-19 03:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-09-19 03:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:21 UTC
+    </footer>
+</body>
+</html>

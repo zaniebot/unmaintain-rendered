@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turn on U006 with 'from __future__ import annotations' - astral-sh/ruff #949</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Turn on U006 with 'from <strong>future</strong> import annotations'</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/949">#949</a>
+        opened by <a href="https://github.com/brandon-leapyear">@brandon-leapyear</a>
+        on 2022-11-28 23:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/brandon-leapyear">@brandon-leapyear</a> on 2022-11-28 23:23</div>
+            <div class="timeline-body"><p>It seems like if <code>target-version</code> is below 3.9, U006 doesn't get triggered <em>at all</em>, even if <code>from __future__ import annotations</code> is included:</p>
+<p>https://github.com/charliermarsh/ruff/blob/731fba90060de58f9893251d62913b9294fa2458/src/check_ast.rs#L1231-L1236</p>
+<p>Repro:</p>
+<pre><code class="language-py">from __future__ import annotations
+
+from typing import Optional
+
+def foo(x: int) -&gt; Optional[int]:
+  return None
+</code></pre>
+<pre><code class="language-console">$ ruff --select U foo.py
+Found 1 error(s).
+foo.py:5:20: U007 Use `X | Y` for type annotations
+1 potentially fixable with the --fix option.
+
+$ ruff --target-version=py38 --select U foo.py
+</code></pre>
+<p>Related: https://github.com/charliermarsh/ruff/issues/778</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-29 01:00</div>
+            <div class="timeline-body"><p>Interesting, I honestly had no idea that <code>from __future__ import annotations</code> enabled this behavior for pre-3.9 versions (https://peps.python.org/pep-0585/#implementation). Will fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2022-11-29 01:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/brandon-leapyear">@brandon-leapyear</a> on 2022-11-29 01:01</div>
+            <div class="timeline-body"><p>:sparkles: <em><strong>This is an old work account. Please reference @brandonchinn178 for all future communication</strong></em> :sparkles:</p>
+<!-- updated by mention_personal_account_in_comments.py -->
+
+<hr />
+<p>To be extra clear, this only affects <em>annotations</em>. Anything at runtime should <em>not</em> be converted pre-3.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-11-29 01:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-29 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-29 01:58</div>
+            <div class="timeline-body"><p>This is going out in <a href="https://github.com/charliermarsh/ruff/releases/tag/v0.0.145">v0.0.145</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tmke8">@tmke8</a> on 2022-12-01 15:38</div>
+            <div class="timeline-body"><p>It seems that in the new release, type aliases also trigger the check. Like in</p>
+<pre><code class="language-python">from __future__ import annotations
+from typing import List, Union
+from typing_extensions import TypeAlias
+
+MyList: TypeAlias = Union[List[int], List[str]]
+</code></pre>
+<p>ruff output:</p>
+<pre><code>Found 3 error(s).
+main.py:5:21: U007 Use `X | Y` for type annotations
+main.py:5:27: U006 Use `list` instead of `List` for type annotations
+main.py:5:38: U006 Use `list` instead of `List` for type annotations
+3 potentially fixable with the --fix option.
+</code></pre>
+<p>However, if I went along with the suggested fix, I would get runtime errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-01 15:40</div>
+            <div class="timeline-body"><p>Taking a look...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-01 15:48</div>
+            <div class="timeline-body"><p>Okay I think this is going to require a more thoughtful fix. I see the issue but need to differentiate between a few cases in the code.</p>
+<p>You should be able to disable this for now with:</p>
+<pre><code class="language-toml">[tool.ruff.pyupgrade]
+# Preserve types, even if a file imports `from __future__ import annotations`.
+keep-runtime-typing = true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-01 15:53</div>
+            <div class="timeline-body"><p>(I'll try to fix this today, gotta get to a few other things first! Now tracking in #979.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:28:31 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix duplicate packages with multiple conflicting extras declared - astral-sh/uv #11513</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix duplicate packages with multiple conflicting extras declared</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11513">#11513</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-02-14 15:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-14 15:48</div>
+            <div class="timeline-body"><p>This implements a somewhat of a cop-out fix for #11479, where the lock
+file produced was missing some conflict markers. This in turn could lead
+to multiple versions of the same package being installed into the same
+environment.</p>
+<p>(What follows is one of the commit messages that gets into the weeds
+about the specific problem here.)</p>
+<p>The particular example I honed in on here was the <code>e3nn -&gt; sympy 1.13.1</code>
+and <code>e3nn -&gt; sympy 1.13.3</code> dependency edges. In particular, while the
+former correctly has a conflict marker, the latter's conflict marker was
+getting simplified to <code>true</code>. This makes the edges trivially
+overlapping, and results in both of them getting installed
+simultaneously. (A similar problem happens for the <code>e3nn -&gt; torch</code>
+dependency edges.)</p>
+<p>Why does this happen? Well, conflict marker simplification works by
+detecting which extras are known to be enabled (and disabled) for each
+node in the graph. This ends up being expressed as a set of sets, where
+each inner set contains items corresponding to &quot;extras is included&quot; or
+&quot;extra is excluded.&quot;</p>
+<p>The logic then is if <em>all</em> of these sets are satisfied by the conflict
+marker on the dependency edge, then this conflict marker can be
+simplified by assuming all of the inclusions/exclusions to be true.</p>
+<p>In this particular case, we run into an issue where the set of
+assumptions discovered for <code>e3nn</code> is:</p>
+<pre><code>{test[sevennet]}, {}, {~test[m3gnet], ~test[alignn], test[all]}</code></pre>
+<p>And the corresponding conflict marker for <code>e3nn -&gt; sympy 1.13.1</code> is:</p>
+<pre><code>extra == 'extra-4-test-all'
+or extra == 'extra-4-test-chgnet'
+or (extra != 'extra-4-test-alignn' and extra != 'extra-4-test-m3gnet')</code></pre>
+<p>And the conflict marker for <code>e3nn -&gt; sympy 1.13.3</code> is:</p>
+<pre><code>extra == 'extra-4-test-alignn' or extra == 'extra-4-test-m3gnet'</code></pre>
+<p>Evaluating each of the sets above for <code>sympy 1.13.1</code>'s conflict
+marker results in them all being true. Simplifying in turn results in
+the marker being true. For <code>sympy 1.13.3</code>, not all of the sets are
+satisfied, so this marker is not simplified.</p>
+<p>I think the fundamental problem here is that our inferences aren't quite
+rich enough to make these logical leaps. In particular, the conflict
+marker for <code>e3nn -&gt; sympy 1.13.3</code> is not satisfied by <em>any</em> of our sets.
+One might therefore conclude that this dependency edge is impossible.
+But! The <code>test[sevennet]</code> set doesn't actually rule out <code>test[m3gnet]</code>
+from being included, for example, because there is no conflict. So it is
+actually possible for this marker to evaluate to true.</p>
+<p>And I think this reveals the problem: for the <code>e3nn -&gt; sympy 1.13.1</code>
+conflict marker, the inferences don't capture the fact that
+<code>test[sevennet]</code> <em>might</em> have <code>test[m3gnet]</code> enabled, and that would in
+turn result in the conflict marker evaluating to <code>false</code>. This directly
+implies that our simplification here is inappropriate.</p>
+<p>It would be nice to revisit how we build our inferences here so that
+they are richer and enable us to make correct logical leaps. For now, we
+fix this particular bug with a bit of a cop-out: we skip conflict marker
+simplification when there are ambiguous dependency edges.</p>
+<p>Fixes #11479</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2025-02-14 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">lock</span> added by @BurntSushi on 2025-02-14 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2025-02-14 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-14 21:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolution/output.rs</code>:97 on 2025-02-14 21:43</div>
+            <div class="timeline-body"><p>Necessary?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-14 21:47</div>
+            <div class="timeline-body"><p>I'm sort of just confirming my understanding, but if we simplified the conflict marker for each set independently, and then checked if each simplification resulted in the same outcome, could we use <em>that</em>?</p>
+<p>Or, what if for each set <code>A</code> and <code>B</code>, we did:</p>
+<pre><code>A and (extra == 'extra-4-test-all'
+or extra == 'extra-4-test-chgnet'
+or (extra != 'extra-4-test-alignn' and extra != 'extra-4-test-m3gnet'))
+or B and (extra == 'extra-4-test-all'
+or extra == 'extra-4-test-chgnet'
+or (extra != 'extra-4-test-alignn' and extra != 'extra-4-test-m3gnet'))
+</code></pre>
+<p>Would that be sound?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-16 17:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/lock.rs</code>:23933 on 2025-02-16 17:09</div>
+            <div class="timeline-body"><p>Is it not still possible for us to simplify out terms like <code>platform_machine != 'aarch64' and extra == 'extra-7-project-cpu' and extra == 'extra-7-project-cu124'</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-16 23:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/it/lock.rs</code>:23933 on 2025-02-16 23:17</div>
+            <div class="timeline-body"><p>Yes I think it's possible. Even before this change, conflict marker simplification does not produce the minimal possible markers in all cases. I think it's just a question of how much time you want me to allocate to the problem. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-16 23:20</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm sort of just confirming my understanding, but if we simplified the conflict marker for each set independently, and then checked if each simplification resulted in the same outcome, could we use that?</p>
+</blockquote>
+<p>If I'm understanding you correctly, I believe that's what the code was already doing (and is still doing for cases where there is no definitive ambiguity). Namely, simplification <em>only</em> happens when evaluating each set results in <code>true</code>. But that still isn't enough here.</p>
+<p>I think the problem is that the assumptions inferred from the dependency graph aren't rich enough. They aren't expressing the full set of possibilities.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-16 23:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolution/output.rs</code>:97 on 2025-02-16 23:40</div>
+            <div class="timeline-body"><p>Oops. Nope. Fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-02-18 01:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-18 01:27</div>
+            <div class="timeline-body"><p>I'm a little worried about how this will affect #11548 and #11559.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-18 12:45</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm a little worried about how this will affect #11548 and #11559.</p>
+</blockquote>
+<p>Yeah hmmm. I think the upside is that this should only apply to cases where there are ambiguous dependency edges (i.e., two different edges with the same package name but different versions). So the lack of simplification I think should be somewhat limited?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-02-18 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-02-18 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-18 12:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

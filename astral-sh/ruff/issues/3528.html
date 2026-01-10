@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>isort.combine-as-imports seems to act opposite to its definition - astral-sh/ruff #3528</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>isort.combine-as-imports seems to act opposite to its definition</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3528">#3528</a>
+        opened by <a href="https://github.com/davfsa">@davfsa</a>
+        on 2023-03-14 22:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/davfsa">@davfsa</a> on 2023-03-14 22:52</div>
+            <div class="timeline-body"><p>Hey!</p>
+<p>I found what I believe is a little bug with regards to isorts <code>combine-as-imports</code>, as it seems to act contrary to its definition in some cases.</p>
+<h4>Sample reproduction code:</h4>
+<pre><code class="language-py">from json import detect_encoding
+from json import dump
+from json import dumps as json_dumps
+from json import load
+from json import loads as json_loads
+
+</code></pre>
+<p><em>Quite a bad example of &quot;real world code&quot;, but there is a genuine use case behind this. The random imports are for the sake of showing the problem. Note that running isort with <code>profile = &quot;black&quot;</code> and <code>force-single-line = true</code> doesnt change this file</em></p>
+<h4><code>--fix</code> while using <code>combine-as-imports = true</code></h4>
+<pre><code>$ ruff ruff_test.py --select I001 --fix
+&lt;no output&gt;
+
+$ cat ruff_test.py
+from json import detect_encoding
+from json import dump
+from json import dumps as json_dumps
+from json import load
+from json import loads as json_loads
+</code></pre>
+<h4><code>--fix</code> while using <code>combine-as-imports = false</code></h4>
+<pre><code>$ ruff ruff_test.py --select I001 --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat ruff_test.py
+from json import detect_encoding
+from json import dump
+from json import load
+from json import dumps as json_dumps
+from json import loads as json_loads
+</code></pre>
+<h4>Ruff settings:</h4>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 125
+target-version = &quot;py38&quot;
+select = [&quot;E&quot;, &quot;I&quot;, &quot;F&quot;]
+
+[tool.ruff.isort]
+force-single-line = true
+combine-as-imports = true  # This line config will be added/removed according to the steps above
+</code></pre>
+<h4>Ruff version:</h4>
+<p>ruff 0.0.255</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-14 23:58</div>
+            <div class="timeline-body"><p>I think the issue is that you have <code>force-single-line = true</code>. <code>combine-as-imports</code> refers to grouping the imports, like:</p>
+<pre><code class="language-py">from json import (
+    detect_encoding,
+    dump,
+    dumps as json_dumps,
+    load,
+    loads as json_loads,
+)
+</code></pre>
+<p>But if you have <code>force-single-line = true</code>, it's <em>always</em> going to split into one import per line, so <code>combine-as-imports</code> has no effect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-14 23:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-14 23:59</div>
+            <div class="timeline-body"><p>(Closing because I tested the above locally, but just LMK if that's unclear at all, or if there's still an issue!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-03-14 23:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2023-03-14 23:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davfsa">@davfsa</a> on 2023-03-15 00:19</div>
+            <div class="timeline-body"><p>Thanks for the quick reply!</p>
+<p>As you pointed out, the behaviour of the configurations I expected is exactly that, which is why it was weird to me when they differed from isort to ruff.</p>
+<p>The code sample I provided with the profile set to black and <code>force_single_line=true</code> in isort, it doesn't change the file, but ruff reports that it should.</p>
+<p>This was confusing to me and I looked through the documentation and tried out several different configurations and ended up finding that setting <code>combine-as-imports</code> seemed to be actig opposite to what is documented, as setting it to true keeps the <code>as</code> imports deperated, but setting it to false (the default) reports that they should be joint.</p>
+<p>Sorry if my initial bug report wasn't clear enough, hope this comment improves it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-15 02:11</div>
+            <div class="timeline-body"><p>No worries! I think I understand what you're saying now. For simplicity, lets <em>ignore</em> <code>combine-as-imports</code> entirely. The issue is that with <code>force-single-line = true</code>, you're seeing a different ordering between Ruff and isort.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2023-03-15 02:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-15 02:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/davfsa">@davfsa</a> on 2023-03-15 07:03</div>
+            <div class="timeline-body"><p>Thanks for the quick fix!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:38 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>0.3.4: pytest fails because `No data_provider tests were created for test_type_availability` ans some warnings - astral-sh/ruff #10542</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>0.3.4: pytest fails because <code>No data_provider tests were created for test_type_availability</code> ans some warnings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10542">#10542</a>
+        opened by <a href="https://github.com/kloczek">@kloczek</a>
+        on 2024-03-24 09:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kloczek">@kloczek</a> on 2024-03-24 09:03</div>
+            <div class="timeline-body"><p>I'm packaging your module as an rpm package so I'm using the typical PEP517 based build, install and test cycle used on building packages from non-root account.</p>
+<ul>
+<li><code>python3 -sBm build -w --no-isolation</code></li>
+<li>because I'm calling <code>build</code> with <code>--no-isolation</code> I'm using during all processes only locally installed modules</li>
+<li>install .whl file in &lt;/install/prefix&gt; using <code>installer</code> module</li>
+<li>run pytest with $PYTHONPATH pointing to sitearch and sitelib inside &lt;/install/prefix&gt;</li>
+<li>build is performed in env which is <em><code>cut off from access to the public network</code></em> (pytest is executed with <code>-m &quot;not network&quot;</code>)</li>
+</ul>
+<details>
+<summary>Here is pytest output:</summary>
+
+<pre><code class="language-console">+ PYTHONPATH=/home/tkloczko/rpmbuild/BUILDROOT/python-ruff-0.3.4-2.fc36.x86_64/usr/lib64/python3.9/site-packages:/home/tkloczko/rpmbuild/BUILDROOT/python-ruff-0.3.4-2.fc36.x86_64/usr/lib/python3.9/site-packages
++ /usr/bin/pytest -ra -m 'not network' --import-mode=importlib
+============================= test session starts ==============================
+platform linux -- Python 3.9.18, pytest-8.1.1, pluggy-1.4.0
+rootdir: /home/tkloczko/rpmbuild/BUILD/ruff-0.3.4
+configfile: pyproject.toml
+plugins: hypothesis-6.99.11
+collected 2003 items / 2 errors
+
+==================================== ERRORS ====================================
+_ ERROR collecting crates/ruff/libcst/libcst/metadata/tests/test_full_repo_manager.py _
+crates/ruff/libcst/libcst/metadata/tests/test_full_repo_manager.py:11: in &lt;module&gt;
+    from libcst.metadata.tests.test_type_inference_provider import _test_simple_class_helper
+&lt;frozen importlib._bootstrap&gt;:1007: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:986: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:680: in _load_unlocked
+    ???
+/usr/lib/python3.9/site-packages/_pytest/assertion/rewrite.py:178: in exec_module
+    exec(co, module.__dict__)
+/usr/lib64/python3.9/site-packages/libcst/metadata/tests/test_type_inference_provider.py:19: in &lt;module&gt;
+    from libcst.tests.test_pyre_integration import TEST_SUITE_PATH
+&lt;frozen importlib._bootstrap&gt;:1007: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:986: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:680: in _load_unlocked
+    ???
+/usr/lib/python3.9/site-packages/_pytest/assertion/rewrite.py:178: in exec_module
+    exec(co, module.__dict__)
+/usr/lib64/python3.9/site-packages/libcst/tests/test_pyre_integration.py:87: in &lt;module&gt;
+    class PyreIntegrationTest(UnitTest):
+/usr/lib64/python3.9/site-packages/libcst/testing/utils.py:168: in __new__
+    populate_data_provider_tests(dct)
+/usr/lib64/python3.9/site-packages/libcst/testing/utils.py:94: in populate_data_provider_tests
+    raise ValueError(
+E   ValueError: No data_provider tests were created for test_type_availability! Please double check your data.
+_ ERROR collecting crates/ruff/libcst/libcst/metadata/tests/test_type_inference_provider.py _
+crates/ruff/libcst/libcst/metadata/tests/test_type_inference_provider.py:19: in &lt;module&gt;
+    from libcst.tests.test_pyre_integration import TEST_SUITE_PATH
+&lt;frozen importlib._bootstrap&gt;:1007: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:986: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:680: in _load_unlocked
+    ???
+/usr/lib/python3.9/site-packages/_pytest/assertion/rewrite.py:178: in exec_module
+    exec(co, module.__dict__)
+/usr/lib64/python3.9/site-packages/libcst/tests/test_pyre_integration.py:87: in &lt;module&gt;
+    class PyreIntegrationTest(UnitTest):
+/usr/lib64/python3.9/site-packages/libcst/testing/utils.py:168: in __new__
+    populate_data_provider_tests(dct)
+/usr/lib64/python3.9/site-packages/libcst/testing/utils.py:94: in populate_data_provider_tests
+    raise ValueError(
+E   ValueError: No data_provider tests were created for test_type_availability! Please double check your data.
+=============================== warnings summary ===============================
+crates/ruff/libcst/libcst/codemod/tests/test_metadata.py:15
+  /home/tkloczko/rpmbuild/BUILD/ruff-0.3.4/crates/ruff/libcst/libcst/codemod/tests/test_metadata.py:15: PytestCollectionWarning: cannot collect test class 'TestingCollector' because it has a __init__ constructor (from: crates/ruff/libcst/libcst/codemod/tests/test_metadata.py)
+    class TestingCollector(ContextAwareVisitor):
+
+crates/ruff/libcst/libcst/codemod/tests/test_metadata.py:23
+  /home/tkloczko/rpmbuild/BUILD/ruff-0.3.4/crates/ruff/libcst/libcst/codemod/tests/test_metadata.py:23: PytestCollectionWarning: cannot collect test class 'TestingTransform' because it has a __init__ constructor (from: crates/ruff/libcst/libcst/codemod/tests/test_metadata.py)
+    class TestingTransform(ContextAwareTransformer):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+ERROR crates/ruff/libcst/libcst/metadata/tests/test_full_repo_manager.py - Va...
+ERROR crates/ruff/libcst/libcst/metadata/tests/test_type_inference_provider.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!
+======================== 2 warnings, 2 errors in 10.94s ========================
+</code></pre>
+</details>
+
+<p>Please let me know if you need more details or want me to perform some diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kloczek">@kloczek</a> on 2024-03-24 12:50</div>
+            <div class="timeline-body"><p>Those two failing units is result of adding to ruff tree libcst source which was necessary before.
+Looks like currently pytest is not able to find any units.</p>
+<pre><code class="language-console">+ PYTHONPATH=/home/tkloczko/rpmbuild/BUILDROOT/python-ruff-0.3.4-2.fc36.x86_64/usr/lib64/python3.9/site-packages:/home/tkloczko/rpmbuild/BUILDROOT/python-ruff-0.3.4-2.fc36.x86_64/usr/lib/py
+thon3.9/site-packages
++ /usr/bin/pytest -ra -m 'not network' --import-mode=importlib --deselect crates/ruff/libcst/libcst/metadata/tests/test_full_repo_manager.py --deselect crates/ruff/libcst/libcst/metadata/te
+sts/test_type_inference_provider.py
+============================= test session starts ==============================
+platform linux -- Python 3.9.18, pytest-8.1.1, pluggy-1.4.0
+rootdir: /home/tkloczko/rpmbuild/BUILD/ruff-0.3.4
+configfile: pyproject.toml
+plugins: hypothesis-6.99.11
+collected 0 items
+
+============================ no tests ran in 1.57s =============================
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-24 19:59</div>
+            <div class="timeline-body"><p>Can you say more about what you're trying to do? Ruff doesn't include any Python unit tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-03-24 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kloczek">@kloczek</a> on 2024-03-24 23:42</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you say more about what you're trying to do? Ruff doesn't include any Python unit tests.</p>
+</blockquote>
+<p>That is what I found after remove add libcst tree.
+So there is no test suite at all? 🤔</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-24 23:45</div>
+            <div class="timeline-body"><p>There's an extensive test suite in the Rust crates. We run it with <code>cargo test</code>, not <code>pytest</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kloczek">@kloczek</a> on 2024-03-25 00:04</div>
+            <div class="timeline-body"><p>Hmm .. just found that there is no to much python code installed by <code>ruff</code> (only one routine which actually returns path to ruff executable).
+Simple in this case it is a bit strange that this tool is registered pyton module on pypi 🤔
+OK closing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @kloczek on 2024-03-25 00:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-25 00:33</div>
+            <div class="timeline-body"><p>This is a tool for using in Python projects so it's very convenient for us to ship a PyPI distribution for users to install via their normal Python project tooling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kloczek">@kloczek</a> on 2024-03-25 13:06</div>
+            <div class="timeline-body"><p>Yes of course however actually included python code seems has nothing to do with <code>ruff</code> any python interface.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:16 UTC
+    </footer>
+</body>
+</html>

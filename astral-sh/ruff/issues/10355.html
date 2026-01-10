@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>formatter: Two iterations required to converge on specific comment + slice case - astral-sh/ruff #10355</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>formatter: Two iterations required to converge on specific comment + slice case</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10355">#10355</a>
+        opened by <a href="https://github.com/aneeshusa">@aneeshusa</a>
+        on 2024-03-12 06:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/aneeshusa">@aneeshusa</a> on 2024-03-12 06:56</div>
+            <div class="timeline-body"><p>Tested on ruff v0.3.2 and <code>main</code> (dacec7377c436fc85e380f7cc69a007824fa08bc). No ruff config.
+Minimized from a file at $WORK; this cropped up during one of my final rebases to switch to ruff.
+Not a blocker since the final formatting is stable.
+black 24.2.0 accepts both the original and final style;
+it rewrites the intermediate style to the final style.</p>
+<p>Input:</p>
+<pre><code>repro(
+    &quot;some long string that takes up some space&quot;
+)[  # some long comment also taking up space
+    0
+]
+</code></pre>
+<p>1st run of ruff gives:</p>
+<pre><code>repro(
+    &quot;some long string that takes up some space&quot;
+)[0]  # some long comment also taking up space
+</code></pre>
+<p>2nd and beyond runs give:</p>
+<pre><code>repro(&quot;some long string that takes up some space&quot;)[
+    0
+]  # some long comment also taking up space
+</code></pre>
+<details>
+<summary>Script used</summary>
+
+<pre><code>#!/usr/bin/env bash
+
+# no errexit
+set -o nounset
+set -o pipefail
+
+tmp_dir=&quot;$(mktemp -d)&quot;
+cleanup() {
+    rm -rf &quot;${tmp_dir}&quot;
+}
+trap cleanup EXIT INT QUIT TERM
+
+cat &gt;&quot;${tmp_dir}/repro.py&quot; &lt;&lt;EOF
+repro(
+    &quot;some long string that takes up some space&quot;
+)[  # some long comment also taking up space
+    0
+]
+EOF
+
+cd ~/code/ruff
+git checkout &quot;${1}&quot;
+ruff=(cargo run --quiet --package=ruff --)
+
+echo -e '\nStarting hash of file'
+(cd &quot;${tmp_dir}&quot; &amp;&amp; sha256sum &quot;./repro.py&quot;)
+cat &quot;${tmp_dir}/repro.py&quot;
+
+echo -e '\nFirst run'
+&quot;${ruff[@]}&quot; format --isolated --target-version py310 --no-cache &quot;${tmp_dir}/repro.py&quot;
+(cd &quot;${tmp_dir}&quot; &amp;&amp; sha256sum &quot;./repro.py&quot;)
+cat &quot;${tmp_dir}/repro.py&quot;
+
+echo -e '\nSecond run'
+&quot;${ruff[@]}&quot; format --isolated --target-version py310 --no-cache &quot;${tmp_dir}/repro.py&quot;
+(cd &quot;${tmp_dir}&quot; &amp;&amp; sha256sum &quot;./repro.py&quot;)
+cat &quot;${tmp_dir}/repro.py&quot;
+
+echo -e '\nThird run'
+&quot;${ruff[@]}&quot; format --isolated --target-version py310 --no-cache &quot;${tmp_dir}/repro.py&quot;
+(cd &quot;${tmp_dir}&quot; &amp;&amp; sha256sum &quot;./repro.py&quot;)
+</code></pre>
+</details>
+
+<p>Didn't see any specific issues for this non-single-step-convergence, let me know if I missed one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-03-12 07:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @AlexWaygood on 2024-03-12 07:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-12 14:29</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2024-03-18 11:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-20 16:53</div>
+            <div class="timeline-body"><p>Thanks for the excellent write up. It made it super easy to reproduce and fix (including test cases)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-03-20 17:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:06 UTC
+    </footer>
+</body>
+</html>

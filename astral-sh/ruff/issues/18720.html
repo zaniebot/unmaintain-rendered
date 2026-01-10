@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff seems to detect git repo above (outside) my current git rep - astral-sh/ruff #18720</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff seems to detect git repo above (outside) my current git rep</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18720">#18720</a>
+        opened by <a href="https://github.com/kaddkaka">@kaddkaka</a>
+        on 2025-06-17 11:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-06-17 11:44</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I run <code>ruff check -v --fix-only .</code> inside my repo at <code>projects/current_project/</code> and see these DEBUG prints early on:</p>
+<pre><code>[ignore::gitignore][DEBUG] opened gitignore file: /projects/.git/info/exclude
+[ignore::gitignore][DEBUG] opened gitignore file: /projects/current_project/.gitignore
+[ignore::gitignore][DEBUG] opened gitignore file: /projects/current_project/.git/info/exclude
+</code></pre>
+<p>I did not expect to see the file <code>/projects/.git/info/exclude</code> to be picked up. Is this expected behavior or a bug?</p>
+<h3>Version</h3>
+<p>ruff 0.11.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-17 14:24</div>
+            <div class="timeline-body"><p>I think this is related to https://github.com/astral-sh/ruff/issues/13692</p>
+<p>What's the content of your <code>.gitignore</code> file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-17 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2025-06-17 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-06-17 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-06-18 12:00</div>
+            <div class="timeline-body"><p><code>/projects/current_project/.gitignore</code> contains about 100 different patterns, half of them having a wildcard <code>*</code>.</p>
+<p>Things like</p>
+<pre><code>*~
+*#*
+*.lo
+*.obj
+*.pyc
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-18 12:44</div>
+            <div class="timeline-body"><p>I'm trying to understand your setup. It seems that <code>projects</code> is a git repository and <code>current_project</code>. Do you use gitmodules or similar?</p>
+<p>The behavior where the sub-repository also respects the ignores from the outer repository does seem reasonable to me. But @BurntSushi should know better if that's expected (I couldn't find any documentation around it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-06-18 14:30</div>
+            <div class="timeline-body"><p>Yeah the documentation in <code>ignore</code> isn't great. I believe the relevant settings here are <a href="https://docs.rs/ignore/latest/ignore/struct.WalkBuilder.html#method.parents"><code>WalkBuilder::parents</code></a> and <a href="https://docs.rs/ignore/latest/ignore/struct.WalkBuilder.html#method.require_git"><code>WalkBuilder::require_git</code></a>.</p>
+<p>It looks like <code>parents</code> is enabled via enabling <code>standard_filters</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/913f136d33fbc1b7d20fc91190431ccef2e2834c/crates/ruff_workspace/src/resolver.rs#L481-L495</p>
+<p>And I don't see anywhere that <code>require_git</code> is set, which means it should be enabled by default:</p>
+<p>https://github.com/BurntSushi/ripgrep/blob/cbc598f245f3c157a872b69102653e2e349b6d92/crates/ignore/src/dir.rs#L587-L605</p>
+<p>Which means that <code>ignore</code> <em>should</em> stop ascending parent directories to read git-related ignore patterns once it sees a <code>.git</code>. So this may be a bug in <code>ignore</code>? I think I'd need an MRE.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @MichaReiser on 2025-06-18 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-06-18 20:12</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm trying to understand your setup. It seems that <code>projects</code> is a git repository and <code>current_project</code>. Do you use gitmodules or similar?</p>
+<p>The behavior where the sub-repository also respects the ignores from the outer repository does seem reasonable to me. But <a href="https://github.com/BurntSushi">@BurntSushi</a> should know better if that's expected (I couldn't find any documentation around it)</p>
+</blockquote>
+<p>Sorry the example is unclear and misleading.</p>
+<p><code>projects</code> and <code>projects/current_project</code> are two unrelated git repo.
+It's probably just a mistake from my side to one git repo in a subfolder of another one,and I can't just move it out of there. But nonetheless, is the ruff behavior to be considered a bug?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-19 09:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah the documentation in ignore isn't great.</p>
+</blockquote>
+<p>I was actually refering to git's documentation here because that's what <code>ignore</code> implements. But I couldn't find a good reference explaining how ignore's are matched other than the syntax-reference (which doesn't go into details on how the ignore files apply if there are multiple or nested repositories)</p>
+<blockquote>
+<p>It's probably just a mistake from my side to one git repo in a subfolder of another one,and I can't just move it out of there. But nonetheless, is the ruff behavior to be considered a bug?</p>
+</blockquote>
+<p>Yes, I think this is a bug. But fixing it might be somewhat involved in the <code>ignore</code> crate because it needs to track ignore rules by repository (it can no longer just accumulate all found ignore rules from its ancestor)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-19 10:01</div>
+            <div class="timeline-body"><p>Actually, I tried to repro this and I think it works as expected. It's just the log messages that are confusing.</p>
+<p>Ruff (ignore) correctly visits files that are ignored by the parent directory. Ruff (ignore) does read the ignore files from the outer repository. This is somewhat unnecessary but it doesn't lead to any downstream problems.</p>
+<p>@kaddkaka do you see any unexpected ruff behavior besides the logs? Like, does it not check files that it should.</p>
+<p>Here's my repro where ruff correctly flags the undeclared variable <code>a</code> even though it is ignored in the outer <code>gitignore</code> file.</p>
+<p><a href="https://github.com/user-attachments/files/20816813/ignore2.zip">ignore2.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-06-19 10:08</div>
+            <div class="timeline-body"><p>This is the reproduction steps:</p>
+<pre><code class="language-console">mkdir -p -v bugreport_ruff_git_parent
+cd bugreport_ruff_git_parent/
+mkdir -p -v another_proj
+cd another_proj/
+git init
+touch pyproject.toml
+touch main.py
+ruff check -v
+</code></pre>
+<p>The second line of the verbose output confused me. It looks like it visits outside the <code>another_proj</code> directory:</p>
+<pre><code>[2025-06-19][12:05:43][ruff::resolve][DEBUG] Using Ruff default settings
+[2025-06-19][12:05:43][ignore::gitignore][DEBUG] opened gitignore file: /tmp/bugreport_ruff_git_parent/.git/info/exclude
+[2025-06-19][12:05:43][ignore::gitignore][DEBUG] opened gitignore file: /tmp/bugreport_ruff_git_parent/another_proj/.git/info/exclude
+[2025-06-19][12:05:43][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;/tmp/bugreport_ruff_git_parent/another_proj/.git&quot;
+[2025-06-19][12:05:43][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/tmp/bugreport_ruff_git_parent/another_proj/pyproject.toml&quot;
+[2025-06-19][12:05:43][ignore::gitignore][DEBUG] opened gitignore file: /tmp/bugreport_ruff_git_parent/another_proj/.ruff_cache/.gitignore
+[2025-06-19][12:05:43][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/tmp/bugreport_ruff_git_parent/another_proj/main.py&quot;
+[2025-06-19][12:05:43][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;/tmp/bugreport_ruff_git_parent/another_proj/.ruff_cache&quot;
+[2025-06-19][12:05:43][ruff::commands::check][DEBUG] Identified files to lint in: 5.527421ms
+[2025-06-19][12:05:44][ruff::diagnostics][DEBUG] Checking: /tmp/bugreport_ruff_git_parent/another_proj/pyproject.toml
+[2025-06-19][12:05:44][ruff::commands::check][DEBUG] Checked 2 files in: 192.703µs
+All checks passed!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-06-19 10:12</div>
+            <div class="timeline-body"><p>I see the same behavior as you @MichaReiser and no actual issue with ignored source files or reporter warning.</p>
+<p>But why is ruff traversing files &quot;outside&quot; my project? Does it go all the way up to <code>/</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-19 10:42</div>
+            <div class="timeline-body"><p>Yes, ruff traverses upwards from the current directory to find any <code>ignore</code> or <code>.gitignore</code> file that it should apply. That doesn't mean that it will apply all of them. Ruff also doesn't traverse the entire <code>/</code> directory. It only traverses downwards from the project directory.</p>
+<details><summary>Logs when running with diagnostics</summary>
+
+<pre><code>[2025-06-19][11:58:46][ruff::resolve][DEBUG] Using configuration file (via parent) at: /Users/micha/astral/test/pyproject.toml
+[2025-06-19][11:58:46][ruff_workspace::pyproject][DEBUG] Detected minimum supported `requires-python` version: 3.10
+[2025-06-19][11:58:46][ignore::gitignore][DEBUG] opened gitignore file: /Users/micha/.gitignore_global
+[2025-06-19][11:58:46][ignore::gitignore][DEBUG] opened gitignore file: /Users/micha/astral/test/.gitignore
+[2025-06-19][11:58:46][ignore::gitignore][DEBUG] opened gitignore file: /Users/micha/astral/test/.git/info/exclude
+[2025-06-19][11:58:46][ignore::gitignore][DEBUG] opened gitignore file: /Users/micha/astral/test/ignore2/.gitignore
+[2025-06-19][11:58:46][ignore::gitignore][DEBUG] opened gitignore file: /Users/micha/astral/test/ignore2/.git/info/exclude
+[2025-06-19][11:58:46][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;/Users/micha/astral/test/ignore2/.git&quot;
+[2025-06-19][11:58:46][ignore::gitignore][DEBUG] opened gitignore file: /Users/micha/astral/test/ignore2/nested-repository/.git/info/exclude
+[2025-06-19][11:58:46][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/Users/micha/astral/test/ignore2/nested-repository/main.py&quot;
+[2025-06-19][11:58:46][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;/Users/micha/astral/test/ignore2/nested-repository/.git&quot;
+[2025-06-19][11:58:46][ruff::commands::check][DEBUG] Identified files to lint in: 3.677917ms
+[2025-06-19][11:58:46][ruff::commands::check][DEBUG] Checked 1 files in: 120.041µs
+nested-repository/main.py:1:1: INP001 File `main.py` is part of an implicit namespace package. Add an `__init__.py`.
+nested-repository/main.py:1:1: T201 `print` found
+</code></pre>
+</details> 
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-06-19 10:50</div>
+            <div class="timeline-body"><p>Downwards or upwards?</p>
+<p>In my repro example, isn't <code>/tmp/bugreport_ruff_git_parent/another_proj/</code> the project directory?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-19 10:52</div>
+            <div class="timeline-body"><p>It mainly traverses upwards to find ignore files. It might need to traverse into some sub directories (e.g. <code>.git</code>) to find the ignore files.</p>
+<p>Once Ruff has found all ignore files, it traverses downwards.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-06-19 10:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-06-19 11:01</div>
+            <div class="timeline-body"><p>But when does it stop? Does it it go all the up to <code>/</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-19 11:03</div>
+            <div class="timeline-body"><p>Yes, it goes all the way up to <code>/</code> because you could have a <code>.ignore</code> file at <code>/.ignore</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-06-19 11:07</div>
+            <div class="timeline-body"><p>I see, I thought it would stay inside the project. Thanks.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:42 UTC
+    </footer>
+</body>
+</html>

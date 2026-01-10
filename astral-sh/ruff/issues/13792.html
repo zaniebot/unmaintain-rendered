@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] circular references in class definitions panic - astral-sh/ruff #13792</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] circular references in class definitions panic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13792">#13792</a>
+        opened by <a href="https://github.com/rtpg">@rtpg</a>
+        on 2024-10-17 11:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rtpg">@rtpg</a> on 2024-10-17 11:15</div>
+            <div class="timeline-body"><pre><code>class C(list[C]): ...
+</code></pre>
+<p>the above code causes <code>red_knot</code> to panic, due to something a bit subtle:</p>
+<ul>
+<li>We query for the type of <code>C</code> via <code>infer_definition_types</code></li>
+<li>during this process we infer the type of <code>list[C]</code></li>
+<li>during that process we (correctly!) annotate the type of <code>list</code> and stuff it in the inference expressions</li>
+<li>We then try to get the type of <code>C</code>... and call <code>infer_definition_types</code></li>
+</ul>
+<p>This leads to <code>C</code> being infered of type <code>Unknown</code> thanks to <code>infer_definition_types_cycle_recover</code>, which is fine and great... but due to something I don't quite understand, the result of <code>infer_definition_types_cycle_recover</code> ends up being the <em>final</em> definition of <code>infer_definition_types(C)</code>.</p>
+<p>As a result we lose the inference on <code>list</code>! So later linting code that traverses the AST tries to look up the type of the <code>list</code> expression and blows up.</p>
+<p>My understanding here is that the queries are like:</p>
+<pre><code>infer_definition_types(C) -&gt; infer_definition_types(C)
+--------------------------------------------------------
+infer_definition_types(C) -&gt; [C: Unknown]
+--------------------------------------------------------
+[C: ClassType (base: Unknown), expressions: {list} ]
+</code></pre>
+<p><em>but</em> that  future queries to the DB for <code>infer_defintion_types(C)</code> ends up returning <code>[C: Unknown]</code>. I have been reading the docs on salsa cycling a bit on this point to try and decipher what is going on here but maybe somebody else would have a better understanding of what can be done here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-17 11:20</div>
+            <div class="timeline-body"><p>@carljm's working on fixpoint iteration that will allow cyclic dependencies</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2024-10-17 11:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rtpg">@rtpg</a> on 2024-10-17 12:19</div>
+            <div class="timeline-body"><p>Alright, good to know! I had this intuition that I didn't need general fixed point iteration (just not caching the cycle recovery result for definitions), but trying to <code>db.report_untracked_read</code> my way out of this got me nowhere.</p>
+<p>Will studiously wait on this one for the adults to show up with the principled solution when the time is right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-17 14:35</div>
+            <div class="timeline-body"><p>Salsa's current cycle handling intentionally sets the &quot;cycle fallback&quot; result as the result for <em>every</em> query in the cycle, not just the single query that finally triggered the cycle. This is done for determinism reasons (so that results don't change depending on where you happen to enter a cycle.) I think this behavior explains the result you're seeing.</p>
+<p>For the code you posted, I would expect it to work in a stub file (where class bases are deferred) but not in a regular Python file, where they are eagerly evaluated.</p>
+<p>Salsa's current cycle recovery is not very useful for us, which is why I'm working on the fixpoint iteration feature, which we definitely need, for example, for evaluating types in loopy control flow graphs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Red Knot 2024" by @carljm on 2024-11-07 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2024-11-09 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Red Knot 2024" by @carljm on 2025-01-09 17:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Red Knot Q1 2025" by @carljm on 2025-01-09 17:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @carljm by @carljm on 2025-03-01 17:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-03-12 12:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-03-12 12:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:27 UTC
+    </footer>
+</body>
+</html>

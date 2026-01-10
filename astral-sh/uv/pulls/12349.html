@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>change `uv version` to be an interface for project version reads and edits - astral-sh/uv #12349</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>change <code>uv version</code> to be an interface for project version reads and edits</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12349">#12349</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-03-20 21:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-03-20 21:11</div>
+            <div class="timeline-body"><p>This is a reimplementation of #7248 with a new CLI interface.</p>
+<p>The old <code>uv version</code> is now <code>uv self version</code> (also it has gained a <code>--short</code> flag for parity).
+The new <code>uv version</code> is now an interface for getting/setting the project version.</p>
+<p>To give a modicum of support for migration, if <code>uv version</code> is run and we fail to find/read a <code>pyproject.toml</code> we will fallback to <code>uv self version</code>. <code>uv version --project .</code> prevents this fallback from being allowed.</p>
+<p>The new API of <code>uv version</code> is as follows:</p>
+<ul>
+<li>pass nothing to read the project version</li>
+<li>pass a version to set the project version</li>
+<li><code>--bump major|minor|patch</code> to semver-bump the project version</li>
+<li><code>--dry-run</code> to show the result but not apply it</li>
+<li><code>--short</code> to have the final printout contain only the final version</li>
+<li><code>--output-format json</code> to get the final printout as json</li>
+</ul>
+<pre><code>$ uv version
+myfast 0.1.0
+
+$ uv version --bump major --dry-run
+myfast 0.1.0 =&gt; 1.0.0
+
+$ uv version 1.2.3 --dry-run
+myfast 0.1.0 =&gt; 1.2.3
+
+$ uv version 1.2.3
+myfast 0.1.0 =&gt; 1.2.3
+
+$ uv version  --short 
+1.2.3
+
+$ uv version  --output-format json 
+{
+  &quot;package_name&quot;: &quot;myfast&quot;,
+  &quot;version&quot;: &quot;1.2.3&quot;,
+  &quot;commit_info&quot;: null
+}
+</code></pre>
+<p>Fixes #6298</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-20 21:55</div>
+            <div class="timeline-body"><p>I didn't explore this in my document because I was focused on <code>uv version</code> vs <code>uv metadata</code> as a decision, but it's sort of an open question if we should use <code>uv project</code> instead of <code>uv metadata</code>. My primary hesitation is that the existing top-level interface is <em>project</em> based, i.e., we have <code>uv add</code> which operates on the project and that <code>uv project</code> may make that more confusing? We also have <code>uv add --script &lt;name&gt;</code> and I don't think we're likely to add a <code>uv script</code> child interface? <code>uv metadata --script &lt;name&gt;</code> sort of makes sense with this and our existing design?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-20 21:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:550 on 2025-03-20 21:58</div>
+            <div class="timeline-body"><p>Maybe like,</p>
+<pre><code class="language-suggestion">    /// Don't write a new version to the `pyproject.toml`
+    ///
+    /// Instead, the version will be displayed.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-03-20 22:04</div>
+            <div class="timeline-body"><p>I think i like <code>metadata</code> over <code>project</code>, yeah.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-03-21 13:25</div>
+            <div class="timeline-body"><p>Oh worth noting that this does not also support <code>uv metadata project.version</code>. It didn't seem terribly valuable for this minimal version of the metadata command, and we can always add that later?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-21 13:39</div>
+            <div class="timeline-body"><blockquote>
+<p>It didn't seem terribly valuable for this minimal version of the metadata command, and we can always add that later?</p>
+</blockquote>
+<p>Agree</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/n4z4m3">@n4z4m3</a> on 2025-03-21 14:18</div>
+            <div class="timeline-body"><p>One possible reason to use project over metadata is that pixi uses project.
+Not that consistency with pixi is a major determining factor, but I thought I would mention it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HenriBlacksmith">@HenriBlacksmith</a> on 2025-03-21 17:12</div>
+            <div class="timeline-body"><p>Not sure it fits in this PR, but you could add a show-bump like: https://callowayproject.github.io/bump-my-version/reference/cli/#bump-my-version-show-bump</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/HenriBlacksmith">@HenriBlacksmith</a> on 2025-03-21 17:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Not sure it fits in this PR, but you could add a show-bump like: https://callowayproject.github.io/bump-my-version/reference/cli/#bump-my-version-show-bump</p>
+</blockquote>
+<p>Actually it could just be some side effect of a --dry-run with no target maybe?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-21 17:19</div>
+            <div class="timeline-body"><p>Yeah that's <code>--dry-run --short</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-21 19:56</div>
+            <div class="timeline-body"><p>I'm sort of leaning towards transitioning <code>uv version</code>, given <code>uv self version</code> is a more sensible long-term interface there and we can avoid confusion by displaying the project package name. I'll ponder this some more though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-03-22 02:04</div>
+            <div class="timeline-body"><p>I'm a tad more in favor of <code>uv metadata</code> as it naturally drives me to think about project metadata. <code>uv version</code> or <code>uv self version</code> makes me think of <code>uv --version</code> or <code>uv self --version</code> weirdly enough😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-03-22 02:07</div>
+            <div class="timeline-body"><p>Perhaps a future thought, given feature requests like https://github.com/astral-sh/uv/issues/6794 could this interface evolve towards supporting updating dependency versions in pyproject.toml as well (as it would follow semantics similar to bump) or would you still see that being part of other existing/new top-level interfaces?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-22 03:59</div>
+            <div class="timeline-body"><p>I have a use case for this command: <a href="https://insyncwithfoo.github.io/ryecharm/rye/intentions/#bump-project-version">In-editor version bumping</a> (currently this feature relies on Rye).</p>
+<p><img src="https://github.com/user-attachments/assets/e79deb25-5491-446b-bb72-24cacf6931e7" alt="" /></p>
+<p>I like the command's design in whole. One minor annoyance is that <code>uv metadata</code> is a bit lengthy; I can't think of a better name though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rumpelsepp">@rumpelsepp</a> on 2025-03-22 08:00</div>
+            <div class="timeline-body"><p>Simply <code>meta</code> instead of <code>metadata</code> perhaps?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/struckchure">@struckchure</a> approved on 2025-03-22 08:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/crimoniv">@crimoniv</a> on 2025-03-22 19:58</div>
+            <div class="timeline-body"><p>Hi there! Just my 2 cents on this:</p>
+<ul>
+<li>This is the first release with a minimal/preliminary version.</li>
+<li>There's still an ongoing discussion about the (sub)command interface and naming (e.g., <code>version</code> vs <code>meta</code> vs <code>metadata</code>).</li>
+<li>Some features might be considered for future iterations (e.g., pre-release versions, calver support, git tags, custom version sources...).</li>
+</ul>
+<p>Would it make sense to include a warning indicating that the command is experimental and subject to future changes? Similar to the warning that was shown with <a href="https://github.com/astral-sh/uv/blob/fb2944599942448aef0f542ecd704ede0b27fde7/crates/uv/src/lib.rs#L1213">uv publish</a>.</p>
+<p>Printing the warning to stderr shouldn't interfere with scripted usage, and will allow to 1) defer commitment on the interface and 2) start collecting usage feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-22 23:25</div>
+            <div class="timeline-body"><blockquote>
+<p>could this interface evolve towards supporting updating dependency versions in pyproject.toml as well (as it would follow semantics similar to bump) or would you still see that being part of other existing/new top-level interfaces?</p>
+</blockquote>
+<p>I think we'll probably create a top-level interface for that since other dependency management commands are there, but I'm not sure yet. That design work is planned to happen soon. My thoughts about an expansion of the <code>metadata</code> section are mostly around editing or showing other <code>pyproject.toml</code> fields as well as dumping project metadata for integration with other tooling (i.e., <code>cargo metadata</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/uglybug">@uglybug</a> on 2025-03-31 11:03</div>
+            <div class="timeline-body"><p>I guess I could just clone, build and test this locally, but I thought it might be easier just to ask the question: how does this cope with <code>dynamic = [&quot;version&quot;]</code>? It should gracefully refuse to bump or set the version at least. Even reading the version in this case I guess is impossible without actually building the project. So, again, it should gracefully exit. I just wouldn't want it to trample over a dynamic version if someone accidentally ran it to set a static one, I think. Maybe there is a use case there, though, if migrating from dynamic to static versioning. Just some thoughts anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-03-31 14:54</div>
+            <div class="timeline-body"><p>The current implementation errors the command on all operations if the <code>version</code> field is not defined (which I believe would be the case if <code>dynamic = [&quot;version&quot;]</code>).</p>
+<p>I should do a cleanup pass on the message though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-03-31 20:39</div>
+            <div class="timeline-body"><p>Pushed up a version of <code>uv metadata version</code> that:</p>
+<ul>
+<li>has better error message for missing version field (i.e. if <code>dynamic = [&quot;version&quot;]</code>)</li>
+<li>takes a superset of the flags of <code>uv version</code> (notably <code>--output-format=json</code>)<ul>
+<li>some minor design work here on if we want to change/update the json format (see snapshots)</li>
+</ul>
+</li>
+<li>respects <code>--project</code></li>
+<li>if search for a pyproject.toml fails, then we:<ul>
+<li>default: warn and run <code>uv --version</code></li>
+<li>if <code>--project</code> was passed: error</li>
+</ul>
+</li>
+</ul>
+<p>I left out the actual step of replacing the current <code>uv version</code> with <code>uv metadata version</code> (and I guess deleting <code>uv metadata version</code>?) to make it easier to review the diff, but I'll do that swap in a followup commit.</p>
+<p>The existence of <code>--output-format=json</code> also breaks the parity between <code>uv version</code> and <code>uv --version</code>, as the latter does not respect that flag! As such to complete the migration plan I believe we must add <code>uv self version</code> which is just the current <code>uv version</code> (or I guess mess with clap and make <code>--version</code> respect it? but gross to have more random top-level flags...).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @Gankra on 2025-04-01 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @Gankra on 2025-04-01 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.7.0" by @Gankra on 2025-04-01 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "add `uv metadata version` command" to "change `uv version` to be an interface for project version reads and edits" by @Gankra on 2025-04-01 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-01 16:46</div>
+            <div class="timeline-body"><p>Ok, updated the main comment and pushed up the latest changes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2025-04-01 20:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/version.rs</code>:725 on 2025-04-01 21:59</div>
+            <div class="timeline-body"><p>Should this say something about it being dynamic?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-01 21:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/version.rs</code>:763 on 2025-04-01 21:59</div>
+            <div class="timeline-body"><p>This error seems especially confusing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-01 21:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-01 22:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/version.rs</code>:806 on 2025-04-01 22:01</div>
+            <div class="timeline-body"><p>Reading this... I wonder if we should suggest <code>--preview</code> to make this an error? <code>--project .</code> is a weird thing for someone to keep around later?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-01 22:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/version.rs</code>:832 on 2025-04-01 22:03</div>
+            <div class="timeline-body"><p>Can we test this where there's not a project as well? The <code>managed = false</code> case is pretty niche</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:543 on 2025-04-01 22:05</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Only show the version
+    ///
+    /// By default, uv will show the project name before the version.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-01 22:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-01 22:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:532 on 2025-04-01 22:07</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Set the project version to this value
+    ///
+    /// To update the project using semantic versioning components instead, use `--bump`.
+</code></pre>
+<p>(or similar)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-01 22:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/version.rs</code>:89 on 2025-04-01 22:08</div>
+            <div class="timeline-body"><p>We should probably special case the error message for <code>--bump</code> values here? To ease migration for Poetry users?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-01 22:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/version.rs</code>:89 on 2025-04-01 22:08</div>
+            <div class="timeline-body"><p>(I am assuming they're not valid versions)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-04-02 13:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/tests/it/version.rs</code>:832 on 2025-04-02 13:23</div>
+            <div class="timeline-body"><p>I wasn't sure if &quot;project missing&quot; was something we could reliably enforce (given we spider into parent dirs)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-02 13:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/version.rs</code>:832 on 2025-04-02 13:27</div>
+            <div class="timeline-body"><p>Hmm... I guess during testing we should stop discovery at the uv test directory (<code>UV_INTERNAL__TEST_DIR</code>)?</p>
+<p>I'm sure we have tests that count on not finding a <code>pyproject.toml</code> in a parent though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-04-02 17:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/src/commands/version.rs</code>:89 on 2025-04-02 17:44</div>
+            <div class="timeline-body"><p>good idea</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-04-02 17:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/tests/it/version.rs</code>:806 on 2025-04-02 17:48</div>
+            <div class="timeline-body"><p>Conversely <code>--preview</code> will enable a ton of random other things right..? Maybe that's fine though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-02 17:53</div>
+            <div class="timeline-body"><p>Pushed up tweaks -- only thing not done is the <code>--preview</code> idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-02 18:58</div>
+            <div class="timeline-body"><p>Added the <code>--preview</code> change</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/T-256">@T-256</a> on 2025-04-06 12:17</div>
+            <div class="timeline-body"><p>This is Great ❤️
+There is also an open issue in Rye about <a href="https://github.com/astral-sh/rye/issues/753">bumping to prereleases versions</a>, Do we need to consider that in uv too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-workspace/src/pyproject_mut.rs</code>:984 on 2025-04-07 14:09</div>
+            <div class="timeline-body"><p>I got confused about why we're creating a <code>project</code> table with only a <code>version</code> entry (while a <code>name</code> is also required), can we <code>get</code> instead for those?</p>
+<pre><code class="language-suggestion">            .get(&quot;project&quot;)
+            .ok_or(Error::MalformedWorkspace)?
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-workspace/src/pyproject_mut.rs</code>:991 on 2025-04-07 14:12</div>
+            <div class="timeline-body"><p>nit: <code>Item::as_str</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/version.rs</code>:76 on 2025-04-07 14:20</div>
+            <div class="timeline-body"><p>This function returns only this one error variant, do we need this matching or should it be an <code>Option&lt;T&gt;</code> instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-workspace/src/pyproject_mut.rs</code>:1023 on 2025-04-07 14:21</div>
+            <div class="timeline-body"><p>A missing <code>project</code> table should error, otherwise we risk creating an invalid <code>project</code> table with a <code>version</code> but no <code>name</code> (should be solved by <code>entry()</code> -&gt; <code>get()</code>, too)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cli/src/version.rs</code>:22 on 2025-04-07 14:37</div>
+            <div class="timeline-body"><p>Is there a reason to not make this a <code>PackageName</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/version.rs</code>:68 on 2025-04-07 14:47</div>
+            <div class="timeline-body"><p>Should we emit a commit info field when we don't query that information for the non-legacy fallback path?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/version.rs</code>:474 on 2025-04-07 16:06</div>
+            <div class="timeline-body"><p>Edge case test suggestion: <code>1!1a1.post1.dev1+deadbeef1</code> (you can drop the epoch fwiw, it's not used in the ecosystem)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/version.rs</code>:32 on 2025-04-07 16:12</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// Read or update project version (`uv version`)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/version.rs</code>:170 on 2025-04-07 17:35</div>
+            <div class="timeline-body"><p><code>any_prerelease</code> and <code>is_local</code>  catch this more generally. another option is to move bumping into <code>uv_pep440</code> and using the <code>VersionFull</code> type</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-07 18:37</div>
+            <div class="timeline-body"><p>I agree that we should improve the prerelease handling, usually when bumping a prerelease version is want to get to either jump to the next version of that prerelease (1.2.3a1 -&gt; 1.2.3a2) or to the stable version of that release instead of the next release (1.2.3a2 -&gt; 1.2.3).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-07 18:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-07 18:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-workspace/src/pyproject_mut.rs</code>:984 on 2025-04-07 18:42</div>
+            <div class="timeline-body"><p>The span here is wrong, i wanted both lines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/version.rs</code>:79 on 2025-04-07 19:03</div>
+            <div class="timeline-body"><p>nit: backticks around the path</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-07 19:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-04-08 16:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/src/commands/version.rs</code>:76 on 2025-04-08 16:54</div>
+            <div class="timeline-body"><p>Ah good catch, I fixed the impl to properly forward version parse errors</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-04-08 16:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/tests/it/version.rs</code>:474 on 2025-04-08 16:55</div>
+            <div class="timeline-body"><p>epoch?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-08 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/version.rs</code>:474 on 2025-04-08 16:57</div>
+            <div class="timeline-body"><p>the <code>1!</code> in front, which allows switching versioning schemes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/tests/it/version.rs</code>:474 on 2025-04-08 16:57</div>
+            <div class="timeline-body"><p>Also incredible nightmare input</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-04-08 16:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/tests/it/version.rs</code>:474 on 2025-04-08 17:03</div>
+            <div class="timeline-body"><p>oh my god epochs oh my god</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-04-08 17:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-08 17:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/version.rs</code>:79 on 2025-04-08 17:05</div>
+            <div class="timeline-body"><p>We don't use backticks following a <code>:</code> usually</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/src/commands/version.rs</code>:79 on 2025-04-08 17:26</div>
+            <div class="timeline-body"><p>That seems inconsistent with style elsewhere? normally it's trailing-colon <em>xor</em> wrapped-in-ticks?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-04-08 17:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-04-08 17:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/tests/it/version.rs</code>:68 on 2025-04-08 17:34</div>
+            <div class="timeline-body"><p>The current format for what is now <code>uv self version --output-format json</code> includes the field even if it's null, so I figured I wouldn't mess with the schema, and that it would be good to have the same schema for both commands?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-04-08 17:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/src/commands/version.rs</code>:170 on 2025-04-08 17:38</div>
+            <div class="timeline-body"><p>I'm increasingly dubious that this even needs a warning...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-04-08 17:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-cli/src/version.rs</code>:22 on 2025-04-08 17:59</div>
+            <div class="timeline-body"><p>It's a write-only format and the version was already being flattened to a String, so I kept it consistent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-09 09:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/version.rs</code>:68 on 2025-04-09 09:44</div>
+            <div class="timeline-body"><p>I expect this will be confusing when someone expects to get <code>commit_info</code> for their package but even if it is in a git repository, we never give them a value for <code>commit_info</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-04-09 09:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-09 09:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/version.rs</code>:170 on 2025-04-09 09:46</div>
+            <div class="timeline-body"><p>Intuitively, I'd expect a <code>stable</code> bump that goes from prerelease to stable, and <code>alpha</code>, <code>beta</code>, <code>rc</code>, <code>dev</code>, <code>post</code> bump types that bump inside of pre/post-releases</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-04-24 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-04-24 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-24 17:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:22 UTC
+    </footer>
+</body>
+</html>

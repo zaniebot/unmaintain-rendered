@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migrate to `zlib-rs` (again) - astral-sh/uv #11894</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Migrate to <code>zlib-rs</code> (again)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11894">#11894</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-03-02 17:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-02 17:01</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I believe <code>zlib-rs</code> is now a better choice on ARM and x86, so I'm just going to assume it's a better choice everywhere. It's much easier to build (removes our CMake dependency), and in my benchmarking, it's substantially faster on ARM and faster or ~exactly even on my x86 Windows machine.</p>
+<p>We migrated to <code>zlib-rs</code> once before (#9184); however, I later reverted it as I learned that they were only doing compile-time feature detection, and so <code>zlib-rs</code> was meaningfully slower on x86. They now perform runtime feature detection: https://trifectatech.org/blog/zlib-rs-is-faster-than-c/.</p>
+<p>To benchmark, I wrote a script to create a local Simple API-compliant registry (see the commit history) for a single package. Then I ran the <code>install-cold</code> benchmark against that registry to install NumPy.</p>
+<p>On ARM:</p>
+<pre><code>❯ uv run resolver --uv-pip-path ../../zlib-ng --uv-pip-path ../../zlib-rs \
+        --benchmark install-cold \
+        req.txt --warmup 10 --min-runs 30
+Benchmark 1: ../../zlib-ng (install-cold)
+  Time (mean ± σ):     165.7 ms ±  34.7 ms    [User: 64.4 ms, System: 93.2 ms]
+  Range (min … max):   141.8 ms … 293.2 ms    30 runs
+
+Benchmark 2: ../../zlib-rs (install-cold)
+  Time (mean ± σ):     150.9 ms ±  16.2 ms    [User: 57.4 ms, System: 86.4 ms]
+  Range (min … max):   135.3 ms … 202.4 ms    30 runs
+
+Summary
+  ../../zlib-rs (install-cold) ran
+    1.10 ± 0.26 times faster than ../../zlib-ng (install-cold)
+</code></pre>
+<p>I benchmarked this about 100 times on my Windows machine and found it difficult to conclude anything beyond &quot;They're nearly the same&quot;. Here's an example:</p>
+<pre><code>PS C:\Users\crmar\workspace\puffin&gt; hyperfine --prepare &quot;uv venv&quot; &quot;zlib-rs.exe pip sync ./scripts/benchmark/req.txt&quot; &quot;zlib-ng.exe pip sync ./scripts/benchmark/req.txt&quot; &quot;zlib-rs.exe pip sync ./scripts/benchmark/req.txt&quot; &quot;zlib-ng.exe pip sync ./scripts/benchmark/req.txt&quot; --runs 10 --warmup 5
+Benchmark 1: zlib-rs.exe pip sync ./scripts/benchmark/req.txt
+  Time (mean ± σ):     240.6 ms ±  10.8 ms    [User: 6.1 ms, System: 92.2 ms]
+  Range (min … max):   229.4 ms … 267.9 ms    10 runs
+
+Benchmark 2: zlib-ng.exe pip sync ./scripts/benchmark/req.txt
+  Time (mean ± σ):     241.3 ms ±   6.2 ms    [User: 7.7 ms, System: 90.6 ms]
+  Range (min … max):   233.9 ms … 252.1 ms    10 runs
+
+Benchmark 3: zlib-rs.exe pip sync ./scripts/benchmark/req.txt
+  Time (mean ± σ):     242.8 ms ±   7.7 ms    [User: 6.2 ms, System: 23.4 ms]
+  Range (min … max):   236.1 ms … 262.8 ms    10 runs
+
+Benchmark 4: zlib-ng.exe pip sync ./scripts/benchmark/req.txt
+  Time (mean ± σ):     245.9 ms ±   5.7 ms    [User: 1.5 ms, System: 59.4 ms]
+  Range (min … max):   240.9 ms … 257.3 ms    10 runs
+
+Summary
+  zlib-rs.exe pip sync ./scripts/benchmark/req.txt ran
+    1.00 ± 0.05 times faster than zlib-ng.exe pip sync ./scripts/benchmark/req.txt
+    1.01 ± 0.06 times faster than zlib-rs.exe pip sync ./scripts/benchmark/req.txt
+    1.02 ± 0.05 times faster than zlib-ng.exe pip sync ./scripts/benchmark/req.txt
+</code></pre>
+<p>Closes #11885.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2025-03-02 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2025-03-02 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-02 19:14</div>
+            <div class="timeline-body"><p>Can we drop cmake from the contributing guide then?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-02 19:20</div>
+            <div class="timeline-body"><p>Sure... Do you know if a C compiler is still &quot;required&quot;? The instructions seem sort of ancient.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2025-03-03 02:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2025-03-03 02:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">no-build</span> added by @charliermarsh on 2025-03-03 02:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-03 10:30</div>
+            <div class="timeline-body"><p>On a <code>ubuntu</code> container, with this PR, you need only <code>gcc</code> and <code>make</code> to build uv. It successfully removes the cmake dependency, so you only need the <code>sudo apt install build-essential</code> you need for building ~everything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-03-03 10:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-03-03 12:43</div>
+            <div class="timeline-body"><p>Love it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-03 15:53</div>
+            <div class="timeline-body"><p>Thanks @konstin. I'll restore the instructions around <code>build-essential</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-03 17:11</div>
+            <div class="timeline-body"><p>For me it's a question of who we're targeting: Anyone with dev experience will have <code>build-essential</code> installed as you hit when compiling almost anything, if we're targeting beginners (i think we have some contributing to uv), it helps being explicit on &quot;<code>curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh &amp;&amp; sudo apt install build-essential</code> and you're ready to develop&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-03 17:22</div>
+            <div class="timeline-body"><p>I left it in for now, just seems unrelated to this change to remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-03-03 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-03-03 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-03 17:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:21 UTC
+    </footer>
+</body>
+</html>

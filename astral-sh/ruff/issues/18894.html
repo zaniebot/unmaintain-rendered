@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve docs for UP046 regarding reusable TypeVars - astral-sh/ruff #18894</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve docs for UP046 regarding reusable TypeVars</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18894">#18894</a>
+        opened by <a href="https://github.com/wardVD">@wardVD</a>
+        on 2025-06-23 12:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/wardVD">@wardVD</a> on 2025-06-23 12:30</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The rule <a href="https://docs.astral.sh/ruff/rules/non-pep695-generic-class/">non-pep695-generic-class</a> doesn't seem to cover a use case where you define a <code>TypeVar</code> in a module which is imported in several other files.</p>
+<p>For example, imagine I have a file
+<code>my_types.py</code></p>
+<p>with</p>
+<pre><code>from typing import TypeVar
+
+CustomNumber = TypeVar(&quot;CustomNumber&quot;, bound=int)
+</code></pre>
+<p>and two files <code>a.py</code> with</p>
+<pre><code>from mytypes import CustomNumber
+
+class A(Generic[CustomNumber]):
+    ...
+</code></pre>
+<p>and <code>b.py</code> with</p>
+<pre><code>from mytypes import CustomNumber
+
+class B(Generic[CustomNumber]):
+    ...
+</code></pre>
+<p>If I want to change <code>CustomNumber</code> to have an upper bound of <code>float</code> I would only need to change in one location. If I would adhere to PEP695 I would need to remove the <code>my_types.py</code> file and refactor the code to e.g.</p>
+<pre><code>class A[CustomNumber: int]():
+    ...
+</code></pre>
+<p>and</p>
+<pre><code>class B[CustomNumber: int]():
+    ...
+</code></pre>
+<p>thus breaking code reproducibility if I would want to change the upper bound. This could lead to code inconsistencies</p>
+<p>I deliberately made the example a bit dummy and trivial but I think it makes the issue clear :-).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-23 13:47</div>
+            <div class="timeline-body"><p>Ah that's an interesting point! We couldn't currently handle this for multiple files since Ruff only analyzes one file at a time, but it's still relevant for the single-file case, I think: https://play.ruff.rs/c90975da-b469-4644-a4bd-b7e23c375db0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-06-23 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-06-23 13:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2025-06-23 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-23 13:53</div>
+            <div class="timeline-body"><p>I think it's a feature that the rule enforces PEP-695 syntax even for cases like this. Quoting <a href="https://peps.python.org/pep-0695/#points-of-confusion">the PEP</a>:</p>
+<blockquote>
+<p>The scoping rules for type variables are difficult to understand. Type variables are typically allocated within the global scope, but their semantic meaning is valid only when used within the context of a generic class, function, or type alias. A single runtime instance of a type variable may be reused in multiple generic contexts, and it has a different semantic meaning in each of these contexts. This PEP proposes to eliminate this source of confusion by declaring type parameters at a natural place within a class, function, or type alias declaration statement.</p>
+</blockquote>
+<p>And for similar reasons, <code>typing.AnyStr</code> (perhaps the most often used &quot;reusable TypeVar&quot;) <a href="https://github.com/python/cpython/issues/105578">is now deprecated</a>. If you want to have clearly scoped TypeVars that use modern syntax, and you only support Python 3.12+, I think you should aim to use PEP-695 syntax wherever possible.</p>
+<blockquote>
+<p>If I want to change <code>CustomNumber</code> to have an upper bound of <code>float</code> I would only need to change in one location.</p>
+</blockquote>
+<p>This could possibly be solved by using a type alias?</p>
+<pre><code class="language-py">type CustomNumberBound = int
+
+class A[CustomNumber: CustomNumberBound]: ...
+class B[CustomNumber: CustomNumberBound]: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> removed by @AlexWaygood on 2025-06-23 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/wardVD">@wardVD</a> on 2025-06-24 09:06</div>
+            <div class="timeline-body"><p>@AlexWaygood That's a very good solution I didn't think about. Still getting used to the new convention. Thank you!</p>
+<p>Then I think this issue can be closed indeed. I don't know if it would be useful to have some more documentation on examples like these to get people going. I think it's near impossible to fix these by <code>ruff</code> automatically but the code refactors can become quite extensive if we need to adhere to PEP695 and people won't do it since they don't know how from the get-go.
+I'll leave it up to you guys to make a decision but can be closed for me. Thanks for the help!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-06-24 10:12</div>
+            <div class="timeline-body"><p>I think one thing we could definitely do here is to expand the &quot;Why is this bad?&quot; section in the docs to make it more obvious that the clearer scoping of the TypeVar is part of the reason why you should prefer the new syntax. The full quote I pasted above might be a bit long to include verbatim, but we could include something like it and possibly link to the PEP.</p>
+<p>I also wouldn't be opposed to adding another example to the <code>## Examples</code> section, such as</p>
+<pre><code class="language-md">```py
+from typing import TypeVar, Generic
+
+ReusableT = TypeVar(&quot;ReusableT&quot;, bound=int | str | dict[int, str])
+
+
+class GenericClass1(Generic[ReusableT]):
+class GenericClass2(Generic[ReusableT]): ...
+class GenericClass3(Generic[ReusableT]): ...
+```
+
+Use instead:
+
+```py
+type ReusableTBound = int | str | dict[int, str]
+
+class GenericClass1[ReusableT: ReusableTBound]:
+class GenericClass2[ReusableT: ReusableTBound]: ...
+class GenericClass3[ReusableT: ReusableTBound]: ...
+```
+</code></pre>
+<p>Now that I look at it, I see the existing example is also missing an import of <code>Generic</code> at the top!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @AlexWaygood on 2025-06-24 10:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> removed by @AlexWaygood on 2025-06-24 10:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @AlexWaygood on 2025-06-24 10:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-06-24 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Extend rule UP046 with reusable TypeVars" to "Improve docs for UP046 regarding reusable TypeVars" by @AlexWaygood on 2025-06-24 21:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonaslb">@jonaslb</a> on 2025-10-29 12:30</div>
+            <div class="timeline-body"><p>Something I just encountered is - I had put explicit variance (covariant/contravariant) on some type parameters. I'm aware that this is inferred with the new syntax. However, I <em>wanted</em> a particular variance. I don't want future edits to accidentally change the variance (eg from covariant to invariant).</p>
+<p>Does someone know if</p>
+<ul>
+<li>Specifying variance explicitly is considered deprecated as well?</li>
+<li>Or if it's still &quot;considered a reasonable thing to do&quot;, in which case this lint should probably not trigger for TypeVars with variance specified?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-29 13:35</div>
+            <div class="timeline-body"><p>@jonaslb There's a related issue about variance in https://github.com/astral-sh/ruff/issues/18976. I think Alex's comment <a href="https://github.com/astral-sh/ruff/issues/18976#issuecomment-3013154682">here</a> may help to answer your question.</p>
+<blockquote>
+<p>In most cases, type checkers should be able to correctly infer the variance of a TypeVar (that's why it's not possible to manually specify them with the new syntax, after all!). So it should be pretty rare that you need to manually override the type checker's inference and specify a different variance to the one that the type checker infers. I'd argue it's rare enough that you should just be able to deal with this by adding # noqa comments to the specific problematic classes?</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jonaslb">@jonaslb</a> on 2025-10-29 19:56</div>
+            <div class="timeline-body"><p>I'm perfectly happy with the quality of the inference. The trouble I feared was that another developer could make changes that'd accidentally change the inferred variance. Not because the inference was wrong, but because a lot of people don't have a good understanding of variance.</p>
+<p>What I did earlier was try to convince myself it was unlikely to happen, or that we would have type checks of other parts of the codebase failing if someone was going to try to do something like that. And hence simply embrace the inference - it does make the code simpler, after all.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:49 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix `cygpath` missing error in virtualenv activate script - astral-sh/uv #10492</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix <code>cygpath</code> missing error in virtualenv activate script</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10492">#10492</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-01-11 05:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-11 05:10</div>
+            <div class="timeline-body"><p>Closes https://github.com/astral-sh/uv/issues/10487</p>
+<p><code>&amp;&gt;</code> is not supported by all shells... but I'm confused how that would cause that behavior still.</p>
+<p>Adding the following to the <code>Dockerfile</code> fixes the error</p>
+<pre><code>RUN sed -i 's/command -v cygpath \&amp;&gt; \/dev\/null/command -v cygpath &gt; \/dev\/null 2&gt;\&amp;1/' $VENV_DIR/bin/activate
+</code></pre>
+<p>Interestingly</p>
+<pre><code>❯ docker run --platform linux/amd64 -it public.ecr.aws/p3v4g4o2/reflex-cloud-base:v0.0.7-py3.12 \
+    /bin/sh -c 'command -v cygpath &amp;&gt; /dev/null; echo $?'
+0
+
+❯ docker run --platform linux/amd64 -it public.ecr.aws/p3v4g4o2/reflex-cloud-base:v0.0.7-py3.12 \
+    /bin/sh -c 'command -v cygpath &gt; /dev/null 2&gt;&amp;1; echo $?'
+127
+
+❯ docker run --platform linux/amd64 -it public.ecr.aws/p3v4g4o2/reflex-cloud-base:v0.0.7-py3.12 \
+    /bin/sh -c 'command -v cygpath; echo $?'
+127
+
+❯ docker run --platform linux/amd64 -it public.ecr.aws/p3v4g4o2/reflex-cloud-base:v0.0.7-py3.12 \
+    /bin/sh -c '{ [ &quot;$OSTYPE&quot; = &quot;cygwin&quot; ] || [ &quot;$OSTYPE&quot; = &quot;msys&quot; ]; }; echo $?'
+1
+
+❯ docker run --platform linux/amd64 -it public.ecr.aws/p3v4g4o2/reflex-cloud-base:v0.0.7-py3.12 \
+    /bin/sh -c '{ [ &quot;x$OSTYPE&quot; = &quot;cygwin&quot; ] || [ &quot;x$OSTYPE&quot; = &quot;msys&quot; ]; } &amp;&amp; command -v foobar &amp;&gt; /dev/null &amp;&amp; echo &quot;hi&quot;; echo $?'
+hi
+0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix `cygpath` missing error message in virtualenv activate script" to "Fix `cygpath` missing error in virtualenv activate script" by @zanieb on 2025-01-11 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-11 15:34</div>
+            <div class="timeline-body"><p>There are other problems though, e.g., https://github.com/astral-sh/uv/issues/10498</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @Gankra on 2025-01-11 15:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:17 UTC
+    </footer>
+</body>
+</html>

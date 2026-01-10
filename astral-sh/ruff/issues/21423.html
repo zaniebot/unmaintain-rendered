@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[E402] Add exception for warnings.filterwarnings() before imports - astral-sh/ruff #21423</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[E402] Add exception for warnings.filterwarnings() before imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21423">#21423</a>
+        opened by <a href="https://github.com/tsvikas">@tsvikas</a>
+        on 2025-11-13 11:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-11-13 11:13</div>
+            <div class="timeline-body"><p>E402 currently allows <code>sys.path</code> and <code>os.environ</code> modifications before imports. I'd like to propose adding <code>warnings.filterwarnings()</code> (and related warning module functions) to this exception list.</p>
+<p><strong>Rationale:</strong></p>
+<ul>
+<li>It's a common pattern to filter warnings before importing modules that emit warnings during import</li>
+<li>Like <code>sys.path</code> modifications, warning filters affect import-time behavior</li>
+<li>Currently requires verbose <code># noqa: E402</code> comments on every subsequent import</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre><code class="language-python">import warnings
+
+warnings.filterwarnings(&quot;ignore&quot;, category=DeprecationWarning)
+
+import some_module  # Currently triggers E402
+</code></pre>
+<p><strong>Proposed:</strong> Treat <code>warnings.filterwarnings()</code>, <code>warnings.simplefilter()</code>, and <code>warnings.resetwarnings()</code> the same as <code>sys.path</code> modifications.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-13 15:29</div>
+            <div class="timeline-body"><p>This is related to some other recent issues around E402, such as https://github.com/astral-sh/ruff/issues/19928.</p>
+<p>I think it makes sense to me to expand the known exceptions for cases in the standard library. I'm pretty sure I've run into this one myself before. But I'm curious what others think too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-11-13 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-11-13 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tsvikas">@tsvikas</a> on 2025-11-16 11:34</div>
+            <div class="timeline-body"><p>Following your comment, i found out that several similar cases exist: https://github.com/astral-sh/ruff/issues?q=is%3Aissue%20state%3Aopen%20E402</p>
+<p>Might I suggest, that rather than hard-coding exceptions for each case, we will add a directive that allows marking non-import statements as intentionally placed within the import block:</p>
+<pre><code class="language-python">import sys
+sys.path.append(&quot;../lib&quot;)  # ruff: import-setup
+import some_module
+
+import warnings
+warnings.filterwarnings(&quot;ignore&quot;, category=DeprecationWarning)  # ruff: import-setup
+import some_other_module
+
+import logging
+logging.basicConfig(level=logging.DEBUG)  # ruff: import-setup
+import yet_another_module
+</code></pre>
+<p>This would:</p>
+<ul>
+<li>Signal explicit intent, making code more self-documenting</li>
+<li>Avoid the need to suppress E402 on all subsequent imports</li>
+<li>Allow any statement to be marked as &quot;import setup&quot; without needing hard-coded exceptions</li>
+<li>Be more maintainable than case-by-case <code># noqa: E402</code> on every import that follows</li>
+</ul>
+<p>The directive would tell Ruff to treat the marked line as if it were part of the import block preamble, so subsequent imports don't trigger E402.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-16 11:41</div>
+            <div class="timeline-body"><p>Thanks for the suggestion. I like the idea of making it easier to suppress the rule.</p>
+<p>I don't think we should introduce rule-specific pragma comments. Simply because it adds complexity for users, they need to learn a new pragma comment, and it adds a lot of complexity to ruff, it needs to understand an extra pragma comment.</p>
+<p>I think #3711 will greatly help here as it allows to disable the rule for an entire block of code</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:43 UTC
+    </footer>
+</body>
+</html>

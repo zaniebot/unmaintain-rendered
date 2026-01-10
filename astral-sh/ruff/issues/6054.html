@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Is it possible to avoid raising `PT012` if `with pytest.raises` contains a `with` statement with a single raise statement?  - astral-sh/ruff #6054</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Is it possible to avoid raising <code>PT012</code> if <code>with pytest.raises</code> contains a <code>with</code> statement with a single raise statement?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6054">#6054</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2023-07-25 06:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/harupy">@harupy</a> on 2023-07-25 06:24</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Is it possible to avoid raising <code>PT012</code> if <code>with pytest.raises</code> contains a <code>with</code> statement with a single raise statement?</p>
+<p>Example</p>
+<pre><code class="language-python">def test_start_run_does_not_suppress_error():
+    with pytest.raises(Exception, match=&quot;foo&quot;):
+        with mlflow.start_run(...):
+            raise Exception(&quot;foo&quot;)
+
+    assert ...
+</code></pre>
+<p>References</p>
+<ul>
+<li>https://github.com/m-burst/flake8-pytest-style/blob/master/docs/rules/PT012.md</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-25 06:24</div>
+            <div class="timeline-body"><p>I found a workaround, but I prefer the original code:</p>
+<pre><code class="language-python">def test_start_run_does_not_suppress_error():
+    with pytest.raises(...), mlflow.start_run(...):
+         raise Exception(...)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-25 14:10</div>
+            <div class="timeline-body"><p>Can you say a bit more about the intent of the code? E.g. why raise within the context manager?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> added by @charliermarsh on 2023-07-25 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-25 14:14</div>
+            <div class="timeline-body"><p>@charliermarsh I'd use this pattern to write assertions about the handling of exceptions by the <code>ml_flow.start_run</code> context manager. The example asserts that it does not swallow the exception (or raises it with a new type).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-25 14:29</div>
+            <div class="timeline-body"><p>@charliermarsh @zanieb Thanks for the comments!</p>
+<blockquote>
+<p>The example asserts that it does not swallow the exception (or raises it with a new type).</p>
+</blockquote>
+<p>Yes, exactly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-25 15:02</div>
+            <div class="timeline-body"><p>I think it's reasonable to accept any <code>with</code> with a single-statement body.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-25 15:30</div>
+            <div class="timeline-body"><p>Should we allow this example?</p>
+<pre><code class="language-python">import pytest
+
+
+def test_foo():
+    with pytest.raises(AttributeError):
+        with foo():
+            if True:
+                please()
+                guess()
+                which()
+                line()
+                throws()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-25 15:38</div>
+            <div class="timeline-body"><p>Can we only accept <code>with</code> with a non-compound-single-statement (e.g. <code>raise</code>) body?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-25 15:40</div>
+            <div class="timeline-body"><p>Yeah that would be my preference. A <code>with</code> that contains one simple statement (no compound statements).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-25 15:47</div>
+            <div class="timeline-body"><p>Sounds good. I'll file a PR tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-25 15:52</div>
+            <div class="timeline-body"><p>Thank you @harupy :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-26 01:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:48 UTC
+    </footer>
+</body>
+</html>

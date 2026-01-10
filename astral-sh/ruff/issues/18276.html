@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S608 - SQL Injection vector through string-based query construction - astral-sh/ruff #18276</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>S608 - SQL Injection vector through string-based query construction</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18276">#18276</a>
+        opened by <a href="https://github.com/laguill">@laguill</a>
+        on 2025-05-23 13:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/laguill">@laguill</a> on 2025-05-23 13:25</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I have this script that store all tables from a sql database and Ruff is report error S608.</p>
+<pre><code class="language-python">    # Dict to store tables dataframes
+    dataframes = {}
+
+    # Store each tables in a dataframe
+    for table in tables_list:
+        query = f&quot;SELECT * FROM '{table}'&quot; # error S608 SQL Injection vector through string-based query construction
+        dataframes[table] = mo.sql(
+            query,
+            output=False,
+            engine=engine,
+        )
+    return
+</code></pre>
+<p>If correct the script as specify in <a href="https://docs.astral.sh/ruff/rules/hardcoded-sql-expression/">documentation</a>
+it becomes</p>
+<pre><code class="language-python">    dataframes = {}
+
+    # Store each tables in a dataframe
+    for table in tables_list:
+        query = &quot;SELECT * FROM '%s'&quot; % table # error UP031 Use format specifier instead of percent format
+        dataframes[table] = mo.sql(
+            query,
+            output=False,
+            engine=engine,
+        )
+    return
+</code></pre>
+<p>So I correct the code again</p>
+<pre><code class="language-python">
+    dataframes = {}
+
+    # Store each tables in a dataframe
+    for table in tables_list:
+        query = &quot;SELECT * FROM '{}'&quot;.format(table) # UP032 Use f-string instead of `format` call
+        dataframes[table] = mo.sql(
+            query,
+            output=False,
+            engine=engine,
+        )
+    return
+</code></pre>
+<p>This is running in circle...</p>
+<p>So what should be the correct way to write SQL query ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-23 13:52</div>
+            <div class="timeline-body"><p>The example in the documentation is an example where the code is incorrect. It isn't the proposed fix. The proper fix is to escape <code>table</code> before inserting the variable into your query to avoid that someone sets table to `table = &quot;users'; DELETE * from users where '' = '&quot; which would drop all content from the users table!</p>
+<p>Now, how this is done depends on the SQL library that you use in your project. However, it also seems that this is a script where <code>tables_list</code> isn't provided by users. It's then safe to suppress the warning with <code># noqa: S608</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-05-23 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-28 07:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:30 UTC
+    </footer>
+</body>
+</html>

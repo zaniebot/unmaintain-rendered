@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request: `SIM105` autofix including (and not removing) inline comments - astral-sh/ruff #4318</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Request: <code>SIM105</code> autofix including (and not removing) inline comments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4318">#4318</a>
+        opened by <a href="https://github.com/jamesbraza">@jamesbraza</a>
+        on 2023-05-09 17:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-05-09 17:50</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Please see the below code snippet:</p>
+<pre><code class="language-python">try:
+    _ = 0
+except KeyError:
+    pass  # Some reason for the suppression
+</code></pre>
+<p>With <code>ruff==0.0.265</code>, and running <code>ruff --fixable=SIM105 --select=SIM105 --fix a.py</code>, this is autofixed to:</p>
+<pre><code class="language-python">import contextlib
+with contextlib.suppress(KeyError):
+    _ = 0
+  # Some reason for the suppression
+</code></pre>
+<p>The autofix is great, but the explanatory comment isn't moved too, so the comment now becomes misplaced.</p>
+<p>I think it is desirable for the autofix to move the comment as well, like so:</p>
+<pre><code class="language-python">import contextlib
+with contextlib.suppress(KeyError):
+    # Some reason for the suppression
+    _ = 0
+
+# or
+
+import contextlib
+with contextlib.suppress(KeyError):  # Some reason for the suppression
+    _ = 0
+</code></pre>
+<p>Thank you for your consideration!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Request: `SIM105` autofix including inline comments" to "Request: `SIM105` autofix including (and not removing) inline comments" by @jamesbraza on 2023-05-09 17:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-05-09 17:55</div>
+            <div class="timeline-body"><p>Similarly, please see this snippet:</p>
+<pre><code class="language-python">try:
+    _ = 0
+except KeyError:  # Some reason for the suppression
+    pass
+</code></pre>
+<p><code>ruff --fixable=SIM105 --select=SIM105 --fix a.py,</code> autofixes to the below, which actually removes the explanatory comment entirely:</p>
+<pre><code class="language-python">import contextlib
+with contextlib.suppress(KeyError):
+    _ = 0
+</code></pre>
+<p>I think it's not desirable for an autofix to remove inline comments.  Thanks again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-09 18:45</div>
+            <div class="timeline-body"><p>It's difficult to retain comments in these cases, since it's not always clear what the comment is meant to be attached to. In general, we often avoid fixes if the fix would result in a lost comment, so perhaps we should extend that logic to this rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-05-09 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-09 21:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:02 UTC
+    </footer>
+</body>
+</html>

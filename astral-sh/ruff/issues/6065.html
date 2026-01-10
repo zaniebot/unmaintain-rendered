@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter: Break quality check before breaking parentheses - astral-sh/ruff #6065</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter: Break quality check before breaking parentheses</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6065">#6065</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-07-25 11:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2023-07-25 11:01</div>
+            <div class="timeline-body"><p>We need to change the breaking priorities with equality checks and parentheses:</p>
+<p>black:</p>
+<pre><code class="language-python">def f():
+    return (
+        unicodedata.normalize(&quot;NFKC&quot;, s1).casefold()
+        == unicodedata.normalize(&quot;NFKC&quot;, s2).casefold()
+    )
+
+ct_match = (
+    aaaaaaaaaaact_id == self.get_content_type(obj=rel_obj, using=instance._state.db).id
+)
+</code></pre>
+<p>ours:</p>
+<pre><code class="language-python">def f():
+    return unicodedata.normalize(&quot;NFKC&quot;, s1).casefold() == unicodedata.normalize(
+        &quot;NFKC&quot;, s2
+    ).casefold()
+
+ct_match = aaaaaaaaaaact_id == self.get_content_type(
+    obj=rel_obj, using=instance._state.db
+).id
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @konstin on 2023-07-25 11:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-07-25 11:28</div>
+            <div class="timeline-body"><p>There could be two possible solutions for this</p>
+<ul>
+<li>Either can_omit_parentheses incorrectly returns false
+Or call expressions should not use parenthesized (which gives them a higher priority)</li>
+</ul>
+<p>Or it's something entirely different</p>
+<p>We may want to rename the issue. This is specific to call expressions. Lists, tuples should have a higher priority</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Alpha" by @MichaReiser on 2023-07-31 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-03 23:35</div>
+            <div class="timeline-body"><p>This is pretty specific -- it seems like it has to be a comparator, with a call on either side, and <em>without</em> another parenthesized node? E.g., Black formats this:</p>
+<pre><code class="language-python">ct_match = (
+    {aaaaaaaaaaaaaaaa} == self.get_content_type(obj=rel_obj, using=instance._state.db).id
+)
+</code></pre>
+<p>As:</p>
+<pre><code class="language-python">ct_match = {aaaaaaaaaaaaaaaa} == self.get_content_type(
+    obj=rel_obj, using=instance._state.db
+).id
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-08-03 23:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-07 17:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:49 UTC
+    </footer>
+</body>
+</html>

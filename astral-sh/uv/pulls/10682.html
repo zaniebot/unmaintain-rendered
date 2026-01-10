@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discard insufficient fork markers - astral-sh/uv #10682</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Discard insufficient fork markers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10682">#10682</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-01-16 14:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-01-16 14:43</div>
+            <div class="timeline-body"><p>In #10669, a pyproject.toml with requires-python but no environment had a lockfile covering only a subset of the requires-python space:</p>
+<pre><code class="language-toml">resolution-markers = [
+    &quot;python_full_version &gt;= '3.10' and platform_python_implementation == 'CPython'&quot;,
+    &quot;python_full_version == '3.9.*'&quot;,
+    &quot;python_full_version &lt; '3.9'&quot;,
+]
+</code></pre>
+<p>This marker set is invalid, we have to reject the lockfile. (We can still use the versions though, to avoid churn).</p>
+<p>Part 1/2 of #10669</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @konstin on 2025-01-16 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @konstin on 2025-01-16 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @konstin by @konstin on 2025-01-16 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-01-16 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-16 16:00</div>
+            <div class="timeline-body"><p>Once discarded, do we just produce the same lockfile anyway? (If so, does this actually fix anything?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-16 16:07</div>
+            <div class="timeline-body"><p>That's the other half of https://github.com/astral-sh/uv/issues/10669: the lockfile we're seeing is invalid, it doesn't cover all possible environments. We should never produce a lockfile in this state (fixing #10669), this new branch is error recovery from a buggy state.</p>
+<p>This PR exists because i minimized https://github.com/astral-sh/uv/issues/10669 to this problem by keeping the lockfile, while we still need to fix the problem where we produce this lockfile starting from a pyproject.toml.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-16 16:11</div>
+            <div class="timeline-body"><p>Ok. My question is: does this actually produce the correct lockfile? Or even with this change, are we still producing the incorrect lockfile after invalidating?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-17 11:01</div>
+            <div class="timeline-body"><p>If checked that when running <code>uv sync</code> on attrs' <code>uv-lock</code> branch, we warn and fix the markers in the lockfile.</p>
+<p>There are two ways to create the lockfile:</p>
+<p>A)</p>
+<pre><code>git switch uv-lock
+uv-this-pr sync
+</code></pre>
+<p>B)</p>
+<pre><code>git switch uv-lock
+rm uv.lock
+uv-this-pr sync
+</code></pre>
+<p>(A) has a slightly larger diff to <code>uv-lock</code> than (B) because we collapse e.g. zipp 3.20.2 and zip 3.21.0 into only zipp 3.20.2. I think this is acceptable for an error recovery branch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2025-01-17 11:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/lock.rs</code>:906 on 2025-01-17 17:18</div>
+            <div class="timeline-body"><p>Nit: &quot;the user&quot; (typo)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-17 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-17 17:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/lock.rs</code>:910 on 2025-01-17 17:19</div>
+            <div class="timeline-body"><p>supported environments, with an s? Not sure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/lock.rs</code>:908 on 2025-01-17 17:19</div>
+            <div class="timeline-body"><p>Do they have to be exactly equal...? Could one be a superset?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-17 17:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-01-17 18:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/lock.rs</code>:908 on 2025-01-17 18:15</div>
+            <div class="timeline-body"><p>I'm on the fence whether to do an equality check or a contains check, i like the equality check because it should catch more bad markers, but we can already revert that to <code>if fork_markers_union.negate().is_disjoint(environments_union)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/lock.rs</code>:908 on 2025-01-17 18:54</div>
+            <div class="timeline-body"><p>Lets do the more conservative thing (contains) for now... I'm just worried that this could have a significant impact and doesn't have a ton of testing, does it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-17 18:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-17 19:45</div>
+            <div class="timeline-body"><p>I'll tweak and merge this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-17 20:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/lock.rs</code>:908 on 2025-01-17 20:15</div>
+            <div class="timeline-body"><p>I would prefer to change this but don't feel confident enough doing it myself, so it may miss this release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/lock.rs</code>:908 on 2025-01-21 10:22</div>
+            <div class="timeline-body"><p>done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-01-21 10:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-03-11 02:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-11 02:54</div>
+            <div class="timeline-body"><p>I'm a little nervous about this change but don't really have better ideas on how to validate it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-11 11:02</div>
+            <div class="timeline-body"><p>What do think about this? We check that the fork marker coverage is correct for the entire test suite.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-03-13 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-03-13 14:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-13 14:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:18 UTC
+    </footer>
+</body>
+</html>

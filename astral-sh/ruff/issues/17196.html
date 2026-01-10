@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referencing an otherwise unused variable in an argument to `Annotated` falsely triggers F841 - astral-sh/ruff #17196</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Referencing an otherwise unused variable in an argument to <code>Annotated</code> falsely triggers F841</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17196">#17196</a>
+        opened by <a href="https://github.com/bkis">@bkis</a>
+        on 2025-04-04 10:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bkis">@bkis</a> on 2025-04-04 10:03</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The following code shows how <code>ruff check --isolated</code> (<code>0.8.2</code> through <code>0.11.3</code>) falsely interprets variables used in arguments to <code>Annotated</code> as &quot;unused&quot; (exact same code in the <a href="https://play.ruff.rs/421bd4d2-02be-4f52-bb94-1349fd6f7ef0">playground</a>):</p>
+<pre><code class="language-py">from typing import Annotated, Literal
+
+
+def type_annotations_from_tuple():
+    annos = (str, &quot;foo&quot;, &quot;bar&quot;)  # unused? really?
+    return Annotated[annos]
+
+
+def type_annotations_from_filtered_tuple():
+    annos = (str, None, &quot;foo&quot;, None, &quot;bar&quot;)  # still unused?
+    return Annotated[tuple([a for a in annos if a is not None])]
+
+
+def literals_from_tuple():
+    string_literals = (&quot;foo&quot;, &quot;bar&quot;)
+    return Literal[string_literals]  # but this counts as &quot;used&quot;?
+</code></pre>
+<h3>Version</h3>
+<p>at least &gt;=0.8.2, &lt;=0.11.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-04-04 11:44</div>
+            <div class="timeline-body"><p>This should be a simple fix. This happens because Ruff always expects a tuple slice in <code>typing.Annotated</code>, which it generally should be, since passing it a different kind of expression would make it an invalid type expression. But that ignores the possibility of dynamically creating these objects in a way that would get ignored by type checkers.</p>
+<p>Instead of <code>debug!</code> in the else branch we should just visit the slice, like we do with <code>typing.Literal</code>.</p>
+<p>Edit: I'm working on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-04-04 12:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-04-04 13:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:09 UTC
+    </footer>
+</body>
+</html>

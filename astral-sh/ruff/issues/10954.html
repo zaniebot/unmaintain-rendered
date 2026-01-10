@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>repeat-until-convergence - astral-sh/ruff #10954</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>repeat-until-convergence</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10954">#10954</a>
+        opened by <a href="https://github.com/KDruzhkin">@KDruzhkin</a>
+        on 2024-04-15 12:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/KDruzhkin">@KDruzhkin</a> on 2024-04-15 12:46</div>
+            <div class="timeline-body"><h2>TL;DR</h2>
+<p>Some fixes, when applied, create conditions for other fixes.</p>
+<p>I would like to have a configuration option <strong>to run <code>ruff check --fix</code> until convergence</strong>, i.e. until no new changes can be made.</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+repeat_until_convergence = true
+</code></pre>
+<p>I work in Visual Studio Code with Ruff extension. If the extension behaves differently from command-line <code>ruff check --fix</code>, it should be configurable as well.</p>
+<h2>An example</h2>
+<p>Recently I went through a large code base, adding <code>from __future__ import annotations</code> where it missed. This simple change started a cascade of other changes.</p>
+<p>This code is flagged with <strong>TCH002</strong> (&quot;Move <code>numpy.typing</code> into a type-checking block&quot;):</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from typing import TypeAlias
+
+import numpy.typing as t
+
+ID: TypeAlias = int
+
+
+def foo(x: t.NDArray) -&gt; int:
+    return len(x)
+</code></pre>
+<p>I obediently <code>click Ctrl_+.</code> and select a quick fix.</p>
+<p>Now, <em>this</em> code is flagged with <strong>I001</strong> (&quot;Import block is unsorted&quot;):</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from typing import TypeAlias, TYPE_CHECKING
+
+
+if TYPE_CHECKING:
+    import numpy.typing as t
+
+ID: TypeAlias = int
+
+
+def foo(x: t.NDArray) -&gt; int:
+    return len(x)
+</code></pre>
+<p>Sometimes the chain is longer than two steps, but I cannot reproduce it now.</p>
+<h2>An analogy</h2>
+<p><strong>Phonology</strong> and <strong>historical linguistics</strong> study phonological rules, i.e. regularities of the form &quot;change A to B in context C&quot;. At the verty heart of this study is the notion of ordering: one rule can trigger or block another rule:</p>
+<ul>
+<li>https://en.wikipedia.org/wiki/Feeding_order</li>
+<li>https://en.wikipedia.org/wiki/Bleeding_order</li>
+</ul>
+<h2>Further questions</h2>
+<ul>
+<li><p>Is the order of rules fixed or not? (Is it part of the public API?) If you change this order internally, can it be a breaking change?</p>
+</li>
+<li><p>Is it difficult to create a graph of interactions? If rule A can trigger (or block) rule B, I would like to see it in the documentation for the rules.</p>
+</li>
+</ul>
+<h2>Keywords</h2>
+<p>I have searched open issues with: 'recursive' (found #6254), 'iterative' (found #8272), 'fixed point' (found #10058), 'fixpoint', and 'convergence'.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KDruzhkin">@KDruzhkin</a> on 2024-04-16 18:25</div>
+            <div class="timeline-body"><p>Sorry, does not belong to <strong>ruff</strong> itself, but to <strong>ruff-vscode</strong>.</p>
+<p>https://github.com/astral-sh/ruff-vscode/issues/451.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @KDruzhkin on 2024-04-16 18:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:32 UTC
+    </footer>
+</body>
+</html>

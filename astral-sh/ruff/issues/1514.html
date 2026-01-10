@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive in F541 (f-string without placeholders) after v0.0.204 - astral-sh/ruff #1514</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive in F541 (f-string without placeholders) after v0.0.204</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1514">#1514</a>
+        opened by <a href="https://github.com/tlambert03">@tlambert03</a>
+        on 2022-12-31 16:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tlambert03">@tlambert03</a> on 2022-12-31 16:10</div>
+            <div class="timeline-body"><p>not sure if it's #1494 or a different PR... but a F541 &quot;f-string without placeholders&quot; false positive is now appearing in v0.0.204 when using format specifiers in f-strings:</p>
+<pre><code class="language-python">v = 23.234234
+f&quot;{v:0.2f}&quot;  # error
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 16:21</div>
+            <div class="timeline-body"><p>Thank you for filing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-12-31 16:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 16:24</div>
+            <div class="timeline-body"><p>@harupy - Do you have any thoughts on the correct fix here?</p>
+<p>The AST looks like this:</p>
+<pre><code>Expr {
+    value: Located {
+        location: Location {
+            row: 2,
+            column: 0,
+        },
+        end_location: Some(
+            Location {
+                row: 2,
+                column: 11,
+            },
+        ),
+        custom: (),
+        node: JoinedStr {
+            values: [
+                Located {
+                    location: Location {
+                        row: 2,
+                        column: 0,
+                    },
+                    end_location: Some(
+                        Location {
+                            row: 2,
+                            column: 11,
+                        },
+                    ),
+                    custom: (),
+                    node: FormattedValue {
+                        value: Located {
+                            location: Location {
+                                row: 2,
+                                column: 3,
+                            },
+                            end_location: Some(
+                                Location {
+                                    row: 2,
+                                    column: 4,
+                                },
+                            ),
+                            custom: (),
+                            node: Name {
+                                id: &quot;v&quot;,
+                                ctx: Load,
+                            },
+                        },
+                        conversion: 0,
+                        format_spec: Some(
+                            Located {
+                                location: Location {
+                                    row: 2,
+                                    column: 0,
+                                },
+                                end_location: Some(
+                                    Location {
+                                        row: 2,
+                                        column: 11,
+                                    },
+                                ),
+                                custom: (),
+                                node: JoinedStr {
+                                    values: [
+                                        Located {
+                                            location: Location {
+                                                row: 2,
+                                                column: 0,
+                                            },
+                                            end_location: Some(
+                                                Location {
+                                                    row: 2,
+                                                    column: 11,
+                                                },
+                                            ),
+                                            custom: (),
+                                            node: Constant {
+                                                value: Str(
+                                                    &quot;0.2f&quot;,
+                                                ),
+                                                kind: None,
+                                            },
+                                        },
+                                    ],
+                                },
+                            },
+                        ),
+                    },
+                },
+            ],
+        },
+    }
+}
+</code></pre>
+<p>So the format spec itself is an &quot;empty&quot; <code>JoinedStr</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 16:30</div>
+            <div class="timeline-body"><p>I was gonna say we could ignore <code>format_spec</code> but... this may require a fix in RustPython, since we <em>do</em> want to flag the latter case:</p>
+<pre><code class="language-py">v = 23.234234
+f&quot;{v:0.2f}&quot;
+f&quot;{v:{f'0.2f'}}&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2022-12-31 17:32</div>
+            <div class="timeline-body"><p>Another reproducer:</p>
+<pre><code>(sphinx) PS S:\Development\sphinx&gt; type bug.py                
+f' style=&quot;vertical-align: {-0:d}px&quot;'
+(sphinx) PS S:\Development\sphinx&gt; pip install &quot;ruff==0.0.203&quot; --quiet
+(sphinx) PS S:\Development\sphinx&gt; ruff -V
+ruff 0.0.203
+(sphinx) PS S:\Development\sphinx&gt; ruff --select F bug.py             
+(sphinx) PS S:\Development\sphinx&gt; pip install &quot;ruff==0.0.204&quot; --quiet
+(sphinx) PS S:\Development\sphinx&gt; ruff -V                            
+ruff 0.0.204
+(sphinx) PS S:\Development\sphinx&gt; ruff --select F bug.py             
+bug.py:1:1: F541 f-string without any placeholders
+Found 1 error(s).
+</code></pre>
+<p>A</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 17:42</div>
+            <div class="timeline-body"><p>I can probably get something out quick-ish to resolve these cases (at the cost of some rare false-negatives).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 18:27</div>
+            <div class="timeline-body"><p>This does feel like a RustPython bug though. \cc @harupy just for visibility.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-12-31 18:30</div>
+            <div class="timeline-body"><p>I checked python's AST for <code>f&quot;{v:0.2}&quot;</code>:</p>
+<pre><code>&gt;&gt;&gt; print(ast.dump(ast.parse('f&quot;{v:0.2}&quot;'), include_attributes=True, indent=2))
+Module(
+  body=[
+    Expr(
+      value=JoinedStr(
+        values=[
+          FormattedValue(
+            value=Name(
+              id='v',
+              ctx=Load(),
+              lineno=1,
+              col_offset=3,
+              end_lineno=1,
+              end_col_offset=4),
+            conversion=-1,
+            format_spec=JoinedStr(
+              values=[
+                Constant(
+                  value='0.2',
+                  lineno=1,
+                  col_offset=0,
+                  end_lineno=1,
+                  end_col_offset=10)],
+              lineno=1,
+              col_offset=0,
+              end_lineno=1,
+              end_col_offset=10),
+            lineno=1,
+            col_offset=0,
+            end_lineno=1,
+            end_col_offset=10)],
+        lineno=1,
+        col_offset=0,
+        end_lineno=1,
+        end_col_offset=10),
+      lineno=1,
+      col_offset=0,
+      end_lineno=1,
+      end_col_offset=10)],
+  type_ignores=[])
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 18:31</div>
+            <div class="timeline-body"><p>Oh nice, so it's the same?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-12-31 18:31</div>
+            <div class="timeline-body"><p>It looks the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 18:32</div>
+            <div class="timeline-body"><p>It looks like Pyflakes doesn't check nested f-strings:</p>
+<pre><code class="language-py">_in_fstring = False
+
+def JOINEDSTR(self, node):
+    if (
+            # the conversion / etc. flags are parsed as f-strings without
+            # placeholders
+            not self._in_fstring and
+            not any(isinstance(x, ast.FormattedValue) for x in node.values)
+    ):
+        self.report(messages.FStringMissingPlaceholders, node)
+
+    self._in_fstring, orig = True, self._in_fstring
+    try:
+        self.handleChildren(node)
+    finally:
+        self._in_fstring = orig
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 18:33</div>
+            <div class="timeline-body"><p>Probably the best we can do then? I can fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 18:33</div>
+            <div class="timeline-body"><p>I did suspect that <code>0.2</code> part would at least have a different location though. It looks like it uses the same location as the surrounding f-string. If it had a different location, I could extract the raw text and manually confirm that it's not a &quot;real&quot; f-string.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-31 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tlambert03">@tlambert03</a> on 2022-12-31 18:45</div>
+            <div class="timeline-body"><p>thanks as always for the blazing fast response</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-12-31 18:47</div>
+            <div class="timeline-body"><p>@charliermarsh Thanks for the fix. Here's my attempt to fix this issue:</p>
+<pre><code class="language-diff">diff --git a/src/checkers/ast.rs b/src/checkers/ast.rs
+index 8629bae..0079d8b 100644
+--- a/src/checkers/ast.rs
++++ b/src/checkers/ast.rs
+@@ -2151,7 +2151,20 @@ where
+                 }
+             }
+             ExprKind::JoinedStr { values } =&gt; {
+-                if self.settings.enabled.contains(&amp;CheckCode::F541) {
++                let is_format_spec = match self.current_expr_parent() {
++                    Some(parent) =&gt; match &amp;parent.0.node {
++                        ExprKind::FormattedValue { format_spec, .. } =&gt; match format_spec {
++                            Some(format_spec) =&gt; {
++                                format_spec.location == expr.location
++                                    &amp;&amp; format_spec.end_location == expr.end_location
++                            }
++                            None =&gt; false,
++                        },
++                        _ =&gt; false,
++                    },
++                    None =&gt; false,
++                };
++                if !is_format_spec &amp;&amp; self.settings.enabled.contains(&amp;CheckCode::F541) {
+                     if !values
+                         .iter()
+                         .any(|value| matches!(value.node, ExprKind::FormattedValue { .. }))
+</code></pre>
+<p>This yields:</p>
+<pre><code>&gt; cargo run -- --no-cache a.py --show-source
+   Compiling ruff v0.0.204 (/home/haru/Desktop/repositories/ruff)
+    Finished dev [unoptimized + debuginfo] target(s) in 7.60s
+     Running `target/debug/ruff --no-cache a.py --show-source`
+a.py:6:5: F541 f-string without any placeholders
+  |
+6 | c = f&quot;def&quot;
+  |     ^^^^^^ F541
+  |
+
+a.py:7:5: F541 f-string without any placeholders
+  |
+7 | d = f&quot;def&quot; + &quot;ghi&quot;
+  |     ^^^^^^ F541
+  |
+
+a.py:9:5: F541 f-string without any placeholders
+  |
+9 |     f&quot;def&quot; +
+  |     ^^^^^^ F541
+  |
+
+a.py:17:5: F541 f-string without any placeholders
+   |
+17 | h = &quot;x&quot; &quot;y&quot; f&quot;z&quot;
+   |     ^^^^^^^^^^^^ F541
+   |
+
+a.py:25:7: F541 f-string without any placeholders
+   |
+25 | f&quot;{v:{f'0.2f'}}&quot;
+   |       ^^^^^^^ F541
+   |
+
+a.py:26:4: F541 f-string without any placeholders
+   |
+26 | f&quot;{f''}&quot;
+   |    ^^^ F541
+   |
+
+Found 6 error(s).
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-31 18:54</div>
+            <div class="timeline-body"><p>Oh nice. @harupy do you want to PR that? At your convenience. It's not urgent. That first fix is building now in <a href="https://github.com/charliermarsh/ruff/releases/tag/v0.0.205">v0.0.205</a> anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2022-12-31 19:02</div>
+            <div class="timeline-body"><p>Yes, I'd be happy to PR that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-01-01 04:37</div>
+            <div class="timeline-body"><p>@charliermarsh I came up with a different approach. The diff looks like this:</p>
+<pre><code class="language-diff">diff --git a/src/ast/visitor.rs b/src/ast/visitor.rs
+index f531bba..9bcefd0 100644
+--- a/src/ast/visitor.rs
++++ b/src/ast/visitor.rs
+@@ -387,7 +387,16 @@ pub fn walk_expr&lt;'a, V: Visitor&lt;'a&gt; + ?Sized&gt;(visitor: &amp;mut V, expr: &amp;'a Expr) {
+         ExprKind::FormattedValue {
+            value, format_spec, ..
+         } =&gt; {
+             visitor.visit_expr(value);
+             if let Some(expr) = format_spec {
+-                visitor.visit_expr(expr);
++                match &amp;expr.node {
++                    // Conversion flags are parsed as f-strings without placeholders,
++                    // which would lead to false positives for F541 (FStringMissingPlaceholders).
++                    ExprKind::JoinedStr { values } =&gt; {
++                        for value in values {
++                            visitor.visit_expr(value);
++                        }
++                    }
++                    _ =&gt; visitor.visit_expr(expr),
++                }
+             }
+         }
+         ExprKind::JoinedStr { values } =&gt; {
+</code></pre>
+<p>The idea is &quot;do not visit format_spec JoinedStr&quot;.</p>
+<p>This approach yields:</p>
+<pre><code>&gt; cargo run -- --no-cache --show-source resources/test/fixtures/pyflakes/F541.py
+resources/test/fixtures/pyflakes/F541.py:6:5: F541 f-string without any placeholders
+  |
+6 | c = f&quot;def&quot;
+  |     ^^^^^^ F541
+  |
+
+resources/test/fixtures/pyflakes/F541.py:7:5: F541 f-string without any placeholders
+  |
+7 | d = f&quot;def&quot; + &quot;ghi&quot;
+  |     ^^^^^^ F541
+  |
+
+resources/test/fixtures/pyflakes/F541.py:9:5: F541 f-string without any placeholders
+  |
+9 |     f&quot;def&quot; +
+  |     ^^^^^^ F541
+  |
+
+resources/test/fixtures/pyflakes/F541.py:17:5: F541 f-string without any placeholders
+   |
+17 | h = &quot;x&quot; &quot;y&quot; f&quot;z&quot;
+   |     ^^^^^^^^^^^^ F541
+   |
+
+resources/test/fixtures/pyflakes/F541.py:26:7: F541 f-string without any placeholders
+   |
+26 | f&quot;{v:{f'0.2f'}}&quot;
+   |       ^^^^^^^ F541
+   |
+
+resources/test/fixtures/pyflakes/F541.py:27:4: F541 f-string without any placeholders
+   |
+27 | f&quot;{f''}&quot;
+   |    ^^^ F541
+   |
+
+Found 6 error(s).
+</code></pre>
+<p>I believe this is simpler than https://github.com/charliermarsh/ruff/issues/1514#issuecomment-1368264538 and allows us to avoid inspecting the parent expression every time we encounter <code>JoinedStr</code>. What do you think?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:10:16 UTC
+    </footer>
+</body>
+</html>

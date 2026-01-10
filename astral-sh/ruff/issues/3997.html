@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fails with assignment expression used in &quot;any()&quot; function - astral-sh/ruff #3997</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fails with assignment expression used in &quot;any()&quot; function</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3997">#3997</a>
+        opened by <a href="https://github.com/lorien">@lorien</a>
+        on 2023-04-17 14:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lorien">@lorien</a> on 2023-04-17 14:46</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Content of &quot;test.py&quot;:</p>
+<pre><code class="language-python">if any((key := x) for x in [&quot;ok&quot;]):
+    print(key)
+</code></pre>
+<p>Ruff command:</p>
+<pre><code>ruff --isolated test.py
+</code></pre>
+<p>Ruff output:</p>
+<pre><code>test.py:2:11: F821 Undefined name `key`
+</code></pre>
+<p>Ruff version: 0.0.261</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fails with assignment expression used in "any" function" to "Fails with assignment expression used in "any()" function" by @lorien on 2023-04-17 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-17 15:47</div>
+            <div class="timeline-body"><p>Hmm yeah, I think we can err on the side of considering this a bug since Mypy and Pyright don't flag <code>key</code> here.</p>
+<p>I will point out, though, that in the general case, it's hard to guarantee that <code>key</code> is defined here, e.g., this also passes Mypy and Pyright but errors at runtime:</p>
+<pre><code class="language-py">if all((key := x) for x in []):
+    print(key)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-04-17 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lorien">@lorien</a> on 2023-04-17 15:58</div>
+            <div class="timeline-body"><pre><code class="language-python">if all((key := x) for x in []):
+    print(key)
+</code></pre>
+<p>To me it looks like bad language design and might be considered as bug in python itself.</p>
+<p>UPD: It does not look wrong to me anymore. The logic is that &quot;all()&quot; return True for empty list or empty iterator. It does not know anything about what happened inside iterator. And nothing was happened there, including not running code &quot;(key := x)&quot; because there is nothing to run it fore. I could not call it a bug, but maybe a bad design.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-04-18 02:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-18 03:20</div>
+            <div class="timeline-body"><p>Yeah it's &quot;correct&quot; behavior (<code>any</code> is false on empty lists, <code>all</code> is true), it's just that we have no way of knowing whether <code>key</code> will be defined within the loop. It looks like other static tools assume it will be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-18 03:25</div>
+            <div class="timeline-body"><p>Looks like it is formally defined that the <code>NamedExpr</code> needs to be treated as a definition in the parent scope: https://peps.python.org/pep-0572/#scope-of-the-target</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-04-25 01:15</div>
+            <div class="timeline-body"><p>Is ruff capable of detecting empty iterators? It seems like the name will always be defined otherwise. It seems like if we cannot tell if it is empty, we must assume that it is not and that the name is indeed defined.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-25 04:18</div>
+            <div class="timeline-body"><p>We don't have that capability right now (to detect empty iterators). Agree that we should assume that the comprehension will execute, and that the name will thus be added to the parent scope. I started on this a bit, but it requires some changes to our semantic model (to add a binding to the non-current scope).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-29 22:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:53 UTC
+    </footer>
+</body>
+</html>

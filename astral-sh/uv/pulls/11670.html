@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider system site packages if activated - astral-sh/uv #11670</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider system site packages if activated</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11670">#11670</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-02-20 15:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-02-20 15:39</div>
+            <div class="timeline-body"><h1>Summary</h1>
+<p>We use <code>site.getsitepackages()</code> for discovering system packages for venvs created with <code>--system-site-packages</code>, while trying to avoid breaking exiting workflows.</p>
+<h1>Details</h1>
+<p>We currently only check in ~1 directory for install packages when looking a system or venv interpreter, usually the venv site packages. But in reality, Python (and <code>importlib.metadata</code>) look in all <code>sys.path</code> entries for packages.</p>
+<p>This can lead to a difference between the runtime behavior and <code>uv pip list</code> as well as other uv operation. Notably, we miss system site packages when used (<code>--system-site-packages</code> on venv installation) and PyPy's std vendored packages (such as <code>cffi</code>).</p>
+<p>Using the full <code>sys.path</code> for discovery means that we're using a variable that has many sources (including <code>.pth</code> files) and that can change at runtime. It easily clashes with our caching as we need to either figure all the places that influence <code>sys.path</code> or re-query the Python interpreter on each operation.</p>
+<p>Besides the usual venv or system Python operation mode, <code>uv pip</code> also has <code>target</code> and <code>prefix</code> options that install into a directory (structure). We keep <code>target</code> and <code>prefix</code> installation as they were, so that they only consider and modify packages in their directory prefix.</p>
+<p>Packages may be uninstallable or not un-uninstallable, where the latter category are system packages, e.g., those installed into std for PyPy. Currently, a PyPy venv will for example shadow the system cffi version with its own version. With the current change, we still don't consider the PyPy std installed packages (they are not reported by <code>site.getsitepackages()</code>), preserving the current behavior. If we add support in the future, we need to consider what happens when let's say a lockfile requires cffi 1.71.1 but PyPy has a vendored, non-removable cffi 1.80.0.</p>
+<p>TODO <code>--exact</code> with <code>--system-site-packages</code>.</p>
+<p>An open question is how to handle system packages during: <code>uv sync</code> and <code>uv pip install</code>. For <code>uv sync</code>, do we error or try to upgrade (and potentially fail) when the versions mismatch? For <code>uv pip install</code> should we set them as constraint, and if so, do we need to add a new incompatibility kind for system packages (currently, system packages are preferences).</p>
+<p>Best reviewed commit-by-commit.</p>
+<p>Closes #9849
+Resolves #2500
+TODO #4466</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-02-20 15:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Run CI" to "Consider system site packages for `uv pip list`" by @konstin on 2025-03-05 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Consider system site packages for `uv pip list`" to "Consider system site packages if activated" by @konstin on 2025-03-05 17:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

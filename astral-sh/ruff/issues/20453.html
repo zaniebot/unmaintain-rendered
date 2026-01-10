@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve import sorting for namespace packages - astral-sh/ruff #20453</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve import sorting for namespace packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20453">#20453</a>
+        opened by <a href="https://github.com/lkollar">@lkollar</a>
+        on 2025-09-17 15:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lkollar">@lkollar</a> on 2025-09-17 15:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>With Ruff 0.13 import sorting has changed in a way that 1st party namespace packages are now categorised as 3rd party.</p>
+<p>Let's assume that a Foo Corp puts all their packages into the <code>foo.</code> namespace. Up until 0.13, the source repo for <code>foo.bar</code> package would have these imports:</p>
+<pre><code class="language-python">import httpx
+
+import foo.baz  # &lt;- another library published by Foo Corp
+import foo.bar  # &lt;- current project
+</code></pre>
+<p>I think this was likely sorted this way because the presence of a <code>foo</code> namespace package in the repository made Ruff consider all packages in that namespace as they belong to the project. This wasn't correct, but it happened to yield the right result.</p>
+<p>With Ruff 0.13, import sorting changes this to:</p>
+<pre><code class="language-python">import httpx
+import foo.baz  # &lt;- now a 3rd party dependency
+
+import foo.bar
+</code></pre>
+<p>So while the detection logic is more correct, the end result is not ideal.</p>
+<p>I wonder if Ruff's import sorting algorithm could be improved so that if it detects a local <code>foo</code> namespace package, it categorises all packages in that namespace as first party.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-17 15:52</div>
+            <div class="timeline-body"><p>CC: @dylwil3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dylwil3 on 2025-09-17 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @dylwil3 on 2025-09-17 21:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-09-17 21:14</div>
+            <div class="timeline-body"><p>Probably what is confusing is that there isn't (as far as I know) an <em>official</em> definition of &quot;first&quot; and &quot;third&quot; party. Currently, we are trying to model that &quot;first&quot; party means &quot;the current package and only the current package&quot; and third party is anything else that isn't a builtin (roughly) - even things in the same top-level namespace. In fact, the impetus for the behavior stabilized in 0.13 was to achieve exactly the <em>opposite</em> of what you're suggesting here (unless I'm misunderstanding) - see #12984.</p>
+<p>I don't think it's possible to support both versions of what folks might consider &quot;first party&quot; by default. However, in your case, I wonder if it would solve the problem to specify this in your settings:</p>
+<pre><code class="language-toml">[tool.ruff.lint.isort]
+known-first-party = [&quot;foo&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/godlygeek">@godlygeek</a> on 2025-09-17 23:06</div>
+            <div class="timeline-body"><p>(I'm a coworker of @lkollar - so, same organization! 👋)</p>
+<blockquote>
+<p>I don't think it's possible to support both versions of what folks might consider &quot;first party&quot; by default.</p>
+</blockquote>
+<p>I can see that people might have different opinions of what constitutes &quot;first party&quot;, and that many of those definitions aren't amenable to programmatic detection (I'd think the most common definition is &quot;packages made by my organization&quot;, but there's no surefire way to know what packages are made by what organization, and using the implicit namespace packages is at best a heuristic).</p>
+<p>But, that said...</p>
+<blockquote>
+<p>Currently, we are trying to model that &quot;first&quot; party means &quot;the current package and only the current package&quot;</p>
+</blockquote>
+<p>Isn't &quot;the current package and only the current package&quot; exactly what people would expect <code>local-folder</code> to be for?</p>
+<p>It seems as though Ruff has currently standardized on:</p>
+<ul>
+<li><code>first-party</code> - absolute imports of modules in the current folder</li>
+<li><code>local-folder</code> - relative imports of modules in the current folder</li>
+</ul>
+<p>Different folks having different definitions for &quot;first party&quot; seems like a red herring to me. Surely whether a module is &quot;first party&quot; or not is a property of the module itself and doesn't change based on how you spell the <code>import</code> of that module, but Ruff currently decides whether or not to put the <code>import</code> in the <code>first-party</code> section based on whether the module is imported with <code>from .</code> or not!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-09-18 01:49</div>
+            <div class="timeline-body"><p>As far as I can tell, the definition of first party I described agrees with the one at least implicitly adopted by <code>isort</code>. For example, the configuration option for <a href="https://pycqa.github.io/isort/docs/configuration/options.html#known-first-party"><code>known-first-party</code></a> has the description:</p>
+<blockquote>
+<p>Force isort to recognize a module as being part of the <em>current python project</em>.</p>
+</blockquote>
+<p>(emphasis my own).</p>
+<p>The question of namespace packages and the question of whether first party includes &quot;packages from your organization&quot; is addressed <a href="https://github.com/PyCQA/isort/issues/1057#issuecomment-974658141">here</a> where it appears they also come to the same conclusion of what first party &quot;ought&quot; to mean (namely - the package under development).</p>
+<p>I'm not trying to say any definition is more or less correct, just that I believe the one adopted by <code>isort</code> and by Ruff seem to be about the same, whereas the one you are suggesting seems to differ.</p>
+<p>But I'd be happy for others to weigh in if I've gotten something muddled here.</p>
+<p>I would also be particularly interested to hear if the configuration option <code>known-first-party</code> does not solve the issue for your use-case, since I would consider that a bug or a deficiency in Ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/godlygeek">@godlygeek</a> on 2025-09-18 06:46</div>
+            <div class="timeline-body"><blockquote>
+<p>I would also be particularly interested to hear if the configuration option <code>known-first-party</code> does not solve the issue for your use-case, since I would consider that a bug or a deficiency in Ruff.</p>
+</blockquote>
+<p>It doesn't allow me to get the ordering I'd like, at least not by itself.</p>
+<p>Setting <code>known-first-party = [&quot;someorg&quot;]</code> when developing the <code>someorg.foo</code> module means <code>someorg.foo</code> and <code>someorg.bar</code> are both treated as first-party and combined into the same section. This does match the behavior that Ruff had prior to 0.13, but I don't think this was the ideal behavior, either.</p>
+<p>I consider it useful for readers of the code to be able to see at a glance what's part of the current repo and what's not, as well as to see at a glance what's coming from PyPI and what's coming from a private package repo instead. Ruff's defaults currently combine stuff that's coming from PyPI with stuff that's coming from our private package index (because other <code>someorg.</code> modules are treated as third party). If I set <code>known-first-party = [&quot;someorg&quot;]</code>, Ruff will instead combine stuff that's coming from our private package index with stuff that's local to the current repo. But neither of those behaviors are what I want. I don't want other modules developed by my company to be sorted in the same section as the current module's imports, nor do I want them to be sorted into the 3rd party imports section, since they are neither part of the current project nor are they 3rd party (at least, not by my understanding of what the terms &quot;first party&quot; and &quot;third party&quot; mean).</p>
+<p>The grouping that I'd like, and that seems natural to me based on the names of the 3 sections, is:</p>
+<ul>
+<li><code>local-folder</code> - the module being developed in the current folder (regardless of whether the import statements referring to that module are absolute or relative)</li>
+<li><code>first-party</code> - other modules made by the same party as the module being developed in the current folder (in my case, by my company)</li>
+<li><code>third-party</code> - non-stdlib modules made by different parties than the module being developed in the current directory</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-18 07:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Setting known-first-party = [&quot;someorg&quot;] when developing the someorg.foo module means someorg.foo and someorg.bar are both treated as first-party and combined into the same section. This does match the behavior that Ruff had prior to 0.13, but I don't think this was the ideal behavior, either.</p>
+</blockquote>
+<p>To clarify my understanding. Is <code>someorg</code> a namespace package where some sub-packages are first-party and others come from pypi?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/godlygeek">@godlygeek</a> on 2025-09-18 07:14</div>
+            <div class="timeline-body"><p>No, it is a namespace package owned by an organization, and we can imagine that every package below it is published only to a private package repository and not to pypi.org</p>
+<p>That is, when developing <code>someorg.http_library</code>, I want the imports of <code>someorg.tcp_library</code> to be sorted into a separate section than the ones for <code>someorg.http_library</code> (since it's a separate library, not part of the current project), and also separate from the modules that aren't named <code>someorg.</code> at all (since I want readers to be able to quickly distinguish what we own versus what's an open source dependency).</p>
+<p>I want 3 sections: the thing in this repo, other things owned by the same people as the thing in this repo, other things owned by other people than the thing in this repo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-18 07:22</div>
+            <div class="timeline-body"><p>I think that should work if you use <code>known-first-party = [&quot;someorg.http_library&quot;]</code> and e.g. `known-first-party = [&quot;someorg.tcp_library&quot;])</p>
+<p>You may need to use <a href="https://docs.astral.sh/ruff/settings/#lint_isort_sections">custom sections</a> if you want to group them into more sections than just first/third party</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/godlygeek">@godlygeek</a> on 2025-09-18 07:54</div>
+            <div class="timeline-body"><p>We've already got the right number of sections for the behavior that I want, the problem is that none of the 3 sections are being used for what their name says.</p>
+<p>If I understand correctly, the current default behavior is:</p>
+<ul>
+<li>The <code>local-folder</code> section contains all the relative imports</li>
+<li>The <code>first-party</code> section contains all the absolute imports of modules in the local folder</li>
+<li>The <code>third-party</code> section contains all the absolute imports of other non-stdlib modules</li>
+</ul>
+<p>All 3 of these seem wrong to me. The <code>local-folder</code> section doesn't include absolute imports of modules that are in the local folder (and it may include relative imports of modules that are <em>not</em> in the local folder, since you can do a relative import of a different subpackage of a common parent namespace package). The <code>first-party</code> section is limited to what's in the local folder, rather than consisting of modules made by a particular party. And the <code>third-party</code> section likewise doesn't contain modules made by a different party than the first party, but instead can contain any other module regardless of what party owns it. None of the 3 names seem to bear any relationship to what's actually sorted into those sections!</p>
+<p>The behavior I'd like to see instead is:</p>
+<ul>
+<li>The <code>local-folder</code> section contains all imports of modules in the local folder (regardless of whether those imports are relative or absolute)</li>
+<li>The <code>first-party</code> section contains all imports of modules owned by the same party as the modules in the local folder</li>
+<li>The <code>third-party</code> section contains all imports of modules owned by other parties than the modules in the local folder</li>
+</ul>
+<p>I'm not asking to add new sections, I'm asking for these 3 sections to be used for the thing their name says they're for: for <code>local-folder</code> to be used for the modules in the current folder (regardless of how they're imported), and for <code>first-party</code> to be used for modules owned by the same party as owns the local folder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-18 08:22</div>
+            <div class="timeline-body"><blockquote>
+<p>The local-folder section contains all the relative imports</p>
+</blockquote>
+<p>Yes, all relative imports (imports starting with one or more <code>.</code>) are categorized as local folder. I can see how the name <code>local-folder</code> might be misleading. The local-folder doesn't mean the same as &quot;it's a file from your project&quot;. I think a better name for this section would have been relative because that's really what it is.</p>
+<blockquote>
+<p>The first-party section contains all the absolute imports of modules in the local folder</p>
+</blockquote>
+<p>No, first-party imports are all modules that are part of your project (and part of a package). A file is part of your project if it is in a sub-directory of <a href="https://docs.astral.sh/ruff/settings/#src"><code>src</code></a>. See https://github.com/astral-sh/ruff/blob/512395f4e6a52dd54136667cdb7e0401ee8b8a0d/crates/ruff_linter/src/rules/isort/categorize.rs#L159-L185</p>
+<blockquote>
+<p>The third-party section contains all the absolute imports of other non-stdlib modules</p>
+</blockquote>
+<p>Sort of. Third-party imports are all modules that haven't been categorized into any other section. Which normally comes down to all modules installed into a venv</p>
+<p>I think the main issue here is that the name <code>local-folder</code> is misleading. <code>local-folder</code> isn't the same as <code>current-folder</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/godlygeek">@godlygeek</a> on 2025-09-18 14:52</div>
+            <div class="timeline-body"><p>The name <code>local-folder</code> is misleading because it implies that things in that section are related by folder, when they aren't. (What does the word &quot;folder&quot; mean in <code>local-folder</code>, if not a directory on disk?)</p>
+<p>The names <code>first-party</code> and <code>third-party</code> are misleading because they imply that things are related by the party creating them, when they aren't. (What does the word &quot;party&quot; mean in <code>first-party</code> and <code>third-party</code>, if not a person or group of people?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-18 14:58</div>
+            <div class="timeline-body"><p>I understand that the names can be somewhat misleading. I'm happy to accept a PR that clarifies the terminology but I don't think it justifies renaming the groups (especially given that first and third party are widely used in the industry and I don't think they're confusing).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-09-18 14:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/godlygeek">@godlygeek</a> on 2025-09-18 15:30</div>
+            <div class="timeline-body"><p>I'm not asking to rename the groups, I'm asking to use the groups for the things that their names say they're for.</p>
+<p>I would like the <code>local-folder</code> group to be used for modules that are in the local (meaning &quot;on this machine&quot;) folder (meaning &quot;filesystem directory&quot;).</p>
+<p>I would like the <code>first-party</code> group to be used for modules made by the same party as the local project.</p>
+<p>I would like the <code>third-party</code> group to be used for modules made by different parties than the local project.</p>
+<blockquote>
+<p>first and third party are widely used in the industry and I don't think they're confusing</p>
+</blockquote>
+<p>The problem I'm raising with the current behavior is exactly that &quot;first party&quot; and &quot;third party&quot; do have standard industry meanings, and these groups don't match that meaning. We say that an HTTP cookie is first-party if it's created by the company whose website you're visiting, and third-party if it's created by a different company. We say that a Nintendo Switch game is first-party if it's created by Nintendo, and third-party if it's created by a different company. Every definition I can find for the word &quot;party&quot; refers to a person or a group of people. The standard industry term &quot;first party&quot; means &quot;made by the same people&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/godlygeek">@godlygeek</a> on 2025-09-18 17:05</div>
+            <div class="timeline-body"><p>To be specific about the change that I'd like to see:</p>
+<p>I'd ask that what's currently detected as <code>first-party</code> by default instead be detected as <code>local-folder</code>, so that <code>local-folder</code> contains all imports for the module in the current folder, regardless of whether those imports are absolute or relative.</p>
+<p>Then, I'd like the documentation for the 3 options to be changed to:</p>
+<blockquote>
+<p>known-local-folder
+A list of modules to consider being a local folder, regardless of whether they can be identified as such via introspection of the local filesystem.</p>
+</blockquote>
+<blockquote>
+<p>known-first-party
+A list of modules to consider first-party, meaning that they are not in the local folder but are maintained by the same people. By default, no other modules are considered first-party.</p>
+</blockquote>
+<blockquote>
+<p>known-third-party
+A list of modules to consider third-party. This is the default section for modules that are not recognized as being part of any other section.</p>
+</blockquote>
+<p>That would fix things so that I could use <code>known-first-party = [&quot;someorg&quot;]</code> to put the imports of other modules maintained by my organization in a dedicated section, and would fix things so that all of the section names correspond to what's actually sorted into those sections.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:23 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update redirect implementation to handle more cases and be more testable - astral-sh/uv #13754</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Update redirect implementation to handle more cases and be more testable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13754">#13754</a>
+        opened by <a href="https://github.com/jtfmumm">@jtfmumm</a>
+        on 2025-05-31 13:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-05-31 13:46</div>
+            <div class="timeline-body"><p>This PR factors out and updates the redirect handling logic from #13595. It handles a few new cases:</p>
+<ul>
+<li>If a 303 redirect is received for any method other than GET or HEAD, converts it to a GET. Unlike <code>reqwest</code>, it does not do this conversion for 301s or 302s (which is not required by RFC 7231 and was not the original intention of the spec).</li>
+<li>If the original request did not have a Referer header, does not include a Referer header in the redirect request.</li>
+<li>If the redirect is a cross-origin request, removes sensitive headers to avoid leaking credentials to untrusted domains.</li>
+<li><ul>
+<li>This change had the side effect of breaking mock server tests that redirected from <code>localhost</code> to <code>pypi-proxy.fly.dev</code>. I have added a <code>CrossOriginCredentialsPolicy</code> enum with a <code>#[cfg(test)]</code>-only <code>Insecure</code> variant. This allows existing tests to continue to work while still making it impossible to propagate credentials on cross-origin requests outside of tests.</li>
+</ul>
+</li>
+<li><ul>
+<li>I've updated the main redirect integration test to check if cross-origin requests fail (there is, by design, no way to configure an insecure cross-origin policy from the command line). But critically, netrc credentials for the new location can still be successfully fetched on a cross-origin redirect (tested in <code>pip_install_redirect_with_netrc_cross_origin</code>).</li>
+</ul>
+</li>
+<li>One of the goals of the refactor was to make the redirect handling logic unit-testable. This PR adds a number of unit tests checking things like proper propagation of credentials on redirects on the same domain (and removal on cross-origin) and HTTP 303 POST-to-GET conversion.</li>
+</ul>
+<p>The following table illustrates the different behaviors on current <code>main</code>, the initial (reverted) redirect handling PR (#12920), the PR that restores #12920 and fixes the 303s bug (#13595), and this PR (#13754). We want to propagate credentials on same-origin but not cross-origin redirects, and we want to look up netrc credentials on redirects.</p>
+<p>| Behavior                                                   | main | reverted #12920 | fix #13595  | update #13754 |
+|---------------------------------------|------|--------------|-------------|----------------|
+| Propagate credentials on same-origin redirects  | No    | Yes                 | Yes          | Yes                        |
+| Propagate credentials on cross-origin redirects | No    | Yes                 | Yes          | No                         |
+| Look up netrc credentials on redirects  | No    | Yes                 | Yes          | Yes                        |
+| Handle 303s without failing                  | Yes   | No                   | Yes          | Yes                        |</p>
+<p>Depends on #13595.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @jtfmumm on 2025-05-31 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">security</span> added by @jtfmumm on 2025-05-31 13:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-31 14:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-client/src/base_client.rs</code>:224 on 2025-05-31 14:17</div>
+            <div class="timeline-body"><p>I've added this same warning in a few places to make sure this invariant isn't broken in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-31 14:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/edit.rs</code>:11865 on 2025-05-31 14:35</div>
+            <div class="timeline-body"><p>On a cross-origin request (which is what happens with the mock server here), no username is propagated. It would be possible to use <code>reqwest_middleware</code> <code>Extensions</code> to do this and special-case the handling of a username propagated in that way, but we have decided to avoid the complexity around this refactor for now. Currently, this means that uv will not successfully find credentials in the keyring for cross-origin requests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @jtfmumm on 2025-05-31 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-05-31 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @jtfmumm on 2025-05-31 14:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Update redirect implementation" to "Update redirect implementation to handle more cases and be more testable" by @jtfmumm on 2025-05-31 14:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-06-05 14:08</div>
+            <div class="timeline-body"><p>Can you add a table to the description showing what behaviors we have on main and how they are with the two PRs for the relevant cases? This makes easier to follow along what we're changing and that we're handling everything we want to handle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-06 01:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you add a table to the description showing what behaviors we have on main and how they are with the two PRs for the relevant cases? This makes easier to follow along what we're changing and that we're handling everything we want to handle.</p>
+</blockquote>
+<p>I've added a table</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jenshnielsen">@jenshnielsen</a> on 2025-06-16 13:06</div>
+            <div class="timeline-body"><p>@jtfmumm Tested this against a local azure feed. As of c9c44e36f8f7aa44df77553c653a65dc8325f39e this works correctly for me and I can confirm that I can install packages as expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-16 13:07</div>
+            <div class="timeline-body"><p>Thanks for the confirmation @jenshnielsen!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thomasaarholt">@thomasaarholt</a> on 2025-06-16 15:03</div>
+            <div class="timeline-body"><p>EDIT: Both ways worked great. No issues.</p>
+<p>I checked out the PR, cd'd into a new folder, added a <code>uv.toml</code> file as per below, created a venv and ran <code>cargo run -- pip install llms</code> to install our custom <code>llms</code> package there. It ran fine. <a href="https://gist.github.com/thomasaarholt/f47790391e946cf0760d9447cdc82284">Here are the -v logs</a>.</p>
+<pre><code># uv.toml
+[pip]
+keyring-provider = &quot;subprocess&quot;
+index-url = &quot;https://VssSessionToken@&lt;our-internal-feed&gt;/pypi/simple/&quot;
+</code></pre>
+<p>The (really cool looking!) uvx command gets stuck on the last compilation step.  EDIT: It finished, just took quite a bit longer than compiling it myself. I then created a new folder for it, ran <code>uv init</code>, and ran the command again successfully.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-16 16:15</div>
+            <div class="timeline-body"><p>Thanks @thomasaarholt! Yeah that command can be slow, but also nice to have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @jtfmumm on 2025-06-18 08:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-06-18 08:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-18 08:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:25 UTC
+    </footer>
+</body>
+</html>

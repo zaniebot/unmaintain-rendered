@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support transparently upgradeable Python bin installations - astral-sh/uv #13531</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support transparently upgradeable Python bin installations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13531">#13531</a>
+        opened by <a href="https://github.com/jtfmumm">@jtfmumm</a>
+        on 2025-05-19 08:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-05-19 08:55</div>
+            <div class="timeline-body"><p>For <code>uv python install --preview</code> and <code>uv python install &lt;minor-version&gt; --preview</code>, this installs transparently upgradeable executables into <code>bin</code>. On macOS/Linux, it uses a symlink pointing to a path containing a minor version directory symlink. On Windows, it uses a trampoline with a junction-containing path as its target.</p>
+<p>When creating <code>bin</code> links, if the install is either a default install or a minor version install, we check if we can derive a <code>DirectorySymlink</code> from each installation. If we can, then</p>
+<ul>
+<li>on macOS/Linux, we use the <code>DirectorySymlink</code> to link the <code>bin</code> link to an executable path containing the symlink directory.</li>
+<li>on Windows, we use the <code>DirectorySymlink</code> (which contains a junction) to create our trampoline.</li>
+</ul>
+<p>On Windows, this also updates a couple of other things:</p>
+<ul>
+<li>When doing comparisons to determine if we have a bin link, if we have a trampoline, we fully resolve its target path using <code>dunce::canonicalize</code>.</li>
+<li>In the trampoline itself, if it's a Python trampoline, we check if we're in a virtual environment (looking for a <code>pyvenv.cfg</code> with a <code>home</code> key). If we are not in a virtual environment and the <code>PYTHONHOME</code> env var is not set, we set <code>PYTHONHOME</code> to the parent directory of the executable in order to ensure that <code>sys.path</code> is set with the correct values.</li>
+</ul>
+<p>This supports both upgradeable <code>python{major}.{minor}</code> and freethreaded <code>python{major}.{minor}t</code> installs. <code>uv python upgrade 3.13</code> will upgrade the former while <code>uv python upgrade 3.13t</code> will upgrade the latter.</p>
+<p>This depends on PR #13712.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-19 13:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/interpreter.rs</code>:644 on 2025-05-19 13:38</div>
+            <div class="timeline-body"><p>Why must the path be absolute?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-19 13:40</div>
+            <div class="timeline-body"><p>Can you add a bit more to the pull request summary about how this works? I could probably glean it from the implementation, but I'd like to understand how it's supposed to work before reading the implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-19 13:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-python/src/interpreter.rs</code>:644 on 2025-05-19 13:56</div>
+            <div class="timeline-body"><p>This method is moved from <code>uv_fs</code> and this was an existing assumption.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-19 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-python/src/interpreter.rs</code>:644 on 2025-05-19 14:00</div>
+            <div class="timeline-body"><p>To be clear, it's also been updated to check on Windows for a trampoline, and if one is found, to use <code>dunce::canonicalize</code> to find the fully resolved path.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-19 14:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/interpreter.rs</code>:644 on 2025-05-19 14:06</div>
+            <div class="timeline-body"><p>I don't understand why the existing assumption was there though, I think it's because otherwise it would be surprising behavior on Windows but you changed the Windows behavior here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-05-19 14:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you add a bit more to the pull request summary about how this works? I could probably glean it from the implementation, but I'd like to understand how it's supposed to work before reading the implementation.</p>
+</blockquote>
+<p>I've added a couple of new paragraphs with more detail.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-19 14:21</div>
+            <div class="timeline-body"><p>Thanks!</p>
+<p>And just to clarify, I thought <code>~/.local/bin/python3.11 -m venv</code> wouldn't work on Unix. How was that resolved?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-05-19 14:32</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks!</p>
+<p>And just to clarify, I thought <code>~/.local/bin/python3.11 -m venv</code> wouldn't work on Unix. How was that resolved?</p>
+</blockquote>
+<p>I just wasn't certain it would work for every scenario, but when testing further I found there was no issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @jtfmumm on 2025-05-20 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-05-21 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-21 20:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-python/src/interpreter.rs</code>:644 on 2025-05-21 20:34</div>
+            <div class="timeline-body"><p>This can still behave in the old way if the executable is not a trampoline. I can look into why this <code>debug_assert</code> was added in the first place, but I don't think my changes would have changed the invariant for the non-trampoline case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-05-26 13:09</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/uv/branches/jtfm%2Fpython-upgrade-bin">CodSpeed Instrumentation Performance Report</a></h2>
+<h3>Merging #13531 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>jtfm/python-upgrade-bin</code> (89b1f78) with <code>main</code> (f20a25f)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 12</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/managed.rs</code>:612 on 2025-06-04 15:10</div>
+            <div class="timeline-body"><p>Can you add about what the <code>canonicalize</code> and the <code>unwrap_or</code> fallback do here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:96 on 2025-06-04 15:18</div>
+            <div class="timeline-body"><p>no a code problem, for my own understanding: what's wrong with <code>sys.path</code> if we don't set <code>PYTHONHOME</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:161 on 2025-06-04 15:21</div>
+            <div class="timeline-body"><p>We usually combine those by opening directly and having <code>Err(err) if err.kind() == io::ErrorKind::NotFound</code> in the error message, but here we may skip the <code>if pyvenv_path.exists()</code> since it's included in discarding open errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:164 on 2025-06-04 15:22</div>
+            <div class="timeline-body"><p>I think we don't trim in the other places where we parse <code>pyvenv.cfg</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/python_install.rs</code>:1138 on 2025-06-04 15:25</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        .unwrap_or_else(|| panic!(&quot;{} should be readable&quot;, path.display()))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-04 15:27</div>
+            <div class="timeline-body"><p>Left some minor comments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-08 23:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-python/src/managed.rs</code>:612 on 2025-06-08 23:22</div>
+            <div class="timeline-body"><p>Added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-08 23:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:96 on 2025-06-08 23:28</div>
+            <div class="timeline-body"><p>There were cases where running with the <code>bin</code> trampoline was setting the effective home directory to as I recall the <code>bin</code> directory. And so, for example, the wrong <code>site-packages</code> path was being set.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Support transparently upgradeable Python bin installations (under `--preview`)" to "Support transparently upgradeable Python bin installations" by @jtfmumm on 2025-06-09 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-10 12:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:167 on 2025-06-10 12:28</div>
+            <div class="timeline-body"><p>Why do we need to search for this key? The presence of a <code>pyvenv.cfg</code> file alone seems sufficient?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-10 12:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:158 on 2025-06-10 12:31</div>
+            <div class="timeline-body"><p>Why are we looking in these two directories? We usually just check in the environment root, which should always be the grandparent of a Python executable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-10 12:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:167 on 2025-06-10 12:31</div>
+            <div class="timeline-body"><p>(We have other checks for virtual environments and they do not read the file)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-10 12:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:167 on 2025-06-10 12:37</div>
+            <div class="timeline-body"><p>I'm following PEP 405 here (same answer for your question about checking two directories):</p>
+<pre><code>This PEP proposes to add a new first step to this search. If a `pyvenv.cfg` file is found either adjacent to the Python executable or one directory above it (if the executable is a symlink, it is not dereferenced), this file is scanned for lines of the form `key = value`. If a `home` key is found, this signifies that the Python binary belongs to a virtual environment, and the value of the home key is the directory containing the Python executable used to create this virtual environment.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:158 on 2025-06-10 12:38</div>
+            <div class="timeline-body"><p>See response above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-10 12:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-10 12:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:167 on 2025-06-10 12:41</div>
+            <div class="timeline-body"><p>But if we've found this is unnecessary I could update it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-10 12:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:167 on 2025-06-10 12:54</div>
+            <div class="timeline-body"><p>Weird. We don't do that today. I'm not sure scanning for the <code>home</code> key is necessary. I also can't think of a situation where the <code>pyvenv.cfg</code> would be next to the executable. I would probably just note that we're not doing this more robust check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-10 12:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:167 on 2025-06-10 12:55</div>
+            <div class="timeline-body"><p>e.g.</p>
+<p>https://github.com/astral-sh/uv/blob/bf96c60e3eb805ba9d66630e87cd639c75f81f0a/crates/uv-python/src/interpreter.rs#L948-L952</p>
+<p>https://github.com/astral-sh/uv/blob/fb0811680054a8aea9d8babdbf6877c6e3da9afe/crates/uv-python/src/virtualenv.rs#L134</p>
+<p>https://github.com/astral-sh/uv/blob/7310ea75da16e6b8c86bbc11c12d6c46a15b8f8e/crates/uv-python/src/discovery.rs#L829-L831</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-10 13:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:167 on 2025-06-10 13:06</div>
+            <div class="timeline-body"><p>Ok, I'll update and comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-06-10 17:47</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/uv/branches/jtfm%2Fpython-upgrade-bin">CodSpeed Walltime Performance Report</a></h2>
+<h3>Merging #13531 will <strong>improve performances by 17.89%</strong></h3>
+<p><sub>Comparing <code>jtfm/python-upgrade-bin</code> (89b1f78) with <code>main</code> (f20a25f)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements<br />
+<code>✅ 11</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>wheelname_parsing_failure[flyte-long-extension]</code> | 112 ns | 95 ns | +17.89% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-10 18:04</div>
+            <div class="timeline-body"><p>Merging into feature branch as part of the PR stack (as described in <a href="https://github.com/astral-sh/uv/pull/13312#issuecomment-2960012218">this comment</a>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @jtfmumm on 2025-06-10 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-06-10 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-10 18:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:24 UTC
+    </footer>
+</body>
+</html>

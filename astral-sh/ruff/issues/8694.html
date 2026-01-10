@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP032 does not cleanup escaped format placeholders in string continuations - astral-sh/ruff #8694</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP032 does not cleanup escaped format placeholders in string continuations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8694">#8694</a>
+        opened by <a href="https://github.com/ThiefMaster">@ThiefMaster</a>
+        on 2023-11-15 13:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2023-11-15 13:30</div>
+            <div class="timeline-body"><p>Original code:</p>
+<pre><code class="language-python">query = ('type != {} OR '
+         &quot;data::text = '{{}}'&quot;
+         .format(my_type))
+</code></pre>
+<pre><code>$ ruff --isolated --select UP032 --preview rufftest/ruff_sample.py
+rufftest/ruff_sample.py:1:10: UP032 [*] Use f-string instead of `format` call
+
+$ ruff --isolated --select UP032 --preview rufftest/ruff_sample.py --fix
+Found 1 error (1 fixed, 0 remaining).
+</code></pre>
+<p>&quot;Fixed&quot; code:</p>
+<pre><code class="language-python">query = (f'type != {my_type} OR '
+         &quot;data::text = '{{}}'&quot;
+         )
+</code></pre>
+<p>Weird whitespace aside, the second string now contains a literal <code>{{}}</code> instead of the previous <code>{}</code> after formatting.</p>
+<p>Any escaped <code>{{}}</code> format placeholders in string parts not converted to an f-string should be replaced with their unescaped version <code>{}</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-11-15 14:51</div>
+            <div class="timeline-body"><p>We just realized we hit the same bug in PyTorch with ruff a while back when we updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-15 15:37</div>
+            <div class="timeline-body"><p>I thought this was filed before and fixed — will look into it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-11-15 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-15 16:01</div>
+            <div class="timeline-body"><p>Here's a failing test case https://github.com/astral-sh/ruff/pull/8697</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-11-15 16:44</div>
+            <div class="timeline-body"><p><code>                        f'&quot;args&quot;: {{}}}}, '</code>
+is what broke for me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-11-16 19:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:59 UTC
+    </footer>
+</body>
+</html>

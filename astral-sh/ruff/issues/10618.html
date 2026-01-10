@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff server` editor integration is broken - astral-sh/ruff #10618</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>ruff server</code> editor integration is broken</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10618">#10618</a>
+        opened by <a href="https://github.com/snowsignal">@snowsignal</a>
+        on 2024-03-26 16:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/snowsignal">@snowsignal</a> on 2024-03-26 16:26</div>
+            <div class="timeline-body"><p>Diagnostics weren't showing up when debugging the new Ruff VS Code extension locally. While investigating this issue, I found these logs, which happen immediately following client/server initialization:</p>
+<pre><code>[info] [Trace - &lt;TIME&gt;] Sending request 'textDocument/codeAction - (2)'.
+[info] [Trace - &lt;TIME&gt;] Received request 'client/registerCapability - (1)'.
+...
+ERROR ruff_server::server Expected request or notification, got response instead: Response { id: RequestId(I32(1)), result: None, error: None }
+</code></pre>
+<p>The issue here is that the client fires off a <code>codeAction</code> request before responding to the <code>registerCapability</code> request from the client. On the server side, we're awaiting and then flushing an incoming response to the <code>registerCapability</code> request. Instead, we flush the <code>codeAction</code> request by mistake, and this lack of response breaks the LSP integration because the JSON-RPC protocol requires that every request has a response.</p>
+<p>This is also why the error log later appears. Because we only flush the first message we receive, the response from the client is handled in the main event loop, which isn't expected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @snowsignal on 2024-03-26 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "`ruff server` may silently ignore a code action request when debugging locally, which breaks editor integration" to "`ruff server` editor integration is broken" by @snowsignal on 2024-03-26 16:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @snowsignal by @snowsignal on 2024-03-26 18:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @snowsignal on 2024-03-26 20:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:19 UTC
+    </footer>
+</body>
+</html>

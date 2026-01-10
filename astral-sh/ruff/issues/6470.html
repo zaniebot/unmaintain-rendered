@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposed rule: `global` or `nonlocal` looks skippable but applies to the whole function - astral-sh/ruff #6470</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Proposed rule: <code>global</code> or <code>nonlocal</code> looks skippable but applies to the whole function</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6470">#6470</a>
+        opened by <a href="https://github.com/andersk">@andersk</a>
+        on 2023-08-10 05:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/andersk">@andersk</a> on 2023-08-10 05:54</div>
+            <div class="timeline-body"><p>In this example, the <code>global</code> declaration is misleading, because Python actually applies it to the whole function, not just the <code>if</code> branch it’s inside.</p>
+<pre><code class="language-python">g = 1
+
+def f(b: bool) -&gt; None:
+    if b:
+        global g
+        g = 2
+    else:
+        g = 3
+
+f(False)
+print(g)  # 3, not 1
+</code></pre>
+<p>The specific rule I would propose is as follows:</p>
+<ul>
+<li>If there’s a <code>global g</code> or <code>nonlocal g</code> declaration at location X, and a reference to <code>g</code> at location Y, and there exists a syntactic control flow path from the function start to Y that doesn’t go through X, then raise a diagnostic “<code>global g</code> looks skippable but applies to the whole function”.</li>
+</ul>
+<p>(This formulation avoids unnecessarily flagging the above example if there were no <code>else: g = 3</code> branch.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-10 12:52</div>
+            <div class="timeline-body"><p>(This would be a good rule to leverage our control-flow graph.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-08-10 12:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2023-08-10 12:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:56 UTC
+    </footer>
+</body>
+</html>

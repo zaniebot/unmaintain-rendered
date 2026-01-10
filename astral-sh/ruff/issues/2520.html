@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invocation as python module `python -m ruff` does not work properly - astral-sh/ruff #2520</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Invocation as python module <code>python -m ruff</code> does not work properly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2520">#2520</a>
+        opened by <a href="https://github.com/trottomv">@trottomv</a>
+        on 2023-02-03 09:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/trottomv">@trottomv</a> on 2023-02-03 09:19</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>When ruff is installed on system without virtualenv or in a different path than the default, the invocation as a python module does not work, and a sys exit occurs without errors printed on the console:</p>
+<p><code>$ pip install ruff</code>
+or
+<code>$ pip install --user --no-cache ruff</code></p>
+<pre><code>$ ruff -V
+ruff 0.0.238
+</code></pre>
+<pre><code>$ python -m ruff check -v .
+$ ruff check -v .
+...
+[2023-02-03][10:15:35][ruff::rules::isort::categorize][DEBUG] Categorized 'json' as StandardLibrary (KnownStandardL
+[2023-02-03][10:15:35][ruff::rules::isort::categorize][DEBUG] Categorized 'django' as ThirdParty (KnownThirdParty)
+[2023-02-03][10:15:35][ruff::rules::isort::categorize][DEBUG] Categorized 'django_drf_filepond' as ThirdParty (NoMa
+[2023-02-03][10:15:35][ruff::rules::isort::categorize][DEBUG] Categorized 'django' as ThirdParty (KnownThirdParty)
+[2023-02-03][10:15:35][ruff::rules::isort::categorize][DEBUG] Categorized 'django' as ThirdParty (KnownThirdParty)
+...
+</code></pre>
+<pre><code>$ find / -name &quot;ruff&quot;
+/home/trotto/.local/lib/python3.11/site-packages/ruff
+/home/trotto/.local/bin/ruff
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-02-03 12:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-03 16:25</div>
+            <div class="timeline-body"><p>Thanks for filing :) I'll take a look today (hopefully).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-03 16:25</div>
+            <div class="timeline-body"><p>Although where possible I recommend <code>ruff</code> over <code>python -m ruff</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trottomv">@trottomv</a> on 2023-02-03 18:09</div>
+            <div class="timeline-body"><p>Thank to you @charliermarsh</p>
+<p>in fact it is absolutely not a blocking problem, but it seems internal to the <code>__main__.py</code></p>
+<p><code>sysconfig.get_path(&quot;scripts&quot;)</code> returns the correct path in case of a virtualenv is active, but if <code>pip install</code> is run to a custom PATH at that point <code>python -m</code> would no longer work because the result of <code>sysconfig.get_path(&quot;scripts &quot;)</code> is always <code>/usr/local/bin</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-03 18:10</div>
+            <div class="timeline-body"><p>Yeah I'm trying to figure out what the &quot;right&quot; fix is here. We could just call <code>subprocess.check_call([&quot;ruff&quot;, ...])</code> or similar. But, is that guaranteed to give you the right version of Ruff, if you have multiple installed in your path...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-03 18:14</div>
+            <div class="timeline-body"><p>I guess we could call <code>subprocess.check_call</code> and add the scripts directory to the front of the path?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/trottomv">@trottomv</a> on 2023-02-03 20:20</div>
+            <div class="timeline-body"><p>I consider quite important to avoid the sys exit without having an explicit error in console, it is not easy to predict the various edge cases and where the ruff binary can be installed, i would suggest something like this:</p>
+<pre><code>if __name__ == &quot;__main__&quot;:                                                   
+    ruff = Path(sysconfig.get_path(&quot;scripts&quot;)) / &quot;ruff&quot;                      
+    if not ruff.is_file():                                                   
+        ruff = Path(sysconfig.get_config_var(&quot;userbase&quot;)) / &quot;bin&quot; / &quot;ruff&quot;   
+        if not ruff.is_file():                                               
+            raise FileNotFoundError(ruff)                                    
+    sys.exit(os.spawnv(os.P_WAIT, ruff, [ruff, *sys.argv[1:]]))              
+                                                                             
+</code></pre>
+<p>This should cover most cases,
+if you like it, I can gladly open a PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-03 21:02</div>
+            <div class="timeline-body"><p>Yeah that seems to work for me. Feel free to send a PR! Would be welcome!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-04 13:23</div>
+            <div class="timeline-body"><p>Closed by #2563.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-04 13:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:12 UTC
+    </footer>
+</body>
+</html>

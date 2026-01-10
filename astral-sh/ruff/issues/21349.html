@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature request: warn on set creation with unhashable types - astral-sh/ruff #21349</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature request: warn on set creation with unhashable types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21349">#21349</a>
+        opened by <a href="https://github.com/gtkacz">@gtkacz</a>
+        on 2025-11-09 22:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gtkacz">@gtkacz</a> on 2025-11-09 22:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>If an user is trying to create a <code>set</code> or similar on unhashable types, it will error with something like <code>TypeError: unhashable type: 'list'</code>. This can easily be warned by <code>ruff</code> if it knows the type of the variable by checking for the existence of the <code>__hash__</code> method.</p>
+<p>Which would warn the user in something like:</p>
+<pre><code class="language-py">some_set = set([{'foo': 'bar'}])
+</code></pre>
+<p>Worth pointing out that iterables with root-level hashable types can be passed, e.g.:</p>
+<pre><code class="language-py">set({'foo': 'bar'})
+&gt;&gt;&gt; {'foo'}
+
+set([0, 1, 2])
+&gt;&gt;&gt; {0, 1, 2}
+</code></pre>
+<p>Example checker implementation in Python:</p>
+<pre><code class="language-py">def is_unhashable(var: Any) -&gt; bool:
+	if not var.__class__.__hash__ and (var.__class__.__iter__ and not var[0].__class__.__hash__):
+		return True
+
+	return False
+
+is_unhashable([0, 1, 2])
+&gt;&gt;&gt; False
+
+is_unhashable([{'foo': 'bar'}])
+&gt;&gt;&gt; True
+
+is_unhashable('foo')
+&gt;&gt;&gt; False
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-10 14:22</div>
+            <div class="timeline-body"><p>My first thought was that this might be a better fit for a type checker, but it doesn't look like <a href="https://play.ty.dev/1f0224b0-f593-40d3-a1d4-a59cf0b6eada">ty</a>, <a href="https://pyright-play.net/?pythonVersion=3.8&amp;strict=true&amp;code=M4ewtgpg%2BsEC4AIC8DZwBQG0DeByAZiCLgFwK4BGAhgE64C%2BAugJRA">pyright</a>, or <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=8ce24737929eb07d09bd82545ada1a42">mypy</a> flag this example either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-11-10 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-11-10 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-10 15:24</div>
+            <div class="timeline-body"><p>Yeah, that was my thought too but <code>set</code> takes an <code>Iterable[T]</code> without any constraints on <code>T</code>. There's an <code>Hashable</code> Protocol but it isn't widely used. @AlexWaygood probably knows more.</p>
+<p>We could hard code common cases but a proper implementation requires multifile analysis, which Ruff doesn't support yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-11-10 16:53</div>
+            <div class="timeline-body"><p>A relevant <code>typeshed</code> issue: https://github.com/python/typeshed/issues/9571</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-10 16:57</div>
+            <div class="timeline-body"><p>Type checkers are mostly useless for accurately inferring hashability, unfortunately. There is a <code>Hashable</code> protocol, but a major problem is that <code>object</code> is inferred as a subtype of <code>Hashable</code> (because <code>hash(object())</code> works at runtime). You can logically infer from this that all Python objects are hashable, since all Python types are subtypes of <code>object</code>... but wait, that's obviously not true.</p>
+<p>Hashability in Python just doesn't follow the normal rules that Python type checkers are meant to assume when they type-check Python code; it's a fundamental violation of the Liskov Substitution Principle baked deep into the language. I actually think Ruff may be able to do better than ty here just by hardcoding a few common cases of things that are known not to be hashable; it's very hard for type checkers to get this right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-11-10 17:00</div>
+            <div class="timeline-body"><p>For related discussion, see:</p>
+<ul>
+<li>https://github.com/astral-sh/ty/issues/1132</li>
+<li>https://github.com/astral-sh/ruff/pull/20284</li>
+<li>https://github.com/PyCQA/flake8-pyi/issues/283#issuecomment-1248095891</li>
+<li>https://github.com/astral-sh/ruff/blob/1d188476b608c94cea5cb2a97ae248d70a0e2154/crates/ty_vendored/vendor/typeshed/stdlib/typing.pyi#L867-L873</li>
+</ul>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:42 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`PGH003` doesn't detect violation if another suppression on that line does include a code - astral-sh/ruff #5960</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>PGH003</code> doesn't detect violation if another suppression on that line does include a code</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/5960">#5960</a>
+        opened by <a href="https://github.com/tylerlaprade">@tylerlaprade</a>
+        on 2023-07-22 00:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-07-22 00:28</div>
+            <div class="timeline-body"><p>The following code should be considered invalid because <code># pyright: ignore</code> does not have a code. However, because <code># noqa</code> has a code, the line doesn't get flagged.</p>
+<pre><code>secret_cache_item = self.cache_secrets_manager._get_cached_secret(self.secret_id)  # pyright: ignore # noqa[SLF001]
+</code></pre>
+<p>If I change it to</p>
+<pre><code>secret_cache_item = self.cache_secrets_manager._get_cached_secret(self.secret_id)  # pyright: ignore
+</code></pre>
+<p>then <code>PGH003</code> does fire (as well as <code>SLF001</code>, of course.</p>
+<p>The correct behavior is that only</p>
+<pre><code>secret_cache_item = self.cache_secrets_manager._get_cached_secret(self.secret_id) # pyright: ignore[reportPrivateUsage] # noqa[SLF001]
+</code></pre>
+<p>should be considered valid.</p>
+<p>It's worth noting that <code># noqa</code> is <em>not</em> recognized by Pyright, as it's a linter directing, not a type-checking one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-22 13:45</div>
+            <div class="timeline-body"><p>I think the issue here is that you have an invalid <code>noqa</code> code, so the PGH003 error is getting suppressed.</p>
+<p>This works as expected:</p>
+<pre><code class="language-python">secret_cache_item = self.cache_secrets_manager._get_cached_secret(self.secret_id)  # pyright: ignore # noqa: SLF001
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-22 13:46</div>
+            <div class="timeline-body"><p><code># noqa[SLF001]</code> is treated as equivalent to <code># noqa</code> (blanket ignore). We can probably warn on that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-22 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2023-07-23 17:18</div>
+            <div class="timeline-body"><p>Incidentally, I confirmed that both halves of this problem are fixed in the preview version:
+<img width="920" alt="image" src="https://github.com/astral-sh/ruff/assets/5475199/cccaf024-55ab-444e-9d10-2e84ae7502b8"></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:46 UTC
+    </footer>
+</body>
+</html>

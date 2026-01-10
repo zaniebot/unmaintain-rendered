@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff doesn't seem to respect the maximum line length - astral-sh/ruff #13607</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff doesn't seem to respect the maximum line length</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13607">#13607</a>
+        opened by <a href="https://github.com/mbridon">@mbridon</a>
+        on 2024-10-02 13:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mbridon">@mbridon</a> on 2024-10-02 13:32</div>
+            <div class="timeline-body"><ul>
+<li>List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+e.g. &quot;RUF001&quot;, &quot;unused variable&quot;, &quot;Jupyter notebook&quot;</li>
+</ul>
+<p>I searched for &quot;line_length&quot; and couldn't find anything interesting :shrug:</p>
+<ul>
+<li>A minimal code snippet that reproduces the bug.</li>
+</ul>
+<p>I had written the following :</p>
+<pre><code>        pretty_print = lambda f: &quot;\n&quot;.join(
+            [
+                line
+                for line in md.parseString(xml_string)
+                .childNodes[0]
+                .toprettyxml(indent=&quot; &quot; * 2, standalone=False)
+                .split(&quot;\n&quot;)
+                if line.strip()
+            ]
+        )
+        return pretty_print(xml_string)
+</code></pre>
+<p>And then ran :</p>
+<pre><code>$ ruff check . --fix --unsafe-fixes
+</code></pre>
+<p>This is the changes I got:</p>
+<pre><code>diff --git a/src/engine_info.py b/src/engine_info.py
+index 5a5775d..f86d14c 100644
+--- a/src/engine_info.py
++++ b/src/engine_info.py
+@@ -194,14 +194,6 @@ class EngineInfoManager(object):
+         for engine in engines:
+             xml_string += engine.xml()
+         xml_string += &quot;&lt;/engines&gt;&quot;
+-        pretty_print = lambda f: &quot;\n&quot;.join(
+-            [
+-                line
+-                for line in md.parseString(xml_string)
+-                .childNodes[0]
+-                .toprettyxml(indent=&quot; &quot; * 2, standalone=False)
+-                .split(&quot;\n&quot;)
+-                if line.strip()
+-            ]
+-        )
++        def pretty_print(f):
++            return &quot;\n&quot;.join([line for line in md.parseString(xml_string).childNodes[0].toprettyxml(indent=&quot; &quot; * 2, standalone=False).split(&quot;\n&quot;) if line.strip()])
+         return pretty_print(xml_string)
+
+</code></pre>
+<ul>
+<li>The command you invoked (e.g., <code>ruff /path/to/file.py --fix</code>), ideally including the <code>--isolated</code> flag.</li>
+</ul>
+<p>Ah, so I didn't know about the <code>--isolate</code> flag until opening this issue, so I ran the same command with it, but this gave the same result. :shrug:</p>
+<pre><code>$ ruff check . --fix --unsafe-fixes --isolate
+</code></pre>
+<ul>
+<li>The current Ruff settings (any relevant sections from your <code>pyproject.toml</code>).</li>
+</ul>
+<pre><code>$ cat pyproject.toml 
+[tool.ruff]
+# Extend the `pyproject.toml` file in the parent directory.
+extend = &quot;../pyproject.toml&quot;
+# But use a different line length.
+line-length = 88
+</code></pre>
+<p>As this didn't work, I tried also adding this:</p>
+<pre><code>$ cat ruff.toml 
+# Extend the `pyproject.toml` file in the parent directory.
+extend = &quot;../pyproject.toml&quot;
+# But use a different line length.
+line-length = 88
+</code></pre>
+<p>And this didn't work either. :confused:</p>
+<p>What did I do wrong?</p>
+<ul>
+<li>The current Ruff version (<code>ruff --version</code>).</li>
+</ul>
+<p>ruff 0.6.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-02 16:32</div>
+            <div class="timeline-body"><p>Hiya! So, our linter rules don't <em>generally</em> guarantee that they'll produce well-formatted code or code that necessarily fits within the specified line length, unfortunately. In general, I think we'd recommend using autofixes alongside an autoformatter such as <a href="https://docs.astral.sh/ruff/formatter/">Ruff's formatter</a> or Black.</p>
+<p>There are a <em>couple</em> of exceptions to this (some rules propose simplifications that wouldn't really make sense if the &quot;simpler&quot; version of the code ended up exceeding the specified line length). But that's the general principle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @AlexWaygood on 2024-10-02 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @AlexWaygood on 2024-10-02 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mbridon">@mbridon</a> on 2024-10-03 07:32</div>
+            <div class="timeline-body"><p>Indeed, I first passed the code through <code>black</code> and then <code>ruff</code> kept the exact same code, no overly long line in either case. A bit silly that ruff first needs blacked code, so it's not really a full replacement as I had hoped... :disappointed:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-03 07:37</div>
+            <div class="timeline-body"><p>Running <code>ruff check</code> and <em>then</em> <code>ruff format</code> is the order in which we recommend to do things, if you want to run both. If you do it like that, it should hopefully be a full replacement :-) neither the linter nor the formatter should require the code to already be blackened in order to run properly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mbridon">@mbridon</a> on 2024-10-03 07:43</div>
+            <div class="timeline-body"><p>In my case I do require the code to be blackened first, otherwise <code>ruff check</code> will add this very long line and remove an import I need to keep for the tests to work...</p>
+<p>I added the <code>fmt: skip</code> comment so black ignores that block and keeps the import, is there a way to tell ruff to do the same?</p>
+<p>Then the only problem remains the overly long line for which I need to blacken the code  :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-03 07:59</div>
+            <div class="timeline-body"><p>Yes, we support suppression comments for our formatter in the same way as black: https://docs.astral.sh/ruff/formatter/#format-suppression</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mbridon">@mbridon</a> on 2024-10-03 13:06</div>
+            <div class="timeline-body"><p>Ok, so I tried the following:</p>
+<pre><code>import ibus_cangjie.sounds  # type: ignore # fmt: skip
+</code></pre>
+<p>And ruff deleted this line, because the import is unused directly, but it is needed for the unit tests to work at all, because even if the import is not used as is, it is used through mocking:</p>
+<pre><code>sys.modules[&quot;ibus_cangjie.sounds&quot;].ErrorSound = MockErrorSound  # type: ignore
+</code></pre>
+<p>So ruff not only deleted the line, ignoring the format suppression comment telling it to skip that line, it also deleted the skipping comment :joy:</p>
+<p>Black at least ignores the line with the same <code>fmt: skip</code> comment. :wink:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-03 13:09</div>
+            <div class="timeline-body"><p>I think that's because it's the linter that's removing the import and not the formatter. So, <code>ruff check --fix</code> will run the linter and fix the diagnostics that can be fixable. You can find more information on the rules that provide fixes at https://docs.astral.sh/ruff/rules/. The way to suppress that is using <code>noqa</code> comments, so in this case it should be <code># noqa: F401</code> (https://docs.astral.sh/ruff/rules/unused-import/).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mbridon">@mbridon</a> on 2024-10-03 13:35</div>
+            <div class="timeline-body"><p>Indeed, that works, thank you @dhruvmanila :tada:</p>
+<p>So ruff is basically all I want now, just an insanely fast black :grin:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-10-03 13:41</div>
+            <div class="timeline-body"><p>Great! Sorry for the confusion, glad we could help here 😊</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-10-03 13:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:17 UTC
+    </footer>
+</body>
+</html>

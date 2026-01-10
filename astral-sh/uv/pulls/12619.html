@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>respect --offline flag for git cli operations - astral-sh/uv #12619</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>respect --offline flag for git cli operations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12619">#12619</a>
+        opened by <a href="https://github.com/thejchap">@thejchap</a>
+        on 2025-04-02 04:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/thejchap">@thejchap</a> on 2025-04-02 04:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>closes #12234</p>
+<p><a href="https://github.com/thejchap/uv/blob/e0f81f0d4a904d8c743e776d9f8c9ef5b96f769c/crates/uv-git/src/git.rs#L573">fetch_with_cli</a> doesn't respect the registry client's <a href="https://github.com/thejchap/uv/blob/e0f81f0d4a904d8c743e776d9f8c9ef5b96f769c/crates/uv-client/src/registry_client.rs#L1009">connectivity setting</a> - this pr updates <code>fetch_with_cli</code> to set <code>GIT_ALLOW_PROTOCOL=file</code> when the client's connectivity setting is <code>Connectivity::Offline</code></p>
+<h2>Test Plan</h2>
+<p>E2E</p>
+<pre><code class="language-sh">cargo run add &quot;pycurl @ git+https://github.com/pycurl/pycurl.git&quot; --directory ~/src/offline-test/ --offline
+</code></pre>
+<pre><code class="language-sh">   Compiling uv-cli v0.0.1 (/Users/justinchapman/src/uv/crates/uv-cli)
+   Compiling uv v0.6.11 (/Users/justinchapman/src/uv/crates/uv)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.47s
+     Running `target/debug/uv add 'pycurl @ git+https://github.com/pycurl/pycurl.git' --directory /Users/justinchapman/src/offline-test/ --offline`
+   Updating https://github.com/pycurl/pycurl.git (HEAD)                                                                                                                                   × Failed to download and build `pycurl @ git+https://github.com/pycurl/pycurl.git`
+  ├─▶ Git operation failed
+  ├─▶ failed to fetch into: /Users/justinchapman/.cache/uv/git-v0/db/9a596e5213c3162d
+  ╰─▶ process didn't exit successfully: `/usr/bin/git fetch --force --update-head-ok 'https://github.com/pycurl/pycurl.git' '+HEAD:refs/remotes/origin/HEAD'` (exit status: 128)
+      --- stderr
+      fatal: transport 'https' not allowed
+
+  help: If you want to add the package regardless of the failed resolution, provide the `--frozen` flag to skip locking and syncing.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @thejchap on 2025-04-02 04:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-02 13:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-git/src/git.rs</code>:235 on 2025-04-02 13:50</div>
+            <div class="timeline-body"><p>Could we just pass the connectivity into here instead of a bool?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-02 13:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-git/src/git.rs</code>:235 on 2025-04-02 13:51</div>
+            <div class="timeline-body"><p>I guess we pass bools for <code>disable_ssl</code>, but I presume that's because the type itself is more complex. I don't feel strongly, but less bools is nice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-02 13:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-static/src/env_vars.rs</code>:495 on 2025-04-02 13:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Used to set allowed protocols for git operations.
+    ///
+    /// When uv is in &quot;offline&quot; mode, only the &quot;file&quot; protocol is allowed.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-02 13:52</div>
+            <div class="timeline-body"><p>Cool!</p>
+<p>Would it be feasible to detect the message</p>
+<blockquote>
+<p>fatal: transport 'https' not allowed</p>
+</blockquote>
+<p>and wrap the error with something more informative?</p>
+<p>Could you add a test case in https://github.com/astral-sh/uv/blob/ddbf90c906083acd51afd86409fa3cb1ae2bcaa6/crates/uv/tests/it/pip_install.rs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-04-02 16:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thejchap">@thejchap</a> reviewed on 2025-04-03 05:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thejchap">@thejchap</a> on <code>crates/uv-git/src/git.rs</code>:235 on 2025-04-03 05:40</div>
+            <div class="timeline-body"><p>@zanieb will defer to you! only passed in as a bool because it meant not having to add an additional import to <code>uv-git</code> to pull in the type (<code>Connectivity</code> is defined in <code>uv-client</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-03 13:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-git/src/git.rs</code>:235 on 2025-04-03 13:07</div>
+            <div class="timeline-body"><p>Ah okay, we can skip that then for now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-04-04 06:41</div>
+            <div class="timeline-body"><p>@zanieb test added and tweaked the error message</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-04-04 14:12</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-04-04 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-04 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-04-04 22:18</div>
+            <div class="timeline-body"><p>Thanks for the help @zanieb !</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:22 UTC
+    </footer>
+</body>
+</html>

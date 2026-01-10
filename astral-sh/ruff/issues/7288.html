@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM401 should catch ternary operations - astral-sh/ruff #7288</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM401 should catch ternary operations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7288">#7288</a>
+        opened by <a href="https://github.com/jerr0328">@jerr0328</a>
+        on 2023-09-12 08:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jerr0328">@jerr0328</a> on 2023-09-12 08:46</div>
+            <div class="timeline-body"><p>In #4932, there was a bug because if-else blocks were rewritten as ternary operations which SIM401 wouldn't be able to fix. The bug was fixed but there's still the fact that you can have code like</p>
+<pre><code class="language-python">obj: dict = ...
+key = ...
+
+value = obj[key] if key in obj else &quot;Not found&quot;
+</code></pre>
+<p>which will not be corrected with <code>ruff check --fix --select SIM .</code></p>
+<p>Expected behavior:</p>
+<pre><code class="language-python">obj: dict = ...
+key = ...
+
+value = obj.get(key, &quot;Not found&quot;)
+</code></pre>
+<p>Checked with ruff <code>v0.0.287</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-09-12 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2023-09-12 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-12 11:54</div>
+            <div class="timeline-body"><p>Makes sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2023-09-12 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @charliermarsh on 2023-09-12 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> removed by @charliermarsh on 2023-09-12 13:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Flowrey">@Flowrey</a> on 2023-09-14 17:39</div>
+            <div class="timeline-body"><p>Hey, I would like to give it a try can I ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-09-14 18:04</div>
+            <div class="timeline-body"><p>@Flowrey feel free!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Flowrey by @zanieb on 2023-09-14 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Flowrey">@Flowrey</a> on 2023-09-14 20:11</div>
+            <div class="timeline-body"><p>I'm a bit puzzled, ternary operations are expressions, <code>Expr::IfExp</code>, but <code>if-else-block-instead-of-dict-get</code> rule is defined for statement and expect an <code>StmtIf</code> as argument, so should i define a new rule in this case like <code>if-expr-instead-of-dict-get</code> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-14 20:15</div>
+            <div class="timeline-body"><p>I think it can be the same <em>rule</em>, but it will need to be a new function that takes an <code>Expr::IfExp</code>, and is called from <code>crates/ruff/src/checkers/ast/analyze/expression.rs</code>. We may also need to rename the rule to reflect the two cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-20 20:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:18 UTC
+    </footer>
+</body>
+</html>

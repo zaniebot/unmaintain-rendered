@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>opt-in files on an individual basis using comment in file - astral-sh/ruff #6156</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>opt-in files on an individual basis using comment in file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6156">#6156</a>
+        opened by <a href="https://github.com/rsyring">@rsyring</a>
+        on 2023-07-28 16:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rsyring">@rsyring</a> on 2023-07-28 16:31</div>
+            <div class="timeline-body"><p>On legacy code bases its sometimes not possible to get buy-in to do a project wide reformat.  However, incremental migration using ruff, especially on brand new files or code that is unlikely to experience merge conflicts with other PRs due to reformating, is easier to justify and implement.</p>
+<p>Right now, that means updating the <code>include</code> setting for every file that should be handled.  In a large project, that list is going to get really big and dominate the config file.  I thought it would be better to have a special comment, maybe <code># include-qa: ruff</code>, along with a setting like <code>include-by-comment: true</code>, that would instruct ruff to include those files.  When it's false, <code># include-qa: ruff</code> would be flagged as a fixable linting error.  That way, when a codebase has been migrated completely, modify that setting to false, use <code>--fix</code> and all the <code>include-qa</code> comments can be removed by ruff.</p>
+<p>I suggest <code># include-qa: ruff</code> in the hope that other tools might be persuaded to use the same system.  E.g. <code># include-qa: ruff black</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-28 16:43</div>
+            <div class="timeline-body"><p>What about adding <code># ruff: noqa</code> to each file, to exempt them all? We could then support flagging unused <code># ruff: noqa</code> comments, and automatically remove them as you gained compatibility.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">noqa</span> added by @charliermarsh on 2023-07-28 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> added by @charliermarsh on 2023-07-28 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rsyring">@rsyring</a> on 2023-07-28 17:40</div>
+            <div class="timeline-body"><p>So like <code>--add-noqa</code> but at the file instead of line level.  It's better than the current options, so if that's where we end up, I'll take it.  Given its only a single line change its unlikely to create merge conflicts.  I like automatically removing those lines when they are no longer needed.</p>
+<p>However, that still entails editing every Python file in the repository.  Given the context I'm considering with this request, large code bases hesitant to enable wholesale changes, it could still create more friction than an opt-in solution.</p>
+<p>On the other hand, its likely that linting and formatting would be desired and, at least in black, the only mechanism I've found to accomplish these same goals is to add <code># fmt: off</code> at the top of every file.  If adding a single line is necessary, adding two lines isn't much harder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-07-28 20:29</div>
+            <div class="timeline-body"><p>Related https://github.com/astral-sh/ruff/issues/1149</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> removed by @charliermarsh on 2023-08-04 02:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-08-04 02:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rsyring">@rsyring</a> on 2023-08-31 00:24</div>
+            <div class="timeline-body"><p>FWIW: I ended up creating a Python script to run black and ruff only if a sentinel value was present in the file.  This does solve the problem when running the tools from the terminal but has enabled lint/format on save functionality, which is the primary use case right now.  In VS Code, this even shows linting in the editor due to its support for &quot;problem matching.&quot;</p>
+<pre><code class="language-python">#!/usr/bin/env python
+&quot;&quot;&quot;
+    Can be used to support format-on-save functionality in code editors on a per-file basis.
+
+    Configure your editor to run this file on save.  VS Code example:
+
+    tasks.json:
+    {
+        // See https://go.microsoft.com/fwlink/?LinkId=733558
+        // for the documentation about the tasks.json format
+        &quot;version&quot;: &quot;2.0.0&quot;,
+        &quot;tasks&quot;: [
+            {
+                &quot;label&quot;: &quot;code-qa&quot;,
+                &quot;type&quot;: &quot;shell&quot;,
+                &quot;command&quot;: &quot;./bin/code-qa.py ${file}&quot;,
+                &quot;presentation&quot;: {
+                    // Comment out to make terminal reveal every time task runs
+                    &quot;reveal&quot;: &quot;never&quot;
+                },
+                &quot;problemMatcher&quot;: {
+                    &quot;owner&quot;: &quot;py&quot;,
+                    &quot;fileLocation&quot;: [&quot;relative&quot;, &quot;${workspaceFolder}&quot;],
+                    &quot;pattern&quot;: {
+                    &quot;regexp&quot;: &quot;^(.*):(\\d+):(\\d+):\\s+([^\\s]+)\\s+(.*)$&quot;,
+                    &quot;file&quot;: 1,
+                    &quot;line&quot;: 2,
+                    &quot;column&quot;: 3,
+                    &quot;code&quot;: 4,
+                    &quot;message&quot;: 5
+                    }
+                }
+            }
+        ]
+    }
+
+    user or workspace settings.json:
+
+    &quot;runOnSave.commands&quot;: [
+        {
+            &quot;match&quot;: &quot;.*\\.py$&quot;,
+            &quot;command&quot;: &quot;workbench.action.tasks.runTask&quot;,
+            &quot;args&quot;: &quot;code-qa&quot;,
+            &quot;runIn&quot;: &quot;vscode&quot;,
+        }
+    ]
+
+    Above requires https://marketplace.visualstudio.com/items?itemName=pucelle.run-on-save
+&quot;&quot;&quot;
+
+import subprocess
+import sys
+
+
+def run(*args):
+    return subprocess.run(args)
+
+
+source_fpath = sys.argv[1]
+result: subprocess.CompletedProcess = run('rg', '-q', '# code-qa: on', source_fpath)
+if result.returncode == 0:
+
+    run('ruff', 'check', '-q', '--fix', source_fpath)
+
+    run('black', '--fast', '-q', source_fpath)
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:51 UTC
+    </footer>
+</body>
+</html>

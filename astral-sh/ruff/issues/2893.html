@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLF001 rejects acceptable private and protected access - astral-sh/ruff #2893</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>SLF001 rejects acceptable private and protected access</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2893">#2893</a>
+        opened by <a href="https://github.com/sanmai-NL">@sanmai-NL</a>
+        on 2023-02-14 14:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sanmai-NL">@sanmai-NL</a> on 2023-02-14 14:47</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>In the following case, a static method is called from within the class definition.
+That should be allowed, and from subclasses too.</p>
+<p>Calls to private methods should also be allowed from within the class definition.</p>
+<pre><code class="language-python">class TestSLF001:
+    @staticmethod
+    def _protected() -&gt; None:
+        pass
+
+    def public() -&gt; None:
+        TestSLF001._protected()
+</code></pre>
+<pre><code class="language-sh">ruff check --select ALL --ignore D103,TCH003,D testslf001.py
+</code></pre>
+<p>ruff 0.0.245</p>
+<p><code>pyproject.toml</code> snippet:</p>
+<pre><code class="language-toml">[tool.ruff]
+select = [&quot;ALL&quot;]
+line-length = 120
+target-version = &quot;py311&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "SLF001 does not discern protected from private members" to "SLF001 rejects acceptable private and protected access" by @sanmai-NL on 2023-02-14 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-02-14 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-14 16:04</div>
+            <div class="timeline-body"><p>👍 Yeah we should accept this. (It currently accepts <code>self._private</code> and <code>cls._private</code>, if it's helpful in the interim.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sanmai-NL">@sanmai-NL</a> on 2023-02-15 05:25</div>
+            <div class="timeline-body"><p><code>cls</code> not being the first param of a class method warrants a linting warning in its own right, indeed. And the same for <code>self</code> and instance methods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-15 16:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:21 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F401 creates infinite loop in preview mode when autofixing an unused first-party submodule import in an `__init__.py` file that has an `__all__` definition - astral-sh/ruff #12513</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F401 creates infinite loop in preview mode when autofixing an unused first-party submodule import in an <code>__init__.py</code> file that has an <code>__all__</code> definition</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12513">#12513</a>
+        opened by <a href="https://github.com/rshanker779">@rshanker779</a>
+        on 2024-07-25 15:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rshanker779">@rshanker779</a> on 2024-07-25 15:39</div>
+            <div class="timeline-body"><p>When having an <code>__init__</code> file with an <code>__all__</code> and an import that does not appear in <code>__all__</code>, an inifinte loop occurs as ruff tries to add the import to <code>__all__</code>. Full recreation details are below</p>
+<p>List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.</p>
+<ul>
+<li><code>__all__</code> init bug
+A minimal code snippet that reproduces the bug.</li>
+</ul>
+<pre><code class="language-python">import custom_module.a
+from custom_module import b
+
+__all__ = ['b']
+</code></pre>
+<p>This is with module structure</p>
+<pre><code>src/
+   - custom_module
+     - __init__.py # with the contents above
+       - a
+         - __init__.py #empty
+       - b 
+         -  __init__.py #empty
+</code></pre>
+<p>Running</p>
+<pre><code class="language-shell">ruff check --select=I,F401 --fix src/custom_module
+</code></pre>
+<p>Causes ruff to repeatedly add <code>custom_module.a</code> to the <code>__all__</code> until it errors</p>
+<p>The final output is</p>
+<pre><code class="language-python">import custom_module.a
+from custom_module import b
+
+__all__ = ['b', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a', 'custom_module.a']
+</code></pre>
+<p>Ruff settings</p>
+<pre><code class="language-toml">[tool.ruff]
+target-version = &quot;py310&quot;
+
+line-length = 120
+format.preview = true
+format.docstring-code-format = true
+lint.select = [
+  &quot;A&quot;,      # flake8-builtins
+  &quot;AIR&quot;,
+  &quot;ASYNC&quot;,
+  &quot;ASYNC1&quot;,
+  &quot;B&quot;,      # flake8-bugbear
+  &quot;BLE&quot;,    # flake8-blind-except
+  &quot;C4&quot;,
+  &quot;D&quot;,
+  &quot;DJ&quot;,
+  &quot;DTZ&quot;,
+  &quot;E&quot;,      # pycodestyle
+  &quot;ERA&quot;,    # eradicate
+  &quot;EXE&quot;,
+  &quot;F&quot;,      # pyflakes
+  &quot;FA&quot;,
+  &quot;FLY&quot;,    # flynt
+  &quot;FURB&quot;,
+  &quot;G&quot;,      # flake8-logging-format
+  &quot;I&quot;,      # isort
+  &quot;ICN&quot;,
+  &quot;INP&quot;,    # flake8-no-pep420
+  &quot;INT&quot;,
+  &quot;LOG&quot;,
+  &quot;N&quot;,      #pep8-naming
+  &quot;NPY&quot;,    # numpy
+  &quot;PD&quot;,     #pandas
+  &quot;PERF&quot;,
+  &quot;PGH&quot;,    # pygrep-hooks
+  &quot;PIE&quot;,
+  &quot;PLE&quot;,
+  &quot;PLW&quot;,
+  &quot;PT&quot;,     # flake8-pytest-style
+  &quot;PTH&quot;,    # flake8-use-pathlib
+  &quot;PYI&quot;,
+  &quot;Q&quot;,
+  &quot;RET&quot;,
+  &quot;RSE&quot;,
+  &quot;RUF&quot;,
+  &quot;S&quot;,      # flake8-bandit
+  &quot;SIM&quot;,
+  &quot;SLOT&quot;,
+  &quot;T&quot;,
+  &quot;TID&quot;,
+  &quot;TRY&quot;,    # tryceratops
+  &quot;UP&quot;,
+  &quot;W&quot;,      # pycodestyle
+  &quot;YTT&quot;,
+]
+lint.ignore = [
+  &quot;D100&quot;,  
+  &quot;D103&quot;,
+  &quot;D104&quot;,
+  &quot;D105&quot;,
+  &quot;D106&quot;,
+  &quot;D401&quot;,   
+  &quot;E501&quot;,
+  &quot;PIE790&quot;,
+  &quot;PLW1514&quot;,
+  &quot;PT001&quot;,
+  &quot;RUF002&quot;,
+  &quot;S101&quot;,
+  &quot;SIM300&quot;,
+  &quot;TRY003&quot;,
+  &quot;TRY300&quot;,
+  &quot;TRY301&quot;,
+  # https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
+  &quot;W191&quot;, # Enforced by the formatter
+]
+lint.per-file-ignores.&quot;**/{tests,scripts}/*&quot; = [
+  &quot;ARG&quot;,
+  &quot;D&quot;,
+  &quot;INP&quot;,
+  &quot;PLR&quot;,
+  &quot;S101&quot;,
+  &quot;T20&quot;,
+]
+lint.fixable = [
+  &quot;F401&quot;,
+  &quot;I&quot;,
+]
+lint.pep8-naming.classmethod-decorators = [
+  &quot;pydantic.validator&quot;,
+]
+lint.pydocstyle.convention = &quot;numpy&quot;
+lint.preview = true
+</code></pre>
+<p>Ruff version</p>
+<pre><code>ruff 0.5.2
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-07-25 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @charliermarsh on 2024-07-25 15:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2024-07-26 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jack-mcivor">@jack-mcivor</a> on 2024-07-26 08:52</div>
+            <div class="timeline-body"><p>I can reproduce this on v0.5.5 with</p>
+<pre><code class="language-shell">ruff check --isolated --preview --select=F401 --fixable=F401 --fix src/custom_module
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-07-29 13:59</div>
+            <div class="timeline-body"><p>I think the issue is that the F401 fix is trying to add <code>&quot;custom_module.a&quot;</code> to <code>__all__</code> for the autofix -- but it shouldn't be, because <code>&quot;custom_module.a&quot;</code> isn't a valid identifier. That means that when it comes around on the next loop, it finds that there the <code>custom_module.a</code> binding created by the import still isn't used at all (normally including it in <code>__all__</code> would mean that it's now counted as used, but here it doesn't because the inclusion in <code>__all__</code> is invalid). So it again tries to add <code>&quot;custom_module.a&quot;</code> to <code>__all__</code> to fix it not being used. And so on and so on, <em>ad infinitum</em>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[Infinite loop] F401 and RUF022 causing a loop in `__all__`" to "F401 fix causes an infinite loop when an unused first-party import in an `__init__.py` file isn't a valid identifier" by @AlexWaygood on 2024-07-29 14:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "F401 fix causes an infinite loop when an unused first-party import in an `__init__.py` file isn't a valid identifier" to "F401 creates infinite loop when autofixing an unused first-party submodule import in an `__init__.py` file that has an `__all__` definition" by @AlexWaygood on 2024-07-29 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @AlexWaygood on 2024-07-29 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "F401 creates infinite loop when autofixing an unused first-party submodule import in an `__init__.py` file that has an `__all__` definition" to "F401 creates infinite loop in preview mode when autofixing an unused first-party submodule import in an `__init__.py` file that has an `__all__` definition" by @AlexWaygood on 2024-07-29 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-07-31 12:34</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:28 UTC
+    </footer>
+</body>
+</html>

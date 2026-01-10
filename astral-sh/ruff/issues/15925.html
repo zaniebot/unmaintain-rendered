@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False-positive N803 with overrides - astral-sh/ruff #15925</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False-positive N803 with overrides</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15925">#15925</a>
+        opened by <a href="https://github.com/bersbersbers">@bersbersbers</a>
+        on 2025-02-04 08:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bersbersbers">@bersbersbers</a> on 2025-02-04 08:33</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p>This is my code. <code>BadClass</code> is bad, but I have to live with it:</p>
+<pre><code class="language-python">from typing import override
+
+
+class BadClass:
+    def fun(self, DaTa: int) -&gt; None: ...  # noqa: N803
+
+
+class MyClass(BadClass):
+    @override
+    def fun(self, DaTa: int) -&gt; None: ...
+</code></pre>
+<p><code>ruff --isolated check --select=N803 bug.py</code> (v0.9.4) gives:</p>
+<pre><code>&gt;ruff --isolated check --select=N803 bug.py
+bug.py:10:19: N803 Argument name `DaTa` should be lowercase
+   |
+ 8 | class MyClass(BadClass):
+ 9 |     @override
+10 |     def fun(self, DaTa: int) -&gt; None: ...
+   |                   ^^^^^^^^^ N803
+   |
+</code></pre>
+<p>However, I'd argue I have to name that argument that way - otherwise, <code>pyright</code> tells me:</p>
+<pre><code>c:\Git\project\bug.py
+  c:\Git\project\bug.py:10:9 - error: Method &quot;fun&quot; overrides class &quot;BadClass&quot; in an incompatible manner
+    Parameter 2 name mismatch: base parameter is named &quot;DaTa&quot;, override parameter is named &quot;data&quot; (reportIncompatibleMethodOverride)
+1 error, 0 warnings, 0 informations
+</code></pre>
+<p>So I'd argue that N803 should ignore functions with <code>@override</code> (as well as their <code>@overload</code>s!).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-02-04 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-04 08:48</div>
+            <div class="timeline-body"><p>Thanks, skipping <code>N803</code> for overriden methods does make sense to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-02-04 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-02-04 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-02-04 12:54</div>
+            <div class="timeline-body"><p>Regarding as well as their @overloads!, I believe this is not possible since the linter only has access to one script at a time. This means that if the base method is in a different script from its overloads, it cannot verify that one is overriding the other. (@MichaReiser, is that correct? 🙂)</p>
+<p>That said, skipping N803 for overridden methods seems like a good idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-04 13:01</div>
+            <div class="timeline-body"><p>Yes, Ruff can't check today if the decorated method actually overrides a method (in the correct way) from a parent class but we can just trust the developer here.</p>
+<p>We plan to implement a rule similar to pyright's for Red Knot, our upcoming type checker.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-05 08:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-05 08:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:32 UTC
+    </footer>
+</body>
+</html>

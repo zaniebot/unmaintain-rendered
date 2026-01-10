@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False negative for S105 when variable is typed - astral-sh/ruff #14991</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False negative for S105 when variable is typed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14991">#14991</a>
+        opened by <a href="https://github.com/zxdavb">@zxdavb</a>
+        on 2024-12-15 19:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zxdavb">@zxdavb</a> on 2024-12-15 19:09</div>
+            <div class="timeline-body"><p>I note that <code>ruff check</code> detects the following:</p>
+<pre><code class="language-python">TEST_PASSWORD = &quot;P@ssw0rd!!&quot;  # Possible hardcoded password assigned to: &quot;TEST_PASSWORD&quot;
+</code></pre>
+<p>... except when the appropriate <code>noqa</code> directive is applied:</p>
+<pre><code class="language-python">TEST_PASSWORD = &quot;P@ssw0rd!!&quot;  # noqa: S105
+</code></pre>
+<p>However, these also pass a <code>ruff check</code> without complaint:</p>
+<pre><code class="language-python">TEST_PASSWORD: str = &quot;P@ssw0rd!!&quot;
+TEST_PASSWORD: Final = &quot;P@ssw0rd!!&quot;
+</code></pre>
+<p>... and, IMO, they should not.</p>
+<p>Ruff 0.8.3
+Python 3.13.0
+Ubuntu 24.04.1 LTS on WSL</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-12-15 21:44</div>
+            <div class="timeline-body"><p>This should require only one edit to <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/checkers/ast/analyze/statement.rs"><code>statement.rs</code></a> to add another call to <code>flake8_bandit::rules::assign_hardcoded_password_string</code> at the end of the <code>AnnAssign</code> branch.</p>
+<p>An excellent <a href="../labels/good%20first%20issue">good first issue</a> candidate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zxdavb">@zxdavb</a> on 2024-12-15 22:52</div>
+            <div class="timeline-body"><p>A bit like this, I guess:</p>
+<pre><code class="language-rust">        Stmt::AnnAssign(
+            assign_stmt @ ast::StmtAnnAssign {
+                target,
+                value,
+                annotation,
+                ..
+            },
+        ) =&gt; {
+...
+
+            if checker.enabled(Rule::HardcodedPasswordString) {
+                flake8_bandit::rules::assign_hardcoded_password_string(checker, value, targets);
+            }
+        }
+        Stmt::TypeAlias(ast::StmtTypeAlias { name, .. }) =&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-12-15 23:24</div>
+            <div class="timeline-body"><p>That's correct, though that scope doesn't have <code>targets</code>, only <code>target</code>.</p>
+<p>If you are submitting a PR, please update the tests too. See <a href="https://github.com/astral-sh/ruff/blob/d848182340079299f71cfdfb647e1ae2d00835b6/CONTRIBUTING.md#the-basics">the contribution guide</a>, then look for the <code>S105.py</code> file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @dylwil3 on 2024-12-16 04:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2024-12-16 04:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @dylwil3 on 2024-12-16 04:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zxdavb">@zxdavb</a> on 2024-12-18 13:18</div>
+            <div class="timeline-body"><blockquote>
+<p>That's correct, though that scope doesn't have <code>targets</code>, only <code>target</code>.</p>
+</blockquote>
+<p>Sigh - I am pretty good with Python...</p>
+<p>For the benefit of others, so far I have:</p>
+<pre><code class="language-rust">            if let Some(value) = value {
+                if checker.enabled(Rule::HardcodedPasswordString) {
+                    flake8_bandit::rules::assign_hardcoded_password_string(
+                        checker,
+                        value,
+                        std::slice::from_ref(target), // Expects an array?
+                    );
+                }
+            }
+</code></pre>
+<p>... but I can't get it to compile!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-18 13:28</div>
+            <div class="timeline-body"><p>What you have seems almost correct and impressive that you found <code>std::slice::from_ref</code>. I remember that I only learned about that method after using Rust for several months:</p>
+<pre><code class="language-rust">            if checker.enabled(Rule::HardcodedPasswordString) {
+                if let Some(value) = value.as_deref() {
+                    flake8_bandit::rules::assign_hardcoded_password_string(
+                        checker,
+                        value,
+                        std::slice::from_ref(target),
+                    );
+                }
+            }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tarasmatsyk">@tarasmatsyk</a> on 2024-12-19 12:02</div>
+            <div class="timeline-body"><p>Hey guys, thank you for an amazing linter!</p>
+<p>I tried to absorb all advices here and came up with a PR:
+https://github.com/astral-sh/ruff/pull/15059</p>
+<p>@zxdavb my apologies if you wanted to tackle this, I was checking open issues and figured this one has the most potential for a test PR :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-12-19 17:15</div>
+            <div class="timeline-body"><p>I think this can be closed now, as it has been resolved by #15059.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-20 08:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:03 UTC
+    </footer>
+</body>
+</html>

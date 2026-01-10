@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule D413 produces a false positive for a section headed `Examples`. - astral-sh/ruff #6037</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule D413 produces a false positive for a section headed <code>Examples</code>.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6037">#6037</a>
+        opened by <a href="https://github.com/ghost">@ghost</a>
+        on 2023-07-24 15:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ghost">@ghost</a> on 2023-07-24 15:48</div>
+            <div class="timeline-body"><p>The bug is exhibited by the command</p>
+<pre><code class="language-shell">ruff --isolated --select D413 /path/to/file.py
+</code></pre>
+<p>If <code>file.py</code> is</p>
+<pre><code class="language-python">&quot;&quot;&quot;Title.
+
+Examples
+--------
+Body.
+&quot;&quot;&quot;
+</code></pre>
+<p>there is a false positive:</p>
+<pre><code>file.py:1:1: D413 [*] Missing blank line after last section (&quot;Examples&quot;)
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+</code></pre>
+<p>However, there is, correctly, no error detected if <code>file.py</code> is</p>
+<pre><code class="language-python">&quot;&quot;&quot;Title.
+
+Heading
+-------
+Body.
+&quot;&quot;&quot;
+</code></pre>
+<p>Running <code>ruff --version</code> prints <code>ruff 0.0.280</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-07-24 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-24 15:55</div>
+            <div class="timeline-body"><p>So I <em>think</em> this is correct. This rule wants you to format like:</p>
+<pre><code class="language-py">&quot;&quot;&quot;Title.
+
+Examples
+--------
+Body.
+
+&quot;&quot;&quot;
+</code></pre>
+<p>Which is consistent with pydocstyle's own implementation of this rule.</p>
+<p>If you're looking to guard against:</p>
+<pre><code class="language-py">&quot;&quot;&quot;Title.
+
+Examples
+--------
+Body.&quot;&quot;&quot;
+</code></pre>
+<p>That's instead covered by D209.</p>
+<p>Note that this is kind of a strange rule -- it's not included in the NumPy, Google, or PEP 257 conventions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-24 15:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2023-07-24 16:24</div>
+            <div class="timeline-body"><p>@charliermarsh,</p>
+<p>Firstly, there is only one new line at the end of the docstring given as an example of the desired style in the documentation for the rule.
+https://beta.ruff.rs/docs/rules/blank-line-after-last-section/#__code_1</p>
+<p>Secondly, if the rule ought to require two new lines there is a false negative when <code>file.py</code> is</p>
+<pre><code class="language-python">&quot;&quot;&quot;Title.
+
+Heading
+-------
+Body.
+&quot;&quot;&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-24 16:27</div>
+            <div class="timeline-body"><p>Thanks, I think that documentation is just wrong. I'll fix it.</p>
+<p>I believe that &quot;Heading&quot; is not a recognized section header (unlike &quot;Examples&quot;), <code>pydocstyle</code> doesn't error there either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2023-07-24 16:29</div>
+            <div class="timeline-body"><p>What headings are recognized?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-24 16:31</div>
+            <div class="timeline-body"><pre><code class="language-python">[
+    &quot;Args&quot;,
+    &quot;Arguments&quot;,
+    &quot;Attention&quot;,
+    &quot;Attributes&quot;,
+    &quot;Caution&quot;,
+    &quot;Danger&quot;,
+    &quot;Error&quot;,
+    &quot;Example&quot;,
+    &quot;Examples&quot;,
+    &quot;Extended Summary&quot;,
+    &quot;Hint&quot;,
+    &quot;Important&quot;,
+    &quot;Keyword Args&quot;,
+    &quot;Keyword Arguments&quot;,
+    &quot;Methods&quot;,
+    &quot;Note&quot;,
+    &quot;Notes&quot;,
+    &quot;Other Args&quot;,
+    &quot;Other Arguments&quot;,
+    &quot;Other Params&quot;,
+    &quot;Other Parameters&quot;,
+    &quot;Parameters&quot;,
+    &quot;Raises&quot;,
+    &quot;References&quot;,
+    &quot;Return&quot;,
+    &quot;Returns&quot;,
+    &quot;See Also&quot;,
+    &quot;Short Summary&quot;,
+    &quot;Tip&quot;,
+    &quot;Todo&quot;,
+    &quot;Warning&quot;,
+    &quot;Warnings&quot;,
+    &quot;Warns&quot;,
+    &quot;Yield&quot;,
+    &quot;Yields&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghost">@ghost</a> on 2023-07-24 16:32</div>
+            <div class="timeline-body"><p>Thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-24 16:37</div>
+            <div class="timeline-body"><p>I can add something to the FAQ around this point.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:48 UTC
+    </footer>
+</body>
+</html>

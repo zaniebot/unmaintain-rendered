@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Some errors not fit into one line - astral-sh/ruff #3520</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Some errors not fit into one line</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3520">#3520</a>
+        opened by <a href="https://github.com/qarmin">@qarmin</a>
+        on 2023-03-14 18:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/qarmin">@qarmin</a> on 2023-03-14 18:32</div>
+            <div class="timeline-body"><p>ruff 0.0.255</p>
+<p>When testing files, I see a lot of oneline error info</p>
+<pre><code>error: Failed to parse Desktop/33/SetPortInfoFF5.py: invalid syntax. Got unexpected token '__init__' at line 13 column 10
+error: Failed to parse Desktop/33/PpmImagePlugin4.py: Got unexpected token 󤄳 at line 133 column 35
+error: Failed to parse Desktop/33/DTDValidateError4.py: Got unexpected token 𓸾 at line 4 column 1
+error: Failed to parse Desktop/33/_test_fortran3.py: unexpected EOF while parsing at line 38 column 1
+error: Failed to parse Desktop/33/netr_DELTA_ID_UNION8.py: Got unexpected token 򍾖 at line 14 column 31
+error: Failed to parse Desktop/33/winapi7.py: Got unexpected token 􋉐 at line 33 column 1
+error: Failed to parse Desktop/33/rtf3.py: invalid syntax. Got unexpected token Newline at line 90 column 45
+error: Failed to parse Desktop/33/NETLOGON_SAM_LOGON_RESPONSE6.py: Got unexpected token 񰅣 at line 57 column 65
+error: Failed to parse Desktop/33/decoders7.py: Got unexpected nesting at line 2 column 1
+error: Failed to parse Desktop/33/comparisons5.py: Got unexpected token 󯻁 at line 1 column 13
+error: Failed to parse Desktop/33/abag1.py: unexpected EOF while parsing at line 17 column 1
+error: Failed to parse Desktop/33/ed255194.py: invalid syntax. Got unexpected token '|' at line 52 column 2
+error: Failed to parse Desktop/33/Content3.py: unexpected EOF while parsing at line 21 column 0
+error: Failed to parse Desktop/33/vesti8.py: Got unexpected token 򻲈 at line 3 column 29
+error: Failed to parse Desktop/33/libglib-2.0.so.0.7200.3-gdb0.py: Got unexpected token 󵟷 at line 1 column 1
+</code></pre>
+<p>but some files produce multiline errors, which is inconsistent and looks bad:</p>
+<pre><code>error: Failed to parse fix_except0.py: invalid syntax. Got unexpected token &quot;&quot;&quot;
+    try_stmt&lt; 'try' ':' (simple_stmt | suite)
+                  cleanup=(except_clause ':' (simple_stmt | suite))+
+                  tail=(['except' ':' (simple_stmt | suite)]
+                        ['else' ':' (simple_stmt | suite)]
+                        ['finally' ':' (simple_stmt | suite)]) &gt;
+    &quot;&quot;&quot; at line 39 column 14
+fix_except0.py:39:15: E999 SyntaxError: invalid syntax. Got unexpected token &quot;&quot;&quot;
+    try_stmt&lt; 'try' ':' (simple_stmt | suite)
+                  cleanup=(except_clause ':' (simple_stmt | suite))+
+                  tail=(['except' ':' (simple_stmt | suite)]
+                        ['else' ':' (simple_stmt | suite)]
+                        ['finally' ':' (simple_stmt | suite)]) &gt;
+    &quot;&quot;&quot;
+Found 1 error.
+
+</code></pre>
+<p>Example file - <a href="https://github.com/charliermarsh/ruff/files/10972513/fix_except0.py.zip">fix_except0.py.zip</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-14 18:37</div>
+            <div class="timeline-body"><p>Not much we can do here as we don't control those errors (they come from LALRPOP, from RustPython). We could omit them entirely, but that seems even worse to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-14 18:37</div>
+            <div class="timeline-body"><p>Maybe omitting them (just showing <code>SyntaxError</code>) is correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-03-14 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-15 08:33</div>
+            <div class="timeline-body"><p>We could potentially truncate after the first line.</p>
+<p>One thing that's on my mind is to re-work Diagnostics in general and, as part of that, I would have pushed towards printing diagnostics with more context by default (multiline diagnostics). Ideally, the system would support a &quot;verbose&quot; mode that prints extra context information that may be too verbose by default.</p>
+<p>Why I'm bringing this up. Has it been an intentional decision only to print one-line diagnostics when running the <code>check</code> command and if so, what was its motivation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-19 03:37</div>
+            <div class="timeline-body"><p>@MichaReiser - It's mostly born out of a &quot;consistent-with-Flake8-by-default&quot; attitude. We do support printing Clippy-like context via the <code>--show-source</code> flag (which can also be set in <code>pyproject.toml</code>):</p>
+<p><img src="https://user-images.githubusercontent.com/1309177/226152193-8a74de4c-3ccf-4397-bd10-8a1197daf19e.png" alt="Screen Shot 2023-03-18 at 11 36 43 PM" /></p>
+<p>But, clearly, it's not the default. That's not based on a principled stance other than that Flake8 also supports a <code>--show-source</code> flag and also doesn't default to it. We could definitely <em>consider</em> making that the default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jfmengels">@jfmengels</a> on 2023-03-22 20:43</div>
+            <div class="timeline-body"><blockquote>
+<p>We could definitely consider making that the default.</p>
+</blockquote>
+<p>Please do :pray:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-22 22:36</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>We could definitely consider making that the default.</p>
+</blockquote>
+<p>Please do :pray:</p>
+</blockquote>
+<p>Hy @jfmengels nice to see you here. I'm reading many of your blog posts to get inspiration for ruff's configuration and behaviour. Thanks for taking to write down your knowledge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jfmengels">@jfmengels</a> on 2023-03-23 09:01</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm reading many of your blog posts to get inspiration for ruff's configuration and behaviour. Thanks for taking to write down your knowledge.</p>
+</blockquote>
+<p>Happy to help! Static analysis is a field that I care about a lot, and I want better tools for everyone. And it's not like there is any competition between linters, since we tend to target different languages 😄
+I'm also trying to learn things from Ruff (performance mostly), though since the implementation of <code>elm-review</code> is done in a very different language, I don't know how much I will be able to put to use in practice.</p>
+<p>But let's not side-track the initial topic anymore 😅, always happy to discuss static analysis in other places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/youknowone">@youknowone</a> on 2023-04-20 14:55</div>
+            <div class="timeline-body"><p>Is this came from <code>ParseErrorType::UnrecognizedToken</code>? The multiline output is totally unexpected. It must be a bug of RustPython.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DimitrisJim">@DimitrisJim</a> on 2023-04-25 04:10</div>
+            <div class="timeline-body"><blockquote>
+<p>but some files produce multiline errors, which is inconsistent and looks bad</p>
+</blockquote>
+<p>but that specific file linked just happens to have a multi-line unexpected token (a triple quoted string literal in this case):</p>
+<pre><code class="language-python">    PATTERN  &quot;&quot;&quot;
+    try_stmt&lt; 'try' ':' (simple_stmt | suite)
+                  cleanup=(except_clause ':' (simple_stmt | suite))+
+                  tail=(['except' ':' (simple_stmt | suite)]
+                        ['else' ':' (simple_stmt | suite)]
+                        ['finally' ':' (simple_stmt | suite)]) &gt;
+    &quot;&quot;&quot;
+</code></pre>
+<p>hence why the output is multi-line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/youknowone">@youknowone</a> on 2023-04-25 05:37</div>
+            <div class="timeline-body"><p>Ah, that was confusing due to contents of the string. Still it looks like the error message need to be escaped (and prorably shortened too?) when being formatted, is it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DimitrisJim">@DimitrisJim</a> on 2023-04-26 10:20</div>
+            <div class="timeline-body"><blockquote>
+<p>Ah, that was confusing due to contents of the string</p>
+</blockquote>
+<p>Exactly! That's why I wanted to run locally and check and realized its just part of the source code.</p>
+<p>Not sure if we shorten/trim here, we can choose either really. I think it makes more sense to show the token that is invalid in its entirety considering that large-ish tokens like this one are not really the norm. Either way, if needed we'll discuss this further in the issue you opened.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-04-26 16:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe omitting them (just showing <code>SyntaxError</code>) is correct?</p>
+</blockquote>
+<p>This seems reasonable to me. #3931 adds a new <code>DisplayParseError</code> that implements our custom rendering for <code>SyntaxErrors. We can customize it to change the rendering of </code>UnrecognizedToken<code>to only show the message, or render the first line only (truncate with</code>...`). I can take a stab at it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2023-04-26 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/youknowone">@youknowone</a> on 2023-04-26 17:20</div>
+            <div class="timeline-body"><p>@DimitrisJim That's reasonable. Probably escaping will be enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-05-10 06:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:38 UTC
+    </footer>
+</body>
+</html>

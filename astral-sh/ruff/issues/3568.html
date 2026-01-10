@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff check file.py output is unreadable - astral-sh/ruff #3568</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff check file.py output is unreadable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3568">#3568</a>
+        opened by <a href="https://github.com/copperfield42">@copperfield42</a>
+        on 2023-03-17 02:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/copperfield42">@copperfield42</a> on 2023-03-17 02:44</div>
+            <div class="timeline-body"><p>Hello, I just hear of this project so I installed to test it, following the usage indication on some file I got this</p>
+<p><img src="https://user-images.githubusercontent.com/4504719/225796639-1e76bda0-9a30-49ec-bfe3-3754c7f495b9.png" alt="image" /></p>
+<p>I installed it like <code>pip install ruff</code>
+ruff version: 0.0.256
+Python version 3.11.2
+OS: Windows 10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-17 02:45</div>
+            <div class="timeline-body"><p>It looks like the color-support detection isn't working. Can you try setting <code>NO_COLOR=1</code>?</p>
+<p>(Reference in docs: https://beta.ruff.rs/docs/faq/#how-can-i-disable-ruffs-color-output)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-17 02:45</div>
+            <div class="timeline-body"><p>(Not sure <em>why</em> it's not working, but we delegate to another library for that: https://crates.io/crates/colored)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-03-17 02:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/copperfield42">@copperfield42</a> on 2023-03-17 02:52</div>
+            <div class="timeline-body"><p>creating and setting the NO_COLOR enviroment variable like that I got</p>
+<p><img src="https://user-images.githubusercontent.com/4504719/225800398-49f72aa1-f6e5-4ef8-991c-b068bbd02530.png" alt="image" /></p>
+<p>now is readable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/copperfield42">@copperfield42</a> on 2023-03-17 02:56</div>
+            <div class="timeline-body"><p>I guess I have to install that colored library too...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/copperfield42">@copperfield42</a> on 2023-03-17 03:03</div>
+            <div class="timeline-body"><p>mmm apparently I have to download a 625mb installer to get the docker thing in order to install the colored library!? what? that is a little too much</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-17 03:33</div>
+            <div class="timeline-body"><p>No no sorry! You don't need to install that library at all. It's a library that Rust uses under the hood to output the colored escape characters, which many terminals recognize. It's <em>supposed</em> to detect whether your terminal supports those characters, and only output them if it does. In your case, it looks like your terminal <em>doesn't</em> support those characters, but the library is emitting them anyway. (E.g., on my machine, I didn't install that library outside of Ruff, but I do get colored output.)</p>
+<p>In short: you don't need to install anything, but for whatever reason, it seems you either need to disable color via the environment variable (so that the library doesn't even <em>try</em> to output color), or try in a different terminal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/copperfield42">@copperfield42</a> on 2023-03-17 03:56</div>
+            <div class="timeline-body"><p>that is weird, it display color correctly for other thing like those of pip, and with the <a href="https://pypi.org/project/colorama/">colorama</a> library (that is needed for the tqdm to display correctly) also work fine, after calling the <code>just_fix_windows_console</code></p>
+<p><img src="https://user-images.githubusercontent.com/4504719/225807340-08e72729-d741-4b65-9a96-a913ec8740bc.png" alt="image" /></p>
+<p>removing the environment and trying in the power shell I got the same</p>
+<p><img src="https://user-images.githubusercontent.com/4504719/225807798-22757b31-4c73-4a39-b0af-6d250f3f1b09.png" alt="image" /></p>
+<p>here is a test script with the colorama</p>
+<pre><code>from colorama import Fore, Back, Style, just_fix_windows_console
+
+just_fix_windows_console()
+
+print(Fore.RED + 'some red text')
+print(Back.GREEN + 'and with a green background')
+print(Style.DIM + 'and in dim text')
+print(Style.RESET_ALL)
+print('back to normal now')
+</code></pre>
+<p>commenting the just_fix_windows_console it display</p>
+<p><img src="https://user-images.githubusercontent.com/4504719/225808520-5ff1190e-36b2-4aa0-ae92-999f091e7305.png" alt="image" /></p>
+<p>with just_fix_windows_console</p>
+<p><img src="https://user-images.githubusercontent.com/4504719/225808614-8b8b9609-ff9c-44e8-87a9-838766103eec.png" alt="image" /></p>
+<p>maybe there is something similar with that colored library too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-17 03:58</div>
+            <div class="timeline-body"><p>Hmm, I'm not 100% sure -- it says <code>Works on Linux, MacOS, and Windows (Powershell)</code> so it's at least <em>supposed</em> to work in PowerShell.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-17 03:59</div>
+            <div class="timeline-body"><p>There's some commentary in https://github.com/mackwic/colored/issues/59 where it seems like it doesn't work in some cases on Windows, but that it's not clear when.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-17 04:00</div>
+            <div class="timeline-body"><p>Oh, I'm seeing this: https://docs.rs/colored/2.0.0/x86_64-pc-windows-msvc/colored/control/fn.set_virtual_terminal.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-17 04:01</div>
+            <div class="timeline-body"><p>Maybe I should be setting that on Windows?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-03-17 04:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/copperfield42">@copperfield42</a> on 2023-03-17 04:06</div>
+            <div class="timeline-body"><p>well, lets try and see.
+<a href="https://github.com/mackwic/colored/issues/59#issuecomment-954367625">constituent</a> there also said something about that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-17 15:33</div>
+            <div class="timeline-body"><p>Are you interested in building Ruff locally to test that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/copperfield42">@copperfield42</a> on 2023-03-17 15:40</div>
+            <div class="timeline-body"><p>sure, what I need to do?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-17 18:24</div>
+            <div class="timeline-body"><p>Could you clone this branch (https://github.com/charliermarsh/ruff/pull/3583), then run:</p>
+<pre><code>cargo run -p ruff_cli -- /path/to/your/file.py --no-cache
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-17 18:25</div>
+            <div class="timeline-body"><p>You'd need to have Rust installed, so if that's too big of a lift, let me know. Maybe someone else can test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/copperfield42">@copperfield42</a> on 2023-03-17 18:56</div>
+            <div class="timeline-body"><p>it is big lift, Rust is very heavy, well the Visual Studio part is, that 950mb in just the c++ compiler or whatever holy molly and if it need the win 11 sdk is 1.5gb DX</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/copperfield42">@copperfield42</a> on 2023-03-17 18:58</div>
+            <div class="timeline-body"><p>if that branch can be made to be pip installed or similar without needing to install rust I can test it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-17 19:00</div>
+            <div class="timeline-body"><p>Ok thanks, let me create a wheel.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-17 19:31</div>
+            <div class="timeline-body"><p>I created wheels and binaries from that branch here: https://github.com/charliermarsh/ruff/actions/runs/4450737152</p>
+<p>You can download them at the bottom, and find the appropriate one for your platform. LMK if that works...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/copperfield42">@copperfield42</a> on 2023-03-17 20:02</div>
+            <div class="timeline-body"><p><img src="https://user-images.githubusercontent.com/4504719/226019978-c818f6a2-b95e-477c-b331-6419a5b17d4e.png" alt="image" /></p>
+<p>it appear to work correctly now :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-17 20:18</div>
+            <div class="timeline-body"><p>Woohoo! I'll clean up that PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/navneethc">@navneethc</a> on 2023-03-17 20:45</div>
+            <div class="timeline-body"><p>Can you use Windows Terminal?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/copperfield42">@copperfield42</a> on 2023-03-17 20:50</div>
+            <div class="timeline-body"><p>the power shell? sure
+<img src="https://user-images.githubusercontent.com/4504719/226041584-01f92b6e-2a58-46ec-8dc2-32edf6bbf109.png" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/navneethc">@navneethc</a> on 2023-03-17 21:06</div>
+            <div class="timeline-body"><blockquote>
+<p>the power shell? sure <img src="https://user-images.githubusercontent.com/4504719/226041584-01f92b6e-2a58-46ec-8dc2-32edf6bbf109.png" alt="image" /></p>
+</blockquote>
+<p>No, Windows Terminal -- it's the more modern alternative to the traditional terminal emulator. I'd recommend using that. It's available via the Windows Store: https://apps.microsoft.com/store/detail/windows-terminal/9N0DX20HK701</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-17 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/copperfield42">@copperfield42</a> on 2023-03-17 21:13</div>
+            <div class="timeline-body"><p>sure, give me a moment to install it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/copperfield42">@copperfield42</a> on 2023-03-17 21:16</div>
+            <div class="timeline-body"><p><img src="https://user-images.githubusercontent.com/4504719/226052904-c58cb9c0-7552-452e-80a5-f7a0f1403d80.png" alt="image" /></p>
+<p>in that one there is no issue with either version of ruff</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/navneethc">@navneethc</a> on 2023-03-17 21:57</div>
+            <div class="timeline-body"><blockquote>
+<p><img src="https://user-images.githubusercontent.com/4504719/226052904-c58cb9c0-7552-452e-80a5-f7a0f1403d80.png" alt="image" /></p>
+<p>in that one there is no issue with either version of ruff</p>
+</blockquote>
+<p>Yeah, that's why I recommended it. :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:40 UTC
+    </footer>
+</body>
+</html>

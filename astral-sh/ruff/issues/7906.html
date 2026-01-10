@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E101 False positive in multiline string - astral-sh/ruff #7906</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>E101 False positive in multiline string</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7906">#7906</a>
+        opened by <a href="https://github.com/david-waterworth">@david-waterworth</a>
+        on 2023-10-11 01:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/david-waterworth">@david-waterworth</a> on 2023-10-11 01:21</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>I have a python model that contains rest endpoint queries defined as multi-line strings, i.e.</p>
+<pre><code>query = &quot;&quot;&quot;
+    query ...
+&quot;&quot;&quot;
+</code></pre>
+<p><code>ruff</code> is reporting <code>E101 Indentation contains mixed spaces and tabs</code> for the text inside the string.</p>
+<p>Technically this is correct as the indentation of the query does contain a mix of tab and spaces - but in general, I feel that <code>ruff</code> shouldn't try and lint a text block.</p>
+<p>Note I observed this in a notebook - I've not tested in a py file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-11 03:46</div>
+            <div class="timeline-body"><p>So pycodestyle has this behavior too, though it's unclear whether they consider it correct (https://github.com/PyCQA/pycodestyle/issues/600, https://github.com/PyCQA/pycodestyle/issues/376, https://github.com/PyCQA/pycodestyle/issues/45).</p>
+<p>We actually disabled W109 (which flags uses of tabs) within such strings. I'm open to disabling E101 too -- but what's the valid use-case for mixing spaces and tabs within a single indent, even within a string?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-10-11 03:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> added by @charliermarsh on 2023-10-12 16:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/njzjz">@njzjz</a> on 2024-09-13 19:01</div>
+            <div class="timeline-body"><p>In a unit test, one may want to check if a file has the expected content.</p>
+<pre><code class="language-py">a = &quot;&quot;&quot;
+	    example1
+	    example2
+&quot;&quot;&quot;
+with open(&quot;some_file.txt&quot;) as f:
+    b = f.read()
+assert a == b
+</code></pre>
+<p>The fix breaks the test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-13 22:16</div>
+            <div class="timeline-body"><p>Ignoring leading whitespace in multiline strings seems reasonable because it is not an indentation.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:34 UTC
+    </footer>
+</body>
+</html>

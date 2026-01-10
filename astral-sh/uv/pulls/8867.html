@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect dynamic version updates in `uv lock` - astral-sh/uv #8867</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect dynamic version updates in <code>uv lock</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/8867">#8867</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-11-06 16:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-06 16:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes https://github.com/astral-sh/uv/issues/8866.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-11-06 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-11-06 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-11-06 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-06 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-06 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rino0601">@rino0601</a> on 2024-11-13 06:38</div>
+            <div class="timeline-body"><p>@charliermarsh</p>
+<p>It seems that this change has affected the CI we were using.</p>
+<p>I prefer using the following configuration:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;pdm-backend&quot;]
+build-backend = &quot;pdm.backend&quot;
+
+[tool.pdm.version]
+source = &quot;scm&quot;
+write_to = &quot;mypkg/_version.py&quot;
+write_template = &quot;__version__ = '{}'&quot;
+</code></pre>
+<p>There are likely similar backends other than <code>pdm-backend</code> as well.</p>
+<p>After version 0.5.0, running <code>uv sync --frozen</code> still modifies <code>uv.lock</code>.</p>
+<p>This results in every version including a date, like this:</p>
+<p><code>mypkg 0.2.2.dev3+g83f1f40.d20241113</code></p>
+<p>When I add a <code>git diff</code> during the CI process, the output looks like this:</p>
+<pre><code>diff --git a/uv.lock b/uv.lock
+index dd84aab..0d49ad8 100644
+--- a/uv.lock
++++ b/uv.lock
+@@ -6,7 +6,7 @@ constraints = [{ name = &quot;sh&quot;, specifier = &quot;==1.14.3&quot; }]
+
+[[package]]
+name = &quot;mypkg&quot;
+-version = &quot;0.2.2.dev4+gee95dc2.d20241113&quot;
++version = &quot;0.2.2.dev6+g77694c2.d20241113&quot;
+source = { editable = &quot;.&quot; }
+dependencies = [
+{ name = &quot;sh&quot; },
+</code></pre>
+<p>The commit hash following <code>+g</code> differs from the actual commit pushed. This is because, with branch protection settings, the commit for the PR changes with each CI run.</p>
+<p>In this situation, if a tag is created, <code>uv.lock</code> is always modified, resulting in a version like <code>0.2.3.d20241113</code>.</p>
+<p>If including <code>commit7</code> in the dynamic version is the issue, it could be worked around by adjusting the <code>pdm-backend</code> configuration to exclude <code>commit7</code> from the version format.
+However, it would be ideal if <code>uv</code> could provide an option to control this. Having <code>commit7</code> in the version has been quite useful for me during development.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:14 UTC
+    </footer>
+</body>
+</html>

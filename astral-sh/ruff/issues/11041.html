@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff format doesn't respect # fmt: skip comment for line-length - astral-sh/ruff #11041</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff format doesn't respect # fmt: skip comment for line-length</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11041">#11041</a>
+        opened by <a href="https://github.com/riZZZhik">@riZZZhik</a>
+        on 2024-04-19 13:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/riZZZhik">@riZZZhik</a> on 2024-04-19 13:51</div>
+            <div class="timeline-body"><p>I am running ruff 0.3.7.</p>
+<p>line-length is modified and E501 is ignored for file with issue</p>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint.extend-per-file-ignores]
+&quot;tests/units/data/*&quot; = [&quot;E501&quot;]
+</code></pre>
+<p>But <code>ruff format</code> command doesn't respect <code># fmt: skip</code> comment after line longer than line-length</p>
+<pre><code class="language-shell">❯ ruff format --diff
+--- tests/units/data/test_texts.py
++++ tests/units/data/test_texts.py
+@@ -43,7 +43,25 @@
+    TextItem(
+        &quot;&lt;speak&gt;    Привет    как дела   ? &lt;/speak&gt;&quot;,
+         ParsedItem(
+-            [&quot;п&quot;, &quot;р'&quot;, &quot;и&quot;, &quot;в'&quot;, &quot;е+&quot;, &quot;т&quot;, &quot;\t&quot;, &quot;к&quot;, &quot;а+&quot;, &quot;к&quot;, &quot;\t&quot;, &quot;д'&quot;, &quot;и&quot;, &quot;л&quot;, &quot;а+&quot;, &quot;\t&quot;, &quot;?&quot;],  # fmt: skip
++            [
++                &quot;п&quot;,
++                &quot;р'&quot;,
++                &quot;и&quot;,
++                &quot;в'&quot;,
++                &quot;е+&quot;,
++                &quot;т&quot;,
++                &quot;\t&quot;,
++                &quot;к&quot;,
++                &quot;а+&quot;,
++                &quot;к&quot;,
++                &quot;\t&quot;,
++                &quot;д'&quot;,
++                &quot;и&quot;,
++                &quot;л&quot;,
++                &quot;а+&quot;,
++                &quot;\t&quot;,
++                &quot;?&quot;,
++            ],  # fmt: skip
+         ),
+     ),
+     TextItem(
+
+1 file would be reformatted, 40 files already formatted
+</code></pre>
+<p>Code is:</p>
+<pre><code class="language-python">[
+    ...
+    TextItem(
+        &quot;&lt;speak&gt;    Привет    как дела   ? &lt;/speak&gt;&quot;,
+        ParsedItem(
+            [&quot;п&quot;, &quot;р'&quot;, &quot;и&quot;, &quot;в'&quot;, &quot;е+&quot;, &quot;т&quot;, &quot;\t&quot;, &quot;к&quot;, &quot;а+&quot;, &quot;к&quot;, &quot;\t&quot;, &quot;д'&quot;, &quot;и&quot;, &quot;л&quot;, &quot;а+&quot;, &quot;\t&quot;, &quot;?&quot;],  # fmt: skip
+        ),
+    ),
+    ...
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-19 13:57</div>
+            <div class="timeline-body"><p>Ruff only supports <code>fmt: skip</code> at the statement level</p>
+<pre><code class="language-python">[
+    ...
+    TextItem(
+        &quot;&lt;speak&gt;    Привет    как дела   ? &lt;/speak&gt;&quot;,
+        ParsedItem(
+            [&quot;п&quot;, &quot;р'&quot;, &quot;и&quot;, &quot;в'&quot;, &quot;е+&quot;, &quot;т&quot;, &quot;\t&quot;, &quot;к&quot;, &quot;а+&quot;, &quot;к&quot;, &quot;\t&quot;, &quot;д'&quot;, &quot;и&quot;, &quot;л&quot;, &quot;а+&quot;, &quot;\t&quot;, &quot;?&quot;],
+        ),
+    ),
+    ...
+]  # fmt: skip
+</code></pre>
+<p>You can enable <a href="https://docs.astral.sh/ruff/rules/invalid-formatter-suppression-comment/"><code>RUF028</code></a> to get warned about incompatible formatter suppression comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-04-19 13:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/riZZZhik">@riZZZhik</a> on 2024-04-19 13:58</div>
+            <div class="timeline-body"><p>Understood, thanks!</p>
+<p>Strange that all RUF checks are enabled yet it doesn't warn me about this on ruff check</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-19 14:44</div>
+            <div class="timeline-body"><p>Hmm that's strange. It get's correctly flagged in the playground https://play.ruff.rs/6c0cc2fc-7028-4ffa-a8ef-43ca4b0ee24f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/riZZZhik">@riZZZhik</a> on 2024-04-20 15:36</div>
+            <div class="timeline-body"><p>@MichaReiser Can you check this code https://pastebin.com/1ZSKYSae ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/riZZZhik">@riZZZhik</a> on 2024-04-20 15:37</div>
+            <div class="timeline-body"><p>Also, I was unable to open your link to the playground, it leaves me with a blank screen.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-20 15:41</div>
+            <div class="timeline-body"><p>Works fine for me in Chrome, perhaps an issue with your browser:</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/1309177/7b35e642-0889-47b5-94a3-6b111e7c7e85" alt="Screenshot 2024-04-20 at 11 41 14 AM" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-20 15:42</div>
+            <div class="timeline-body"><p>@riZZZhik what browser are you using?</p>
+<p>I tried your code and Ruff correctly flags https://play.ruff.rs/249420c2-2a8e-497e-85bf-cf7722cbdabc</p>
+<p>Oh, I think I know whats happening. Do you have <code>ruff.lint.preview = true</code> or <code>ruff.preview = true</code> in your configuration? We should stabalize this rule in the next minor release (CC: @snowsignal )</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/riZZZhik">@riZZZhik</a> on 2024-04-20 16:22</div>
+            <div class="timeline-body"><p>Yes, you are right, preview was disabled. After setting <code>ruff.preview = true</code> warning appeared.</p>
+<hr />
+<p>I am from Russia and get request to https://api.astral-1ad.workers.dev/249420c2-2a8e-497e-85bf-cf7722cbdabc gives <code>ERR_TIMED_OUT</code>.
+Worked fine when i enabled vpn, i guess provider blocks connection from here</p>
+<img width="1512" alt="Screenshot 2024-04-20 at 7 18 11 PM" src="https://github.com/astral-sh/ruff/assets/21087403/0e0058ae-565e-4b6e-a953-d9c4ac0a439f">
+
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:34 UTC
+    </footer>
+</body>
+</html>

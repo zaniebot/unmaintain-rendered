@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule F821 Type Annotations With Forward References - astral-sh/ruff #7175</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule F821 Type Annotations With Forward References</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7175">#7175</a>
+        opened by <a href="https://github.com/mikedh">@mikedh</a>
+        on 2023-09-06 00:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mikedh">@mikedh</a> on 2023-09-06 00:50</div>
+            <div class="timeline-body"><p>Thanks for the great library!! I've been loving unifying around the ruff rules.</p>
+<p>I was adding type hints using <a href="https://peps.python.org/pep-0484/#forward-references">PEP 484 forward references</a> to avoid an import of a soft dependency. The PEP says &quot;when a type hint contains names that have not been defined yet, that definition may be expressed as a string literal, to be resolved later.&quot; The code runs fine, and the forward reference looks OK in sphinx docs. However, they hit the <code>F821</code> rule in the same way that an unrunnably undefined type hint would. Suggested fix: make forward references with undefined name raise a different error like <code>F822</code> so it can be selectively ignored rather than ignoring all instances of <code>F821</code> which is very helpful.</p>
+<p>Example:</p>
+<pre><code>class Thing:
+    def a_sparse(self) -&gt; &quot;scipy.sparse.coo_matrix&quot;:
+        # this function runs fine
+        # doing the import in the function to keep the dependency optional
+        from scipy.sparse import coo_matrix
+        return coo_matrix([0])
+
+    def broken(self) -&gt; ActuallyUndefined:
+        # this function is actually broken by the type hint
+        # and must be removed to run in Python
+        return 'Nah'
+</code></pre>
+<p>Ruff output:</p>
+<pre><code>mikedh@orion$ ruff repro.py
+repro.py:2:28: F821 Undefined name `scipy`
+repro.py:7:25: F821 Undefined name `ActuallyUndefined`
+Found 2 errors.
+</code></pre>
+<p>Version <code>ruff==0.0.278</code>
+Rules:</p>
+<pre><code>[tool.ruff]
+target-version = &quot;py37&quot;
+select = [
+    # &quot;ANN&quot;, # annotations
+    &quot;B&quot;, # bugbear
+    &quot;C&quot;, # comprehensions
+    &quot;E&quot;, # style errors
+    &quot;F&quot;, # flakes
+    &quot;I&quot;, # import sorting
+    &quot;RUF100&quot;, # meta
+    &quot;U&quot;, # upgrade
+    &quot;W&quot;, # style warnings
+    &quot;YTT&quot;, # sys.version
+]
+ignore = [
+  &quot;C901&quot;, # Comprehension is too complex (11 &gt; 10)
+  &quot;N802&quot;, # Function name should be lowercase
+  &quot;N806&quot;, # Variable in function should be lowercase
+  &quot;E501&quot;, # Line too long ({width} &gt; {limit} characters)
+  &quot;B904&quot;, # raise ... from err
+  &quot;B905&quot;, # zip() without an explicit strict= parameter
+  &quot;ANN101&quot;, # type hint for `self`
+  &quot;ANN002&quot;, # type hint for *args
+  &quot;ANN003&quot;, # type hint for **kwargs
+]
+line-length = 90
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Type Annotations With Forward References" to "Rule F821 Type Annotations With Forward References" by @mikedh on 2023-09-06 00:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-09-06 01:05</div>
+            <div class="timeline-body"><p>Hey @mikedh glad you like Ruff and thanks for the well written issue :)</p>
+<p>A type checker will also complain that the name is undefined e.g. Pylance in VSCode reports the violation and mypy does as well:</p>
+<pre><code class="language-python">class Thing:
+    def example(self) -&gt; &quot;bar&quot;:
+        from foo import bar
+
+        return bar()
+</code></pre>
+<pre><code>❯ mypy example.py
+example.py:2: error: Name &quot;bar&quot; is not defined  [name-defined]
+Found 1 error in 1 file (checked 1 source file)
+</code></pre>
+<p>and they're correct that this name is not usable for type checking. If you move the import out of the method, e.g.</p>
+<pre><code class="language-python">class Thing:
+    def example(self) -&gt; &quot;bar&quot;:
+        return bar()
+    
+from foo import bar
+</code></pre>
+<p>there are no longer complaints of an undefined name — this is what PEP 484 generally means by deferred resolution.</p>
+<p>I think what you're looking for is:</p>
+<pre><code class="language-python">from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from foo import bar
+
+class Thing:
+    def example(self) -&gt; &quot;bar&quot;:
+        from foo import bar
+        return bar()
+</code></pre>
+<p>Unfortunately this requires two imports since you need the name at runtime as well. I can see the appeal of avoiding this by introducing a separate code you can just ignore, but I'm not sure there's a point to defining the return type if it cannot be resolved by type checkers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2023-09-06 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikedh">@mikedh</a> on 2023-09-07 20:37</div>
+            <div class="timeline-body"><p>Thanks for the suggestions!! I just did additional imports in my case. I guess I figured since one case is runnable and one isn't it would be nice to selectively ignore it by breaking it out into a different rule. Totally understand if that's not a reasonable thing to support in ruff!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @mikedh on 2023-09-07 20:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AntiSol">@AntiSol</a> on 2025-05-13 03:32</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure there's a point to defining the return type if it cannot be resolved by type checkers.</p>
+</blockquote>
+<p>..................The point would be to enable humans to know what typing is desired.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:14 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix(venv): make relocatable activation scripts support ksh - astral-sh/uv #5640</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix(venv): make relocatable activation scripts support ksh</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5640">#5640</a>
+        opened by <a href="https://github.com/paveldikov">@paveldikov</a>
+        on 2024-07-30 22:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-07-30 22:15</div>
+            <div class="timeline-body"><p>It transpires that detecting the directory a script was sourced from is non-trivial across <code>bash</code>, <code>ksh</code> and <code>zsh</code>.</p>
+<p>The previous version was a one-liner and supported <code>bash</code> and <code>zsh</code> but not <code>ksh</code>.</p>
+<p>It is possible to keep the one-liner and add <code>ksh</code> support, but that is mutually-exclusive with <code>zsh</code>.</p>
+<p>Therefore, the only way to square this circle is to add an <code>if</code> block. A silver lining here is that although longer, the script is probably easier to follow as there is less code-golfing going on.</p>
+<hr />
+<p>© 2024 Morgan Stanley.</p>
+<p>THIS SOFTWARE IS CONTRIBUTED SUBJECT TO THE TERMS OF THE APACHE LICENSE V.2.0 AND THE MIT LICENSE.</p>
+<p>THIS SOFTWARE IS LICENSED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE AND ANY WARRANTY OF NON-INFRINGEMENT, ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. THIS SOFTWARE MAY BE REDISTRIBUTED TO OTHERS ONLY BY EFFECTIVELY USING THIS OR ANOTHER EQUIVALENT DISCLAIMER IN ADDITION TO ANY OTHER REQUIRED LICENSE TERMS.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-30 22:18</div>
+            <div class="timeline-body"><p>Can you note why ksh is important to support in particular? There are <em>a lot</em> of shells out there. Are we going to support all of them?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-07-30 22:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you note why ksh is important to support in particular? There are <em>a lot</em> of shells out there. Are we going to support all of them?</p>
+</blockquote>
+<p>I agree that trying to support <em>all</em> of them is futile.</p>
+<p>The Korn shell in particular is very much entrenched in a lot of enterprise environments at least.</p>
+<p>Not sure about zsh -- I recall ohmyzsh being trendy some years ago... never used it much myself. I personally do not object to excluding it, but others might?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 22:37</div>
+            <div class="timeline-body"><p>I think Zsh is very important, I believe it's the default on macOS.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-30 22:38</div>
+            <div class="timeline-body"><p>I'm fine with this as it's <em>only</em> used for <code>--relocatable</code>, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-07-30 22:43</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm fine with this as it's <em>only</em> used for <code>--relocatable</code>, right?</p>
+</blockquote>
+<p>Yes. I will actually go back and drop the sourced'ness checks for all except bash (which is what currently exists). I am testing them right now and are really brittle stuff -- would not want them to impact real users.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @paveldikov on 2024-07-30 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-07-30 23:39</div>
+            <div class="timeline-body"><p>Phew, that was not fun. Tested (by hand) across bash, ksh and zsh. So far so good. zsh in particular is where the <code>&gt; /dev/null</code> trick comes from -- TIL it has a 'loud' cd command.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @paveldikov on 2024-07-30 23:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-07-30 23:51</div>
+            <div class="timeline-body"><p>I guess my qualm with ksh (and curiosity as to why it is important) is that it's not included in our existing <code>uv-shell::Shell</code> variants. I'd like to have a solid list of shells we support, rather than support for some here and others there.</p>
+<p>I presume it's present in enterprise because of red hat?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-07-31 00:58</div>
+            <div class="timeline-body"><blockquote>
+<p>I guess my qualm with ksh (and curiosity as to why it is important) is that it's not included in our existing uv-shell::Shell variants. I'd like to have a solid list of shells we support, rather than support for some here and others there.</p>
+</blockquote>
+<p>That is a fair concern. I had a brief look at the module and it doesn't look terribly complicated (save for <code>configuration_files()</code> which requires a bit of research because I haven't got a clue as to how it's used). How would you like me/us to approach this -- same PR or track separately?</p>
+<blockquote>
+<p>I presume it's present in enterprise because of red hat?</p>
+</blockquote>
+<p>The correlation is rather uncanny indeed. Although I would not be surprised if that the affinity for <code>ksh</code> predates widespread RHEL (or even Linux!) adoption.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/paveldikov">@paveldikov</a> on 2024-07-31 01:18</div>
+            <div class="timeline-body"><p>Ok @zanieb it turns out it was a fairly trivial addition considering there's already a pattern of supporting multiple POSIX shells with largely the same code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-07-31 16:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-07-31 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-07-31 16:18</div>
+            <div class="timeline-body"><p>Thank you. This seems reasonable to me, especially now that we added Ksh to our shell enum.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-07-31 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-07-31 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-07-31 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jsirois">@jsirois</a> on 2024-12-13 20:13</div>
+            <div class="timeline-body"><p>Late to this, but, FWIW, ksh is the default shell on AIX which I think a fair number of IBM customers still use. So, not silicon-valley, but certainly banks and the like.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:12 UTC
+    </footer>
+</body>
+</html>

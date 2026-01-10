@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respect `requires-python` when installing tools - astral-sh/uv #10401</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Respect <code>requires-python</code> when installing tools</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10401">#10401</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-01-08 17:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-08 17:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR revives https://github.com/astral-sh/uv/pull/7827 to improve tool resolutions such that, if the resolution fails, and the selected interpreter doesn't match the required Python version from the solve, we attempt to re-solve with a newly-discovered interpreter that <em>does</em> match the required Python version.</p>
+<p>For now, we attempt to choose a Python interpreter that's greater than the inferred <code>requires-python</code>, but compatible with the same Python minor. This helps avoid successive failures for cases like Posting, where choosing Python 3.13 fails because it has a dependency that lacks source distributions and doesn't publish any Python 3.13 wheels. We should further improve the strategy to solve <em>that</em> case too, but this is at least the more conservative option...</p>
+<p>In short, if you do <code>uv tool instal posting</code>, and we find Python 3.8 on your machine, we'll detect that <code>requires-python: &gt;=3.11</code>, then search for the latest Python 3.11 interpreter and re-resolve.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/6381.
+Closes https://github.com/astral-sh/uv/issues/10282.</p>
+<h2>Test Plan</h2>
+<p>The following should succeed:</p>
+<pre><code>cargo run python uninstall --all
+cargo run python install 3.8
+cargo run tool install posting
+</code></pre>
+<p>In the logs, we see:</p>
+<pre><code>...
+DEBUG No compatible version found for: posting
+DEBUG Refining interpreter with: Python &gt;=3.11, &lt;3.12
+DEBUG Searching for Python &gt;=3.11, &lt;3.12 in managed installations or search path
+DEBUG Searching for managed installations at `/Users/crmarsh/.local/share/uv/python`
+DEBUG Skipping incompatible managed installation `cpython-3.8.20-macos-aarch64-none`
+DEBUG Found `cpython-3.13.1-macos-aarch64-none` at `/opt/homebrew/bin/python3` (search path)
+DEBUG Skipping interpreter at `/opt/homebrew/opt/python@3.13/bin/python3.13` from search path: does not satisfy request `&gt;=3.11, &lt;3.12`
+DEBUG Found `cpython-3.11.7-macos-aarch64-none` at `/opt/homebrew/bin/python3.11` (search path)
+DEBUG Re-resolving with Python 3.11.7
+DEBUG Using request timeout of 30s
+DEBUG Solving with installed Python version: 3.11.7
+DEBUG Solving with target Python version: &gt;=3.11.7
+DEBUG Adding direct dependency: posting*
+DEBUG Searching for a compatible version of posting (*)
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2025-01-08 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2025-01-08 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-01-08 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2025-01-08 17:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-08 17:20</div>
+            <div class="timeline-body"><p>I think this is a significant improvement but not perfect. I have a few more ideas to improve it further. (But I have no idea how to test it in our suite.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-01-08 17:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/common.rs</code>:141 on 2025-01-08 17:35</div>
+            <div class="timeline-body"><p>For some reason I don't love &quot;refining&quot;, but I don't have a great alternative off the top of my head :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-01-08 17:36</div>
+            <div class="timeline-body"><p>Cool, thank you for taking this on!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-08 17:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/tool/common.rs</code>:141 on 2025-01-08 17:38</div>
+            <div class="timeline-body"><p>Lol, fair!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-01-08 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-08 17:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-08 17:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:17 UTC
+    </footer>
+</body>
+</html>

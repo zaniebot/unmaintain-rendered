@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proposal: Add basic Python API - astral-sh/ruff #8401</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Proposal: Add basic Python API</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8401">#8401</a>
+        opened by <a href="https://github.com/sam-bristow">@sam-bristow</a>
+        on 2023-11-01 09:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sam-bristow">@sam-bristow</a> on 2023-11-01 09:48</div>
+            <div class="timeline-body"><p>Is the ruff team open to exposing a minimal Python API for interacting with the checker and formatter?</p>
+<p>I am looking at integrating Ruff into some code-generation tooling but having to interact with the tool through <code>subprocess</code> and temporary files adds a few footguns.</p>
+<p>By exposing ~4 Python functions I think we could cover 90% of the common requirements for Ruff as a library:</p>
+<pre><code class="language-python">def load_config(config: str) -&gt; RuffConfig:
+    ...
+
+def format(source: str, config: Optional[RuffConfig] = None) -&gt; str:
+    ...
+
+def formatted(source: str, config: Optional[RuffConfig] = None) -&gt; bool:
+    ...
+
+def check(source: str, config: Optional[RuffConfig] = None) -&gt; bool:
+    ...
+</code></pre>
+<p>These functions all operate on strings rather than files leaving all IO to the wrapping code.</p>
+<p>A typical example of using this API might look like:</p>
+<pre><code class="language-python">#...
+with open('pyproject.toml', 'r') as f:
+    config = load_config(f.read())
+
+formatted_code = ruff.format(some_code_fragment, config)
+#...
+</code></pre>
+<p>With these functions available implementing Ruff equivalents of <code>blacken-docs</code> etc would be fairly mechanical.</p>
+<p>Any thoughts?</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-11-01 09:51</div>
+            <div class="timeline-body"><p>Hey. Yeah, interacting with subprocess is annoying. There are a couple concerns outlined in https://github.com/astral-sh/ruff/issues/659 mainly around the stability concerns and Ruff using <code>stdout</code> in some places instead of structured diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sam-bristow">@sam-bristow</a> on 2023-11-01 10:02</div>
+            <div class="timeline-body"><p>Ah, I spent a reasonable amount of time looking for an existing ticket but clearly didn't have the right combo of keywords. Should I close this ticket and reword my use-cases as a comment on #659 ?</p>
+<p>In my case I don't really need structured diagnostics for the checker functionality. A simple &quot;good&quot;/&quot;no-good&quot; is plenty.</p>
+<p>More important for me is being able to work with strings rather than temporary files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-11-01 11:33</div>
+            <div class="timeline-body"><p>@sam-bristow You don't need to use temporary files, since <code>ruff</code> supports the UNIX convention of <code>-</code> being a stand-in for <code>stdin</code>.</p>
+<pre><code class="language-python">import json
+import subprocess
+
+bad_code = &quot;print   ('hi');&quot;
+
+# Formatter example
+formatted = subprocess.check_output(
+    [&quot;ruff&quot;, &quot;format&quot;, &quot;-&quot;], input=bad_code, encoding=&quot;utf-8&quot;
+)
+print(repr(formatted))
+
+# Checker example
+proc = subprocess.run(
+    [&quot;ruff&quot;, &quot;--select=ALL&quot;, &quot;--output-format=json&quot;, &quot;check&quot;, &quot;-&quot;],
+    input=bad_code,
+    stdout=subprocess.PIPE,
+    stderr=subprocess.DEVNULL,
+    encoding=&quot;utf-8&quot;,
+)
+print(proc.returncode)  # 1 if bad
+print(json.loads(proc.stdout))
+</code></pre>
+<p>outputs</p>
+<pre><code>'print(&quot;hi&quot;)\n'
+1
+[{'cell': None, 'code': 'E902', ...
+</code></pre>
+<p>You can also add <code>--stdin-filename=...</code> if you like.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-02 02:09</div>
+            <div class="timeline-body"><p>👍 I'm gonna merge this into #659. Definitely feel free to chime in there -- though if your use-case is solved by passing data via <code>stdin</code> as @akx kindly mentioned above, that's cool too :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-02 02:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:50 UTC
+    </footer>
+</body>
+</html>

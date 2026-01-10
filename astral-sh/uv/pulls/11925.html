@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Issue #11637] Use suffix on uvx binary when searching for uv binary - astral-sh/uv #11925</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Issue #11637] Use suffix on uvx binary when searching for uv binary</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11925">#11925</a>
+        opened by <a href="https://github.com/cliebBS">@cliebBS</a>
+        on 2025-03-03 15:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/cliebBS">@cliebBS</a> on 2025-03-03 15:23</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>When running uvx that has been installed using a pipx suffix, the corresponding uv binary cannot be found due to uvx always looking for an executable called <code>uv</code> on the PATH, while it has instead been installed using a suffix.  This change makes it so that uvx discovers the suffix to its name and then searches for a uv binary with the same suffix.  For example, if uvx is called <code>uvx@0.6.2</code>, then it will search for <code>uv@0.6.2</code> instead of <code>uv</code>.</p>
+<h2>Test Plan</h2>
+<ol>
+<li>Remove all <code>uv</code> and <code>uvx</code> binaries from the PATH</li>
+<li>Build code on <code>main</code></li>
+<li>Rename <code>uvx</code> -&gt; <code>uvx@0.6.2</code> and <code>uv</code> -&gt; <code>uv@0.6.2</code></li>
+<li>Run <code>uvx@0.6.2</code> and observe that it produces the following output:</li>
+</ol>
+<pre><code>error: Could not find the `uv` binary at: /Users/me/.local/bin/uv
+</code></pre>
+<ol start="5">
+<li>Delete the <code>uv@0.6.2</code> and <code>uvx@0.6.2</code> binaries</li>
+<li>Build the code on this branch</li>
+<li>Run <code>uvx</code> and observe that it behaves like normal (maintains current behavior)</li>
+<li>Rename <code>uvx</code> -&gt; <code>uvx@0.6.2</code> and <code>uv</code> -&gt; <code>uv@0.6.2</code></li>
+<li>Run <code>uvx@0.6.2</code> and observe that it behaves like normal (exhibits correct behavior for suffixed executable names)</li>
+<li>Rename <code>uv@0.6.2</code> -&gt; <code>uv</code></li>
+<li>Run <code>uvx@0.6.2</code> and observe that it emits a warning about falling back to bare <code>uv</code>, followed by normal <code>uvx</code> output</li>
+</ol>
+<pre><code>warning: Unable to find /Users/jane.doe/code/uv/target/debug/uv@0.6.2, defaulting to /Users/jane.doe/code/uv/target/debug/uv
+Provide a command to run with `uvx &lt;command&gt;`.
+
+The following tools are installed:
+
+- keyring v25.5.0
+
+See `uvx --help` for more information.
+</code></pre>
+<ol start="12">
+<li>Run <code>uvx@0.6.2</code> and observe that it presents an error message stating that <code>uv</code> could not be found either with the suffixed name or with the bare name</li>
+</ol>
+<pre><code>error: Could not find uv binary at /Users/jane.doe/uv/target/debug/uv@0.6.2 or /Users/jane.doe/uv/target/debug/uv
+</code></pre>
+<p>Resolves #11637</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[Issue 111637] Use suffix on uvx binary when searching for uv binary" to "[Issue 11637] Use suffix on uvx binary when searching for uv binary" by @cliebBS on 2025-03-03 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[Issue 11637] Use suffix on uvx binary when searching for uv binary" to "[Issue #11637] Use suffix on uvx binary when searching for uv binary" by @cliebBS on 2025-03-03 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-03 17:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/bin/uvx.rs</code>:48 on 2025-03-03 17:46</div>
+            <div class="timeline-body"><p>Should all these error cases have different error messages? Seems helpful to distinguish between them if someone actually encounters these failures.</p>
+<p>Does it make sense to use a <code>io:Error</code> here? <code>NotFound</code> seems weird in this context, though I'm not sure if it's worth complicating the <code>run</code> signature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cliebBS">@cliebBS</a> reviewed on 2025-03-03 18:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cliebBS">@cliebBS</a> on <code>crates/uv/src/bin/uvx.rs</code>:48 on 2025-03-03 18:25</div>
+            <div class="timeline-body"><p>I wasn't sure how much of the details we wanted to expose to users.  I updated the code to have distinct error messages for each potential error situation, switched a couple of places to use <code>InvalidData</code> as the error kind instead of <code>NotFound</code>, and removed one of the error cases entirely in favor of using a fallback value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-03 18:54</div>
+            <div class="timeline-body"><p>I think this makes sense to me. Thanks for taking the time to contribute it.</p>
+<p>Do you think we should fallback to <code>uv</code> if <code>uv-suffix</code> does not exist? I think we might need to for backwards compatibility?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-03-03 18:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cliebBS">@cliebBS</a> on 2025-03-03 19:16</div>
+            <div class="timeline-body"><p>Falling back to plain <code>uv</code> when <code>uv{suffix}</code> doesn't exist I think has a couple of problems:</p>
+<ol>
+<li>There's no guarantee that there will be a <code>uv</code> on the system.  Doing a suffixed install using <code>pipx</code> will rename all binaries to use the suffix, so you'd actually need a separate installation of uv on your system to have the fallback option in place</li>
+<li>Falling back to bare <code>uv</code> can result in a different version of uv being used to execute the command than the version of <code>uvx</code> that is trying to exec the command.  While this would work for now, if a breaking change were made to <code>uv tool uvx</code> or <code>uv tool run</code> in the future (this is still a 0.x product, after all), it could result in <code>uvx{suffix}</code> becoming incompatible with <code>uv</code> and likely producing some very confusing errors for the user</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-03 19:42</div>
+            <div class="timeline-body"><p>This assumes that <code>pipx</code> is the only reason that the binary would have a different name though, which I'm not comfortable with.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cliebBS">@cliebBS</a> on 2025-03-03 19:57</div>
+            <div class="timeline-body"><p>Ok, it now does the following:</p>
+<ol>
+<li>Run <code>uv{suffix}</code> if it is present in <code>uvx</code> directory</li>
+<li>Run <code>uv</code> if it is present in <code>uvx</code> directory</li>
+<li>Provide an error message that includes the names we tried to use to find <code>uv</code></li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cliebBS">@cliebBS</a> on 2025-03-12 12:32</div>
+            <div class="timeline-body"><p>@zanieb Is there anything more I can do at this point to help get this fix/change merged?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-16 15:27</div>
+            <div class="timeline-body"><p>I don't think so, sorry — just about finding time to review.</p>
+<p>@Gankra can you own this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @Gankra on 2025-04-16 15:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @Gankra on 2025-04-16 15:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> requested changes on 2025-04-16 17:10</div>
+            <div class="timeline-body"><p>I like the idea, but if we're willing to fallback to <code>uv</code> then it doesn't make sense to consider it an error for the <code>uvx</code> binary to have a weird/unparseable name. At most we could emit a warning?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-16 18:25</div>
+            <div class="timeline-body"><p>Continued in:</p>
+<ul>
+<li>#12923</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cliebBS">@cliebBS</a> on 2025-04-16 18:35</div>
+            <div class="timeline-body"><p>@Gankra I updated the code to emit a warning when falling back, and also to fall back when there is an issue in finding the extension for the <code>uvx</code> binary.  It will now only fail if no <code>uv</code> is found at all.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-16 18:53</div>
+            <div class="timeline-body"><p>Ah, sorry for the race, I've merged my impl! I should have mentioned I was going to push up a cleanup (incredible response time on a PR this old, wow!).</p>
+<p>Thanks for the great idea/contribution!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-04-16 18:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:21 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pyflakes rules do not detect unused shadowed import when using `from __future__ import annotations` - astral-sh/ruff #15172</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Pyflakes rules do not detect unused shadowed import when using <code>from __future__ import annotations</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15172">#15172</a>
+        opened by <a href="https://github.com/injust">@injust</a>
+        on 2024-12-28 21:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/injust">@injust</a> on 2024-12-28 21:48</div>
+            <div class="timeline-body"><pre><code class="language-python">from __future__ import annotations
+
+from enum import Enum
+
+from packaging.version import Version
+
+
+class Foo:
+    class Version(Enum):
+        pass
+
+    version: Version | None = None
+</code></pre>
+<p>Inside <code>Foo</code>, the unused <code>from packaging.version import Version</code> import is shadowed by the <code>Version</code> enum. But Ruff doesn't detect the unused import. If I remove <code>from __future__ import annotations</code>, F401 and F811 are correctly reported.</p>
+<p>Pyflakes output:</p>
+<pre><code>test.py:5:1: 'packaging.version.Version' imported but unused
+test.py:9:5: redefinition of unused 'Version' from line 5
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-29 08:26</div>
+            <div class="timeline-body"><p>This is a bit of a tricky case. Technically this is ill-defined as far as type checkers are concerned, since with <code>from __future__ import annotations</code> analysis can happen out of order, so the semantics need to remain the same, no matter in which order you analyze the statements (as long as you defer lookups when you can't find something), so when the lookup for <code>Version</code> happens it might have seen <code>Version</code> in the global scope, but not the one the local scope.</p>
+<p>Ruff performs a global name lookup in deferred annotations in order to resolve that ambiguity, which is why the import doesn't get detected as unused. The safe way to write this would be:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from enum import Enum
+
+from packaging.version import Version
+
+
+class Foo:
+    class Version(Enum):
+        pass
+
+    version: Foo.Version | None = None
+</code></pre>
+<p>Which does trigger F401 and F811</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2024-12-29 09:04</div>
+            <div class="timeline-body"><p>Also this matches the behavior of <code>typing.get_type_hints</code>, which will perform the lookup in the global scope before looking it up in the local scope:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from __future__ import annotations
+&gt;&gt;&gt; from collections.abc import Iterable                                                   
+&gt;&gt;&gt; class Foo:
+...     class Iterable:
+...             pass
+...     iterable: Iterable | None = None                                                   
+... 
+&gt;&gt;&gt; from typing import get_type_hints                                                      
+&gt;&gt;&gt; get_type_hints(Foo)
+{'iterable': collections.abc.Iterable | None}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/injust">@injust</a> on 2024-12-30 04:57</div>
+            <div class="timeline-body"><p>I see, thanks for explaining.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @injust on 2024-12-30 04:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:08 UTC
+    </footer>
+</body>
+</html>

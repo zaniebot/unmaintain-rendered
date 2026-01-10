@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLW3301 false positive if outer call has multiple arguments and inner call has one argument - astral-sh/ruff #18849</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLW3301 false positive if outer call has multiple arguments and inner call has one argument</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18849">#18849</a>
+        opened by <a href="https://github.com/zackw">@zackw</a>
+        on 2025-06-21 14:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zackw">@zackw</a> on 2025-06-21 14:22</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This is the converse of #16163.  In general,</p>
+<pre><code>    v1 = max(lower_bound, max(iterable_1)) # erroneous PLW3301
+    v2 = min(upper_bound, min(iterable_2)) # erroneous PLW3301
+</code></pre>
+<p>cannot be expressed any other way, but -- even after the change in #16885 -- ruff with PLW3301 active will tell you to change it to</p>
+<pre><code>    v1 = max(lower_bound, iterable_1) # now crashes
+    v2 = min(upper_bound, iterable_2) # now crashes
+</code></pre>
+<p>which is probably going to throw a TypeError, and even if it doesn't, it won't do the same thing as the original.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-23 07:38</div>
+            <div class="timeline-body"><p>Can you tell me what Ruff version you're using and how <code>lower_bound</code> and <code>iterable_1</code> are defined?</p>
+<p>The <code>v1</code> example gets fixed to <code>max(lower_bound, *iterable_1)</code> which seems correct to me.</p>
+<p><code>v2</code> gets fixed to <code>min(upper_bound, *iterable_2)</code> which also seems correct to me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-06-23 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2025-06-23 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zackw">@zackw</a> on 2025-06-24 14:00</div>
+            <div class="timeline-body"><p>I was looking at the playground, which doesn't show any fixes for PLW3301.  Maybe they're off by default, but I couldn't figure out how to turn them on.  See for example <a href="https://play.ruff.rs/2820f381-fadb-444d-902d-811ac928f178">https://play.ruff.rs/2820f381-fadb-444d-902d-811ac928f178</a>.</p>
+<p>Regardless, the suggested fix is bad, because it forces Python to allocate a tuple for the entire contents of the iterable.  Compare:</p>
+<pre><code class="language-sh">$ python3.13 -m timeit -- 'max(12345, max(range(10_000_000)))'
+1 loop, best of 5: 475 msec per loop
+$ python3.13 -m timeit -- 'max(12345, *range(10_000_000))'
+1 loop, best of 5: 652 msec per loop
+</code></pre>
+<p>In realistic (rather than microbenchmark) situations the memory overhead of the splat may also be unacceptable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-24 14:13</div>
+            <div class="timeline-body"><p>This could possibly be a separate bug report, but PLW3301 doesn't offer a fix if there are comments in the replacement range. We usually just mark the fix as unsafe in those cases now. This playground will allow fixes to be applied: https://play.ruff.rs/7e017746-8622-48fc-b828-318056e67065</p>
+<p>https://github.com/astral-sh/ruff/blob/02ae8e1210b074dfeb32e748850aeb0d892735d3/crates/ruff_linter/src/rules/pylint/rules/nested_min_max.rs#L179-L183</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-25 07:02</div>
+            <div class="timeline-body"><p>I see. This isn't about a false positive in the sense that Ruff's suggested fix is incorrect or breaks program semantics but because it can degrade performance in micro benchmarks. I feel like this is a good use case of a noqa, given how subtle the performance difference is (it's unlikely to matter in 99% of cases). We could change our documentation, though.</p>
+<p>@ntBre nice find. Do you want to put a PR up for this. It should be a very quick change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> removed by @MichaReiser on 2025-06-25 07:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @MichaReiser on 2025-06-25 07:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-06-25 13:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zackw">@zackw</a> on 2025-06-27 14:04</div>
+            <div class="timeline-body"><p>We must be coming at this from very different premises.  To me, there is almost no readability difference between <code>max(bound, max(iterable))</code> and <code>max(bound, *iterable)</code>, and therefore the performance advantage of the nested <code>max</code> call, small as it is in most cases, is sufficient reason to say that this <em>is</em> a genuine false positive: Ruff should not be making this suggestion at all.</p>
+<p>But evidently you think that <code>max(bound, *iterable)</code> is <em>better</em> than <code>max(bound, max(iterable))</code> for some reason, sufficient to relegate the performance cost to the land of &quot;mark it noqa when it matters&quot;. Please help me understand why you think this. Do you find <code>max(bound, *iterable)</code> significantly more readable? Is it something else I haven't mentioned?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-27 14:29</div>
+            <div class="timeline-body"><p>The rule is called <code>nested-min-max</code>, and there's a nested <code>max</code> call in <code>max(bound, max(iterable))</code>, so I think it's pretty hard to argue that this is a false positive. It's also flagged by the upstream linter, although the error message isn't quite correct:</p>
+<pre><code class="language-shell">$ cat try.py
+max(1, max(range(3)))
+$ pylint try.py
+************* Module try
+try.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+try.py:1:0: W3301: Do not use nested call of 'max'; it's possible to do 'max(1, range(3))' instead (nested-min-max)
+
+------------------------------------------------------------------
+Your code has been rated at 0.00/10 (previous run: 0.00/10, +0.00)
+</code></pre>
+<p>And I do find it more readable, personally. In the nested case, I have to stop and consider the associativity of <code>max</code>, whereas in a single call, it's pretty clearly going to be the max of the whole collection.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:47 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Build backend: Revamp include/exclude - astral-sh/uv #9525</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Build backend: Revamp include/exclude</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9525">#9525</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-11-29 15:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-11-29 15:43</div>
+            <div class="timeline-body"><p>When building the source distribution, we always need to include <code>pyproject.toml</code> and the module, when building the wheel, we always include the module but nothing else at top level. Since we only allow a single module per wheel, that means that there are no specific wheel includes. This means we have source includes, source excludes, wheel excludes, but no wheel includes: This is defined by the module root, plus the metadata files and data directories separately.</p>
+<p>Extra source dist includes are currently unused (they can't end up in the wheel currently), but it makes sense to model them here, they will be needed for any sort of procedural build step.</p>
+<p>This results in the following fields being relevant for inclusions and exclusion:</p>
+<ul>
+<li><code>pyproject.toml</code> (always included in the source dist)</li>
+<li>project.readme: PEP 621</li>
+<li>project.license-files: PEP 639</li>
+<li>module_root: <code>Path</code></li>
+<li>source_include: <code>Vec&lt;Glob&gt;</code></li>
+<li>source_exclude: <code>Vec&lt;Glob&gt;</code></li>
+<li>wheel_exclude: <code>Vec&lt;Glob&gt;</code></li>
+<li>data: <code>Map&lt;KnownDataName, Path&gt;</code></li>
+</ul>
+<p>An opinionated choice is that that wheel excludes always contain the source excludes: Otherwise you could have a path A in the source tree that gets included when building the wheel directly from the source tree, but not when going through the source dist as intermediary, because A is in source excludes, but not in the wheel excludes. This has been a source of errors previously.</p>
+<p>In the process, I fixed a bug where we would skip directories and only include the files and were missing license due to absolute globs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-11-29 15:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-11-29 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-12-01 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-12-01 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-01 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:734 on 2024-12-03 14:14</div>
+            <div class="timeline-body"><p>This was a helpful comment, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-12-03 14:14</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:15 UTC
+    </footer>
+</body>
+</html>

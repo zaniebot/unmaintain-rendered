@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refactor `Resolution` type to retain dependency graph - astral-sh/uv #9106</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Refactor <code>Resolution</code> type to retain dependency graph</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9106">#9106</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-11-14 00:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-14 00:16</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR should not contain any user-visible changes, but the goal is to refactor the <code>Resolution</code> type to retain a dependency graph. We want to be able to explain <em>why</em> a given package was excluded on error (see: https://github.com/astral-sh/uv/issues/8962), which in turn requires that at install time, we can go back and figure out the dependency chain. At present, <code>Resolution</code> is just a map from package name to distribution; this PR remodels it as a graph in which each node is a package, and the edges contain markers plus extras or dependency groups.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2024-11-14 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-11-14 00:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-14 05:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/lock/target.rs</code>:160 on 2024-11-14 05:19</div>
+            <div class="timeline-body"><p>I'm pretty unhappy with basically this whole method. It's just a bit tortured to achieve the representations we want (e.g., we have to retain nodes even though we won't install them).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-11-14 05:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-11-14 05:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-distribution-types/src/resolution.rs</code>:177 on 2024-11-14 13:26</div>
+            <div class="timeline-body"><p>Is &quot;single platform&quot; correct here? I <em>think</em> it might be, &quot;subset of all marker environments&quot; instead.</p>
+<p>Although, this is also for a <code>Node</code>... Should this be moved to the docs for <code>Resolution</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-distribution-types/src/resolution.rs</code>:197 on 2024-11-14 13:26</div>
+            <div class="timeline-body"><p>Nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/lock/target.rs</code>:197 on 2024-11-14 13:30</div>
+            <div class="timeline-body"><p>What was hard about turning this into a helper method instead of a macro? It's not immediately obvious to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolution/output.rs</code>:817 on 2024-11-14 13:32</div>
+            <div class="timeline-body"><p>I think <code>s/ResolutionGraph/ResolverOutput</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolution/output.rs</code>:823 on 2024-11-14 13:32</div>
+            <div class="timeline-body"><p>Very helpful! Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolution/output.rs</code>:826 on 2024-11-14 13:34</div>
+            <div class="timeline-body"><p>Same &quot;single platform&quot; phrasing here... should it also be &quot;subset of all marker environments&quot;? But the last &quot;shouldn't be called&quot; part suggests maybe not...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolution/output.rs</code>:826 on 2024-11-14 13:36</div>
+            <div class="timeline-body"><p>And if &quot;single platform&quot; is right, should we have an assertion like <code>assert!(output.fork_markers.is_empty())</code> to enforce this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution-types/src/resolution.rs</code>:13 on 2024-11-14 13:36</div>
+            <div class="timeline-body"><p>Nit: <code>Node, Edge, Directed</code> sounds like they are generic types from petgraph itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-11-14 13:37</div>
+            <div class="timeline-body"><p>This overall LGTM.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock/target.rs</code>:160 on 2024-11-14 13:48</div>
+            <div class="timeline-body"><p>What about replacing the macro with a method? https://gist.github.com/konstin/da92fa38a8840050b8b2dedfefaef559</p>
+<pre><code class="language-rust">    /// Convert a lockfile entry to an installable distribution.
+    fn package_to_node(
+        &amp;self,
+        package: &amp;Package,
+        tags: &amp;Tags,
+        build_options: &amp;BuildOptions,
+        install_options: &amp;InstallOptions,
+    ) -&gt; Result&lt;Node, LockError&gt; {
+        if install_options.include_package(
+            package.name(),
+            self.project_name(),
+            self.lock().members(),
+        ) {
+            let dist = package.to_dist(
+                self.workspace().install_path(),
+                TagPolicy::Required(tags),
+                build_options,
+            )?;
+            let version = package.version().clone();
+            let dist = ResolvedDist::Installable { dist, version };
+            let hashes = package.hashes();
+            Ok(Node::Dist {
+                dist,
+                hashes,
+                install: true,
+            })
+        } else {
+            let dist = package.to_dist(
+                self.workspace().install_path(),
+                TagPolicy::Preferred(tags),
+                &amp;BuildOptions::default(),
+            )?;
+            let version = package.version().clone();
+            let dist = ResolvedDist::Installable { dist, version };
+            let hashes = package.hashes();
+            Ok(Node::Dist {
+                dist,
+                hashes,
+                install: false,
+            })
+        }
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock/target.rs</code>:160 on 2024-11-14 13:51</div>
+            <div class="timeline-body"><p>tbh i kinda like having the full graph, it makes reasoning easier.</p>
+<p>Another option here would be to have the <code>install</code> outline as a mask, e.g. a hashset of node indexes that represent the installed subset; haven't checked if that actually helps though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock/target.rs</code>:228 on 2024-11-14 13:54</div>
+            <div class="timeline-body"><p>I really that we don't have orphan nodes anymore, but aren't those a bit different in that they aren't mandatory, but depend on the user selection? (This may just be a documentation issue)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/lock/target.rs</code>:250 on 2024-11-14 13:55</div>
+            <div class="timeline-body"><p>nit: <code>if !... { continue; }</code> and dedent the rest</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-11-14 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-14 19:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/lock/target.rs</code>:160 on 2024-11-14 19:57</div>
+            <div class="timeline-body"><p>Good call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-14 20:07</div>
+            <div class="timeline-body"><p>Thank you both!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-11-14 20:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-14 20:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-14 20:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:14 UTC
+    </footer>
+</body>
+</html>

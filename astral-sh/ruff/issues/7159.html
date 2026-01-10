@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fingerprint in gitlab report should not use location in code as part of the hashing algorithm - astral-sh/ruff #7159</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fingerprint in gitlab report should not use location in code as part of the hashing algorithm</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7159">#7159</a>
+        opened by <a href="https://github.com/gregersn">@gregersn</a>
+        on 2023-09-05 15:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gregersn">@gregersn</a> on 2023-09-05 15:00</div>
+            <div class="timeline-body"><p>ruff 0.0.287</p>
+<p>Using the location in the code file as part of the hashing for the fingerprint causes a comparison between reports to show one issue as fixed, and a new one as having come to, if other parts of a file is changed, causing the line number to change.</p>
+<p>As a comparison, this is how eslint-gitlab-reports calculate hashing: https://gitlab.com/remcohaszing/eslint-formatter-gitlab/-/blob/main/index.js?ref_type=heads#L72</p>
+<p>In its (ruff) current for, the output in gitlab will show a lot of noise when reporting on code quality if, say, a line is inserted above all the linting issues in a code file, and moving them one line down. They will all get new  fingerprints, and the fingerprints that were in the old report will be gone.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @MichaReiser on 2023-09-05 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-05 19:46</div>
+            <div class="timeline-body"><p>Thanks for reporting this and linking to an alternative implementation. ESlint's approach is interesting because it provides a more stable result. The only shortcoming that I can think of right now (if I understand it correctly) is that it won't report a lint if an error for the same rule in the same file was fixed but a new (otherwise than the location identical) violation was introduced. But this seems less of an error compared to Ruff over-reporting on newly introduced and fixed diagnostics for every PR.</p>
+<p>The one thing that's unclear to me as someone who hasn't used GitLab extensively is whether this is a breaking change. I would assume that GitLab will mark ALL diagnostics as changed when upgrading from the current hash function to the new hash function. Do you know if that's correct and how disruptive that would be?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gregersn">@gregersn</a> on 2023-09-05 19:56</div>
+            <div class="timeline-body"><p>Depends on your definition of a breaking change.
+And how intrusive it would be would depend on how people treat their tooling environments.
+The upgrade would, with all likely hood trigger all of them changed, for that one pipeline run of main/master after the upgrade, and then after that all would be back to normal. There is a place to view the reports for each pipeline run, but it is loaded for that run, and doesn't really show any of the previous.</p>
+<p>So as for how disruptive? Not more than what I would say was worth it to not have almost every run report on new and fixed errors, that are just results of lines being moved around.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @MichaReiser on 2023-09-05 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @MichaReiser on 2023-09-05 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2023-09-05 20:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-06 15:08</div>
+            <div class="timeline-body"><p>@gregersn would you be interested in contributing the change? I can point you to the relevant code and provide support.</p>
+<p>@zanieb a potential use case for <code>--preview</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gregersn">@gregersn</a> on 2023-09-06 15:54</div>
+            <div class="timeline-body"><p>I have never used Rust, but I am taking a look at it now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-06 16:00</div>
+            <div class="timeline-body"><blockquote>
+<p>I have never used Rust, but I am taking a look at it now.</p>
+</blockquote>
+<p>Happy to help you get started.</p>
+<p>The relevant code is</p>
+<p>https://github.com/astral-sh/ruff/blob/ea72d5feba369b7be2c49302557620b2788beb85/crates/ruff/src/message/gitlab.rs#L55-L100</p>
+<p>Let me know if I can help you in anyway and feel free to ping me on Discord.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-09-08 06:25</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:14 UTC
+    </footer>
+</body>
+</html>

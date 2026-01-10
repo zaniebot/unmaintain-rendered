@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>build-binaries for riscv64  - astral-sh/uv #12688</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>build-binaries for riscv64</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12688">#12688</a>
+        opened by <a href="https://github.com/Xeonacid">@Xeonacid</a>
+        on 2025-04-06 05:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Xeonacid">@Xeonacid</a> on 2025-04-06 05:19</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Build riscv64 binary so it can get released in the GitHub Releases, which is used by many high-level apps.</p>
+<p>A copy-paste from linux-s390x, with only target and arch changed.</p>
+<p>maturin-action added riscv64 support in v1.48.0, this PR also bumps it to the latest version, v1.48.1.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>Let CI test itself :P</p>
+<p>Already tested in <a href="https://github.com/Xeonacid/uv/actions/runs/14289179697/job/40048172301">my fork</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2025-04-07 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-07 02:05</div>
+            <div class="timeline-body"><p>I think we also need to change the cargo-dist manifest in the <code>Cargo.toml</code> to include these binaries.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @charliermarsh on 2025-04-07 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Xeonacid">@Xeonacid</a> on 2025-04-07 02:34</div>
+            <div class="timeline-body"><p>The <code>cargo test</code> CI failure seems unrelated to this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Xeonacid">@Xeonacid</a> on 2025-04-07 02:41</div>
+            <div class="timeline-body"><blockquote>
+<p>I think we also need to change the cargo-dist manifest in the <code>Cargo.toml</code> to include these binaries.</p>
+</blockquote>
+<p>Thanks for the review! Fixed.</p>
+<p>The 2.31 minimal glibc version comes from the <a href="https://github.com/rust-cross/manylinux-cross/pull/101">manylinux Docker used by maturin-action</a>, which is the first manylinux version supported by <a href="https://github.com/pypa/auditwheel/blob/8964d1e5e5daee875c324c2e0b73cc8f3e5af1c9/src/auditwheel/policy/manylinux-policy.json#L326">auditwheel</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kxxt">@kxxt</a> on 2025-04-07 04:38</div>
+            <div class="timeline-body"><p>One thing worth mentioning is that bazel is currently (ab)using the fact that for all currently supported platforms, the target triple in uv releases matches the target triples used in <a href="https://github.com/astral-sh/python-build-standalone/releases/tag/20250317">python-build-standalone</a>.</p>
+<p>But as for this PR, the target triple in uv releases (<code>riscv64gc-unknown-linux-gnu</code>) would not match <code>riscv64-unknown-linux-gnu</code> python-build-standalone.</p>
+<p>I think it is up to the uv maintainers to decide whether it is fair for bazel to leverage such a coincidence.</p>
+<ul>
+<li>If it is fair, we need to rename the release artifacts for riscv64 to strip the ISA ext part <code>gc</code>.</li>
+<li>If it is not, then bazel's rules_python would need a fix.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-07 18:04</div>
+            <div class="timeline-body"><p>context on the riscv64/risvc64gc mismatch (note there's also a remapping for &quot;arm5tel&quot;):</p>
+<ul>
+<li>https://github.com/astral-sh/python-build-standalone/issues/504</li>
+</ul>
+<p>https://github.com/astral-sh/uv/blob/2b62f73064cd9fdaf4e347d6e835e384d6c6b981/crates/uv-python/src/downloads.rs#L778-L785</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-04-07 18:06</div>
+            <div class="timeline-body"><p>In this case I think it's fair to ask bazel to fix its mapping.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-04-07 18:13</div>
+            <div class="timeline-body"><p>Implementation-wise this looks correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.github/workflows/build-binaries.yml</code>:722 on 2025-04-07 18:16</div>
+            <div class="timeline-body"><p>The arch is always <code>riscv64</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-07 18:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Xeonacid">@Xeonacid</a> reviewed on 2025-04-07 23:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Xeonacid">@Xeonacid</a> on <code>.github/workflows/build-binaries.yml</code>:722 on 2025-04-07 23:56</div>
+            <div class="timeline-body"><p>Dropped the two <code>if</code> cases. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Xeonacid">@Xeonacid</a> on 2025-04-08 00:46</div>
+            <div class="timeline-body"><p>I have no idea why the s390x build fails, which is untouched between the previous and latest push...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-08 08:38</div>
+            <div class="timeline-body"><p>I restarted the build and it passed, so just a fluke with the runner</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @konstin on 2025-04-08 10:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Xeonacid">@Xeonacid</a> on 2025-04-09 12:27</div>
+            <div class="timeline-body"><p>Rebased against updated maturin-action.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Xeonacid">@Xeonacid</a> on 2025-04-09 12:55</div>
+            <div class="timeline-body"><p>The s390x build seems very flaky...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Xeonacid">@Xeonacid</a> on 2025-06-10 12:15</div>
+            <div class="timeline-body"><p>Hi team, is there any chance to get this PR merged? Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-10 15:18</div>
+            <div class="timeline-body"><p>Yep this is ready to land, thanks for the ping!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-06-10 15:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-06-10 15:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:22 UTC
+    </footer>
+</body>
+</html>

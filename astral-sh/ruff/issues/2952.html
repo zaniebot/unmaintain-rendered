@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build fail for version 0.0.247 on OpenBSD with custom allocator (jemalloc) - astral-sh/ruff #2952</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Build fail for version 0.0.247 on OpenBSD with custom allocator (jemalloc)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2952">#2952</a>
+        opened by <a href="https://github.com/lcheylus">@lcheylus</a>
+        on 2023-02-16 10:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/lcheylus">@lcheylus</a> on 2023-02-16 10:04</div>
+            <div class="timeline-body"><p>I'm trying to build <strong>ruff version 0.0.247 on OpenBSD-current (future version 7.3) / amd64</strong>.</p>
+<p>My build failed due to use of custom allocator (jemalloc) in <code>crates/ruff_cli/src/main.rs</code> :</p>
+<pre><code>Compiling lexical-parse-float v0.8.5
+(...)
+Running `/usr/obj/ports/ruff-0.0.247/build-amd64/target/release/build/tikv-jemalloc-sys-bbac7504c01f7e80/build-script-build`
+The following warnings were emitted during compilation:
+
+warning: &quot;jemalloc support for `x86_64-unknown-openbsd` is untested&quot;
+
+error: failed to run custom build command for `tikv-jemalloc-sys v0.5.3+5.3.0-patched`
+
+Caused by:
+  process didn't exit successfully: `/usr/obj/ports/ruff-0.0.247/build-amd64/target/release/build/tikv-jemalloc-sys-bbac7504c01f7e80/build-script-build` (exit status: 101)
+(...)
+</code></pre>
+<p>With the same configuration, <strong>build of ruff version 0.0.246 is OK</strong>.</p>
+<p>Custom allocator (jemalloc) is not correctly supported on OpenBSD.</p>
+<p>This build error is due to commit https://github.com/charliermarsh/ruff/commit/2bf7b35268963881754edf1da09cab0b2ba5062c (Re-enable custom allocators). To fix my build for version 0.0.247, I need to patch sources to revert this commit, as in commit https://github.com/charliermarsh/ruff/commit/48a5cd1dd942caa5b00ea07f3393168306d4e1f4 (Revert &quot;perf: Use custom allocator&quot;).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-16 13:25</div>
+            <div class="timeline-body"><p>Thanks, I'll fix this today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-16 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lcheylus">@lcheylus</a> on 2023-02-16 18:04</div>
+            <div class="timeline-body"><p>Thanks but your fix in https://github.com/charliermarsh/ruff/pull/2957 is too restrictive : jemalloc is supported on FreeBSD and NetBSD. OpenBSD is the only OS where there is this failure on build using custom allocator.</p>
+<p>A correct fix should be :</p>
+<ul>
+<li><code>crates/ruff_cli/Cargo.toml</code> line 72 :</li>
+</ul>
+<pre><code class="language-rust">[target.'cfg(all(not(target_os = &quot;windows&quot;), not(target_os = &quot;openbsd&quot;), any(target_arch = &quot;x86_64&quot;, target_arch = &quot;aarch64&quot;, target_arch = &quot;powerpc64&quot;)))'.dependencies]
+</code></pre>
+<ul>
+<li><code>crates/ruff_cli/src/main.rs</code> line 31 :</li>
+</ul>
+<pre><code class="language-rust">#[cfg(all(
+      not(target_os = &quot;windows&quot;),
+      not(target_os = &quot;openbsd&quot;),
+      any(
+          target_arch = &quot;x86_64&quot;,
+          target_arch = &quot;aarch64&quot;,
+          target_arch = &quot;powerpc64&quot;
+      )
+))]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-16 18:42</div>
+            <div class="timeline-body"><p>Ah ok, thank you! I completely believe you :D but is there a source I can reference for posterity? Like docs, or a passing build on those platforms, or something similar?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-16 18:54</div>
+            <div class="timeline-body"><p>I see: https://man.freebsd.org/cgi/man.cgi?query=jemalloc&amp;apropos=0&amp;sektion=0&amp;manpath=FreeBSD+11.4-RELEASE&amp;arch=default&amp;format=html and https://man.netbsd.org/NetBSD-7.2/jemalloc.3 and then https://github.com/jemalloc/jemalloc/issues/289, so maybe that answers the question.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:23 UTC
+    </footer>
+</body>
+</html>

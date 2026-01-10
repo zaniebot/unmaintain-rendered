@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turn `--verify-hashes` on by default - astral-sh/uv #9170</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Turn <code>--verify-hashes</code> on by default</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9170">#9170</a>
+        opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a>
+        on 2024-11-17 01:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-11-17 01:08</div>
+            <div class="timeline-body"><p>Fixes #9164</p>
+<p>Using clap's <code>default_value_t</code> makes the <code>flag</code> function unhappy, so just set the default when we unwrap. Tested with no flags, <code>--verify-hashes</code>, <code>--no-verify-hashes</code> and setting in uv.toml</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hauntsaninja">@hauntsaninja</a> reviewed on 2024-11-17 01:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on <code>crates/uv/tests/it/build.rs</code>:1557 on 2024-11-17 01:48</div>
+            <div class="timeline-body"><p>I don't understand what's causing these two new lines</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-11-17 02:06</div>
+            <div class="timeline-body"><p>Note that <code>UV_VERIFY_HASHES=0</code> won't really do anything because <code>flag</code> will receive <code>false, false</code> and turn it into <code>None -&gt; true</code>, so we'll continue to verify hashes. We need something that does the opposite of <code>BoolishValueParser</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-17 16:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-17 16:41</div>
+            <div class="timeline-body"><p>What if we change <code>HashCheckingMode::from_args</code> to take two <code>Option</code>? Then we can differentiate between <code>UV_VERIFY_HASHES</code> being <code>0</code>, <code>1</code>, or unset.</p>
+<p>It would also be somewhat conventional for us to make <code>--verify-hashes</code> hidden, and add <code>UV_NO_VERIFY_HASHES</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-11-17 20:47</div>
+            <div class="timeline-body"><p>I assume you meant <code>flag</code>, not <code>HashCheckingMode::from_args</code>. Right now it's too late by then, since clap will already have given you bools. The naive thing of turning <code>verify_hashes</code> into an <code>Option&lt;bool&gt;</code> in the CLI struct seemed to mess with clap's logic for flags and setting <code>default_missing_value</code> didn't seem to fix. I'm probably missing some dumb clap trick, feel free to take over this PR if it's obvious to you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-17 20:52</div>
+            <div class="timeline-body"><p>Sounds good, I'll see what I can do...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-11-17 20:53</div>
+            <div class="timeline-body"><p>Okay, the issue is that <code>default_missing_value</code> just silently doesn't work if you don't also specify <code>require_equals</code> and <code>num_args</code>. I'll push the change (if you see a better way feel free to)!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">security</span> added by @charliermarsh on 2024-11-17 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2024-11-18 01:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-18 01:37</div>
+            <div class="timeline-body"><p>Okay I modified things a bit such that instead of <code>UV_VERIFY_HASHES=0</code>, we require <code>UV_NO_VERIFY_HASHES=1</code>, which is consistent with the rest of the CLI. We also now document <code>--no-verify-hashes</code> instead of <code>--verify-hashes</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-11-18 01:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-11-18 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-18 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-18 02:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on <code>crates/uv-static/src/env_vars.rs</code>:172 on 2024-11-18 02:38</div>
+            <div class="timeline-body"><p>Need to change the string constant here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hauntsaninja">@hauntsaninja</a> reviewed on 2024-11-18 02:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hauntsaninja">@hauntsaninja</a> reviewed on 2024-11-18 02:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on <code>crates/uv-static/src/env_vars.rs</code>:172 on 2024-11-18 02:39</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/9186</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-18 02:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-static/src/env_vars.rs</code>:172 on 2024-11-18 02:40</div>
+            <div class="timeline-body"><p>Hah, great... Thanks!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:14 UTC
+    </footer>
+</body>
+</html>

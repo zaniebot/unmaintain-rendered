@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback from a flake8 user - astral-sh/ruff #2261</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feedback from a flake8 user</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2261">#2261</a>
+        opened by <a href="https://github.com/alexprengere">@alexprengere</a>
+        on 2023-01-27 15:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alexprengere">@alexprengere</a> on 2023-01-27 15:13</div>
+            <div class="timeline-body"><p>I just spent a couple of hours testing ruff (0.0.236), replacing my flake8 config.
+It was a very pleasant experience! <em>flake8-to-ruff</em> was great and the transition went smoothly.
+Here are a few differences that could make it even better IMO:</p>
+<ul>
+<li>flake8 has a default config file that can be read from <code>~/.config/flake8</code>, I think it would be great if ruff could default to looking for <code>~/.config/ruff.toml</code> when <em>no config file is found</em>. I tend to use a global unique config for all my projects (+IDE config), and this would save the extra <code>--config ~/.config/ruff.toml</code> flag to pass when calling ruff</li>
+<li>flake8 can read its config from <code>tox.ini</code>, and I think it would benefit ruff as well. pip still has different behaviour based on the presence of <code>pyproject.toml</code>, so for some projects introducing this file can be problematic. Adding a <code>ruff.toml</code> can be a downside when there is already a <code>tox.ini</code> that centralizes tooling config and execution</li>
+<li>finally, here is the list of plugins I frequently use but could not find in the docs, but frankly I would not bother too much, as the current state of rules is truly impressive<ul>
+<li><a href="https://pypi.org/project/flake8-async/">flake8-async</a></li>
+<li><a href="https://pypi.org/project/flake8-warnings/">flake8-warnings</a></li>
+<li><a href="https://pypi.org/project/flake8-broken-line/">flake8-broken-line</a></li>
+<li><a href="https://pypi.org/project/flake8-printf-formatting/">flake8-printf-formatting</a></li>
+<li><a href="https://pypi.org/project/flake8-markdown/">flake8-markdown</a></li>
+<li><a href="https://pypi.org/project/flake8-rst/">flake8-rst</a></li>
+</ul>
+</li>
+</ul>
+<p>If you feel my first two points could be interesting I can file separate issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 15:38</div>
+            <div class="timeline-body"><p>Thank you for this!</p>
+<blockquote>
+<p>flake8 has a default config file that can be read from ~/.config/flake8, I think it would be great if ruff could default to looking for ~/.config/ruff.toml when no config file is found. I tend to use a global unique config for all my projects (+IDE config), and this would save the extra --config ~/.config/ruff.toml flag to pass when calling ruff</p>
+</blockquote>
+<p>We do support this, I think, but it's not well-documented -- in fact, it may not be documented at all! If we can't find a config, we'll respect a <code>ruff.toml</code> at <code>${sys::config_dir()}/ruff/ruff.toml</code>. E.g., if you're on Linux, it's <code>/home/alice/.config/ruff/ruff.toml</code>:</p>
+<pre><code class="language-rust">/// Returns the path to the user's config directory.
+///
+/// The returned value depends on the operating system and is either a `Some`, containing a value from the following table, or a `None`.
+///
+/// |Platform | Value                                 | Example                                  |
+/// | ------- | ------------------------------------- | ---------------------------------------- |
+/// | Linux   | `$XDG_CONFIG_HOME` or `$HOME`/.config | /home/alice/.config                      |
+/// | macOS   | `$HOME`/Library/Application Support   | /Users/Alice/Library/Application Support |
+/// | Windows | `{FOLDERID_RoamingAppData}`           | C:\Users\Alice\AppData\Roaming           |
+pub fn config_dir() -&gt; Option&lt;PathBuf&gt; {
+    sys::config_dir()
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 17:21</div>
+            <div class="timeline-body"><p>(I'll add this to the docs later today.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexprengere">@alexprengere</a> on 2023-01-27 17:31</div>
+            <div class="timeline-body"><p>I tested this and it works perfectly, thanks. Indeed a couple of lines in the docs should be enough 😉
+What are your thoughts on <code>tox.ini</code> based config?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jackenmen">@Jackenmen</a> on 2023-01-27 20:38</div>
+            <div class="timeline-body"><p>I think that having a centralized pyproject.toml <em>and</em> ruff.toml is already enough and tox.ini seems like a rather bad place for putting non-tox config even if some tools decided to put their config there (same as with some tools that decided to put their config in setup.cfg). Additionally, it would require supporting another <em>file format</em> since it's not a TOML file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 22:59</div>
+            <div class="timeline-body"><p>Yeah unfortunately we're unlikely to support <code>tox.ini</code>. I totally understand why it would be convenient, but I really want to avoid supporting another file format for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-28 00:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alexprengere">@alexprengere</a> on 2023-02-03 13:34</div>
+            <div class="timeline-body"><p>After thinking a bit more about this, I believe not supporting <code>tox.ini</code> is indeed the right choice.
+Out of all the tools I use, <code>flake8</code> was the only one that did not have support for <code>pyproject.toml</code> config.
+So in the end, I could <a href="https://github.com/alexprengere/currencyconverter/commit/a61c90d25ad3ace9a4613326bf215a941997b752">migrate</a> all the config to <code>pyproject.toml</code> (Black, pytest, coverage, ... and now ruff), in most of my projects.
+This makes even more sense now that <a href="https://peps.python.org/pep-0621/">PEP 621</a> was implemented and landed in setuptools 61+, as we will be able to get rid of <code>setup.cfg</code> and <code>setup.py</code> as well.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:04 UTC
+    </footer>
+</body>
+</html>

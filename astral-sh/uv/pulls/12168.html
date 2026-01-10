@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve error message when a virtual environment Python symlink is broken - astral-sh/uv #12168</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve error message when a virtual environment Python symlink is broken</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12168">#12168</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-03-14 14:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-03-14 14:02</div>
+            <div class="timeline-body"><p>When removing a Python interpreter underneath an existing venv, uv currently shows a not found error:</p>
+<pre><code>error: Failed to inspect Python interpreter from active virtual environment at `.venv/bin/python3`
+  Caused by: Python interpreter not found at `/home/konsti/projects/uv/.venv/bin/python3`
+</code></pre>
+<p>This is unintuitive, as the file for the Python interpreter does exist, it is a broken symlink that needs to be replaced with <code>uv venv</code>.</p>
+<p>I've been encountering those occasionally, and I expect users that switch between versions a lot will, too, especially when they also use pyenv or a similar Python manager.</p>
+<p>The new error hints at this solution:</p>
+<pre><code>error: Failed to inspect Python interpreter from active virtual environment at `.venv/bin/python3`
+  Caused by: Broken symlink at `.venv/bin/python3`, was the underlying Python interpreter removed?
+
+hint: To recreate the virtual environment, run `uv venv`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2025-03-14 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @konstin on 2025-03-14 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @jtfmumm by @konstin on 2025-03-14 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-14 14:08</div>
+            <div class="timeline-body"><p>Nice. Can we add another newline before the hint, and remove the trailing period on the hint per the style guide?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-14 14:18</div>
+            <div class="timeline-body"><p>I'm considering removing <code>InterpreterError::NotFound</code>, do we have cases we want to permit that are not covered by <code>InterpreterError::BrokenSymlink</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-16 16:44</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm considering removing InterpreterError::NotFound</p>
+</blockquote>
+<p>I think we need it for a case like <code>uv run -p /path/to/python3.12</code>, right? A missing file there is different than a broken symlink</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-16 16:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/discovery.rs</code>:924 on 2025-04-16 16:45</div>
+            <div class="timeline-body"><p>Isn't it important to report the broken symlink in this context too? I'm not sure how that'd look downstream. You could test with <code>uv venv foo &amp;&amp; &lt;uninstall python&gt; &amp;&amp; uv run -p foo</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-16 16:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/discovery.rs</code>:924 on 2025-04-16 16:46</div>
+            <div class="timeline-body"><p>I guess the hint could be wrong here if it's not a virtual environment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Hint for broken venv" to "Improve error message when a virtual environment Python symlink is broken" by @zanieb on 2025-04-16 16:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-16 16:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:16295 on 2025-04-16 16:48</div>
+            <div class="timeline-body"><p>What if the virtual environment was found in a parent directory or specified some other way? I'm worried this hint might be misleading.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-16 22:32</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I'm considering removing InterpreterError::NotFound</p>
+</blockquote>
+<p>I think we need it for a case like <code>uv run -p /path/to/python3.12</code>, right? A missing file there is different than a broken symlink</p>
+</blockquote>
+<p>I'm afraid I'm not following along what <code>/path/to/python3.12</code> means. If I do <code>uv run -p /usr/bin/python3.12 python</code> it works in either case. If I do <code>uv run -p /does/not/exist/python3.12 python</code> there's the current behavior and the one if we remove <code>InterpreterError::NotFound</code>.</p>
+<p>Current behavior:</p>
+<pre><code>$ uv run -p /does/not/exist/python3.12 python
+error: No interpreter found for path `/does/not/exist/python3.12` in virtual environments, managed installations, or search path
+</code></pre>
+<p>After removing <code>InterpreterError::NotFound</code>:</p>
+<pre><code>$ uv run -p /does/not/exist/python3.12 python
+error: Failed to inspect Python interpreter from provided path at `/does/not/exist/python3.12`
+  Caused by: Failed to query Python interpreter
+  Caused by: failed to canonicalize path `/does/not/exist/python3.12`: No such file or directory (os error 2)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-16 22:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:16295 on 2025-04-16 22:35</div>
+            <div class="timeline-body"><p>Should we make the hint more generic, like &quot;hint: The Python interpreter seems to have been uninstalled, consider recreating the virtual environment&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-16 22:39</div>
+            <div class="timeline-body"><p>I see. I think that might cause other problems for discovery, I'd need to look carefully at the downstream effects. I can do that though..</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-16 22:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:16295 on 2025-04-16 22:40</div>
+            <div class="timeline-body"><p>That seems more correct. You could sniff for <code>pyenv.cfg</code> too? If this was handled in the caller instead (as it sort of was before this PR?) you would have information about whether it's a virtual environment or not?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-16 22:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/discovery.rs</code>:924 on 2025-04-16 22:44</div>
+            <div class="timeline-body"><p>For this case, I get the same behavior with and without this PR:</p>
+<pre><code>$ uv venv botched &amp;&amp; rm botched/bin/python &amp;&amp; ln -s /does/not/exist/python botched/bin/python &amp;&amp; uv run -p botched
+Using CPython 3.13.2
+Creating virtual environment at: botched
+Activate with: source botched/bin/activate
+error: No interpreter found for directory `botched` in virtual environments, managed installations, or search path
+$ uv-pr venv botched &amp;&amp; rm botched/bin/python &amp;&amp; ln -s /does/not/exist/python botched/bin/python &amp;&amp; uv-pr run -p botched
+Using CPython 3.13.2
+Creating virtual environment at: botched
+Activate with: source botched/bin/activate
+error: No interpreter found for directory `botched` in virtual environments, managed installations, or search path
+</code></pre>
+<p>The error is imo misleading, we found an interpreter, but it's broken, though that looks like a different problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-16 22:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:16295 on 2025-04-16 22:52</div>
+            <div class="timeline-body"><p>@jtfmumm you got an opinion on that from the other work on healing broken venvs wrt <code>pyvenv.cfg</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-16 22:55</div>
+            <div class="timeline-body"><p>It would be interesting to know if this has downstream effects, it would be nice if we could scope the special case down to only broken symlinks, which tightly corresponds to uninstalled python interpreters.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-16 23:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:16295 on 2025-04-16 23:29</div>
+            <div class="timeline-body"><p>i.e., we have https://github.com/astral-sh/uv/blob/7d12b6af00fea7b45d0c0e1e2d0f9431b3cf9b9c/crates/uv-python/src/discovery.rs#L819-L828</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-06 11:20</div>
+            <div class="timeline-body"><p>@zanieb Could you find out if we still need <code>InterpreterError::NotFound</code> with <code>InterpreterError::BrokenSymlink</code>, or if there are downstream problems?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-06 12:27</div>
+            <div class="timeline-body"><p>I can try, but it's going to be hard to find time as it's not very critical. Do we need to remove it? It's kind of high risk to remove error variants that are used in Python discovery.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-06 14:03</div>
+            <div class="timeline-body"><p>If we don't have the clarity about <code>InterpreterError::NotFound</code>, can we move ahead with just adding <code>InterpreterError::BrokenSymlink</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-07 17:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/interpreter.rs</code>:687 on 2025-05-07 17:28</div>
+            <div class="timeline-body"><p>Doesn't specializing this case mean we're not improving the error message when it's not a virtual environment? I'm curious why you chose this instead of having conditional display of the hint? Either with <code>BrokenSymlink(PathBuf, bool)</code> or by deferring that <code>pyvenv.cfg</code> lookup to error display time. (adding another dedicated variant is an option, of course, but seems like more work downstream of here)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-05-07 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-07 17:58</div>
+            <div class="timeline-body"><p>Thanks for your patience</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-07 18:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:17384 on 2025-05-07 18:06</div>
+            <div class="timeline-body"><p>The specialization for that would be at</p>
+<p>https://github.com/astral-sh/uv/blob/060be9cef197d83e5546fb1be10e8e8373a1cfc6/crates/uv-python/src/discovery.rs#L897-L906</p>
+<p>It's not great right now. I think we should tackle that separately though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-07 18:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-python/src/interpreter.rs</code>:687 on 2025-05-07 18:07</div>
+            <div class="timeline-body"><p>I've only seen the error show in uv for venvs, but it doesn't hurt to cover the non-venv case, too.</p>
+<p>In the test the error looks suboptimal too (we're ignoring the explicitly passed python interpreter is unexpected, I checked both <code>uv venv</code> and <code>uv pip compile</code>), but that's a different problem (and the behavior for this case does not change).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-07 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:17384 on 2025-05-07 18:10</div>
+            <div class="timeline-body"><p>Looking at an aspect of this briefly... https://github.com/astral-sh/uv/pull/13335</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-05-07 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-05-07 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-07 18:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:21 UTC
+    </footer>
+</body>
+</html>

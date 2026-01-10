@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOC501 should not raise on ImportError - astral-sh/ruff #14534</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>DOC501 should not raise on ImportError</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14534">#14534</a>
+        opened by <a href="https://github.com/Matt-Ord">@Matt-Ord</a>
+        on 2024-11-22 16:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Matt-Ord">@Matt-Ord</a> on 2024-11-22 16:46</div>
+            <div class="timeline-body"><p>I'm getting a 'false positive' on DOC501 when my package has an optional dependency on matplotlib</p>
+<pre><code>def get_axis_colorbar(axis: Axes) -&gt; Colorbar | None:
+    &quot;&quot;&quot;Get a colorbar attached to the axis.&quot;&quot;&quot;
+    if plt is None:
+        msg = &quot;Matplotlib is not installed. Please install it with the 'plot' extra.&quot;
+        raise ImportError(msg) # Ruff warns here
+    for artist in axis.get_children():
+        if isinstance(artist, plt.cm.ScalarMappable) and artist.colorbar is not None:
+            return artist.colorbar
+    return None
+</code></pre>
+<p>Using ruff 0.8. It might be nice to be able to exclude ImportError from this rule, as it is not an error which a user would be 'expected' to see during runtime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-11-22 21:58</div>
+            <div class="timeline-body"><p>Hi, not a maintainer, just someone interested in the <code>DOC</code> rules! Would you mind explaining why <code>ImportError</code> is special? My intuition (perhaps misguided) is that I would quite like a function that specifically raises <code>ImportError</code> to document that behaviour. To me, the fact that it's an exception type that's raised explicitly rarely seems to make it all the more worth documenting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Matt-Ord">@Matt-Ord</a> on 2024-11-22 22:07</div>
+            <div class="timeline-body"><p>The thought was that it was not really a 'runtime error' as I would expect to document to a user but an install time error. If it is just the result of a user not properly installing downstream dependencies, I would say it would probably be better just to document the required dependency but not the error in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @AlexWaygood on 2024-11-22 22:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2024-11-25 09:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-25 09:16</div>
+            <div class="timeline-body"><blockquote>
+<p>The thought was that it was not really a 'runtime error' as I would expect to document to a user but an install time error.</p>
+</blockquote>
+<p>It's a nice touch that you hint users towards installing Matplotlib with the <code>plot</code> extra. But I do agree with @tjkuson that I would expect the exception to be documented if I opted into <code>DOC501</code> because a missing extra otherwise manifests as an <code>AttributeError</code> and not necessarily as an <code>ImportError</code>. The difference might surprise someone calling <code>get_axis_colorbar</code> as a library-function.</p>
+<p>In your situation, I would suppress the violation with <code># noqa: DOC501</code> or consider doing the check earlier, maybe in a main function or when initializing the library to avoid repeating it over multiple functions. Unless this function belongs to a subset of functions that are only sometimes supported (e.g. when installed with an extra), then raising inside the specific library function does make sense, but I would then also expect this to be documented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Matt-Ord">@Matt-Ord</a> on 2024-11-25 09:21</div>
+            <div class="timeline-body"><p>Thanks for taking the time to respond - this is indeed part of a subset of functions, rather than a core feature which is the reason behind the 'plot' extra. I'll close the issue in this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Matt-Ord on 2024-11-25 09:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:49 UTC
+    </footer>
+</body>
+</html>

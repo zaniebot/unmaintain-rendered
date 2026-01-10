@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch `pyproject.toml` from GitHub API - astral-sh/uv #10765</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fetch <code>pyproject.toml</code> from GitHub API</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10765">#10765</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-01-20 01:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-20 01:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>When resolving Git metadata, we may be able to fetch the metadata from GitHub directly in some cases. This is <em>way</em> faster, since we don't need to perform many Git operations and, in particular, don't need to clone the repo.</p>
+<p>This only works in the following cases:</p>
+<ul>
+<li>The Git repository is public. Otherwise, I believe you need an access token, which we don't have.</li>
+<li>The <code>pyproject.toml</code> has static metadata.</li>
+<li>The <code>pyproject.toml</code> has no <code>tool.uv.sources</code>. Otherwise, we need to lower them... And, if there are any paths or workspace sources, that requires an install path (i.e., we need the content on-disk).</li>
+<li>The project is in the repo root. If it's in a subdirectory, it could be a workspace member. And if it's a workspace member, there could be sources defined in the workspace root. But we can't know without fetching the workspace root -- and we need the workspace in order to find the root...</li>
+</ul>
+<p>Closes #10568.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2025-01-20 01:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2025-01-20 01:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2025-01-20 01:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">no-build</span> added by @charliermarsh on 2025-01-20 01:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-20 03:07</div>
+            <div class="timeline-body"><p>Did you do any benches?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-20 03:35</div>
+            <div class="timeline-body"><p>Yeah, I think it's just whatever the cost of cloning the repo is. For example, &gt;20x faster for uv:</p>
+<pre><code>❯ hyperfine 'echo &quot;uv @ git+https://github.com/astral-sh/uv&quot; | ./target/release/uv pip compile - -n' 'echo &quot;uv @ git+https://github.com/astral-sh/uv&quot; | uv pip compile - -n' --warmup 5 --runs 10
+Benchmark 1: echo &quot;uv @ git+https://github.com/astral-sh/uv&quot; | ./target/release/uv pip compile - -n
+  Time (mean ± σ):     126.7 ms ±  13.6 ms    [User: 27.9 ms, System: 12.3 ms]
+  Range (min … max):   113.7 ms … 162.6 ms    10 runs
+
+Benchmark 2: echo &quot;uv @ git+https://github.com/astral-sh/uv&quot; | uv pip compile - -n
+  Time (mean ± σ):      2.892 s ±  0.035 s    [User: 1.220 s, System: 0.389 s]
+  Range (min … max):    2.840 s …  2.942 s    10 runs
+
+Summary
+  echo &quot;uv @ git+https://github.com/astral-sh/uv&quot; | ./target/release/uv pip compile - -n ran
+   22.83 ± 2.46 times faster than echo &quot;uv @ git+https://github.com/astral-sh/uv&quot; | uv pip compile - -n
+</code></pre>
+<p>(Python interpreter querying is like 40ms out of that 120ms. The GitHub API call is like 50ms. The GitHub file fetch is like 30ms.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-git/src/resolver.rs</code>:76 on 2025-01-20 08:53</div>
+            <div class="timeline-body"><p>We should set a good example and add contact information and version too: <code>uv/{uv_version} (+https://github.com/astral-sh/uv)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-01-20 08:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-01-20 08:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-git/src/resolver.rs</code>:86 on 2025-01-20 08:54</div>
+            <div class="timeline-body"><p>We need a log statement with the error here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-20 08:58</div>
+            <div class="timeline-body"><p>How do we handle github api limits? If I'm reading the header correctly we get 60 requests per hour. Do we just rely on github to send us 403 when we've exhausted the rate limit?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-20 13:28</div>
+            <div class="timeline-body"><p>Yes. It’s no different than the existing fast-path code we have in the Git crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-01-20 16:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-20 17:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-git/src/resolver.rs</code>:76 on 2025-01-20 17:40</div>
+            <div class="timeline-body"><p>I'll change this separately, since we already do this in <code>uv-git</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-01-20 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-20 17:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-20 17:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:18 UTC
+    </footer>
+</body>
+</html>

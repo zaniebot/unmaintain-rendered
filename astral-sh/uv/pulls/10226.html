@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Rust crate jiff to v0.1.16 - astral-sh/uv #10226</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Update Rust crate jiff to v0.1.16</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10226">#10226</a>
+        opened by <a href="https://github.com/renovate">@renovate</a>
+        on 2024-12-30 02:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/renovate">@renovate</a> on 2024-12-30 02:24</div>
+            <div class="timeline-body"><p>This PR contains the following updates:</p>
+<p>| Package | Type | Update | Change |
+|---|---|---|---|
+| <a href="https://redirect.github.com/BurntSushi/jiff">jiff</a> | workspace.dependencies | patch | <code>0.1.15</code> -&gt; <code>0.1.16</code> |</p>
+<hr />
+<h3>Release Notes</h3>
+<details>
+<summary>BurntSushi/jiff (jiff)</summary>
+
+<h3><a href="https://redirect.github.com/BurntSushi/jiff/blob/HEAD/CHANGELOG.md#0116-2024-12-26"><code>v0.1.16</code></a></h3>
+<p><a href="https://redirect.github.com/BurntSushi/jiff/compare/0.1.15...0.1.16">Compare Source</a></p>
+<p>===================
+This release includes a new <code>jiff::fmt::friendly</code> module for formatting and
+parsing durations in a more human readable format than what ISO 8601 specifies.
+ISO 8601 remains the &quot;default&quot; duration format in Jiff due to its widespread
+support. Here are some examples:</p>
+<pre><code class="language-text">40d
+40 days
+1y1d
+1yr 1d
+3d4h59m
+3 days, 4 hours, 59 minutes
+3d 4h 59m
+2h30m
+2h 30m
+1mo
+1w
+1 week
+1w4d
+1 wk 4 days
+1m
+0.0021s
+0s
+0d
+0 days
+3 mins 34s 123ms
+3 mins 34.123 secs
+3 mins 34,123s
+1y1mo1d1h1m1.1s
+1yr 1mo 1day 1hr 1min 1.1sec
+1 year, 1 month, 1 day, 1 hour, 1 minute 1.1 seconds
+1 year, 1 month, 1 day, 01:01:01.1
+</code></pre>
+<p>To quickly demonstrate this new feature, here's a simple CLI program using
+Clap:</p>
+<pre><code class="language-rust,no_run">use clap::Parser;
+use jiff::{Span, Zoned};
+
+#[derive(Parser, Debug)]
+
+#[command(version, about, long_about = None)]
+struct Args {
+    duration: Span,
+}
+
+fn main() {
+    let args = Args::parse();
+    println!(&quot;adding duration to now: {}&quot;, &amp;Zoned::now() + args.duration);
+}
+</code></pre>
+<p>And running the program:</p>
+<pre><code class="language-text">$ cargo run -q -- '1 year, 2 months, 5 hours'
+adding duration to now: 2026-02-26T18:58:22-05:00[America/New_York]
+$ cargo run -q -- 'P1Y2MT5H'  # ISO 8601 durations are supported too!
+adding duration to now: 2026-02-26T19:00:57-05:00[America/New_York]
+</code></pre>
+<p>With Jiff, you should no longer need to pull in crates like
+<a href="https://docs.rs/humantime"><code>humantime</code></a> and
+<a href="https://docs.rs/humantime-serde"><code>humantime-serde</code></a>
+to accomplish a similar task.</p>
+<p>While this new format doesn't support any kind of internationalization, the
+prevalence of the <code>humantime</code> crate suggests there's a desire for something
+like this. The &quot;friendly&quot; format is meant to service all the same use cases
+as <code>humantime</code> does for durations, but in a way that doesn't let you shoot
+yourself in the foot.</p>
+<p>The new &quot;friendly&quot; format is now the default for the <code>Debug</code> implementations
+of both <code>Span</code> and <code>SignedDuration</code>. It's also available via the &quot;alternate&quot;
+<code>Display</code> implementations for <code>Span</code> and <code>SignedDuration</code> as well. Moreover,
+the <code>FromStr</code> trait implementations for both <code>Span</code> and <code>SignedDuration</code> will
+parse <em>both</em> the ISO 8601 duration and this new &quot;friendly&quot; format. Finally,
+when <code>serde</code> integration is enabled, the <code>Deserialize</code> implementations for
+<code>SignedDuration</code> and <code>Span</code> also automatically parse either ISO 8601 or the
+friendly format. For serialization, ISO 8601 remains the default, but the
+<code>jiff::fmt::serde</code> module provides easy to use helpers to switch to the
+friendly format.</p>
+<p>The <code>jiff::fmt::friendly</code> module documentation provides many more details,
+including a complete grammar for the format.</p>
+<p>Enhancements:</p>
+<ul>
+<li><a href="https://redirect.github.com/BurntSushi/jiff/pull/143">#​143</a>:
+Add <code>Hash</code> implementation for <code>Zoned</code> and <code>Timestamp</code>.</li>
+</ul>
+<p>Bug fixes:</p>
+<ul>
+<li><a href="https://redirect.github.com/BurntSushi/jiff/issues/60">#​60</a>:
+Use a better <code>Debug</code> output format for <code>SignedDuration</code> and <code>Span</code>.</li>
+<li><a href="https://redirect.github.com/BurntSushi/jiff/issues/111">#​111</a>:
+Add a new &quot;friendly&quot; duration format.</li>
+<li><a href="https://redirect.github.com/BurntSushi/jiff/issues/138">#​138</a>:
+Fix deserialization in <code>serde_yml</code> and <code>serde_yaml</code> crates.</li>
+<li><a href="https://redirect.github.com/BurntSushi/jiff/pull/161">#​161</a>:
+Fix <code>serde</code> dependency configuration so that it builds in no-std mode.</li>
+</ul>
+</details>
+
+<hr />
+<h3>Configuration</h3>
+<p>📅 <strong>Schedule</strong>: Branch creation - &quot;before 4am on Monday&quot; (UTC), Automerge - At any time (no schedule defined).</p>
+<p>🚦 <strong>Automerge</strong>: Disabled by config. Please merge this manually once you are satisfied.</p>
+<p>♻ <strong>Rebasing</strong>: Whenever PR becomes conflicted, or you tick the rebase/retry checkbox.</p>
+<p>🔕 <strong>Ignore</strong>: Close this PR and you won't be reminded about this update again.</p>
+<hr />
+<ul>
+<li>[ ] <!-- rebase-check -->If you want to rebase/retry this PR, check this box</li>
+</ul>
+<hr />
+<p>This PR was generated by <a href="https://mend.io/renovate/">Mend Renovate</a>. View the <a href="https://developer.mend.io/github/astral-sh/uv">repository job log</a>.</p>
+<!--renovate-debug:eyJjcmVhdGVkSW5WZXIiOiIzOS44NS4wIiwidXBkYXRlZEluVmVyIjoiMzkuODUuMCIsInRhcmdldEJyYW5jaCI6Im1haW4iLCJsYWJlbHMiOlsiaW50ZXJuYWwiXX0=-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @renovate[bot] on 2024-12-30 02:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-12-30 02:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-30 02:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-30 02:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:16 UTC
+    </footer>
+</body>
+</html>

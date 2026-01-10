@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use index-level instead of realm-level credential caching for known indexes - astral-sh/uv #12717</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use index-level instead of realm-level credential caching for known indexes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12717">#12717</a>
+        opened by <a href="https://github.com/jtfmumm">@jtfmumm</a>
+        on 2025-04-07 14:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-07 14:32</div>
+            <div class="timeline-body"><p>The current uv behavior is to cache credentials either at the request URL or realm level. But in general, the expected behavior for indexes is to apply credentials at the index level (as implemented in #12651). This means that we also need to cache credentials at this level. Note that when uv does not detect an index URL for a request URL, it will continue to apply the old behavior.</p>
+<p>Depends on #12651.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">network</span> added by @jtfmumm on 2025-04-07 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @jtfmumm on 2025-04-07 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-07 16:19</div>
+            <div class="timeline-body"><p>@zanieb We can either merge this into <a href="https://github.com/astral-sh/uv/tree/jtfm/index-url-auth">jtfm/index-url-auth</a> if approved or sequence it after #12651.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-07 23:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:290 on 2025-04-07 23:03</div>
+            <div class="timeline-body"><p>If there's no cache entry for the index, should we fall back to the realm still? I would think so, for cases where a file is hosted elsewhere on the realm?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-08 10:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-auth/src/middleware.rs</code>:290 on 2025-04-08 10:41</div>
+            <div class="timeline-body"><p>The problem is that two indexes could have different credentials but the same realm. If both indexes have files hosted elsewhere on the realm, we could only cache the correct credentials at the realm level for one of them. That seems confusing.</p>
+<p>But if we did want to fall back to the realm, we couldn't do it here. Instead, we'd need to check the realm cache again after the credentials fetch step. Otherwise uv will potentially find the wrong credentials here and use those without, e.g., checking the keyring for the index URL. There's a test in this PR that covers that case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-08 18:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:290 on 2025-04-08 18:29</div>
+            <div class="timeline-body"><blockquote>
+<p>The problem is that two indexes could have different credentials but the same realm. If both indexes have files hosted elsewhere on the realm, we could only cache the correct credentials at the realm level for one of them. That seems confusing.</p>
+</blockquote>
+<p>I agree it seems confusing, but it's also better than not authenticating at all, right? I think the more common case is that you have a single index per realm — mixing indexes per realm is rare. As-is, this could be a regression from our existing behavior.</p>
+<blockquote>
+<p>Otherwise uv will potentially find the wrong credentials here and use those without, e.g., checking the keyring for the index URL.</p>
+</blockquote>
+<p>I agree we shouldn't use the realm-level cache until we've checked for credentials at the index-level.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-09 08:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-auth/src/middleware.rs</code>:290 on 2025-04-09 08:15</div>
+            <div class="timeline-body"><p>Ok, I've added realm-level cache check as a final fallback for an index URL (and a new test to check this behavior)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @jtfmumm on 2025-04-10 09:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-04-10 09:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-10 09:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:22 UTC
+    </footer>
+</body>
+</html>

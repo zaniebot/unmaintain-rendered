@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E711: `--fix` doesn't always fix and messes up quotes - astral-sh/ruff #1237</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>E711: <code>--fix</code> doesn't always fix and messes up quotes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1237">#1237</a>
+        opened by <a href="https://github.com/mikeroll">@mikeroll</a>
+        on 2022-12-14 11:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mikeroll">@mikeroll</a> on 2022-12-14 11:14</div>
+            <div class="timeline-body"><p><code>ruff</code> correctly identifies the issues with the code below</p>
+<pre><code class="language-py">def test():
+    assert &quot;string&quot; == None  # E711
+    assert 42 == None  # E711
+    assert foo(&quot;string&quot;) == None  # E711
+</code></pre>
+<p>but <code>ruff --fix</code> here is far from perfect:</p>
+<pre><code class="language-py">def test():
+    assert 'string' == None  # suddenly single quotes and no fix
+    assert 42 == None  # no fix
+    assert foo('string') is None  # fixed, but why single quotes?
+</code></pre>
+<p>Tested on 0.178.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-14 11:28</div>
+            <div class="timeline-body"><p>The first two look like bugs. The conversion to single quotes is known (#454) and an accepted limitation right now for certain fixes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-12-14 11:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-14 18:24</div>
+            <div class="timeline-body"><p>Huh, wait, this actually does do the right thing for me (modulo the single quotes) -- I get this output:</p>
+<pre><code class="language-py">def test():
+    assert 'string' is None  # E711
+    assert 42 is None  # E711
+    assert foo('string') is None  # E711
+</code></pre>
+<p>Any idea on the discrepancy?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-12-14 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @charliermarsh on 2022-12-15 00:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2022-12-15 00:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeroll">@mikeroll</a> on 2022-12-15 10:53</div>
+            <div class="timeline-body"><p>Weird, I have checked again just now in a fresh venv.</p>
+<pre><code>❯ cat test.py
+def foo(x):
+    return None
+
+def test():
+    assert &quot;string&quot; == None
+    assert 42 == None
+    assert foo(&quot;string&quot;) == None
+
+❯ python -V; ruff --version
+Python 3.10.6
+ruff 0.0.182
+
+❯ ruff --fix test.py; cat test.py
+Found 202 error(s) (200 fixed, 2 remaining).
+test.py:5:24: E711 Comparison to `None` should be `cond is None`
+test.py:6:18: E711 Comparison to `None` should be `cond is None`
+def foo(x):
+    return None
+
+def test():
+    assert 'string' == None
+    assert 42 == None
+    assert foo('string') is None
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-15 13:13</div>
+            <div class="timeline-body"><p>I wonder if there are competing error fixes that are causing a conflict here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-15 13:16</div>
+            <div class="timeline-body"><p>Ah, ok, I think the issue here is that we have two conflicting rules (though Flake8 raises the same errors).</p>
+<p>Before the <code>is</code> fix, we have:</p>
+<pre><code>foo.py:5:21: E711 comparison to None should be 'if cond is None:'
+foo.py:6:15: E711 comparison to None should be 'if cond is None:'
+</code></pre>
+<p>And once that's autofixed, we get:</p>
+<pre><code>foo.py:5:12: F632 use ==/!= to compare constant literals (str, bytes, int, float, tuple)
+foo.py:6:12: F632 use ==/!= to compare constant literals (str, bytes, int, float, tuple)
+</code></pre>
+<p>So we just keep autofixing back and forth (hence &quot;200 fixed&quot;).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-15 13:17</div>
+            <div class="timeline-body"><p>I think <code>E711</code> should be disabled when the other comparator is a literal.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2022-12-15 13:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-12-15 13:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-15 13:17</div>
+            <div class="timeline-body"><p>Thanks for this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-15 13:21</div>
+            <div class="timeline-body"><p>(Will fix today.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeroll">@mikeroll</a> on 2022-12-15 16:56</div>
+            <div class="timeline-body"><p>Oh nice, thanks a lot!</p>
+<p>Also a reminder for me to include the configuration in bug reports, I do have both E and F enabled.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-15 17:08</div>
+            <div class="timeline-body"><p>It's kind of tricky because the rules are fundamentally in conflict :)</p>
+<p>Take, for example, <code>if &quot;abc&quot; is None: pass</code>.</p>
+<p><code>F632</code> says we should change this to <code>if &quot;abc&quot; == None: pass</code>, since comparing to <code>None</code> with <code>==</code> like that is a <code>SyntaxWarning</code> (which I believe will be an error in the future). But <code>if &quot;abc&quot; == None: pass</code> triggers <code>E711</code>.</p>
+<p>The fix I settled on is to avoid auto-fixing <code>E711</code> and <code>E712</code> errors that would in turn <em>cause</em> an <code>F632</code>, which I think is the best compromise. So, in this case, we <em>would</em> change it to <code>if &quot;abc&quot; == None: pass</code> to avoid the syntax error; but you'd then be presented with an <code>E711</code> that you'd have to fix yourself or disable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-15 17:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:10:16 UTC
+    </footer>
+</body>
+</html>

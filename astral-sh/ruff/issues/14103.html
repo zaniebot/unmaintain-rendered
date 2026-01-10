@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff format` not fomatting properly long line - astral-sh/ruff #14103</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>ruff format</code> not fomatting properly long line</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14103">#14103</a>
+        opened by <a href="https://github.com/imperosol">@imperosol</a>
+        on 2024-11-05 10:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/imperosol">@imperosol</a> on 2024-11-05 10:48</div>
+            <div class="timeline-body"><ul>
+<li>keywords search : <code>format</code>, <code>E501</code></li>
+<li>commands invoked : <code>ruff format</code>, <code>ruff format --isolated</code></li>
+<li>current Ruff version : <code>0.6.9</code></li>
+<li>relevant Ruff settings : <code>line-length: 88</code></li>
+</ul>
+<p>Hello,</p>
+<p>I am currently working on a django project, where I do some chained queryset operations.
+Usually, <code>ruff format</code> handles quite well this case and performs line breaks as intended.</p>
+<p>However, I encountered a case where it seems to fail. It more or less looks like this :</p>
+<pre><code class="language-py">class Bar:
+    def bar_function():
+        my_not_so_short_subquery: QuerySet[MyCustomModel] = (
+            MuCustomModel.objects.custom_qs_method().filter(first_filter__user=OuterRef(&quot;pk&quot;), second_filter__lt=threshold)
+        )
+</code></pre>
+<p>Small note : This is not the exact same code where I saw the issue, so I changed some variables names to have something that still fails while not being the real deal (but this fails as well, so the main goal as a minimum reproducible code is fulfilled)</p>
+<p>Here, the length of penultimate line is of 115 characters, while my ruff config has the default (88 characters). This is really annoying, because it is not only wrongly formatted, but it also conflict with the E501 rule.</p>
+<p>What I intended ruff format to do was something more like :</p>
+<pre><code class="language-py">        my_not_so_short_subquery: QuerySet[MyCustomModel] = (
+            MuCustomModel.objects.custom_qs_method()
+            .filter(first_filter__user=OuterRef(&quot;pk&quot;), second_filter__lt=threshold)
+        )
+</code></pre>
+<p>However, if I try to write this manually, ruff format this back to the wrong version.</p>
+<p>If I remove the type annotation (which I do not intend to do), it works :</p>
+<pre><code class="language-py">        my_not_so_short_subquery = MuCustomModel.objects.custom_qs_().filter(
+            first_filter__user=OuterRef(&quot;pk&quot;), second_filter__lt=threshold
+        )
+</code></pre>
+<p>And if I shorten the variable name (which would somewhat hinder the meaning of the variable, thus I'd like to avoid), it works too :</p>
+<pre><code class="language-py">        my_subquery: QuerySet[MyCustomModel] = MuCustomModel.objects.custom_qs_method().filter(
+            first_filter__user=OuterRef(&quot;pk&quot;), second_filter__lt=threshold
+        )
+</code></pre>
+<p>Do you know where this could originate from ?</p>
+<p>Thank you for your work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-05 11:01</div>
+            <div class="timeline-body"><p>Thanks for creating a minimal reproducible example. This seems to be fixed in the preview style, see <a href="https://play.ruff.rs/dbf61fe6-9e2c-496e-bc31-192f9e601d4a">playground</a>. The fix will get released as part of the #13371</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-11-05 11:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/imperosol">@imperosol</a> on 2024-11-05 12:06</div>
+            <div class="timeline-body"><p>Indeed, this is fixed with the <code>--preview</code> flag. I guess we will just add a <code>fmt: off</code> until it is stabilized.</p>
+<p>Thanks for your answer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-05 12:44</div>
+            <div class="timeline-body"><p>I'll close this as the bug is fixed and we're only waiting for stabilization now. Thanks again for reporting!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-05 12:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:37 UTC
+    </footer>
+</body>
+</html>

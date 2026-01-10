@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLW3301 false positive if outer call has one argument and inner call has multiple arguments - astral-sh/ruff #16163</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLW3301 false positive if outer call has one argument and inner call has multiple arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16163">#16163</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-02-14 14:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-02-14 14:29</div>
+            <div class="timeline-body"><h3>Description</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/nested-min-max/"><code>nested-min-max</code> (PLW3301)</a> has a false positive in Ruff 0.9.6 when the inner call is the outer call’s only argument and the inner call has multiple arguments.</p>
+<pre><code class="language-console">$ cat &gt;plw3301.py &lt;&lt;'# EOF'
+print(min(min([2, 3], [4, 1])))
+print(max(max([2, 4], [3, 1])))
+# EOF
+
+$ python plw3301.py
+2
+3
+
+$ ruff --isolated check --select PLW3301 plw3301.py --unsafe-fixes --fix
+Found 2 errors (2 fixed, 0 remaining).
+
+$ python plw3301.py
+[2, 3]
+[3, 1]
+</code></pre>
+<p>This is similar to #4682, in which the inner call has only one argument.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-02-14 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2025-02-14 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2025-02-14 14:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vladNed">@vladNed</a> on 2025-02-14 18:21</div>
+            <div class="timeline-body"><p>yeah, seems like if formats the code thus modifying the behavior of the original code.</p>
+<p>I can start working on this if its fine.</p>
+<p>The min/max should be flatten when the values inside are the same and not when the parent min/max is applied on a different type of values</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/vladNed">@vladNed</a> on 2025-02-17 09:30</div>
+            <div class="timeline-body"><p>found that the function just checks for arguments that are min/max inside the min/max without checking the types inside the nested one.</p>
+<p>Probably one improvement I can do is to check if inside there is a the nested one contains the same types as the parent one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zackw">@zackw</a> on 2025-04-02 18:08</div>
+            <div class="timeline-body"><p>The converse is also a false positive:</p>
+<pre><code>x = max(floor, max(iterable))  # erroneous PLW3301
+</code></pre>
+<p>cannot be expressed any other way in general.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-06-20 13:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:39 UTC
+    </footer>
+</body>
+</html>

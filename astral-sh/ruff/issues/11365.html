@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`ruff check --fix --select I` seems to split imports incorrectly  - astral-sh/ruff #11365</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>ruff check --fix --select I</code> seems to split imports incorrectly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11365">#11365</a>
+        opened by <a href="https://github.com/svfat">@svfat</a>
+        on 2024-05-10 17:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/svfat">@svfat</a> on 2024-05-10 17:16</div>
+            <div class="timeline-body"><p>Keywords: import, imports</p>
+<p>When running <code>ruff check --fix --select I</code> on my code, I've noticed that it does not handle imports within round brackets correctly. Specifically, it unnecessarily splits grouped imports into separate blocks.</p>
+<p><strong>Example</strong>:
+Running the command on the following code:</p>
+<pre><code class="language-python">from aws_cdk import (
+    aws_dynamodb as dynamodb,
+    aws_lambda as lambda,
+)
+</code></pre>
+<p>Results in:</p>
+<pre><code class="language-python">from aws_cdk import (
+    aws_dynamodb as dynamodb,
+)
+from aws_cdk import (
+    aws_lambda as lambda,
+)
+</code></pre>
+<p><strong>pyproject.toml settings</strong></p>
+<pre><code class="language-[tool.ruff]">line-length = 120
+indent-width = 4
+
+[tool.ruff.format]
+indent-style = &quot;space&quot;
+quote-style = &quot;single&quot;
+docstring-code-format = true
+skip-magic-trailing-comma = false
+line-ending = &quot;auto&quot;
+
+[tool.ruff.lint.pydocstyle]
+convention = &quot;google&quot;
+</code></pre>
+<p><strong>ruff version:</strong>
+ruff 0.4.4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-10 18:41</div>
+            <div class="timeline-body"><p>Can you try with:</p>
+<pre><code class="language-toml">[tool.ruff.lint.isort]
+combine-as-imports = true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-05-10 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2024-05-10 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-05-11 16:18</div>
+            <div class="timeline-body"><p>I've confirmed in the playground that <code>combine-as-imports</code> leaves that as stable formatting: https://play.ruff.rs/0e4f5cd7-3ced-4a4a-89b6-c4670fe8b1d1</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-05-11 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-05-11 16:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Emerentius">@Emerentius</a> on 2024-08-06 07:33</div>
+            <div class="timeline-body"><p>Could this be reopened?</p>
+<p><code>combine-as-imports</code> isn't really the solution here, it's more of a workaround. The definition of that setting is &quot;Combines as imports on the same line.&quot; which isn't what you may want.</p>
+<p>The way I see it, you may prefer to have as-imports on their own line or on the same line:</p>
+<pre><code>from aws_cdk import (
+    aws_dynamodb as dynamodb,
+    aws_lambda as lambda,
+)
+</code></pre>
+<pre><code>from aws_cdk import aws_dynamodb as dynamodb, aws_lambda as lambda
+</code></pre>
+<p>and if enough imports appear on one line, the second formatting choice would fall back to placing each as-import on its own line.</p>
+<p>Right now, there is no way of configuring ruff such that you would always have as-imports on their own line without also getting small groups of as-imports in one line, possibly mixed with regular non-as-imports.</p>
+<p>I can't imagine anyone wanting to have the <code>from some_module import (</code> part repeated for every import. It balloons the import section because every as-import is now 3 lines big.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:51 UTC
+    </footer>
+</body>
+</html>

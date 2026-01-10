@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove `import re` from entrypoint wrapper scripts - astral-sh/uv #10627</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove <code>import re</code> from entrypoint wrapper scripts</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10627">#10627</a>
+        opened by <a href="https://github.com/hukkin">@hukkin</a>
+        on 2025-01-15 08:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/hukkin">@hukkin</a> on 2025-01-15 08:54</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>This removes <code>import re</code> from the wrapper script of installed tools, so that small tools that never <code>import re</code> themselves are allowed to load faster.</p>
+<p>This was offered to <code>distlib</code> but was rejected https://github.com/pypa/distlib/pull/239. That discussion includes all the relevant performance measurements for this change.</p>
+<p>Here's the corresponding <code>pip</code> issue https://github.com/pypa/pip/issues/13165 and <code>pip</code> PR https://github.com/pypa/pip/pull/13166</p>
+<p>The motivation for this change was <a href="https://discuss.python.org/t/make-more-of-the-standard-library-import-on-demand/76311">this discussion</a> on Python Discourse.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>Ran</p>
+<pre><code class="language-console">cargo build
+./target/debug/uv tool install black
+black --version
+# observed that installed black runs succesfully
+cat ~/.local/bin/black
+# observed that the wrapper script no longer imports `re` module
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:44 on 2025-01-15 13:36</div>
+            <div class="timeline-body"><p>I think it's not compatible with Python &lt; 3.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2025-01-15 13:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hukkin">@hukkin</a> reviewed on 2025-01-15 13:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hukkin">@hukkin</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:44 on 2025-01-15 13:43</div>
+            <div class="timeline-body"><p>I've tried this on Python 2.7, it should work fine. What feature do you think is not compatible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2025-01-15 13:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:44 on 2025-01-15 13:52</div>
+            <div class="timeline-body"><p>I just know <code>str.endswith</code> added in Python 3.10.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:44 on 2025-01-15 13:56</div>
+            <div class="timeline-body"><p>I think you could also do:</p>
+<pre><code class="language-suggestion">    if sys.argv[0][-11:] == &quot;-script.pyw&quot;:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2025-01-15 13:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/hukkin">@hukkin</a> reviewed on 2025-01-15 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/hukkin">@hukkin</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:44 on 2025-01-15 13:57</div>
+            <div class="timeline-body"><p>Here's Python 2.6 docs referencing it https://docs.python.org/2.6/library/stdtypes.html#str.endswith</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2025-01-15 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv-install-wheel/src/wheel.rs</code>:44 on 2025-01-15 14:03</div>
+            <div class="timeline-body"><p>Oh, forgive me, I almost losing my Python memories after working with Rust.</p>
+<blockquote>
+<p>I just know <code>str.endswith</code> added in Python 3.9.</p>
+</blockquote>
+<p>(That was <code>removesuffix</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-01-15 16:30</div>
+            <div class="timeline-body"><p>This seems reasonable to me.</p>
+<p>cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-15 16:31</div>
+            <div class="timeline-body"><p>Yeah this is good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-01-15 18:44</div>
+            <div class="timeline-body"><p>nice work, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @konstin on 2025-01-15 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-01-15 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-01-15 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-15 18:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:18 UTC
+    </footer>
+</body>
+</html>

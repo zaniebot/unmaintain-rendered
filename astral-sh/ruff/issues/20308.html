@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False-negative with `TC003` - astral-sh/ruff #20308</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False-negative with <code>TC003</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20308">#20308</a>
+        opened by <a href="https://github.com/osauldmy">@osauldmy</a>
+        on 2025-09-08 18:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/osauldmy">@osauldmy</a> on 2025-09-08 18:08</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Example to reproduce. In this case <code>Any</code> could be moved into <code>if TYPE_CHECKING</code> block, as it's not runtime-required import.</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+def some_function(value: Any) -&gt; Iterator[int]:
+    del value
+    yield from range(5)
+</code></pre>
+<p>If I remove the <code>Iterator</code> import outside, similarly to <code>Any</code>, <code>TC003</code> is correctly fired.</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from collections.abc import Iterator
+from typing import TYPE_CHECKING, Any
+</code></pre>
+<p><code>TC003 Move standard library import </code>collections.abc.Iterator<code> into a type-checking block</code></p>
+<p>Should also happen to <code>Any</code> from first snippet.</p>
+<h3>Version</h3>
+<p>0.12.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "False-negative with TC003" to "False-negative with `TC003`" by @osauldmy on 2025-09-08 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/second-ed">@second-ed</a> on 2025-09-08 18:49</div>
+            <div class="timeline-body"><p>Is your expected behaviour this?</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+    from typing import Any
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/osauldmy">@osauldmy</a> on 2025-09-08 18:59</div>
+            <div class="timeline-body"><p>Yes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-08 19:37</div>
+            <div class="timeline-body"><p><code>typing</code> is one of the default <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-type-checking_exempt-modules">exempt-modules</a>. If you set that to <code>[]</code>, you get the behavior you expect: <a href="https://play.ruff.rs/1cef8b0a-1259-49a1-b52c-68c36c2c666f">playground</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-09-08 19:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/osauldmy">@osauldmy</a> on 2025-09-08 19:40</div>
+            <div class="timeline-body"><p>One more setting I didn't know about. Thanks. Solves my problem, closing the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @osauldmy on 2025-09-08 19:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:21 UTC
+    </footer>
+</body>
+</html>

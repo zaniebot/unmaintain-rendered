@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix multi-user file locking - astral-sh/uv #10265</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix multi-user file locking</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10265">#10265</a>
+        opened by <a href="https://github.com/guoci">@guoci</a>
+        on 2025-01-01 20:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/guoci">@guoci</a> on 2025-01-01 20:41</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Try to resolve #8032 with suggestion in https://github.com/astral-sh/uv/issues/8032#issuecomment-2402907189</p>
+<h2>Test Plan</h2>
+<p>Tested on the Dockerfile (minimal reproducible example) in https://github.com/astral-sh/uv/issues/8032#issue-2574635582</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @zanieb on 2025-01-01 21:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-fs/src/lib.rs</code>:567 on 2025-01-06 17:16</div>
+            <div class="timeline-body"><p>Can you use <a href="https://docs.rs/nix/latest/nix/sys/stat/fn.umask.html#"><code>nix::sys::stat::umask</code></a> here instead? (Otherwise, you're adding a dependency here on <code>nix</code> when just <code>libc</code> would do. But if we're depending on <code>nix</code>, we might as well use the safe API...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-fs/src/lib.rs</code>:561 on 2025-01-06 17:20</div>
+            <div class="timeline-body"><p>I unfortunately think this is not quite right. <code>umask</code> is a <em>process global</em> property, but we might have multiple threads in the same process creating files. So when you twiddle the <code>umask</code> like this, you might very well be impacting the creation of other completely unrelated files in an undesirable way.</p>
+<p>Is it possible to change the permissions after the file is created instead?</p>
+<p>I suppose another alternative here is to suggest that end users change their <code>umask</code> when running <code>uv</code> if they want it to run in multi-user mode.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2025-01-06 17:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/guoci">@guoci</a> reviewed on 2025-01-06 18:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/guoci">@guoci</a> on <code>crates/uv-fs/src/lib.rs</code>:561 on 2025-01-06 18:13</div>
+            <div class="timeline-body"><p>Thanks for the review.</p>
+<blockquote>
+<p>Is it possible to change the permissions after the file is created instead?</p>
+</blockquote>
+<p>Yes, but multiple processes can cause errors between the time of creation and the time of changing permissions.</p>
+<blockquote>
+<p>I suppose another alternative here is to suggest that end users change their umask when running uv if they want it to run in multi-user mode.</p>
+</blockquote>
+<p>Another alternative I have is to set the umask at <code>main</code>.</p>
+<p>Yet another alternative to change the locking implementation to check the existence of a .lock file. Then, the .lock file must be deleted when unlocking.</p>
+<p>If a uv process abnormally terminates without unlocking, subsequent runs may cause a deadlock. If that happens the Python environment is possibly broken and needs to be set up again anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/guoci">@guoci</a> reviewed on 2025-01-06 18:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/guoci">@guoci</a> on <code>crates/uv-fs/src/lib.rs</code>:567 on 2025-01-06 18:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you use <a href="https://docs.rs/nix/latest/nix/sys/stat/fn.umask.html#"><code>nix::sys::stat::umask</code></a> here instead? (Otherwise, you're adding a dependency here on <code>nix</code> when just <code>libc</code> would do. But if we're depending on <code>nix</code>, we might as well use the safe API...)</p>
+</blockquote>
+<p>Tested, <code>nix::sys::stat::umask</code> works and is safe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-01-06 18:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-fs/src/lib.rs</code>:561 on 2025-01-06 18:36</div>
+            <div class="timeline-body"><p>I think we need to be very cautious about changing our locking strategy. The strategy you're proposing is the &quot;classic&quot; approach (although for maximum portability, a directory and not a file should be used, as SQLite does IIRC), but it has the predictable downside as you point out: on some occasions, the lock file isn't deleted when unlocked. And the only way around this is user intervention, which is usually to delete the lock file and &quot;hope for the best.&quot; Probably in this context, the simplest approach would be for the user to just completely delete the virtual environment.</p>
+<p>IMO, the success of this strategy depends a lot on how often that lock file hangs around. In a perfect world, sure, its existence after process termination implies something went wrong with uv and thus the user should be blowing away the venv anyway. But I'm not convinced that this is the only way for a lock file to hang around. It's not uncommon for me to use programs that utilize this locking strategy, and despite their best efforts, I still need to remove the lock file from time to time.</p>
+<p>Have you tried setting <code>umask</code> yourself outside of uv? Does that work? If it does, then I kinda feel like that's the most appropriate solution here. Because you're fundamentally working in a shared environment, and it seems sensible to set a <code>umask</code> that supports that environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/guoci">@guoci</a> reviewed on 2025-01-06 18:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/guoci">@guoci</a> on <code>crates/uv-fs/src/lib.rs</code>:561 on 2025-01-06 18:46</div>
+            <div class="timeline-body"><blockquote>
+<p>I think we need to be very cautious about changing our locking strategy. The strategy you're proposing is the &quot;classic&quot; approach (although for maximum portability, a directory and not a file should be used, as SQLite does IIRC), but it has the predictable downside as you point out: on some occasions, the lock file isn't deleted when unlocked. And the only way around this is user intervention, which is usually to delete the lock file and &quot;hope for the best.&quot; Probably in this context, the simplest approach would be for the user to just completely delete the virtual environment.</p>
+<p>IMO, the success of this strategy depends a lot on how often that lock file hangs around. In a perfect world, sure, its existence after process termination implies something went wrong with uv and thus the user should be blowing away the venv anyway. But I'm not convinced that this is the only way for a lock file to hang around. It's not uncommon for me to use programs that utilize this locking strategy, and despite their best efforts, I still need to remove the lock file from time to time.</p>
+</blockquote>
+<p>Thanks for the explanation.</p>
+<blockquote>
+<p>Have you tried setting <code>umask</code> yourself outside of uv? Does that work? If it does, then I kinda feel like that's the most appropriate solution here. Because you're fundamentally working in a shared environment, and it seems sensible to set a <code>umask</code> that supports that environment.</p>
+</blockquote>
+<p>Yes, external setting of <code>umask</code> does work and also pointed out in https://github.com/astral-sh/uv/issues/8032#issue-2574635582.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/guoci">@guoci</a> on <code>crates/uv-fs/src/lib.rs</code>:561 on 2025-01-06 18:47</div>
+            <div class="timeline-body"><p>I think this PR can be closed then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/guoci">@guoci</a> reviewed on 2025-01-06 18:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-01-06 18:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-fs/src/lib.rs</code>:561 on 2025-01-06 18:50</div>
+            <div class="timeline-body"><p>All righty, thansk!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-01-06 18:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:16 UTC
+    </footer>
+</body>
+</html>

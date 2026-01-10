@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omit variant when detecting compatible Python installs - astral-sh/uv #10722</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Omit variant when detecting compatible Python installs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10722">#10722</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-01-17 19:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-17 19:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes https://github.com/astral-sh/uv/issues/10586.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-17 19:30</div>
+            <div class="timeline-body"><p>I don't have a great way to test this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-01-17 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2025-01-17 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-17 19:33</div>
+            <div class="timeline-body"><p>I think I solved this in https://github.com/astral-sh/uv/pull/9788 — one sec</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-17 19:34</div>
+            <div class="timeline-body"><p>Funny, similar https://github.com/astral-sh/uv/pull/9788/commits/d51e5d7736d249e5eddaf3a28d640e78d2528276 — it's a bit more nuanced though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-17 19:44</div>
+            <div class="timeline-body"><p>Want me to port that over here? Close this entirely? Merge as-is? Up to you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-17 19:52</div>
+            <div class="timeline-body"><p>I won't have time to look closer today, I think my change might require the other changes in the PR, i.e., we only allow an older version from a newer architecture — not the other way around. So if we can't detect a newer architecture it doesn't solve anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-17 19:55</div>
+            <div class="timeline-body"><p>Quick test looks good, I'm fine with the incremental improvement here</p>
+<pre><code>❯ uv python install &quot;cpython-3.10.16-linux-x86_64_v2-gnu&quot;
+Installed Python 3.10.16 in 2.20s
+ + cpython-3.10.16-linux-x86_64_v2-gnu
+❯ uv python list
+cpython-3.14.0a4+freethreaded-linux-x86_64-gnu    &lt;download available&gt;
+cpython-3.14.0a4-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.13.1+freethreaded-linux-x86_64-gnu      &lt;download available&gt;
+cpython-3.13.1-linux-x86_64-gnu                   /usr/bin/python3.13
+cpython-3.13.1-linux-x86_64-gnu                   /usr/bin/python3 -&gt; python3.13
+cpython-3.13.1-linux-x86_64-gnu                   /usr/bin/python -&gt; python3
+cpython-3.13.1-linux-x86_64-gnu                   /bin/python3.13
+cpython-3.13.1-linux-x86_64-gnu                   /bin/python3 -&gt; python3.13
+cpython-3.13.1-linux-x86_64-gnu                   /bin/python -&gt; python3
+cpython-3.13.1-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.12.8-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.11.11-linux-x86_64-gnu                  &lt;download available&gt;
+cpython-3.10.16-linux-x86_64-gnu                  &lt;download available&gt;
+cpython-3.9.21-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.8.20-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.7.9-linux-x86_64-gnu                    &lt;download available&gt;
+pypy-3.10.14-linux-x86_64-gnu                     &lt;download available&gt;
+pypy-3.9.19-linux-x86_64-gnu                      &lt;download available&gt;
+pypy-3.8.16-linux-x86_64-gnu                      &lt;download available&gt;
+pypy-3.7.13-linux-x86_64-gnu                      &lt;download available&gt;
+❯ ./target/debug/uv python list
+cpython-3.14.0a4+freethreaded-linux-x86_64-gnu    &lt;download available&gt;
+cpython-3.14.0a4-linux-x86_64-gnu                 &lt;download available&gt;
+cpython-3.13.1+freethreaded-linux-x86_64-gnu      &lt;download available&gt;
+cpython-3.13.1-linux-x86_64-gnu                   /usr/bin/python3.13
+cpython-3.13.1-linux-x86_64-gnu                   /usr/bin/python3 -&gt; python3.13
+cpython-3.13.1-linux-x86_64-gnu                   /usr/bin/python -&gt; python3
+cpython-3.13.1-linux-x86_64-gnu                   /bin/python3.13
+cpython-3.13.1-linux-x86_64-gnu                   /bin/python3 -&gt; python3.13
+cpython-3.13.1-linux-x86_64-gnu                   /bin/python -&gt; python3
+cpython-3.13.1-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.12.8-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.11.11-linux-x86_64-gnu                  &lt;download available&gt;
+cpython-3.10.16-linux-x86_64-gnu                  /home/zb/.local/share/uv/python/cpython-3.10.16-linux-x86_64_v2-gnu/bin/python3.10
+cpython-3.9.21-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.8.20-linux-x86_64-gnu                   &lt;download available&gt;
+cpython-3.7.9-linux-x86_64-gnu                    &lt;download available&gt;
+pypy-3.10.14-linux-x86_64-gnu                     &lt;download available&gt;
+pypy-3.9.19-linux-x86_64-gnu                      &lt;download available&gt;
+pypy-3.8.16-linux-x86_64-gnu                      &lt;download available&gt;
+pypy-3.7.13-linux-x86_64-gnu                      &lt;download available&gt;
+❯ uv run -p 3.10 python -c &quot;&quot;
+cpython-3.10.16-linux-x86_64-gnu ------------------------------ 16.22 MiB/19.80 MiB                                          ^C
+❯ ./target/debug/uv run -p 3.10 python -c &quot;&quot;
+</code></pre>
+<p>We shouldn't omit the variant in <code>python list</code>  but that's separate</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-01-17 19:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-17 20:04</div>
+            <div class="timeline-body"><p>You might want to make sure the sorting is right too (as done in the other pr)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-17 20:05</div>
+            <div class="timeline-body"><pre><code>❯ ./target/debug/uv python install 3.10
+Installed Python 3.10.16 in 2.81s
+ + cpython-3.10.16-linux-x86_64-gnu
+❯ ./target/debug/uv python install cpython-3.10.16-linux-x86_64_v2-gnu
+Installed Python 3.10.16 in 2.93s
+ + cpython-3.10.16-linux-x86_64_v2-gnu
+❯ ./target/debug/uv python find 3.10
+/home/zb/.local/share/uv/python/cpython-3.10.16-linux-x86_64_v2-gnu/bin/python3.10
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-01-21 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-21 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-21 15:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:18 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FURB118, `lambda x: x[:, 0]` should be `itemgetter((slice(None), 0))`, instead of `itemgetter((:, 0))` - astral-sh/ruff #13508</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>FURB118, <code>lambda x: x[:, 0]</code> should be <code>itemgetter((slice(None), 0))</code>, instead of <code>itemgetter((:, 0))</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13508">#13508</a>
+        opened by <a href="https://github.com/nasyxx">@nasyxx</a>
+        on 2024-09-25 04:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nasyxx">@nasyxx</a> on 2024-09-25 04:48</div>
+            <div class="timeline-body"><p>In refurb, FURB118, <code>lambda x: x[:, 0]</code> should be <code>itemgetter((slice(None), 0))</code>, instead of <code>itemgetter((:, 0))</code></p>
+<pre><code class="language-python"># xx.py
+import numpy as np
+xs = np.array([[1, 2, 3]])
+xm = map(lambda x: x[:, 0], xs)
+</code></pre>
+<pre><code>xx.py:
+  3:10 FURB118 [*] Use `operator.itemgetter((:, 0))` instead of defining a lambda
+</code></pre>
+<p>I guess <code>(:, 0)</code> is not a valid tuple.</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-09-25 06:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-09-25 06:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-25 06:58</div>
+            <div class="timeline-body"><p>The python slice index syntax always trips me up and in this case it's unclear to me what the result of the map operation is.</p>
+<p>@nasyxx could you clarify. Do you expect the above to be valid code? I'm asking to better understand if this is a bug in the fix or that the rule shouldn't flag the above code. CC: @AlexWaygood</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nasyxx">@nasyxx</a> on 2024-09-25 16:03</div>
+            <div class="timeline-body"><blockquote>
+<p>@nasyxx could you clarify. Do you expect the above to be valid code?</p>
+</blockquote>
+<p>Hi, the above is valid, while it will raise IndexError.</p>
+<p>My actual ndarray is quite complex, you can change <code>xs</code> to <code>xs = np.ones((5, 4, 3, 2, 1))</code>.  Then when running <code>list(xm)</code> will give you result.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-25 17:15</div>
+            <div class="timeline-body"><p>There's definitely a serious bug here: we currently suggest invalid syntax (and, if you run with <code>--fix</code>, we introduce invalid syntax).</p>
+<pre><code class="language-diff">- lambda x: x[:, 0]
++ import operator
++ operator.itemgetter((:, 0))
+</code></pre>
+<p>In my opinion, <code>itemgetter((slice(None), 0))</code> (which would be the correct way of rewriting this with <code>itemgetter</code>, as @nasyxx says) is quite ugly, so I think I'd vote for not emitting a diagnostic at all in this case. But others may feel differently; emitting a diagnostic would be <em>consistent</em> with the overall (quite opinionated) philosophy of <code>FURB118</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-09-25 23:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-26 01:53</div>
+            <div class="timeline-body"><p>We already handle converting <code>x[:]</code> to <code>slice(None)</code> so I opted to continue emitting the diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-26 14:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-09-26 14:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:14 UTC
+    </footer>
+</body>
+</html>

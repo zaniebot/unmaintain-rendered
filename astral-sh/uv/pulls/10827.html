@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolve `find-links` paths relative to the configuration file - astral-sh/uv #10827</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Resolve <code>find-links</code> paths relative to the configuration file</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10827">#10827</a>
+        opened by <a href="https://github.com/NightRa">@NightRa</a>
+        on 2025-01-21 21:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/NightRa">@NightRa</a> on 2025-01-21 21:34</div>
+            <div class="timeline-body"><h2>One-liner</h2>
+<p>Relative find-links configuration to local path from a pyproject.toml or uv.toml is now relative to the config file</p>
+<h2>Summary</h2>
+<h3>Background</h3>
+<p>One can configure find-links in a <code>pyproject.toml</code> or <code>uv.toml</code> file, which are located from the cli arg, system directory, user directory, or by traversing parent directories until one is encountered.</p>
+<p>This PR addresses the following scenario:</p>
+<ul>
+<li>A project directory which includes a <code>pyproject.toml</code> or <code>uv.toml</code> file</li>
+<li>The config file includes a <code>find-links</code> option. (eg under <code>[tool.uv]</code> for <code>pyproject.toml</code>)</li>
+<li>The <code>find-links</code> option is configured to point to a local subdirectory in the project: <code>packages/</code></li>
+<li>There is a subdirectory called <code>subdir</code>, which is the current working directory</li>
+<li>I run <code>uv run my_script.py</code>. This will locate the <code>pyproject.toml</code> in the parent directory</li>
+</ul>
+<h3>Current Behavior</h3>
+<ul>
+<li>uv tries to use the path <code>subdir/packages/</code> to find packages, and fails.</li>
+</ul>
+<h3>New Behavior</h3>
+<ul>
+<li>uv tries to use the path <code>packages/</code> to find the packages, and succeeds</li>
+<li>Specifically, any relative local find-links path will resolve to be relative to the configuration file.</li>
+</ul>
+<h3>Why is this behavior change OK?</h3>
+<ul>
+<li>I believe no one depends on the behavior that a relative find-links when running in a subdir will refer to different directories each time</li>
+<li>Thus this change only allows a more common use case which didn't work previously.</li>
+</ul>
+<h2>Test Plan</h2>
+<ul>
+<li>I re-created the setup mentioned above:</li>
+</ul>
+<pre><code>UvTest/
+├── packages/
+│   ├── colorama-0.4.6-py2.py3-none-any.whl
+│   └── tqdm-4.67.1-py3-none-any.whl
+├── subdir/
+│   └── my_script.py
+└── pyproject.toml
+</code></pre>
+<pre><code class="language-toml"># pyproject.toml
+[project]
+name = &quot;uvtest&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;tqdm&gt;=4.67.1&quot;,
+]
+
+[tool.uv]
+offline = true
+no-index = true
+find-links = [&quot;packages/&quot;]
+</code></pre>
+<ul>
+<li>With working directory under <code>subdir</code>, previously, running <code>uv sync --offline</code> would fail resolving the tdqm package, and after the change it succeeds.</li>
+<li>Additionally, one can use <code>uv sync --show-settings</code> to show the actually-resolved settings - now having the desired path in <code>flat_index.url.path</code></li>
+</ul>
+<h2>Alternative designs considered</h2>
+<ul>
+<li>I considered modifying the <code>impl Deserialize for IndexUrl</code> to parse ahead of time directly with a base directory by having a custom <code>Deserializer</code> with a base dir field, but it seems to contradict the design of the serde <code>Deserialize</code> trait - which should work with all <code>Deserializer</code>s</li>
+</ul>
+<h2>Future work</h2>
+<ul>
+<li>Support for adjusting all other local-relative paths in <code>Options</code> would be desired, but is out of scope for the current PR.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2025-01-21 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @zanieb on 2025-01-21 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-21 21:53</div>
+            <div class="timeline-body"><p>Thanks. It would be useful to include a test here (that fails on <code>main</code> but passes on this branch) to guard against regressions (and make sure we understand the problematic scenario).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NightRa">@NightRa</a> on 2025-01-21 21:57</div>
+            <div class="timeline-body"><p>@charliermarsh</p>
+<ul>
+<li>A test corresponding to the scenario I described would need to have a whl file for some package.</li>
+<li>Which minimal test package would you consider appropriate for this?</li>
+<li>This would also imply it needs to be checked in the uv repository</li>
+<li>Where would be an appropriate location in the repository to hold this whl file for the test?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-21 21:59</div>
+            <div class="timeline-body"><p>We already have a few checked-in that you can use in <code>./scripts/links</code>. Grep around for tests that use <code>scripts/links</code> for examples?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NightRa">@NightRa</a> on 2025-01-21 22:32</div>
+            <div class="timeline-body"><p>@charliermarsh
+Done.
+Also checked the test fails on master and succeeds here.
+Previously it would fail with:</p>
+<pre><code>error: Failed to read `--find-links` directory: C:\Users\...\AppData\Roaming\uv\tests\.tmpS7JaZu\temp\subdir\packages
+  Caused by: The system cannot find the path specified. (os error 3)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NightRa">@NightRa</a> on 2025-01-22 08:07</div>
+            <div class="timeline-body"><p>@charliermarsh Anything else required to merge here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-22 18:06</div>
+            <div class="timeline-body"><p>No, I just need time to review the changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NightRa">@NightRa</a> on 2025-01-22 18:08</div>
+            <div class="timeline-body"><p>Great, thanks for your time!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-01-22 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-01-22 19:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-01-22 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-22 19:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[uv-settings]: Correct behavior for relative find-links paths when run from a subdir " to "Resolve `find-links` paths relative to the configuration file" by @zanieb on 2025-01-22 19:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NightRa">@NightRa</a> on 2025-01-22 21:09</div>
+            <div class="timeline-body"><p>Indeed wasn't sure about the &amp;mut. Thanks for the fixes
+Love the quick support. Would recommend. 10/10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-22 21:16</div>
+            <div class="timeline-body"><p>Yeah the <code>&amp;mut</code> worked, I just generally prefer to use these kinds of immutability patterns. Thanks for the PR!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:18 UTC
+    </footer>
+</body>
+</html>

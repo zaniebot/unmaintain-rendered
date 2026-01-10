@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `--show-with` to `uv tool list` to list packages included by `--with` - astral-sh/uv #13264</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>--show-with</code> to <code>uv tool list</code> to list packages included by <code>--with</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13264">#13264</a>
+        opened by <a href="https://github.com/gaardhus">@gaardhus</a>
+        on 2025-05-02 12:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/gaardhus">@gaardhus</a> on 2025-05-02 12:36</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add a <code>--show-extras</code> argument to the <code>uv tool list</code> cli, to show which extra dependencies were installed with the tool.</p>
+<p>i.e.</p>
+<pre><code class="language-bash">$ uv tool install fastapi --with requests --with typer==0.14
+</code></pre>
+<pre><code class="language-bash">$ uv tool list --show-extras
+fastapi v0.115.12 [extras: requests, typer==0.14]
+- fastapi
+</code></pre>
+<h2>Test Plan</h2>
+<p>Added a new test function based on the others in the same file, with the other arguments tested with the new argument as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-02 13:14</div>
+            <div class="timeline-body"><p>Thanks for contributing! Is there an issue discussing this feature?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaardhus">@gaardhus</a> on 2025-05-02 13:18</div>
+            <div class="timeline-body"><p>Tried looking but I couldn't find any; I needed the functionality my self so I just went ahead an implemented it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-02 13:24</div>
+            <div class="timeline-body"><p>Thanks for checking. Given that there wasn't prior discussion, we'll need to figure out what we want the user experience to look like here.</p>
+<p>e.g., for:</p>
+<blockquote>
+<p>[extras: requests, typer==0.14]</p>
+</blockquote>
+<p>Should we show the extras <em>after</em> the <code>--with</code> dependencies? or add <code>with: </code>? It seems confusing as-is.</p>
+<p>Another option... should we just render it as <code>fastapi[requests] v0.115.12</code>?</p>
+<p>What's the motivation for making this opt-in? Should we always show these?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaardhus">@gaardhus</a> on 2025-05-02 13:34</div>
+            <div class="timeline-body"><p>Sure thing!</p>
+<blockquote>
+<p>Thanks for checking. Given that there wasn't prior discussion, we'll need to figure out what we want the user experience to look like here.</p>
+<p>e.g., for:</p>
+<blockquote>
+<p>[extras: requests, typer==0.14]</p>
+</blockquote>
+<p>Should we show the extras <em>after</em> the <code>--with</code> dependencies? or add <code>with: </code>? It seems confusing as-is.</p>
+</blockquote>
+<p>Currently I thought the terminology was that you installed <code>extras</code> with <code>with</code> in the case of <code>uv tool install</code>, if that makes sense?</p>
+<p>https://docs.astral.sh/uv/concepts/tools/#including-additional-dependencies</p>
+<p>However, renaming my implementation to <code>--show-with</code> and <code>[with: requests]</code> I think is fine.</p>
+<blockquote>
+<p>Another option... should we just render it as <code>fastapi[requests] v0.115.12</code>?</p>
+<p>What's the motivation for making this opt-in? Should we always show these?</p>
+</blockquote>
+<p>I made it optional since I mainly needed it for debugging I guess? So if I just need to know which tools I have installed and are available, I don't really need to know the specific requirements, (i.e. also why I guess the <code>--show-version-specifiers</code> is also an argument). Also, it might get super cluttered if you have a lot of specified extras.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-02 13:40</div>
+            <div class="timeline-body"><p>Oh, sorry I totally misunderstood. We can't say <code>extras</code> here as that term is a bit overloaded, i.e., it means a set of optional dependency for a package (see https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#dependencies-optional-dependencies and https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-extras). I should have read more carefully.</p>
+<p>I think it's okay to do <code>[with: ...]</code> excluding version specifiers by default? <code>--show-version-specifiers</code> is indeed behind a flag because it adds a lot of visual noise, but <code>[with: ]</code> seems less likely to do that? My main concern would be users that do like... <code>--with-requirements &lt;file&gt;</code> and include a <em>lot</em> of additional dependencies. I'm not sure how we want to render that, even if it's opt-in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-02 13:41</div>
+            <div class="timeline-body"><p>(If we leave it opt-in, we need another flag name. Maybe just <code>--show-with</code> but that feels clunky to me for some reason)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaardhus">@gaardhus</a> on 2025-05-02 13:46</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh, sorry I totally misunderstood. We can't say <code>extras</code> here as that term is a bit overloaded, i.e., it means a set of optional dependency for a package (see https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#dependencies-optional-dependencies and https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-extras). I should have read more carefully.</p>
+</blockquote>
+<p>Yeah, I was just about to say that: I see that <code>extra</code>(s) may not be that precise, since they are more directly tied with the actual dependencies of the package (https://docs.astral.sh/uv/pip/dependencies/#using-pyprojecttoml https://docs.astral.sh/uv/guides/integration/fastapi/#migrating-an-existing-fastapi-project).</p>
+<blockquote>
+<p>I think it's okay to do <code>[with: ...]</code> excluding version specifiers by default? <code>--show-version-specifiers</code> is indeed behind a flag because it adds a lot of visual noise, but <code>[with: ]</code> seems less likely to do that? My main concern would be users that do like... <code>--with-requirements &lt;file&gt;</code> and include a <em>lot</em> of additional dependencies. I'm not sure how we want to render that, even if it's opt-in.</p>
+</blockquote>
+<p>For my use cases I would still think it should be an argument rather than default behavior. Running <code>uv tool list</code> to get a very brief and minimal overview of the tools and their executeables is nice, and when I need more information (which will generally be for some form of debugging?) its nice to have the arguments.</p>
+<blockquote>
+<p>(If we leave it opt-in, we need another flag name. Maybe just <code>--show-with</code> but that feels clunky to me for some reason)</p>
+</blockquote>
+<p>Agree, maybe that's also why I went with <code>--show-extras</code>. Could be <code>--show-with-requirements</code> or <code>--show-extra-requirements</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaardhus">@gaardhus</a> on 2025-05-02 13:54</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I think it's okay to do <code>[with: ...]</code> excluding version specifiers by default? <code>--show-version-specifiers</code> is indeed behind a flag because it adds a lot of visual noise, but <code>[with: ]</code> seems less likely to do that? My main concern would be users that do like... <code>--with-requirements &lt;file&gt;</code> and include a <em>lot</em> of additional dependencies. I'm not sure how we want to render that, even if it's opt-in.</p>
+</blockquote>
+<p>For my use cases I would still think it should be an argument rather than default behavior. Running <code>uv tool list</code> to get a very brief and minimal overview of the tools and their executeables is nice, and when I need more information (which will generally be for some form of debugging?) its nice to have the arguments.</p>
+</blockquote>
+<p>Also, I have a hard time imagining the new argument to show less visual noise than <code>--show-version-specifiers</code> does?</p>
+<blockquote>
+<blockquote>
+<p>(If we leave it opt-in, we need another flag name. Maybe just <code>--show-with</code> but that feels clunky to me for some reason)</p>
+</blockquote>
+<p>Agree, maybe that's also why I went with <code>--show-extras</code>. Could be <code>--show-with-requirements</code> or <code>--show-extra-requirements</code>?</p>
+</blockquote>
+<p>Or maybe the super verbose <code>--show-with-extra-requirements</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @konstin on 2025-05-02 15:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaardhus">@gaardhus</a> on 2025-05-02 15:39</div>
+            <div class="timeline-body"><p>Just throwing in another solution: To merge the <code>--show-version-specifiers</code> with my argument into <code>--show-specifiers</code> or <code>--show-all-specifiers</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-02 15:42</div>
+            <div class="timeline-body"><p>I don't think <code>--show-specifiers</code> makes sense for including these &quot;additional&quot; package names.</p>
+<p>I <em>think</em> <code>--show-with</code> makes the most sense for now. I think we can easily rename it in the future if we want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gaardhus">@gaardhus</a> on 2025-05-02 15:51</div>
+            <div class="timeline-body"><p>Last suggestion would be to reword extra to additional, also in <code>uv tool install --help</code></p>
+<pre><code>      --with &lt;WITH&gt;
+          Include the following additional requirements
+</code></pre>
+<p>and then for <code>uv tool list --help</code></p>
+<pre><code>  --show-additional-requirements              Whether to display the additional requirements installed with
+                             each tool
+</code></pre>
+<p>and maybe still <code>[with: ...]</code>  in the output of the actual command?</p>
+<p>I don't feel strong about either, so up to you what I should implement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-06 12:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/list.rs</code>:84 on 2025-05-06 12:53</div>
+            <div class="timeline-body"><p>Can you rename this variable to match, e.g., <code>with_requirements</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-06 12:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/tool_list.rs</code>:447 on 2025-05-06 12:54</div>
+            <div class="timeline-body"><p>How does <code>with:</code> interact with <code>required:</code>? Can you add a test case for that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-06 13:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/list.rs</code>:90 on 2025-05-06 13:01</div>
+            <div class="timeline-body"><p>Is the requirement source display ever empty?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-06 13:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/list.rs</code>:105 on 2025-05-06 13:04</div>
+            <div class="timeline-body"><p>I think you could rewrite this entire block as something like</p>
+<pre><code class="language-rust">        let extra_requirements = (show_with &amp;&amp; !tool.requirements().is_empty())
+            .then(|| {
+                let requirements = tool
+                    .requirements()
+                    .iter()
+                    // Exclude the package itself
+                    .filter(|req| req.name != name)
+                    .map(|req| format!(&quot;{}{}&quot;, req.name, req.source))
+                    .join(&quot;, &quot;);
+                format!(&quot; [with: {requirements}]&quot;)
+            })
+            .unwrap_or_default();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gaardhus">@gaardhus</a> reviewed on 2025-05-06 13:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gaardhus">@gaardhus</a> on <code>crates/uv/tests/it/tool_list.rs</code>:447 on 2025-05-06 13:12</div>
+            <div class="timeline-body"><p>My bad, pretty sure that black test was supposed to do that, so I updated it to include an <code>--with requests</code> argument</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gaardhus">@gaardhus</a> reviewed on 2025-05-06 13:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gaardhus">@gaardhus</a> on <code>crates/uv/src/commands/tool/list.rs</code>:105 on 2025-05-06 13:44</div>
+            <div class="timeline-body"><p>Okay that broke some stuff, need to add a check that requirements exists, I guess since installing without any --with requirements still returns the original package, and hence returns an empty <code>[width: ]</code> string. Will add the original test without any --with requirements which I was supposed to test this back in the test suite.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gaardhus">@gaardhus</a> reviewed on 2025-05-06 14:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gaardhus">@gaardhus</a> on <code>crates/uv/src/commands/tool/list.rs</code>:105 on 2025-05-06 14:27</div>
+            <div class="timeline-body"><p>I'm super new to rust, so sorry if there is something I don't ace.</p>
+<p>Since the requirements array may be empty, I think we do need an if else clause here before inserting the values?</p>
+<p>So currently working implementation would be</p>
+<pre><code class="language-rs">        let with_requirements = (show_with &amp;&amp; !tool.requirements().is_empty())
+            .then(|| {
+                let requirements = tool
+                    .requirements()
+                    .iter()
+                    .filter(|req| req.name != name)
+                    .map(|req| format!(&quot;{}{}&quot;, req.name, req.source))
+                    .join(&quot;, &quot;);
+                if requirements.is_empty() {
+                    String::new()
+                } else {
+                    format!(&quot; [with: {requirements}]&quot;)
+                }
+            })
+            .unwrap_or_default();
+</code></pre>
+<p>My initial implementation was based on the version_specifier parsing on the lines above. So if you prefer unwrap_or_default should I also change that chunk to mirror that, ie.</p>
+<pre><code class="language-rs">        let version_specifier = show_version_specifiers
+            .then(|| {
+                let specifiers = tool
+                    .requirements()
+                    .iter()
+                    .filter(|req| req.name == name)
+                    .map(|req| req.source.to_string())
+                    .filter(|s| !s.is_empty())
+                    .join(&quot;, &quot;);
+                if specifiers.is_empty() {
+                    String::new()
+                } else {
+                    format!(&quot; [required: {specifiers}]&quot;)
+                }
+            })
+            .unwrap_or_default();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gaardhus">@gaardhus</a> reviewed on 2025-05-06 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gaardhus">@gaardhus</a> on <code>crates/uv/src/commands/tool/list.rs</code>:90 on 2025-05-06 14:57</div>
+            <div class="timeline-body"><p>I just copied the filtering from the code block above, but removing any if them doesn't change the output or the status of the tests? So I guess either remove them, or if the are required ideally add test cases to capture that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/list.rs</code>:105 on 2025-05-06 15:02</div>
+            <div class="timeline-body"><p>You could just do <code>(show_with &amp;&amp; tool.requirements().len() &gt; 1)</code>, though it's a bit less elegant since it doesn't capture that after the filter.</p>
+<p>The prettier way is like..</p>
+<pre><code class="language-rust">        let extra_requirements = show_with
+            .then(|| {
+                tool.requirements()
+                    .iter()
+                    // Exclude the package itself
+                    .filter(|req| req.name != name)
+                    .peekable()
+            })
+            // Omit the `[with: ...]` if there are no extra requirements
+            .filter(|requirements| requirements.peek().is_some())
+            .map(|requirements| {
+                let requirements = requirements
+                    .iter()
+                    .map(|req| format!(&quot;{}{}&quot;, req.name, req.source))
+                    .join(&quot;, &quot;);
+                format!(&quot; [with: {requirements}]&quot;)
+            })
+            .unwrap_or_default();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-06 15:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-06 15:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/list.rs</code>:105 on 2025-05-06 15:02</div>
+            <div class="timeline-body"><p>You could just do <code>(show_with &amp;&amp; tool.requirements().len() &gt; 1)</code>, though it's a bit less elegant since overlaps with the logic encoded in the filter.</p>
+<p>The prettier way is like..</p>
+<pre><code class="language-rust">        let extra_requirements = show_with
+            .then(|| {
+                tool.requirements()
+                    .iter()
+                    // Exclude the package itself
+                    .filter(|req| req.name != name)
+                    .peekable()
+            })
+            // Omit the `[with: ...]` if there are no extra requirements
+            .filter(|requirements| requirements.peek().is_some())
+            .map(|requirements| {
+                let requirements = requirements
+                    .iter()
+                    .map(|req| format!(&quot;{}{}&quot;, req.name, req.source))
+                    .join(&quot;, &quot;);
+                format!(&quot; [with: {requirements}]&quot;)
+            })
+            .unwrap_or_default();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-06 15:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/list.rs</code>:105 on 2025-05-06 15:03</div>
+            <div class="timeline-body"><p>(The <code>show_version_specifiers</code> implementation isn't as clean as it could be, it was also externally contributed)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gaardhus">@gaardhus</a> reviewed on 2025-05-06 17:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gaardhus">@gaardhus</a> on <code>crates/uv/src/commands/tool/list.rs</code>:105 on 2025-05-06 17:43</div>
+            <div class="timeline-body"><p>Thank you for your suggestions and detailed review!</p>
+<p>I couldn't make the peekable work, the compiler kept throwing errors about mutability.</p>
+<p>So I tried reimplementing and unifying the two functions like this</p>
+<pre><code class="language-rs">        let tool_requirements = (show_version_specifiers | show_with)
+            .then(|| tool.requirements())
+            .unwrap_or_default();
+
+        let version_specifier = show_version_specifiers
+            .then(|| {
+                let specifiers = tool_requirements
+                    .iter()
+                    .filter(|req| req.name == name)
+                    .map(|req| req.source.to_string())
+                    .filter(|s| !s.is_empty())
+                    .join(&quot;, &quot;);
+                (!specifiers.is_empty())
+                    .then(|| format!(&quot; [required: {specifiers}]&quot;))
+                    .unwrap_or_default()
+            })
+            .unwrap_or_default();
+
+        let with_requirements = (show_with &amp;&amp; tool_requirements.len() &gt; 1)
+            .then(|| {
+                let requirements = tool_requirements
+                    .iter()
+                    .filter(|req| req.name != name)
+                    .map(|req| format!(&quot;{}{}&quot;, req.name, req.source))
+                    .join(&quot;, &quot;);
+                format!(&quot; [with: {requirements}]&quot;)
+            })
+            .unwrap_or_default();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-06 17:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/list.rs</code>:90 on 2025-05-06 17:51</div>
+            <div class="timeline-body"><p>I don't think it's possible for it to be empty from looking at the implementation 🤷‍♀️ not sure why it's that way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-06 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/list.rs</code>:105 on 2025-05-06 17:58</div>
+            <div class="timeline-body"><p>Ah sorry about that, the mutable reference thing is annoying... I'm not sure if there's a fix for that (but I'll ask someone who knows more than me).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-06 17:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/list.rs</code>:105 on 2025-05-06 17:59</div>
+            <div class="timeline-body"><p>Ah <code>.take_if(|requirements| requirements.peek().is_some())</code> works instead of <code>.filter(...)</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-06 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/tool/list.rs</code>:105 on 2025-05-06 18:03</div>
+            <div class="timeline-body"><p>(Rust's idioms around options take a while to learn, but they are nice once you get the hang of it)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/gaardhus">@gaardhus</a> on <code>crates/uv/src/commands/tool/list.rs</code>:105 on 2025-05-06 18:54</div>
+            <div class="timeline-body"><p>Then they become</p>
+<pre><code class="language-rs">        let version_specifier = show_version_specifiers
+            .then(|| {
+                tool.requirements()
+                    .iter()
+                    .filter(|req| req.name == name)
+                    .map(|req| req.source.to_string())
+                    .filter(|s| !s.is_empty())
+                    .peekable()
+            })
+            .take_if(|specifiers| specifiers.peek().is_some())
+            .map(|mut specifiers| {
+                let specifiers = specifiers.join(&quot;, &quot;);
+                format!(&quot; [required: {specifiers}]&quot;)
+            })
+            .unwrap_or_default();
+
+        let with_requirements = show_with
+            .then(|| {
+                tool.requirements()
+                    .iter()
+                    .filter(|req| req.name != name)
+                    .peekable()
+            })
+            .take_if(|requirements| requirements.peek().is_some())
+            .map(|requirements| {
+                let requirements = requirements
+                    .map(|req| format!(&quot;{}{}&quot;, req.name, req.source))
+                    .join(&quot;, &quot;);
+                format!(&quot; [with: {requirements}]&quot;)
+            })
+            .unwrap_or_default();
+</code></pre>
+<p>if I'm not mistaken?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/gaardhus">@gaardhus</a> reviewed on 2025-05-06 18:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add `--show-extras` argument to `uv tool list` cli" to "Add `--show-with` to `uv tool list` to list packages included by `--with`" by @zanieb on 2025-05-06 19:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-06 19:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/tool_list.rs</code>:428 on 2025-05-06 19:05</div>
+            <div class="timeline-body"><p>Do you think these should be separate blocks? Should it be <code>[required: ..., with: ...]</code>?</p>
+<p>There's no need for this stylistic nit to block this pull request, we can address this afterwards if we want.</p>
+<p>cc @charliermarsh curious if you have a stance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-05-06 19:05</div>
+            <div class="timeline-body"><p>Thanks for your patience!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2025-05-06 19:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-06 19:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:4337 on 2025-05-06 19:06</div>
+            <div class="timeline-body"><p>We might want to say &quot;additional&quot; here (as discussed elsewhere). If you want to update that language all at once, it can happen here or in a separate pull requests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-06 19:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:4337 on 2025-05-06 19:06</div>
+            <div class="timeline-body"><p>I think it's also fine to just say &quot;requirements&quot; without the floating (s)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-06 19:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:4337 on 2025-05-06 19:07</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Whether to display the additional requirements installed with each tool.
+</code></pre>
+<p>(will require generated reference update)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-05-06 20:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-05-06 20:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:24 UTC
+    </footer>
+</body>
+</html>

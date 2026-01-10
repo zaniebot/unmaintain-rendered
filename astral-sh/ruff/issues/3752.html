@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore use of `cargo nextest` for test running - astral-sh/ruff #3752</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Explore use of <code>cargo nextest</code> for test running</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3752">#3752</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-03-26 21:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-26 21:10</div>
+            <div class="timeline-body"><p>We should profile this to understand whether it's faster for our project.</p>
+<p>See: https://twitter.com/boshen_c/status/1639878432820727809.</p>
+<p>See: https://github.com/Boshen/oxc/blob/d4af69930ceb9f083e6358f60b0967abb3bfc5f5/.github/workflows/check.yaml#L104-L115.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2023-03-26 21:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-26 22:15</div>
+            <div class="timeline-body"><p>Nextest does not run doctest so I disabled doctest by replacing <code>/// ```rust</code> with <code>/// ```no_run</code>.</p>
+<p>warm perfs</p>
+<pre><code class="language-console">❯ hyperfine 'cargo nextest run --all --all-features'
+Benchmark 1: cargo nextest run --all --all-features
+  Time (mean ± σ):      6.459 s ±  0.115 s    [User: 63.093 s, System: 6.695 s]
+  Range (min … max):    6.292 s …  6.700 s    10 runs
+
+❯ hyperfine 'cargo test --all --all-features'
+Benchmark 1: cargo test --all --all-features
+  Time (mean ± σ):     11.376 s ±  0.056 s    [User: 43.252 s, System: 9.700 s]
+  Range (min … max):   11.296 s … 11.509 s    10 runs
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-26 22:27</div>
+            <div class="timeline-body"><p>I cannot get to run <code>cargo test --doc</code>.
+I have this error:</p>
+<pre><code class="language-console">❯ cargo test --doc
+    Finished test [unoptimized + debuginfo] target(s) in 0.19s
+   Doc-tests ruff
+
+running 11 tests
+…
+test src/map_codes.rs - map_codes::Entry::parse (line 283) ... FAILED
+
+failures:
+
+---- src/map_codes.rs - map_codes::Entry::parse (line 283) stdout ----
+error: expected one of `.`, `;`, `?`, `}`, or an operator, found `=&gt;`
+ --&gt; src/map_codes.rs:284:23
+  |
+3 | (Pycodestyle, &quot;E101&quot;) =&gt; Rule::MixedSpacesAndTabs,
+  |                       ^^ expected one of `.`, `;`, `?`, `}`, or an operator
+
+error: aborting due to previous error
+
+Couldn't compile the test.
+
+failures:
+    src/map_codes.rs - map_codes::Entry::parse (line 283)
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+error: doctest failed, to rerun pass `-p ruff_macros --doc`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-03-28 11:31</div>
+            <div class="timeline-body"><p>Strange, fixed in https://github.com/charliermarsh/ruff/pull/3766</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-03-28 12:35</div>
+            <div class="timeline-body"><p>Thank you @JonathanPlasse for measuring the wall-times. Did you create the measurements locally or on a GitHub Action?</p>
+<p>My reaction is that it's probably not worth using <code>nextest</code> on CI <strong>today</strong> because</p>
+<ul>
+<li>The majority of the time is spent compiling</li>
+<li>The huge benefit of <code>nextest</code> is that it does a better job at concurrently running jobs. This is less important when using the default Github Action runners, because they <a href="https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources">have only two cores</a>,</li>
+<li>Installing <code>nextest</code> will add  a few extra seconds</li>
+<li>It increases the complexity of the CI job (installing, calling nextest, calling <code>cargo test</code> for doctests)</li>
+</ul>
+<p>But we may want to reconsider in the future, when we have more tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-29 00:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-29 00:15</div>
+            <div class="timeline-body"><p>We've explored it a bit -- not using for now, so closing.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:46 UTC
+    </footer>
+</body>
+</html>

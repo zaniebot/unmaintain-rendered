@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Let `--output-format` update previous values - astral-sh/ruff #18345</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Let <code>--output-format</code> update previous values</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18345">#18345</a>
+        opened by <a href="https://github.com/dmyersturnbull">@dmyersturnbull</a>
+        on 2025-05-27 19:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dmyersturnbull">@dmyersturnbull</a> on 2025-05-27 19:55</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Ruff complains if <code>--output-format</code> is passed multiple times, including if given the same value:</p>
+<pre><code class="language-prompt">$ ruff check --fix --no-fix --fix --no-fix
+# (Works as expected.)
+
+$ ruff check --output-format concise --output-format concise
+error: the argument '--output-format &lt;OUTPUT_FORMAT&gt;' cannot be used multiple times
+</code></pre>
+<p>This can be a limitation in contexts that provide the subcommand and initial options.
+This showed up in a <a href="https://just.systems">just</a> recipe, which was approximately:</p>
+<pre><code class="language-justfile">fix-ruff-issues *args: (ruff-check &quot;--fix-only&quot; args)
+show-ruff-issues *args: (ruff-check &quot;--no-fix&quot; args)
+
+ruff-check *args:
+  ruff check --output-format grouped {{args}}
+</code></pre>
+<p>A user noticed a bug with my recipe:</p>
+<pre><code class="language-bash">$ just show-ruff-issues --statistics
+ruff failed
+  Cause: Unsupported serialization format for statistics: Grouped
+# (Ok, fair enough.)
+
+$ ruff check --statistics --output-format grouped
+error: the argument '--output-format &lt;OUTPUT_FORMAT&gt;' cannot be used multiple times
+</code></pre>
+<p>Unfortunately, there's no way to remove/replace the initial value. While I can get around this in a Just recipe, it might be impossible in a Makefile or a <a href="https://pre-commit.com">pre-commit</a> hook, etc.</p>
+<h3>Version</h3>
+<p>0.11.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-05-28 06:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2025-05-28 06:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-28 06:17</div>
+            <div class="timeline-body"><p>Hi @dmyersturnbull</p>
+<p>I think we should look at this in general. It isn't specific about <code>--output-format</code>. The question here is if the CLI should allow repeating arbitrary options.</p>
+<p>I'd say no. I would expect that <code>--output-format concise --output-format full</code> would write multiple output formats (e.g. one to stderr and the other to stdout?). Since this isn't the case, I want Ruff to warn if I accidentially repeated the option (which is probably unintentional).</p>
+<p>Fortunately, there is a workaround for your use case. You can use the <code>--config</code> option. It has lower precedence than any explicitly named argument, and it can be arbitrarily repeated.</p>
+<pre><code class="language-shell">ruff check --config &quot;output-format=concise&quot; --output-format full
+</code></pre>
+<p>Here, <code>--output-format full</code> wins over <code>--config &quot;output-format=concise&quot;</code> but Ruff will use <code>concise</code> if <code>--output-format</code> isn't specified.</p>
+<p>An other alternative is to configure the <code>output-format</code> in your <code>pyproject.toml</code> or <code>ruff.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dmyersturnbull">@dmyersturnbull</a> on 2025-05-28 21:13</div>
+            <div class="timeline-body"><p>@MichaReiser Thanks for your reply! I didn't know about <code>--config</code>, which does help.</p>
+<p>As for the general question of allowing repeated options, <code>--config</code> presumably obviates the need. I can understand choosing to disallow repeated options (though, admittedly, allowing <code>--fix --no-fix</code> feels inconsistent).</p>
+<p>Your work and Astral's is very appreciated, by the way. uv in particular is a godsend.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dmyersturnbull on 2025-05-28 21:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:32 UTC
+    </footer>
+</body>
+</html>

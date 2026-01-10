@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>noqa comment at the end of a definition is not respected (DJ001) - astral-sh/ruff #7006</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>noqa comment at the end of a definition is not respected (DJ001)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7006">#7006</a>
+        opened by <a href="https://github.com/jaap3">@jaap3</a>
+        on 2023-08-30 11:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jaap3">@jaap3</a> on 2023-08-30 11:55</div>
+            <div class="timeline-body"><p>Using <code>ruff 0.0.286</code> is noticed the following:</p>
+<pre><code class="language-python">from django.db import models
+
+class MyModel(models.Model):
+    rejection_code = models.CharField(max_length=255, null=True)
+</code></pre>
+<p>Triggers <code>DJ001 Avoid using `null=True` on string-based fields such as CharField</code>.</p>
+<p>In this case I wanted to ignore this, so I tried:</p>
+<pre><code class="language-python">rejection_code = models.CharField(max_length=255, null=True)  # noqa: DJ001 (allow null)
+</code></pre>
+<p>This works, but triggers <code>E501</code> as the line is now too long. So I wrapped it:</p>
+<pre><code class="language-python">rejection_code = models.CharField(
+  max_length=255, 
+  null=True,
+)  # noqa: DJ001 (allow null)
+</code></pre>
+<p>This fixes <code>E501</code>, but now <code>DJ001</code> is triggered again.</p>
+<p>The only way I can suppress <code>DJ001</code> is placing the comment on the first line:</p>
+<pre><code class="language-python">rejection_code = models.CharField(  # noqa: DJ001 (allow null)
+  max_length=255, 
+  null=True,
+)
+</code></pre>
+<p>I'm not sure if this specific to <code>DJ001</code>, or all <code>noqa</code> comments. I personally would like to be able to place the <code>noqa</code> comment at the end of the definition, instead of at the start.</p>
+<p>EDIT: Just noticed it happening for <code># noqa: PLR0913</code> as well. <code>black</code> auto-formats these lines so the <code>noqa</code> comment is at the end, where it doesn't work anymore.</p>
+<p>EDIT 2:</p>
+<p><strong>Summary of later comments:</strong></p>
+<p>For <code>PLR6301</code> the <code>noqa</code> comment needs to be on the self argument:</p>
+<pre><code class="language-python">class Foo:
+    def do_example(self, arg1, *, arg2=&quot;example&quot;, arg3=10, arg4=None, arg5=True):  # noqa: PLR0913, PLR6301
+        return
+</code></pre>
+<p>So when wrapped the <code>noqa</code> comment should be split:</p>
+<pre><code class="language-python">class Foo:
+    def do_example(  # noqa: PLR0913
+        self, arg1, *, arg2=&quot;example&quot;, arg3=10, arg4=None, arg5=True  # noqa: PLR6301
+    ):
+        return
+</code></pre>
+<p>or</p>
+<pre><code class="language-python">class Foo:
+    def do_example(  # noqa: PLR0913
+        self, # noqa: PLR6301
+        arg1, 
+        *,
+        arg2=&quot;example&quot;, 
+        arg3=10, 
+        arg4=None,
+        arg5=True,
+    ):
+        return
+</code></pre>
+<p>It's not possible to suppress <code>DJ001</code> for the <code>nul=True</code> line in this way:</p>
+<pre><code class="language-python">rejection_code = models.CharField(
+  max_length=255, 
+  null=True,  # noqa: DJ001 (allow null)
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaap3">@jaap3</a> on 2023-08-30 13:47</div>
+            <div class="timeline-body"><p>Looks like this issue might be covered by the discussion in https://github.com/astral-sh/ruff/discussions/6670</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-30 13:49</div>
+            <div class="timeline-body"><p>Ah yeah, I believe our formatter would handle this case as you describe (avoid breaking the expression if the pragma comment causes the line to go over the line length limit). For Black, I believe you <em>do</em> have to do something like:</p>
+<pre><code class="language-python">rejection_code = models.CharField(  # noqa: DJ001 (allow null)
+  max_length=255, 
+  null=True,
+)
+</code></pre>
+<p>(I believe Flake8 has the same requirement -- the comment needs to be on the same line as the violation.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-08-30 13:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaap3">@jaap3</a> on 2023-08-30 14:46</div>
+            <div class="timeline-body"><p>It gets weird for <code>PLR6301</code>, where the <code>noqa</code> comment needs to be on the <code>self</code> argument:</p>
+<pre><code class="language-python">class Foo:
+    def bar(self, arg1, arg2, arg3, arg4):  # noqa: PLR6301
+        return
+</code></pre>
+<p>When wrapping that definition over multiple lines, this is the only way to ignore <code>PLR6301</code>:</p>
+<pre><code class="language-python">class Foo:
+    def bar(
+        self,  # noqa: PLR6301
+        arg1, 
+        arg2, 
+        arg3, 
+        arg4,
+    ):
+        return
+</code></pre>
+<p>EDIT: I've updated this original post with an additional example based on this one that also violates <code>PLR0913</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaap3">@jaap3</a> on 2023-08-31 09:38</div>
+            <div class="timeline-body"><p>This is just a duplicate of https://github.com/astral-sh/ruff/issues/4244</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jaap3 on 2023-08-31 09:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jaap3">@jaap3</a> on 2023-08-31 09:43</div>
+            <div class="timeline-body"><p>One additional observations:</p>
+<p>Seeing how <code>PLR6301</code> is ignorable by placing it after the <code>self</code> argument, I tried to see if that would work on the <code>null=True</code> line for <code>DJ001</code> (it doesn't):</p>
+<pre><code class="language-python">rejection_code = models.CharField(
+  max_length=255, 
+  null=True,  # noqa: DJ001 (allow null)
+)
+</code></pre>
+<p>Would be nice if these <code>noqa</code> comments could work on the &quot;logical&quot; line. Not sure if that's feasible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-08-31 13:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:10 UTC
+    </footer>
+</body>
+</html>

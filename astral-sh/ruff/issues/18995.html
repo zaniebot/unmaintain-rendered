@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DJ012  lint encourages breaking change - astral-sh/ruff #18995</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>DJ012  lint encourages breaking change</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18995">#18995</a>
+        opened by <a href="https://github.com/DMunkei">@DMunkei</a>
+        on 2025-06-27 19:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DMunkei">@DMunkei</a> on 2025-06-27 19:25</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Since the ordering is important when it comes to managers in Django, reordering might introduce unexpected behaviour. In this case the lint <code>DJ012</code> was getting triggered even though both objects are <code>Managers</code>.</p>
+<p>This is a minimal example to reproduce it.</p>
+<pre><code class="language-py">class NotDeletedObjectsManager(Manager):
+    &quot;&quot;&quot;Returns only those objects that are do not have delete_flag=1&quot;&quot;&quot;
+
+    def get_queryset(self):
+        return super().get_queryset().exclude(delete_flag=1)
+
+
+class QuestBaseModel(models.Model):
+    objects = NotDeletedObjectsManager()
+    all_objects = models.Manager() 
+    class Meta:
+        abstract = True
+
+
+class MyModel(QuestBaseModel):...
+</code></pre>
+<p>Here's the output of the command <code>ruff check</code></p>
+<pre><code class="language-bash">api/utils/models.py:17:5: DJ012 Order of model's inner classes, methods, and fields does not follow the Django Style Guide: field declaration should come before manager declaration
+   |
+16 |     objects = NotDeletedObjectsManager()
+17 |     all_objects = models.Manager()
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ DJ012
+18 |
+19 |     class Meta:
+</code></pre>
+<p>Here is additional information regarding the versions of the programs installed.</p>
+<pre><code>Ruff version: ruff 0.12.0
+Python version: 3.12.9
+Django version: 5.0
+</code></pre>
+<h3>Version</h3>
+<p>0.12.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-27 22:47</div>
+            <div class="timeline-body"><p>Example in playground: https://play.ruff.rs/1c3aba5d-1917-4581-85ea-609794264552
+My guess would be that a setting should be added to allow extending what ruff considers a &quot;manager&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DMunkei">@DMunkei</a> on 2025-06-28 07:36</div>
+            <div class="timeline-body"><p>Is there no way to make it realise that both are Managers?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-28 07:47</div>
+            <div class="timeline-body"><p>Not currently. Looking at the code for <code>DJ012</code> only an assignment to the name &quot;object&quot; is considered a manager declaration.
+https://github.com/astral-sh/ruff/blob/90cb0d3a7b0d1b9528854dad64dd17330bfd5f36/crates/ruff_linter/src/rules/flake8_django/rules/unordered_body_content_in_model.rs#L153-L186
+I'm not familiar with how Django works, but there probably either needs to be an extension to the codes logic to account for other types of manager declarations, and/or a setting for customizing this behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DMunkei">@DMunkei</a> on 2025-06-28 17:14</div>
+            <div class="timeline-body"><p>In this case the order of the managers matters when queries are executed.
+<a href="https://docs.djangoproject.com/en/5.2/topics/db/managers/#django.db.models.Model._default_manager">Documentation regarding default manager definition</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-30 13:33</div>
+            <div class="timeline-body"><p>I think we should at least try to infer the type to see if it's a <code>Manager</code> instead of going by the assigned name. It could be a bit tedious to have to configure each one. We'd need multi-file analysis to do the inference robustly, but we can at least handle the single-file case for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-06-30 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-06-30 13:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DMunkei">@DMunkei</a> on 2025-06-30 15:52</div>
+            <div class="timeline-body"><p>From an outside perspective, not knowing how it's done under the hood. I agree with @ntBre , that inference would be less tedious and moreover the type information should be available. No?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2025-07-07 12:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-07 12:47</div>
+            <div class="timeline-body"><p>Maybe a noob question but I'm not using Django myself. Is there a naming convention for manager fields? Looking at the implementation here</p>
+<p>https://github.com/astral-sh/ruff/blob/2d224e6096401e0a512d49899d2e6374c932c979/crates/ruff_linter/src/rules/flake8_django/rules/unordered_body_content_in_model.rs#L156-L169</p>
+<p>It seems all we do to identify a manager field is to test if it is named <code>objects</code>. Could we test if the field ends with <code>_objects</code> instead of testing for an exact match?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DMunkei">@DMunkei</a> on 2025-07-07 13:40</div>
+            <div class="timeline-body"><p>Per default, model classes <em>do not</em> require you to define a <code>objects</code> field. If you happen to define one, the naming convention in the end is irrelevant. I do not believe there's a naming convention, I might be wrong though.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:51 UTC
+    </footer>
+</body>
+</html>

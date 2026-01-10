@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support multi-level member imports in fixes - astral-sh/ruff #8713</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support multi-level member imports in fixes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8713">#8713</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-11-16 04:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-16 04:14</div>
+            <div class="timeline-body"><pre><code>ruff  *.py --select TRIO115 --no-cache --fix --unsafe-fixes --preview --isolated
+</code></pre>
+<p>file content:</p>
+<pre><code>from trio import Event, sleep
+class _RouteMethod(Enum):
+    def __init__(self, token: str):
+        self._headers = {
+        }
+    async def request(
+    ):
+            try:
+                        if bool(resp.headers.get(&quot;X-RateLimit-Global&quot;)):
+                            logger.warning(
+                        )
+                        await sleep(reset_after)
+            except OSError as err:
+                    await sleep(5)
+</code></pre>
+<p>error</p>
+<pre><code>/home/rafal/test/tmp_folder/F_NAME_9541977883458822252.py:12:31: TRIO115 Use `trio.lowlevel.checkpoint()` instead of `trio.sleep(0)`
+Found 1 error.
+[*] 1 fixable with the --fix option.
+
+error: Fix introduced a syntax error in `/home/rafal/test/tmp_folder/F_NAME_9541977883458822252.py` with rule codes TRIO115: invalid syntax. Got unexpected token '.' at byte offset 39
+---
+from trio import Event, sleep, lowlevel.checkpoint
+class _RouteMethod(Enum):
+    def __init__(self, token: str):
+        self._headers = {
+        }
+    async def request(
+    ):
+            try:
+                        if bool(resp.headers.get(&quot;X-RateLimit-Global&quot;)):
+                            logger.warning(
+                        )
+                        await lowlevel.checkpoint
+            except OSError as err:
+                    await sleep(5)
+---
+</code></pre>
+<p><a href="https://github.com/astral-sh/ruff/files/13353656/python_compressed.zip">python_compressed.zip</a></p>
+<p><em>Originally posted by @qarmin in https://github.com/astral-sh/ruff/issues/8402#issuecomment-1810838129</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-11-16 04:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-11-16 04:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-12-01 01:03</div>
+            <div class="timeline-body"><p>@charliermarsh Have you looked at this? Otherwise I can give it a look, seems like an easy fix :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Unassigned @charliermarsh by @charliermarsh on 2023-12-01 01:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-01 01:26</div>
+            <div class="timeline-body"><p>@dhruvmanila - No, feel free! I don't know how hard or easy it is -- it likely requires some kind of iteration within the <code>Importer</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-12-01 01:40</div>
+            <div class="timeline-body"><p>Hmm, not sure where does this import come from: <code>from trio import Event, sleep, lowlevel.checkpoint</code> as for me it's always <code>from trio import Event, sleep, lowlevel</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-12-01 01:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-12-01 01:44</div>
+            <div class="timeline-body"><p>Oh, the import was a bug in <code>v0.1.5</code> which was fixed in <code>v0.1.6</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-01 01:57</div>
+            <div class="timeline-body"><p>I fixed this specific case, but it doesn't always do the optimal thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2023-12-01 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-01 01:58</div>
+            <div class="timeline-body"><p>For example, if the user has <code>import trio.lowlevel</code>, I don't think we leverage the fact that we can do <code>trio.lowlevel.checkpoint</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:00 UTC
+    </footer>
+</body>
+</html>

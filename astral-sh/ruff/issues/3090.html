@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff stops enforcing rules in src/ based layout - astral-sh/ruff #3090</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff stops enforcing rules in src/ based layout</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3090">#3090</a>
+        opened by <a href="https://github.com/ashb">@ashb</a>
+        on 2023-02-21 18:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ashb">@ashb</a> on 2023-02-21 18:14</div>
+            <div class="timeline-body"><p>This is a slightly odd one to track down, but ruff has stopped enforcing any rules in my <code>src/</code> folder!</p>
+<p>I've got a private repo (which makes it hard to share, at least publicly).</p>
+<p>The ruff rules have been constant for the life of the repo (it's about 6 weeks old), so I tried using <code>git bisect</code></p>
+<p>I've managed to track down the commit that breaks things, using this <code>git bisect run</code> script:</p>
+<pre><code>bash -c '(cat src/myproject/app.py; echo -e &quot;\n\nf\&quot;a\&quot;&quot; ) | ruff check --no-fix --stdin-filename src/myproject/app.py  - --diff 2&gt;&amp;1 | grep --fixed &quot;+\&quot;a\&quot;&quot;'
+</code></pre>
+<p>And looking at the changed files in the breaking commit, it doesn't &quot;add up&quot;:</p>
+<pre><code> src/myproject/__main__.py                                                  | 18 +++++++++++++++---
+ src/myproject/api/routers/health.py                                        | 11 -----------
+ src/myproject/apiserver/router.py                                          |  8 ++++++++
+ src/myproject/app.py                                                       | 46 +++++++++++++++-------------------------------
+ src/myproject/{metascheduler =&gt; common}/versions/alembic.py                |  0
+ src/myproject/{metascheduler =&gt; common}/versions/v2_2_4.py                 |  0
+ src/myproject/{metascheduler =&gt; common}/versions/v2_5.py                   |  0
+ src/myproject/common/models/dsn.py                                         | 23 +++++++++++++++++++++++
+ src/myproject/dependencies.py                                              |  7 -------
+ src/myproject/hypervisor/__init__.py                                       |  0
+ src/myproject/hypervisor/dependencies.py                                   |  7 +++++++
+ src/myproject/hypervisor/router.py                                         | 26 ++++++++++++++++++++++++++
+ src/myproject/hypervisor/routers/health.py                                 | 11 +++++++++++
+ src/myproject/logging.py                                                   |  5 +++--
+ src/myproject/component/__init__.py                                        |  1 -
+ src/myproject/settings.py                                                  | 14 ++++++++++++++
+</code></pre>
+<p>I'd be happy to share access to the repo for the commits in question if it helps debug. (For future me, the breaking commit is b06f117fc and b06f117fc^ is good)</p>
+<p>Through-out this time errors are still flaged up in <code>tests/</code></p>
+<details>
+<summary>Ruff config in pyproject.toml</summary>
+```
+[tool.ruff]
+line-length = 110
+extend-select = [
+    "W",    # pycodestyle warnings
+    "I",    # isort
+    "C90",  # Complexity
+    "C",    # flake8-comprehensions
+    "ISC",  # flake8-implicit-str-concat
+    "T10",  # flake8-debugger
+    "A",    # flake8-builtins
+    "UP",   # pyupgrade
+    "RUF",  # un-needed noqa stanzas
+]
+extend-ignore = ["A002"]
+extend-exclude = [
+    "__pycache__",
+]
+target-version = "py311"
+fix = true
+
+<p>[tool.ruff.isort]
+combine-as-imports = true
+known-first-party = [&quot;myproject&quot;, &quot;tests&quot;]</p>
+<p>[tool.ruff.mccabe]
+max-complexity = 6</p>
+<pre><code>&lt;/details&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-02-21 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-02-21 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-21 18:22</div>
+            <div class="timeline-body"><p>I'm not immediately sure what's going on. The first thing I'd wonder is if some of the files are being unintentionally excluded by the default exclusions list:</p>
+<pre><code class="language-rust">pub static EXCLUDE: Lazy&lt;Vec&lt;FilePattern&gt;&gt; = Lazy::new(|| {
+    vec![
+        FilePattern::Builtin(&quot;.bzr&quot;),
+        FilePattern::Builtin(&quot;.direnv&quot;),
+        FilePattern::Builtin(&quot;.eggs&quot;),
+        FilePattern::Builtin(&quot;.git&quot;),
+        FilePattern::Builtin(&quot;.hg&quot;),
+        FilePattern::Builtin(&quot;.mypy_cache&quot;),
+        FilePattern::Builtin(&quot;.nox&quot;),
+        FilePattern::Builtin(&quot;.pants.d&quot;),
+        FilePattern::Builtin(&quot;.pytype&quot;),
+        FilePattern::Builtin(&quot;.ruff_cache&quot;),
+        FilePattern::Builtin(&quot;.svn&quot;),
+        FilePattern::Builtin(&quot;.tox&quot;),
+        FilePattern::Builtin(&quot;.venv&quot;),
+        FilePattern::Builtin(&quot;__pypackages__&quot;),
+        FilePattern::Builtin(&quot;_build&quot;),
+        FilePattern::Builtin(&quot;buck-out&quot;),
+        FilePattern::Builtin(&quot;build&quot;),
+        FilePattern::Builtin(&quot;dist&quot;),
+        FilePattern::Builtin(&quot;node_modules&quot;),
+        FilePattern::Builtin(&quot;venv&quot;),
+    ]
+});
+</code></pre>
+<p>E.g., that might happen if you moved files into a <code>build</code> subdirectory. But based on the layout above, I'm not seeing anything that would trigger that behavior.</p>
+<p>The other possibility is that the automatic <code>gitignore</code> behavior somehow thinks those files should be ignored.</p>
+<p>Are you able to share the output of running with <code>--verbose</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashb">@ashb</a> on 2023-02-21 18:27</div>
+            <div class="timeline-body"><pre><code>❯ ruff --version
+ruff 0.0.249
+
+❯ ruff check --no-fix src/laminar/app.py --verbose
+[2023-02-21][18:26:29][ruff::commands::run][DEBUG] Identified files to lint in: 1.6477ms
+[2023-02-21][18:26:29][ruff::diagnostics][DEBUG] Cache hit for: /home/ash/code/astro/laminar/src/laminar/app.py
+[2023-02-21][18:26:29][ruff::commands::run][DEBUG] Checked 1 files in: 10.105801ms
+
+❯ rm -r .ruff_cache
+
+❯ ruff check --no-fix src/laminar/app.py --verbose
+[2023-02-21][18:26:41][ruff::commands::run][DEBUG] Identified files to lint in: 1.64271ms
+[2023-02-21][18:26:41][ruff::commands::run][DEBUG] Checked 1 files in: 9.527063ms
+</code></pre>
+<p>And to force an error (isort and f-string without replacements):</p>
+<pre><code>diff --git a/src/laminar/app.py b/src/laminar/app.py
+index 8370d1b..400aa8b 100644
+--- a/src/laminar/app.py
++++ b/src/laminar/app.py
+@@ -1,5 +1,5 @@
+-import structlog
+ from fastapi import APIRouter, FastAPI
++import structlog
+
+ app = FastAPI()
+
+@@ -22,3 +22,5 @@ def build_app() -&gt; FastAPI:
+     log.info(&quot;Starting&quot;, app=module.__name__)
+     app.include_router(module.router)
+     return app
++
++f&quot;a&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashb">@ashb</a> on 2023-02-21 18:33</div>
+            <div class="timeline-body"><p>(Happy to work out a way to get you a copy of the working and broken commits privately if it helps)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-21 18:42</div>
+            <div class="timeline-body"><p>It would help a lot, if you're open to it. Do you want to send a zip by email (charlie.r.marsh@gmail.com)? What works best?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashb">@ashb</a> on 2023-02-21 18:59</div>
+            <div class="timeline-body"><p>You've got mail!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-21 19:01</div>
+            <div class="timeline-body"><p>I forgot that I shipped a feature in latest Ruff that silently turns it off for all of <em>your</em> projects specifically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashb">@ashb</a> on 2023-02-21 19:03</div>
+            <div class="timeline-body"><p>😿</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-21 19:13</div>
+            <div class="timeline-body"><p>Is the issue not that <code>app.py</code> now contains a <code>match</code> statement? Which is suppressed with <code># noqa: E999</code>. (But the presence of the <code>match</code> means we can't check the AST.)</p>
+<p>If you remove the <code>noqa</code>, you get a warning, like: <code>error: Failed to parse src/laminar/app.py: invalid syntax. Got unexpected token 'settings' at line 16 column 11</code>.</p>
+<p>If you add an error that's not based on the AST (like a long line), you get: <code>src/laminar/app.py:26:89: E501 Line too long (91 &gt; 88 characters)</code>.</p>
+<p>If so, this should all be moot anyway since <code>match</code> support just merged. But maybe I'm misdiagnosing here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashb">@ashb</a> on 2023-02-21 19:22</div>
+            <div class="timeline-body"><p>Ooooh shiny. Testing out a main build now.</p>
+<p>I guess it makes sense that with the syntax errors it can't parse the AST to enforce more of the rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashb">@ashb</a> on 2023-02-21 19:32</div>
+            <div class="timeline-body"><p>Yup, confirmed. Main fixes it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ashb on 2023-02-21 19:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:27 UTC
+    </footer>
+</body>
+</html>

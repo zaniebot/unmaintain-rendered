@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regression in Ruff's ordering of import aliases with `force-sort-within-sections` - astral-sh/ruff #8661</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Regression in Ruff's ordering of import aliases with <code>force-sort-within-sections</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8661">#8661</a>
+        opened by <a href="https://github.com/cmsetzer">@cmsetzer</a>
+        on 2023-11-13 18:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cmsetzer">@cmsetzer</a> on 2023-11-13 18:25</div>
+            <div class="timeline-body"><p>It looks like #7963 introduced a regression in Ruff's ordering of certain import aliases when <code>force-sort-within-sections</code> is enabled. In version 0.1.3 and prior, Ruff and isort produced identical output under this setting.</p>
+<h2>Example</h2>
+<ul>
+<li>Ruff version 0.1.5</li>
+<li>isort version 5.12.0</li>
+</ul>
+<p>Given <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.isort]
+force_sort_within_sections = true
+
+[tool.ruff.isort]
+force-sort-within-sections = true
+</code></pre>
+<p>And <code>example.py</code>:</p>
+<pre><code class="language-py">import encodings
+from datetime import timezone as tz
+from datetime import timedelta
+import datetime as dt
+import datetime
+</code></pre>
+<p>isort produces the following:</p>
+<pre><code class="language-console">$ cat example.py | isort -
+
+import datetime
+import datetime as dt
+from datetime import timedelta
+from datetime import timezone as tz
+import encodings
+</code></pre>
+<p>...while Ruff now places <code>import datetime as dt</code> out of order:</p>
+<pre><code class="language-console">$ cat example.py | ruff check --fix --no-cache --select=&quot;I001&quot; --stdin-filename=&quot;-&quot;
+
+import datetime
+from datetime import timedelta
+from datetime import timezone as tz
+import datetime as dt
+import encodings
+
+Found 1 error (1 fixed, 0 remaining).
+</code></pre>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-13 18:26</div>
+            <div class="timeline-body"><p>Thanks! @bluthej, are you able to take a look at this? If not, I understand and can investigate myself, but thought I would ask first since it's likely related to your recent refactor.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-11-13 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2023-11-13 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-13 18:27</div>
+            <div class="timeline-body"><p>Regardless, @cmsetzer, will make sure this is fixed for the next release. Thanks for the clear write-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluthej">@bluthej</a> on 2023-11-13 18:27</div>
+            <div class="timeline-body"><p>@charliermarsh sure I'll take a look at it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-13 18:30</div>
+            <div class="timeline-body"><p>@bluthej - Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluthej">@bluthej</a> on 2023-11-13 19:13</div>
+            <div class="timeline-body"><p>Ok so what happens is the from imports don't have an &quot;asname&quot;, so they have a <code>None</code> that places them before the <code>import ... as</code>.</p>
+<p>Looks like inverting the last two fields of <code>ModuleKey</code> fixes it, and all the tests pass, but before submitting a PR I'd like to look at the code before my refactor to make sure that this is how the ordering took place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-13 23:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:58 UTC
+    </footer>
+</body>
+</html>

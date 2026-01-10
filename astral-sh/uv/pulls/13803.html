@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Better error message for version specifier with missing operator - astral-sh/uv #13803</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Better error message for version specifier with missing operator</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13803">#13803</a>
+        opened by <a href="https://github.com/jmwoliver">@jmwoliver</a>
+        on 2025-06-03 12:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jmwoliver">@jmwoliver</a> on 2025-06-03 12:36</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>When missing an operator for version parsing, it would give an error that was hard to know how to fix if you were not familiar with version specifiers / PEP-440:</p>
+<pre><code>Unexpected end of version specifier, expected operator
+</code></pre>
+<p>Now, it will attempt to provide a more useful hint if it can parse the version from the remaining scanner:</p>
+<pre><code>Unexpected end of version specifier, expected operator. Did you mean `==3.12`?
+</code></pre>
+<h2>Test Plan</h2>
+<p>Unit tests in <code>version_specifier.rs</code> were added/updated for the following cases:</p>
+<ul>
+<li><code>test_parse_specifier_missing_operator_error</code></li>
+<li><code>test_parse_specifier_missing_operator_invalid_version_error</code></li>
+<li><code>test_invalid_word</code></li>
+<li><code>test_invalid_specifier</code></li>
+<li><code>error_message_version_specifiers_parse_error</code></li>
+</ul>
+<p>A test in <code>edit.rs</code> for failing to parse the <code>pyproject.toml</code> when using <code>add</code> was also included to match the request in the original issue:</p>
+<ul>
+<li><code>add_invalid_requires_python</code></li>
+</ul>
+<p>I didn't add cases where no version specifier is provided because it seemed like it doesn't get to the point of parsing in that case, so it should not happen.</p>
+<h2>Reference</h2>
+<p>Fixes #13126</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/joao-krauchenco-mottu">@joao-krauchenco-mottu</a> approved on 2025-06-03 12:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2025-06-03 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jmwoliver">@jmwoliver</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:6964 on 2025-06-03 13:02</div>
+            <div class="timeline-body"><p>This seems like it is parsing wrong (<code>3.12</code> vs <code>12</code>) but I don't understand the full context and maybe that is the expected behavior in this case. I updated it to get the tests passing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jmwoliver">@jmwoliver</a> reviewed on 2025-06-03 13:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jmwoliver">@jmwoliver</a> on 2025-06-03 13:33</div>
+            <div class="timeline-body"><p>I'm not sure why the <code>CI / check system | python on opensuse</code> action is failing. Would someone mind rerunning that? It looks like it just timed out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-03 14:33</div>
+            <div class="timeline-body"><p>Yeah, we'll disable that until we can fix it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-06-03 14:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:6964 on 2025-06-03 14:34</div>
+            <div class="timeline-body"><p>The wheel <em>does</em> have <code>12</code> in it</p>
+<pre><code>❯ cat validation-3.0.0.dist-info/METADATA
+Metadata-Version: 2.1
+Name: validation
+Version: 3.0.0
+Requires-Python: 12
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jmwoliver">@jmwoliver</a> reviewed on 2025-06-03 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jmwoliver">@jmwoliver</a> on <code>crates/uv/tests/it/pip_compile.rs</code>:6964 on 2025-06-03 14:43</div>
+            <div class="timeline-body"><p>Ah thanks for the clarification! I saw this:</p>
+<pre><code class="language-rust">let context = TestContext::new(&quot;3.12&quot;);
+</code></pre>
+<p>And wasn't sure if it was just parsing that wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "fix: better error message when missing operator in version parsing (#13126)" to "Better error message when missing operator in version parsing" by @konstin on 2025-06-03 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Better error message when missing operator in version parsing" to "Better error message for missing operator in version parsing" by @konstin on 2025-06-03 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Better error message for missing operator in version parsing" to "Better error message for version specifier with missing operator" by @konstin on 2025-06-03 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-03 17:56</div>
+            <div class="timeline-body"><p>I changed the diagnostic building so we don't drop a <code>.*</code> if present and adjusted the message style for the uv conventions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-06-03 17:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-06-03 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-06-03 19:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:25 UTC
+    </footer>
+</body>
+</html>

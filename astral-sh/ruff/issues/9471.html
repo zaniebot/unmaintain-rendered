@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base set RUF100 positive on a pragma for a superset rule - astral-sh/ruff #9471</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Base set RUF100 positive on a pragma for a superset rule</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9471">#9471</a>
+        opened by <a href="https://github.com/arthur-st">@arthur-st</a>
+        on 2024-01-11 16:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/arthur-st">@arthur-st</a> on 2024-01-11 16:01</div>
+            <div class="timeline-body"><p>Let's imagine a repository structure like this:</p>
+<pre><code>base/.ruff.toml
+.ruff.toml
+main.py
+</code></pre>
+<p>Where <code>base/.ruff.toml</code> is a stock config file and <code>.ruff.toml</code> is this:</p>
+<pre><code>extend = 'base/.ruff.toml
+extend-select =  [&quot;FBT&quot;]
+</code></pre>
+<p>Imagine then a 2-stage CI setup that blocks commits violating <code>base/.ruff.toml</code>, and merely annotates, in a non-blocking way, commits violating <code>.ruff.toml</code>. If someone adds a <code># noqa: FBT001</code> pragma to relevant code in <code>main.py</code>, <code>base/.ruff.toml</code> starts blocking <code>main.py</code> commits based on <code>RUF100</code>, since the directive in the pragma is unused, due to the rule not being enabled in <code>base/.ruff.toml</code>.</p>
+<p>What are the options here? Presently, I'm “forwarding” <code>RUF100</code> into the outermost Ruff configuration declaration, but that is a functionality compromise.</p>
+<p>Somewhat related, another question/feature request. Would it be possible to namespace Ruff output by config file?</p>
+<p>Consider the following config structure:</p>
+<pre><code>.ruff.toml
+foo/.ruff.toml
+foo/bar/.ruff.toml
+</code></pre>
+<p>Imagine that config files import config from the parent folder, in a daisy chain. What I would like to see is Ruff output specifying the namespace of each linting message, e.g., <code>root:RUF001</code>, <code>foo:FBT001</code>,  and <code>bar:PIE800</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-14 02:54</div>
+            <div class="timeline-body"><p>Hmm... I don't know that there are any better options here as compared to what you're doing already. In general, we can't really know what the superset of rules would be for any given file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2024-01-14 02:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arthur-st">@arthur-st</a> on 2024-01-15 07:01</div>
+            <div class="timeline-body"><p>Fair enough. I'm thinking through the question myself for another turn, and there really isn't a robust way to tell what is a superset for an “out-of-path”. On a linear (well, directly nested) path it's a bit less arbitrary, but I wouldn't be surprised to learn that there can be nuanced setups for that as well.</p>
+<p>In practical terms, then, I think what I've come up with is good enough. The annotations are surfaced prominently, which is good enough in these specific circumstances for a rule like RUF100.</p>
+<p>What about the second question?</p>
+<p>I was imagining a solution like walking back through all config imports, getting their labels through config or runtime generation, and then building the scope up via extensions, e.g.:</p>
+<pre><code>.ruff.toml &lt;- rules A1, A2
+foo/.ruff.toml &lt;-  import .ruff.toml, extend-select B1, B2
+foo/bar/.ruff.toml &lt;- import foo/.ruff.toml, extend-select C1, C2
+</code></pre>
+<p>resulting in a mapping like</p>
+<pre><code>root = A1, A2
+foo = B1, B2
+bar = C1, C2
+</code></pre>
+<p>that can then be used to label the output. But I'm not sure if this makes within the data model of Ruff, or if it has any overlaps with your plans for it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:26 UTC
+    </footer>
+</body>
+</html>

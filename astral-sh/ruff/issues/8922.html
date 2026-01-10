@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E501 doesn't work in certain cases - astral-sh/ruff #8922</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>E501 doesn't work in certain cases</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8922">#8922</a>
+        opened by <a href="https://github.com/yaroslavsadin">@yaroslavsadin</a>
+        on 2023-11-30 11:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/yaroslavsadin">@yaroslavsadin</a> on 2023-11-30 11:15</div>
+            <div class="timeline-body"><pre><code>$ ruff --version
+ruff 0.1.6
+</code></pre>
+<p>No custom TOML config used.</p>
+<p>Good code snippet:</p>
+<pre><code class="language-python">{
+    i: i for i in ['somtehingverylongsomtehingverylongsomtehingverylongsomtehingverylongsomtehingverylongsomtehingverylongsomtehingverylong']
+}
+</code></pre>
+<pre><code class="language-console">$ ruff --select=E501 test.py
+test.py:2:89: E501 Line too long (141 &gt; 88)
+Found 1 error.
+</code></pre>
+<p>Bad code snippet:</p>
+<pre><code class="language-python">{
+    i: i for i in
+    ['somtehingverylongsomtehingverylongsomtehingverylongsomtehingverylongsomtehingverylongsomtehingverylongsomtehingverylong']
+}
+</code></pre>
+<pre><code class="language-console">$ ruff --select=E501 test.py
+$
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-30 14:27</div>
+            <div class="timeline-body"><p>Thanks for the clear issue. I think this is roughly the same as https://github.com/astral-sh/ruff/issues/8383 and there's some
+more commentary in that issue + a few ideas for improvement. The gist of it is that if a line doesn't contain any splittable whitespace, we avoid flagging E501, which is more often helpful than hurtful, since a line without splittable whitespace tends to be, e.g., a single long URL or other long token. In this case, though, we should <em>probably</em> be flagging E501, since we can split on the bracket at least.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-30 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-30 14:27</div>
+            <div class="timeline-body"><p>(Closing to merge with #8383.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-11-30 14:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:07 UTC
+    </footer>
+</body>
+</html>

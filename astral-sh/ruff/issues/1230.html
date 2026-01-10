@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panic when RUF100 check encounters carriage return - astral-sh/ruff #1230</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Panic when RUF100 check encounters carriage return</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1230">#1230</a>
+        opened by <a href="https://github.com/squiddy">@squiddy</a>
+        on 2022-12-13 16:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-13 16:50</div>
+            <div class="timeline-body"><p>Another one from #1206</p>
+<pre><code class="language-bash">echo -e 'foo = &quot;&quot;&quot;\r&quot;&quot;&quot;' | cargo run -- - --select RUF100 --fix
+</code></pre>
+<pre><code>thread 'main' panicked at 'index out of bounds: the len is 1 but the index is 1', src/check_lines.rs:125:66
+</code></pre>
+<p>Not sure how likely this is to be an issue in practice. I think I'm doing something suboptimal to the input/output of the test runner over at #1206 and when testing the <code>W605_1.py</code> it eventually ends up in output similar to the minimal testcase.</p>
+<p>Python will happily execute it though.</p>
+<pre><code class="language-bash">$ echo -e 'foo = &quot;&quot;&quot;\rhello world&quot;&quot;&quot;;print(foo)' | python
+
+hello world
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-13 16:52</div>
+            <div class="timeline-body"><p>I was hoping this could be something https://github.com/charliermarsh/ruff/issues/76 could surface, but my attempts so far weren't successful in producing anything with it that shows a problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-13 21:01</div>
+            <div class="timeline-body"><p>Does this have to do with passing over <code>stdin</code>? And how the strings are interpreted? It seems fine if I paste these contents into <code>foo.py</code> and run Ruff over that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-12-13 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2022-12-13 21:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-14 03:48</div>
+            <div class="timeline-body"><p>It's not about stdin, let me attach that in the hopes that github doesn't mess with it.</p>
+<p><a href="https://github.com/charliermarsh/ruff/files/10224094/ruf100_panic.txt">ruf100_panic.txt</a></p>
+<p>Most editors would show this like this. There is a <code>\r</code> after the opening quotes that is causing a line break, but it's not a typical newline ending (<code>\r\n</code> on windows, <code>\n</code> on linux machines).</p>
+<pre><code>foo = &quot;&quot;&quot;
+hello world&quot;&quot;&quot;;print(foo)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @charliermarsh on 2022-12-15 00:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-17 18:26</div>
+            <div class="timeline-body"><p>I noticed that latest main doesn't have the issue anymore. bisect suggests that 9cb18a481b8241608ad8964d3f107247e758a251 fixed this issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-17 20:53</div>
+            <div class="timeline-body"><p>It's odd because in https://github.com/charliermarsh/ruff/commit/7e45a9f2e2d536c06660ccff04b499f52e6d5a6f, I was able to re-enable the Black compatibility test for <code>W605_1.py</code>, but I didn't really understand why. After https://github.com/charliermarsh/ruff/commit/9cb18a481b8241608ad8964d3f107247e758a251, I had to re-add it, even though it seemed to work fine for me when I ran the series of commands manually. Maybe related somehow?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-17 20:54</div>
+            <div class="timeline-body"><p>I guess we can close this though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-18 07:04</div>
+            <div class="timeline-body"><p><code>W605_1.py</code> is the only test fixture that uses CRLF line endings, all the others just use LF. So I think there is still something odd going on.</p>
+<pre><code class="language-console">❯ find resources/test/fixtures/ -iname &quot;*.py&quot; -exec file {} \; | grep CRLF
+resources/test/fixtures/pycodestyle/W605_1.py: ASCII text, with CRLF line terminators
+</code></pre>
+<hr />
+<p>One &quot;fix&quot; for this is to replace the CRLF line endings in that fixture file with LF, for example using <code>dos2unix</code>.</p>
+<pre><code class="language-console">❯ dos2unix resources/test/fixtures/pycodestyle/W605_1.py 
+dos2unix: converting file resources/test/fixtures/pycodestyle/W605_1.py to Unix format...
+
+❯ cargo test --package ruff --test black_compatibility_test -- --ignored
+   Compiling ruff v0.0.185 (/home/squiddy/projects/ruff)
+    Finished test [unoptimized + debuginfo] target(s) in 2.40s
+     Running tests/black_compatibility_test.rs (target/debug/deps/black_compatibility_test-9e3e94cead0d0415)
+
+running 1 test
+[2022-12-18][08:03:39][black_compatibility_test][INFO] `blackd` not ready yet; retrying...
+[2022-12-18][08:03:39][black_compatibility_test][INFO] `blackd` not ready yet; retrying...
+[2022-12-18][08:03:39][black_compatibility_test][INFO] `blackd` ready
+test test_ruff_black_compatibility ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 42.08s
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-21 19:34</div>
+            <div class="timeline-body"><p>It's intentional that they use CRLF line endings though, I think we used to handle those incorrectly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-26 09:38</div>
+            <div class="timeline-body"><p>I'm not sure why running the steps manually doesn't trigger any issue, but if I grab the python file right before I get something that triggers it. Minimal test case is this (also works if you put that into a file first):</p>
+<pre><code class="language-console">&gt; echo -e 'foo = &quot;&quot;&quot;\r&quot;&quot;&quot; # noqa' | cargo run -- -
+    Finished dev [unoptimized + debuginfo] target(s) in 0.10s
+     Running `target/debug/ruff -`
+thread 'main' panicked at 'index out of bounds: the len is 1 but the index is 1', src/checkers/noqa.rs:41:27
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>The underlying issue here is that there is a disconnect between how we collect commented lines (their row number) and how we map that onto the line itself in <code>check_noqa</code>.</p>
+<p>For collecting commented lines we utilize the tokenizer, look for comments and take the row of the starting location. If ran against my test case, it will report the <code># noqa</code> being one row 2. So it seems to treat <code>\r</code> as a line break.</p>
+<p>In <code>check_noqa</code> however we use <code>contents.lines()</code> to get individual lines. <code>.lines()</code> only deals with <code>\n</code> and <code>\r\n</code>. So in our example, it would only return one line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-26 09:44</div>
+            <div class="timeline-body"><p>I'd be happy to provide a fix, but I need look a bit further what the expected behaviour should be and if there are other places where we need to adapt our concept of lines.</p>
+<p>The lexer of RustPython seems to replace <code>\r</code> with <code>\n</code> first before continuing. https://github.com/RustPython/RustPython/blob/247e815880766d556ef1ca6f0af69daf1a5fe59a/compiler/parser/src/lexer.rs#L194</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-26 09:52</div>
+            <div class="timeline-body"><p>Here we go: https://docs.python.org/3.11/reference/lexical_analysis.html?highlight=lexical#physical-lines</p>
+<blockquote>
+<p>A physical line is a sequence of characters terminated by an end-of-line sequence. In source files and strings, any of the standard platform line termination sequences can be used - the Unix form using ASCII LF (linefeed), the Windows form using the ASCII sequence CR LF (return followed by linefeed), or the old Macintosh form using the ASCII CR (return) character. All of these forms can be used equally, regardless of platform. The end of input also serves as an implicit terminator for the final physical line.</p>
+</blockquote>
+<p>So <code>ASCII CR</code> (<code>\r</code>) is a valid line termination, so we should treat it as such.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2022-12-27 09:58</div>
+            <div class="timeline-body"><blockquote>
+<p>or the old Macintosh form using the ASCII CR (return) character</p>
+</blockquote>
+<p>Apparantely old here means <code>&lt;= MacOS X</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/squiddy">@squiddy</a> on 2023-01-01 10:06</div>
+            <div class="timeline-body"><p>I see some options here.</p>
+<h3>Properly support <code>CR</code> line endings</h3>
+<p>Supporting here means properly reading and writing source code. I think the writing part is covered by recent changes for the most part (ignoring the textwrap part) and is quite easy to do.</p>
+<p>The reading part is a bit more difficult. RustPython does support <code>CR (\r)</code> by replacing it with a <code>LF (\n)</code> and then not having to worry about it later on, so we're good here. What currently doesn't work is when we read the source code directly through <code>SourceCodeLocator</code> and make use of <code>lines()</code>.
+<code>lines</code> only cares about <code>LF</code>. There was a discussion on a rust board about expanding support here, but it didn't go anywhere. Just looking at a single byte is easier to implement.</p>
+<p>What can we do?</p>
+<p>a) we either implement our own line splitting logic and see if that has some noticeable performance impact
+b) we stick with <code>LF</code> as the line ending in the core of the code, and only deal with dialects on the edges, i.e. normalizing line endings when code comes in, adjusting to style when emitting code</p>
+<h3>Don't support <code>CR</code> line endings</h3>
+<p>When linting a file, detect line endings and issue an error / warning and stop processing that file. I now see that <code>CR</code> stop being the default line ending in MacOS X (and not that it was the last version to do that). It was released in 2001. So any new code/projects in the past 22 years are likely to not use this line ending.</p>
+<p>Given how tricky (and probably surprising) this line handling is, perhaps this is an acceptable tradeoff?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-01 22:12</div>
+            <div class="timeline-body"><p>I think I'm comfortable not supporting this based on the above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/youknowone">@youknowone</a> on 2023-02-10 20:34</div>
+            <div class="timeline-body"><p>is this related to https://github.com/RustPython/RustPython/pull/4484?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 21:19</div>
+            <div class="timeline-body"><p>@youknowone - No this is much older. CR line endings are pretty rare and we decided not to support them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-13 04:03</div>
+            <div class="timeline-body"><p>Okay, this is now resolved via #3454 and #3439.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-13 04:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:28:38 UTC
+    </footer>
+</body>
+</html>

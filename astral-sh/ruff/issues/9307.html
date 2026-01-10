@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F821 false positive: `dict.__dict__['fromkeys']` - astral-sh/ruff #9307</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F821 false positive: <code>dict.__dict__['fromkeys']</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9307">#9307</a>
+        opened by <a href="https://github.com/AA-Turner">@AA-Turner</a>
+        on 2023-12-29 09:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2023-12-29 09:48</div>
+            <div class="timeline-body"><p>Ruff doesn't like classmethod descriptors, or seems to think that they're undefined, which is rather odd.</p>
+<pre><code class="language-python">a = type({}).__dict__['fromkeys']
+b = dict.__dict__['fromkeys']
+assert a is b
+</code></pre>
+<p>Saving the above to <code>bug.py</code>, and running only with <code>F821</code>:</p>
+<pre><code class="language-pscon">PS I:\Development&gt; ruff -V
+ruff 0.1.9
+PS I:\Development&gt; ruff --isolated --show-source --select F821 bug.py
+bug.py:2:20: F821 Undefined name `fromkeys`
+  |
+1 | a = type({}).__dict__['fromkeys']
+2 | b = dict.__dict__['fromkeys']
+  |                    ^^^^^^^^ F821
+3 | assert a is b
+  |
+
+Found 1 error.
+</code></pre>
+<p>Note only the second line yields an error -- using <code>type({})</code> as an indirection for <code>dict</code> solves the issue.</p>
+<p>A</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-29 11:37</div>
+            <div class="timeline-body"><p>Thanks — I’m guessing it thinks it’s a type annotation, as when subscripting dict directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-12-29 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-12-29 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-29 15:15</div>
+            <div class="timeline-body"><p>Closed by https://github.com/astral-sh/ruff/pull/9309.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-29 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2023-12-29 16:03</div>
+            <div class="timeline-body"><p>Thanks Charlie!</p>
+<p>A</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:19 UTC
+    </footer>
+</body>
+</html>

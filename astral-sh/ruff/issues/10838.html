@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider splitting C419 for sum/min/max into its own rule - astral-sh/ruff #10838</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider splitting C419 for sum/min/max into its own rule</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10838">#10838</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2024-04-08 19:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/carljm">@carljm</a> on 2024-04-08 19:26</div>
+            <div class="timeline-body"><p>As discussed in https://github.com/astral-sh/ruff/issues/3259#issuecomment-2033127339, the performance impact of switching from comprehension to generator is different if you are passing to a short-circuiting function (e.g. <code>any</code> or <code>all</code>) vs a non-short-circuiting one (<code>sum</code>, <code>min</code>, <code>max</code>). Given these differing tradeoffs, it would be reasonable for a project to want to enable the lint for short-circuiting cases, and not the others. This suggests that we should split them into separate rules (or add a config option), as requested in https://github.com/astral-sh/ruff/pull/10759#issuecomment-2037394814</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @carljm on 2024-04-08 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> added by @carljm on 2024-04-08 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.4.0" by @carljm on 2024-04-08 19:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.4.0" by @dhruvmanila on 2024-04-18 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.5.0" by @dhruvmanila on 2024-04-18 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @MichaReiser on 2024-06-24 09:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.5.0" by @MichaReiser on 2024-06-24 09:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.6" by @MichaReiser on 2024-06-24 09:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-06-27 19:19</div>
+            <div class="timeline-body"><p>I would also like these to be separate rules, because of the performance impact!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.6" by @MichaReiser on 2024-08-12 08:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Andrej730">@Andrej730</a> on 2025-06-15 05:48</div>
+            <div class="timeline-body"><p>Also came across this trying out rule updates from <code>--preview</code>.
+Generator is catching up but only when there are a lot of objects to hold in memory (&gt;100k), otherwise list comprehensions are significantly faster.</p>
+<pre><code class="language-python">import timeit
+
+def bench(repeats):
+    def decorator(func):
+        total = timeit.timeit(func, number=repeats)
+        avg = total / repeats
+        print(f&quot;{func.__name__: &lt;35} - {avg * 1e6:.2f} μs&quot;)
+        return func
+    return decorator
+
+@bench(repeats=10000)
+def test_sum_list_comprehension_4000():
+    sum([i for i in range(1, 4000)])
+
+@bench(repeats=10000)
+def test_sum_generator_4000():
+    sum(i for i in range(1, 4000))
+
+@bench(repeats=100)
+def test_sum_list_comprehension_100000():
+    sum([i for i in range(1, 100000)])
+
+@bench(repeats=100)
+def test_sum_generator_100000():
+    sum(i for i in range(1, 100000))
+
+# test_sum_list_comprehension_4000    - 63.88 μs
+# test_sum_generator_4000             - 107.81 μs
+# test_sum_list_comprehension_100000  - 2700.70 μs
+# test_sum_generator_100000           - 3106.45 μs
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jvacek">@jvacek</a> on 2025-10-06 17:37</div>
+            <div class="timeline-body"><p>Performance aside, I think it's is worth reiterating that the preview behaviour is deviating from how C419 behaves like upstream, as it's pretty explicit about only affecting <code>any</code> and <code>all</code>.</p>
+<p>https://github.com/adamchainz/flake8-comprehensions?tab=readme-ov-file#c419-unnecessary-list-comprehension-in-anyall-prevents-short-circuiting---rewrite-as-a-generator</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:27 UTC
+    </footer>
+</body>
+</html>

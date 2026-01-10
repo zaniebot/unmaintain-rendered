@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The auto-convert `.format()` to f-strings completely misses some `.format()` statements - astral-sh/ruff #17972</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>The auto-convert <code>.format()</code> to f-strings completely misses some <code>.format()</code> statements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17972">#17972</a>
+        opened by <a href="https://github.com/john-science">@john-science</a>
+        on 2025-05-08 22:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/john-science">@john-science</a> on 2025-05-08 22:17</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>In my <a href="https://github.com/terrapower/armi/pull/2135/files#r2080518707">code</a>, I had this format statement:</p>
+<pre><code class="language-python">&quot; {0:^10s} {1:^25s}&quot;.format(str(total), str(&quot;Total Number of Warnings&quot;)
+</code></pre>
+<p>When I did this, <code>ruff</code> doesn't even register this f-string as existing:</p>
+<pre><code class="language-bash">ruff check --select=TID252 my_file.py
+</code></pre>
+<p>And when I did this, it fixed a dozen <code>.format()</code> statements in the file, but totally ignored this one (did not even mention it):</p>
+<pre><code class="language-bash">ruff check --select=TID252 . --unsafe-fixes --fix
+</code></pre>
+<p>I love <code>ruff</code>, by the way. You folks rock.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-09 00:14</div>
+            <div class="timeline-body"><p>Thanks for the kind words and the report!</p>
+<p>This is the expected behavior for the exact command in the issue, which only selects <a href="https://docs.astral.sh/ruff/rules/relative-imports/#relative-imports-tid252">relative-imports (TID252)</a> and not any rules related to <code>format</code>, as far as I know. However, I can also reproduce the issue in the <a href="https://play.ruff.rs/1b937575-33b2-4106-a305-e1f0b0f52a9c">playground</a> when selecting <a href="https://docs.astral.sh/ruff/rules/f-string/#f-string-up032">f-string (UP032)</a>, which I assume you meant :)</p>
+<p>I haven't identified the exact cause here yet, but it looks like the rule is not applied when one of the <code>format</code> arguments is a string literal. This triggers UP032, for example:</p>
+<pre><code class="language-python">warnings = &quot;Total Number of Warnings&quot;
+&quot; {0:^10s} {1:^25s}&quot;.format(str(total), str(warnings))
+</code></pre>
+<p>This is probably to avoid quoting issues, but maybe there's something more we can do here, especially on Python versions after 3.12 where this code is fine:</p>
+<pre><code class="language-python">f&quot; {str(total):^10s} {str(&quot;Total Number of Warnings&quot;):^25s}&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-05-09 00:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-09 06:09</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/ruff/issues/17918 and https://github.com/astral-sh/ruff/issues/2031</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-09 06:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:25 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`UP037` causes runtime errors in Python 3.14 - astral-sh/ruff #20782</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>UP037</code> causes runtime errors in Python 3.14</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20782">#20782</a>
+        opened by <a href="https://github.com/tylerlaprade">@tylerlaprade</a>
+        on 2025-10-09 09:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2025-10-09 09:18</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>After upgrading to Ruff 0.14.0 and Python 3.14, I autofixed my codebase to remove thousands of quoted annotations, which is great. However, when I run my app, those names are undefined. If I add <code>from __future__ import annotations</code> to the file, the runtime errors go away, but</p>
+<ol>
+<li>I did not think this would be needed, and</li>
+<li>If it is needed, the autofix should've added it</li>
+</ol>
+<p><em>UPDATE:</em> The only two affected files both had <code>from django.db.models.signals import ModelSignal</code> in an <code>if TYPE_CHECKING</code> block, so that's likely related.</p>
+<p><em>UPDATE2:</em> Another file was affected, but it's only used in the Django admin portal, so I didn't notice. This one doesn't have <code>ModelSignal</code>, but it does have <code>SimpleLazyObject</code></p>
+<h3>Version</h3>
+<p>0.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-09 09:36</div>
+            <div class="timeline-body"><p>Thanks for reporting. Could you share a minified version of the code before UP037 rewrote it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2025-10-09 09:48</div>
+            <div class="timeline-body"><p>@MichaReiser, here's one affected snippet. It was failing to find <code>CondorBaseModel</code>, which is a custom base class we've defined for all our Django objects. Ruff removed the quotes from the annotation.</p>
+<pre><code class="language-python3">    @abstractmethod
+    def get_models(self) -&gt; list['type[CondorBaseModel]']:
+</code></pre>
+<p>Any repro is going to have to be run as part of a Django project, so I can't easily show anything meaningful in the playground.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2025-10-09 09:53</div>
+            <div class="timeline-body"><p>Okay, so I played around with that file and found that it happens for this specifically and not other usages of <code>CondorBaseModel</code> annotations:</p>
+<pre><code class="language-python3">    def _make_log_create(self) -&gt; Callable[..., None]:
+        def _log_create(
+            sender: type['CondorBaseModel'], instance: 'CondorBaseModel', created: bool, **kwargs
+        ) -&gt; None:
+            if created:
+                self.create_non_m2m_log_entry(
+                    action=Action.CREATE, instance=instance, diff_old=None, diff_new=instance
+                )
+
+        return _log_create
+</code></pre>
+<p>I suspect my initial thought around specific Django imports was a red herring, and that it's actually just failing for annotations in nested function definitions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2025-10-09 09:55</div>
+            <div class="timeline-body"><p>The other file it's failing in is trickier, though. In here, it's failing on <code>ModelSignal</code>:</p>
+<pre><code class="language-python3">@receiver(post_delete, sender=Forecast)
+@receiver(post_delete, sender=ForecastFolder)
+@receiver(post_soft_delete, sender=Forecast)
+@receiver(post_soft_delete, sender=ForecastFolder)
+def forecast_or_forecastfolder_deleted_callback(
+    sender: type[Forecast | ForecastFolder],
+    instance: Forecast | ForecastFolder,
+    signal: 'ModelSignal',
+    **kwargs,
+) -&gt; None:
+</code></pre>
+<p>Presumably this is due to some kind of introspection performed by <code>@receiver</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-09 13:37</div>
+            <div class="timeline-body"><p>Coincidentally, https://github.com/astral-sh/ruff/issues/6510 also appeared in my notifications this morning. I wonder if we should be respecting the <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-type-checking_runtime-evaluated-base-classes">runtime-evaluated-base-classes</a> and <a href="https://docs.astral.sh/ruff/settings/#lint_flake8-type-checking_runtime-evaluated-decorators">runtime-evaluated-decorators</a> settings from the TC rules in <code>UP037</code> too?</p>
+<p>I guess it might not make sense to reuse those directly, but something similar seems helpful here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kamikaze">@kamikaze</a> on 2025-10-09 16:46</div>
+            <div class="timeline-body"><p>same here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-10-09 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2025-10-09 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-09 17:03</div>
+            <div class="timeline-body"><p>CC: @dylwil3 We might need to mark the rule as unsafe for Python 3.14 if there's no from future import</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-10-10 19:31</div>
+            <div class="timeline-body"><p>I'm still trying to understand this a bit better, and it would help if I could reproduce it. In one of your comments you said this:</p>
+<blockquote>
+<p>I suspect my initial thought around specific Django imports was a red herring, and that it's actually just failing for annotations in nested function definitions.</p>
+</blockquote>
+<p>Can you provide a minimal reproducible example that doesn't have anything to do with Django? If not - could you provide a minimal reproducible example that does involve Django (but include the full steps to reproduce)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danparizher">@danparizher</a> on 2025-10-13 05:40</div>
+            <div class="timeline-body"><p>I was able to reproduce this with the following snippet:</p>
+<pre><code class="language-py">from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import Tuple, List
+
+class CustomModel:
+    &quot;&quot;&quot;A custom model class that simulates Django's behavior&quot;&quot;&quot;
+    pass
+
+def outer_function():
+    &quot;&quot;&quot;Outer function that returns a function with annotations&quot;&quot;&quot;
+    
+    def inner_function_with_annotation(
+        sender: &quot;type[CustomModel]&quot;, 
+        instance: &quot;CustomModel&quot;, 
+        created: bool, 
+        **kwargs
+    ) -&gt; None:
+        &quot;&quot;&quot;Inner function with type annotations that may be evaluated at runtime&quot;&quot;&quot;
+        if created:
+            print(f&quot;Created instance: {instance}&quot;)
+    
+    return inner_function_with_annotation
+</code></pre>
+<p>I think the problem lies here - from what I understand, <code>checker.semantic().in_runtime_evaluated_annotation()</code> is not correctly detecting runtime-evaluated contexts: https://github.com/astral-sh/ruff/blob/0e8c02aea68e75e8d86030bc182b98613f86824b/crates/ruff_linter/src/rules/pyupgrade/rules/quoted_annotation.rs#L104-L110</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-10-13 18:03</div>
+            <div class="timeline-body"><p>Thanks for the investigation! Unfortunately I'm still having trouble reproducing the actual error here. Maybe I'm missing steps or something obvious? I copied and pasted your snippet into <code>ex.py</code> and then did:</p>
+<pre><code class="language-console">❯ uvx python3.14 ex.py
+
+❯ ruff check --isolated --no-cache --select UP037 --target-version py314 ex.py --output-format concise
+ex.py:14:17: UP037 [*] Remove quotes from type annotation
+ex.py:15:19: UP037 [*] Remove quotes from type annotation
+Found 2 errors.
+[*] 2 fixable with the `--fix` option.
+
+❯ ruff check --isolated --no-cache --select UP037 --target-version py314 ex.py --fix
+Found 2 errors (2 fixed, 0 remaining).
+
+❯ uvx python3.14 ex.py
+</code></pre>
+<p>No runtime errors. I also tried adding a call to <code>outer_function</code> which did not produce an error either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @dylwil3 on 2025-10-13 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tylerlaprade">@tylerlaprade</a> on 2025-10-13 18:25</div>
+            <div class="timeline-body"><p>@dylwil3, what if you call the function returned by <code>outer_function</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-10-13 18:55</div>
+            <div class="timeline-body"><p>Still no error</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; from typing import TYPE_CHECKING
+...
+... if TYPE_CHECKING:
+...     from typing import Tuple, List
+...
+... class CustomModel:
+...     &quot;&quot;&quot;A custom model class that simulates Django's behavior&quot;&quot;&quot;
+...     pass
+...
+... def outer_function():
+...     &quot;&quot;&quot;Outer function that returns a function with annotations&quot;&quot;&quot;
+...
+...     def inner_function_with_annotation(
+...         sender: type[CustomModel],
+...         instance: CustomModel,
+...         created: bool,
+...         **kwargs
+...     ) -&gt; None:
+...         &quot;&quot;&quot;Inner function with type annotations that may be evaluated at runtime&quot;&quot;&quot;
+...         if created:
+...             print(f&quot;Created instance: {instance}&quot;)
+...
+...     return inner_function_with_annotation
+...
+&gt;&gt;&gt; outer_function()(CustomModel,CustomModel(),True)
+Created instance: &lt;__main__.CustomModel object at 0x10355d010&gt;
+&gt;&gt;&gt; outer_function()(CustomModel,CustomModel(),False)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-10 17:29</div>
+            <div class="timeline-body"><p>I'll close this because I think we still don't have an MRE? Happy to re-open if someone can provide an MRE (or can describe cases where the fix causes runtime errors)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-10 17:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:32 UTC
+    </footer>
+</body>
+</html>

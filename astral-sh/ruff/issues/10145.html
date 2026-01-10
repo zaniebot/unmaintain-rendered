@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[new rule] pylint W0133: Exception statement has no effect - astral-sh/ruff #10145</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[new rule] pylint W0133: Exception statement has no effect</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10145">#10145</a>
+        opened by <a href="https://github.com/Taragolis">@Taragolis</a>
+        on 2024-02-27 16:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Taragolis">@Taragolis</a> on 2024-02-27 16:17</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>This rule already requested into the https://github.com/astral-sh/ruff/issues/8674, however suggested replacement <code>B018</code> can not handle all the cases.</p>
+<p>For example this snippet do not violate any of <code>B018</code> checks: https://play.ruff.rs/bef7e65b-09c6-4e8f-84e9-48a75be4e0b9</p>
+<pre><code class="language-python"># w0133.py
+from __future__ import annotations
+
+
+def some_func(b: str, *, a: str | None = None, raise_an_error=True):
+    if a:
+        msg = &quot;`a` is deprecated, consider to use `b` instead.&quot;
+        if raise_an_error:
+            msg = &quot;Use `b` instead.&quot;
+            ValueError(msg)
+        DeprecationWarning(msg)
+        b = a
+    return b
+
+
+class AwesomeClass:
+    def __init__(self, b: str | None = None, **kwargs):
+        if a := kwargs.pop(&quot;a&quot;, None):
+            DeprecationWarning(&quot;`a` is deprecated, consider to use `b` instead.&quot;)
+            if b and a != b:
+                msg = f&quot;Unable to resolve ambiguous values b={b!r}, a={a!r}.&quot;
+                ValueError(msg)
+            b = a
+        self.b = b
+
+    def abstract(self):
+        NotImplementedError(&quot;abstract should be implemented&quot;)
+
+
+ValueError(&quot;Foo&quot;)
+DeprecationWarning(&quot;Bar&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    ValueError(&quot;Spam&quot;)
+    DeprecationWarning(&quot;Egg&quot;)
+</code></pre>
+<p>In the other hand  <code>pylint</code> rule <a href="https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/pointless-exception-statement.html"><code>W0133</code></a> catch all useless exceptions and warnings</p>
+<pre><code class="language-console">❯ pipx run pylint --disable=all --enable=&quot;W0133&quot; w0133.py
+************* Module w0133
+w0133.py:10:12: W0133: Exception statement has no effect (pointless-exception-statement)
+w0133.py:11:8: W0133: Exception statement has no effect (pointless-exception-statement)
+w0133.py:19:12: W0133: Exception statement has no effect (pointless-exception-statement)
+w0133.py:22:16: W0133: Exception statement has no effect (pointless-exception-statement)
+w0133.py:27:8: W0133: Exception statement has no effect (pointless-exception-statement)
+w0133.py:30:0: W0133: Exception statement has no effect (pointless-exception-statement)
+w0133.py:31:0: W0133: Exception statement has no effect (pointless-exception-statement)
+w0133.py:35:4: W0133: Exception statement has no effect (pointless-exception-statement)
+w0133.py:36:4: W0133: Exception statement has no effect (pointless-exception-statement)
+</code></pre>
+<p>It would be nice if it possible to have this rule as part of the <code>ruff</code>, this might help to found such a mistakes in codebase of pretty big projects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-02-27 21:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeleppane">@mikeleppane</a> on 2024-02-28 07:37</div>
+            <div class="timeline-body"><p>I could take a look at this. Let’s see, if this can be reasonably extended to the B018. Otherwise, this may require a separate rule?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Taragolis">@Taragolis</a> on 2024-02-28 09:12</div>
+            <div class="timeline-body"><p>If you ask me then I do not not have any preferences, so it could be either separate rule something like <code>PLW0133</code> or extension of <code>B018</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-11 17:39</div>
+            <div class="timeline-body"><p>Done in https://github.com/astral-sh/ruff/pull/10176</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-03-11 17:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:56 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOG004 false positive - astral-sh/ruff #18044</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>LOG004 false positive</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18044">#18044</a>
+        opened by <a href="https://github.com/sk-">@sk-</a>
+        on 2025-05-12 14:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sk-">@sk-</a> on 2025-05-12 14:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The preview rule LOG004 (<a href="https://docs.astral.sh/ruff/rules/log-exception-outside-except-handler/">log-exception-outside-except-handler</a>) is producing a false positive when explicitly passing an <code>exc_info</code> argument.</p>
+<p>The code below (<a href="https://play.ruff.rs/a03680fc-069a-4dbf-80f0-a79e30970605">playground link</a>) reproduces the issue:</p>
+<pre><code class="language-python">import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.exception(&quot;Test LOG004&quot;, exc_info=IndexError(&quot;test message&quot;))
+</code></pre>
+<p>producing the output</p>
+<pre><code>test_logging.py:5:1: LOG004 `.exception()` call outside exception handlers
+  |
+3 | logging.basicConfig(level=logging.INFO)
+4 | logger = logging.getLogger(__name__)
+5 | logger.exception(&quot;Test LOG004&quot;, exc_info=IndexError(&quot;test message&quot;))
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ LOG004
+  |
+  = help: Replace with `.error()`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>However,  this code is perfectly valid and it outputs</p>
+<pre><code>ERROR:__main__:Test LOG004
+IndexError: test message
+</code></pre>
+<p>Note that the <a href="https://docs.astral.sh/ruff/rules/log-exception-outside-except-handler/">justification</a> for the rule states:</p>
+<blockquote>
+<p>Calling .exception() outside of an exception handler attaches None as exception information, leading to confusing messages:</p>
+</blockquote>
+<p>However in this case, the exception information is indeed attached because it was passed explicitly.</p>
+<p>I could see why someone may prefer to just use <code>error</code> and avoid using <code>exception</code> in this case, but that IMO would be a stylistical rule similar to <a href="https://docs.astral.sh/ruff/rules/exception-without-exc-info/">LOG007</a>. Such rule could get some good reception as others <a href="https://github.com/astral-sh/ruff/issues/4136#issuecomment-2586709067">have manifested</a> that they never use <code>logger.exception</code>.</p>
+<h3>Version</h3>
+<p>0.11.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-12 21:23</div>
+            <div class="timeline-body"><p>I don't have a strong opinion either way here, but I think there's a good argument that this is not a false positive. The <a href="https://docs.python.org/3/library/logging.html#logging.exception"><code>logging.exception</code> docs</a> say:</p>
+<blockquote>
+<p>This function should only be called from an exception handler.</p>
+</blockquote>
+<p>without any qualification, which seems to be what this lint rule enforces. I think this is also in line with the <a href="https://github.com/adamchainz/flake8-logging/blob/3ae3b15643fcdc822cff11d34ba9fe5d6d2ea3cd/src/flake8_logging/__init__.py#L283-L287">upstream linter</a>, although I haven't tested to be sure.</p>
+<p>If we decide that this is a true positive, we could at least update the rule documentation to align more closely with the Python docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-05-12 21:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sk-">@sk-</a> on 2025-05-12 23:31</div>
+            <div class="timeline-body"><p>I agree with you assessment and sorry for missing the <code>logging.exception</code> docs, I was looking at the docstrings, which are different to what is published on the docs.</p>
+<p>It'd be great if the rule's <a href="https://docs.astral.sh/ruff/rules/log-exception-outside-except-handler/">documentation</a> could be changed so that it is clear that the rules enforces what the <a href="https://docs.python.org/3/library/logging.html#logging.exception">logging docs</a> suggest.</p>
+<p>In any case, jut like others we opted to get rid of all calls to <code>.exception</code> in favor of calls to <code>.error</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sk- on 2025-05-12 23:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2025-09-16 15:34</div>
+            <div class="timeline-body"><p>I think the rule docs should suggest to use <code>error</code> method, if <code>exception(exc_info=…)</code> is used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-16 15:57</div>
+            <div class="timeline-body"><p>@spaceone I don't think I'm following your suggestion. Both the error message shown in this issue and the rule docs already recommend using <code>logging.error</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2025-09-16 16:25</div>
+            <div class="timeline-body"><p>Well yes, https://docs.astral.sh/ruff/rules/log-exception-outside-except-handler/ says to replace <code>exception()</code> to <code>error()</code>.
+I was only irritated first because:
+<code>log.exception(&quot;foo&quot;, exc_info=exc_info)</code> is valid in a non-exception context. but should of course also be migrated to just use error().</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:26 UTC
+    </footer>
+</body>
+</html>

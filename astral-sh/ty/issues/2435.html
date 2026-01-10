@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>total_ordering when mixed with literals fails - astral-sh/ty #2435</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>total_ordering when mixed with literals fails</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2435">#2435</a>
+        opened by <a href="https://github.com/behrmann">@behrmann</a>
+        on 2026-01-10 12:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/behrmann">@behrmann</a> on 2026-01-10 12:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Thanks for adding <code>@total_ordering</code> support with <a href="https://github.com/astral-sh/ruff/pull/22181">ruff#22181</a>!</p>
+<p>Adapting the motivating example from #1202, mixing this with literals does not yet work:</p>
+<pre><code class="language-python">import functools
+
+
+@functools.total_ordering
+class Comparable:
+    def __init__(self, value: int):
+        self.value = value
+
+    def __eq__(self, other: object) -&gt; bool:
+        if isinstance(other, Comparable):
+            return self.value == other.value
+        if isinstance(other, int):
+            return self == Comparable(other)
+        return False
+
+    def __lt__(self, other: object) -&gt; bool:
+        if isinstance(other, Comparable):
+            return self.value &lt; other.value
+        if isinstance(other, int):
+            return self &lt; Comparable(other)
+        return False
+
+    # # Uncommenting this implementation satisfies ty
+    # def __le__(self, other) -&gt; bool:
+    #     if isinstance(other, Comparable):
+    #         return self.value &lt;= other.value
+    #     if isinstance(other, int):
+    #         return self &lt;= Comparable(other)
+    #     return False
+
+
+
+a = Comparable(1)
+b = 2
+
+print(a &lt;= b)
+</code></pre>
+<p>Both mypy and pyright accept this code. In mkosi code similar to this is used for <a href="https://github.com/systemd/mkosi/blob/main/mkosi/versioncomp.py">version checking</a>, where the underlying algorithm works on strings, but version objects, strings and integers need to be covered.</p>
+<h3>Version</h3>
+<p>ty 0.0.11 (830cb9cc6 2026-01-09)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:30:25 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exempt `typing` from TCH by default? - astral-sh/ruff #2267</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Exempt <code>typing</code> from TCH by default?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2267">#2267</a>
+        opened by <a href="https://github.com/scop">@scop</a>
+        on 2023-01-27 17:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/scop">@scop</a> on 2023-01-27 17:08</div>
+            <div class="timeline-body"><p>ruff 0.0.236</p>
+<p>It would seem to me that <code>typing</code> should be exempted from TCH by default.</p>
+<p>For example:</p>
+<pre><code class="language-python">from typing import Any
+
+def foo() -&gt; Any:
+    return 1
+</code></pre>
+<p>Unless I'm missing something, use of the type checking block that satisfies this check requires importing <code>TYPE_CHECKING</code> from <code>typing</code>, which loads <code>typing</code>, thus nullifying the usefulness for this for <code>typing</code> imports.</p>
+<pre><code>&gt;&gt;&gt; import sys
+&gt;&gt;&gt; &quot;typing&quot; in sys.modules
+False
+&gt;&gt;&gt; from typing import TYPE_CHECKING
+&gt;&gt;&gt; &quot;typing&quot; in sys.modules
+True
+</code></pre>
+<p>flake8-type-checking's README points to two &quot;examples in the wild&quot;, both of which contain <code>typing</code> imports, neither of which places them in the <code>TYPE_CHECKING</code> block:</p>
+<ul>
+<li>https://github.com/python-poetry/poetry/blob/714c09dd845c58079cff3f3cbedc114dff2194c9/src/poetry/factory.py#L1:L33</li>
+<li>https://github.com/snok/asgi-correlation-id/blob/main/asgi_correlation_id/middleware.py#L1:L12</li>
+</ul>
+<p>flake8-type-checking also contains this note:
+https://github.com/snok/flake8-type-checking/blob/main/flake8_type_checking/checker.py#L601-L603
+...along with some other conditions regarding <code>typing</code> import aliasing and <code>typing.cast</code> imports above that commentary. I haven't dug into them nor if ruff currently has any corresponding functionality.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-01-27 17:57</div>
+            <div class="timeline-body"><p>There is a small advantage to moving, e.g. <code>from typing import Any, Generic, ParamSpec, TypeAlias, TypeVar, ...</code>, into a <code>TYPE_CHECKING</code> block: Reducing the amount of cruft littering the module globals at runtime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 17:58</div>
+            <div class="timeline-body"><p>We could make it part of <code>exempt-modules</code> by default, that way it's configurable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-01-27 18:02</div>
+            <div class="timeline-body"><p>Also, is this happening because you have <code>strict = true</code>? You can also set <code>exempt-modules = [&quot;typing&quot;]</code> if you want to prevent this happening...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/scop">@scop</a> on 2023-01-27 18:41</div>
+            <div class="timeline-body"><p>No <code>strict = true</code> here. I understand I could exempt it for myself, I just think it would be a better default for most cases, therefore suggesting it here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 18:56</div>
+            <div class="timeline-body"><p>Yeah I think the least surprising thing would be to exempt typing and typing extensions by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/scop">@scop</a> on 2023-01-27 19:28</div>
+            <div class="timeline-body"><p><code>typing_extensions</code> is a bit different, as I think it can be entirely put within <code>TYPE_CHECKING</code> and the import actually avoided at runtime. Therefore I'd personally not exempt it by default. But no strong opinions on that here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-27 23:00</div>
+            <div class="timeline-body"><p>Yeah makes sense. I'll add <code>typing</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-27 23:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:04 UTC
+    </footer>
+</body>
+</html>

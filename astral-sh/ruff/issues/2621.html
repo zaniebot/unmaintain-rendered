@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixable error is not fixed - astral-sh/ruff #2621</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fixable error is not fixed</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2621">#2621</a>
+        opened by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a>
+        on 2023-02-07 11:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a> on 2023-02-07 11:31</div>
+            <div class="timeline-body"><p>Sample code: https://github.com/WhyNotHugo/python-barcode/blob/f824d00592daabbe62a9c9a68b7a3113c215207d/barcode/writer.py#L264</p>
+<pre><code class="language-console">&gt; ruff .      
+barcode/writer.py:264:17: SIM108 [*] Use ternary operator `xpos = bxs + (bxe - bxs) / 2.0 if self.center_text else bxs` instead of if-else-block
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+
+&gt; ruff --fix .
+barcode/writer.py:264:17: SIM108 [*] Use ternary operator `xpos = bxs + (bxe - bxs) / 2.0 if self.center_text else bxs` instead of if-else-block
+Found 1 error.
+</code></pre>
+<p>But nothing is fixed. <code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;setuptools&gt;=45&quot;, &quot;wheel&quot;, &quot;setuptools_scm&gt;=6.2&quot;]
+
+[tool.setuptools_scm]
+write_to = &quot;barcode/version.py&quot;
+version_scheme = &quot;post-release&quot;
+
+[tool.black]
+target-version = ['py37']
+
+[tool.ruff]
+select = [
+    &quot;E&quot;,
+    &quot;F&quot;,
+    &quot;W&quot;,
+    &quot;B0&quot;,
+    &quot;I&quot;,
+    &quot;UP&quot;,
+    &quot;N&quot;,
+    &quot;C4&quot;,
+    &quot;PT&quot;,
+    &quot;SIM&quot;,
+    &quot;TID&quot;,
+]
+target-version = &quot;py37&quot;
+
+[tool.ruff.isort]
+force-single-line = true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-07 15:42</div>
+            <div class="timeline-body"><p>The problem is likely that fixing this error would result in a line that exceeds the specified line length.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @charliermarsh on 2023-02-07 15:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-07 15:42</div>
+            <div class="timeline-body"><p>Which is intended -- that we skip the fix -- but could be better communicated in the output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-02-07 15:48</div>
+            <div class="timeline-body"><p>Also related: https://github.com/charliermarsh/ruff/issues/1766, https://github.com/charliermarsh/ruff/issues/1791.</p>
+<p>It would be hard to know what to do with the placement of the comment too which may no longer make sense.</p>
+<p>I guess it does say &quot;potentially fixable&quot; 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/WhyNotHugo">@WhyNotHugo</a> on 2023-02-07 15:49</div>
+            <div class="timeline-body"><p>Makes perfect sense to skip the change if there are comments.</p>
+<p>But also agree that output should make clear what's up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-07 15:49</div>
+            <div class="timeline-body"><p>We should probably detect that we <em>won't</em> fix that case, and not add the <code>[*]</code>, and not include it in the list of potentially fixable errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-08 21:12</div>
+            <div class="timeline-body"><p>(Oh sorry, I didn't actually look at the code -- it is indeed because of the comment, that we avoid fixing it. But we should still make that clear.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/spaceone">@spaceone</a> on 2023-02-08 21:15</div>
+            <div class="timeline-body"><p>shouldn't the comment cause that it's not detected as <code>SIM108</code> as the comment is the reason that it should not be written as one-liner?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-08 21:18</div>
+            <div class="timeline-body"><p>We used to have that behavior but I changed it. It led to confusing behavior like https://github.com/charliermarsh/ruff/issues/2442 whereby adding a <code>noqa</code> comment would turn off that check and lead to an unused <code>noqa</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-09 02:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:15 UTC
+    </footer>
+</body>
+</html>

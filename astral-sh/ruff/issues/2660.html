@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support globbing in `banned-api` - astral-sh/ruff #2660</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support globbing in <code>banned-api</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2660">#2660</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-02-08 15:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-08 15:45</div>
+            <div class="timeline-body"><p>E.g., <code>top</code> should match <code>import top</code>, but not <code>import top.internal</code>, whereas <code>top.*</code> should match both (I think? We'll do whatever <code>flake8-tidy-imports</code> does).</p>
+<p>See: #2656.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2023-02-08 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-02-10 03:47</div>
+            <div class="timeline-body"><p>No ... I don't think that's a good idea because <code>import top.internal</code> also imports <code>top</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-10 03:57</div>
+            <div class="timeline-body"><p>Yes good point! I agree that we shouldn't implement the submodule semantics described above. It was a lazy example.</p>
+<p>The question here is really: what does <code>flake8-tidy-imports</code> do? And do we want to support <em>that</em>? (E.g., do we want to support globbing like <code>example.*.truck</code>, as in <code>flake8-tidy-imports</code>?)</p>
+<p>(I don't really want to support it, and I won't be working on it any time soon, but that's the intent of the issue.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/seamuswn">@seamuswn</a> on 2024-03-27 17:12</div>
+            <div class="timeline-body"><p>We have a Python monorepo in my org, where we have developed shared abstractions built under <code>src.core</code>. Ideally we would like to prevent importing private / internal packages within that core package. Specifically restricting subpackages at any level  within <code>src.core</code> named 'internal' (i.e. <code>src.core.*.internal</code>), or any subpackages where the package name starts with <code>_</code> (i.e. <code>src.core._*</code>/<code>src.core.*._*</code>).</p>
+<p>I think this would be a useful feature for that type of use case, where we want to import restrictions based on our package structure</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashrub-holvi">@ashrub-holvi</a> on 2024-05-22 07:12</div>
+            <div class="timeline-body"><p>I have probably similar idea <code>__init__</code> file is a sort of public interface of a package, so outside of package nobody should do <code>from mypackage.xxx import yyy,</code> they should do <code>from mypackage import yyy</code> only. Tried to do</p>
+<pre><code>[tool.ruff.lint.flake8-tidy-imports.banned-api]
+&quot;mypackage.*.*&quot;.msg = &quot;Import from mypackage&quot;
+</code></pre>
+<p>but was not able to make it work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-08-11 20:34</div>
+            <div class="timeline-body"><p>If globbing (or at least submodules) support is added to https://docs.astral.sh/ruff/rules/banned-api/ (TID251), could it also be added to https://docs.astral.sh/ruff/rules/banned-module-level-imports/ (TID253) ? I'd like to configure it like such:</p>
+<pre><code class="language-py">[lint.flake8-tidy-imports]
+banned-module-level-imports = [
+	# platform-specific imports
+	&quot;android&quot;,
+	&quot;jnius&quot;,
+	&quot;platformdirs.android&quot;, # still allowing top-level platformdirs
+	&quot;platformdirs.linux&quot; ,# still allowing top-level platformdirs
+	&quot;platformdirs.macos&quot;, # still allowing top-level platformdirs
+	&quot;platformdirs.windows&quot;, # still allowing top-level platformdirs
+	&quot;winreg&quot;,
+]
+</code></pre>
+<p>And at this point, https://docs.astral.sh/ruff/rules/banned-import-from/ (ICN003) as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rh-sp">@rh-sp</a> on 2025-04-22 09:30</div>
+            <div class="timeline-body"><p>To expand on @ashrub-holvi's take, I would like to limit import to canonical locations in a Django app. So for example, models should always be imported from <code>my_app.models</code>, never <code>my_app.models.foo</code> or <code>my_app.models.bar</code>. A more pressing version of this, a colleague of mine has identified a potential issue with Django signals and how they're imported. Not sure how much of this is our setup vs. Django conventions, but at least in our case, signals are only registered if they're imported in <code>my_app.signals</code>. If we allow importing a signal from <code>my_app.signals.foo</code>, it will not work if it's not also imported by <code>my_app.signals</code>'s <code>__init__.py</code>.</p>
+<p>So Ideally I would like to have some setting like:</p>
+<pre><code class="language-toml">[lint.something]
+banned-something = [
+    &quot;*.signals.**&quot;,
+    &quot;*.models.**&quot;
+]
+</code></pre>
+<p>Which would lead to the following:</p>
+<pre><code class="language-python">from my_app.models import Product  # allowed
+from my_app.models.product import Product  # banned
+from my_app.models.product.simple import SimpleProduct  # banned (** matches one or more components)
+from something_else.foo.models.product import Product  # allowed (* matches only single component)
+</code></pre>
+<p>The last line being allowed isn't required for us, but it would be nice to be able to make this distinction.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:16 UTC
+    </footer>
+</body>
+</html>

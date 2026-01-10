@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixes bug in `uv remove` when only comments exist - astral-sh/uv #10484</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fixes bug in <code>uv remove</code> when only comments exist</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10484">#10484</a>
+        opened by <a href="https://github.com/bnorick">@bnorick</a>
+        on 2025-01-10 23:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/bnorick">@bnorick</a> on 2025-01-10 23:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes a bug when there are only comments in the dependencies section.</p>
+<p>Basically, after one removes all dependencies, if there are remaining comments then the value unwrapped here https://github.com/astral-sh/uv/blob/c198e2233efaa037a9154fd7fe2625e4c78d976b/crates/uv-workspace/src/pyproject_mut.rs#L1309 is never properly initialized.
+It's initialized to <code>None</code>, here https://github.com/astral-sh/uv/blob/c198e2233efaa037a9154fd7fe2625e4c78d976b/crates/uv-workspace/src/pyproject_mut.rs#L1256, but doesn't get set to <code>Some(...)</code> until the first dependency here https://github.com/astral-sh/uv/blob/c198e2233efaa037a9154fd7fe2625e4c78d976b/crates/uv-workspace/src/pyproject_mut.rs#L1276 and since we remove them all... there are none.</p>
+<h2>Test Plan</h2>
+<p>Manually induced bug with</p>
+<pre><code>[project]
+name = &quot;t1&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.11&quot;
+dependencies = [
+    &quot;duct&gt;=0.6.4&quot;,
+    &quot;minilog&gt;=2.3.1&quot;,
+    # comment
+]
+</code></pre>
+<p>Then running</p>
+<pre><code>$ RUST_LOG=trace RUST_BACKTRACE=full uv remove duct minilog
+DEBUG uv 0.5.8
+DEBUG Found project root: `/home/bnorick/dev/workspace/t1`
+DEBUG No workspace root found, using project root
+thread 'main' panicked at crates/uv-workspace/src/pyproject_mut.rs:1294:73:
+called `Option::unwrap()` on a `None` value
+stack backtrace:
+   0:     0x5638d7bed6ba - &lt;unknown&gt;
+   1:     0x5638d783760b - &lt;unknown&gt;
+   2:     0x5638d7bae232 - &lt;unknown&gt;
+   3:     0x5638d7bf0f07 - &lt;unknown&gt;
+   4:     0x5638d7bf215c - &lt;unknown&gt;
+   5:     0x5638d7bf1972 - &lt;unknown&gt;
+   6:     0x5638d7bf1909 - &lt;unknown&gt;
+   7:     0x5638d7bf18f4 - &lt;unknown&gt;
+   8:     0x5638d75087d2 - &lt;unknown&gt;
+   9:     0x5638d750896b - &lt;unknown&gt;
+  10:     0x5638d7508d68 - &lt;unknown&gt;
+  11:     0x5638d8dcf1bb - &lt;unknown&gt;
+  12:     0x5638d76be271 - &lt;unknown&gt;
+  13:     0x5638d75ef1f9 - &lt;unknown&gt;
+  14:     0x5638d75fc3cd - &lt;unknown&gt;
+  15:     0x5638d772d9de - &lt;unknown&gt;
+  16:     0x5638d8476812 - &lt;unknown&gt;
+  17:     0x5638d83e1894 - &lt;unknown&gt;
+  18:     0x5638d84722d3 - &lt;unknown&gt;
+  19:     0x5638d83e1372 - &lt;unknown&gt;
+  20:     0x7f851cfc7d90 - &lt;unknown&gt;
+  21:     0x7f851cfc7e40 - __libc_start_main
+  22:     0x5638d758e992 - &lt;unknown&gt;
+  23:                0x0 - &lt;unknown&gt;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-01-10 23:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-10 23:42</div>
+            <div class="timeline-body"><p>Thanks for the fix!</p>
+<p>What do you think of the following change to avoid future regressions here?</p>
+<pre><code class="language-diff">diff --git a/crates/uv-workspace/src/pyproject_mut.rs b/crates/uv-workspace/src/pyproject_mut.rs
+index b5c11c620..de45f70c6 100644
+--- a/crates/uv-workspace/src/pyproject_mut.rs
++++ b/crates/uv-workspace/src/pyproject_mut.rs
+@@ -1272,15 +1272,11 @@ fn reformat_array_multiline(deps: &amp;mut Array) {
+                 .map(|(s, _)| s)
+                 .unwrap_or(decor_prefix);
+ 
+-            // If there is no indentation, use four-space.
+-            indentation_prefix = Some(if decor_prefix.is_empty() {
+-                &quot;    &quot;.to_string()
+-            } else {
+-                decor_prefix.to_string()
+-            });
++            indentation_prefix = (!decor_prefix.is_empty()).then_some(decor_prefix.to_string());
+         }
+ 
+-        let indentation_prefix_str = format!(&quot;\n{}&quot;, indentation_prefix.as_ref().unwrap());
++        let indentation_prefix_str =
++            format!(&quot;\n{}&quot;, indentation_prefix.as_deref().unwrap_or(&quot;    &quot;));
+ 
+         for comment in find_comments(decor.prefix()).chain(find_comments(decor.suffix())) {
+             match comment.comment_type {
+@@ -1307,7 +1303,7 @@ fn reformat_array_multiline(deps: &amp;mut Array) {
+                 match comment.comment_type {
+                     CommentType::OwnLine =&gt; {
+                         let indentation_prefix_str =
+-                            format!(&quot;\n{}&quot;, indentation_prefix.as_ref().unwrap());
++                            format!(&quot;\n{}&quot;, indentation_prefix.as_deref().unwrap_or(&quot;    &quot;));
+                         rv.push_str(&amp;indentation_prefix_str);
+                     }
+                     CommentType::EndOfLine =&gt; {
+</code></pre>
+<p>Would you mind adding a test case in <code>crates/uv/tests/it/edit.rs</code> too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bnorick">@bnorick</a> on 2025-01-11 00:17</div>
+            <div class="timeline-body"><p>Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-01-11 00:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-01-11 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-11 01:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:17 UTC
+    </footer>
+</body>
+</html>

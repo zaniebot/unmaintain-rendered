@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[internal] `ComparableExpr` docstring does not match behavior - astral-sh/ruff #13291</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[internal] <code>ComparableExpr</code> docstring does not match behavior</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13291">#13291</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2024-09-09 05:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-09-09 05:38</div>
+            <div class="timeline-body"><p>In the docstring for <code>ComparableExpr</code>, it says:</p>
+<p>https://github.com/astral-sh/ruff/blob/e1603e3dca680d76e9e5a3fe9b832dd05b3b8e11/crates/ruff_python_ast/src/comparable.rs#L14-L16</p>
+<p>However, the following test for that behavior fails:</p>
+<pre><code class="language-rust">#[cfg(test)]
+mod tests {
+    use ruff_text_size::TextRange;
+
+    use crate::{self as ast, comparable::ComparableExpr, StringLiteralFlags};
+    #[test]
+    fn compare_concatenated_string_to_value() {
+        let concatenated_string_expr: ast::Expr = ast::ExprStringLiteral {
+            range: TextRange::default(),
+            value: ast::StringLiteralValue::concatenated(vec![
+                ast::StringLiteral {
+                    range: TextRange::default(),
+                    value: &quot;a&quot;.into(),
+                    flags: StringLiteralFlags::default(),
+                },
+                ast::StringLiteral {
+                    range: TextRange::default(),
+                    value: &quot;b&quot;.into(),
+                    flags: StringLiteralFlags::default(),
+                },
+            ]),
+        }
+        .into();
+        let string_expr: ast::Expr = ast::ExprStringLiteral {
+            range: TextRange::default(),
+            value: ast::StringLiteralValue::single(ast::StringLiteral {
+                range: TextRange::default(),
+                value: &quot;ab&quot;.into(),
+                flags: StringLiteralFlags::default(),
+            }),
+        }
+        .into();
+
+        assert_eq!(
+            ComparableExpr::from(&amp;concatenated_string_expr),
+            ComparableExpr::from(&amp;string_expr)
+        );
+    }
+}
+</code></pre>
+<p>If we want the docstring to match the behavior then probably these snippets</p>
+<p>https://github.com/astral-sh/ruff/blob/e1603e3dca680d76e9e5a3fe9b832dd05b3b8e11/crates/ruff_python_ast/src/comparable.rs#L781-L784</p>
+<p>https://github.com/astral-sh/ruff/blob/e1603e3dca680d76e9e5a3fe9b832dd05b3b8e11/crates/ruff_python_ast/src/comparable.rs#L1025-L1029</p>
+<p>should be modified - presumably <code>comparable::ExprStringLiteral</code> should just have a <code>value</code> not <code>parts</code>, and the match arm should populate that field with the computed value?</p>
+<p>Same goes for bytes and fstrings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-09 11:40</div>
+            <div class="timeline-body"><p>Storing a <code>&amp;str</code> or <code>&amp;[u8]</code> for <code>ExprStringLitral</code>/<code>BytesLiteral</code> does make sense to.</p>
+<p>I went back and noticed that we changed this behavior in https://github.com/astral-sh/ruff/pull/7927. There's an unresolved comment https://github.com/astral-sh/ruff/pull/7927/files#r1399535432 which makes me think that this indeed was unintentional. @dhruvmanila, do you remember if this was an intentional change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2024-09-09 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-09-09 14:03</div>
+            <div class="timeline-body"><p>I think that might have been an unintentional change, I can't remember the reasoning behind it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-09-09 16:19</div>
+            <div class="timeline-body"><p>Great! So for string, I think I can do the following two changes:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_python_ast/src/comparable.rs b/crates/ruff_python_ast/src/comparable.rs
+index bdc80bfbe..aaf4411f9 100644
+--- a/crates/ruff_python_ast/src/comparable.rs
++++ b/crates/ruff_python_ast/src/comparable.rs
+@@ -780,7 +780,7 @@ pub struct ExprFString&lt;'a&gt; {
+ 
+ #[derive(Debug, PartialEq, Eq, Hash)]
+ pub struct ExprStringLiteral&lt;'a&gt; {
+-    parts: Vec&lt;ComparableStringLiteral&lt;'a&gt;&gt;,
++    value: ComparableStringLiteral&lt;'a&gt;,
+ }
+ 
+ #[derive(Debug, PartialEq, Eq, Hash)]
+@@ -1024,7 +1024,9 @@ impl&lt;'a&gt; From&lt;&amp;'a ast::Expr&gt; for ComparableExpr&lt;'a&gt; {
+             }
+             ast::Expr::StringLiteral(ast::ExprStringLiteral { value, range: _ }) =&gt; {
+                 Self::StringLiteral(ExprStringLiteral {
+-                    parts: value.iter().map(Into::into).collect(),
++                    value: ComparableStringLiteral {
++                        value: value.to_str(),
++                    },
+                 })
+             }
+             ast::Expr::BytesLiteral(ast::ExprBytesLiteral { value, range: _ }) =&gt; {
+
+</code></pre>
+<p>But I think I need some Rust help for what to do with the <code>BytesLiteral</code> case. I tried:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_python_ast/src/comparable.rs b/crates/ruff_python_ast/src/comparable.rs
+index aaf4411f9..daae22866 100644
+--- a/crates/ruff_python_ast/src/comparable.rs
++++ b/crates/ruff_python_ast/src/comparable.rs
+@@ -785,7 +785,7 @@ pub struct ExprStringLiteral&lt;'a&gt; {
+ 
+ #[derive(Debug, PartialEq, Eq, Hash)]
+ pub struct ExprBytesLiteral&lt;'a&gt; {
+-    parts: Vec&lt;ComparableBytesLiteral&lt;'a&gt;&gt;,
++    value: ComparableBytesLiteral&lt;'a&gt;,
+ }
+ 
+ #[derive(Debug, PartialEq, Eq, Hash)]
+@@ -1031,7 +1031,9 @@ impl&lt;'a&gt; From&lt;&amp;'a ast::Expr&gt; for ComparableExpr&lt;'a&gt; {
+             }
+             ast::Expr::BytesLiteral(ast::ExprBytesLiteral { value, range: _ }) =&gt; {
+                 Self::BytesLiteral(ExprBytesLiteral {
+-                    parts: value.iter().map(Into::into).collect(),
++                    value: ComparableBytesLiteral {
++                        value: &amp;value.bytes().collect::&lt;Vec&lt;u8&gt;&gt;().into_boxed_slice(),
++                    },
+                 })
+             }
+             ast::Expr::NumberLiteral(ast::ExprNumberLiteral { value, range: _ }) =&gt; {
+</code></pre>
+<p>But the borrow checker is not happy with me. I can see how to get an <code>&amp;[BytesLiteral]</code> out of <code>BytesLiteralValue</code> but I don't see how to get the corresponding <code>&amp;[u8]</code> from there. I think the borrow checker would be happy if <code>ComparableBytesLiteral.value</code> was <code>Box&lt;[u8]&gt;</code> (and I removed the borrow), but I'm not sure if that's the right way to do this sort of thing...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-09 16:23</div>
+            <div class="timeline-body"><p>Yeah, you have to store the <code>bytes</code> somewhere either by adding a <code>to_bytes</code> method to <code>BytesLiteral</code> or storing a <code>Vec</code> inside <code>ComparableBytesLiteral</code>. I'm leaning towards storing a <code>Cow&lt;'ast, [u8]&gt;</code> in <code>ComparableBytesLiteral</code> which is <code>Cow::Borrowed</code> if it is a single value literal and <code>Owned</code> when it consists of multiple values.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-09-25 14:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:05 UTC
+    </footer>
+</body>
+</html>

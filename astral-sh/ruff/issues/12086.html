@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reqression: ruff 0.5.0 expects noqa directive at a different line - astral-sh/ruff #12086</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reqression: ruff 0.5.0 expects noqa directive at a different line</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12086">#12086</a>
+        opened by <a href="https://github.com/anz-ableton">@anz-ableton</a>
+        on 2024-06-28 06:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/anz-ableton">@anz-ableton</a> on 2024-06-28 06:47</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>I've searched for the following keywords before opening this issue:</p>
+<ul>
+<li><code>noqa</code>,</li>
+<li><code>S603</code>, <code>S602</code></li>
+<li><code>subprocess</code></li>
+</ul>
+<p>Ruff in version <code>0.4.10</code> will not complain about the following snippet:</p>
+<pre><code class="language-python">def run(a_long_command_to_make_this_wrap_at_the_line_end, use_shell):
+    subprocess.run(
+        a_long_command_to_make_this_wrap_at_the_line_end,
+        capture_output=True,
+        check=True,
+        shell=use_shell,  #  noqa: S603
+    )
+</code></pre>
+<p>However, when using <code>0.5.0</code> it will complain with</p>
+<pre><code class="language-bash">$ ruff check --select S .
+ruff_s603_regression.py:5:5: S603 `subprocess` call: check for execution of untrusted input
+  |
+4 | def run(a_long_command_to_make_this_wrap_at_the_line_end, use_shell):
+5 |     subprocess.run(
+  |     ^^^^^^^^^^^^^^ S603
+6 |         a_long_command_to_make_this_wrap_at_the_line_end,
+7 |         capture_output=True,
+  |
+
+Found 1 error.
+</code></pre>
+<p>Moving the <code>noqa</code> directive to the line where <code>subprocess.run</code> is called will make it succeed:</p>
+<pre><code class="language-diff">diff --git a/ruff_s603_regression.py b/ruff_s603_regression.py
+index eda9e6c..306eb56 100644
+--- a/ruff_s603_regression.py
++++ b/ruff_s603_regression.py
+@@ -2,11 +2,11 @@ import subprocess
+ 
+ 
+ def run(a_long_command_to_make_this_wrap_at_the_line_end, use_shell):
+-    subprocess.run(
++    subprocess.run(  #  noqa: S603
+         a_long_command_to_make_this_wrap_at_the_line_end,
+         capture_output=True,
+         check=True,
+-        shell=use_shell,  #  noqa: S603
++        shell=use_shell,
+     ) 
+</code></pre>
+<p>For completeness, below is the content of the full example file:</p>
+<pre><code class="language-python">import subprocess
+
+
+def run(a_long_command_to_make_this_wrap_at_the_line_end, use_shell):
+    subprocess.run(  #  noqa: S603
+        a_long_command_to_make_this_wrap_at_the_line_end,
+        capture_output=True,
+        check=True,
+        shell=use_shell,
+    )
+
+
+run(&quot;echo 'Hello, World!'&quot;, True)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-28 06:52</div>
+            <div class="timeline-body"><p>Hi.</p>
+<p>It is documented in the changelog under rule changes but I should have mentioned it in the breaking changes section, to make it more visible. Let me update the changelog real quick</p>
+<blockquote>
+<p>[flake8-bandit] Modify diagnostic ranges for shell-related rules (https://github.com/astral-sh/ruff/pull/10667)</p>
+</blockquote>
+<p>You can use <code>--add-noqa</code> and https://docs.astral.sh/ruff/rules/unused-noqa/ to automatically move the noqa comments (add the new once and remove the no longer necessary comments)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @MichaReiser on 2024-06-28 06:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/anz-ableton">@anz-ableton</a> on 2024-06-28 07:07</div>
+            <div class="timeline-body"><p>@MichaReiser Thanks for the swift response and for updating the changelog! I did not know about the <code>--add-noqa</code> flag, that's pretty helpful! Will you take care of closing this issue once the changelog got updated?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-28 11:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-06-28 11:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:15 UTC
+    </footer>
+</body>
+</html>

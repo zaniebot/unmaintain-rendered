@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False-positive `N802` with `overload` and `override` - astral-sh/ruff #7479</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False-positive <code>N802</code> with <code>overload</code> and <code>override</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7479">#7479</a>
+        opened by <a href="https://github.com/bersbersbers">@bersbersbers</a>
+        on 2023-09-18 08:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bersbersbers">@bersbersbers</a> on 2023-09-18 08:22</div>
+            <div class="timeline-body"><ul>
+<li>A minimal code snippet that reproduces the bug.</li>
+</ul>
+<pre><code class="language-python">from typing import overload
+
+from typing_extensions import override
+
+
+class CannotModify:
+    @overload
+    def BadName(self, var: int) -&gt; int:  # noqa: N802
+        ...
+
+    @overload
+    def BadName(self, var: str) -&gt; str:  # noqa: N802
+        ...
+
+    def BadName(self, var: int | str) -&gt; int | str:  # noqa: N802
+        return var
+
+
+class MyClass(CannotModify):
+    @overload
+    def BadName(self, var: int) -&gt; int:
+        ...
+
+    @overload
+    def BadName(self, var: str) -&gt; str:
+        ...
+
+    @override
+    def BadName(self, var: int | str) -&gt; int | str:
+        return var * 2
+
+</code></pre>
+<ul>
+<li>The command you invoked</li>
+</ul>
+<pre><code>ruff --isolated --select N802 bug.py
+</code></pre>
+<p>gives</p>
+<pre><code>bug.py:21:9: N802 Function name `BadName` should be lowercase
+bug.py:25:9: N802 Function name `BadName` should be lowercase
+Found 2 errors.
+</code></pre>
+<p>I feel the <code>@override</code> before the implementation of <code>MyClass.BadName</code> should extend to the overloads. Or should I add one <code>@override</code> per <code>@overload</code>?</p>
+<ul>
+<li>The current Ruff version (<code>ruff --version</code>).</li>
+</ul>
+<p>0.0.290</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-18 13:18</div>
+            <div class="timeline-body"><p>I suppose we could just omit any methods tagged with <code>@overload</code> since presumedly we will end up flagging the implementation itself?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-09-18 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-09-18 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-18 17:48</div>
+            <div class="timeline-body"><p>Yeah, let's just omit <code>@overload</code> methods here I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @charliermarsh on 2023-09-18 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @charliermarsh on 2023-09-18 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2023-09-18 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-18 18:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:23 UTC
+    </footer>
+</body>
+</html>

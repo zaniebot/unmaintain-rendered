@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv-resolver: pre-compute PEP 508 markers from universal markers - astral-sh/uv #10472</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv-resolver: pre-compute PEP 508 markers from universal markers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10472">#10472</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-01-10 15:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-01-10 15:48</div>
+            <div class="timeline-body"><p>It turns out that we use <code>UniversalMarker::pep508</code> quite a bit. To the
+point that it makes sense to pre-compute it when constructing a
+<code>UniversalMarker</code>.</p>
+<p>This still isn't necessarily the fastest thing we can do, but this
+results in a major speed-up and <code>without_extras</code> no longer shows up for
+me in a profile.</p>
+<p>Motivating benchmarks. First, from #10430:</p>
+<pre><code>$ hyperfine 'rm -f uv.lock &amp;&amp; uv lock' 'rm -f uv.lock &amp;&amp; uv-ag-optimize-without-extras lock'
+Benchmark 1: rm -f uv.lock &amp;&amp; uv lock
+  Time (mean ± σ):     408.3 ms ± 276.6 ms    [User: 333.6 ms, System: 111.1 ms]
+  Range (min … max):   316.9 ms … 1195.3 ms    10 runs
+
+  Warning: The first benchmarking run for this command was significantly slower than the rest (1.195 s). This could be caused by (filesystem) caches that were not filled until after the first run. You should consider using the '--warmup' option to fill those caches before the actual benchmark. Alternatively, use the '--prepare' option to clear the caches before each timing run.
+
+Benchmark 2: rm -f uv.lock &amp;&amp; uv-ag-optimize-without-extras lock
+  Time (mean ± σ):     209.4 ms ±   2.2 ms    [User: 209.8 ms, System: 103.8 ms]
+  Range (min … max):   206.1 ms … 213.4 ms    14 runs
+
+Summary
+  rm -f uv.lock &amp;&amp; uv-ag-optimize-without-extras lock ran
+    1.95 ± 1.32 times faster than rm -f uv.lock &amp;&amp; uv lock
+</code></pre>
+<p>And now from #10438:</p>
+<pre><code>$ hyperfine 'uv pip compile requirements.in -c constraints.txt --universal --no-progress --python-version 3.8 --offline &gt; /dev/null' 'uv-ag-optimize-without-extras pip compile requirements.in -c constraints.txt --universal --no-progress --python-version 3.8 --offline &gt; /dev/null'
+Benchmark 1: uv pip compile requirements.in -c constraints.txt --universal --no-progress --python-version 3.8 --offline &gt; /dev/null
+  Time (mean ± σ):     12.718 s ±  0.052 s    [User: 12.818 s, System: 0.140 s]
+  Range (min … max):   12.650 s … 12.815 s    10 runs
+
+Benchmark 2: uv-ag-optimize-without-extras pip compile requirements.in -c constraints.txt --universal --no-progress --python-version 3.8 --offline &gt; /dev/null
+  Time (mean ± σ):     419.5 ms ±   6.7 ms    [User: 434.7 ms, System: 100.6 ms]
+  Range (min … max):   412.7 ms … 434.3 ms    10 runs
+
+Summary
+  uv-ag-optimize-without-extras pip compile requirements.in -c constraints.txt --universal --no-progress --python-version 3.8 --offline &gt; /dev/null ran
+   30.32 ± 0.50 times faster than uv pip compile requirements.in -c constraints.txt --universal --no-progress --python-version 3.8 --offline &gt; /dev/null
+</code></pre>
+<p>Fixes #10430, Fixes #10438</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2025-01-10 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-10 15:58</div>
+            <div class="timeline-body"><p>Oh come on</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-01-10 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/universal_marker.rs</code>:89 on 2025-01-10 15:59</div>
+            <div class="timeline-body"><p>Should this be false?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-10 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2025-01-10 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-01-10 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-01-10 16:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-10 16:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:17 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Changes in sub pyproject.toml do not cause a cache bust - astral-sh/ruff #12721</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Changes in sub pyproject.toml do not cause a cache bust</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12721">#12721</a>
+        opened by <a href="https://github.com/fellhorn">@fellhorn</a>
+        on 2024-08-06 20:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/fellhorn">@fellhorn</a> on 2024-08-06 20:41</div>
+            <div class="timeline-body"><p>When modifying a <code>pyproject.toml</code> in a subfolder ruff does correctly handle this as a cache bust. The same modification of the root level <code>pyproject.toml</code> causes a cache bust.</p>
+<p>The setup can be recreated with this script:</p>
+<pre><code class="language-bash">#!/bin/bash
+
+# Create root pyproject.toml
+cat &lt;&lt; EOF &gt; pyproject.toml
+[tool.ruff.lint]
+select = []
+EOF
+
+# Create lib directory and its pyproject.toml
+mkdir lib
+cat &lt;&lt; EOF &gt; lib/pyproject.toml
+[tool.ruff.lint]
+select = []
+EOF
+
+# Create a Python file with a hello world function
+# It violates ANN rules
+cat &lt;&lt; EOF &gt; lib/hello.py
+def hello_world():
+    print(&quot;Hello, World!&quot;)
+EOF
+
+# Run ruff check
+echo &quot;Running initial ruff check:&quot;
+ruff check
+
+# Modify lib/pyproject.toml
+cat &lt;&lt; EOF &gt; lib/pyproject.toml
+[tool.ruff.lint]
+select = [&quot;ANN&quot;]
+EOF
+
+# Run ruff check again - it works due to a cache hit
+echo &quot;Running ruff check after modification:&quot;
+ruff check
+
+# Ruff check without cache will fail
+echo &quot;Running ruff check without cache&quot;
+ruff check --no-cache
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-bash">Running initial ruff check:
+All checks passed!
+Running ruff check after modification:
+All checks passed!
+Running ruff check without cache
+lib/hello.py:1:5: ANN201 Missing return type annotation for public function `hello_world`
+  |
+1 | def hello_world():
+  |     ^^^^^^^^^^^ ANN201
+2 |     print(&quot;Hello, World!&quot;)
+  |
+  = help: Add return type annotation: `None`
+
+Found 1 error.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>Tested with <code>ruff 0.5.6</code>.</p>
+<p>Searched for different combinations of these keywords and have not found an existing issue: cache pyproject.toml subfolder --no-cache subproject</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Chnages in sub pyproject.toml do not cause a cache bust" to "Changes in sub pyproject.toml do not cause a cache bust" by @AlexWaygood on 2024-08-06 23:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cache</span> added by @AlexWaygood on 2024-08-06 23:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-08-07 05:27</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/issues/12264 might be related</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-07 19:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:36 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>It says &quot;All checks passed!&quot; although there are errors - astral-sh/ruff #13822</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>It says &quot;All checks passed!&quot; although there are errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13822">#13822</a>
+        opened by <a href="https://github.com/limafresh">@limafresh</a>
+        on 2024-10-19 14:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/limafresh">@limafresh</a> on 2024-10-19 14:45</div>
+            <div class="timeline-body"><pre><code>$ tree
+.
+├── LICENSE
+├── MANIFEST.in
+├── pyproject.toml
+├── README.md
+├── screenshots
+│   ├── screenshot1.png
+│   ├── screenshot2.png
+│   ├── screenshot3.png
+│   └── screenshot4.png
+└── src
+    └── pyqulator
+        ├── __init__.py
+        ├── locales
+        │   ├── ui_ru.qm
+        │   ├── ui_ru.ts
+        │   ├── ui_uk.qm
+        │   └── ui_uk.ts
+        ├── main.py
+        ├── ui.py
+        └── ui.ui
+
+5 directories, 16 files
+host@antix1:~/GitHub/pyqulator
+$ ruff check
+All checks passed!
+host@antix1:~/GitHub/pyqulator
+</code></pre>
+<p>It says &quot;All checks passed!&quot;, although I deliberately made a lot of errors in the <code>main.py</code> file. Configuration in pyproject.toml, but even if you remove it, it's the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-19 18:26</div>
+            <div class="timeline-body"><p>What kind of errors? This is pretty basic functionality that works for other users so there has to be something specific going on in your setup and we'll need more details to help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-19 18:27</div>
+            <div class="timeline-body"><p>Can you reproduce your <code>main.py</code> errors in https://play.ruff.rs ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2024-10-19 18:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/limafresh">@limafresh</a> on 2024-10-22 07:32</div>
+            <div class="timeline-body"><p>Doesn't react to string lengths and different types of quotes, although I specified this in pyproject.toml</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-22 07:46</div>
+            <div class="timeline-body"><p>@limafresh Can you provide the contents of the <code>pyproject.toml</code> config and that of the Python file in which you expect the violations to show up but isn't?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/limafresh">@limafresh</a> on 2024-10-22 09:57</div>
+            <div class="timeline-body"><p><strong>pyproject.toml</strong></p>
+<pre><code>line-length = 100
+[tool.ruff.format]
+quote-style = &quot;double&quot;
+</code></pre>
+<p><strong>hello.py</strong></p>
+<pre><code>hello = 'hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello, hello'
+print(hello)
+</code></pre>
+<pre><code>$ ruff check
+All checks passed!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-22 10:11</div>
+            <div class="timeline-body"><p>Thanks for providing the file contents.</p>
+<p>First, the <a href="https://docs.astral.sh/ruff/settings/#line-length"><code>line-length</code></a> config should go under the <code>[tool.ruff]</code> heading:</p>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 100
+
+[tool.ruff.format]
+quote-style = &quot;double&quot;
+</code></pre>
+<p>Now, I'm guessing that you must be looking for a <a href="https://docs.astral.sh/ruff/rules/line-too-long/"><code>line-too-long</code></a> violation to be highlighted, is that correct? If so, then you'll need to select the rule because it isn't included in the default rule set. The rules that are enabled by default are &quot;E4&quot;, &quot;E7&quot;, &quot;E9&quot;, &quot;F&quot; (https://github.com/astral-sh/ruff/#configuration). So, let's do that:</p>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+extend-select = [&quot;E501&quot;]
+
+[tool.ruff.format]
+quote-style = &quot;double&quot;
+</code></pre>
+<p>And, regarding the quotes, that would be handled by the formatter which is a separate subcommand. So, running <code>ruff format</code> should update the quote style to use double quotes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> removed by @dhruvmanila on 2024-10-22 10:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @dhruvmanila on 2024-10-22 10:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/limafresh">@limafresh</a> on 2024-10-22 11:23</div>
+            <div class="timeline-body"><p>Why can't you make everything in check? Check says everything is fine, but format still fixes errors. It's wildly inconvenient. I thought it was a good replacement for flake8, but I was disappointed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-22 11:30</div>
+            <div class="timeline-body"><p>See #8232</p>
+<p>Please be kind to project maintainers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/limafresh">@limafresh</a> on 2024-10-22 11:49</div>
+            <div class="timeline-body"><p>How can I see what exactly will be formatted before formatting?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-22 11:55</div>
+            <div class="timeline-body"><p>You can run <code>ruff format --diff</code> to see the formatting changes.</p>
+<p>I take from your response that the original issue has been resolved. If not, feel free to comment here and I can reopen.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-10-22 11:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/limafresh">@limafresh</a> on 2024-10-22 12:04</div>
+            <div class="timeline-body"><p>Thank you very much! I just learned for the first time what a formatter is and what they are for, and I thought it was an unfinished linter! Thank you very much, I'm switching to Ruff😊</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/szilvesztercsab">@szilvesztercsab</a> on 2025-01-08 15:22</div>
+            <div class="timeline-body"><p>For some reason, i'm hitting the same kind of issue and can't figure out why:</p>
+<pre><code class="language-console">❯ eza -aTI '.git|.venv'
+.
+├── .editorconfig
+├── .gitignore
+├── .pre-commit-config.yaml
+├── .python-version
+├── .ruff_cache
+│   ├── .gitignore
+│   ├── 0.8.6
+│   │   ├── 5085134478066165372
+│   │   ├── 5361439220955715206
+│   │   ├── 6089338595112545736
+│   │   └── 15102853139710753150
+│   └── CACHEDIR.TAG
+├── hello.py
+├── pyproject.toml
+├── README.md
+└── uv.lock
+
+❯ uv run ruff check -v
+[2025-01-08][17:15:05][ruff::resolve][DEBUG] Using configuration file (via parent) at: /Users/csaba/Code/py-experiments/pyproject.toml
+[2025-01-08][17:15:05][ruff_linter::settings::types][DEBUG] Detected minimum supported `requires-python` version: 3.13
+[2025-01-08][17:15:05][ignore::gitignore][DEBUG] opened gitignore file: /Users/csaba/Code/py-experiments/.gitignore
+[2025-01-08][17:15:05][ignore::gitignore][DEBUG] opened gitignore file: /Users/csaba/Code/py-experiments/.git/info/exclude
+[2025-01-08][17:15:05][ruff_linter::settings::types][DEBUG] Detected minimum supported `requires-python` version: 3.13
+[2025-01-08][17:15:05][ignore::walk][DEBUG] ignoring /Users/csaba/Code/py-experiments/.venv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/csaba/Code/py-experiments/.gitignore&quot;), original: &quot;.venv&quot;, actual: &quot;**/.venv&quot;, is_whitelist: false, is_only_dir: false })))
+[2025-01-08][17:15:05][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;/Users/csaba/Code/py-experiments/.git&quot;
+[2025-01-08][17:15:05][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/Users/csaba/Code/py-experiments/pyproject.toml&quot;
+[2025-01-08][17:15:05][ignore::gitignore][DEBUG] opened gitignore file: /Users/csaba/Code/py-experiments/.ruff_cache/.gitignore
+[2025-01-08][17:15:05][ruff_workspace::resolver][DEBUG] Ignored path via `exclude`: &quot;/Users/csaba/Code/py-experiments/.ruff_cache&quot;
+[2025-01-08][17:15:05][ruff_workspace::resolver][DEBUG] Included path via `include`: &quot;/Users/csaba/Code/py-experiments/hello.py&quot;
+[2025-01-08][17:15:05][ruff::commands::check][DEBUG] Identified files to lint in: 3.080125ms
+[2025-01-08][17:15:05][ruff::diagnostics][DEBUG] Checking: /Users/csaba/Code/py-experiments/pyproject.toml
+[2025-01-08][17:15:05][ruff::commands::check][DEBUG] Checked 2 files in: 122.625µs
+All checks passed!
+</code></pre>
+<p><code>pyproject.toml</code></p>
+<pre><code class="language-toml">[project]
+dependencies = []
+description = &quot;Add your description here&quot;
+name = &quot;py-experiments&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13&quot;
+version = &quot;0.1.0&quot;
+
+[dependency-groups]
+dev = [
+  &quot;pre-commit&gt;=4.0.1&quot;,
+  &quot;pytest&gt;=8.3.4&quot;,
+  &quot;ruff&gt;=0.8.6&quot;,
+]
+
+[tool.ruff]
+fix = true
+preview = true
+required-version = &quot;&gt;=0.8.6&quot;
+show-fixes = true
+
+[tools.ruff.lint]
+fixable = [&quot;ALL&quot;]
+select = [&quot;ALL&quot;]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+</code></pre>
+<p><code>hello.py</code></p>
+<pre><code class="language-py">def foo(a, b, c):
+    if a:
+        if b:
+            if c:
+                return 1
+            else:
+                return 2
+        else:
+            return 3
+    else:
+        return 4
+
+</code></pre>
+<p>The above raises hell <a href="https://play.ruff.rs/3ff21bfd-1829-4552-84d6-aabd144f2608">on the playground</a>, but is a-okay on my machine.</p>
+<p>What gives?</p>
+<p>Also, should this be a seperate issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/szilvesztercsab">@szilvesztercsab</a> on 2025-01-08 15:33</div>
+            <div class="timeline-body"><blockquote>
+<p>For some reason, i'm hitting the same kind of issue and can't figure out why:</p>
+<p>❯ eza -aTI '.git|.venv'
+.
+├── .editorconfig
+├── .gitignore
+├── .pre-commit-config.yaml
+├── .python-version
+├── .ruff_cache
+│   ├── .gitignore
+│   ├── 0.8.6
+│   │   ├── 5085134478066165372
+│   │   ├── 5361439220955715206
+│   │   ├── 6089338595112545736
+│   │   └── 15102853139710753150
+│   └── CACHEDIR.TAG
+├── hello.py
+├── pyproject.toml
+├── README.md
+└── uv.lock</p>
+<p>❯ uv run ruff check -v
+[2025-01-08][17:15:05][ruff::resolve][DEBUG] Using configuration file (via parent) at: /Users/csaba/Code/py-experiments/pyproject.toml
+[2025-01-08][17:15:05][ruff_linter::settings::types][DEBUG] Detected minimum supported <code>requires-python</code> version: 3.13
+[2025-01-08][17:15:05][ignore::gitignore][DEBUG] opened gitignore file: /Users/csaba/Code/py-experiments/.gitignore
+[2025-01-08][17:15:05][ignore::gitignore][DEBUG] opened gitignore file: /Users/csaba/Code/py-experiments/.git/info/exclude
+[2025-01-08][17:15:05][ruff_linter::settings::types][DEBUG] Detected minimum supported <code>requires-python</code> version: 3.13
+[2025-01-08][17:15:05][ignore::walk][DEBUG] ignoring /Users/csaba/Code/py-experiments/.venv: Ignore(IgnoreMatch(Gitignore(Glob { from: Some(&quot;/Users/csaba/Code/py-experiments/.gitignore&quot;), original: &quot;.venv&quot;, actual: &quot;**/.venv&quot;, is_whitelist: false, is_only_dir: false })))
+[2025-01-08][17:15:05][ruff_workspace::resolver][DEBUG] Ignored path via <code>exclude</code>: &quot;/Users/csaba/Code/py-experiments/.git&quot;
+[2025-01-08][17:15:05][ruff_workspace::resolver][DEBUG] Included path via <code>include</code>: &quot;/Users/csaba/Code/py-experiments/pyproject.toml&quot;
+[2025-01-08][17:15:05][ignore::gitignore][DEBUG] opened gitignore file: /Users/csaba/Code/py-experiments/.ruff_cache/.gitignore
+[2025-01-08][17:15:05][ruff_workspace::resolver][DEBUG] Ignored path via <code>exclude</code>: &quot;/Users/csaba/Code/py-experiments/.ruff_cache&quot;
+[2025-01-08][17:15:05][ruff_workspace::resolver][DEBUG] Included path via <code>include</code>: &quot;/Users/csaba/Code/py-experiments/hello.py&quot;
+[2025-01-08][17:15:05][ruff::commands::check][DEBUG] Identified files to lint in: 3.080125ms
+[2025-01-08][17:15:05][ruff::diagnostics][DEBUG] Checking: /Users/csaba/Code/py-experiments/pyproject.toml
+[2025-01-08][17:15:05][ruff::commands::check][DEBUG] Checked 2 files in: 122.625µs
+All checks passed!
+<code>pyproject.toml</code></p>
+<p>[project]
+dependencies = []
+description = &quot;Add your description here&quot;
+name = &quot;py-experiments&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.13&quot;
+version = &quot;0.1.0&quot;</p>
+<p>[dependency-groups]
+dev = [
+&quot;pre-commit&gt;=4.0.1&quot;,
+&quot;pytest&gt;=8.3.4&quot;,
+&quot;ruff&gt;=0.8.6&quot;,
+]</p>
+<p>[tool.ruff]
+fix = true
+preview = true
+required-version = &quot;&gt;=0.8.6&quot;
+show-fixes = true</p>
+<p>[tools.ruff.lint]
+fixable = [&quot;ALL&quot;]
+select = [&quot;ALL&quot;]</p>
+<p>[tool.ruff.format]
+docstring-code-format = true
+<code>hello.py</code></p>
+<p>def foo(a, b, c):
+if a:
+if b:
+if c:
+return 1
+else:
+return 2
+else:
+return 3
+else:
+return 4
+The above raises hell <a href="https://play.ruff.rs/3ff21bfd-1829-4552-84d6-aabd144f2608">on the playground</a>, but is a-okay on my machine.</p>
+<p>What gives?</p>
+<p>Also, should this be a seperate issue?</p>
+</blockquote>
+<p>I have a nasty typo in <code>pyproject.toml#L22</code> which just cost me at least an hour of head scratching. God-damn.</p>
+<p>It should say <code>[tool.ruff.lint]</code> but instead it sais <code>[tools.ruff.lint]</code>.</p>
+<p>Sorry for bothering you all.</p>
+<p>Kudos for the super awesome tool. Love it. ❤</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:28 UTC
+    </footer>
+</body>
+</html>

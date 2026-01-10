@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set 4MB stack size for all threads, introduce `UV_STACK_SIZE` - astral-sh/uv #12839</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Set 4MB stack size for all threads, introduce <code>UV_STACK_SIZE</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12839">#12839</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-04-11 16:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-04-11 16:05</div>
+            <div class="timeline-body"><p>See #12769 for the motivation. We set the 4MB not only for the main thread, but also for all tokio and rayon threads to fix a stack overflow while unpacking wheels in production on Windows.</p>
+<p>There are two variables for setting the stack size: A new <code>UV_STACK_SIZE</code> that takes precedent, and the existing <code>RUST_MIN_STACK</code>. When setting the stack size, <code>UV_STACK_SIZE</code> should be preferred, since <code>RUST_MIN_STACK</code> affects all Rust applications, including build backends we call (e.g., maturin). The minimum stack size is set to 1MB, the lowest stack size we observed on a platform (Windows main thread).</p>
+<p>Fixes #12769</p>
+<h2>Test Plan</h2>
+<p>Tested manually with the example from #12769</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-04-11 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @konstin on 2025-04-11 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @konstin on 2025-04-11 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-configuration/src/threading.rs</code>:32 on 2025-04-11 16:14</div>
+            <div class="timeline-body"><p>the <code>unwrap_or(0).max(UV_MIN_STACK_DEFAULT)</code> was imo important for ensuring no errant/unrelated uses of RUST_MIN_STACK broke uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-04-11 16:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-14 08:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-configuration/src/threading.rs</code>:32 on 2025-04-14 08:52</div>
+            <div class="timeline-body"><p>Doesn't <code>unwrap_or(0).max(UV_MIN_STACK_DEFAULT)</code> mean that we never allow to set a smaller stack size, even with <code>RUST_MIN_STACK</code>? My idea was that we allow <code>RUST_MIN_STACK</code> in both directions, so that we can both test the effect of lower values (is the bound too high?) and allow bumping it higher (for testing in cases https://github.com/astral-sh/uv/issues/12769 like where we need to bump it higher).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-04-14 12:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-configuration/src/threading.rs</code>:32 on 2025-04-14 12:58</div>
+            <div class="timeline-body"><p>Yeah but at this point we &quot;know&quot; the current value is insufficient, so it's not safe to let people set it lower. And someone might set it in their system for another thing and call an accident? Maybe I'm being too paranoid.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Set 4MB stack size for all threads" to "Set 4MB stack size for all threads, introduce `UV_STACK_SIZE`" by @konstin on 2025-04-14 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-14 13:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-configuration/src/threading.rs</code>:32 on 2025-04-14 13:59</div>
+            <div class="timeline-body"><p>I put a 1MB limit in place and switched to <code>UV_STACK_SIZE</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-04-16 07:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-04-16 07:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-16 07:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:22 UTC
+    </footer>
+</body>
+</html>

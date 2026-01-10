@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PERF403 fix has two problems related to tuples - astral-sh/ruff #19153</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PERF403 fix has two problems related to tuples</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/19153">#19153</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-07-05 13:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-07-05 13:57</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/manual-dict-comprehension/"><code>manual-dict-comprehension</code> (PERF403)</a> has two problems related to tuples.</p>
+<p>Given a singleton tuple key, the fix changes behavior. <a href="https://play.ruff.rs/a242190c-ec87-4bfa-8423-fb3f87c4cf0a">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;perf403_1.py &lt;&lt;'# EOF'
+def f():
+    v = {}
+    for o, (x,) in [&quot;ox&quot;]:
+        v[x,] = o
+    return v
+print(f())
+# EOF
+
+$ python perf403_1.py
+{('x',): 'o'}
+
+$ ruff --isolated check perf403_1.py --select PERF403 --preview --unsafe-fixes --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat perf403_1.py
+def f():
+    v = {x: o for o, (x,) in [&quot;ox&quot;]}
+    return v
+print(f())
+
+$ python perf403_1.py
+{'x': 'o'}
+</code></pre>
+<p>Given an unparenthesized tuple value, the fix introduces a syntax error. <a href="https://play.ruff.rs/54d03b7b-dd7c-4297-bacb-fa735245fd10">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;perf403_2.py &lt;&lt;'# EOF'
+def f():
+    v = {}
+    for (o, p), x in [(&quot;op&quot;, &quot;x&quot;)]:
+        v[x] = o, p
+# EOF
+
+$ ruff --isolated check perf403_2.py --select PERF403 --preview --unsafe-fixes --diff 2&gt;&amp;1 | grep error:
+error: Fix introduced a syntax error. Reverting all changes.
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.2 (9bee8376a 2025-07-03)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-07-06 02:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-07-06 02:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-07-06 02:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/liortct">@liortct</a> on 2025-07-06 06:14</div>
+            <div class="timeline-body"><p>Hey,
+I’d like to fix this issue and open a PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @liortct by @ntBre on 2025-07-06 14:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sudormrfbin">@sudormrfbin</a> on 2025-09-01 10:31</div>
+            <div class="timeline-body"><p>Can this issue be closed now since #19934 is merged?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-01 14:51</div>
+            <div class="timeline-body"><p>I think so, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-09-01 14:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:55 UTC
+    </footer>
+</body>
+</html>

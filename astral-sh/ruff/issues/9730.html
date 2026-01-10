@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False Positive PT012 for async iterator - astral-sh/ruff #9730</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False Positive PT012 for async iterator</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9730">#9730</a>
+        opened by <a href="https://github.com/nmzgnv">@nmzgnv</a>
+        on 2024-01-31 07:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nmzgnv">@nmzgnv</a> on 2024-01-31 07:07</div>
+            <div class="timeline-body"><h2>What's wrong</h2>
+<p>I want to test that async iterator raises error.</p>
+<pre><code class="language-python">with pytest.raises(KeyError, match='unknown'):
+    async for _ in gpt.generate(gpt_request):
+        pass
+</code></pre>
+<p>Receive unexpected error <code>PT012 'pytest.raises()' block should contain a single simple statement</code>, but the statement is already simple.</p>
+<h2>How it should work</h2>
+<p>not raise PT012 for simple async for loops as with empty context managers https://github.com/m-burst/flake8-pytest-style/blob/master/docs/rules/PT012.md</p>
+<h2>System information</h2>
+<ul>
+<li>Operating system: mac OS Ventura 13.5</li>
+<li>Python version: 3.11.4</li>
+<li>ruff version: v0.1.9</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-31 21:52</div>
+            <div class="timeline-body"><p>I agree this is reasonable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-01-31 21:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-31 21:56</div>
+            <div class="timeline-body"><p>Is it possible to rewrite this with a single <code>await asyncio.gather</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nmzgnv">@nmzgnv</a> on 2024-02-01 09:32</div>
+            <div class="timeline-body"><p>I have no idea about <code>asyncio.gather</code>, but if error occures on the first iteration, you can use <code>await anext(...)</code>:</p>
+<pre><code class="language-python">async def async_gen():
+    for i in range(10):
+        raise ValueError('Hello')
+        yield i
+
+
+async def main():
+    await anext(async_gen())
+</code></pre>
+<p>if an error occurs after many iterations, then you need to go through the iterator completely before the error occurs. Another tric:</p>
+<pre><code class="language-python">async def main():
+    _ = [elem async for elem in async_gen()]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-06 01:52</div>
+            <div class="timeline-body"><p>@RonnyPfannschmidt - Do you have an opinion on this one, before I consider changing the rule?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a> on 2024-02-06 05:17</div>
+            <div class="timeline-body"><p>I'm a bit torn on this one</p>
+<p>The most beautiful Syntax is the false positive</p>
+<p>The listcomp makes the intent more clear</p>
+<p>This is one of the cases where I wish thered be a consume helper</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jelle-openai">@jelle-openai</a> on 2025-01-16 18:35</div>
+            <div class="timeline-body"><p>I think this is a false positive and should be fixed. The workarounds proposed here make the code harder to understand.</p>
+<p>Edit: I'm happy to work on a fix here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-17 01:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:36 UTC
+    </footer>
+</body>
+</html>

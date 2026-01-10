@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make uv’s first-index strategy more secure by default by failing early on authentication failure - astral-sh/uv #12805</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make uv’s first-index strategy more secure by default by failing early on authentication failure</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12805">#12805</a>
+        opened by <a href="https://github.com/jtfmumm">@jtfmumm</a>
+        on 2025-04-10 12:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-10 12:38</div>
+            <div class="timeline-body"><p>uv’s default index strategy was designed with dependency confusion attacks in mind. <a href="https://docs.astral.sh/uv/configuration/indexes/#searching-across-multiple-indexes">According to the docs</a>, “if a package exists on an internal index, it should always be installed from the internal index, and never from PyPI”. Unfortunately, this is not true in the case where authentication fails on that internal index. In that case, uv will simply try the next index (even on the <code>first-index</code> strategy). This means that uv is not secure by default in this common scenario.</p>
+<p>This PR causes uv to stop searching for a package if it encounters an authentication failure at an index. It is possible to opt out of this behavior for an index with a new <code>pyproject.toml</code> option <code>ignore-error-codes</code>. For example:</p>
+<pre><code>[[tool.uv.index]]
+name = &quot;my-index&quot;
+url = &quot;&lt;index-url&gt;&quot;
+ignore-error-codes = [401, 403]
+</code></pre>
+<p>This will also enable users to handle idiosyncratic registries in a more fine-grained way. For example, PyTorch registries return a 403 when a package is not found. In this PR, we special-case PyTorch registries to ignore 403s, but users can use <code>ignore-error-codes</code> to handle similar behaviors if they encounter them on internal registries.</p>
+<p>Depends on #12651</p>
+<p>Closes #9429
+Closes #12362</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @jtfmumm on 2025-04-10 12:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">network</span> added by @jtfmumm on 2025-04-10 12:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @jtfmumm on 2025-04-10 12:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Exit indexes search on auth failure to make uv's first-index strategy more secure by default" to "Make uv’s first-index strategy more secure by default by failing early on authentication failure" by @jtfmumm on 2025-04-10 13:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-10 19:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/index.rs</code>:76 on 2025-04-10 19:45</div>
+            <div class="timeline-body"><p>I love watching this comment jump around :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-16 18:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/status_code_strategy.rs</code>:40 on 2025-04-16 18:58</div>
+            <div class="timeline-body"><p>Why <code>expect</code> here? How do we know they're valid? Should this just return an <code>Err</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-16 19:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index.rs</code>:237 on 2025-04-16 19:00</div>
+            <div class="timeline-body"><p>Does this mean we don't allow overriding our default behavior for given index URLs by defining an empty set <code>ignore-error-codes = []</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index.rs</code>:393 on 2025-04-16 19:01</div>
+            <div class="timeline-body"><p>Why not just store <code>StatusCode</code> directly instead of the u16?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-16 19:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-client/src/registry_client.rs</code>:520 on 2025-04-16 19:02</div>
+            <div class="timeline-body"><p>Can this use <code>.map_or</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-16 19:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:289 on 2025-04-16 19:03</div>
+            <div class="timeline-body"><p>Is this part of this pull request? Does this need rebase?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-16 19:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-16 19:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index_url.rs</code>:595 on 2025-04-16 19:06</div>
+            <div class="timeline-body"><p>Can you add a doc?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-17 09:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-auth/src/middleware.rs</code>:289 on 2025-04-17 09:59</div>
+            <div class="timeline-body"><p>Yeah, need a rebase</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-17 10:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index.rs</code>:393 on 2025-04-17 10:02</div>
+            <div class="timeline-body"><p>I tried that first, but <code>StatusCode</code> doesn't implement <code>Serialize</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-17 10:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index.rs</code>:237 on 2025-04-17 10:10</div>
+            <div class="timeline-body"><p>The new default behavior is to only ignore 404s, which we do no matter what <code>IndexStatusCodeStrategy</code> is specified. I'm not sure we want to allow disabling that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-17 10:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index_url.rs</code>:595 on 2025-04-17 10:29</div>
+            <div class="timeline-body"><p>Added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-17 13:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index.rs</code>:393 on 2025-04-17 13:38</div>
+            <div class="timeline-body"><p>Why does it need to implement <code>Serialize</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index.rs</code>:237 on 2025-04-17 13:43</div>
+            <div class="timeline-body"><p>I'm referring to the <code>from_index_url</code> behavior here, not the default behavior. Let's say I'm using pytorch but don't want to ignore 403s (e.g., because something has changed and our default is incorrect), that's not possible with <code>ignore-error-codes = []</code>, right? You'd need <code>ignore-error-codes = [XXX]</code> where <code>XXX</code> is some arbitrary code.</p>
+<p>Separately, regarding the fallback to the default behavior... what do we do if a user specifies <code>ignore-error-codes = [404]</code>?  We'd ignore the 404, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-17 13:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-17 13:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index.rs</code>:237 on 2025-04-17 13:51</div>
+            <div class="timeline-body"><p>Ah, ok that wasn't clear. That's true for the pytorch case. I can update it to treat an explicit empty list as overriding the default.</p>
+<p>If you specified just <code>[404]</code>, then uv would behave exactly as it does with the default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index.rs</code>:237 on 2025-04-17 14:01</div>
+            <div class="timeline-body"><blockquote>
+<p>I can update it to treat an explicit empty list as overriding the default.</p>
+</blockquote>
+<p>I like the idea of allowing the user to opt out of our inference.</p>
+<blockquote>
+<p>If you specified just [404], then uv would behave exactly as it does with the default.</p>
+</blockquote>
+<p>Ah yeah sorry that was a silly question, the 404 is <em>ignored</em> by default. Confusing myself :)</p>
+<p>Is the motivation for this that you don't want people to need to specify <code>404</code> once they start adding <code>ignore-error-codes</code>? And / or that you think people should <em>never</em> be allowed to fail on 404s?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-17 14:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-17 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index.rs</code>:237 on 2025-04-17 14:03</div>
+            <div class="timeline-body"><p>(fwiw we had a similar discussion around extension of default values in https://github.com/astral-sh/uv/pull/7136#discussion_r1750399976)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-17 14:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index.rs</code>:237 on 2025-04-17 14:21</div>
+            <div class="timeline-body"><p>Yeah, I agree that allowing them to opt-out is usefully flexible. But I don't think failing on 404s makes sense. The whole point of the index strategies is to determine what to do when a package is missing. If someone requested the ability to fail on 404s, I'd recommend that they set a single index they want to search as the default. Does that make sense?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-17 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index.rs</code>:237 on 2025-04-17 14:22</div>
+            <div class="timeline-body"><p>(updated by the way)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index.rs</code>:393 on 2025-04-17 15:29</div>
+            <div class="timeline-body"><p>Both <code>Serialize</code> and <code>Deserialize</code> are derived on <code>Index</code> and <code>StatusCode</code> doesn't implement either. We could do <code>#[serde(skip)]</code> but that seemed incorrect to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-17 15:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-17 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index.rs</code>:393 on 2025-04-17 16:57</div>
+            <div class="timeline-body"><p>Stepping up a level, why is <code>Index</code> serializable? For writing it to the TOML file? If that's it, why <em>would</em> we need this field to be serializable? A user can't construct it via the CLI. If truly necessary, why not use a wrapper type to implement serializability?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-17 17:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index.rs</code>:237 on 2025-04-17 17:01</div>
+            <div class="timeline-body"><p>Alright, that seems sensible. Let's just make sure it's clearly documented that 404s are always &quot;ignored&quot;. Can you also add a section to https://docs.astral.sh/uv/configuration/indexes/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-17 18:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index.rs</code>:393 on 2025-04-17 18:44</div>
+            <div class="timeline-body"><p>If we don’t need it, I can use #[serde(skip)]</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-17 19:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index.rs</code>:393 on 2025-04-17 19:13</div>
+            <div class="timeline-body"><p>I guess it's going to be more complicated than that. We can't use skip when we need a <code>deserialize_with</code> to parse the numbers in the TOML file. I'll need to implement a wrapper type around <code>StatusCode</code> for deriving <code>schemars::JsonSchema</code> as well as <code>De/Serialize</code> if we want to do it this way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-17 20:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/index.rs</code>:393 on 2025-04-17 20:18</div>
+            <div class="timeline-body"><p>It seems nice for type safety throughout and straightforward to implement? I don't feel super strongly, but the current approach of validating at the CLI level, but retaining the u16, then revalidating later seems quite weird.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-17 20:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index.rs</code>:393 on 2025-04-17 20:30</div>
+            <div class="timeline-body"><p>Yeah that’s why originally it was validated once on ingest with an expect down the line when converted to a StatusCode. But I can also create the wrapper</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-04-17 20:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution-types/src/status_code_strategy.rs</code>:22 on 2025-04-17 20:53</div>
+            <div class="timeline-body"><p>Should we compare the <code>Realm</code> here instead? Or use <code>endswith</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution-types/src/status_code_strategy.rs</code>:27 on 2025-04-17 20:54</div>
+            <div class="timeline-body"><p>I don't think <code>vec!</code> is necessary here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-04-17 20:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution-types/src/status_code_strategy.rs</code>:75 on 2025-04-17 20:54</div>
+            <div class="timeline-body"><p>This can be <code>Copy</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-04-17 20:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-04-17 20:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/error.rs</code>:240 on 2025-04-17 20:56</div>
+            <div class="timeline-body"><p>Can we retain the type? In other words, should this be <code>#[from] IndexSourceError</code>? Why <code>String</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-04-17 20:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution-types/Cargo.toml</code>:33 on 2025-04-17 20:56</div>
+            <div class="timeline-body"><p>Can we make this a dev dependency? (We typically want to avoid using <code>anyhow</code> in library crates.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-18 07:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/Cargo.toml</code>:33 on 2025-04-18 07:46</div>
+            <div class="timeline-body"><p>Removed with refactor</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-client/src/error.rs</code>:240 on 2025-04-18 07:47</div>
+            <div class="timeline-body"><p>Removed with refactor</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-18 07:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-18 08:28</div>
+            <div class="timeline-body"><p>@zanieb I've created a wrapper type for <code>StatusCode</code> that implements <code>JsonSchema</code> and <code>De/Serialize</code> on <a href="https://github.com/astral-sh/uv/pull/12805/commits/4da1534f68bf482714232db449877aa855db774c">this commit</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-18 09:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index.rs</code>:237 on 2025-04-18 09:09</div>
+            <div class="timeline-body"><p>Added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-18 21:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/status_code_strategy.rs</code>:112 on 2025-04-18 21:14</div>
+            <div class="timeline-body"><p>Should this just be a deref implementation? (we do that pretty often)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-18 21:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/status_code_strategy.rs</code>:147 on 2025-04-18 21:15</div>
+            <div class="timeline-body"><p>Ah it seems nice to have this in the schema</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-18 21:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/edit.rs</code>:10665 on 2025-04-18 21:16</div>
+            <div class="timeline-body"><p>This looks like a regression, e.g., that <code>help: </code> message is gone.</p>
+<p>This is an example of what I was concerned about (e.g., over in https://github.com/astral-sh/uv/pull/12667#discussion_r2029115491) by exiting eagerly instead of relying existing error handling.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-18 21:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/lock.rs</code>:7527 on 2025-04-18 21:18</div>
+            <div class="timeline-body"><p>This also looks like a regression, we no longer are explaining <em>why</em> <code>iniconfig</code> was required (though it <em>is</em> an improvement that we say which index we failed to fetch it from — I think that's just the missing hint I flagged in https://github.com/astral-sh/uv/pull/12667#discussion_r2029183230 though).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-18 21:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/indexes.md</code>:216 on 2025-04-18 21:19</div>
+            <div class="timeline-body"><p>I'd link to the strategy here, if we can</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-18 21:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/indexes.md</code>:217 on 2025-04-18 21:23</div>
+            <div class="timeline-body"><p>Elsewhere, we stylize error codes as &quot;HTTP XXX&quot; instead of &quot;<code>XXX NAME</code>&quot;. I do think the name is nice, I might do &quot;HTTP 403 Forbidden&quot; though? I'd probably omit the backticks, since you refer to the error codes in the subsequent text without them.</p>
+<p>You can probably just say &quot;status code&quot; instead of &quot;response status code&quot;.</p>
+<p>Generally, I'd avoid using &quot;it&quot; to refer to uv if it's easy. So... &quot;uv will stop searching if a ... is encountered&quot; rather than &quot;uv will stop searching if it encounters ...&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-18 21:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/indexes.md</code>:220 on 2025-04-18 21:24</div>
+            <div class="timeline-body"><p>We avoid referring to &quot;Users&quot; like this in the documentation. Instead, I'd say &quot;You can configure which error codes...&quot; or, more typically, &quot;To ignore additional error codes for an index, use the <code>...</code> setting.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-18 21:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/status_code_strategy.rs</code>:112 on 2025-04-18 21:37</div>
+            <div class="timeline-body"><p>I’m pretty sure you can’t match against e.g. StatusCode::FORBIDDEN that way (which is what we need this for)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-18 21:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-types/src/status_code_strategy.rs</code>:112 on 2025-04-18 21:43</div>
+            <div class="timeline-body"><p>Wouldn't you just deref it where you're currently calling this method?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-19 07:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/status_code_strategy.rs</code>:112 on 2025-04-19 07:45</div>
+            <div class="timeline-body"><p>Oh yeah, I was thinking of the transparent deref, but you're right you can just call <code>deref()</code>. Updated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-21 09:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/edit.rs</code>:10665 on 2025-04-21 09:10</div>
+            <div class="timeline-body"><p>I've created a PR off this branch to address this problem (see #13016).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-22 14:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/lock.rs</code>:7527 on 2025-04-22 14:53</div>
+            <div class="timeline-body"><p>Addressed in #13016</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-22 14:59</div>
+            <div class="timeline-body"><p>@zanieb Now that #13016 is merged into this PR and I've rebased against <code>release/070</code>, I don't think there is unaddressed feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-04-25 02:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/tool/run.rs</code>:477 on 2025-04-25 02:46</div>
+            <div class="timeline-body"><p>Are these changes intended as part of this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-04-25 02:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/cache.rs</code>:21 on 2025-04-25 02:48</div>
+            <div class="timeline-body"><p>As a point of data modeling, I think this should be an enum, not a string -- is that possible? I recommend always approaching <code>String</code> with skepticism by default, since casting down to <code>String</code> means you've lost ~all type safety and type information. If we know this is either a realm or an index URL, then it makes sense to model the data that way, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/middleware.rs</code>:387 on 2025-04-25 02:50</div>
+            <div class="timeline-body"><p>Personally, I'd just call this <code>index_url</code>, since <code>maybe</code> is implied by the type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-04-25 02:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-04-25 02:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/registry_client.rs</code>:379 on 2025-04-25 02:50</div>
+            <div class="timeline-body"><p>Why is this not <code>status_code_strategy_for</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-04-25 02:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/registry_client.rs</code>:998 on 2025-04-25 02:51</div>
+            <div class="timeline-body"><p>I think we should document these variants, do you mind?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-04-25 02:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/registry_client.rs</code>:353 on 2025-04-25 02:52</div>
+            <div class="timeline-body"><p>Should this variant include the status code? Should we log this interaction here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-04-25 02:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/registry_client.rs</code>:521 on 2025-04-25 02:54</div>
+            <div class="timeline-body"><p>Do we now lose this error? Does it ever get surfaced to the user?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-04-25 02:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/registry_client.rs</code>:353 on 2025-04-25 02:54</div>
+            <div class="timeline-body"><p>Having trouble following a bit, how does this error propagate upwards?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-04-25 02:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/configuration/indexes.md</code>:217 on 2025-04-25 02:56</div>
+            <div class="timeline-body"><p>What does &quot;stop searching&quot; mean, for a user? Similarly, what does it mean to &quot;keep&quot; searching?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-25 07:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/tool/run.rs</code>:477 on 2025-04-25 07:25</div>
+            <div class="timeline-body"><p>No, just needed to rebase against the newly rebased <code>release/070</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-25 07:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-client/src/registry_client.rs</code>:379 on 2025-04-25 07:43</div>
+            <div class="timeline-body"><p>I've added a comment. For unsafe index strategies, we ignore authentication failures and just find whatever matches we can across the indexes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-25 07:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-client/src/registry_client.rs</code>:353 on 2025-04-25 07:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Having trouble following a bit, how does this error propagate upwards?</p>
+</blockquote>
+<p>It's the same as before. On a 401 or 403 that our strategy does not ignore, we set that in the <code>IndexCapabilities</code>. When you break here, that effectively ends the search and a <code>PackageNotFound</code> error will be returned at the end of this function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-25 08:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-client/src/registry_client.rs</code>:521 on 2025-04-25 08:03</div>
+            <div class="timeline-body"><p>It no longer gets surfaced to the user if it's an error with a response status code. That's because the new interface gives the user the ability to ignore any status code they want.</p>
+<p>But now I've updated it so that if the strategy check fails on anything other than a 401 or 403, we just return the original error. This still provides the flexibility but preserves the old error information.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-25 08:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>docs/configuration/indexes.md</code>:217 on 2025-04-25 08:05</div>
+            <div class="timeline-body"><p>I thought it was clear from the section title, but I'll make it more explicit.</p>
+<p>It now reads &quot;stop searching across indexes&quot; and &quot;continue searching across indexes&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-25 08:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-auth/src/cache.rs</code>:21 on 2025-04-25 08:48</div>
+            <div class="timeline-body"><p>Updated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-04-25 08:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @jtfmumm on 2025-04-25 08:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-04-25 09:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @jtfmumm on 2025-04-25 09:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-25 09:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-client/src/registry_client.rs</code>:521 on 2025-04-25 09:39</div>
+            <div class="timeline-body"><p>I've also added a regression test for this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/cache.rs</code>:19 on 2025-04-29 13:24</div>
+            <div class="timeline-body"><p>Rustdoc please for the variants.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/cache.rs</code>:28 on 2025-04-29 13:24</div>
+            <div class="timeline-body"><p>Nit: <code>Self</code> instead of <code>FetchUrl</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-auth/src/index.rs</code>:64 on 2025-04-29 13:25</div>
+            <div class="timeline-body"><p>Nit: Rustdoc please with an example of when this returns <code>true</code> vs. <code>false</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/registry_client.rs</code>:521 on 2025-04-29 13:36</div>
+            <div class="timeline-body"><p>I'm still struggling a bit. Why do we break when (e.g.) we hit a 401, but 401 isn't included in the list of ignored errors? Why is it not something like this?</p>
+<pre><code class="language-diff">diff --git a/crates/uv-client/src/registry_client.rs b/crates/uv-client/src/registry_client.rs
+index 8bdf2c065..3cb6b4978 100644
+--- a/crates/uv-client/src/registry_client.rs
++++ b/crates/uv-client/src/registry_client.rs
+@@ -348,12 +348,6 @@ impl RegistryClient {
+                                 }
+                                 // Package not found, so we will continue on to the next index (if there is one)
+                                 SimpleMetadataSearchOutcome::NotFound =&gt; {}
+-                                // The search failed because of an HTTP status code that we don't ignore for
+-                                // this index. We end our search here.
+-                                SimpleMetadataSearchOutcome::StatusCodeFailure(status_code) =&gt; {
+-                                    debug!(&quot;Indexes search failed because of status code failure: {status_code}&quot;);
+-                                    break;
+-                                }
+                             }
+                         }
+                         IndexFormat::Flat =&gt; {
+@@ -522,17 +516,15 @@ impl RegistryClient {
+                     let Some(status_code) = err.status() else {
+                         return Err(ErrorKind::WrappedReqwestError(url, err).into());
+                     };
+-                    let decision =
+-                        status_code_strategy.handle_status_code(status_code, index, capabilities);
+-                    if let IndexStatusCodeDecision::Fail(status_code) = decision {
+-                        if !matches!(
+-                            status_code,
+-                            StatusCode::UNAUTHORIZED | StatusCode::FORBIDDEN
+-                        ) {
+-                            return Err(ErrorKind::WrappedReqwestError(url, err).into());
++                    match status_code_strategy.handle_status_code(status_code, index, capabilities)
++                    {
++                        IndexStatusCodeDecision::Ignore =&gt; {
++                            Ok(SimpleMetadataSearchOutcome::NotFound)
++                        }
++                        IndexStatusCodeDecision::Fail(..) =&gt; {
++                            Err(ErrorKind::WrappedReqwestError(url, err).into())
+                         }
+                     }
+-                    Ok(SimpleMetadataSearchOutcome::from(decision))
+                 }
+ 
+                 // The package is unavailable due to a lack of connectivity.
+@@ -998,18 +990,6 @@ pub(crate) enum SimpleMetadataSearchOutcome {
+     Found(OwnedArchive&lt;SimpleMetadata&gt;),
+     /// Simple metadata was not found
+     NotFound,
+-    /// A status code failure was encountered when searching for
+-    /// simple metadata and our strategy did not ignore it
+-    StatusCodeFailure(StatusCode),
+-}
+-
+-impl From&lt;IndexStatusCodeDecision&gt; for SimpleMetadataSearchOutcome {
+-    fn from(item: IndexStatusCodeDecision) -&gt; Self {
+-        match item {
+-            IndexStatusCodeDecision::Ignore =&gt; Self::NotFound,
+-            IndexStatusCodeDecision::Fail(status_code) =&gt; Self::StatusCodeFailure(status_code),
+-        }
+-    }
+ }
+ 
+ /// A map from [`IndexUrl`] to [`FlatIndexEntry`] entries found at the given URL, indexed by
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-04-29 13:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-client/src/registry_client.rs</code>:521 on 2025-04-29 13:50</div>
+            <div class="timeline-body"><p>Because if we do it that way, we lose the richer error messages from the resolver. I actually originally did it the way you suggest, but @zanieb pointed out that there were regressions in the amount of information the user was getting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-29 13:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-29 13:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-client/src/registry_client.rs</code>:521 on 2025-04-29 13:51</div>
+            <div class="timeline-body"><p>This is sort of like the original behavior of returning <code>Ok(None)</code> except that it also stops the search from going to the next index.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-29 13:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-auth/src/index.rs</code>:64 on 2025-04-29 13:54</div>
+            <div class="timeline-body"><p>Because of the timing of the release, can we defer this to a PR afterwards? I just moved this logic from a function to a method in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-29 13:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-auth/src/cache.rs</code>:19 on 2025-04-29 13:57</div>
+            <div class="timeline-body"><p>Added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-29 13:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-auth/src/cache.rs</code>:28 on 2025-04-29 13:58</div>
+            <div class="timeline-body"><p>Updated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-04-29 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-04-29 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/registry_client.rs</code>:352 on 2025-04-29 15:40</div>
+            <div class="timeline-body"><p>I think this should mention the assumption that the status code failure will be tracked by <code>IndexCapabilities</code> and surfaced via hints.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-04-29 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/registry_client.rs</code>:530 on 2025-04-29 15:41</div>
+            <div class="timeline-body"><p>I think this should mention that these specific codes are tracked via <code>IndexCapabilities</code> and surfaced via hints; otherwise, it's not really clear why these <em>specific</em> codes are ignored.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-04-29 15:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/registry_client.rs</code>:1003 on 2025-04-29 15:42</div>
+            <div class="timeline-body"><p>I think I would find it clearer if we actually just made individual enum variants for Unauthorized and Forbidden, rather than allowing an arbitrary status code here. That way the expectations are encoded in the type system. We should make the invalid state (e.g., <code>StatusCodeFailure(400)</code>) unrepresentable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-29 17:48</div>
+            <div class="timeline-body"><p>I'm going to merge and kick the tires on the release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-04-29 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-29 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-29 17:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juhaszp95">@juhaszp95</a> on 2025-04-30 08:22</div>
+            <div class="timeline-body"><p>Hi There,</p>
+<p>Just a quick question on the above - I have an internal package index which also returns 403 for missing packages. Is it possible to make the <code>ignore-error-codes</code> a user-wide setting by somehow incorporating it in <code>uv.toml</code>? I.e. to declare custom exceptions user-wide.</p>
+<p>Furthermore, it seems to me that the workaround in <code>pyproject.toml</code> only works if I include the authentication token as well in the url, which is obviously undesirable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-30 08:46</div>
+            <div class="timeline-body"><blockquote>
+<p>Hi There,</p>
+<p>Just a quick question on the above - I have an internal package index which also returns 403 for missing packages. Is it possible to make the <code>ignore-error-codes</code> a user-wide setting by somehow incorporating it in <code>uv.toml</code>? I.e. to declare custom exceptions user-wide.</p>
+<p>Furthermore, it seems to me that the workaround in <code>pyproject.toml</code> only works if I include the authentication token as well in the url, which is obviously undesirable.</p>
+</blockquote>
+<p>You shouldn't need to include a token in the URL (and I agree you shouldn't include one in <code>pyproject.toml</code>). Did you run into an issue when excluding it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juhaszp95">@juhaszp95</a> on 2025-04-30 09:12</div>
+            <div class="timeline-body"><p>Yes - interestingly, I get the error <code>An index URL (https://myorg.jfrog.io/artifactory/api/pypi/pypi/simple) could not be queried due to a lack of valid authentication credentials (403 Forbidden).</code>, even though I set <code>ignore-error-codes = [401, 403]</code>. This index is set as an <code>extra-index-url</code> in <code>uv.toml</code>. This doesn't seem to be an issue for the other internal index I use, which is set as the <code>index-url</code> in <code>uv.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-30 09:23</div>
+            <div class="timeline-body"><p>Ok, would you mind opening an issue and including a reproduction and trace (<code>-vv</code>) logs? I can investigate this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juhaszp95">@juhaszp95</a> on 2025-04-30 09:25</div>
+            <div class="timeline-body"><p>Should I put it <a href="https://github.com/astral-sh/uv/issues/13216">here</a> as it seems closely related, or would you rather a separate issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-30 09:28</div>
+            <div class="timeline-body"><p>I think a separate issue for now would be helpful. It's not clear to me these are the same problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juhaszp95">@juhaszp95</a> on 2025-04-30 10:14</div>
+            <div class="timeline-body"><p>I've realised what the problem is just now (and it's sort of OK): as I was debugging, I left the <code>url</code> in the format <code>USER@ORG@repository-url</code> which works for <code>extra-index-url</code> but strangely does not for <code>index-url</code>. When I removed the <code>USER@ORG</code> part it worked again, so that's all solved I believe! I have no idea why it behaves differently for <code>index-url</code> and <code>extra-index-url</code>, but at least it works for both when there aren't really any credentials there (i.e. not just the token deleted, but everything). Also, interestingly, I need to put the <code>index-url</code> in <code>pyproject.toml</code> (without any <code>ignore-error-codes</code>) for it to work - strange. It's like as if the <code>extra-index-url</code> is treated differently than the <code>index-url</code>, or perhaps if indexes are declared in <code>pyproject.toml</code>, the contents of <code>uv.toml</code> are ignored, hence the need to declare the index in <code>pyproject.toml</code> as well.</p>
+<p>This still leaves the outstanding question whether all this config could be saved to a <code>uv.toml</code> for user-level configuration so I don't need to do this at every single project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-30 11:16</div>
+            <div class="timeline-body"><p>Is this problem unique to 0.7.0 or do you also see it on 0.6.17? The <code>ignore-error-codes</code> feature doesn't exist on 0.6.17, but I'm trying to understand if something broke with 0.7.0 or if this is just an enhancement you'd like to see to the new error code behavior. Or if the main concern is the change that we are no longer ignoring 403s by default (and you can't find a good way to configure uv to ignore them for your situation).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/juhaszp95">@juhaszp95</a> on 2025-04-30 11:56</div>
+            <div class="timeline-body"><p>The problem and enhancement request is both unique to 0.7.0. Before, I had all index and authentication info saved in <code>uv.toml</code> with no issues. Now, due to how 0.7.0 handles error codes, I have to copy ignores to all projects as well. It'd be good if the ignores could be configured centrally rather than at a project level (for my use-case). I've checked 0.7.1 doesn't solve this (as expected).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:22 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C416 incorrectly flags dict comprehension based on dict with tuple keys - astral-sh/ruff #13625</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>C416 incorrectly flags dict comprehension based on dict with tuple keys</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13625">#13625</a>
+        opened by <a href="https://github.com/henribru">@henribru</a>
+        on 2024-10-04 14:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/henribru">@henribru</a> on 2024-10-04 14:37</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>https://play.ruff.rs/4d78b865-9778-415b-9303-377a3fdff673</p>
+<pre><code class="language-python">d1 = {(1, 2): 3, (3, 4): 5}
+d2 = {x: y for x, y in d1}
+</code></pre>
+<p><a href="https://docs.astral.sh/ruff/rules/unnecessary-comprehension/">C416</a> suggests changing <code>d2</code> to <code>dict(d1)</code>, which is incorrect because this will just copy <code>d1</code>.</p>
+<p>This seems like an intractable problem to solve in general because you'd have to know whether the thing being iterated over is a dict. In a case like this I suppose it could be done with local type inference, though. <a href="https://docs.astral.sh/ruff/rules/in-dict-keys/">SIM118</a> mentions acting differently based on whether it can statically know something to be a dict, so I assume that's something Ruff is already capable of.</p>
+<p>The fix is thankfully already marked as unsafe for a different reason, so this isn't a huge problem. But it seems worth documenting this case as another reason for marking it as unsafe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-04 15:24</div>
+            <div class="timeline-body"><p>Ah the classic case where the dict keys are tuples. I think we could do better here with type inference, yeah.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @zanieb on 2024-10-04 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @zanieb on 2024-10-04 15:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-04 15:26</div>
+            <div class="timeline-body"><p>This is sort of a false positive of the rule not a fix safety problem though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henribru">@henribru</a> on 2024-10-04 15:53</div>
+            <div class="timeline-body"><blockquote>
+<p>This is sort of a false positive of the rule not a fix safety problem though.</p>
+</blockquote>
+<p>Well, sure, but in general the only way to avoid false positives for this is to only flag it if you can statically determine that it's not a dict, right? But that would make the rule apply much more rarely, so the more pragmatic solution seems like keeping the fix as unsafe and avoiding flagging it if you can statically determine that it's a dict. Not sure if Ruff generally prefers correctness or more broadly applicable rules, though.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:19 UTC
+    </footer>
+</body>
+</html>

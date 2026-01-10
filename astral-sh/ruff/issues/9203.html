@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E501 line-too-long created as a side effect of applying UP015 - astral-sh/ruff #9203</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>E501 line-too-long created as a side effect of applying UP015</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9203">#9203</a>
+        opened by <a href="https://github.com/eli-schwartz">@eli-schwartz</a>
+        on 2023-12-19 22:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2023-12-19 22:49</div>
+            <div class="timeline-body"><ul>
+<li>Given a ruff.toml that declares the line length to be 79.</li>
+<li>On the https://github.com/openstack/ironic-python-agent codebase:</li>
+</ul>
+<pre><code>$ ruff check . --select E501
+# success
+
+$ ruff check . --select UP015,E501 --fix
+ironic_python_agent/hardware.py:96:80: E501 Line too long (82 &gt; 79)
+Found 15 errors (14 fixed, 1 remaining).
+</code></pre>
+<pre><code class="language-diff">diff --git a/ironic_python_agent/hardware.py b/ironic_python_agent/hardware.py
+index 95faabca..a48f9dc1 100644
+--- a/ironic_python_agent/hardware.py
++++ b/ironic_python_agent/hardware.py
+@@ -93,8 +93,7 @@ def _get_device_info(dev, devclass, field):
+     &quot;&quot;&quot;Get the device info according to device class and field.&quot;&quot;&quot;
+     try:
+         devname = os.path.basename(dev)
+-        with open('/sys/class/%s/%s/device/%s' % (devclass, devname, field),
+-                  'r') as f:
++        with open('/sys/class/%s/%s/device/%s' % (devclass, devname, field)) as f:
+             return f.read().strip()
+     except IOError:
+         LOG.warning(&quot;Can't find field %(field)s for &quot;
+</code></pre>
+<p>Ruff is responsible for reformatting this line when applying <em>lint</em> fixes. It should respect the max line length, and avoid folding the two lines together as a side effect of removing the open mode.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jayofdoom">@jayofdoom</a> on 2023-12-19 22:51</div>
+            <div class="timeline-body"><p>Thanks for proxying this bugreport; I can confirm I saw this behavior when trialing ruff on the ironic-python-agent codebase.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2023-12-19 23:05</div>
+            <div class="timeline-body"><p>If ruff isn't confident it can apply the UP015 fixer it should just refuse to do it at all without --unsafe-fixes, of course. Either solution is valid, though I suspect users would be okay with just removing the <code>'r'</code> anyways.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-20 00:29</div>
+            <div class="timeline-body"><p>The ideal behavior here is for us to re-format the fix, but in lieu of that, I don't know that <em>not</em> offering the fix is actually better -- we've had a lot of confusion in the past when adding that behavior to specific rules (it's respected in <em>some</em> cases): https://github.com/astral-sh/ruff/issues/8106</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2023-12-20 00:47</div>
+            <div class="timeline-body"><p>Maybe there needs to be:</p>
+<ol>
+<li>a generic mechanism for autofixes to detect when they would rewrite code which formerly obeyed the line-length setting, to violate it, and mark that autofix as long-line-unsafe</li>
+<li>a dedicated option, similar to --unsafe-fixes but <em>not actually called unsafe-fixes</em>, e.g. <code>--long-line-fixes</code></li>
+</ol>
+<p>I definitely do not think it's appropriate to violate the line length.</p>
+<ul>
+<li>not everyone uses, or wants to use, a formatter</li>
+<li>ruff combined with autofixes can be very useful for performing one-off migrations</li>
+<li>many projects have CI which is gated on flake8, but not ruff, so it would be advantageous to be able to run <code>ruff check --fix</code> and get fewer fixes, but passing CI</li>
+<li>but mostly, &quot;In the face of ambiguity, refuse the temptation to guess.&quot; If ruff is going to emit an error code either way, then there is no point in <em>both</em> modifying the file <em>and</em> emitting an error code. Ruff should not make a decision about whether you prefer to get an error due to the UP015 code or get a different error due to the E501 code. Instead, ruff should simply report whichever error your codebase already has, and let <em>you</em> make the judgment call.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-01-02 17:59</div>
+            <div class="timeline-body"><p>I'm going to merge this into https://github.com/astral-sh/ruff/issues/8106 and make the issue more general -- bear with me...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-01-02 17:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:16 UTC
+    </footer>
+</body>
+</html>

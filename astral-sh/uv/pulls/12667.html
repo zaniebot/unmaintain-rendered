@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distinguish between authentication failures due to missing vs invalid credentials - astral-sh/uv #12667</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Distinguish between authentication failures due to missing vs invalid credentials</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12667">#12667</a>
+        opened by <a href="https://github.com/jtfmumm">@jtfmumm</a>
+        on 2025-04-04 10:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-04 10:16</div>
+            <div class="timeline-body"><p>Prior to this change, unless an index was configured as <code>authenticate = &quot;always&quot;</code>, authentication failures would output the same error message whether the cause was missing credentials or incorrect credentials. This PR ensures that missing credentials lead to a distinct error message.</p>
+<p>Once #12651 is merged,
+Closes #12280</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @jtfmumm on 2025-04-04 10:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-04 10:19</div>
+            <div class="timeline-body"><p>These snapshot tests will need to be updated to reflect #12651 once it is merged. So this PR should wait on #12651.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-04 16:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:592 on 2025-04-04 16:26</div>
+            <div class="timeline-body"><p>Why did this one change? There's no policy set here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-04 16:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/lock.rs</code>:8468 on 2025-04-04 16:27</div>
+            <div class="timeline-body"><p>This looks like a regression to me?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-04 17:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-auth/src/middleware.rs</code>:592 on 2025-04-04 17:15</div>
+            <div class="timeline-body"><p>Maybe there's a better way to do it, but the existing approach had been to throw an error for the missing credentials case. There's no policy set here, but the reason for the 401 is because of missing credentials.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-04 17:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:592 on 2025-04-04 17:17</div>
+            <div class="timeline-body"><p>I don't think we can throw an error there though, doesn't downstream logic rely on a successful request? (i.e., in https://github.com/astral-sh/uv/pull/12667#discussion_r2029115491)</p>
+<p>Perhaps I misunderstood the intent of this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-04 17:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/lock.rs</code>:8468 on 2025-04-04 17:18</div>
+            <div class="timeline-body"><p>This is a case where the fetch failed because there were no credentials, which is the reason the package was not found (since we were never authenticated, we were not able to search for it). So this case is intentional. Does it still seem like a regression?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-04 17:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/lock.rs</code>:8468 on 2025-04-04 17:21</div>
+            <div class="timeline-body"><p>I think so? Doesn't this fail eagerly now? What if there was a second index with the package available?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-04 17:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/lock.rs</code>:7528 on 2025-04-04 17:22</div>
+            <div class="timeline-body"><p>A bit of an aside, but... why weren't we showing the hint from https://github.com/astral-sh/uv/pull/12667/files#diff-82edd36151736f44055f699a34c8b19a63ffc4cf3c86bf5fb34d69f8ac88a957L8471 in this case?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-04 17:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/lock.rs</code>:8468 on 2025-04-04 17:23</div>
+            <div class="timeline-body"><p>(It should be easy to add a test for that, we should probably have coverage regardless)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/lock.rs</code>:8468 on 2025-04-04 17:24</div>
+            <div class="timeline-body"><p>I'll add that test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-04 17:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-04 17:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/lock.rs</code>:7528 on 2025-04-04 17:25</div>
+            <div class="timeline-body"><p>That's a good question. I'll look into it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-04 17:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-auth/src/middleware.rs</code>:592 on 2025-04-04 17:28</div>
+            <div class="timeline-body"><p>The only tests that broke were cases where we'd want the message to indicate that missing credentials was the cause of failing to find the package. But if we are depending on getting the 401 out of this response downstream, then this approach won't work. In that case, I can try using reqwest extensions to add more context about the 401.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-04 17:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:592 on 2025-04-04 17:32</div>
+            <div class="timeline-body"><p>Ah I understand the goal now, you want to make the case where no credentials were present distinct from the case where the credentials are wrong. Sorry it took me a while to get there. I think the snapshot changes should be like..</p>
+<blockquote>
+<p>hint: An index URL (https://pypi-proxy.fly.dev/basic-auth/simple) could not be queried due to a lack of valid authentication credentials (401 Unauthorized).</p>
+</blockquote>
+<p>to</p>
+<blockquote>
+<p>hint: An index URL (https://pypi-proxy.fly.dev/basic-auth/simple) could not be queried due to missing credentials (401 Unauthorized)</p>
+</blockquote>
+<p>and</p>
+<blockquote>
+<p>hint: An index URL (https://pypi-proxy.fly.dev/basic-auth/simple) could not be queried due to invalid credentials (401 Unauthorized)</p>
+</blockquote>
+<p>I think changing that error path entirely feels too risky and is hopefully unnecessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-04 18:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-auth/src/middleware.rs</code>:592 on 2025-04-04 18:40</div>
+            <div class="timeline-body"><p>(fwiw, I think this would have been clearer if the title was something like &quot;Distinguish between authentication failures due to missing vs invalid credentials&quot;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Improve authentication failure error messages" to "Distinguish between authentication failures due to missing vs invalid credentials" by @jtfmumm on 2025-04-05 11:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-25 15:36</div>
+            <div class="timeline-body"><p>Closing because we are going to use a different approach.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-04-25 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-01 11:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:22 UTC
+    </footer>
+</body>
+</html>

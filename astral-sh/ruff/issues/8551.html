@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F401 False Positive with Generics Type Annotations - astral-sh/ruff #8551</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F401 False Positive with Generics Type Annotations</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8551">#8551</a>
+        opened by <a href="https://github.com/Kaelten">@Kaelten</a>
+        on 2023-11-07 23:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Kaelten">@Kaelten</a> on 2023-11-07 23:44</div>
+            <div class="timeline-body"><p>I have a generic base class in my code base that, to prevent circular imports, must have a forward reference used in it's type annotation.</p>
+<p>Unfortunately, the type checking block keeps getting flagged as in violation of F401.
+I've reconstructed a very arbitrary example below.</p>
+<p><strong>Ruff Version:</strong> 0.1.3
+<strong>Command:</strong> Not 100% sure because it's being ran from the pycharm integration when this happens.</p>
+<p><strong>Config</strong></p>
+<pre><code class="language-toml">[tool.ruff]
+output-format = &quot;grouped&quot;
+target-version = &quot;py311&quot;
+
+line-length = 120
+
+# enable everything by default, and opt out as needed
+select = [&quot;ALL&quot;]
+ignore = [
+    # turning off a few settings to make ruff linter warnings happy
+    &quot;ISC001&quot;, # flake8-implicit-str-concat
+    # flake8-annotations
+    &quot;ANN101&quot;, # missing-type-self
+    &quot;ANN102&quot;, # missing-type-cls
+    &quot;ANN401&quot;, # any-type
+    # flake8-bandit
+    &quot;S603&quot;, # subprocess-without-shell-equals-true
+    # flake8-builtins
+    &quot;A003&quot;, # builtin-attribute-shadowing
+    # flake8-fixme
+    &quot;FIX002&quot;, # line-contains-todo
+    # flake8-todos
+    &quot;TD003&quot;, # missing-todo-link
+    # pydocstyle
+    &quot;D100&quot;, # undocumented-public-module
+    &quot;D102&quot;, # undocumented-public-method
+    &quot;D104&quot;, # undocumented-public-package
+    &quot;D105&quot;, # undocumented-magic-method
+    &quot;D106&quot;, # undocumented-public-nested-class
+    &quot;D107&quot;, # undocumented-public-init
+    &quot;D203&quot;, # one-blank-line-before-class, conflicts with D211
+    &quot;D212&quot;, # multi-line-summary-first-line, conflicts with D213
+    &quot;D215&quot;, # section-underline-not-over-indented
+    &quot;D406&quot;, # new-line-after-section-name
+    &quot;D407&quot;, # dashed-underline-after-section
+    &quot;D408&quot;, # section-underline-after-name
+    &quot;D409&quot;, # section-underline-matches-section-length
+    &quot;D413&quot;, # blank-line-after-last-section
+    # pylint
+    &quot;PLC0105&quot;, # type-name-incorrect-variance
+]
+
+# the below rules can fight in progress development and as such we won't autofix them
+unfixable = [
+    # eradicate
+    &quot;ERA001&quot;, # commented-out-code
+    # flake8-bugbear
+    &quot;B007&quot;, # unused-loop-control-variable
+    # perflint
+    &quot;PERF102&quot;, # incorrect-dict-iterator
+    # pyflakes
+    &quot;F841&quot;, # unused-variable
+]
+
+[tool.ruff.format]
+quote-style = &quot;single&quot;
+
+[tool.ruff.flake8-bugbear]
+extend-immutable-calls = [
+    &quot;fastapi.Depends&quot;,
+    &quot;fastapi.Form&quot;,
+    &quot;fastapi.Header&quot;,
+    &quot;fastapi.Query&quot;,
+]
+
+[tool.ruff.flake8-quotes]
+inline-quotes = &quot;single&quot;
+
+[tool.ruff.flake8-tidy-imports]
+ban-relative-imports = &quot;all&quot;
+
+[tool.ruff.flake8-tidy-imports.banned-api]
+&quot;typing.TypedDict&quot;.msg = &quot;Pydantic requires 3.12 backports for TypedDict validations, use `typing_extensions.TypedDict` instead.&quot;
+
+[tool.ruff.isort]
+combine-as-imports = true
+force-wrap-aliases = true
+lines-between-types = 1
+
+section-order = [
+    &quot;future&quot;,
+    &quot;standard-library&quot;,
+    &quot;third-party&quot;,
+    &quot;shared&quot;,
+    &quot;services&quot;,
+    &quot;tools&quot;,
+    &quot;first-party&quot;,
+    &quot;local-folder&quot;,
+]
+
+[tool.ruff.isort.sections]
+&quot;services&quot; = [
+    &quot;serviceName1&quot;,
+]
+
+&quot;shared&quot; = [
+    &quot;sharedPackage&quot;,
+]
+
+&quot;tools&quot; = [
+    &quot;toolPackage&quot;,
+]
+
+[tool.ruff.pep8-naming]
+# without this setting these decorators would trigger N805 false positives
+classmethod-decorators = [
+    &quot;pydantic.field_validator&quot;,
+    &quot;pydantic.model_validator&quot;,
+    &quot;sqlalchemy.orm.declared_attr&quot;,
+    &quot;sqlalchemy.orm.declared_attr.directive&quot;,
+]
+</code></pre>
+<p><strong>Reproduction case:</strong></p>
+<pre><code class="language-python">from typing import TYPE_CHECKING, Generic, TypeVar
+
+if TYPE_CHECKING:
+    from typing import List  # noqa: F401
+
+_T = TypeVar('_T')
+
+
+class MyGeneric(Generic[_T]):
+    &quot;&quot;&quot;My Generic Base.&quot;&quot;&quot;
+
+
+class Test(MyGeneric['List[int]']):
+    &quot;&quot;&quot;My non generic thing.&quot;&quot;&quot;
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-11-09 02:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-09 03:24</div>
+            <div class="timeline-body"><p>I don't believe we support arbitrary generics -- can you try adding it to <a href="https://docs.astral.sh/ruff/settings/#pyflakes-extend-generics"><code>extend-generics</code></a>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-11-09 03:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kaelten">@Kaelten</a> on 2023-11-09 17:27</div>
+            <div class="timeline-body"><p>That was it!  I'd think it'd be possible, in some situations at least, to recognize arbitrary generics and the associated type annotations.  Is it something you plan to investigate further?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-10 05:06</div>
+            <div class="timeline-body"><p>I think we will eventually! But I'm gonna mark it as out of scope for the issue for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-10 05:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:54 UTC
+    </footer>
+</body>
+</html>

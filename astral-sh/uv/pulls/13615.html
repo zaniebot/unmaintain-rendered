@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add script for testing uv against different registries - astral-sh/uv #13615</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add script for testing uv against different registries</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13615">#13615</a>
+        opened by <a href="https://github.com/jtfmumm">@jtfmumm</a>
+        on 2025-05-23 10:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-05-23 10:38</div>
+            <div class="timeline-body"><p>This PR provides a script that uses environment variables to determine which registries to test. This script is being used to run automated registry tests in CI for AWS, Azure, GCP, Artifactory, GitLab, Cloudsmith, and Gemfury.</p>
+<p>You must configure the following required env vars for each registry:</p>
+<pre><code>    UV_TEST_&lt;registry_name&gt;_URL            URL for the registry
+    UV_TEST_&lt;registry_name&gt;_TOKEN       authentication token
+    UV_TEST_&lt;registry_name&gt;_PKG          private package to install
+</code></pre>
+<p>The username defaults to &quot;__token__&quot; but can be optionally set with:</p>
+<pre><code>    UV_TEST_&lt;registry_name&gt;_USERNAME
+</code></pre>
+<p>For each configured registry, the test will attempt to install the specified package. Some registries can fall back to PyPI internally, so it's important to choose a package that only exists in the registry you are testing.</p>
+<p>Currently, a successful test means that it finds the line “ + &lt;package_name&gt;” in the output. This is because in its current form we don’t know ahead of time what package it is and hence what the exact expected output would be. The advantage if that anyone can run this locally, though they would have to have access to the registries they want to test.</p>
+<p>You can also use the <code>--use-op</code> command line argument to derive these test env vars from a 1Password vault (default is &quot;RegistryTests&quot; but can be configured with <code>--op-vault</code>). It will look at all items in the vault with names following the pattern <code>UV_TEST_&lt;registry_name&gt;</code> and will derive the env vars as follows:</p>
+<pre><code>    `UV_TEST_&lt;registry_name&gt;_USERNAME` from the `username` field
+    `UV_TEST_&lt;registry_name&gt;_TOKEN` from the `password` field
+    `UV_TEST_&lt;registry_name&gt;_URL` from a field with the label `url`
+    `UV_TEST_&lt;registry_name&gt;_PKG` from a field with the label `pkg`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">testing</span> added by @jtfmumm on 2025-05-23 10:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-23 13:47</div>
+            <div class="timeline-body"><p>Can we define a default list or target that checks that the tests ran against all known registries?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-05-23 13:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Can we define a default list or target that checks that the tests ran against all known registries?</p>
+</blockquote>
+<p>Yeah, that’s a good idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-05-23 19:04</div>
+            <div class="timeline-body"><p>I've added a cli arg <code>--all</code> that causes the script to check if you've tested known registries. Right now the list is     <code>artifactory</code>, <code>azure</code>, <code>aws</code>, <code>cloudsmith</code>, <code>gcp</code>, <code>gemfury</code>, <code>gitlab</code>, and <code>nexus</code>. Even if you don't have credentials for all of them when you run the test, it's helpful as a reminder of other registries to test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2025-05-27 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-27 18:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>scripts/registries-test.py</code>:102 on 2025-05-27 18:15</div>
+            <div class="timeline-body"><p>It'd probably be good to just use <code>&quot;uv&quot;</code> and accept a path to the uv binary to use. It'd be nice not to entangle this with <code>cargo build</code> / <code>cargo run</code> so we can test against other versions and such,</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>scripts/registries-test.py</code>:96 on 2025-05-27 18:16</div>
+            <div class="timeline-body"><p>I would use <code>env = os.environ.copy()</code> and pass this to the subprocess instead of mutating the live environment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>scripts/registries-test.py</code>:113 on 2025-05-27 18:18</div>
+            <div class="timeline-body"><p>I would probably do...</p>
+<pre><code class="language-suggestion">        if verbosity:
+            cmd.extend([&quot;-&quot; + &quot;v&quot; * verbosity])
+</code></pre>
+<p>since uv supports arbitrary <code>-v</code> flags too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>scripts/registries-test.py</code>:96 on 2025-05-27 18:19</div>
+            <div class="timeline-body"><p>(This let's us do things like add concurrency safely in the future)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-27 18:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-27 18:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>scripts/registries-test.py</code>:102 on 2025-05-27 18:58</div>
+            <div class="timeline-body"><p>Updated to provide a <code>--binary</code> cli arg with default <code>uv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-28 12:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/registries-test.py</code>:102 on 2025-05-28 12:03</div>
+            <div class="timeline-body"><p>I'm using https://github.com/astral-sh/uv/blob/aa629c4a54c31d6132ab1655b90dd7542c17d120/scripts/publish/test_publish.py#L537-L544 for the publish test script, it's convenient for me cause it updates the build locally but uses the provided binary in CI</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/registries-test.py</code>:19 on 2025-05-28 12:10</div>
+            <div class="timeline-body"><p>This should have a version bound</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/registries-test.py</code>:19 on 2025-05-28 12:10</div>
+            <div class="timeline-body"><p>Doesn't that break the test when someone publishes the same package name to pypi?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/registries-test.py</code>:64 on 2025-05-28 12:15</div>
+            <div class="timeline-body"><p>Incorrect return type annotation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/registries-test.py</code>:92 on 2025-05-28 12:22</div>
+            <div class="timeline-body"><p>missing article</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/registries-test.py</code>:32 on 2025-05-28 12:23</div>
+            <div class="timeline-body"><p>Can you set a requires-python too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/registries-test.py</code>:82 on 2025-05-28 12:23</div>
+            <div class="timeline-body"><p>nit: we can apply pyupgrade here:</p>
+<pre><code>    env: dict[str, str],
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/registries-test.py</code>:113 on 2025-05-28 12:25</div>
+            <div class="timeline-body"><p>nit: we should do this before constructing the add command (I got confused for a moment why we're doing <code>uv add</code> without <code>uv init</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/registries-test.py</code>:149 on 2025-05-28 12:26</div>
+            <div class="timeline-body"><p>We should render both stderr and stdout on failure</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/registries-test.py</code>:239 on 2025-05-28 12:27</div>
+            <div class="timeline-body"><p>We can print stdout/stderr for this error too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/registries-test.py</code>:199 on 2025-05-28 12:33</div>
+            <div class="timeline-body"><p>You can set this as default value in <code>parse_args</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/registries-test.py</code>:96 on 2025-05-28 12:34</div>
+            <div class="timeline-body"><p>What I like to use is:</p>
+<pre><code>env = {
+   **os.environ,
+   &quot;FOO&quot;: foo(),
+   &quot;BAR&quot;: bar,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/registries-test.py</code>:232 on 2025-05-28 12:35</div>
+            <div class="timeline-body"><p>Does it make sense to define a default package name we publish to registries?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/registries-test.py</code>:345 on 2025-05-28 12:36</div>
+            <div class="timeline-body"><p>Should this fail with <code>--all</code>? Otherwise it sounds like a test could slip through if the env var is missing or wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-28 12:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-28 15:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>scripts/registries-test.py</code>:102 on 2025-05-28 15:27</div>
+            <div class="timeline-body"><p>That's fine with me too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-29 21:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>scripts/registries-test.py</code>:19 on 2025-05-29 21:33</div>
+            <div class="timeline-body"><p>That's a good point, but I'm not sure we can do better with a registry that internally falls back to PyPI since I don't think we have any control over it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-29 21:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>scripts/registries-test.py</code>:232 on 2025-05-29 21:34</div>
+            <div class="timeline-body"><p>That does make sense. I've been using <code>a01</code> locally but we can use something like <code>registry_test_pkg</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-30 08:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/registries-test.py</code>:232 on 2025-05-30 08:41</div>
+            <div class="timeline-body"><p>I've used <code>astral-test-&lt;...&gt;</code> for the publish test but for the private registry we can use anything as long as it's clearly identifiable as a test package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/registries-test.py</code>:19 on 2025-05-30 08:42</div>
+            <div class="timeline-body"><p>ok, then that's an error source we have to live with.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-30 08:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-05-30 22:20</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/uv/branches/jtfm%2Fregistry-test-script">CodSpeed Walltime Performance Report</a></h2>
+<h3>Merging #13615 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>jtfm/registry-test-script</code> (bcc0f17) with <code>main</code> (49b4501)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 12</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-09 21:38</div>
+            <div class="timeline-body"><p>I've added support for deriving registry env vars from the 1Password cli tool (<code>op</code>) if you pass in the <code>--use-op</code> flag. These values are derived from a specified vault (default is &quot;RegistryTests&quot; but can be configured with <code>--op-vault</code>). It will look at all items in the vault with names following the pattern <code>UV_TEST_&lt;registry_name&gt;</code> and will derive the env vars as follows:</p>
+<pre><code>    `UV_TEST_&lt;registry_name&gt;_USERNAME` from the `username` field
+    `UV_TEST_&lt;registry_name&gt;_TOKEN` from the `password` field
+    `UV_TEST_&lt;registry_name&gt;_URL` from a field with the label `url`
+    `UV_TEST_&lt;registry_name&gt;_PKG` from a field with the label `pkg`
+</code></pre>
+<p>If there is no corresponding field for any of these and an env var has been set in the environment, then that will be used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-06-11 22:19</div>
+            <div class="timeline-body"><p>I've added a CI integration test that runs the registry test script using GitHub secrets to set the env vars. It is currently running against AWS, Azure, GCP, GitLab, Artifactory, Cloudsmith, and Gemfury.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-13 10:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/registries-test.py</code>:291 on 2025-06-13 10:10</div>
+            <div class="timeline-body"><p>That seems to be the old value</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-13 10:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/registries-test.py</code>:172 on 2025-06-13 10:59</div>
+            <div class="timeline-body"><p>This gets a <code>Path</code>, but is annotated as <code>str</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.github/workflows/ci.yml</code>:1512 on 2025-06-13 15:24</div>
+            <div class="timeline-body"><p>Can you mask the token with <code>::add-mask::</code>, and also the GCP token?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.github/workflows/ci.yml</code>:1515 on 2025-06-13 15:25</div>
+            <div class="timeline-body"><p>These actions should use hashes for versions too</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/registries-test.py</code>:97 on 2025-06-13 15:27</div>
+            <div class="timeline-body"><p>This can be <code>removeprefix</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>scripts/registries-test.py</code>:167 on 2025-06-13 15:33</div>
+            <div class="timeline-body"><p>We don't need the <code>encoding=&quot;utf-8&quot;</code> here. https://peps.python.org/pep-0686/ will solve this fully, but we're not writing non-ascii here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-06-13 15:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @jtfmumm on 2025-06-18 07:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-06-18 07:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-18 07:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:25 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff format breaking # noqa: B008 - astral-sh/ruff #18146</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff format breaking # noqa: B008</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18146">#18146</a>
+        opened by <a href="https://github.com/waterworthd-cim">@waterworthd-cim</a>
+        on 2025-05-17 01:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/waterworthd-cim">@waterworthd-cim</a> on 2025-05-17 01:41</div>
+            <div class="timeline-body"><p>I'm not sure if this is a duplicate, I'm not sure what to search for</p>
+<p>I'm using dlthub, which makes heavy use of decorators, dependency inject and defaults which violate B008, i.e.</p>
+<pre><code>@dlt.resource()
+def data_reader(
+    credentials: ConnectionStringCredentials = dlt.secrets.value,
+    incremental: dlt.sources.incremental = dlt.sources.incremental(  &quot;xmin&quot;, initial_value=0) # noqa: B008
+) -&gt; Iterable[pyarrow.Table]:
+    pass
+</code></pre>
+<p>The issue is after adding <code># noqa: B008</code> my <code>ruff format</code> pre-commit hook reformatted the line to</p>
+<pre><code>@dlt.resource()
+def data_reader(
+    credentials: ConnectionStringCredentials = dlt.secrets.value,
+    incremental: dlt.sources.incremental = dlt.sources.incremental(  
+        &quot;xmin&quot;, initial_value=0
+    ) # noqa: B008
+) -&gt; Iterable[pyarrow.Table]:
+    pass
+</code></pre>
+<p>And then triggered B008 again on the first line, to fix I had to move to # noqa, i.e.</p>
+<pre><code>@dlt.resource()
+def data_reader(
+    credentials: ConnectionStringCredentials = dlt.secrets.value,
+    incremental: dlt.sources.incremental = dlt.sources.incremental(  # noqa: B008
+        &quot;xmin&quot;, initial_value=0
+    ) 
+) -&gt; Iterable[pyarrow.Table]:
+    pass
+</code></pre>
+<p>It seems that it's not correctly identifying where the &quot;line&quot; ends - the hint seems to have to be applied at the end of the first line of a multi-line statement, but that's not safe if <code>ruff format</code> breaks a hinted line?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-17 14:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:28 UTC
+    </footer>
+</body>
+</html>

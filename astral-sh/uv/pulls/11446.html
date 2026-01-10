@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A minimal build backend for uv: uv_build - astral-sh/uv #11446</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>A minimal build backend for uv: uv_build</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11446">#11446</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-02-12 14:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-02-12 14:58</div>
+            <div class="timeline-body"><p>uv itself is a large package with many dependencies and lots of features. To build a package using the uv build backend, you shouldn't have to download and install the entirety of uv. For platform where we don't provide wheels, it should be possible and fast to compile the uv build backend. To that end, we're introducing a python package that contains a trimmed down version of uv that only contains the build backend, with a minimal dependency tree in rust.</p>
+<p>The <code>uv_build</code> package is publish from CI just like uv itself. It is part of the workspace, but has much less dependencies for its own binary. We're using cargo deny to enforce that the network stack is not part of the dependencies. A new build profile ensure we're getting the minimum possible binary size for a rust binary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cthoyt">@cthoyt</a> on <code>python/uv/_build_backend.py</code>:42 on 2025-02-12 15:58</div>
+            <div class="timeline-body"><p>typo check on the <code>replace()</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cthoyt">@cthoyt</a> reviewed on 2025-02-12 15:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>Cargo.toml</code>:287 on 2025-02-13 13:48</div>
+            <div class="timeline-body"><p>panic = &quot;abort&quot; <em>may</em> also reduce size if we're desperate for every byte: https://doc.rust-lang.org/cargo/reference/profiles.html#panic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-build/src/main.rs</code>:1 on 2025-02-13 13:55</div>
+            <div class="timeline-body"><p>I would love to have a comment here explaining why we are doing this. just to produce an anyhow error instead of panic when stdout is closed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-build/pyproject.toml</code>:42 on 2025-02-13 13:56</div>
+            <div class="timeline-body"><p>i don't know why but this is incredibly funny to me (it makes sense)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-build/deny.toml</code>:8 on 2025-02-13 13:57</div>
+            <div class="timeline-body"><p>rad</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>.github/workflows/build-binaries.yml</code>:145 on 2025-02-13 14:00</div>
+            <div class="timeline-body"><p>Hmm I was gonna say this will slow down releases a lot if it's serial but in theory this thing should build super fast so it's fine?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "CI: uv-build" to "A minimal build backend for uv: uv_build" by @konstin on 2025-02-13 14:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-02-13 14:45</div>
+            <div class="timeline-body"><p>looked over everything but the python</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-13 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>Cargo.toml</code>:287 on 2025-02-13 14:54</div>
+            <div class="timeline-body"><p>Probably worth at least checking how much it saves us</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-02-13 14:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.github/workflows/build-binaries.yml</code>:145 on 2025-02-13 14:55</div>
+            <div class="timeline-body"><p>It's 22s on a fresh target directory for me locally. I had initially put them in succession to reuse the target dir, but that mostly doesn't apply anymore with the different opt mode.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-02-13 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>.github/workflows/build-binaries.yml</code>:145 on 2025-02-13 14:56</div>
+            <div class="timeline-body"><p>Yeah basically nothing to share</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-02-13 14:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build/src/main.rs</code>:1 on 2025-02-13 14:58</div>
+            <div class="timeline-body"><p>I've mostly done it for consistency with <code>writeln!(printer.stdout(), ...)</code> we're using everywhere else, i don't feel strongly about.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>Cargo.toml</code>:287 on 2025-02-13 15:11</div>
+            <div class="timeline-body"><p>I've added it for, it gets us down to 1217927 bytes on linux. I'm not sure with we want to deploy that, we've had very few panics in the past but if the happen the panic message is the only indication we get.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-02-13 15:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>python/uv/__init__.py</code>:30 on 2025-02-13 15:16</div>
+            <div class="timeline-body"><p>consider either remove or change the message to use <code>uv_build</code> instead.
+https://github.com/astral-sh/uv/blob/a4bd73f9229eabce1ecc70cc605ab5872d40e27c/python/uv/<strong>init</strong>.py#L33-L46</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2025-02-13 15:25</div>
+            <div class="timeline-body"><p>IIUC, to configure backend, we should use <code>tool.uv.build-backend</code>, but since <code>uv_build</code> is now standalone package could expect it to be changed?</p>
+<p>IMO, <code>tool.uv.build</code> or <code>tool.uv-build</code> is closer to <code>uv_build</code>, the package name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2025-02-19 10:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2025-02-19 10:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/johnthagen">@johnthagen</a> reviewed on 2025-02-26 14:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/johnthagen">@johnthagen</a> on <code>Cargo.toml</code>:287 on 2025-02-26 14:33</div>
+            <div class="timeline-body"><p>You could see if this helps:</p>
+<pre><code class="language-toml">codegen-units = 1
+</code></pre>
+<ul>
+<li>https://github.com/johnthagen/min-sized-rust?tab=readme-ov-file#reduce-parallel-code-generation-units-to-increase-optimization</li>
+</ul>
+<p>Note, as described in the link above, this (like LTO and others) can slow down the compile time, but could reduce the binary size.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-26 14:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>Cargo.toml</code>:283 on 2025-02-26 14:44</div>
+            <div class="timeline-body"><p>It'd be nice to talk briefly about the goals here, since we're doing some different things.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:226 on 2025-02-26 14:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                Without bounding the `uv_build` version, the source distribution will break \
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-26 14:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-26 14:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:227 on 2025-02-26 14:45</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                when a future, breaking version of `uv_build` is released.&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-26 14:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:230 on 2025-02-26 14:45</div>
+            <div class="timeline-body"><p>We should report what they used verbatim, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-26 14:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:225 on 2025-02-26 14:46</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                upper bound on the `uv_build` version such as `&lt;{next_breaking}`. \
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-26 14:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-build/pyproject.toml</code>:4 on 2025-02-26 14:49</div>
+            <div class="timeline-body"><p>Maybe?</p>
+<pre><code class="language-suggestion">description = &quot;The uv build backend&quot;
+</code></pre>
+<p>It's awkward as phrased currently. I'm not sure we need to explain it's a partial distribution here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-build/python/uv_build/__main__.py</code>:6 on 2025-02-26 14:50</div>
+            <div class="timeline-body"><p>Did you want to use <code>uv_build</code> consistently?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-26 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-26 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>python/uv/__init__.py</code>:20 on 2025-02-26 14:54</div>
+            <div class="timeline-body"><p>Can we say a bit more here? Like.</p>
+<pre><code class="language-suggestion">            f&quot;Using `uv.{attr_name}` is not allowed; build backend functionality is in the `uv_build` package. Did you mean to use `uv_build` as your build system?&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-26 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>Cargo.lock</code>:4673 on 2025-02-26 14:56</div>
+            <div class="timeline-body"><p>Need to update the version before merge</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-26 14:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>Cargo.lock</code>:4673 on 2025-02-26 14:58</div>
+            <div class="timeline-body"><p>We should also add the child <code>pyproject.toml</code> to https://github.com/astral-sh/uv/blob/a0b9f22a21d4ddfc80dcefa63f4bf15e1e252cc9/pyproject.toml#L79 — right?</p>
+<p>Rooster only updates the root <code>pyproject.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-02-26 14:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:230 on 2025-02-26 14:59</div>
+            <div class="timeline-body"><p>Without extra hacks, we don't retain the verbatim representation here, we normalize all package just after reading (like in the resolver, too). If we care about the exact input value, we can change the serde types and do late parsing here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-26 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-build-backend/src/metadata.rs</code>:230 on 2025-02-26 15:00</div>
+            <div class="timeline-body"><p>If it's a pain, this seems fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-02-26 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-build/python/uv_build/__main__.py</code>:6 on 2025-02-26 15:00</div>
+            <div class="timeline-body"><p>yes good catch</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-02-26 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-02-26 15:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>Cargo.lock</code>:4673 on 2025-02-26 15:01</div>
+            <div class="timeline-body"><p>ah yes i was looking for that option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-27 10:17</div>
+            <div class="timeline-body"><p>Some datapoints: A <code>maturin build --profile minimal-size --zig</code> for uv-build takes 17s on my (high-end) desktop, for a 1,2MB wheel. I can link almost any crate compiled to an actual function we perform, except for tokio and rkyv (the build backend is sync and doesn't use the uv cache). It's still a lost of crates, but it's also a lot of features (zip and tar.gz files, SHA256 checksums, parsing the email format for METADATA, toml for pyproject.toml, globs and regex for configuration and PEP 639, SPDX license checking, URL parsing, colorized cli messages, PEP 440, PEP 508 and PEP 625, csv for the record, tracing for logging, ...).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-02-28 01:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-28 01:41</div>
+            <div class="timeline-body"><p>Looks great. My only question is: did we settle on the desired identifiers for this piece?</p>
+<pre><code class="language-toml">requires = [&quot;uv_build&gt;=0.4.15,&lt;5&quot;]
+build-backend = &quot;uv_build&quot;
+</code></pre>
+<p>I'm cool with it overall, I assume @zanieb is too. I might have a slight preference for:</p>
+<pre><code class="language-toml">requires = [&quot;uv-build&gt;=0.4.15,&lt;5&quot;]
+build-backend = &quot;uv.build&quot;
+</code></pre>
+<p>But I assume that's more complicated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-28 03:10</div>
+            <div class="timeline-body"><p>Yeah I prefer the aesthetics of</p>
+<pre><code>requires = [&quot;uv-build&gt;=0.4.15,&lt;5&quot;]
+build-backend = &quot;uv.build&quot;
+</code></pre>
+<p>but then we will clobber the root <code>uv/__init__.py</code>, I think?</p>
+<p>Agree we should nail down our preferred spelling before merging. Perhaps a brief summary of the trade-offs would be helpful?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2025-02-28 10:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv-build/python/uv_build/__init__.py</code>:44 on 2025-02-28 10:01</div>
+            <div class="timeline-body"><p>IMO, at least by <code>uv-build</code> we could use it as library instead of calling it through binary's cli.
+do we want still to support <code>build-system.build-backend = &quot;uv&quot;</code>? If no, the <em>call</em> function could be entirely removed and directly use <code>uv_build_backend</code> methods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-28 18:04</div>
+            <div class="timeline-body"><p>While I agree with</p>
+<pre><code class="language-toml">requires = [&quot;uv-build&gt;=0.4.15,&lt;5&quot;]
+build-backend = &quot;uv.build&quot;
+</code></pre>
+<p>being better looking, I see two aspects that drew me towards <code>uv_build</code>: With <code>uv.build</code>, every action (such as <code>from uv.build import build_wheel</code>) has to first import <code>uv/__init__.py</code>, too. This couples uv's own <code>uv/__init__.py</code> to <code>uv-build</code> across all versions (since they don't depend on each other, any version combination is possible). As separation from <code>uv</code> through <code>build-backend = &quot;uv-build&quot;</code> future proofs the module import. The other aspect is that I regularly have to help with user questions where the problem turns out to be two packages that overwrite each other partially or fully being in the dependency tree, so I'm biased against packages that ship modules of a different name.</p>
+<p>To also mention a discarded alternative, there was also an option of having <code>build-backend = &quot;uv.build&quot;</code> because both <code>uv</code> and <code>uv-build</code> would ship the build backend, or similarly allowing <code>build-backend = &quot;uv&quot;</code>, but I couldn't find an option to make those work without the risk of two different versions of <code>uv</code> and <code>uv-build</code> conflicting on installed files (and overwriting in a way that breaks something).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-03 21:58</div>
+            <div class="timeline-body"><p>On the package collision / overwriting note: this should be quite rare, right? Since the build backend is usually installed in an isolated build environment?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-03-03 22:35</div>
+            <div class="timeline-body"><blockquote>
+<p>On the package collision / overwriting note: this should be quite rare, right? Since the build backend is usually installed in an isolated build environment?</p>
+</blockquote>
+<p>While less common there are various legitimate reasons to build in a non-isolated environment. The first one that comes to mind is having pinned build dependencies, which has somewhat limited tooling support outside manually doing it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-03 23:02</div>
+            <div class="timeline-body"><blockquote>
+<p>The first one that comes to mind is having pinned build dependencies, which has somewhat limited tooling support outside manually doing it.</p>
+</blockquote>
+<p>We definitely intend to fix this though. (but I understand that doesn't mean this isn't a problem for people using other build frontends). I still see that as a niche or advanced use-case where it's fine if the packages overlap.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-04 01:53</div>
+            <div class="timeline-body"><p>(I'm not attached to a particular outcome here. I think <code>uv_build</code> is probably simpler — but I want to poke at our motivations a bit)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-04 13:04</div>
+            <div class="timeline-body"><p>Currently, it's always just <code>requires = [&quot;uv_build...&quot;]</code>, but expect that to change in the future as the build backend becomes more powerful and people want to add other packages, too, for additional functionality.</p>
+<p>Overall my experience is that when used correctly, namespace packages/packages with renaming and isolated packages work equally well. Even though, users are regularly hitting broken installs with cases where two packages conflict on a filesystem level, and then it's hard to figure out what and why even broke. <code>uv.build</code> also puts an implicit constraint on <code>uv/__init__.py</code> because it always gets imported for <code>uv.build</code> no matter the <code>uv</code> version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-03-06 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-03-06 19:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-06 19:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

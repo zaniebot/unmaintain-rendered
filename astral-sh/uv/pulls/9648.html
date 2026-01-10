@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create missing dir for `uv export`/ `uv pip compile` - astral-sh/uv #9648</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Create missing dir for <code>uv export</code>/ <code>uv pip compile</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9648">#9648</a>
+        opened by <a href="https://github.com/blueraft">@blueraft</a>
+        on 2024-12-04 20:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/blueraft">@blueraft</a> on 2024-12-04 20:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes #9643.</p>
+<p>I modified the <code>commit</code> fn so this applies to <code>uv compile --output-file</code> too. But I can move it to the export module if we want to restrict this to <code>uv export</code> only.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-04 20:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/mod.rs</code>:236 on 2024-12-04 20:51</div>
+            <div class="timeline-body"><p>Don't we need <a href="https://doc.rust-lang.org/beta/std/fs/fn.create_dir_all.html"><code>create_dir_all</code></a>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-12-04 20:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/mod.rs</code>:236 on 2024-12-04 20:51</div>
+            <div class="timeline-body"><p>I think we should just unequivocally call <code>create_dir_all</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/mod.rs</code>:235 on 2024-12-04 20:52</div>
+            <div class="timeline-body"><p>Should this be <code>try_exists</code>? What happens if the parent is a link to another directory? What happens if it's a file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-04 20:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2024-12-04 21:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/uv/src/commands/mod.rs</code>:236 on 2024-12-04 21:00</div>
+            <div class="timeline-body"><p>Changed it to <code>create_dir_all</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2024-12-04 21:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/uv/src/commands/mod.rs</code>:235 on 2024-12-04 21:00</div>
+            <div class="timeline-body"><p>makes sense, I've changed it to <code>try_exists</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/mod.rs</code>:236 on 2024-12-04 21:06</div>
+            <div class="timeline-body"><p>It might make sense to skip <code>try_exists</code> as suggested by Charlie, it already has a behavior for existing directories and probably handles race conditions?</p>
+<p>Also, I think you can skip the empty check</p>
+<blockquote>
+<p>If the empty path is passed to this function, it always succeeds without creating any directories.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-12-04 21:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2024-12-04 21:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/uv/src/commands/mod.rs</code>:236 on 2024-12-04 21:10</div>
+            <div class="timeline-body"><p>ah ok done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-12-04 21:11</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-12-04 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> removed by @charliermarsh on 2024-12-04 21:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-04 21:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-12-04 21:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-12-04 21:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:15 UTC
+    </footer>
+</body>
+</html>

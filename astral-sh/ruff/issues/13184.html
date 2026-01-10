@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`pydoclint` diagnostics should target docstrings instead of the first undocumented return, yield, or exception - astral-sh/ruff #13184</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>pydoclint</code> diagnostics should target docstrings instead of the first undocumented return, yield, or exception</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13184">#13184</a>
+        opened by <a href="https://github.com/tjkuson">@tjkuson</a>
+        on 2024-08-31 17:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-08-31 17:03</div>
+            <div class="timeline-body"><p>Please consider changing the diagnostic target of the <code>pydoclint</code> rules in Ruff. I think the docstring itself should be the target instead.</p>
+<h2>It is more consistent with <code>pydocstyle</code> rules</h2>
+<p>The <code>pydocstyle</code> diagnostics target the docstring. Having inconsistent targets for <code>pydocstyle</code> and <code>pydoclint</code> rules may cause user confusion and separates <code>noqa</code> directives.</p>
+<p>For example, to suppress two docstring-related diagnostics, users would have to do something like</p>
+<pre><code class="language-python">def foo(n: int) -&gt; int:
+    &quot;&quot;&quot;Foo a number
+
+    Args:
+        n: an integer.
+    &quot;&quot;&quot;  # noqa: D400
+    ...
+    return bar  # noqa: DOC201
+</code></pre>
+<h2>Changing the function body may force users to move <code>noqa</code> directives</h2>
+<p>Adding an early return to the example above forces the <code>noqa: DOC201</code> directive to be moved up, which is an extra burden for users and produces a noisier diff than if the directive were attached to the docstring itself.</p>
+<pre><code class="language-diff"> def foo(n: int) -&gt; int:
+     &quot;&quot;&quot;Foo a number.
+
+     Args:
+         n: an integer.
+     &quot;&quot;&quot;  # noqa: D400
++    if baz:
++        return 0  # noqa: DOC201
+     ...
+-    return bar  # noqa: DOC201
++    return bar
+</code></pre>
+<h2>It is easier to understand</h2>
+<p>This may be subjective, but I think that using respective returns, yields, or exceptions as targets themselves is unintuitive. Per the naming convention,</p>
+<blockquote>
+<p>Like Clippy, Ruff's rule names should make grammatical and logical sense when read as &quot;allow ${rule}&quot; or &quot;allow ${rule} items&quot;, as in the context of suppression comments.</p>
+<p>For example, AssertFalse fits this convention: it flags assert False statements, and so a suppression comment would be framed as &quot;allow assert False&quot;.</p>
+</blockquote>
+<p>I think the <code>pydoclint</code> diagnostics targetting their respective undocumented statement undermines this principle. For example,</p>
+<pre><code class="language-python">return bar  # &quot;allow the docstring to not document returns&quot;
+</code></pre>
+<p>would imply it is only that this specific return needn't be documented. However, suppressing the diagnostic for one return statement suppresses the diagnostic for all return statements (in other words, it suppresses the diagnostic for the entire docstring). If it operates the docstring and not any one particular statement, that it would be the most semantically logical and consistent for the diagnostic range to be the docstring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-31 19:04</div>
+            <div class="timeline-body"><p>This seems reasonable to me, and it'll definitely be better to make this change while these rules are still in preview... @charliermarsh, what do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @AlexWaygood on 2024-08-31 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-02 07:30</div>
+            <div class="timeline-body"><p>It does make sense to me that the diagnostic range is the docstring. However, this points out a limitation of our diagnostic system that only allows a single code frame. I can see situations where the rule flags a docstring but finding the return/yield statement isn't trivial because it is a very long function.</p>
+<p>I still think we should change the range and the solution to the above problem is to extend our diagnostic system to:</p>
+<ul>
+<li>Have a violation range</li>
+<li>Support zero or many additional code frames that contextualize the violation.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-02 07:33</div>
+            <div class="timeline-body"><blockquote>
+<p>the solution to the above problem is to extend our diagnostic system to:</p>
+<ul>
+<li>Have a violation range</li>
+<li>Support zero or many additional code frames that contextualize the violation.</li>
+</ul>
+</blockquote>
+<p>In the meantime, the diagnostic messages for these rules could potentially mention the problematic line number in the function body that triggered the violation on the docstring</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @AlexWaygood on 2024-09-02 07:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-02 07:34</div>
+            <div class="timeline-body"><blockquote>
+<p>In the meantime, the diagnostic messages for these rules could potentially mention the problematic line number in the function body that triggered the violation on the docstring</p>
+</blockquote>
+<p>I would rather not do that. Computing the line number inside a lint rule is discouraged because it is fairly expensive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-09-02 07:36</div>
+            <div class="timeline-body"><p>Ah yeah, we only have direct access to the TextRange inside the rule, not the line number. Makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-16 18:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-16 18:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:01 UTC
+    </footer>
+</body>
+</html>

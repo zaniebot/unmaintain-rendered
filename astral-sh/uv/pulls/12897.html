@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow updating Git sources by name - astral-sh/uv #12897</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow updating Git sources by name</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12897">#12897</a>
+        opened by <a href="https://github.com/maxmynter">@maxmynter</a>
+        on 2025-04-15 12:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/maxmynter">@maxmynter</a> on 2025-04-15 12:57</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<p>Closes: #4567</p>
+<h2>Summary</h2>
+<p>When adding a package with Git reference options (<code>--rev</code>, <code>--tag</code>, <code>--branch</code>) that already has a Git source defined, use the existing Git URL with the new reference instead of reporting an error.</p>
+<p>This allows commands like <code>uv add requests --branch main</code> to work when requests is already defined with a Git source in the project configuration.</p>
+<p>Previously, you would need to provide the whole Git url again for this to work:</p>
+<pre><code class="language-bash">uv add git+https://github.com/psf/requests --branch main
+</code></pre>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<ul>
+<li>[x] Add unit tests for project</li>
+<li>[x] Add unit tests for script</li>
+<li>[x] Tested locally for project and script environments like below</li>
+</ul>
+<h3>Testing Project</h3>
+<p>In a directory using the <code>uv</code> executable from this PR (via replacing every <code>uv</code> with <code>cargo run --</code>) initialize a project and virtual environment</p>
+<pre><code class="language-bash">uv init
+uv venv
+</code></pre>
+<p>move into the environment</p>
+<pre><code class="language-bash"># on mac
+source .venv/bin/activate
+</code></pre>
+<p>and add a dependency with a git url</p>
+<pre><code class="language-bash">uv add git+https://github.com/Textualize/rich --branch master
+</code></pre>
+<p>Then change the branch of the project to see that the branch can be changed without need of the whole git url:</p>
+<pre><code class="language-bash">uv add rich --branch py310
+</code></pre>
+<h3>Testing Script</h3>
+<p>Create the following file, e.g. <code>script.py</code>:</p>
+<pre><code class="language-python">import time
+from rich.progress import track
+
+print(&quot;Starting&quot;)
+for i in track(range(20), description=&quot;For example:&quot;):
+    time.sleep(0.05)
+print(&quot;Done&quot;)
+</code></pre>
+<p>Now using <code>uv</code> (referencing the executable of this PR) add the dependency</p>
+<pre><code class="language-bash">uv add --script script.py 'git+https://github.com/Textualize/rich' --branch master
+</code></pre>
+<p>and check we can execute the script:</p>
+<pre><code class="language-bash">uv run script.py
+</code></pre>
+<p>To test the change update the branch</p>
+<pre><code class="language-bash">uv add --script script.py rich --branch py310
+</code></pre>
+<p>and check that the dependency is updated and the script is executed:</p>
+<pre><code class="language-bash">uv run script.py
+</code></pre>
+<!-- How was it tested? -->
+
+<hr />
+<p>This is my first time contributing to <code>uv</code> (yay, 🤗) so let me know if there is something obvious i am missing.
+Unit tests will follow soon.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-04-15 13:14</div>
+            <div class="timeline-body"><p>Looks good! To add an integration test for this behavior, you can add a test to <code>crates/uv/tests/it/edit.rs</code>, the file contains other <code>uv add</code> tests which should be similar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-04-15 13:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fallback to Git URL if it exists but Non-Git source with git reference option is provided" to "Allow updating Git sources by name" by @konstin on 2025-04-15 13:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/maxmynter">@maxmynter</a> on 2025-04-16 18:47</div>
+            <div class="timeline-body"><p>@konstin Added intergration tests for project and script using Git <code>--rev</code>, <code>--branch</code>, and <code>--tag</code>. Let me know if something is missing.</p>
+<hr />
+<p>Edit: The CI failed with a timeout on a test that seems unrelated (i may be wrong); i seem to not have permissions to rerun CI and will refrain from pushing further empty retrigger commits.</p>
+<p>The tests that failed on <a href="https://github.com/astral-sh/uv/pull/12897/commits/b8a15a1d23fdb164e216363d1dcda1f0f1038d6e">b8a15a1</a> and <a href="https://github.com/astral-sh/uv/pull/12897/commits/62e13576f6b345aa9a873cbde602747bf3247676">62e1357</a> are different despite unchanged code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2025-04-16 18:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-04-21 02:05</div>
+            <div class="timeline-body"><p>This looks great -- thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-04-21 02:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-04-21 02:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:23 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOC102 false positives - astral-sh/ruff #20923</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>DOC102 false positives</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20923">#20923</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-10-16 14:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-16 14:45</div>
+            <div class="timeline-body"><p>There were two remaining false positives found in the <a href="https://github.com/astral-sh/ruff/pull/20376#issuecomment-3288875538">ecosystem check</a> on #20376.</p>
+<ul>
+<li><p><a href="https://github.com/DisnakeDev/disnake/blob/613e01d45d8eb0034a4f3fd524b64752e55b0b38/disnake/client.py#L814">disnake/client.py:814:9:</a> DOC102 Documented parameter <code>Example</code> is not in the function's signature
+We look for a section called Example<strong>s</strong>, but I think it would be worth allowing singular Example too. I think this one is not specific to DOC102 and can affect other rules.</p>
+</li>
+<li><p><a href="https://github.com/apache/superset/blob/2f8657f122f4a40c1a8cddb6be989aead77fa752/superset/async_events/api.py#L57">superset/async_events/api.py:57:11:</a> DOC102 Documented parameter <code>responses</code> is not in the function's signature
+This and several other superset errors are from docstrings like</p>
+<pre><code class="language-py">        &quot;&quot;&quot;
+      Read off of the Redis async events stream, using the user's JWT token and
+      optional query params for last event received.
+      ---
+      get:
+        summary: Read off of the Redis events stream
+        description: &gt;-
+          Reads off of the Redis events stream, using the user's JWT token and
+          optional query params for last event received.
+        parameters:
+        - in: query
+          name: last_id
+          description: Last ID received by the client
+          schema:
+              type: string
+        responses:
+          200:
+</code></pre>
+<p>which I guess looks like YAML. I feel like we could do something like not process sub-sections under an unknown heading to filter this out, but I haven't taken a closer look.</p>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-10-16 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2025-10-16 17:55</div>
+            <div class="timeline-body"><p>FYI for the second case, it is not an unknown heading. The problem is that we recognize <code>parameters:</code> as a valid heading.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pep-sanwer">@pep-sanwer</a> on 2025-10-16 21:12</div>
+            <div class="timeline-body"><p>A few more false positives related to less commonly used <code>numpy</code> <a href="https://numpydoc.readthedocs.io/en/latest/format.html#sections">docstring sections</a></p>
+<p>From my testing it looks like the following valid sections are not being recognized as sections:</p>
+<ul>
+<li><code>Receives</code></li>
+<li><code>Warns</code></li>
+<li><code>Warnings</code></li>
+</ul>
+<hr />
+<p>Given <code>example.py</code> like:</p>
+<pre><code class="language-python">def bad_doc102(x: int) -&gt; int:
+    &quot;&quot;&quot;
+    Show a `Warnings` DOC102 false positive.
+
+    Parameters
+    ----------
+    x : int
+
+    Warnings
+    --------
+    This function demonstrates a DOC102 false positive
+
+    Returns
+    -------
+    int
+    &quot;&quot;&quot;
+    return x
+</code></pre>
+<p>results in the false positive</p>
+<pre><code class="language-shell">✗ ruff check example.py
+example.py:
+  9:5 DOC102 Documented parameter `Warnings` is not in the function's signature
+
+Found 1 error.
+</code></pre>
+<hr />
+<p>Given <code>example.py</code> like:</p>
+<pre><code class="language-python">def bad_doc102(x: int) -&gt; int:
+    &quot;&quot;&quot;
+    Show another `Warnings` DOC102 false positive.
+
+    Parameters
+    ----------
+    x : int
+
+    Raises
+    ------
+    ValueError
+        If `x` is zero
+
+    Warnings
+    --------
+    This function demonstrates a DOC102 false positive
+
+    Returns
+    -------
+    int
+    &quot;&quot;&quot;
+    if x == 0:
+        msg = &quot;x cannot be zero&quot;
+        raise ValueError(msg)
+
+    return x
+</code></pre>
+<p>results in the false positive</p>
+<pre><code class="language-shell">✗ ruff check example.py
+example.py:
+  2:5 DOC502 Raised exceptions are not explicitly raised: `Warnings`, `--------`, `This function demonstrates a DOC102 false positive`
+
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/augustelalande">@augustelalande</a> on 2025-10-16 21:16</div>
+            <div class="timeline-body"><p>I can make a quick PR to add those</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:35 UTC
+    </footer>
+</body>
+</html>

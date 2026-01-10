@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatting an overlapping set of files can lead to errors - astral-sh/ruff #19395</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatting an overlapping set of files can lead to errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/19395">#19395</a>
+        opened by <a href="https://github.com/ikalchev">@ikalchev</a>
+        on 2025-07-17 09:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ikalchev">@ikalchev</a> on 2025-07-17 09:10</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This is probably on us, but I thought it would be good to bring it to your attention at least for doc purposes.</p>
+<p>We were running <code>ruff format &lt;dir1&gt; &lt;dir2&gt;</code> on some generated code as part of our build pipeline. From time to time, the format step will blow up with syntax errors in some of the source files, i.e. as if the source python code is not valid python. After splitting the command into two separate format commands (one for dir 1 and one for dir 2), the issue got resolved (this was guesswork-type of fix).</p>
+<p>So we took a harder look and we saw that the dir2 is a subdir of dir1 and we are passing it because it is in .gitignore. So I went and looked at the ruff format source code and noticed it is doing a formatting of all given arguments in parallel: https://github.com/astral-sh/ruff/blob/main/crates/ruff/src/commands/format.rs#L108</p>
+<p>Is it possible there is a race condition here where formatting on dir may mess up the formatting of of another, overlapping dir?</p>
+<h3>Version</h3>
+<p>ruff 0.9.9</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-17 09:52</div>
+            <div class="timeline-body"><p>Hi. Thanks for the report.</p>
+<p>That sounds interesting.</p>
+<p>I don't think the <code>par_iter</code> call there should lead to a race condition because we first identify all python files using:</p>
+<pre><code>    let (paths, resolver) = python_files_in_path(&amp;files, &amp;pyproject_config, config_arguments)?;
+</code></pre>
+<p>This should deduplicate overlapping paths provided with <code>files</code>. The only case where I could see this leading to races is if you're using symlinks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-07-17 09:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2025-07-17 09:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @MichaReiser on 2025-07-17 09:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ikalchev">@ikalchev</a> on 2025-07-17 10:18</div>
+            <div class="timeline-body"><p>Thanks for the quick response!</p>
+<blockquote>
+<p>if you're using symlinks.</p>
+</blockquote>
+<p>Definitely not using symlinks, we can rule this out. We will try to debug a bit more and also to come up with a reproducible example. Trouble is it is intermittent.</p>
+<blockquote>
+<p>This should deduplicate overlapping paths provided with files</p>
+</blockquote>
+<p>I was looking at the parallel visitor there, I can't seem to grasp where dedup happens. Can you point me to it if it's not too much to ask? The drop logic seems to append the file lists one after the other.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-17 10:22</div>
+            <div class="timeline-body"><p>The deduplication should happen by the walkdir/ignore crate. At least that's what I think it does. @BurntSushi will know better</p>
+<p>(would have to be somewhere in here https://docs.rs/walkdir/latest/src/walkdir/lib.rs.html#1-1194)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ikalchev">@ikalchev</a> on 2025-07-17 10:53</div>
+            <div class="timeline-body"><p>Did a small experiment, though not using the parallel walker (most was AI generated, apologies):</p>
+<pre><code class="language-rs">use ignore::WalkBuilder;
+use std::collections::HashSet;
+
+fn main() {
+    // mkdir -p a/b
+    // touch a/b/c.txt
+    let dir = &quot;a&quot;;
+    let subdir = &quot;a/b&quot;;
+
+    // Create a HashSet to keep track of encountered files
+    let mut seen_files = HashSet::new();
+    let mut duplicates = Vec::new();
+
+    // Build the walker for the directory
+    let walker = WalkBuilder::new(dir)
+        .add(subdir)
+        .build();
+
+    for result in walker {
+        if let Ok(entry) = result {
+            if entry.file_type().is_some() &amp;&amp; entry.file_type().unwrap().is_file() {
+                if let Some(path) = entry.path().to_str() {
+                    if seen_files.contains(path) {
+                        duplicates.push(path.to_owned());
+                    } else {
+                        seen_files.insert(path.to_owned());
+                    }
+                }
+            }
+        }
+    }
+
+    if duplicates.is_empty() {
+        println!(&quot;No duplicate files found.&quot;);
+    } else {
+        println!(&quot;Duplicate files found:&quot;);
+        for dup in duplicates {
+            println!(&quot;{}&quot;, dup);
+        }
+    }
+}
+
+</code></pre>
+<p>This does print <code>a/b/c.txt</code> as a duplicate file, so the walkbuilder doesn't do any dedup itself and I suspect the parallel versions does not as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-07-17 12:17</div>
+            <div class="timeline-body"><p>Neither <code>walkdir</code> nor <code>ignore</code> do any kind of deduplication with exactly one exception: it will detect file system loops created by symbolic links and report an error if one is found (and then keep going, but avoiding the loop). Otherwise they are &quot;dumb&quot; in the sense that if you give <code>path/to/dir1</code> and <code>path/to/dir1/dir2</code>, then <code>dir2</code> will be visited twice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @MichaReiser on 2025-07-17 12:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> removed by @MichaReiser on 2025-07-17 12:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-07-17 12:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2025-07-17 12:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> removed by @MichaReiser on 2025-07-17 12:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-09-19 18:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:00 UTC
+    </footer>
+</body>
+</html>

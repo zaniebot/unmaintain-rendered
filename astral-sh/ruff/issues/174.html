@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consider auto-excluding files matched by gitignore files - astral-sh/ruff #174</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Consider auto-excluding files matched by gitignore files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/174">#174</a>
+        opened by <a href="https://github.com/Jackenmen">@Jackenmen</a>
+        on 2022-09-13 00:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Jackenmen">@Jackenmen</a> on 2022-09-13 00:59</div>
+            <div class="timeline-body"><p>Patterns would need to be read from:</p>
+<ul>
+<li><code>.gitignore</code> file in the same directory as the path, or in any parent directory (the latter allows tools to put a <code>.gitignore</code> file with <code>*</code> in the directory they create to auto-exclude themselves)</li>
+<li>patterns read from <code>$GIT_DIR/info/exclude</code> (allows user-specific patterns for a specific repository)</li>
+<li>patterns read from the file specified by Git's configuration variable <code>core.excludesFile</code> (allows global user-specific patterns, I personally use this one)</li>
+</ul>
+<p>Reference: https://git-scm.com/docs/gitignore</p>
+<p>This might come at a performance cost but it definitely would be a useful feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2022-09-13 01:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-09-15 14:24</div>
+            <div class="timeline-body"><p>(Working on this.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sgryjp">@sgryjp</a> on 2022-09-17 23:29</div>
+            <div class="timeline-body"><p>Hi! I thought using <a href="https://docs.rs/ignore/latest/ignore/"><code>ignore</code></a> crate instead of <code>walkdir</code>+<code>gitignore</code> can be an option. The crate is used inside very popular and performant tools such as <a href="https://github.com/BurntSushi/ripgrep/tree/13.0.0/crates/ignore">ripgrep</a> and <a href="https://github.com/sharkdp/fd/blob/v8.4.0/Cargo.toml#L41">fd</a> so we can expect reliability and performance at the same time. It also allow us to choose UNLICENSE so you will have no license conflicts. Could you consider using it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/messense">@messense</a> on 2022-11-26 03:44</div>
+            <div class="timeline-body"><p>+1 for this.</p>
+<p>As for using the <code>ignore</code> crate, IMO it should work generally, but be aware that it's not 100% compatible with git ignore, see https://github.com/PyO3/maturin/issues/885#issuecomment-1112108447</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jackenmen">@Jackenmen</a> on 2022-12-04 13:11</div>
+            <div class="timeline-body"><p>I like that the <code>ignore</code> crate has all of the functionality I described in the issue description built-in - it supports <code>.gitignore</code> files at all directory levels of the repository, supports <code>.git/info/exclude</code>, <em>and</em> supports global gitignore!</p>
+<blockquote>
+<p>There are many rules that influence whether a particular file or directory is skipped by this iterator. Those rules are documented here. Note that the rules assume a default configuration.
+[...]</p>
+<ul>
+<li>Second, ignore files are checked. Ignore files currently only come from git ignore files (<code>.gitignore</code>, <code>.git/info/exclude</code> and the configured global gitignore file), plain <code>.ignore</code> files, which have the same format as gitignore files, or explicitly added ignore files. The precedence order is: <code>.ignore</code>, <code>.gitignore</code>, <code>.git/info/exclude</code>, global gitignore and finally explicitly added ignore files. Note that precedence between different types of ignore files is not impacted by the directory hierarchy; any .ignore file overrides all .gitignore files. Within each precedence level, more nested ignore files have a higher precedence than less nested ignore files.
+[...]</li>
+</ul>
+</blockquote>
+<p>https://docs.rs/ignore/latest/ignore/struct.WalkBuilder.html#ignore-rules</p>
+<p>(reading of <code>.ignore</code> files can be disabled separately from the other functionality in case it's something you don't want)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-04 14:50</div>
+            <div class="timeline-body"><p>Definitely happy to support this! I just haven't personally prioritized the work since <em>most</em> exclusions are doable with the current configuration settings, even if less convenient. But we should do it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Jackenmen">@Jackenmen</a> on 2022-12-04 14:59</div>
+            <div class="timeline-body"><p>Personally I'm mostly missing a way to ignore files only on my system, in projects where I don't have significant enough stake to change the exclusions they've set up. At best I could maybe make alias <code>ruff</code> to <code>ruff --extend-exclude files,folders</code> or something like that but that probably overrides the configuration from the pyproject.toml so it wouldn't really work universally across all projects. Meanwhile with ignore files I can either put a file/directory in global gitignore, make sure that there's <code>.gitignore</code> with <code>*</code> in a directory I want to ignore, or I can put a file/directory in <code>.git/info/exclude</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jhallard">@jhallard</a> on 2022-12-13 22:28</div>
+            <div class="timeline-body"><p>Just a slight bump on this, we've had some issues sneak in with the pyproject.toml and .gitignore lists getting out of sync which caused us to accidentally lint a GB or so of third party code, would be convenient if those automatically sync'd.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-13 23:20</div>
+            <div class="timeline-body"><p>(I still want to explore this, and do so via the ignore crate. Just need to find time.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2022-12-13 23:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-13 23:51</div>
+            <div class="timeline-body"><p>I'll give this a try (but my newborn just came home today so bear with me :))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jhallard">@jhallard</a> on 2022-12-13 23:52</div>
+            <div class="timeline-body"><p>@charliermarsh 1. Congratulations!! 🎉 2. you're a beast. We're not blocked on this by any means so take care of yourself!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-14 00:09</div>
+            <div class="timeline-body"><p>@jhallard - Thank you so much! I just couldn't help but share :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-12-14 20:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-14 21:56</div>
+            <div class="timeline-body"><p>This is going out in the next release: https://github.com/charliermarsh/ruff/pull/1234.</p>
+<p>The behavior is documented in the README (and in <code>BREAKING_CHANGES.md</code>), and there's an opt-out setting (<code>respect-gitignore = false</code>).</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:10:15 UTC
+    </footer>
+</body>
+</html>

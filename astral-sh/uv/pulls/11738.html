@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use hash instead of full wheel name in wheels bucket - astral-sh/uv #11738</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use hash instead of full wheel name in wheels bucket</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11738">#11738</a>
+        opened by <a href="https://github.com/nkitsaini">@nkitsaini</a>
+        on 2025-02-24 05:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/nkitsaini">@nkitsaini</a> on 2025-02-24 05:27</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Closes #2410</p>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>This changes the name of files in <code>wheels</code> bucket to use a hash instead of the wheel name as to not exceed maximum file length limit on various systems.</p>
+<p>This only addresses the primary concern of #2410. It still does <em>not</em> address:</p>
+<ul>
+<li>Path limit of 260 on windows: https://github.com/astral-sh/uv/issues/2410#issuecomment-2062020882
+To solve this we need to opt-in to longer path limits on windows (<a href="https://github.com/astral-sh/uv/issues/2410#issuecomment-2150532658">ref</a>), but I think that is a separate issue and should be a separate MR.</li>
+<li>Exceeding filename limit while building a wheel from source distribution
+As per my understanding, this is out of uv's control. Name of the output wheel will be decided by build-backend used by the project. For wheels built from source distribution, pip also uses the wheel names in cache. So I have not touched <code>sdists</code> cache.</li>
+</ul>
+<p>I have added a <code>filename: WheelFileName</code> field in <code>Archive</code>, so we can use it while indexing instead of relying on the filename on disk. Another way to do this was to read <code>.dist-info/WHEEL</code> and <code>.dist-info/METADATA</code> and build <code>WheelFileName</code> but that seems less robust and will be slower.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>Tested by installing <code>yt-dlp</code>, <code>httpie</code> and <code>sqlalchemy</code> and verifying that cache files in <code>wheels</code> bucket use hash.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nkitsaini">@nkitsaini</a> reviewed on 2025-02-24 05:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nkitsaini">@nkitsaini</a> on <code>crates/uv-distribution/src/source/built_wheel_metadata.rs</code>:32 on 2025-02-24 05:28</div>
+            <div class="timeline-body"><p>This is an unrelated change. I got a bit confused here between directory/files while reading the code. I can move this to separate MR or remove it if required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @nkitsaini on 2025-02-24 08:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2025-02-24 08:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Use hash instead of full wheel name in wheels cache" to "Use hash instead of full wheel name in wheels bucket" by @nkitsaini on 2025-02-24 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @zanieb on 2025-02-24 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-24 19:48</div>
+            <div class="timeline-body"><p>Thanks! Will review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-02-25 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">no-build</span> added by @charliermarsh on 2025-02-25 14:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-25 14:51</div>
+            <div class="timeline-body"><p>I think this generally looks right, though I'm undecided on whether we should <em>always</em> do this, or only do it for wheels with filenames that exceed a certain length. It does hurt cache (plaintext) readability a bit which is inconvenient for debugging, since you can no longer infer the wheel tags etc. from the cached filename alone.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-25 14:56</div>
+            <div class="timeline-body"><p>At least the hashes are consistent across these files, so you <em>can</em> look at <code>WHEEL</code>:</p>
+<p><img src="https://github.com/user-attachments/assets/254e248b-8a7c-455d-985c-90678c61b900" alt="Screenshot 2025-02-25 at 9 55 25 AM" /></p>
+<p>That's probably good enough.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-02-25 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nkitsaini">@nkitsaini</a> on 2025-02-25 15:39</div>
+            <div class="timeline-body"><blockquote>
+<p>so you can look at WHEEL:</p>
+</blockquote>
+<p>I was doing a more hacky <code>cat &lt;file&gt;</code> and finding the tags/version.</p>
+<p><img src="https://github.com/user-attachments/assets/57a37b4d-b4f8-400d-be7f-0e2d11c7656b" alt="image" /></p>
+<p>Let me change the filenames to <code>{trimmed_filename}-{hash}</code>. Should be quick.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nkitsaini">@nkitsaini</a> on 2025-02-25 16:09</div>
+            <div class="timeline-body"><p>I went with <code>trimmed(version+tags)-hash</code> as that was informative compared to <code>trimmed(name+version+tags)-hash</code> as we already have package name as dir name.</p>
+<p><img src="https://github.com/user-attachments/assets/bddda44f-7621-4d7e-b919-c07ea9458837" alt="image" /></p>
+<p><img src="https://github.com/user-attachments/assets/f8b0492d-4bfd-4a8a-aa5d-15549448d237" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nkitsaini">@nkitsaini</a> reviewed on 2025-02-25 16:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nkitsaini">@nkitsaini</a> on <code>crates/uv-distribution-filename/src/wheel.rs</code>:113 on 2025-02-25 16:12</div>
+            <div class="timeline-body"><p>Couldn't think of a better name for this ;(
+Feel free to change it or reject this commit :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nkitsaini">@nkitsaini</a> on 2025-02-25 16:58</div>
+            <div class="timeline-body"><p>@charliermarsh Sorry for the delay. It is good from my end.</p>
+<p>~~There seems to be one seemingly unrelated failure in windows tests. I don't have a good way to reproduce the failure locally.~~ It was just some flakiness. I have no idea what caused it, maybe some failure with disk I/O ¯\_(ツ)_/¯ .</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-25 22:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cache/src/lib.rs</code>:625 on 2025-02-25 22:41</div>
+            <div class="timeline-body"><p>I'd probably move this to a utility since it's non-trivial and repeated three times.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-25 22:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cache/src/lib.rs</code>:625 on 2025-02-25 22:43</div>
+            <div class="timeline-body"><p>(doesn't need to be blocking, we can do this separately)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-25 22:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-filename/src/wheel.rs</code>:115 on 2025-02-25 22:46</div>
+            <div class="timeline-body"><p>Would it be painful to truncate to the last <code>-</code> before the trimmed length limit is reached? I think stopping mid-tag could be confusing on read, though I guess any partial tag output is a bit confusing. Also sort of tempted to just take the first few tags or drop the tags entirely? Not sure what's best in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nkitsaini">@nkitsaini</a> reviewed on 2025-02-26 03:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nkitsaini">@nkitsaini</a> on <code>crates/uv-cache/src/lib.rs</code>:625 on 2025-02-26 03:50</div>
+            <div class="timeline-body"><p>:+1: Moved the reference finding part to dedicated function.</p>
+<p><a href="https://github.com/astral-sh/uv/pull/11738/commits/b400c8598ddc19e347a683810027b2efa339f7b4#diff-d0c8455b65232353aa60383cd8a80d99a8b31cf7cd76bf22c18d32de36bed34cR514"><code>b400c85</code> (#11738)</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nkitsaini">@nkitsaini</a> reviewed on 2025-02-26 03:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nkitsaini">@nkitsaini</a> on <code>crates/uv-distribution-filename/src/wheel.rs</code>:115 on 2025-02-26 03:54</div>
+            <div class="timeline-body"><blockquote>
+<p>Would it be painful to truncate to the last - before the trimmed length limit is reached</p>
+</blockquote>
+<p>Not painful but I am not sure if it will be very helpful as it will mean dropping platform tags completely in most cases since they do not use dashes as seperator.</p>
+<pre><code>Example: sqlalchemy-1.4.52-cp38-cp38-manylinux1_x86_64.manylinux2010_x86_64.manylinux_2_12_x86_64.manylinux_2_5_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.http
+</code></pre>
+<p>I agree it is a bit confusing. I have changed to what I think leads to least confusion and doesn't affect readability for normal cases. So, filename will be <code>{version}-{tags}</code> if it can fit within max limit otherwise <code>{truncated(version)}-{digest}</code> (<a href="https://pypi.org/project/uselesscapitalquiz/">yes there can be large versions</a> and I just realized uv can't parse them!).</p>
+<p>I initially wanted to keep all names consistent but I think newer implementation is better.</p>
+<p><img src="https://github.com/user-attachments/assets/e30a324f-125b-43e4-92cc-1ee1481717fb" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-26 04:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-filename/src/wheel.rs</code>:115 on 2025-02-26 04:48</div>
+            <div class="timeline-body"><p>Cool, thanks! Let's see what @charliermarsh thinks now that it's changed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nkitsaini">@nkitsaini</a> on 2025-02-26 05:19</div>
+            <div class="timeline-body"><p>Side Note: Is windows CI always a bit flaky or am I just having a bad luck? I don't know what was the issue for the first failure, second failure seems to be network related.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nkitsaini">@nkitsaini</a> reviewed on 2025-02-26 14:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nkitsaini">@nkitsaini</a> on <code>crates/uv-distribution-filename/src/wheel.rs</code>:348 on 2025-02-26 14:01</div>
+            <div class="timeline-body"><p>It seems these hashes are <a href="https://doc.rust-lang.org/std/hash/trait.Hash.html#portability">not stable across compiler releases</a>, while <code>cache_key</code> is supposed to be.</p>
+<p>We need to use <code>self.name.cache_key(state)</code>, which will require either implementing <code>CacheKey</code> for all the nested types in <code>WheelFilename</code> or we can cut-off to a string using <code>format!(&quot;{}&quot;, self.tags).cache_key(state)</code>.</p>
+<p>I prefer cutting to string which albeit possibly slower will avoid hash change when we restructure inner types, but no strong preference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-26 17:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution-filename/src/wheel.rs</code>:115 on 2025-02-26 17:48</div>
+            <div class="timeline-body"><p>I am a fan of <code>version-tags</code> and <code>version-digest</code>. This looks good to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-26 17:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution-filename/src/wheel.rs</code>:348 on 2025-02-26 17:50</div>
+            <div class="timeline-body"><p>I was hoping we could avoid the allocations but I guess you're right that this could have some negative side effects. Feel free to change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nkitsaini">@nkitsaini</a> reviewed on 2025-02-26 17:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nkitsaini">@nkitsaini</a> on <code>crates/uv-distribution-filename/src/wheel.rs</code>:348 on 2025-02-26 17:54</div>
+            <div class="timeline-body"><p>Cool, changing it. I think since we are going with <code>version-tags</code> and <code>version-digest</code>, I will also keep the digest to just be digest of the tags instead of full stem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-26 18:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-distribution-filename/src/wheel.rs</code>:485 on 2025-02-26 18:20</div>
+            <div class="timeline-body"><p>We try to use inline snapshots in the project, if feasible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-26 18:33</div>
+            <div class="timeline-body"><p>I'll try to get this merged today.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-26 19:35</div>
+            <div class="timeline-body"><p>Thanks for your work on this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-26 22:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution-filename/src/wheel.rs</code>:114 on 2025-02-26 22:18</div>
+            <div class="timeline-body"><p>@nkitsaini -- I changed this to 64 to accommodate common manylinux tags, like <code>cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64</code>. I don't see much of a downside. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nkitsaini">@nkitsaini</a> reviewed on 2025-02-26 22:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nkitsaini">@nkitsaini</a> on <code>crates/uv-distribution-filename/src/wheel.rs</code>:114 on 2025-02-26 22:23</div>
+            <div class="timeline-body"><p>Yeah, it is better. Older one was mostly arbitrary. As long as we stay below 140, it should not be an issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-26 22:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/index/cached_wheel.rs</code>:156 on 2025-02-26 22:30</div>
+            <div class="timeline-body"><p>@nkitsaini -- I also removed the <code>Version</code> checks from this method. I think the version (before the <code>-</code>) isn't actually guaranteed to be valid, since it could be truncated to, like... <code>1.2.0+</code>. I might change that in the cache key to avoid those ambiguities, but still seems safer to remove the assumption here. (We already validate that the file ends in <code>.rev</code> anyway.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/nkitsaini">@nkitsaini</a> reviewed on 2025-02-26 22:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/nkitsaini">@nkitsaini</a> on <code>crates/uv-distribution/src/index/cached_wheel.rs</code>:156 on 2025-02-26 22:40</div>
+            <div class="timeline-body"><p>Ah, nice. Missed that. I am also not sure how valuable these checks were. It would make sense to use cache even if the filename is wrong but it points to a valid archive. And I wouldn't assume there would be any invalid files unless created manually, which should be pretty rare hence negating any performance benefits from saved disk I/O.</p>
+<p>Maybe I am missing something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-02-26 22:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-26 22:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-26 22:42</div>
+            <div class="timeline-body"><p>Thanks @nkitsaini! This was a great contribution. I hope you'll consider continuing to contribute to uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-27 08:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

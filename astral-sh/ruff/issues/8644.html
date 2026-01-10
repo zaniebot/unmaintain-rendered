@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatting instability in `async` call chain - astral-sh/ruff #8644</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatting instability in <code>async</code> call chain</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8644">#8644</a>
+        opened by <a href="https://github.com/roshanjrajan-zip">@roshanjrajan-zip</a>
+        on 2023-11-13 05:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/roshanjrajan-zip">@roshanjrajan-zip</a> on 2023-11-13 05:03</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>I don't know if this is expected but I am getting an error when formatting the following code. I would expect Ruff to come to a solution and not have differences when running with --no-cache or not.</p>
+<p>Ruff Settings: Nothing specific for format but have line-length set to 88.
+Ruff Version: v0.1.4/0.1.5</p>
+<p>Steps to reproduce:</p>
+<ol>
+<li>Create file called test.py with the following code</li>
+</ol>
+<pre><code class="language-python"># test.py
+def func():
+    test_data = await (
+        Stream.from_async(async_data.data())
+        .flat_map_async(lambda data: data.async_data())
+        .map(lambda data: data.data())
+        .filter_async(is_valid_data)
+        .to_list()
+    )
+</code></pre>
+<ol start="2">
+<li>Call <code>ruff format test.py --isolated </code>. Can call this repeatedly and it stays the same as the following.</li>
+</ol>
+<pre><code class="language-python">def func():
+    test_data = await Stream.from_async(async_data.data()).flat_map_async(
+        lambda data: data.async_data()
+    ).map(lambda data: data.data()).filter_async(is_valid_data).to_list()
+</code></pre>
+<ol start="3">
+<li>Now if I run this code in CI where it runs the github action on v0.1.4 with <code>format check</code> it fails. When I call <code>ruff format test.py --isolated --no-cache</code> it formats the code to the following.</li>
+</ol>
+<pre><code class="language-python">def func():
+    test_data = (
+        await Stream.from_async(async_data.data())
+        .flat_map_async(lambda data: data.async_data())
+        .map(lambda data: data.data())
+        .filter_async(is_valid_data)
+        .to_list()
+    )
+</code></pre>
+<p>This is stable and all calls to ruff format w/o the --no-cache flag do not reformat the file. This also allows it to pass in CI with the format check. Any help/pointers on how to make sure this is stable is greatly appreciated!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Formatter: Using no_cache formats code differently which impacts formatting on other machines/CI" to "Formatter: Using --no-cache formats code differently which impacts formatting on other machines/CI" by @roshanjrajan-zip on 2023-11-13 05:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-13 05:11</div>
+            <div class="timeline-body"><p>I think the issue is that there's an instability in the formatting:</p>
+<pre><code class="language-python"># test.py
+def func():
+    test_data = await (
+        Stream.from_async(async_data.data())
+        .flat_map_async(lambda data: data.async_data())
+        .map(lambda data: data.data())
+        .filter_async(is_valid_data)
+        .to_list()
+    )
+
+# Format once...
+def func():
+    test_data = await Stream.from_async(async_data.data()).flat_map_async(
+        lambda data: data.async_data()
+    ).map(lambda data: data.data()).filter_async(is_valid_data).to_list()
+
+# Format twice...
+def func():
+    test_data = (
+        await Stream.from_async(async_data.data())
+        .flat_map_async(lambda data: data.async_data())
+        .map(lambda data: data.data())
+        .filter_async(is_valid_data)
+        .to_list()
+    )
+</code></pre>
+<p>It's just a bug in the formatter. Will need to ensure it's fixed for the next release. Thanks!</p>
+<p>(If you want a workaround, I'd suggest just applying that final formatting, which Ruff will retain.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-11-13 05:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-11-13 05:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/roshanjrajan-zip">@roshanjrajan-zip</a> on 2023-11-13 06:03</div>
+            <div class="timeline-body"><p>Will do and thanks for looking into this! Really appreciate the great work you are doing! 🔥</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Formatter: Using --no-cache formats code differently which impacts formatting on other machines/CI" to "Formatting instability in async call chain" by @charliermarsh on 2023-11-13 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Formatting instability in async call chain" to "Formatting instability in `async` call chain" by @charliermarsh on 2023-11-13 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-17 17:24</div>
+            <div class="timeline-body"><p>Closed by https://github.com/astral-sh/ruff/pull/8676.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-17 17:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:57 UTC
+    </footer>
+</body>
+</html>

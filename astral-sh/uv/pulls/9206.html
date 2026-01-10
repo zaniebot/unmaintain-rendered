@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Better error message when `git` is not found - astral-sh/uv #9206</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Better error message when <code>git</code> is not found</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9206">#9206</a>
+        opened by <a href="https://github.com/blueraft">@blueraft</a>
+        on 2024-11-18 16:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/blueraft">@blueraft</a> on 2024-11-18 16:47</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes https://github.com/astral-sh/uv/issues/9200</p>
+<h2>Test Plan</h2>
+<p>Using the following Dockerfile:</p>
+<pre><code class="language-Dockerfile">FROM debian:latest
+
+RUN apt-get update &amp;&amp; apt-get install -y python3
+
+WORKDIR /app
+COPY target/debug/uv .
+RUN chmod +x uv
+
+RUN /app/uv venv &amp;&amp; /app/uv pip install git@github.com:pallets/flask.git
+</code></pre>
+<pre><code>❯ cargo build -q -p uv &amp;&amp; docker build .
+...
+ =&gt; ERROR [6/6] RUN /app/uv venv &amp;&amp; /app/uv pip install git@github.com:pallets/flask.git                    0.4s
+------
+ &gt; [6/6] RUN /app/uv venv &amp;&amp; /app/uv pip install git@github.com:pallets/flask.git:
+0.275 Using CPython 3.11.2 interpreter at: /usr/bin/python3
+0.275 Creating virtual environment at: .venv
+0.318   × Failed to download and build `git @
+0.318   │ file:///app/github.com:pallets/flask.git`
+0.318   ├─▶ Git operation failed
+0.318   ╰─▶ Git executable not found. Ensure that Git is installed and available.
+------
+Dockerfile:9
+--------------------
+   7 |     RUN chmod +x uv
+   8 |
+   9 | &gt;&gt;&gt; RUN /app/uv venv &amp;&amp; /app/uv pip install git@github.com:pallets/flask.git
+  10 |
+--------------------
+ERROR: failed to solve: process &quot;/bin/sh -c /
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-18 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @charliermarsh on 2024-11-18 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @charliermarsh on 2024-11-18 17:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-18 17:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-git/src/git.rs</code>:30 on 2024-11-18 17:22</div>
+            <div class="timeline-body"><p>I think we should make this <code>#[error(transparent)]</code> and pass the source unmodified.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/blueraft">@blueraft</a> reviewed on 2024-11-18 17:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/blueraft">@blueraft</a> on <code>crates/uv-git/src/git.rs</code>:30 on 2024-11-18 17:27</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-11-18 17:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-11-18 17:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-18 17:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:14 UTC
+    </footer>
+</body>
+</html>

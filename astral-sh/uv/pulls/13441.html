@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: add dynamically generated sysconfig replacement mappings - astral-sh/uv #13441</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: add dynamically generated sysconfig replacement mappings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13441">#13441</a>
+        opened by <a href="https://github.com/samypr100">@samypr100</a>
+        on 2025-05-14 02:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/samypr100">@samypr100</a> on 2025-05-14 02:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Implementation referenced in https://github.com/astral-sh/uv/pull/12239#issuecomment-2744880003</p>
+<p>Closes #12919 #12901</p>
+<p>This makes the sysconfig replacements mappings dynamically generated from https://github.com/astral-sh/python-build-standalone/blob/main/cpython-unix/targets.yml</p>
+<h2>Test Plan</h2>
+<p>cargo dev tests, and tested scenario from https://github.com/astral-sh/uv/issues/12901#issuecomment-2822107454</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-05-14 02:49</div>
+            <div class="timeline-body"><p>@zanieb Are you ok with this general approach? There is an big assumption here that targets.yml will be the canonical way to obtain these mappings going forward.</p>
+<p>It has the (good? or bad?) side-effect that as soon as targets.yml adds a new non-mapped entry, it will fail the generate tests. We can lock it down to only reference build-standalone releases though, but that may require manual updating/upkeep.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @samypr100 on 2025-05-20 01:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-20 01:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-dev/src/generate_sysconfig_mappings.rs</code>:14 on 2025-05-20 01:46</div>
+            <div class="timeline-body"><p>re</p>
+<blockquote>
+<p>It has the (good? or bad?) side-effect that as soon as targets.yml adds a new non-mapped entry, it will fail the generate tests.</p>
+</blockquote>
+<p>Can we just use a tag instead of <code>main</code> here and update it in the &quot;Sync Python Releases&quot; job?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-20 01:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Are you ok with this general approach?</p>
+</blockquote>
+<p>I think so? The targets file may change, but I do think static declaration of the targets is helpful.</p>
+<p>I can take a closer look, but I'm at the PyCon Sprints this week and am pretty distracted.</p>
+<p>@Gankra might have some thoughts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">no-build</span> added by @zanieb on 2025-05-20 01:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-05-20 02:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-dev/src/generate_sysconfig_mappings.rs</code>:14 on 2025-05-20 02:12</div>
+            <div class="timeline-body"><p>We can use a tagged link, e.g. https://raw.githubusercontent.com/astral-sh/python-build-standalone/refs/tags/20250517/cpython-unix/targets.yml</p>
+<p>Note, if we're syncing you'd effectively get the latest release targets.yml at the cron interval, are you thinking <code>Sync Python Releases</code> will also run <code>cargo dev generate-sysconfig-metadata</code> and commit the changes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-05-20 02:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-dev/src/generate_sysconfig_mappings.rs</code>:14 on 2025-05-20 02:33</div>
+            <div class="timeline-body"><p>It would be something roughly like this</p>
+<pre><code class="language-yaml">...
+      - name: Sync Sysconfig Targets
+        run: |
+          latest_tag=$(curl -fsSL -H &quot;Accept: application/json&quot; https://github.com/astral-sh/python-build-standalone/releases/latest | jq -r .tag_name)
+          sed -i &quot;s|refs/tags/[^/]\+/cpython-unix|refs/tags/${latest_tag}/cpython-unix|g&quot; src/generate_sysconfig_mappings.rs
+          cargo dev generate-sysconfig-metadata 
+        working-directory: ./crates/uv-dev
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+...
+      - name: &quot;Create Pull Request&quot;
+        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
+        with:
+          commit-message: &quot;Sync latest Python releases&quot;
+          add-paths: |
+            crates/uv-python/download-metadata.json
+            crates/uv-dev/src/generate_sysconfig_mappings.rs
+            crates/uv-python/src/sysconfig/generated_mappings.rs
+...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-20 13:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-dev/src/generate_sysconfig_mappings.rs</code>:14 on 2025-05-20 13:12</div>
+            <div class="timeline-body"><p>Yeah that's what I was thinking, though that implementation should be in a local script so we can run it without CI too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-05-21 02:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-dev/src/generate_sysconfig_mappings.rs</code>:14 on 2025-05-21 02:42</div>
+            <div class="timeline-body"><p>Changes added in ef0f160b5d15b78bb40d8848f58aa999afd9af27</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-dev/src/generate_sysconfig_mappings.rs</code>:138 on 2025-05-27 02:46</div>
+            <div class="timeline-body"><p>is this dark sorcery or cruft from refactoring?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-dev/src/generate_sysconfig_mappings.rs</code>:134 on 2025-05-27 02:47</div>
+            <div class="timeline-body"><p>like, ok this works, but, why not just have a multiline string literal?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-dev/src/generate_sysconfig_mappings.rs</code>:134 on 2025-05-27 02:49</div>
+            <div class="timeline-body"><p>(I'm guessing this is just &quot;because the other generate commands are written like this&quot; which, fair enough)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-05-27 02:58</div>
+            <div class="timeline-body"><p>This all seems vaguely coherent and yeah using a source of truth seems good. Could you give some insight on why the shell script if the rust code already needs to know how to do http requests to github?</p>
+<p>Alternatively, could the work the script does be done by fetch-download-metadata.py, so local invokers can just run One Thing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @Gankra by @zanieb on 2025-05-28 18:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2025-05-29 02:18</div>
+            <div class="timeline-body"><blockquote>
+<p>This all seems vaguely coherent and yeah using a source of truth seems good. Could you give some insight on why the shell script if the rust code already needs to know how to do http requests to github?</p>
+</blockquote>
+<p>Good question. The shell script exists to update the python-build-standalone release tag used by the .rs file for to generate the sysconfig metadata. This was a change done after https://github.com/astral-sh/uv/pull/13441#discussion_r2096703347.</p>
+<blockquote>
+<p>Alternatively, could the work the script does be done by fetch-download-metadata.py, so local invokers can just run One Thing?</p>
+</blockquote>
+<p>My thought was to integrate it with the existing cargo dev workflow and tests. I think an alternate script would suffer from the same situation? We'd have to be specific about the release tag we would be pulling in the changes from and it would have to be routinely updated as per https://github.com/astral-sh/uv/pull/13441#discussion_r2096703347 it was not desirable to point it main.  Some other options I can think about are</p>
+<ol>
+<li>Make a change to the existing code to point to the latest release tag instead every time (rather than main) which will make it &quot;break&quot; less often when running the cargo dev tests (or equivalent alternate python script run).</li>
+<li>We use an environment variable on the existing .rs file instead to control the tag it pulls from and leave it unset locally (making the tests pass when its unset), but CI sets it.</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-dev/src/generate_sysconfig_mappings.rs</code>:134 on 2025-05-29 02:19</div>
+            <div class="timeline-body"><p>Indeed, I kept it this way for consistency 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-05-29 02:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-05-29 02:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-dev/src/generate_sysconfig_mappings.rs</code>:138 on 2025-05-29 02:23</div>
+            <div class="timeline-body"><p>The clippy skip? I took it from the readme https://github.com/rust-lang/rust-clippy#allowingdenying-lints</p>
+<p>The formatting skip? I found it in https://github.com/rust-lang/rust/issues/124735#issuecomment-2094818939 (dark sorcery)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-29 12:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/sysconfig/generated_mappings.rs</code>:4 on 2025-05-29 12:35</div>
+            <div class="timeline-body"><p>Can this include the tag?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-05-29 12:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-dev/src/generate_sysconfig_mappings.rs</code>:51 on 2025-05-29 12:36</div>
+            <div class="timeline-body"><p>Should these all be referring to the cli reference?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-05-29 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-dev/src/generate_sysconfig_mappings.rs</code>:51 on 2025-05-29 12:56</div>
+            <div class="timeline-body"><p>Good catch, fixed in b641ff6a9f6589847f999c47e45eb857b0c421fd</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2025-05-29 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-python/src/sysconfig/generated_mappings.rs</code>:4 on 2025-05-29 12:56</div>
+            <div class="timeline-body"><p>Indeed, addressed in a11a3044020d489ce6cc4a92228ac5fc9e01ab70</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-05-29 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @geofft by @geofft on 2025-05-30 15:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-05-31 03:18</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/uv/branches/samypr100%3Adynamic-sysconfig">CodSpeed Walltime Performance Report</a></h2>
+<h3>Merging #13441 will <strong>improve performances by 15.79%</strong></h3>
+<p><sub>Comparing <code>samypr100:dynamic-sysconfig</code> (c92019a) with <code>main</code> (13a86a2)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements<br />
+<code>✅ 11</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>wheelname_parsing_failure[flyte-long-extension]</code> | 110 ns | 95 ns | +15.79% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-06-02 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-06-02 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-02 18:15</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:24 UTC
+    </footer>
+</body>
+</html>

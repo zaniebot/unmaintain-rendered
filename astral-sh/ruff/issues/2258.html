@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`PT013`: Ignore imports in `TYPE_CHECKING` block? - astral-sh/ruff #2258</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>PT013</code>: Ignore imports in <code>TYPE_CHECKING</code> block?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2258">#2258</a>
+        opened by <a href="https://github.com/ngnpope">@ngnpope</a>
+        on 2023-01-27 14:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ngnpope">@ngnpope</a> on 2023-01-27 14:51</div>
+            <div class="timeline-body"><p>Consider the following:</p>
+<pre><code class="language-python">from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from pytest import MonkeyPatch
+
+def test_something(monkeypatch: MonkeyPatch) -&gt; None:
+    ...
+</code></pre>
+<p>This results in the following:</p>
+<pre><code class="language-console">❯ ruff --version
+ruff 0.0.236
+
+❯ ruff --select PT013 bug.py 
+bug.py:4:5: PT013 Found incorrect import of pytest, use simple `import pytest` instead
+Found 1 error.
+</code></pre>
+<p>It seems that <code>PT013</code> is largely driven by trying to avoid things like <code>from pytest import fixture</code> and <code>from pytest import mark</code>, but it'd be pretty ugly to be forced to use <code>pytest.MonkeyPatch</code>, etc. everywhere we want to type hint things...</p>
+<p>I guess a workaround is to do something like the following:</p>
+<pre><code class="language-python">from typing import TYPE_CHECKING, TypeAlias
+
+import pytest
+
+if TYPE_CHECKING:
+    MonkeyPatch: TypeAlias = pytest.MonkeyPatch
+
+def test_something(monkeypatch: MonkeyPatch) -&gt; None:
+    assert 0
+</code></pre>
+<p>But this feels a little unnatural... Can we make <code>PT013</code> not apply in <code>TYPE_CHECKING</code> blocks?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-01-27 15:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "PT013: Ignore imports in `TYPE_CHECKING` block?" to "`PT013`: Ignore imports in `TYPE_CHECKING` block?" by @ngnpope on 2023-02-09 16:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-18 16:02</div>
+            <div class="timeline-body"><p>I can see why this is useful, but I think it would arguably be surprising to special-case it. I'm going to close as &quot;not planned&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-18 16:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:03 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF009 - Specific attribute value definition should be valid - astral-sh/ruff #20353</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF009 - Specific attribute value definition should be valid</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20353">#20353</a>
+        opened by <a href="https://github.com/IDrokin117">@IDrokin117</a>
+        on 2025-09-11 17:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/IDrokin117">@IDrokin117</a> on 2025-09-11 17:50</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Consider the following attribute value definitions as valid for <a href="https://docs.astral.sh/ruff/rules/function-call-in-dataclass-default-argument/#function-call-in-dataclass-default-argument-ruf009">function-call-in-dataclass-default-argument (RUF009)</a></p>
+<ol>
+<li>Nested descriptor definition (related to https://github.com/astral-sh/ruff/issues/20266). <a href="https://play.ruff.rs/ad2a8c0b-a3e7-4fcb-b86a-c1fc48f3af02">Playground</a></li>
+</ol>
+<pre><code class="language-python">import dataclasses
+
+
+class Descriptor:
+
+    def __get__(self, instance, owner):
+        pass
+
+    def __set__(self, instance, value):
+        pass
+
+
+@dataclasses.dataclass(frozen=True)
+class A:
+    class NestedDescriptor:
+
+        def __get__(self, instance, owner):
+            pass
+
+        def __set__(self, instance, value):
+            pass
+
+    descriptor: Descriptor = Descriptor()
+    nested_descriptor: NestedDescriptor = NestedDescriptor() # RUF009 Do not perform function call `NestedDescriptor` in dataclass defaults
+</code></pre>
+<ol start="2">
+<li>Non-direct dataclass instantiation. <a href="https://play.ruff.rs/a5acb0de-57ea-44f3-8150-56609d0a1af5">Playground</a></li>
+</ol>
+<pre><code class="language-python">import dataclasses
+
+
+@dataclasses.dataclass(frozen=True)
+class B:
+    attr: int = 1
+
+class Temp:
+    cls = B
+
+@dataclasses.dataclass(frozen=True)
+class A:
+    b: B = B()
+    temp_b: B = Temp.cls()  # RUF009 Do not perform function call `Temp.cls` in dataclass defaults
+</code></pre>
+<ol start="3">
+<li>Import from module</li>
+</ol>
+<pre><code class="language-python"># my_module.py
+import dataclasses
+
+@dataclasses.dataclass(frozen=True)
+class C:
+    attr: int = 1
+</code></pre>
+<pre><code class="language-python">#main.py
+import dataclasses
+from my_module import C
+import my_module
+
+
+@dataclasses.dataclass(frozen=True)
+class B:
+    attr: int = 1
+
+
+@dataclasses.dataclass(frozen=True)
+class A:
+    b: B = B()
+    imported_c: C = C()  # RUF009 Do not perform function call `C` in dataclass defaults
+    imported_module_c: C = my_module.C()  # RUF009 Do not perform function call `my_module.C` in dataclass defaults
+
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.12.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @ntBre on 2025-09-11 19:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:21 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule Request: redundant logfmt str ctor catch in G rules or add new rule - astral-sh/ruff #12734</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule Request: redundant logfmt str ctor catch in G rules or add new rule</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12734">#12734</a>
+        opened by <a href="https://github.com/Skylion007">@Skylion007</a>
+        on 2024-08-07 15:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-08-07 15:27</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>This is a really common antipattern I wish logfmt (G*) rules would catch:</p>
+<pre><code class="language-python">   log.warning(&quot;Cannot write to %s&quot;, str(profile_path))
+</code></pre>
+<p>is redundant and does an potentially expensive str construction which is what we are trying to avoid with these rules anyway. Instead, the <code>%s</code> ensure it will be formatted as a string anyway! As such, this can be simplified into the better code:</p>
+<pre><code class="language-python">   log.warning(&quot;Cannot write to %s&quot;, profile_path)
+</code></pre>
+<p>Which will be faster in both the case where it's printed and the case where it's not by either avoiding an unnecessary string copy or a unnecessary construction in the first place.</p>
+<p>This rule could be added more generically to any string formatting in the new or old styles</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamchainz">@adamchainz</a> on 2024-08-07 21:03</div>
+            <div class="timeline-body"><p>Replying on behalf of flake8-logging here. I think we can avoid parsing the string formatting the message and instead error for any <code>str</code> or <code>repr</code> calls in the positional arguments of a logging call. That seems like it would catch the issue without much chance of false positive. What do you think? Happy to review a PR there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-07 22:54</div>
+            <div class="timeline-body"><p>Thanks! We do have a parser for format strings so we <em>could</em> parse it and cross-reference with the positional calls if needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-08-07 22:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2024-08-07 22:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-09-19 20:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:37 UTC
+    </footer>
+</body>
+</html>

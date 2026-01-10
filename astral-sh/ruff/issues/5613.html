@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Format assignment expressions (`FormatExprNamedExpr`) - astral-sh/ruff #5613</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Format assignment expressions (<code>FormatExprNamedExpr</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/5613">#5613</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2023-07-08 14:41
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/konstin">@konstin</a> on 2023-07-08 14:41</div>
+            <div class="timeline-body"><p>Assignment expressions are those using the &quot;walrus operator&quot; <code>:=</code>:</p>
+<pre><code class="language-python">if x := f():
+    g(x)
+</code></pre>
+<p>In general, they are easy to format, they are a sequence of target, space, <code>:=</code>, space, value with optional parentheses.</p>
+<p>The difficulty is that there are a list of <a href="https://peps.python.org/pep-0572/#exceptional-cases">exceptional cases in PEP 572</a> where the parentheses are mandatory based on the surrounding node, e.g. keyword argument values need parentheses. So for implementing this we either need to use the <a href="https://github.com/astral-sh/ruff/blob/40ddc1604cf53d209d55c7fd9ec40a399fc2a53f/crates/ruff_python_formatter/src/expression/expr_tuple.rs#L128">tuple way of checking if there are parentheses in range</a> or each node in the list in PEP 572 needs to have a special case where it checks whether the expression it is about to format is a <code>ExprNamedExpr</code> and in that cases sets the parentheses to always.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @konstin on 2023-07-08 14:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-08 14:46</div>
+            <div class="timeline-body"><p>If the named expression needs to be parenthesized, won’t it already have been parenthesized in the parsed source? (Otherwise it would’ve been invalid syntax in the first place.) So would those “exceptions” be solved by preserving original parentheses? May be misunderstanding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-07-08 14:50</div>
+            <div class="timeline-body"><p>Good point, i filed this because i <a href="https://github.com/astral-sh/ruff/compare/main...named_expr_stash">tried the naive solution and failed</a>, but you're right, the <a href="https://github.com/astral-sh/ruff/blob/40ddc1604cf53d209d55c7fd9ec40a399fc2a53f/crates/ruff_python_formatter/src/expression/expr_tuple.rs#L128">tuple way of checking if there are parentheses in range</a> is likely better</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-07-10 11:52</div>
+            <div class="timeline-body"><p>Implemented this differently because unlike tuples even mandatory parentheses are not part of the range</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2023-07-10 12:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:38 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S507 does not trigger when using class inheritance - astral-sh/ruff #21407</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>S507 does not trigger when using class inheritance</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21407">#21407</a>
+        opened by <a href="https://github.com/schnow265">@schnow265</a>
+        on 2025-11-12 15:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/schnow265">@schnow265</a> on 2025-11-12 15:14</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When creating a class which inherits from <code>paramiko.SSHClient</code> and then using <code>self.set_missing_host_key_policy(paramiko.AutoAddPolicy)</code>, the linter rule is not triggered. The same applies when creating an instance of the custom class and calling the function there.</p>
+<p>I have included an example:</p>
+<pre><code class="language-python">import paramiko
+
+ssh_client = paramiko.SSHClient()
+ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy)  # triggers rule
+
+
+class Test(paramiko.SSHClient):
+    def __init__(self):
+        super().__init__()
+        self.set_missing_host_key_policy(paramiko.AutoAddPolicy)  # does not trigger rule
+
+client = Test()
+client.set_missing_host_key_policy(paramiko.AutoAddPolicy)  # also doesn't trigger rule
+</code></pre>
+<p>You can check it by pasting my python snippet into a file and then using the following command:</p>
+<pre><code class="language-shell">ruff check --select S507 ./path/to/file.py
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.14.4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-11-12 20:54</div>
+            <div class="timeline-body"><p>Thanks for the report! I think we could try to resolve base classes within the same file at least, even if multi-file analysis is still unavailable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-11-12 20:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:43 UTC
+    </footer>
+</body>
+</html>

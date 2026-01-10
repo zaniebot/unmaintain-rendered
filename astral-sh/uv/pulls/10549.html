@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make build backend type annotations more generic - astral-sh/uv #10549</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make build backend type annotations more generic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10549">#10549</a>
+        opened by <a href="https://github.com/cthoyt">@cthoyt</a>
+        on 2025-01-13 00:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/cthoyt">@cthoyt</a> on 2025-01-13 00:26</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>As a follow-up to https://github.com/astral-sh/uv/pull/10434, this PR makes the dictionary type annotations more generic with the <code>typing.Mapping</code> abstract class.</p>
+<p>In theory, this allows <code>typing.TypedDict</code> to be passed. However, note that in practice, the uv build backend is set up to reject if anything is actually passed to this optional parameter 😄</p>
+<p>Suggested in https://github.com/astral-sh/uv/pull/10434#issuecomment-2584357031</p>
+<h2>Test Plan</h2>
+<ul>
+<li><code>uvx ruff check --select ANN python/</code> checks typing is complete</li>
+<li><code>uvx mypy --strict python/</code> checks typing is consistent</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Update build backend type annotations" to "Make build backend type annotations more generic" by @cthoyt on 2025-01-13 00:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jorenham">@jorenham</a> on <code>python/uv/_build_backend.py</code>:31 on 2025-01-13 05:04</div>
+            <div class="timeline-body"><p><code>list</code> is invariant, so it <code>list[str]</code> won't accept <code>list[LiteralString]</code> or other lists whose value type is strict subtype of <code>str</code>.</p>
+<p>Repro:
+https://basedpyright.com/?typeCheckingMode=all&amp;code=GYJw9gtgBALgngBwJYDsDmUkQWEMoAySMApiAIYA2AyjCKmgLABQLLAJicFMABQD6ALiiUkAZxgBtCSAC6AGigB6AJRQAtAD4oAOTAoSwgHQm2zSmOGiJkoqQo06DWVAC8USQCJPslnwsqZkA</p>
+<p>So if this wasn't intended, then you could use <code>collections.abc.Sequence</code>, which has a covariant value type parameter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jorenham">@jorenham</a> on <code>python/uv/_build_backend.py</code>:21 on 2025-01-13 05:11</div>
+            <div class="timeline-body"><p><code>typing.Mapping</code> is deprecated since python 3.9, so it's recommended to import it from <code>collections.abc</code>: https://docs.python.org/3/library/typing.html#typing.Mapping</p>
+<p>And it apparently already works on Python 3.8:
+https://basedpyright.com/?pythonVersion=3.8&amp;typeCheckingMode=all&amp;code=GYJw9gtgBAxmA28CmMAuBLMA7AzgOgEMAjGKdCABzBFSgFkCKL0sBzAWACguCAuexszYBtHKhAAaKGJABdKAF4oAbwC%2BXIA</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jorenham">@jorenham</a> reviewed on 2025-01-13 05:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cthoyt">@cthoyt</a> reviewed on 2025-01-13 12:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cthoyt">@cthoyt</a> on <code>python/uv/_build_backend.py</code>:21 on 2025-01-13 12:27</div>
+            <div class="timeline-body"><p>I also checked on PyPI, and the uv python package only supports py38+, so this is doable. Updated in 808eb2d8d.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cthoyt">@cthoyt</a> reviewed on 2025-01-13 12:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cthoyt">@cthoyt</a> on <code>python/uv/_build_backend.py</code>:31 on 2025-01-13 12:32</div>
+            <div class="timeline-body"><p>done in 7250bdbbd</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jorenham">@jorenham</a> approved on 2025-01-13 13:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cthoyt">@cthoyt</a> on 2025-01-13 13:45</div>
+            <div class="timeline-body"><p>ping @konstin  :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-01-13 18:34</div>
+            <div class="timeline-body"><p>thanks for following up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-01-13 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-01-13 18:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-13 18:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:18 UTC
+    </footer>
+</body>
+</html>

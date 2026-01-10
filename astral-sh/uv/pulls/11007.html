@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guard against concurrent cache writes on Windows - astral-sh/uv #11007</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Guard against concurrent cache writes on Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11007">#11007</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-01-27 22:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-27 22:59</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>On Windows, we have a lot of issues with atomic replacement and such. There are a bunch of different failure modes, but they generally involve: trying to persist a fail to a path at which the file already exists, trying to replace or remove a file while someone else is reading it, etc.</p>
+<p>This PR adds locks to all of the relevant database paths. We already use these advisory locks when building source distributions; now we use them when unzipping wheels, storing metadata, etc.</p>
+<p>Closes #11002.</p>
+<h2>Test Plan</h2>
+<p>I ran the following script:</p>
+<pre><code class="language-shell"># Define the cache directory path
+$cacheDir = &quot;C:\Users\crmar\workspace\uv\cache&quot;
+
+# Clear the cache directory if it exists
+if (Test-Path $cacheDir) {
+    Remove-Item -Recurse -Force $cacheDir
+}
+
+# Create the cache directory again
+New-Item -ItemType Directory -Force -Path $cacheDir
+
+# Define the command to run with --cache-dir flag
+$command = {
+    param ($venvPath)
+
+    # Create a virtual environment in the specified path with --python
+    uv venv $venvPath
+
+    # Run the pip install command with --cache-dir flag
+    C:\Users\crmar\workspace\uv\target\profiling\uv.exe pip install flask==1.0.4 --no-binary flask --cache-dir C:\Users\crmar\workspace\uv\cache -v --python $venvPath
+}
+
+# Define the paths for the different virtual environments
+$venv1 = &quot;C:\Users\crmar\workspace\uv\venv1&quot;
+$venv2 = &quot;C:\Users\crmar\workspace\uv\venv2&quot;
+$venv3 = &quot;C:\Users\crmar\workspace\uv\venv3&quot;
+$venv4 = &quot;C:\Users\crmar\workspace\uv\venv4&quot;
+$venv5 = &quot;C:\Users\crmar\workspace\uv\venv5&quot;
+
+# Start the command in parallel five times using Start-Job, each with a different venv
+$job1 = Start-Job -ScriptBlock $command -ArgumentList $venv1
+$job2 = Start-Job -ScriptBlock $command -ArgumentList $venv2
+$job3 = Start-Job -ScriptBlock $command -ArgumentList $venv3
+$job4 = Start-Job -ScriptBlock $command -ArgumentList $venv4
+$job5 = Start-Job -ScriptBlock $command -ArgumentList $venv5
+
+# Wait for all jobs to complete
+$jobs = @($job1, $job2, $job3, $job4, $job5)
+$jobs | ForEach-Object { Wait-Job $_ }
+
+# Retrieve the results (optional)
+$jobs | ForEach-Object { Receive-Job -Job $_ }
+
+# Clean up the jobs
+$jobs | ForEach-Object { Remove-Job -Job $_ }
+</code></pre>
+<p>And ensured it succeeded in five straight invocations (whereas on <code>main</code>, it consistently fails with a variety of different traces).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @charliermarsh on 2025-01-27 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2025-01-27 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-01-27 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2025-01-27 23:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-27 23:59</div>
+            <div class="timeline-body"><p>I'll fix up the tests on approval -- they're just count offsets due to writing more files to the cache (sadly).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-28 09:24</div>
+            <div class="timeline-body"><p>Can you add the script you used to provoke the error and check that it's test? Otherwise we don't have a regression test should we ever have to revisit this code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-client/src/registry_client.rs</code>:339 on 2025-01-28 09:24</div>
+            <div class="timeline-body"><p>Can you extend the comment explaining the <code>[cfg(windows)]</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-fs/src/lib.rs</code>:52 on 2025-01-28 09:26</div>
+            <div class="timeline-body"><p>Do i read this comment correctly that there is no way for us to make this atomic?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-01-28 09:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-28 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-fs/src/lib.rs</code>:52 on 2025-01-28 14:03</div>
+            <div class="timeline-body"><p>I can try, but making it atomic doesn't solve the problem. We could still run into issues whereby we attempt to overwrite the file while it's open, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-28 14:03</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you add the script you used to provoke the error and check that it's test? Otherwise we don't have a regression test should we ever have to revisit this code.</p>
+</blockquote>
+<p>Sorry, do you mean, add a test to the codebase itself? The script I used is in the PR summary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-01-28 14:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-fs/src/lib.rs</code>:52 on 2025-01-28 14:17</div>
+            <div class="timeline-body"><p>That's good to know, i didn't think of that case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-28 14:22</div>
+            <div class="timeline-body"><p>Sorry, totally overlooked that. Is it possible to port this to an integration test, or alternatively could we add that script to <code>scripts/</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-01-28 14:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-28 14:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-fs/src/lib.rs</code>:52 on 2025-01-28 14:26</div>
+            <div class="timeline-body"><p>It's somewhat tragic. I think we should still try to make this atomic though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-01-28 20:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-28 20:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-28 20:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-28 20:34</div>
+            <div class="timeline-body"><p>@konstin -- I'm just gonna leave it in here for now. I think this is ~as good as putting it in <code>scripts</code> given that we'll never run it and it will likely bitrot there.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:19 UTC
+    </footer>
+</body>
+</html>

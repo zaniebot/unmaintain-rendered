@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM101 fix reverses order of `or` condition - astral-sh/ruff #7797</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM101 fix reverses order of <code>or</code> condition</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7797">#7797</a>
+        opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a>
+        on 2023-10-04 03:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2023-10-04 03:02</div>
+            <div class="timeline-body"><pre><code>$ cat sim101.py
+assert (
+    job.only_on_instances is None
+    or isinstance(job.only_on_instances, list)
+    or isinstance(job.only_on_instances, set)
+)
+$ python -m ruff --select=SIM101 sim101.py 
+sim101.py:2:5: SIM101 [*] Multiple `isinstance` calls for expression, merge into a single call
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+$ python -m ruff --select=SIM101 sim101.py  --fix --diff
+--- sim101.py
++++ sim101.py
+@@ -1,5 +1,3 @@
+ assert (
+-    job.only_on_instances is None
+-    or isinstance(job.only_on_instances, list)
+-    or isinstance(job.only_on_instances, set)
++    isinstance(job.only_on_instances, (list, set)) or job.only_on_instances is None
+ )
+
+Would fix 1 error.
+$ python -m ruff --version
+ruff 0.0.292
+</code></pre>
+<p>Notice that the original code checked <code>job.only_on_instances is None</code> first, and Ruff's change puts it second instead.</p>
+<p>It's harmless in this case, but in general this change could break working code that relies on short-circuit evaluation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2023-10-04 03:03</div>
+            <div class="timeline-body"><p>I'll try to come up with a fix for this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-04 03:09</div>
+            <div class="timeline-body"><p>Oof yeah, looks like a bug. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-04 03:10</div>
+            <div class="timeline-body"><p>This probably needs to be sensitive to order:</p>
+<pre><code class="language-rust">// Generate the combined `BoolOp`.
+let node = ast::ExprBoolOp {
+    op: BoolOp::Or,
+    values: iter::once(call)
+        .chain(
+            values
+                .iter()
+                .enumerate()
+                .filter(|(index, _)| !indices.contains(index))
+                .map(|(_, elt)| elt.clone()),
+        )
+        .collect(),
+    range: TextRange::default(),
+};
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-10-04 03:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2023-10-04 03:12</div>
+            <div class="timeline-body"><p>Yes, I'm staring at that code now :)</p>
+<p>Here's a related bug I noticed when looking at the code:</p>
+<pre><code> assert (
+-    isinstance(x, int)
+-    or x is None
+-    or isinstance(x, str)
++    isinstance(x, (int, str)) or x is None
+ )
+
+</code></pre>
+<p>If the two isinstance() calls are not adjacent among the members of the BoolOp, it isn't safe to combine them. I think in that case Ruff simply should not emit any error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @JelleZijlstra by @charliermarsh on 2023-10-04 04:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-04 04:42</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:31 UTC
+    </footer>
+</body>
+</html>

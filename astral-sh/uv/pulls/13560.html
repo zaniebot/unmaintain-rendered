@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `DisplaySafeUrl` newtype to prevent leaking of credentials by default - astral-sh/uv #13560</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>DisplaySafeUrl</code> newtype to prevent leaking of credentials by default</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13560">#13560</a>
+        opened by <a href="https://github.com/jtfmumm">@jtfmumm</a>
+        on 2025-05-20 19:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-05-20 19:09</div>
+            <div class="timeline-body"><p>Prior to this PR, there were numerous places where uv would leak credentials in logs. We had a way to mask credentials by calling methods or a recently-added <code>redact_url</code> function, but this was not secure by default. There were a number of other types (like <code>GitUrl</code>) that would leak credentials on display.</p>
+<p>This PR adds a <code>DisplaySafeUrl</code> newtype to prevent leaking credentials when logging by default. It takes a maximalist approach, replacing the use of <code>Url</code> almost everywhere. This includes when first parsing config files, when storing URLs in types like <code>GitUrl</code>, and also when storing URLs in types that in practice will never contain credentials (like <code>DirectorySourceUrl</code>). The idea is to make it easy for developers to do the right thing and for the compiler to support this (and to minimize ever having to manually convert back and forth). Displaying credentials now requires an active step. Note that despite this maximalist approach, the use of the newtype should be zero cost.</p>
+<p>One conspicuous place this PR does not use <code>DisplaySafeUrl</code> is in the <code>uv-auth</code> crate. That would require new clones since there are calls to <code>request.url()</code> that return a <code>&amp;Url</code>. One option would have been to make <code>DisplaySafeUrl</code> wrap a <code>Cow</code>, but this would lead to lifetime annotations all over the codebase. I've created a separate PR based on this one (#13576) that updates <code>uv-auth</code> to use <code>DisplaySafeUrl</code> with one  new clone. We can discuss the tradeoffs there.</p>
+<p>Most of this PR just replaces <code>Url</code> with <code>DisplaySafeUrl</code>. The core is <code>uv_redacted/lib.rs</code>, where the newtype is implemented. To make it easier to review the rest, here are some points of note:</p>
+<ul>
+<li><code>DisplaySafeUrl</code> has a <code>Display</code> implementation that masks credentials. Currently, it will still display the username when there is both a username and password. If we think is the wrong choice, it can now be changed in one place.</li>
+<li><code>DisplaySafeUrl</code> has a <code>remove_credentials()</code> method and also a <code>.to_string_with_credentials()</code> method. This allows us to use it in a variety of scenarios.</li>
+<li><code>IndexUrl::redacted()</code> was renamed to <code>IndexUrl::removed_credentials()</code> to make it clearer that we are not masking.</li>
+<li>We convert from a <code>DisplaySafeUrl</code> to a <code>Url</code> when calling <code>reqwest</code> methods like <code>.get()</code> and <code>.head()</code>.</li>
+<li>We convert from a <code>DisplaySafeUrl</code> to a <code>Url</code> when creating a <code>uv_auth::Index</code>. That is because, as mentioned above, I will be updating the <code>uv_auth</code> crate to use this newtype in a separate PR.</li>
+<li>A number of tests (e.g., in <code>pip_install.rs</code>) that formerly used filters to mask tokens in the test output no longer need those filters since tokens in URLs are now masked automatically.</li>
+<li>The one place we are still knowingly writing credentials to <code>pyproject.toml</code> is when a URL with credentials is passed to <code>uv add</code> with <code>--raw</code>. Since displaying credentials is no longer automatic, I have added a <code>to_string_with_credentials()</code> method to the <code>Pep508Url</code> trait. This is used when <code>--raw</code> is passed. Adding it to that trait is a bit weird, but it's the simplest way to achieve the goal. I'm open to suggestions on how to improve this, but note that because of the way we're using generic bounds, it's not as simple as just creating a separate trait for that method.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add `LogSafeUrl` newtype to prevent leaking of credentials" to "Add `LogSafeUrl` newtype to prevent leaking of credentials by default" by @jtfmumm on 2025-05-20 19:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">security</span> added by @jtfmumm on 2025-05-20 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-05-20 19:26</div>
+            <div class="timeline-body"><p>I continued to use the new <code>uv-redacted</code> crate for the newtype, replacing the <code>redacted_url</code> method there. I'm not sure that's the best name for the crate anymore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-26 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-redacted/src/lib.rs</code>:41 on 2025-05-26 14:24</div>
+            <div class="timeline-body"><p>nit: Maybe some more generic name, such as <code>RedactingUrl</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-26 14:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-redacted/src/lib.rs</code>:57 on 2025-05-26 14:25</div>
+            <div class="timeline-body"><p>This docstring is wrong</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-26 14:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-redacted/src/lib.rs</code>:6 on 2025-05-26 14:27</div>
+            <div class="timeline-body"><p>I would make this more generic, since we're also displaying URLs in error messages and serializing it to files, e.g.:</p>
+<pre><code class="language-suggestion">/// A [`Url`] wrapper that redacts credentials when displaying the URL.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-26 14:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution-types/src/index_url.rs</code>:131 on 2025-05-26 14:28</div>
+            <div class="timeline-body"><p>nit: For consistency: <code>without_credentials</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-26 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution-types/src/index_url.rs</code>:111 on 2025-05-26 14:38</div>
+            <div class="timeline-body"><p>I find it confusing that <code>LogSafeUrl</code> here is both working a URL that has credentials, but redacts them, and as a URL that had its credentials removed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-26 14:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index_url.rs</code>:111 on 2025-05-26 14:41</div>
+            <div class="timeline-body"><p>The idea is that it's a version of <code>Url</code> that you can log safely. It's not meant to imply that the credentials are in any other state. I wanted it to effectively be uv's replacement for using <code>Url</code> in general.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-26 14:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-redacted/src/lib.rs</code>:41 on 2025-05-26 14:46</div>
+            <div class="timeline-body"><p>I'm not really sure what the best name is. I want to be careful not to imply that the credentials are in an obfuscated/redacted state internally, which is why I didn't go with <code>ObfuscatedUrl</code> initially.</p>
+<p>Your suggestion is better than that because it implies something active. But my worry would still be that it might mislead developers to think that the credentials can't be accessed at all (i.e., via <code>.username()</code> or <code>.password()</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-26 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index_url.rs</code>:111 on 2025-05-26 14:50</div>
+            <div class="timeline-body"><p>But maybe I'm missing part of your point. The <code>without_credentials()</code> case is for when you want to display or log the URL without the masked credentials. There are some cases where we want to indicate the credentials were part of the raw URL by showing the masked version (e.g., for debugging requests) and some cases where we just want the URL itself (like in the lockfile).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/add.rs</code>:653 on 2025-05-26 14:54</div>
+            <div class="timeline-body"><p>Do we still need this?</p>
+<p>This question applies to all non-test <code>remove_credentials</code> calls: Do we still need explicit redaction, or does automatic redaction handle everything we need now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/run.rs</code>:1499 on 2025-05-26 15:00</div>
+            <div class="timeline-body"><p>Is there a specific reason this didn't become a redacted URL?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/publish.rs</code>:349 on 2025-05-26 15:03</div>
+            <div class="timeline-body"><p>re publishing, <code>TrustedPublishingError</code> should also use redacted URLs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-git/src/source.rs</code>:86 on 2025-05-26 15:04</div>
+            <div class="timeline-body"><p><code>credentials.apply</code> should operate on a redacting URL by default</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/lock.rs</code>:8407 on 2025-05-26 15:08</div>
+            <div class="timeline-body"><p>The new redactions in action!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-client/src/registry_client.rs</code>:488 on 2025-05-26 15:10</div>
+            <div class="timeline-body"><pre><code class="language-suggestions">        trace!(&quot;Fetching metadata for {package_name} from {url}&quot;);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-client/src/registry_client.rs</code>:631 on 2025-05-26 15:11</div>
+            <div class="timeline-body"><p>This method should take a <code>LogSafeUrl</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution/src/source/mod.rs</code>:1472 on 2025-05-26 15:13</div>
+            <div class="timeline-body"><p>Errors are displayed and should use the redacted URL</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution/src/error.rs</code>:6 on 2025-05-26 15:13</div>
+            <div class="timeline-body"><p>nit: import sorting</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution-types/src/file.rs</code>:193 on 2025-05-26 15:14</div>
+            <div class="timeline-body"><p>Do we need to apply redactions when displaying <code>UrlString</code>s?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution-types/src/index_url.rs</code>:111 on 2025-05-26 15:18</div>
+            <div class="timeline-body"><p>This is something that's already in the existing code: Sometimes <code>Url</code> refers to a URL with credentials, and sometimes to the same underlying &quot;data&quot; without credentials. What about returning a <code>impl Display</code> instead of a real type from <code>without_credentials</code> to make it clearer that this is an output-only method?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-git/src/credentials.rs</code>:34 on 2025-05-26 15:20</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        trace!(&quot;Caching credentials for {url}&quot;);
+</code></pre>
+<p>for <code>println!</code> clippy catches those, but apparently it can't through tracing's macros.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pep508/src/lib.rs</code>:149 on 2025-05-26 15:25</div>
+            <div class="timeline-body"><p>We can give this a more native-feeling API with a proxy type (eliding generics):</p>
+<pre><code class="language-rust">struct RequirementDisplay&lt;'a&gt; {
+    display_credentials: bool,
+    requirement: &amp;'a Requirement,
+}
+
+impl Display for RequirementDisplay&lt;'_&gt; {
+    fn fmt(&amp;self, f: &amp;mut Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+        // inlining fmt_requirement
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/pubgrub/report.rs</code>:1533 on 2025-05-26 15:36</div>
+            <div class="timeline-body"><p>I'm a bit torn here, on one side seeing <code>***</code> here could be confusing cause those credentials are evidently the wrong ones, otoh I'd really want to know that there were credentials on the URL here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>uv.schema.json</code>:417 on 2025-05-26 15:38</div>
+            <div class="timeline-body"><p>The JSON schema here should be just URL (or <code>uri</code>), the <code>LogSafeUrl</code> description should not be part of the IDE completion help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-05-26 15:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-26 15:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/project/add.rs</code>:653 on 2025-05-26 15:48</div>
+            <div class="timeline-body"><p>I tried to preserve the existing logic as much as I could. This old <code>redact_credentials</code> function removed the credentials from the <code>Url</code>. So this is just doing the same thing the new way.</p>
+<p>The <code>LogSafeUrl</code> only automatically masks credentials (if they exist) when displaying. That doesn't handle cases where you want to display a URL without credentials or for some other reason want to remove them. In those cases, you still have to handle it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-26 15:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/src/commands/project/add.rs</code>:653 on 2025-05-26 15:50</div>
+            <div class="timeline-body"><p>But since the codebase does not currently have a single consistent way of handling this, it could make sense to do another pass to see where we really need to remove them and where we don't. I'd rather do that as part of a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-26 15:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-resolver/src/pubgrub/report.rs</code>:1533 on 2025-05-26 15:54</div>
+            <div class="timeline-body"><p>Yeah that's a good point. Note that this is not changing the existing behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-26 18:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/index_url.rs</code>:111 on 2025-05-26 18:09</div>
+            <div class="timeline-body"><p>Are there cases where we might want the URL but not the credentials? That's thinking ahead. For now, we'd add some extra allocations and lose the type information (i.e., that this is safe to display). So I'm hesitant to change it, but not a strong opinion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-26 18:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-git/src/source.rs</code>:86 on 2025-05-26 18:12</div>
+            <div class="timeline-body"><p>The reason is that I've intentionally handled the <code>uv_auth</code> part of the work in a separate PR off of this one (#13576). <code>Credentials</code> does operate on the new type there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-26 18:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/file.rs</code>:193 on 2025-05-26 18:27</div>
+            <div class="timeline-body"><p>This is a good question. We probably should. I'm using <code>LogSafeUrl</code>s to create <code>UrlString</code>s in these changes wherever we were using <code>Url</code>'s, but you can also create one directly from a <code>&amp;str</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-26 18:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/file.rs</code>:193 on 2025-05-26 18:27</div>
+            <div class="timeline-body"><p>I'll create an issue for that and can follow up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-26 18:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-resolver/src/pubgrub/report.rs</code>:1533 on 2025-05-26 18:29</div>
+            <div class="timeline-body"><p>Reflecting more, I think it's helpful this way since it indicates the invalid credentials were on the URL.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-26 20:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pep508/src/lib.rs</code>:154 on 2025-05-26 20:16</div>
+            <div class="timeline-body"><p>You can return an <code>-&gt; impl Display</code> here, no need to evaluate eagerly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-26 21:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-redacted/src/lib.rs</code>:41 on 2025-05-26 21:37</div>
+            <div class="timeline-body"><p>I've gone with <code>DisplaySafeUrl</code> after some discussion. Updating PR name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Add `LogSafeUrl` newtype to prevent leaking of credentials by default" to "Add `DisplaySafeUrl` newtype to prevent leaking of credentials by default" by @jtfmumm on 2025-05-26 21:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-26 22:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution-types/src/file.rs</code>:193 on 2025-05-26 22:04</div>
+            <div class="timeline-body"><p>Created #13668</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @jtfmumm on 2025-05-26 22:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-05-26 22:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-26 22:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-05-27 11:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-redacted/src/lib.rs</code>:201 on 2025-05-27 11:37</div>
+            <div class="timeline-body"><p>This type can / should be <code>Copy</code>. It doesn't really make sense for users to use <code>&amp;DisplaySafeUrlRef</code> since it's already a reference.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-05-27 11:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/show_settings.rs</code>:5365 on 2025-05-27 11:39</div>
+            <div class="timeline-body"><p>Is this the intended debug representation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-05-27 11:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pep508/src/verbatim_url.rs</code>:80 on 2025-05-27 11:40</div>
+            <div class="timeline-body"><p>Can these use <code>DisplaySafeUrl::from_file_path</code> directly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-05-27 11:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-redacted/src/lib.rs</code>:96 on 2025-05-27 11:41</div>
+            <div class="timeline-body"><p>Should this instead return a type that implements <code>Display</code>? It seems more flexible?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-05-27 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-redacted/src/lib.rs</code>:201 on 2025-05-27 15:00</div>
+            <div class="timeline-body"><p>Implemented this and your other suggestions in a follow-up PR: #13683.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rivershah">@rivershah</a> on 2025-06-02 15:50</div>
+            <div class="timeline-body"><p><code>0.7.9</code> fails to propagate credentials for authenticated wheel URLs. When those wheels depend on other authenticated wheels, uv fetches the transitive dependencies without authentication and raises errors</p>
+<p>For example I now seeing strange behaviour such as this:</p>
+<pre><code>$ uv pip install --compile-bytecode --system -r pyproject.toml --all-extras --no-cache
+Using Python 3.12.10 environment at: /usr/local
+Resolved 159 packages in 3.85s
+Bytecode compiled 28515 files in 1.02s
+
+$ uv pip install --compile-bytecode --system -r pyproject.toml --all-extras
+Using Python 3.12.10 environment at: /usr/local
+  × Failed to download `xxx @ https://&lt;token&gt;@gitlab.com/api/v4/projects/&lt;project-id&gt;/packages/pypi/files/&lt;file-id&gt;/xxx.whl`
+  ├─▶ Failed to fetch: `https://gitlab.com/api/v4/projects/&lt;project-id&gt;/packages/pypi/files/&lt;file-id&gt;/xxx.whl`
+  ╰─▶ HTTP status client error (401 Unauthorized) for url (https://gitlab.com/api/v4/projects/&lt;project-id&gt;/packages/pypi/files/&lt;file-id&gt;/xxxx.whl)
+</code></pre>
+<p>The wheel installation that is rejected is not a direct dependency</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-06-02 15:51</div>
+            <div class="timeline-body"><p>Can you please create a separate issue, ideally with a minimal reproduction that we can execute ourselves?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jlconnor">@jlconnor</a> on 2025-06-02 18:57</div>
+            <div class="timeline-body"><p>My team and I are also running into an issue where <code>uv export</code> is not un-obfuscating the credentials and causing pip to fail.</p>
+<pre><code class="language-Running">  ****@github.com: Permission denied (publickey).
+  fatal: Could not read from remote repository.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-02 18:58</div>
+            <div class="timeline-body"><p>@jlconnor please please open a new issue with all the details described in #9452</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jlconnor">@jlconnor</a> on 2025-06-02 22:13</div>
+            <div class="timeline-body"><p>@zanieb Here you go: https://github.com/astral-sh/uv/issues/13791</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:24 UTC
+    </footer>
+</body>
+</html>

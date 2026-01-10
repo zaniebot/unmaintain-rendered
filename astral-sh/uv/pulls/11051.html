@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avoid sharing state between universal and non-universal resolves - astral-sh/uv #11051</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Avoid sharing state between universal and non-universal resolves</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11051">#11051</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-01-29 02:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-29 02:56</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is a really subtle issue. I'm actually having trouble writing a test for it, though the problem makes sense. In short, we're sharing the <code>SharedState</code> between the <code>BuildContext</code> and the universal resolver. The <code>SharedState</code> includes <code>VersionMap</code>, which tracks incompatibilities... The incompatibilities use the platform tags, which are only present when resolving from the <code>BuildContext</code> (i.e., when resolving build dependencies). The universal resolver then fails because it sees a bunch of &quot;incompatible&quot; wheels that are incompatible with the current platform (i.e., the current Python interpreter).</p>
+<p>In short, we <em>cannot</em> share a <code>SharedState</code> across two operations that perform a universal and then a platform-specific resolution. So this PR adds separate types and fixes up any overlapping usages.</p>
+<p>A better setup, for the future, would be to somehow share the underlying simple metadata, and only track separate <code>VersionMap</code> -- since there <em>is</em> a bunch of data we can share. But that's a larger change.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/10977.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-01-29 02:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-01-29 03:26</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/uv/branches/charlie%2Fshared-state">CodSpeed Performance Report</a></h2>
+<h3>Merging #11051 will <strong>improve performances by 10.5%</strong></h3>
+<p><sub>Comparing <code>charlie/shared-state</code> (720298c) with <code>main</code> (3878c00)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements<br />
+<code>✅ 13</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>resolve_warm_jupyter</code> | 66 ms | 59.7 ms | +10.5% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-01-29 03:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-29 03:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-29 03:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-29 03:27</div>
+            <div class="timeline-body"><p>What the heck? Why did this improve performance?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:19 UTC
+    </footer>
+</body>
+</html>

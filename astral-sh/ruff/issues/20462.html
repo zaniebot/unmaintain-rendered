@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suggestion: Improve SIM105 message, check for improper use of contextlib.suppress - astral-sh/ruff #20462</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Suggestion: Improve SIM105 message, check for improper use of contextlib.suppress</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20462">#20462</a>
+        opened by <a href="https://github.com/NMertsch">@NMertsch</a>
+        on 2025-09-18 07:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/NMertsch">@NMertsch</a> on 2025-09-18 07:30</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I recently received a <a href="https://gitlab.com/SiLA2/sila_python/-/merge_requests/76">PR</a> containing a subtle bug, which was kind-of caused by ruff.</p>
+<h3>What happened</h3>
+<p><a href="https://gitlab.com/StefanMa/sila_python-deletion_scheduled-74452258/-/commit/a63e34e853b701b10bf7e64807d8597edbde1089#ede45c3ac59be78ed757ad91acbe7945e3b47abe_109_113">First commit</a>:</p>
+<pre><code class="language-python">try:
+    something()
+except SomeException:
+    pass
+</code></pre>
+<p><a href="https://gitlab.com/StefanMa/sila_python-deletion_scheduled-74452258/-/jobs/11359074513">Ruff in CI</a>:</p>
+<pre><code class="language-text">113 | /             try:
+114 | |                 something()
+115 | |             except SomeException:
+116 | |                 pass
+    | |____________________^
+    |
+help: Replace with `contextlib.suppress(SomeException)`
+</code></pre>
+<p>The PR author literally followed the Ruff message in the <a href="https://gitlab.com/SiLA2/sila_python/-/commit/df38c61a6f625dec0563e73d8ba846e5dc057dd5?merge_request_iid=76">next commit</a>, which satisfied ruff:</p>
+<pre><code class="language-python">try:
+    something()
+except SomeException:
+    contextlib.suppress(SomeException)  # instead of `pass`
+</code></pre>
+<p>The correct usage is:</p>
+<pre><code class="language-python">with contextlib.suppress(SomeException):
+    something()
+</code></pre>
+<p>The <a href="https://docs.astral.sh/ruff/rules/suppressible-exception/">documentation of SIM105</a> is fine, but the user didn't look there due to the seemingly clear help message.</p>
+<h3>Suggestions</h3>
+<ul>
+<li>Change the help message of SIM105 to &quot;Replace try-except block with <code>with contextlib.suppress(SomeException):</code>&quot;</li>
+<li>Add a rule for flagging <code>contextlib.suppress(...)</code> as the only statement in an <code>except</code> block (or merge with <a href="https://docs.astral.sh/ruff/rules/useless-contextlib-suppress/">B022: useless-contextlib-suppress</a>)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @MichaReiser on 2025-09-18 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @MichaReiser on 2025-09-18 07:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-18 07:42</div>
+            <div class="timeline-body"><p>Including <code>try-except</code> in the message seems a good improvement</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Raj-G07">@Raj-G07</a> on 2025-09-18 21:10</div>
+            <div class="timeline-body"><p><strong>Note</strong>: <code>contextlib.suppress</code> is slower than using <code>try-except-pass</code> directly. For <strong>performance-critical code</strong>, consider retaining the try-except-pass pattern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-09-25 15:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:24 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Push priorities to pubgrub and solve virtual package with the strongest constraints first - astral-sh/uv #10935</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Push priorities to pubgrub and solve virtual package with the strongest constraints first</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10935">#10935</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-01-24 13:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-01-24 13:25</div>
+            <div class="timeline-body"><p>We were updating package priorities in without syncing them with pubgrub, so uv and pubgrub were getting out of sync. Surprisingly, this didn't cause any apparent differences in resolution, I expected this would change at least our ecosystem cases. It's potentially breaking through any time we change something in either uv or pubgrub.</p>
+<p>We fix this by pushing updates to pubgrub. We couldn't previously u this because the way priority updates were tracked through the decision level. Instead, we switch to tracking the packages whose derivations changed in a set, based on https://github.com/pubgrub-rs/pubgrub/compare/dev...Eh2406:pubgrub:stop-prioritize. Since uv priorities don't depend on the ranges, we can speed this up further by not using this set in uv. In pubgrub, we can upstream this and use it as a correctness fix to also reprioritize when the conflict tracker changed, which is currently not handled.</p>
+<p>I thought I had a performance regression that would be fixed by making pubgrub priorities fast by using the package ids as index. This turned out to be insufficient and the perf bottleneck had to be fixed on the pubgrub side.</p>
+<p>Inside a package, we switch to processing the virtual package with the strongest constraint first, to avoid missing constraints:</p>
+<p>Say we first see <code>a; python_version &quot;&gt;=3.9&quot;</code> and then <code>a==1; python_version &quot;&gt;=3.10&quot;</code>. We would currently assign a the wrong version (e.g. <code>a==2</code> ) through deciding <code>a; python_version &quot;&gt;=3.9&quot;</code> first, then fix it up when we see <code>a==1; python_version &quot;&gt;=3.10&quot;</code> right after.</p>
+<p>This is a potentially breaking change in that it can change the resolution in edge cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-01-24 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @konstin on 2025-01-24 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> removed by @konstin on 2025-01-24 13:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-03-10 22:52</div>
+            <div class="timeline-body"><p>Surprisingly, this PR doesn't change resolutions we observe, it only changes the order of virtual packages: The order of the package names is already correct as far as i can tell (events that lead uv to updating the priority for a package name also lead pubgrub to re-query that packages priority). It still makes sense to push updates to the virtual package priorities in pubgrub when they change in uv to avoid subtle problems in the future, though not in the shape of this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-03-10 22:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:19 UTC
+    </footer>
+</body>
+</html>

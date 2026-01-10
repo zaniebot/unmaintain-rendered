@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff complains wrongly when we delete a variable in a function ( F821 ) - astral-sh/ruff #9858</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff complains wrongly when we delete a variable in a function ( F821 )</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9858">#9858</a>
+        opened by <a href="https://github.com/Leo-Adlakha">@Leo-Adlakha</a>
+        on 2024-02-06 11:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Leo-Adlakha">@Leo-Adlakha</a> on 2024-02-06 11:56</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Hi, Ruff raises an issue with the following code snippet, even when the code is running fine. Could you please fix this issue ?</p>
+<pre><code>MyHost :: adlakha$ ruff test.py 
+test.py:10:19: F821 Undefined name `ABC_123`
+Found 1 error.
+</code></pre>
+<p>Code Snippet for reproducing the bug:</p>
+<pre><code class="language-py">def abc():
+    global ABC_123
+    global XYZ_123
+
+    class ABC_123():
+        pass
+
+    class XYZ_123():
+        def inputs(self):
+            yield ABC_123
+
+    print(XYZ_123().inputs())
+
+    del ABC_123
+    del XYZ_123
+
+abc()
+</code></pre>
+<p>Command invoked:</p>
+<pre><code>ruff &lt;name-of-the-file&gt;
+</code></pre>
+<p>Ruff version - <code>0.1.6</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-06 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-06 15:00</div>
+            <div class="timeline-body"><p>This likely won't be fixed in the near future since it requires tracing the function calls themselves -- i.e., we need to know that <code>inputs()</code> wasn't called after the variable was deleted, as in:</p>
+<pre><code class="language-python">def abc():
+    global ABC_123
+    global XYZ_123
+
+    class ABC_123():
+        pass
+
+    class XYZ_123():
+        def inputs(self):
+            yield ABC_123
+
+    XYZ_123().inputs()
+
+    del ABC_123
+
+    XYZ_123().inputs()
+
+abc()
+</code></pre>
+<p>(Mypy and Pyright don't raise any errors on this, even though it will error at runtime.)</p>
+<p>I'll label it as a bug but candidly I'd recommend trying to restructure the code to avoid this kind of binding flow -- it's hard to follow and really hard for static analyzers to help you with.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-02-07 06:38</div>
+            <div class="timeline-body"><p>Is this a duplicate of either/or:</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/issues/6242</li>
+<li>https://github.com/astral-sh/ruff/issues/7733</li>
+<li>https://github.com/astral-sh/ruff/issues/9349</li>
+</ul>
+<p>And the similar tracing problem as with other <code>F821</code> issues?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:41 UTC
+    </footer>
+</body>
+</html>

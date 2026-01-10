@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B909 misses dict.keys() deletion - astral-sh/ruff #16865</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>B909 misses dict.keys() deletion</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16865">#16865</a>
+        opened by <a href="https://github.com/skairunner">@skairunner</a>
+        on 2025-03-20 09:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/skairunner">@skairunner</a> on 2025-03-20 09:52</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Using this file:</p>
+<pre><code class="language-python">import typing as t
+
+d: t.Dict[str, int] = {
+    &quot;a&quot;: 1,
+    &quot;b&quot;: 2,
+}
+
+for key in d.keys():
+    del d[key]
+</code></pre>
+<p>When I run this command:</p>
+<pre><code>ruff check --preview --select B909 testruff.py
+</code></pre>
+<p>I expect to see a B909 failure, but instead all tests pass. I feel like B909 should be able to catch this, especially because running this code raises a RuntimeError:</p>
+<pre><code>RuntimeError: dictionary changed size during iteration
+</code></pre>
+<p>For what it's worth, <code>flake8-bugbear</code> also fails to catch this problem.</p>
+<p>Modifying the test code to this causes Ruff to correctly point out the B909 error:</p>
+<pre><code class="language-python">import typing as t
+
+d: t.Dict[str, int] = {
+    &quot;a&quot;: 1,
+    &quot;b&quot;: 2,
+}
+
+for key in d:
+    del d[key]
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.11.0 (2cd25ef64 2025-03-14)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "B909 misses dict deletion" to "B909 misses dict.keys() deletion" by @skairunner on 2025-03-20 10:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2025-03-20 10:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dylwil3 on 2025-03-20 10:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-03-20 10:24</div>
+            <div class="timeline-body"><p>That seems like a reasonable extension of the rule to me, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-03-20 15:24</div>
+            <div class="timeline-body"><p>We should also add support for detecting <code>.items</code> as in:</p>
+<pre><code class="language-python">for k,v in d.items():
+    if cond(v):
+        del d[k]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/skairunner">@skairunner</a> on 2025-03-20 20:14</div>
+            <div class="timeline-body"><p>Ultimately at least for dicts, the problem is deleting any of its keys while iterating over a dictionary:</p>
+<pre><code>for &lt;anything&gt; in &lt;some kind of dictionary iterator over d&gt;:
+  #...
+  del d[&lt;literally anything&gt;]
+</code></pre>
+<p>The deletion doesn't even have to use a value that comes from the iterator, because <strong>all</strong> deletes are illegal. I don't know if it's difficult to encode this into Ruff, though.</p>
+<p>Things that can go in the dictionary iterator slot include:</p>
+<pre><code># Basic iterators
+d
+d.keys()
+d.items()
+# Iteration tools
+enumerate(&lt;any of the above&gt;)
+zip(&lt;any of the above&gt;, ...)
+(most of the itertools functions)
+</code></pre>
+<p>The basic iterators and enumerate are probably the most common, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @skairunner on 2025-03-20 20:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @skairunner on 2025-03-20 20:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:59 UTC
+    </footer>
+</body>
+</html>

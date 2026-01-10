@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[question] Preview lints: shouldn't autofixes be unsafe? - astral-sh/ruff #8754</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[question] Preview lints: shouldn't autofixes be unsafe?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8754">#8754</a>
+        opened by <a href="https://github.com/magnuslarsen">@magnuslarsen</a>
+        on 2023-11-18 13:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/magnuslarsen">@magnuslarsen</a> on 2023-11-18 13:33</div>
+            <div class="timeline-body"><p>As the title says, wouldn't the autofixes on in-preview lint-rules, inherently be unsafe?</p>
+<p>Take the following example (no pyproject.toml or alike):</p>
+<pre><code class="language-sh">mlar@cettisanger /tmp/ruff-preview-test&gt; cat test.py
+# E201 (preview, &quot;safe&quot; autofix)
+print( &quot;E201&quot;)
+# E703 (not preview, safe autofix)
+print(&quot;E703&quot;);
+# RUF015 (not preview, unsafe autofix)
+list([1, 2])[0]
+
+mlar@cettisanger /tmp/ruff-preview-test&gt; ruff check test.py --extend-select &quot;RUF&quot; --extend-select &quot;E&quot;
+test.py:4:14: E703 [*] Statement ends with an unnecessary semicolon
+test.py:6:1: RUF015 Prefer `next(iter([1, 2]))` over single element slice
+Found 2 errors.
+[*] 1 fixable with the `--fix` option (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+
+mlar@cettisanger /tmp/ruff-preview-test [1]&gt; ruff check test.py --extend-select &quot;RUF&quot; --extend-select &quot;E&quot; --preview
+test.py:2:7: E201 [*] Whitespace after '('
+test.py:4:14: E703 [*] Statement ends with an unnecessary semicolon
+test.py:6:1: RUF015 Prefer `next(iter([1, 2]))` over single element slice
+Found 3 errors.
+[*] 2 fixable with the `--fix` option (1 hidden fix can be enabled with the `--unsafe-fixes` option).
+</code></pre>
+<p>What is being said here, is that:</p>
+<ul>
+<li><code>E201</code>: The lint rule is &quot;considered experimental or unstable&quot;, but the associated autofix is <em>safe</em></li>
+<li><code>E703</code>: The lint rule and associated autofix are both <em>stable</em> (perfect)</li>
+<li><code>RUF015</code>: The lint rule is <em>stable</em> but the associated autofix is <em>unsafe</em> (this makes sense)</li>
+</ul>
+<p>It makes sense that an autofix can be considered safe (that is, it requires no changes before going out of preview), but if you attach it to a lint-rule that has, as an example, too many false-positives (which I assume falls under &quot;experimental and unstable&quot;), it is really <em>that</em> safe?</p>
+<p>I was at least under the assumption that in order to use an in-preview autofix, I would have the also specify <code>--unsafe-fixes</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-11-18 15:21</div>
+            <div class="timeline-body"><p>Hi!</p>
+<p>Fix safety has a different meaning than preview. Fix safety is akin to the confidence that the fix will not change the meaning of your code. Preview is used for new changes, both to explore the viability of rules and reduce the number of new diagnostics users have resolve on patch releases. The safe fixes on these preview rules are <em>intended</em> to meet the standards of a safe fix. If they do not, we need that feedback before the rules are promoted to stable. I don't see an additional opt-in benefiting users. We use unsafe fixes for preview rules when the fix is <em>actually</em> unsafe.</p>
+<p>I'd recommend reading the applicability documentation at https://github.com/astral-sh/ruff/blob/main/crates/ruff_diagnostics/src/fix.rs#L12-L24
+The preview documentation at https://docs.astral.sh/ruff/preview/
+And the versioning discussion at https://github.com/astral-sh/ruff/discussions/6998</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2023-11-18 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/magnuslarsen">@magnuslarsen</a> on 2023-11-18 18:01</div>
+            <div class="timeline-body"><p>Thanks for the fast and detailed response!</p>
+<p>The terminology just confused me. Being in preview and still considered &quot;safe&quot; was not working in my head :-)</p>
+<p>Again thanks, also for ruff!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @magnuslarsen on 2023-11-18 18:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:02 UTC
+    </footer>
+</body>
+</html>

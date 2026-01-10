@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter incompatibility: breaking multiple context managers - astral-sh/ruff #7441</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter incompatibility: breaking multiple context managers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7441">#7441</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2023-09-16 16:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-16 16:43</div>
+            <div class="timeline-body"><p>Given:</p>
+<pre><code class="language-python">if True:
+    with tempfile.TemporaryDirectory() as d1:
+        symlink_path = Path(d1).joinpath(&quot;testsymlink&quot;)
+        with tempfile.TemporaryDirectory(dir=d1) as d2, tempfile.TemporaryDirectory(
+            dir=d1
+        ) as d4, tempfile.TemporaryDirectory(dir=d2) as d3, tempfile.NamedTemporaryFile(
+            dir=d4
+        ) as source_file, tempfile.NamedTemporaryFile(
+            dir=d3
+        ) as lock_file:
+            pass
+</code></pre>
+<p>Black formats as:</p>
+<pre><code class="language-python">if True:
+    with tempfile.TemporaryDirectory() as d1:
+        symlink_path = Path(d1).joinpath(&quot;testsymlink&quot;)
+        with tempfile.TemporaryDirectory(dir=d1) as d2, tempfile.TemporaryDirectory(
+            dir=d1
+        ) as d4, tempfile.TemporaryDirectory(dir=d2) as d3, tempfile.NamedTemporaryFile(
+            dir=d4
+        ) as source_file, tempfile.NamedTemporaryFile(
+            dir=d3
+        ) as lock_file:
+            pass
+</code></pre>
+<p>Ruff formats as:</p>
+<pre><code class="language-python">if True:
+    with tempfile.TemporaryDirectory() as d1:
+        symlink_path = Path(d1).joinpath(&quot;testsymlink&quot;)
+        with tempfile.TemporaryDirectory(dir=d1) as d2, tempfile.TemporaryDirectory(
+            dir=d1
+        ) as d4, tempfile.TemporaryDirectory(dir=d2) as d3, tempfile.NamedTemporaryFile(
+            dir=d4
+        ) as source_file, tempfile.NamedTemporaryFile(dir=d3) as lock_file:
+            pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-09-16 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-09-16 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Beta" by @charliermarsh on 2023-09-16 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-09-16 16:51</div>
+            <div class="timeline-body"><p>Hm it'd be great if this formatted as</p>
+<pre><code class="language-python">if True:
+    with tempfile.TemporaryDirectory() as d1:
+        symlink_path = Path(d1).joinpath(&quot;testsymlink&quot;)
+        with (
+            tempfile.TemporaryDirectory(dir=d1) as d2,
+            tempfile.TemporaryDirectory(dir=d1) as d4,
+            tempfile.TemporaryDirectory(dir=d2) as d3,
+            tempfile.NamedTemporaryFile(dir=d4) as source_file,
+            tempfile.NamedTemporaryFile(dir=d3) as lock_file,
+        ):
+            pass
+</code></pre>
+<p>which Ruff did for me once but I'm not sure how I triggered it, perhaps with an old version.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-16 17:16</div>
+            <div class="timeline-body"><blockquote>
+<p>which Ruff did for me once but I'm not sure how I triggered it, perhaps with an old version.</p>
+</blockquote>
+<p>I think this only happens if you parenthesize the with item<strong>s</strong> and not each individual with item.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-18 13:31</div>
+            <div class="timeline-body"><p>IMO: Splitting all calls just because a context manager splits seems unnecessary. This is probably related to ruff not splitting a call expression even if its callee expands</p>
+<pre><code class="language-python">if grid is not None:
+    rgrid = &quot;&quot;&quot;Multiline string
+    more lines&quot;&quot;&quot;.where(
+        ~grid.isnull()
+    )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @MichaReiser on 2023-09-27 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @MichaReiser on 2023-09-27 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-27 16:03</div>
+            <div class="timeline-body"><p>We're gonna call this a known deviation that we don't plan to fix. When we implement preview style, we'll support adding parentheses here for supported versions (see: https://github.com/astral-sh/ruff/issues/7234#issuecomment-1720273440), which will achieve the formatting that @zanieb suggested.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-27 16:03</div>
+            <div class="timeline-body"><p>Can be closed once we add documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2023-09-28 13:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-04 04:24</div>
+            <div class="timeline-body"><p>(I don't think was closed by #7694; I <em>think</em> that PR closed a different issue.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2023-10-30 01:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-10 04:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-11-10 04:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:22 UTC
+    </footer>
+</body>
+</html>

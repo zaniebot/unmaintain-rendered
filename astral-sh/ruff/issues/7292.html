@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update `F541` to use new tokens to detect f-strings - astral-sh/ruff #7292</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Update <code>F541</code> to use new tokens to detect f-strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7292">#7292</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2023-09-12 09:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-12 09:42</div>
+            <div class="timeline-body"><p><code>F541</code> checks for useless f-strings i.e., f-strings without any placeholders.</p>
+<p>The rule needs to be updated to use the new f-string tokens to detect that.</p>
+<h3>Possible solution</h3>
+<p>Once we encounter the <code>FStringStart</code> token and if there are no placeholders inside the f-string, then the next token is guaranteed going to a <code>FStringMiddle</code> token containing the entire content of the f-string and then we'll get the <code>FStringEnd</code> token. For example,</p>
+<pre><code class="language-python">f&quot;we're inside a f-string&quot;
+</code></pre>
+<p>The above code will emit the following tokens:</p>
+<pre><code>0 FStringStart 2
+2 FStringMiddle {
+    value: &quot;we're inside a f-string&quot;,
+    is_raw: false,
+} 25
+25 FStringEnd 26
+</code></pre>
+<p>And, for triple-quoted f-strings:</p>
+<pre><code class="language-python">f&quot;&quot;&quot;this is a triple
+quoted f-string with
+multiple lines of text&quot;&quot;&quot;
+</code></pre>
+<p>We get the following tokens:</p>
+<pre><code>0 FStringStart 4
+4 FStringMiddle {
+    value: &quot;this is a triple\nquoted f-string with\nmultiple lines of text&quot;,
+    is_raw: false,
+} 64
+64 FStringEnd 67
+</code></pre>
+<p>I propose to create two edits:</p>
+<ol>
+<li>Remove the f-string prefix. This can be extracted using the <code>FStringStart</code> token</li>
+<li>Unescape the f-string using the <code>FStringMiddle</code> token i.e., replacing <code>{{</code> and <code>}}</code> with <code>{</code> and <code>}</code></li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">python312</span> added by @dhruvmanila on 2023-09-12 09:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2023-09-12 09:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2023-09-13 04:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2023-09-18 16:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:18 UTC
+    </footer>
+</body>
+</html>

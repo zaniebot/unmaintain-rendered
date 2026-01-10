@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTZ011 flags `datetime.date.today()` unnecessarily for pure date usage - astral-sh/ruff #21661</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>DTZ011 flags <code>datetime.date.today()</code> unnecessarily for pure date usage</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21661">#21661</a>
+        opened by <a href="https://github.com/Jason-Francis-github">@Jason-Francis-github</a>
+        on 2025-11-27 12:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Jason-Francis-github">@Jason-Francis-github</a> on 2025-11-27 12:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<h4><strong>Description</strong></h4>
+<p>The <code>DTZ011</code> rule currently flags <code>datetime.date.today()</code> as a violation, suggesting the use of <code>datetime.datetime.now(tz=...).date()</code> instead. While this makes sense for timezone-aware <strong>datetime</strong> operations, it feels overly strict when the requirement is for a <strong>date only</strong>, without any time component.</p>
+<p>For example:</p>
+<pre><code class="language-python">from datetime import date
+
+registration_date = date.today().strftime(&quot;%d/%m/%Y&quot;)
+</code></pre>
+<p>This is a common and reasonable pattern when working with dates in isolation (e.g., formatting for display, storing a date-only field). Time zones are irrelevant in this context because there is no ambiguity about hours or minutes.</p>
+<hr />
+<h4><strong>Why this matters</strong></h4>
+<ul>
+<li>Enforcing timezone awareness for pure dates adds unnecessary complexity.</li>
+<li>The suggested alternative (<code>datetime.now(tz=...).date()</code>) introduces overhead without practical benefit for date-only use cases.</li>
+<li>Many projects (especially tests or business logic dealing with dates) will need to add <code># noqa: DTZ011</code> or disable the rule entirely, reducing the value of linting.</li>
+</ul>
+<hr />
+<h4><strong>Proposed Solutions</strong></h4>
+<ol>
+<li><p><strong>Allow <code>date.today()</code> by default</strong><br />
+Exempt <code>datetime.date.today()</code> from <code>DTZ011</code> since it does not suffer from the same ambiguity as naive <code>datetime</code>.</p>
+</li>
+<li><p><strong>Introduce a separate rule or configuration</strong></p>
+<ul>
+<li>Keep <code>DTZ011</code> for <code>datetime.now()</code> and similar datetime operations.</li>
+<li>Add an option to ignore date-only functions like <code>date.today()</code>.</li>
+</ul>
+</li>
+<li><p><strong>Document rationale clearly</strong><br />
+If the rule is intended to apply universally, clarify why <code>date.today()</code> should be considered problematic.</p>
+</li>
+</ol>
+<hr />
+<h4><strong>Example of current behavior</strong></h4>
+<pre><code class="language-python"># Current flagged usage:
+from datetime import date
+registration_date = date.today().strftime(&quot;%d/%m/%Y&quot;)  # noqa: DTZ011
+
+# Suggested alternative (adds unnecessary complexity for date-only):
+from datetime import datetime
+from zoneinfo import ZoneInfo
+registration_date = datetime.now(ZoneInfo(&quot;Europe/London&quot;)).date().strftime(&quot;%d/%m/%Y&quot;)
+</code></pre>
+<hr />
+<h4><strong>Expected behavior</strong></h4>
+<p>No lint error for <code>date.today()</code> when used for date-only formatting or logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-11-28 08:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-28 08:44</div>
+            <div class="timeline-body"><p>Hi. <code>DTZ011</code> only flags <code>date.today()</code> usages. I think you can just disable the rule if, for your use case, the time zone part isn't important.</p>
+<blockquote>
+<p>Introduce a separate rule or configuration</p>
+</blockquote>
+<p>This is already the case today. <code>datetime.now</code> is <a href="https://docs.astral.sh/ruff/rules/call-datetime-now-without-tzinfo/"><code>DTZ005</code></a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-10 17:23</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:47 UTC
+    </footer>
+</body>
+</html>

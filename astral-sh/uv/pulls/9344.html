@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combine `sys_platform` and `platform_system` in marker algebra - astral-sh/uv #9344</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Combine <code>sys_platform</code> and <code>platform_system</code> in marker algebra</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9344">#9344</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-11-22 02:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-22 02:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a representation to the marker algebra to capture &quot;known pairs&quot; of <code>sys_platform</code> and <code>platform_system</code> values.</p>
+<p>For example, we want to be able to detect that <code>sys_platform == 'win32'</code> and <code>platform_system == 'Darwin'</code> are disjoint.</p>
+<p>There is some risk here, in that if there are platforms for which, e.g., <code>sys_platform == 'win32</code> but <code>platform_system</code> is not <code>Windows</code>, we'll get things wrong. I'm trying to weigh whether that's a real risk.</p>
+<p>In theory, we could <em>maybe</em> also include <code>os.name</code> here?</p>
+<p>Closes #7760.
+Closes #9275.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-11-22 02:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @charliermarsh on 2024-11-22 02:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-11-22 02:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-11-22 02:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vinno97">@Vinno97</a> on 2024-11-22 13:27</div>
+            <div class="timeline-body"><blockquote>
+<p>In theory, we could maybe also include os.name here?</p>
+</blockquote>
+<p>Yes. I was just about to comment on #9275  about this.</p>
+<p>For example, <code>jupyter-server</code> has a dependency on <code>pywinpty</code> for <code>os_name == 'nt'</code>. If want linux-only lock-file, a full dependency string would then have to be: <code>platform_system == 'Linux' and sys_platform == 'linux' and os_name == 'posix'</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-22 14:14</div>
+            <div class="timeline-body"><p>Yeah. I think it's a bit more challenging because there isn't a 1-to-1 mapping between <code>os.name</code> and <code>sys.platform</code> for Linux and macOS (they both use <code>posix</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-22 14:17</div>
+            <div class="timeline-body"><p>(Not impossible but different than what I've encoded here.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vinno97">@Vinno97</a> on 2024-11-22 15:17</div>
+            <div class="timeline-body"><p>Since <code>os_name == 'posix'</code> could also be true for BSD and other more <em>esoteric</em> POSIX operating systems, perhaps <code>os_name == ' posix'</code>  should entail <code>os_name != 'nt'</code>, with its subsequent <code>platform_system</code> and <code>sys_platform</code> restrictions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-23 00:27</div>
+            <div class="timeline-body"><p>On reflection, what I have here is not correct. It fails this test (i.e., it thinks these are disjoint):</p>
+<pre><code class="language-rust">assert!(!is_disjoint(
+    &quot;sys_platform == 'cygwin'&quot;,
+    &quot;platform_system == 'Java'&quot;
+));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-23 01:04</div>
+            <div class="timeline-body"><p>Somewhat losing confidence here because it turns out Android also returns <code>&quot;Linux&quot;</code> for <code>platform_system</code>? Despite <code>sys_platform</code> returning <code>&quot;android&quot;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vinno97">@Vinno97</a> on 2024-11-25 09:33</div>
+            <div class="timeline-body"><p>It seems like Poetry has gone though quite the rabbit hole for this themselves: https://github.com/python-poetry/poetry/issues/5192. But even after quite some pull requests, they closed the isue with this comment:</p>
+<blockquote>
+<p>Closing since there haven't been much improvements/fixes anymore in the last time and I can't come up with a good solution for merging sys_platform and platform_system. - https://github.com/python-poetry/poetry/issues/5192#issuecomment-1229432876</p>
+</blockquote>
+<p>It appears this may be an unresolvable issue, though perhaps it's feasible to just cull known impossible environments? I.e. we know that <code>platform_system=='Linux'</code>  will never occur together with <code>sys_platform=='win32'</code>  or <code>sys_platform=='darwin'</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-25 13:46</div>
+            <div class="timeline-body"><p>I think it's absolutely possible to solve in our marker system, I just don't have the right solution here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-11-26 11:42</div>
+            <div class="timeline-body"><p>This is a tough one, my intuition is to encode know mismatch rather than known pairs. There's a tendency to subdivide platforms to accommodate new developments (the development of rust target triples is a good reference since it's more upstreamed than the python build vars), so i would encode tier 1 and tier 2 pairs that never match, such as darwin <code>sys_platform</code> and Windows in <code>platform_system</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Vinno97">@Vinno97</a> on 2024-11-26 11:55</div>
+            <div class="timeline-body"><p>@konstin that's a good point and probably catches the majority of the standard cases with a smaller chance if breaking future cases</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-26 14:02</div>
+            <div class="timeline-body"><p>Yes that's also what I want to do. Here's a new idea: we encode all mutually exclusive pairs, and for each pair (A, B), we add <code>and (not A or not B)</code> to each expression. In practice, it's probably easier to have a method like <code>is_impossible</code> alongside <code>is_false</code> that just does a single operation to check this for all pairs at once.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-07 01:44</div>
+            <div class="timeline-body"><p>Closing in favor of https://github.com/astral-sh/uv/pull/9444.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-07 01:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:15 UTC
+    </footer>
+</body>
+</html>

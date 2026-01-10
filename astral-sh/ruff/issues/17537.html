@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Panic leads to hang - astral-sh/ruff #17537</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Panic leads to hang</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17537">#17537</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-04-22 07:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-22 07:17</div>
+            <div class="timeline-body"><p>With a 5%-10% chance, Red Knot <em>hangs</em> when running on <a href="https://github.com/hydpy-dev/hydpy">hydpy</a> (with dependencies installed). In all <em>other</em> cases, Red Knot panics with</p>
+<pre><code>thread '&lt;unnamed&gt;' panicked at /home/shark/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:167:25:
+dependency graph cycle querying try_metaclass_(Id(9673)); set cycle_fn/cycle_initial to fixpoint iterate
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+</code></pre>
+<p>but then sometimes, it seems as if that panic does not properly lead to a crash.</p>
+<p>When the hang occurs, the Red Knot is in the following state (all threads waiting):</p>
+<ul>
+<li>Thread 1: The main thread waits for a new message in <a href="https://github.com/astral-sh/ruff/blob/718b0cadf4398bf611bd76c982c64486e679d8e1/crates/red_knot/src/main.rs#L240">this <code>recv()</code> call</a>.</li>
+<li>Threads 2-5: All rayon worker threads seem to be idle.</li>
+<li>(Thread 6: the ctrl-c thread, implicitly started <a href="https://github.com/astral-sh/ruff/blob/718b0cadf4398bf611bd76c982c64486e679d8e1/crates/red_knot/src/main.rs#L139-L145">here</a>).</li>
+</ul>
+<details>
+<summary>Full thread backtraces with <code>RAYON_NUM_THREADS=4</code></summary>
+
+<pre><code class="language-gdb">Thread 6 (Thread 0x77abf3e5c6c0 (LWP 83184) &quot;ctrl-c&quot;):
+#0  0x000077abf3f1ebe2 in ?? () from /usr/lib/libc.so.6
+#1  0x000077abf3f12e33 in ?? () from /usr/lib/libc.so.6
+#2  0x000077abf3f12e74 in ?? () from /usr/lib/libc.so.6
+#3  0x000077abf3f8da3e in read () from /usr/lib/libc.so.6
+#4  0x00005b20271e2285 in nix::unistd::read (fd=3, buf=...) at src/unistd.rs:1097
+#5  0x00005b2027182395 in ctrlc::platform::unix::block_ctrl_c () at /home/shark/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ctrlc-3.4.6/src/platform/unix/mod.rs:180
+#6  0x00005b202717da12 in ctrlc::set_handler_inner::{closure#0}&lt;red_knot::run_check::{closure_env#4}&gt; () at /home/shark/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ctrlc-3.4.6/src/lib.rs:141
+#7  0x00005b20271a4156 in std::sys::backtrace::__rust_begin_short_backtrace&lt;ctrlc::set_handler_inner::{closure_env#0}&lt;red_knot::run_check::{closure_env#4}&gt;, ()&gt; (f=&lt;error reading variable: Cannot access memory at address 0xb&gt;) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/sys/backtrace.rs:152
+#8  0x00005b202716e6aa in std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure#0}&lt;ctrlc::set_handler_inner::{closure_env#0}&lt;red_knot::run_check::{closure_env#4}&gt;, ()&gt; () at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/thread/mod.rs:559
+#9  0x00005b20271d33d0 in core::panic::unwind_safe::{impl#23}::call_once&lt;(), std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}&lt;ctrlc::set_handler_inner::{closure_env#0}&lt;red_knot::run_check::{closure_env#4}&gt;, ()&gt;&gt; (self=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/panic/unwind_safe.rs:272
+#10 0x00005b20271d382b in std::panicking::try::do_call&lt;core::panic::unwind_safe::AssertUnwindSafe&lt;std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}&lt;ctrlc::set_handler_inner::{closure_env#0}&lt;red_knot::run_check::{closure_env#4}&gt;, ()&gt;&gt;, ()&gt; (data=0x77abf3e5ba78) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panicking.rs:587
+#11 0x00005b202716e98b in __rust_try ()
+#12 0x00005b202716e093 in std::panicking::try&lt;(), core::panic::unwind_safe::AssertUnwindSafe&lt;std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}&lt;ctrlc::set_handler_inner::{closure_env#0}&lt;red_knot::run_check::{closure_env#4}&gt;, ()&gt;&gt;&gt; (f=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panicking.rs:550
+#13 std::panic::catch_unwind&lt;core::panic::unwind_safe::AssertUnwindSafe&lt;std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}&lt;ctrlc::set_handler_inner::{closure_env#0}&lt;red_knot::run_check::{closure_env#4}&gt;, ()&gt;&gt;, ()&gt; (f=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panic.rs:358
+#14 std::thread::{impl#0}::spawn_unchecked_::{closure#1}&lt;ctrlc::set_handler_inner::{closure_env#0}&lt;red_knot::run_check:--Type &lt;RET&gt; for more, q to quit, c to continue without paging--
+:{closure_env#4}&gt;, ()&gt; () at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/thread/mod.rs:557
+#15 0x00005b20271a542e in core::ops::function::FnOnce::call_once&lt;std::thread::{impl#0}::spawn_unchecked_::{closure_env#1}&lt;ctrlc::set_handler_inner::{closure_env#0}&lt;red_knot::run_check::{closure_env#4}&gt;, ()&gt;, ()&gt; () at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/function.rs:250
+#16 0x00005b2028881f3b in alloc::boxed::{impl#28}::call_once&lt;(), dyn core::ops::function::FnOnce&lt;(), Output=()&gt;, alloc::alloc::Global&gt; () at library/alloc/src/boxed.rs:1976
+#17 alloc::boxed::{impl#28}::call_once&lt;(), alloc::boxed::Box&lt;dyn core::ops::function::FnOnce&lt;(), Output=()&gt;, alloc::alloc::Global&gt;, alloc::alloc::Global&gt; () at library/alloc/src/boxed.rs:1976
+#18 std::sys::pal::unix::thread::{impl#2}::new::thread_start () at library/std/src/sys/pal/unix/thread.rs:106
+#19 0x000077abf3f1670a in ?? () from /usr/lib/libc.so.6
+#20 0x000077abf3f9aaac in ?? () from /usr/lib/libc.so.6
+
+Thread 5 (Thread 0x77abf3c5b6c0 (LWP 83185) &quot;red_knot&quot;):
+#0  0x000077abf3f9888d in syscall () from /usr/lib/libc.so.6
+#1  0x00005b2028884885 in std::sys::pal::unix::futex::futex_wait () at library/std/src/sys/pal/unix/futex.rs:72
+#2  std::sys::sync::condvar::futex::Condvar::wait_optional_timeout () at library/std/src/sys/sync/condvar/futex.rs:49
+#3  std::sys::sync::condvar::futex::Condvar::wait () at library/std/src/sys/sync/condvar/futex.rs:33
+#4  0x00005b20285bbd52 in std::sync::poison::condvar::Condvar::wait&lt;bool&gt; (self=0x5b205af39a08, guard=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/sync/poison/condvar.rs:191
+#5  0x00005b20285aa1bf in rayon_core::sleep::Sleep::sleep&lt;rayon_core::registry::{impl#10}::wait_until_cold::{closure_env#0}&gt; (self=0x5b205af3a458, idle_state=0x77abf3c59fa0, latch=0x5b205ae0c570, has_injected_jobs=...) at src/sleep/mod.rs:188
+#6  0x00005b20285a9b86 in rayon_core::sleep::Sleep::no_work_found&lt;rayon_core::registry::{impl#10}::wait_until_cold::{closure_env#0}&gt; (self=0x5b205af3a458, idle_state=0x77abf3c59fa0, latch=0x5b205ae0c570, has_injected_jobs=...) at src/sleep/mod.rs:107
+#7  0x00005b20285a4ef6 in rayon_core::registry::WorkerThread::wait_until_cold (self=0x77abf3c5a180, latch=0x5b205ae0c570) at src/registry.rs:798
+#8  0x00005b20285a4c6b in rayon_core::registry::WorkerThread::wait_until&lt;rayon_core::latch::OnceLatch&gt; (self=0x77abf3c5a180, latch=0x5b205ae0c570) at src/registry.rs:769
+#9  0x00005b20285a5045 in rayon_core::registry::WorkerThread::wait_until_out_of_work (self=0x77abf3c5a180) at src/registry.rs:818
+#10 0x00005b20285a554f in rayon_core::registry::main_loop (thread=...) at src/registry.rs:923
+#11 0x00005b20285a1ff6 in rayon_core::registry::ThreadBuilder::run (self=...) at src/registry.rs:53
+--Type &lt;RET&gt; for more, q to quit, c to continue without paging--
+#12 0x00005b20285a247d in rayon_core::registry::{impl#2}::spawn::{closure#0} () at src/registry.rs:98
+#13 0x00005b20285aaa16 in std::sys::backtrace::__rust_begin_short_backtrace&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt; (f=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/sys/backtrace.rs:152
+#14 0x00005b20285abe3b in std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure#0}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt; () at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/thread/mod.rs:559
+#15 0x00005b20285aa8b4 in core::panic::unwind_safe::{impl#23}::call_once&lt;(), std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt;&gt; (self=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/panic/unwind_safe.rs:272
+#16 0x00005b20285b2978 in std::panicking::try::do_call&lt;core::panic::unwind_safe::AssertUnwindSafe&lt;std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt;&gt;, ()&gt; (data=0x77abf3c5a9d8) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panicking.rs:587
+#17 0x00005b20285ae03b in __rust_try ()
+#18 0x00005b20285abbb8 in std::panicking::try&lt;(), core::panic::unwind_safe::AssertUnwindSafe&lt;std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt;&gt;&gt; (f=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panicking.rs:550
+#19 std::panic::catch_unwind&lt;core::panic::unwind_safe::AssertUnwindSafe&lt;std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt;&gt;, ()&gt; (f=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panic.rs:358
+#20 std::thread::{impl#0}::spawn_unchecked_::{closure#1}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt; () at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/thread/mod.rs:557
+#21 0x00005b20285b5dcf in core::ops::function::FnOnce::call_once&lt;std::thread::{impl#0}::spawn_unchecked_::{closure_env#1}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt;, ()&gt; () at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/function.rs:250
+#22 0x00005b2028881f3b in alloc::boxed::{impl#28}::call_once&lt;(), dyn core::ops::function::FnOnce&lt;(), Output=()&gt;, alloc::alloc::Global&gt; () at library/alloc/src/boxed.rs:1976
+#23 alloc::boxed::{impl#28}::call_once&lt;(), alloc::boxed::Box&lt;dyn core::ops::function::FnOnce&lt;(), Output=()&gt;, alloc::alloc::Global&gt;, alloc::alloc::Global&gt; () at library/alloc/src/boxed.rs:1976
+#24 std::sys::pal::unix::thread::{impl#2}::new::thread_start () at library/std/src/sys/pal/unix/thread.rs:106
+#25 0x000077abf3f1670a in ?? () from /usr/lib/libc.so.6
+#26 0x000077abf3f9aaac in ?? () from /usr/lib/libc.so.6
+--Type &lt;RET&gt; for more, q to quit, c to continue without paging--
+
+Thread 4 (Thread 0x77abeb9ff6c0 (LWP 83186) &quot;red_knot&quot;):
+#0  0x000077abf3f9888d in syscall () from /usr/lib/libc.so.6
+#1  0x00005b2028884885 in std::sys::pal::unix::futex::futex_wait () at library/std/src/sys/pal/unix/futex.rs:72
+#2  std::sys::sync::condvar::futex::Condvar::wait_optional_timeout () at library/std/src/sys/sync/condvar/futex.rs:49
+#3  std::sys::sync::condvar::futex::Condvar::wait () at library/std/src/sys/sync/condvar/futex.rs:33
+#4  0x00005b20285bbd52 in std::sync::poison::condvar::Condvar::wait&lt;bool&gt; (self=0x5b205af39a88, guard=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/sync/poison/condvar.rs:191
+#5  0x00005b20285aa1bf in rayon_core::sleep::Sleep::sleep&lt;rayon_core::registry::{impl#10}::wait_until_cold::{closure_env#0}&gt; (self=0x5b205af3a458, idle_state=0x77abeb9fdfa0, latch=0x5b205ae0c5a0, has_injected_jobs=...) at src/sleep/mod.rs:188
+#6  0x00005b20285a9b86 in rayon_core::sleep::Sleep::no_work_found&lt;rayon_core::registry::{impl#10}::wait_until_cold::{closure_env#0}&gt; (self=0x5b205af3a458, idle_state=0x77abeb9fdfa0, latch=0x5b205ae0c5a0, has_injected_jobs=...) at src/sleep/mod.rs:107
+#7  0x00005b20285a4ef6 in rayon_core::registry::WorkerThread::wait_until_cold (self=0x77abeb9fe180, latch=0x5b205ae0c5a0) at src/registry.rs:798
+#8  0x00005b20285a4c6b in rayon_core::registry::WorkerThread::wait_until&lt;rayon_core::latch::OnceLatch&gt; (self=0x77abeb9fe180, latch=0x5b205ae0c5a0) at src/registry.rs:769
+#9  0x00005b20285a5045 in rayon_core::registry::WorkerThread::wait_until_out_of_work (self=0x77abeb9fe180) at src/registry.rs:818
+#10 0x00005b20285a554f in rayon_core::registry::main_loop (thread=...) at src/registry.rs:923
+#11 0x00005b20285a1ff6 in rayon_core::registry::ThreadBuilder::run (self=...) at src/registry.rs:53
+#12 0x00005b20285a247d in rayon_core::registry::{impl#2}::spawn::{closure#0} () at src/registry.rs:98
+#13 0x00005b20285aaa16 in std::sys::backtrace::__rust_begin_short_backtrace&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt; (f=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/sys/backtrace.rs:152
+#14 0x00005b20285abe3b in std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure#0}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt; () at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/thread/mod.rs:559
+#15 0x00005b20285aa8b4 in core::panic::unwind_safe::{impl#23}::call_once&lt;(), std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt;&gt; (self=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/panic/unwind_safe.rs:272
+#16 0x00005b20285b2978 in std::panicking::try::do_call&lt;core::panic::unwind_safe::AssertUnwindSafe&lt;std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt;&gt;, ()&gt; (dat--Type &lt;RET&gt; for more, q to quit, c to continue without paging--
+a=0x77abeb9fe9d8) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panicking.rs:587
+#17 0x00005b20285ae03b in __rust_try ()
+#18 0x00005b20285abbb8 in std::panicking::try&lt;(), core::panic::unwind_safe::AssertUnwindSafe&lt;std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt;&gt;&gt; (f=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panicking.rs:550
+#19 std::panic::catch_unwind&lt;core::panic::unwind_safe::AssertUnwindSafe&lt;std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt;&gt;, ()&gt; (f=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panic.rs:358
+#20 std::thread::{impl#0}::spawn_unchecked_::{closure#1}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt; () at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/thread/mod.rs:557
+#21 0x00005b20285b5dcf in core::ops::function::FnOnce::call_once&lt;std::thread::{impl#0}::spawn_unchecked_::{closure_env#1}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt;, ()&gt; () at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/function.rs:250
+#22 0x00005b2028881f3b in alloc::boxed::{impl#28}::call_once&lt;(), dyn core::ops::function::FnOnce&lt;(), Output=()&gt;, alloc::alloc::Global&gt; () at library/alloc/src/boxed.rs:1976
+#23 alloc::boxed::{impl#28}::call_once&lt;(), alloc::boxed::Box&lt;dyn core::ops::function::FnOnce&lt;(), Output=()&gt;, alloc::alloc::Global&gt;, alloc::alloc::Global&gt; () at library/alloc/src/boxed.rs:1976
+#24 std::sys::pal::unix::thread::{impl#2}::new::thread_start () at library/std/src/sys/pal/unix/thread.rs:106
+#25 0x000077abf3f1670a in ?? () from /usr/lib/libc.so.6
+#26 0x000077abf3f9aaac in ?? () from /usr/lib/libc.so.6
+
+Thread 3 (Thread 0x77abf3a5a6c0 (LWP 83187) &quot;red_knot&quot;):
+#0  0x000077abf3f9888d in syscall () from /usr/lib/libc.so.6
+#1  0x00005b2028884885 in std::sys::pal::unix::futex::futex_wait () at library/std/src/sys/pal/unix/futex.rs:72
+#2  std::sys::sync::condvar::futex::Condvar::wait_optional_timeout () at library/std/src/sys/sync/condvar/futex.rs:49
+#3  std::sys::sync::condvar::futex::Condvar::wait () at library/std/src/sys/sync/condvar/futex.rs:33
+#4  0x00005b20285bbd52 in std::sync::poison::condvar::Condvar::wait&lt;bool&gt; (self=0x5b205af39b08, guard=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/sync/poison/condvar.rs:191
+#5  0x00005b20285aa1bf in rayon_core::sleep::Sleep::sleep&lt;rayon_core::registry::{impl#10}::wait_until_cold::{closure_env#0}&gt; (self=0x5b205af3a458, idle_state=0x77abf3a58fa0, latch=0x5b205ae0c5d0, has_injected_jobs=...) at src/sleep/mod.rs:188
+#6  0x00005b20285a9b86 in rayon_core::sleep::Sleep::no_work_found&lt;rayon_core::registry::{impl#10}::wait_until_cold::{cl--Type &lt;RET&gt; for more, q to quit, c to continue without paging--
+osure_env#0}&gt; (self=0x5b205af3a458, idle_state=0x77abf3a58fa0, latch=0x5b205ae0c5d0, has_injected_jobs=...) at src/sleep/mod.rs:107
+#7  0x00005b20285a4ef6 in rayon_core::registry::WorkerThread::wait_until_cold (self=0x77abf3a59180, latch=0x5b205ae0c5d0) at src/registry.rs:798
+#8  0x00005b20285a4c6b in rayon_core::registry::WorkerThread::wait_until&lt;rayon_core::latch::OnceLatch&gt; (self=0x77abf3a59180, latch=0x5b205ae0c5d0) at src/registry.rs:769
+#9  0x00005b20285a5045 in rayon_core::registry::WorkerThread::wait_until_out_of_work (self=0x77abf3a59180) at src/registry.rs:818
+#10 0x00005b20285a554f in rayon_core::registry::main_loop (thread=...) at src/registry.rs:923
+#11 0x00005b20285a1ff6 in rayon_core::registry::ThreadBuilder::run (self=...) at src/registry.rs:53
+#12 0x00005b20285a247d in rayon_core::registry::{impl#2}::spawn::{closure#0} () at src/registry.rs:98
+#13 0x00005b20285aaa16 in std::sys::backtrace::__rust_begin_short_backtrace&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt; (f=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/sys/backtrace.rs:152
+#14 0x00005b20285abe3b in std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure#0}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt; () at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/thread/mod.rs:559
+#15 0x00005b20285aa8b4 in core::panic::unwind_safe::{impl#23}::call_once&lt;(), std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt;&gt; (self=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/panic/unwind_safe.rs:272
+#16 0x00005b20285b2978 in std::panicking::try::do_call&lt;core::panic::unwind_safe::AssertUnwindSafe&lt;std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt;&gt;, ()&gt; (data=0x77abf3a599d8) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panicking.rs:587
+#17 0x00005b20285ae03b in __rust_try ()
+#18 0x00005b20285abbb8 in std::panicking::try&lt;(), core::panic::unwind_safe::AssertUnwindSafe&lt;std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt;&gt;&gt; (f=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panicking.rs:550
+#19 std::panic::catch_unwind&lt;core::panic::unwind_safe::AssertUnwindSafe&lt;std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt;&gt;, ()&gt; (f=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panic.rs:358
+#20 std::thread::{impl#0}::spawn_unchecked_::{closure#1}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt; () at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/thread/mod.rs:557
+--Type &lt;RET&gt; for more, q to quit, c to continue without paging--
+#21 0x00005b20285b5dcf in core::ops::function::FnOnce::call_once&lt;std::thread::{impl#0}::spawn_unchecked_::{closure_env#1}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt;, ()&gt; () at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/function.rs:250
+#22 0x00005b2028881f3b in alloc::boxed::{impl#28}::call_once&lt;(), dyn core::ops::function::FnOnce&lt;(), Output=()&gt;, alloc::alloc::Global&gt; () at library/alloc/src/boxed.rs:1976
+#23 alloc::boxed::{impl#28}::call_once&lt;(), alloc::boxed::Box&lt;dyn core::ops::function::FnOnce&lt;(), Output=()&gt;, alloc::alloc::Global&gt;, alloc::alloc::Global&gt; () at library/alloc/src/boxed.rs:1976
+#24 std::sys::pal::unix::thread::{impl#2}::new::thread_start () at library/std/src/sys/pal/unix/thread.rs:106
+#25 0x000077abf3f1670a in ?? () from /usr/lib/libc.so.6
+#26 0x000077abf3f9aaac in ?? () from /usr/lib/libc.so.6
+
+Thread 2 (Thread 0x77abf38596c0 (LWP 83188) &quot;red_knot&quot;):
+#0  0x000077abf3f9888d in syscall () from /usr/lib/libc.so.6
+#1  0x00005b2028884885 in std::sys::pal::unix::futex::futex_wait () at library/std/src/sys/pal/unix/futex.rs:72
+#2  std::sys::sync::condvar::futex::Condvar::wait_optional_timeout () at library/std/src/sys/sync/condvar/futex.rs:49
+#3  std::sys::sync::condvar::futex::Condvar::wait () at library/std/src/sys/sync/condvar/futex.rs:33
+#4  0x00005b20285bbd52 in std::sync::poison::condvar::Condvar::wait&lt;bool&gt; (self=0x5b205af39b88, guard=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/sync/poison/condvar.rs:191
+#5  0x00005b20285aa1bf in rayon_core::sleep::Sleep::sleep&lt;rayon_core::registry::{impl#10}::wait_until_cold::{closure_env#0}&gt; (self=0x5b205af3a458, idle_state=0x77abf3857fa0, latch=0x5b205ae0c600, has_injected_jobs=...) at src/sleep/mod.rs:188
+#6  0x00005b20285a9b86 in rayon_core::sleep::Sleep::no_work_found&lt;rayon_core::registry::{impl#10}::wait_until_cold::{closure_env#0}&gt; (self=0x5b205af3a458, idle_state=0x77abf3857fa0, latch=0x5b205ae0c600, has_injected_jobs=...) at src/sleep/mod.rs:107
+#7  0x00005b20285a4ef6 in rayon_core::registry::WorkerThread::wait_until_cold (self=0x77abf3858180, latch=0x5b205ae0c600) at src/registry.rs:798
+#8  0x00005b20285a4c6b in rayon_core::registry::WorkerThread::wait_until&lt;rayon_core::latch::OnceLatch&gt; (self=0x77abf3858180, latch=0x5b205ae0c600) at src/registry.rs:769
+#9  0x00005b20285a5045 in rayon_core::registry::WorkerThread::wait_until_out_of_work (self=0x77abf3858180) at src/registry.rs:818
+#10 0x00005b20285a554f in rayon_core::registry::main_loop (thread=...) at src/registry.rs:923
+#11 0x00005b20285a1ff6 in rayon_core::registry::ThreadBuilder::run (self=...) at src/registry.rs:53
+#12 0x00005b20285a247d in rayon_core::registry::{impl#2}::spawn::{closure#0} () at src/registry.rs:98
+#13 0x00005b20285aaa16 in std::sys::backtrace::__rust_begin_short_backtrace&lt;rayon_core::registry::{impl#2}::spawn::{clo--Type &lt;RET&gt; for more, q to quit, c to continue without paging--
+sure_env#0}, ()&gt; (f=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/sys/backtrace.rs:152
+#14 0x00005b20285abe3b in std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure#0}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt; () at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/thread/mod.rs:559
+#15 0x00005b20285aa8b4 in core::panic::unwind_safe::{impl#23}::call_once&lt;(), std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt;&gt; (self=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/panic/unwind_safe.rs:272
+#16 0x00005b20285b2978 in std::panicking::try::do_call&lt;core::panic::unwind_safe::AssertUnwindSafe&lt;std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt;&gt;, ()&gt; (data=0x77abf38589d8) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panicking.rs:587
+#17 0x00005b20285ae03b in __rust_try ()
+#18 0x00005b20285abbb8 in std::panicking::try&lt;(), core::panic::unwind_safe::AssertUnwindSafe&lt;std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt;&gt;&gt; (f=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panicking.rs:550
+#19 std::panic::catch_unwind&lt;core::panic::unwind_safe::AssertUnwindSafe&lt;std::thread::{impl#0}::spawn_unchecked_::{closure#1}::{closure_env#0}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt;&gt;, ()&gt; (f=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/panic.rs:358
+#20 std::thread::{impl#0}::spawn_unchecked_::{closure#1}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt; () at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/thread/mod.rs:557
+#21 0x00005b20285b5dcf in core::ops::function::FnOnce::call_once&lt;std::thread::{impl#0}::spawn_unchecked_::{closure_env#1}&lt;rayon_core::registry::{impl#2}::spawn::{closure_env#0}, ()&gt;, ()&gt; () at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/function.rs:250
+#22 0x00005b2028881f3b in alloc::boxed::{impl#28}::call_once&lt;(), dyn core::ops::function::FnOnce&lt;(), Output=()&gt;, alloc::alloc::Global&gt; () at library/alloc/src/boxed.rs:1976
+#23 alloc::boxed::{impl#28}::call_once&lt;(), alloc::boxed::Box&lt;dyn core::ops::function::FnOnce&lt;(), Output=()&gt;, alloc::alloc::Global&gt;, alloc::alloc::Global&gt; () at library/alloc/src/boxed.rs:1976
+#24 std::sys::pal::unix::thread::{impl#2}::new::thread_start () at library/std/src/sys/pal/unix/thread.rs:106
+#25 0x000077abf3f1670a in ?? () from /usr/lib/libc.so.6
+#26 0x000077abf3f9aaac in ?? () from /usr/lib/libc.so.6
+
+Thread 1 (Thread 0x77abf3e7fe00 (LWP 83183) &quot;red_knot&quot;):
+--Type &lt;RET&gt; for more, q to quit, c to continue without paging--
+#0  0x000077abf3f9888d in syscall () from /usr/lib/libc.so.6
+#1  0x00005b202886ff16 in std::sys::pal::unix::futex::futex_wait () at library/std/src/sys/pal/unix/futex.rs:72
+#2  std::sys::sync::thread_parking::futex::Parker::park () at library/std/src/sys/sync/thread_parking/futex.rs:55
+#3  std::thread::Thread::park () at library/std/src/thread/mod.rs:1446
+#4  std::thread::park () at library/std/src/thread/mod.rs:1083
+#5  0x00005b20271a0ed5 in crossbeam_channel::context::Context::wait_until (self=0x7fffcd482100, deadline=...) at /home/shark/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/crossbeam-channel-0.5.14/src/context.rs:162
+#6  0x00005b2027197825 in crossbeam_channel::flavors::array::{impl#1}::recv::{closure#1}&lt;red_knot::MainLoopMessage&gt; (cx=0x7fffcd482100) at /home/shark/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/crossbeam-channel-0.5.14/src/flavors/array.rs:432
+#7  0x00005b20271d94dd in crossbeam_channel::context::{impl#0}::with::{closure#0}&lt;crossbeam_channel::flavors::array::{impl#1}::recv::{closure_env#1}&lt;red_knot::MainLoopMessage&gt;, ()&gt; (cx=0x7fffcd482100) at /home/shark/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/crossbeam-channel-0.5.14/src/context.rs:52
+#8  0x00005b20271d9a07 in crossbeam_channel::context::{impl#0}::with::{closure#1}&lt;crossbeam_channel::flavors::array::{impl#1}::recv::{closure_env#1}&lt;red_knot::MainLoopMessage&gt;, ()&gt; (cell=0x77abf3e7fd60) at /home/shark/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/crossbeam-channel-0.5.14/src/context.rs:60
+#9  0x00005b2027199088 in std::thread::local::LocalKey&lt;core::cell::Cell&lt;core::option::Option&lt;crossbeam_channel::context::Context&gt;&gt;&gt;::try_with&lt;core::cell::Cell&lt;core::option::Option&lt;crossbeam_channel::context::Context&gt;&gt;, crossbeam_channel::context::{impl#0}::with::{closure_env#1}&lt;crossbeam_channel::flavors::array::{impl#1}::recv::{closure_env#1}&lt;red_knot::MainLoopMessage&gt;, ()&gt;, ()&gt; (self=0x5b2028fe8678, f=...) at /home/shark/.rustup/toolchains/1.86-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std/src/thread/local.rs:310
+#10 0x00005b20271d8670 in crossbeam_channel::context::Context::with&lt;crossbeam_channel::flavors::array::{impl#1}::recv::{closure_env#1}&lt;red_knot::MainLoopMessage&gt;, ()&gt; (f=...) at /home/shark/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/crossbeam-channel-0.5.14/src/context.rs:55
+#11 0x00005b202719745e in crossbeam_channel::flavors::array::Channel&lt;red_knot::MainLoopMessage&gt;::recv&lt;red_knot::MainLoopMessage&gt; (self=0x5b205ae40c00, deadline=...) at /home/shark/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/crossbeam-channel-0.5.14/src/flavors/array.rs:421
+#12 0x00005b2027184e0f in crossbeam_channel::channel::Receiver&lt;red_knot::MainLoopMessage&gt;::recv&lt;red_knot::MainLoopMessage&gt; (self=0x7fffcd4864f8) at /home/shark/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/crossbeam-channel-0.5.14/src/channel.rs:814
+#13 0x00005b20271b4407 in red_knot::MainLoop::main_loop (self=0x7fffcd486478, db=0x7fffcd485990) at crates/red_knot/src/main.rs:240
+#14 0x00005b20271b31ba in red_knot::MainLoop::run (self=..., db=0x7fffcd485990) at crates/red_knot/src/main.rs:227
+#15 0x00005b20271b0f0a in red_knot::run_check (args=...) at crates/red_knot/src/main.rs:150
+--Type &lt;RET&gt; for more, q to quit, c to continue without paging--
+#16 0x00005b20271af405 in red_knot::run () at crates/red_knot/src/main.rs:66
+#17 0x00005b20271af20e in red_knot::main () at crates/red_knot/src/main.rs:29
+
+</code></pre>
+</details>
+
+<p>I also still see a message about the panic before the hang occurs, e.g.</p>
+<pre><code>thread '&lt;unnamed&gt;' panicked at /home/shark/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:167:25:
+dependency graph cycle querying try_metaclass_(Id(64829)); set cycle_fn/cycle_initial to fixpoint iterate
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+thread '&lt;unnamed&gt;' panicked at /home/shark/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/87bf6b6/src/function/fetch.rs:167:25:
+dependency graph cycle querying try_metaclass_(Id(64829)); set cycle_fn/cycle_initial to fixpoint iterate
+</code></pre>
+<p><strong>How to reproduce</strong></p>
+<pre><code class="language-bash">git clone https://github.com/hydpy-dev/hydpy
+cd hydpy
+uv venv
+uv pip install numpy pandas-stubs scipy-stubs types-docutils types-networkx
+
+while true; do red_knot check --python .venv hydpy; done
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-04-22 07:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-04-22 07:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Red Knot Alpha" by @AlexWaygood on 2025-04-22 07:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2025-04-25 10:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-25 11:38</div>
+            <div class="timeline-body"><p>I'm no longer convinced that the hang is due to a panic because:</p>
+<ul>
+<li>Rayon exits the process if it can't propagate a panic (this is the case for the thread started inside the main loop)</li>
+<li>Adding a <code>catch_unwind</code> to the <code>check</code> handler in the main loop doesn't fix the issue</li>
+<li>Pressing Ctrl+C doesn't exit the process</li>
+<li>Running Red Knot with extra verbose logging shows that some threads are inside type inference</li>
+</ul>
+<pre><code>16      ┌─┘
+5      ├─   3.455161s 125ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(5), kind: WillExecute { database_key: infer_definition_types(Id(5a717)) } }
+5      └─┐red_knot_python_semantic::types::infer::infer_definition_types{range=124225..124226, file=File(System(&quot;/Users/micha/astral/ecosystem/hydpy/hydpy/models/ga_garto.py&quot;))}
+4          ├─   3.455186s  13ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(4), kind: WillExecute { database_key: member_lookup_with_policy_(Id(193be)) } }
+4          ├─   3.455195s  13ms TRACE red_knot_python_semantic::types member_lookup_with_policy: CM.load_file
+15        └─┐red_knot_python_semantic::types::infer::infer_expression_types{expression=Id(3a05), range=20639..20678, file=File(System(&quot;/Users/micha/astral/ecosystem/hydpy/hydpy/models/sw1d/sw1d_model.py&quot;))}
+6          └─┐red_knot_python_semantic::symbol::symbol{name=&quot;Calc_Precipitation_V1&quot;}
+6            ├─   3.455239s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(6), kind: DidInternValue { id: Id(1e08c), revision: R2 } }
+12      ├─   3.455256s  38ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(12), kind: WillExecute { database_key: infer_definition_types(Id(56f92)) } }
+10          └─┐red_knot_python_semantic::symbol::symbol{name=&quot;FunctionType&quot;}
+10          ┌─┘
+7          └─┐red_knot_python_semantic::symbol::symbol{name=&quot;extract&quot;}
+10          ├─   3.455310s  13ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(10), kind: DidInternValue { id: Id(3781e), revision: R2 } }
+9      ├─   3.455323s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(9), kind: DidInternValue { id: Id(16922), revision: R2 } }
+16      ├─   3.455336s  77ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(16), kind: WillExecute { database_key: infer_definition_types(Id(5868f)) } }
+16      └─┐red_knot_python_semantic::types::infer::infer_definition_types{range=63264..63278, file=File(System(&quot;/Users/micha/astral/ecosystem/hydpy/hydpy/exe/xmltools.py&quot;))}
+5        ├─   3.455359s   0ms TRACE red_knot_python_semantic::types::infer Resolving imported object `*` from module `hydpy.core.typingtools` into file `/Users/micha/astral/ecosystem/hydpy/hydpy/models/ga_garto.py`
+14        └─┐red_knot_python_semantic::symbol::symbol{name=&quot;pointerutils&quot;}
+4          ├─   3.455383s  14ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(4), kind: WillExecute { database_key: use_def_map(Id(24d96)) } }
+4          └─┐red_knot_python_semantic::semantic_index::use_def_map{scope=Id(24d96), file=File(System(&quot;/Users/micha/astral/ecosystem/hydpy/hydpy/core/importtools.py&quot;))}
+4          ┌─┘
+15        ┌─┘
+4          ├─   3.455432s  14ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(4), kind: WillExecute { database_key: use_def_map(Id(3cd88)) } }
+4          └─┐red_knot_python_semantic::semantic_index::use_def_map{scope=Id(3cd88), file=File(System(&quot;/Users/micha/astral/ecosystem/hydpy/hydpy/core/filetools.py&quot;))}
+4          ┌─┘
+7          ┌─┘
+10          ├─   3.455478s  13ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(10), kind: DidInternValue { id: Id(230fb), revision: R2 } }
+10          ├─   3.455490s  13ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(10), kind: WillExecute { database_key: class_member_with_policy_(Id(230fb)) } }
+10          ├─   3.455499s  13ms TRACE red_knot_python_semantic::types class_member: def __init__(self, *, modelname: str | None = None) -&gt; None.__set__
+16        ├─   3.455516s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(16), kind: DidInternValue { id: Id(56497), revision: R2 } }
+7          └─┐red_knot_python_semantic::symbol::symbol{name=&quot;str&quot;}
+14        ┌─┘
+13        ┌─┘
+6            ├─   3.455561s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(6), kind: WillExecute { database_key: symbol_by_id(Id(1e08c)) } }
+13        └─┐red_knot_python_semantic::symbol::symbol{name=&quot;str&quot;}
+6            ├─   3.455578s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(6), kind: WillExecute { database_key: infer_definition_types(Id(4c20b)) } }
+6            └─┐red_knot_python_semantic::types::infer::infer_definition_types{range=88210..88231, file=File(System(&quot;/Users/micha/astral/ecosystem/hydpy/hydpy/models/meteo/meteo_model.py&quot;))}
+3      ├─   3.455605s  29ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(3), kind: DidInternValue { id: Id(2c48d), revision: R2 } }
+4          ├─   3.455616s  14ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(4), kind: WillExecute { database_key: infer_definition_types(Id(4bd6e)) } }
+4          └─┐red_knot_python_semantic::types::infer::infer_definition_types{range=35332..35341, file=File(System(&quot;/Users/micha/astral/ecosystem/hydpy/hydpy/core/filetools.py&quot;))}
+11      └─┐red_knot_python_semantic::types::infer::infer_definition_types{range=172..173, file=File(System(&quot;/Users/micha/astral/ecosystem/hydpy/hydpy/interfaces/stateinterfaces.py&quot;))}
+10          └─┐red_knot_python_semantic::symbol::symbol{name=&quot;FunctionType&quot;}
+5        ├─   3.455668s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(5), kind: DidInternValue { id: Id(60038), revision: R2 } }
+5        ├─   3.455678s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(5), kind: WillExecute { database_key: member_lookup_with_policy_(Id(60038)) } }
+5        ├─   3.455687s   0ms TRACE red_knot_python_semantic::types member_lookup_with_policy: &lt;module 'hydpy.core.typingtools'&gt;.MayNonerable2
+14      ┌─┘
+12      └─┐red_knot_python_semantic::types::infer::infer_definition_types{range=34..35, file=File(System(&quot;/Users/micha/astral/ecosystem/hydpy/hydpy/data/HydPy-H-Lahn/conditions/init_1996_01_01_00_00_00/land_lahn_kalk.py&quot;))}
+8        ┌─┘
+13        ┌─┘
+15      ┌─┘
+13        └─┐red_knot_python_semantic::symbol::symbol{name=&quot;NoneType&quot;}
+15      ├─   3.455760s   9ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(15), kind: WillExecute { database_key: infer_definition_types(Id(3a44f)) } }
+9      ├─   3.455772s   1ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(9), kind: WillExecute { database_key: infer_definition_types(Id(5c86e)) } }
+9      └─┐red_knot_python_semantic::types::infer::infer_definition_types{range=94367..94371, file=File(System(&quot;/Users/micha/astral/ecosystem/hydpy/hydpy/exe/servertools.py&quot;))}
+11        ├─   3.455796s   0ms TRACE red_knot_python_semantic::types::infer Resolving imported object `*` from module `hydpy.core.typingtools` into file `/Users/micha/astral/ecosystem/hydpy/hydpy/interfaces/stateinterfaces.py`
+10          ┌─┘
+16      ┌─┘
+10          ├─   3.455825s  13ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(10), kind: DidInternValue { id: Id(230fc), revision: R2 } }
+16      ├─   3.455832s  78ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(16), kind: WillExecute { database_key: infer_definition_types(Id(58693)) } }
+16      └─┐red_knot_python_semantic::types::infer::infer_definition_types{range=70984..70995, file=File(System(&quot;/Users/micha/astral/ecosystem/hydpy/hydpy/exe/xmltools.py&quot;))}
+12        ├─   3.455857s   0ms TRACE red_knot_python_semantic::types::infer Resolving imported object `*` from module `hydpy.models.hland_96` into file `/Users/micha/astral/ecosystem/hydpy/hydpy/data/HydPy-H-Lahn/conditions/init_1996_01_01_00_00_00/land_lahn_kalk.py`
+6              ├─   3.455870s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(6), kind: DidInternValue { id: Id(39cac), revision: R2 } }
+13        ┌─┘
+8      ┌─┘
+6            ┌─┘
+3      ├─   3.455907s  29ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(3), kind: WillExecute { database_key: try_mro_(Id(2c48d)) } }
+6          ┌─┘
+4            └─┐red_knot_python_semantic::symbol::symbol{name=&quot;NoneType&quot;}
+11        ├─   3.455940s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(11), kind: DidInternValue { id: Id(60429), revision: R2 } }
+11        ├─   3.455951s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(11), kind: WillExecute { database_key: member_lookup_with_policy_(Id(60429)) } }
+11        ├─   3.455961s   0ms TRACE red_knot_python_semantic::types member_lookup_with_policy: &lt;module 'hydpy.core.typingtools'&gt;.VectorObject
+11        └─┐red_knot_python_semantic::symbol::symbol{name=&quot;VectorObject&quot;}
+14      ├─   3.455987s  55ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(14), kind: WillExecute { database_key: infer_definition_types(Id(c464)) } }
+16        ├─   3.456000s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(16), kind: DidInternValue { id: Id(56498), revision: R2 } }
+12        ├─   3.456014s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(12), kind: DidInternValue { id: Id(5fc32), revision: R2 } }
+12        ├─   3.456026s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(12), kind: WillExecute { database_key: member_lookup_with_policy_(Id(5fc32)) } }
+12        ├─   3.456034s   0ms TRACE red_knot_python_semantic::types member_lookup_with_policy: &lt;module 'hydpy.models.hland_96'&gt;.MethodGroup
+3      ├─   3.456047s  29ms TRACE red_knot_python_semantic::types::class ClassLiteralType::try_mro: SG1
+13        └─┐red_knot_python_semantic::symbol::symbol{name=&quot;bool&quot;}
+13        ┌─┘
+4            ┌─┘
+13        └─┐red_knot_python_semantic::symbol::symbol{name=&quot;bool&quot;}
+4            └─┐red_knot_python_semantic::symbol::symbol{name=&quot;NoneType&quot;}
+10          ├─   3.456109s  14ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(10), kind: WillExecute { database_key: class_member_with_policy_(Id(230fc)) } }
+10          ├─   3.456120s  14ms TRACE red_knot_python_semantic::types class_member: def __init__(self, *, modelname: str | None = None) -&gt; None.__delete__
+11        ┌─┘
+14      └─┐red_knot_python_semantic::types::infer::infer_definition_types{range=981..982, file=File(System(&quot;/Users/micha/astral/ecosystem/hydpy/hydpy/core/testtools.py&quot;))}
+16      ┌─┘
+15      └─┐red_knot_python_semantic::types::infer::infer_definition_types{range=20683..20700, file=File(System(&quot;/Users/micha/astral/ecosystem/hydpy/hydpy/models/sw1d/sw1d_model.py&quot;))}
+8      ├─   3.456187s  23ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(8), kind: WillExecute { database_key: infer_definition_types(Id(74b6)) } }
+8      └─┐red_knot_python_semantic::types::infer::infer_definition_types{range=5159..5166, file=File(System(&quot;/Users/micha/astral/ecosystem/hydpy/hydpy/core/parametertools.py&quot;))}
+3      ├─   3.456211s  29ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(3), kind: DidInternValue { id: Id(2c48e), revision: R2 } }
+3      ├─   3.456222s  29ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(3), kind: WillExecute { database_key: try_mro_(Id(2c48e)) } }
+3      ├─   3.456230s  30ms TRACE red_knot_python_semantic::types::class ClassLiteralType::try_mro: State1DSequence
+3      ├─   3.456241s  30ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(3), kind: WillExecute { database_key: inheritance_cycle_(Id(25cd9)) } }
+3      ├─   3.456249s  30ms TRACE red_knot_python_semantic::types::class Class::inheritance_cycle: State1DSequence
+4            ┌─┘
+5        └─┐red_knot_python_semantic::symbol::symbol{name=&quot;MayNonerable2&quot;}
+4            ├─   3.456277s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(4), kind: DidInternValue { id: Id(52460), revision: R2 } }
+5        ┌─┘
+4          ┌─┘
+5      ┌─┘
+15        ├─   3.456310s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(15), kind: WillExecute { database_key: infer_expression_types(Id(3a06)) } }
+15        └─┐red_knot_python_semantic::types::infer::infer_expression_types{expression=Id(3a06), range=20703..20827, file=File(System(&quot;/Users/micha/astral/ecosystem/hydpy/hydpy/models/sw1d/sw1d_model.py&quot;))}
+8        ├─   3.456340s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(8), kind: WillExecute { database_key: infer_expression_types(Id(7c1b)) } }
+9        ├─   3.456355s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(9), kind: WillExecute { database_key: infer_expression_types(Id(5c48a)) } }
+6          ├─   3.456369s   1ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(6), kind: DidInternValue { id: Id(af92), revision: R2 } }
+6          ├─   3.456380s   1ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(6), kind: WillExecute { database_key: member_lookup_with_policy_(Id(af92)) } }
+6          ├─   3.456387s   1ms TRACE red_knot_python_semantic::types member_lookup_with_policy: &lt;module 'hydpy.models.meteo.meteo_model'&gt;.Adjust_Precipitation_V1
+10          └─┐red_knot_python_semantic::symbol::symbol{name=&quot;FunctionType&quot;}
+3      ├─   3.456410s  30ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(3), kind: WillExecute { database_key: symbol_table(Id(10742)) } }
+3      └─┐red_knot_python_semantic::semantic_index::symbol_table{scope=Id(10742), file=File(System(&quot;/Users/micha/astral/ecosystem/hydpy/hydpy/models/hland/hland_sequences.py&quot;))}
+3      ┌─┘
+16      ├─   3.456445s  78ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(16), kind: WillExecute { database_key: infer_definition_types(Id(58697)) } }
+16      └─┐red_knot_python_semantic::types::infer::infer_definition_types{range=72404..72415, file=File(System(&quot;/Users/micha/astral/ecosystem/hydpy/hydpy/exe/xmltools.py&quot;))}
+12        └─┐red_knot_python_semantic::symbol::symbol{name=&quot;MethodGroup&quot;}
+4          ├─   3.456485s  15ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(4), kind: DidInternValue { id: Id(218e8), revision: R2 } }
+4          ├─   3.456497s  15ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(4), kind: WillExecute { database_key: class_member_with_policy_(Id(218e8)) } }
+4          ├─   3.456506s  15ms TRACE red_knot_python_semantic::types class_member: CM.load_file
+15          ├─   3.456517s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(15), kind: DidInternValue { id: Id(5f814), revision: R2 } }
+15          ├─   3.456527s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(15), kind: WillExecute { database_key: member_lookup_with_policy_(Id(5f814)) } }
+15          ├─   3.456535s   0ms TRACE red_knot_python_semantic::types member_lookup_with_policy: &lt;module 'hydpy.models.sw1d.sw1d_factors'&gt;.WaterLevelUpstream
+6          └─┐red_knot_python_semantic::symbol::symbol{name=&quot;Adjust_Precipitation_V1&quot;}
+10          ┌─┘
+11      ┌─┘
+14        ├─   3.456583s   0ms TRACE red_knot_python_semantic::types::infer Resolving imported object `*` from module `hydpy.core.typingtools` into file `/Users/micha/astral/ecosystem/hydpy/hydpy/core/testtools.py`
+10        ┌─┘
+14        ├─   3.456603s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(14), kind: DidInternValue { id: Id(1ab66), revision: R2 } }
+14        ├─   3.456613s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(14), kind: WillExecute { database_key: member_lookup_with_policy_(Id(1ab66)) } }
+14        ├─   3.456623s   0ms TRACE red_knot_python_semantic::types member_lookup_with_policy: &lt;module 'hydpy.core.typingtools'&gt;.TensorInputObject
+8        └─┐red_knot_python_semantic::types::infer::infer_expression_types{expression=Id(7c1b), range=5169..5198, file=File(System(&quot;/Users/micha/astral/ecosystem/hydpy/hydpy/core/parametertools.py&quot;))}
+9        └─┐red_knot_python_semantic::types::infer::infer_expression_types{expression=Id(5c48a), range=94374..94434, file=File(System(&quot;/Users/micha/astral/ecosystem/hydpy/hydpy/exe/servertools.py&quot;))}
+4          ├─   3.456662s  15ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(4), kind: DidInternValue { id: Id(18d15), revision: R2 } }
+4          ├─   3.456675s  15ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(4), kind: WillExecute { database_key: symbol_by_id(Id(18d15)) } }
+7          ┌─┘
+15          └─┐red_knot_python_semantic::symbol::symbol{name=&quot;WaterLevelUpstream&quot;}
+7          └─┐red_knot_python_semantic::symbol::symbol{name=&quot;str&quot;}
+7          ┌─┘
+5      ├─   3.456740s 126ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(5), kind: WillExecute { database_key: infer_definition_types(Id(5a718)) } }
+5      └─┐red_knot_python_semantic::types::infer::infer_definition_types{range=124225..124226, file=File(System(&quot;/Users/micha/astral/ecosystem/hydpy/hydpy/models/ga_garto.py&quot;))}
+7          └─┐red_knot_python_semantic::symbol::symbol{name=&quot;bool&quot;}
+16        ├─   3.456764s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(16), kind: DidInternValue { id: Id(56499), revision: R2 } }
+12        ┌─┘
+14        └─┐red_knot_python_semantic::symbol::symbol{name=&quot;TensorInputObject&quot;}
+13        ┌─┘
+8          ├─   3.456842s   0ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(8), kind: DidInternValue { id: Id(1ccb1), revision: R2 } }
+4          ├─   3.456855s  15ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(4), kind: DidInternValue { id: Id(37447), revision: R2 } }
+4          ├─   3.456866s  15ms TRACE red_knot_project::db Salsa event: Event { thread_id: ThreadId(4), kind: WillExecute { database_key: try_call_dunder_get_(Id(37447)) } }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-25 12:12</div>
+            <div class="timeline-body"><p>Maybe there are two issues:</p>
+<ul>
+<li>With <code>-vvv</code>. Hangs are very frequent, Ctrl + C doesn't work</li>
+<li>Without <code>-vvv</code>. Hangs are less frequent, Ctrl+C still works (suggesting that the main loop is waiting and that the rayon panic handler didn't trigger)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-25 12:49</div>
+            <div class="timeline-body"><p>Interesting, removing the <code>Cancelled::catch</code> (which we absolutely need) makes the error go away (or much harder to reproduce)</p>
+<pre><code>    pub(crate) fn with_db&lt;F, T&gt;(&amp;self, f: F) -&gt; Result&lt;T, Cancelled&gt;
+    where
+        F: FnOnce(&amp;ProjectDatabase) -&gt; T + std::panic::UnwindSafe,
+    {
+        // Cancelled::catch(|| f(self))
+        Ok(f(self))
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-25 13:25</div>
+            <div class="timeline-body"><p>Uff, this was annoying to track down but I found the root cause:</p>
+<p>When a salsa query panics that is used from two threads, then two panics are propagated:</p>
+<ul>
+<li>The panic on the thread that was executing the query (regular panic)</li>
+<li>A <code>Cancelled::PropagatedPanic</code> on the thread that waited on the result of the panicking thread</li>
+</ul>
+<p><code>rayon::scope</code> will pick one of the two panics to propagate, which is why we haven't been able to reproduce this consistently.</p>
+<p>Now, to my surprise, the <code>Cancelled::PropagatedPanic</code> is catched by <code>Cancelled::catch</code> in which case we return an <code>Err</code> from <code>db.check</code>. Our <code>main_loop</code> doesn't handle the <code>Err</code> case because because I assumed <code>Cancelled</code> would only be triggered when any input has changed (in which case we can just wait for the next check call to complete).</p>
+<p>Unfortunately, Salsa doesn't provide a way to distinguish between <code>Cancelled::PendingWrite</code> and <code>Cancelled::PropagatedPanic</code>, which means this requires an upstream change first. See https://salsa.zulipchat.com/#narrow/channel/333573-Contributing-to-Salsa/topic/.60Cancelled.3A.3APropagatedPanic.60/with/514378835</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-04-26 06:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:18 UTC
+    </footer>
+</body>
+</html>

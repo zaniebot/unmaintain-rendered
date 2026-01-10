@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`noqa: TC003` not equivalent to `ignore = [&quot;TC003&quot;]` (TCH -&gt; TC name change?) - astral-sh/ruff #17356</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>noqa: TC003</code> not equivalent to <code>ignore = [&quot;TC003&quot;]</code> (TCH -&gt; TC name change?)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17356">#17356</a>
+        opened by <a href="https://github.com/dmyersturnbull">@dmyersturnbull</a>
+        on 2025-04-11 16:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dmyersturnbull">@dmyersturnbull</a> on 2025-04-11 16:20</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The renaming of TCH to TC resulted in some extremely confusing behavior, originally seen in Ruff 0.11.2.</p>
+<p><strong>Summary:</strong> <code>ruff: noqa: TC003</code> works but <code>ignore = [&quot;TC003&quot;]</code> does not. Related to #16763 (reported in #14810).</p>
+<p><strong>In action:</strong> <a href="https://play.ruff.rs/908a0930-7512-4e1e-b87e-a6e7a592fd3e">minimal working example</a> in 0.11.5.</p>
+<p>Playing around on <code>play.ruff.rs</code>, it only occurs with <em>both</em> <code>TCH</code> and <code>TC</code> in <code>select</code>. In fact, it depends on specific set of options that are unlikely to occur in the wild. Opening this issue only in case it's a symptom of another issue.</p>
+<h3>Issue seen in Ruff 0.11.2</h3>
+<p>In Ruff 0.11.2, having <code>preview</code> enabled and only <code>TCH</code> in <code>select</code> is sufficient.</p>
+<pre><code class="language-toml"># File: pyproject.toml
+
+[tool.ruff]
+preview = true
+
+[tool.ruff.lint]
+select = [&quot;TCH&quot;]
+ignore = [&quot;TC003&quot;]
+</code></pre>
+<pre><code class="language-python"># File: src/pkg/__init__.py
+
+# Violation: TC003: Move [...] into a type-checking block
+from os import PathLike
+</code></pre>
+<p><b>Doesn't suppress:</b></p>
+<pre><code class="language-toml"># File: pyproject.toml
+[tool.ruff.lint]
+select = [&quot;TCH&quot;]
+ignore = [&quot;TC003&quot;]
+</code></pre>
+<p><b>Does suppress:</b></p>
+<pre><code class="language-python"># File: src/pkg/core.py
+# ruff: noqa: TC003
+from os import PathLike
+</code></pre>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-04-13 13:21</div>
+            <div class="timeline-body"><p>I can't reproduce your findings. Your minimal repro doesn't match the configuration you provided and has nothing to do with rule redirects. You can get the same behavior with any rule if you put a narrow code in <code>select</code> and a broad code in <code>ignore</code>.</p>
+<p>E.g. the following configuration will not suppress F401 errors, even though <code>F</code> is part of <code>ignore</code>.</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+select = [&quot;F401&quot;]
+ignore = [&quot;F&quot;]
+</code></pre>
+<p>but the reverse definitely works, even with rule redirects. I've tried every possible combination of rule redirects and they all work on your example:</p>
+<p>https://play.ruff.rs/3a8fbde0-862d-4637-9e91-c89814b47972</p>
+<pre><code class="language-toml">select = [&quot;TC&quot;]
+ignore = [&quot;TCH003&quot;]
+</code></pre>
+<p>https://play.ruff.rs/293d84fa-2418-4d25-ab94-08d4e2fcf9a5</p>
+<pre><code class="language-toml">select = [&quot;TCH&quot;]
+ignore = [&quot;TC003&quot;]
+</code></pre>
+<p>https://play.ruff.rs/c830de15-22bc-4080-9810-27045e83f338</p>
+<pre><code class="language-toml">select = [&quot;TCH&quot;]
+ignore = [&quot;TCH003&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @ntBre on 2025-04-14 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-04-22 08:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff wrongly flags valid mypy forward references in TYPE_CHECKING as not defined - astral-sh/ruff #9753</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff wrongly flags valid mypy forward references in TYPE_CHECKING as not defined</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9753">#9753</a>
+        opened by <a href="https://github.com/ezyang">@ezyang</a>
+        on 2024-02-01 15:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ezyang">@ezyang</a> on 2024-02-01 15:13</div>
+            <div class="timeline-body"><pre><code>from typing import TYPE_CHECKING
+
+class A:
+    if TYPE_CHECKING:
+        B = A
+</code></pre>
+<p>fails with</p>
+<pre><code>a.py:5:13: F821 Undefined name `A`
+</code></pre>
+<p>but this is fine by mypy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-01 15:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-01 15:19</div>
+            <div class="timeline-body"><p>Interesting... In my cursory testing, Pyright doesn't respect this, so I'm not certain that we should? \cc @erictraut in case you have thoughts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/erictraut">@erictraut</a> on 2024-02-01 18:32</div>
+            <div class="timeline-body"><p>Mypy's failure to detect this has nothing to do with <code>TYPE_CHECKING</code>. It doesn't detect invalid forward references even if you were to remove the <code>TYPE_CHECKING</code> conditional:</p>
+<pre><code class="language-python">class A:
+    B = A # No error from mypy
+</code></pre>
+<p>I think pyright and ruff are correct in flagging this as an error. If mypy were to add this missing functionality, it would likewise report an error here.</p>
+<p>In general, I recommend against using <code>TYPE_CHECKING</code> within your code. It's effectively a &quot;lie&quot; to static analysis tools and type checkers, and that can mask errors and make your code more fragile.</p>
+<p>If your intent here is to define a type alias <code>B</code> within the scope of class <code>A</code>, you can do so without the use of <code>TYPE_CHECKING</code> as follows...</p>
+<p>If you're using Python 3.12:</p>
+<pre><code class="language-python">class A:
+    type B = A
+</code></pre>
+<p>If you're using an older version of Python:</p>
+<pre><code class="language-python">from typing import TypeAlias
+class A:
+    B: TypeAlias = &quot;A&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-02-01 18:39</div>
+            <div class="timeline-body"><p>I agree with Eric -- this isn't a feature of mypy; OP's snippet only works with mypy due to a feature being missing from mypy</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-05 15:58</div>
+            <div class="timeline-body"><p>I'm gonna close this for now based on the above feedback from @erictraut and @AlexWaygood. Sorry for any inconvenience @ezyang.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-05 15:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:36 UTC
+    </footer>
+</body>
+</html>

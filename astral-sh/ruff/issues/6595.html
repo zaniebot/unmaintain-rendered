@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ISC003 gives false positive when two different string types in one line are mandatory - astral-sh/ruff #6595</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ISC003 gives false positive when two different string types in one line are mandatory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6595">#6595</a>
+        opened by <a href="https://github.com/mmarras">@mmarras</a>
+        on 2023-08-15 12:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mmarras">@mmarras</a> on 2023-08-15 12:36</div>
+            <div class="timeline-body"><p>When defining <code>hovertemplates</code> they use a magic string (e.g. <code>%{x}</code> to denote the x-data)  that cannot be inside an fstring. If one wants to combine the former with an fstring on the same line it flags the thing and it is impossible to comply to ruff ISC without breaking the code. So even if one decides to keep the rule for same line, it should make exception for mixed string types.</p>
+<p>Correct :</p>
+<pre><code class="language-python">import plotly.graph_objs as go
+string = &quot;Data1&quot;
+go.Figure(data=go.Scatter(
+    x=[1.123123,2.12321,3.12321],
+    y=[1.12321,2.12321,3.12321],
+    hovertemplate=&quot;%{x:.2f}&lt;br&gt;%{y:.3f}&quot; + f&quot;&lt;extra&gt;{string}&lt;/extra&gt;&quot;)
+          )
+</code></pre>
+<p>The above codeblock but with <code> hovertemplate=f&quot;%{x:.2f}&lt;br&gt;%{y:.3f}&lt;extra&gt;{string}&lt;/extra&gt;&quot;)</code> fails.</p>
+<blockquote>
+<p>NameError: name 'x' is not defined</p>
+</blockquote>
+<p>Of course the correct version (see codeblock) triggers</p>
+<blockquote>
+<p>Explicitly concatenated string should be implicitly concatenatedRuff<a href="https://beta.ruff.rs/docs/rules/explicit-string-concatenation">ISC003</a></p>
+</blockquote>
+<p>or when implicitly concatenated:</p>
+<blockquote>
+<p>Implicitly concatenated string literals on one lineRuff<a href="https://beta.ruff.rs/docs/rules/single-line-implicit-string-concatenation">ISC001</a></p>
+</blockquote>
+<p><em>Originally posted by @mmarras in https://github.com/astral-sh/ruff/issues/5332#issuecomment-1657277651</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-15 13:08</div>
+            <div class="timeline-body"><p>Having trouble reproducing.</p>
+<p>Given:</p>
+<pre><code class="language-python">import plotly.graph_objs as go
+string = &quot;Data1&quot;
+go.Figure(data=go.Scatter(
+    x=[1.123123,2.12321,3.12321],
+    y=[1.12321,2.12321,3.12321],
+    hovertemplate=&quot;%{x:.2f}&lt;br&gt;%{y:.3f}&quot; + f&quot;&lt;extra&gt;{string}&lt;/extra&gt;&quot;)
+          )
+</code></pre>
+<p>Running <code>ruff check foo.py --select ISC --isolated -n</code> doesn't yield any violations.</p>
+<p>Was it broken over multiple lines? Like:</p>
+<pre><code class="language-python">import plotly.graph_objs as go
+string = &quot;Data1&quot;
+go.Figure(data=go.Scatter(
+    x=[1.123123,2.12321,3.12321],
+    y=[1.12321,2.12321,3.12321],
+    hovertemplate=(
+        &quot;%{x:.2f}&lt;br&gt;%{y:.3f}&quot; +
+        f&quot;&lt;extra&gt;{string}&lt;/extra&gt;&quot;)
+    )
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mmarras">@mmarras</a> on 2023-08-15 14:45</div>
+            <div class="timeline-body"><p>Indeed, this only shows in my VScode (1.81.0) extension (v2023.32.0, ruff 0.0.277, I assume), not if I run ruff cli with ruff (0.0.284). My bad.</p>
+<p><img src="https://github.com/astral-sh/ruff/assets/53915566/59cc6cf5-1334-48e1-8d50-8843c491945a" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-15 16:22</div>
+            <div class="timeline-body"><p>Hm I think the VSCode extension should use your externally installed Ruff if available (so an update is not needed to get the latest version). Anyway, it sounds like we've resolved this on the latest version. Let us know if there's more we can do!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2023-08-15 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-15 16:23</div>
+            <div class="timeline-body"><p>I think it's not quite resolved because the request is that we <em>don't</em> flag explicit concatenations with mixed-kind strings, like:</p>
+<pre><code class="language-python">import plotly.graph_objs as go
+string = &quot;Data1&quot;
+go.Figure(data=go.Scatter(
+    x=[1.123123,2.12321,3.12321],
+    y=[1.12321,2.12321,3.12321],
+    hovertemplate=(
+        &quot;%{x:.2f}&lt;br&gt;%{y:.3f}&quot; +
+        f&quot;&lt;extra&gt;{string}&lt;/extra&gt;&quot;)
+    )
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-15 16:24</div>
+            <div class="timeline-body"><p>(The confusion above is about whether it flags for multiline strings or single-line strings, related to the repro.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @charliermarsh on 2023-08-15 16:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mmarras">@mmarras</a> on 2023-08-15 17:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Hm I think the VSCode extension should use your externally installed Ruff if available (so an update is not needed to get the latest version). Anyway, it sounds like we've resolved this on the latest version. Let us know if there's more we can do!</p>
+</blockquote>
+<p>So, VScode was in a different env than my terminal conda env, therefore the missmatch in ruff results editor vs cli.</p>
+<p>As far as I am concerned <strong>the issue is solved</strong> (I checked, as of 0.0.281). Conclusion stands: my bad.</p>
+<p>For me it was always about the single line example. I was happy as soon as an explicit concat of a mixed-kind one-line string wasn't flagged anymore. But I'm using plotly quite a bit so, if it comes up in another constellation, I can for sure report back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-08-15 17:50</div>
+            <div class="timeline-body"><p>Okay, sounds good! I'm glad it's resolved for this use-case, thank you for reporting back :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-15 17:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:00 UTC
+    </footer>
+</body>
+</html>

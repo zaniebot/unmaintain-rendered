@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove --version from uv subcommands - astral-sh/uv #12439</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove --version from uv subcommands</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12439">#12439</a>
+        opened by <a href="https://github.com/jtfmumm">@jtfmumm</a>
+        on 2025-03-24 16:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-03-24 16:38</div>
+            <div class="timeline-body"><p>Currently, uv will return the uv version when <code>--version</code> is passed into subcommands, though it is displayed as follows:</p>
+<pre><code>$ uv run --version
+uv-run 0.6.7 (029b9e1fc 2025-03-17)
+</code></pre>
+<p>We don't actually version subcommands separately and we may want to use the <code>--version</code> flag for other purposes (e.g., #12376). This PR removes this default version from all subcommands. <code>uv --version</code> still works.</p>
+<p>Closes #12431</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">breaking</span> added by @zanieb on 2025-03-24 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.7.0" by @zanieb on 2025-03-24 16:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inoa-jboliveira">@inoa-jboliveira</a> on 2025-03-25 21:31</div>
+            <div class="timeline-body"><p>Hi, I think <code>--version</code> is quite important for uvx since it lacks <code>uvx version</code> and it can be installed standalone without uv.
+Is it preserved here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-03-25 22:03</div>
+            <div class="timeline-body"><p>@inoa-jboliveira that’s a good point. I’ll update to cover that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-27 19:42</div>
+            <div class="timeline-body"><p>Can we add a <code>uvx --version</code> to the smoke tests or something? (done in https://github.com/astral-sh/uv/pull/12516)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-03-28 14:31</div>
+            <div class="timeline-body"><p>This change invalidates a couple of our old tests that checked that passing <code>--version</code> before the final command (e.g., <code>uv run --version python</code>) would output uv's version and not Python's. I've updated these tests to use <code>--help</code>, but this is testing something slightly different. <code>uv run --help python</code> outputs <code>uv run</code> help, not uv help.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @jtfmumm on 2025-04-01 06:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-15 21:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/help.rs</code>:119 on 2025-04-15 21:58</div>
+            <div class="timeline-body"><p>I feel like the old description was better? This feels like a minor regression</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv/tests/it/help.rs</code>:119 on 2025-04-25 15:28</div>
+            <div class="timeline-body"><p>Unfortunately, it seems like you can't update the default version help message when using the clap macro approach. Do you think this regression is a reason to move this out of the release?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-04-25 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-25 15:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/help.rs</code>:119 on 2025-04-25 15:56</div>
+            <div class="timeline-body"><p>Why do we need to use the clap macro? Can't we just make this flag only applicable at the root instead of global?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/help.rs</code>:119 on 2025-04-26 00:40</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/uv/pull/13108</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-26 00:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on 2025-04-28 07:07</div>
+            <div class="timeline-body"><p>Closing in favor of #13108</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @jtfmumm on 2025-04-28 07:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-01 11:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:22 UTC
+    </footer>
+</body>
+</html>

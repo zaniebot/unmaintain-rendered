@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mutable default argument not detected when it is a constant (by B006 and others) - astral-sh/ruff #11030</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Mutable default argument not detected when it is a constant (by B006 and others)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11030">#11030</a>
+        opened by <a href="https://github.com/omgMath">@omgMath</a>
+        on 2024-04-19 08:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/omgMath">@omgMath</a> on 2024-04-19 08:03</div>
+            <div class="timeline-body"><p>Hi
+I found a case where my expectations does not meet the results reported by ruff. But first, let's start with the issue basics:</p>
+<ul>
+<li>Keywords searched: &quot;B006&quot;, &quot;mutable default&quot;</li>
+<li>Ruff version: <code>ruff 0.4.0</code></li>
+<li>Command invoked: <code>ruff check case.py --select ALL --ignore D,FA --isolated</code></li>
+</ul>
+<p>Where my <code>case.py</code> contains the following lines:</p>
+<pre><code class="language-python">DEFAULT_ENTRIES = [1, 2, 3]
+
+def append_one(entries: list[int] = DEFAULT_ENTRIES) -&gt; None:
+    entries.append(1)
+</code></pre>
+<p>I would have hoped that this would be detected by <a href="https://docs.astral.sh/ruff/rules/mutable-argument-default/">rule B006</a> (or any other rule), but sadly it is not.</p>
+<p>However, the rule detects the issue if instead of <code>DEFAULT_ENTRIES</code> we use <code>[]</code>.
+Thanks for checking!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "B006 " to "Mutable default argument not detected when it is a constant (by B006 and others)" by @omgMath on 2024-04-19 08:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-19 08:11</div>
+            <div class="timeline-body"><p>Thanks for the report. I believe this is the current limitation of many rules where they <em>don't</em> try to resolve the type of a variable. It will only check if it's a literal expression like <code>[]</code>, <code>{}</code>, etc.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2024-04-19 08:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-19 13:48</div>
+            <div class="timeline-body"><p>I feel like we <em>could</em> catch this via the type annotation though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-19 13:56</div>
+            <div class="timeline-body"><p>Yeah, it should be doable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-24 03:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gerrymanoim">@gerrymanoim</a> on 2024-09-26 16:37</div>
+            <div class="timeline-body"><p>Just confirming that as of ruff 0.6.6 it still doesn't catch the constant via type annotations:</p>
+<pre><code class="language-python">TEST = [1, 2, 3]
+
+def test(l: list[int] = [1, 2, 3]):
+    pass
+
+def test2(l: list[int] = TEST):
+    pass
+</code></pre>
+<p>Does https://github.com/astral-sh/ruff/pull/11122 need more work? Anything that we could help with?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:34 UTC
+    </footer>
+</body>
+</html>

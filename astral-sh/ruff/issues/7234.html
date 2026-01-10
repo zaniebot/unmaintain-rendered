@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter: Target version support - astral-sh/ruff #7234</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter: Target version support</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7234">#7234</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2023-09-08 07:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-08 07:54</div>
+            <div class="timeline-body"><p>Adjust the formatting based on the syntax supported by the targeted python versions.</p>
+<blockquote>
+<p>Black uses this option to decide what grammar to use to parse your code. In addition, it may use it to decide what style to use. For example, support for a trailing comma after *args in a function call was added in Python 3.5, so Black will add this comma only if the target versions are all Python 3.5 or higher.</p>
+</blockquote>
+<p><a href="https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html#t-target-version">Source</a></p>
+<ul>
+<li>[ ] Decide on minimal supported python version</li>
+<li>[ ] Trailing args and kwargs comments (depending on the above decision)</li>
+<li>[ ] Parenthesized with items</li>
+</ul>
+<hr />
+<p>Relevant features:</p>
+<ul>
+<li>3.10: <a href="https://docs.python.org/3/whatsnew/3.10.html#parenthesized-context-managers">Parenthesized with items</a></li>
+<li>3.12: <a href="https://peps.python.org/pep-0701/">f-string grammar</a></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2023-09-08 07:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Beta" by @MichaReiser on 2023-09-08 07:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2023-09-12 07:46</div>
+            <div class="timeline-body"><p>Do we have a list of syntax that would change formatter behaviour that is not in 3.7/3.8? I can only think of nested f-string quotes in 3.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-12 07:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Do we have a list of syntax that would change formatter behaviour that is not in 3.7/3.8? I can only think of nested f-string quotes in 3.12</p>
+</blockquote>
+<p>f-strings will be fun because they now can contain comments too, yeah.</p>
+<p>I don't have more than what's outlined in the issue above and is derived from Black's documentation. We could do a quick search on Black's repository to identify other version-specific formatting (or look at their version-specific tests)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-12 11:52</div>
+            <div class="timeline-body"><p>Parenthesized with items (mentioned above) -- need to make sure we don't introduce parentheses there if unsupported. I don't know if this needs changes or not, but it was new in Python 3.10. (They have <code>crates/ruff_python_formatter/resources/test/fixtures/black/py_39/remove_with_brackets.py</code> for this, I think?)</p>
+<p>See also <code>crates/ruff_python_formatter/resources/test/fixtures/black/py_39/pep_572_py39.py</code> -- walrus operators can be unparenthesized in some cases starting in Python 3.9, so we need to make sure we don't <em>remove</em> parentheses in such cases on older versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-13 09:22</div>
+            <div class="timeline-body"><blockquote>
+<p>For my projects, the quote normalization would be OK, as this should be already fixed by the Q rules in the linter. However, the prefix normalization would be very problematic, as it breaks backwards compatibility with some older versions of Pythons that we still need to support for a couple of our projects. Specifically, the issue is the change from br&quot;...&quot; to rb&quot;...&quot; for binary regular expressions, which causes a SyntaxError. Without some type of replacement for this --skip-string-normalization option, we would not be able to switch to Ruff for formatting.</p>
+</blockquote>
+<p>Originally <a href="https://github.com/astral-sh/ruff/discussions/7305#discussioncomment-6987835">answer</a> by @tdulcet</p>
+<blockquote>
+<p>Not versions that are supported by Ruff. Specifically, Python 3.1 and older, including 2.7 which we still need to support unfortunately... [[source](Not versions that are supported by Ruff. Specifically, Python 3.1 and older, including 2.7 which we still need to support unfortunately...)]</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-14 22:56</div>
+            <div class="timeline-body"><p>I've confirmed that the unparenthesized walruses is handled correctly (we never <em>remove</em> those parentheses, so we're fine).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-14 23:00</div>
+            <div class="timeline-body"><p>We also get the <code>remove_with_brackets.py</code> test case right. I've confirmed that we only add parentheses in a <code>with</code> if there were already parentheses to start. (Can see <code>should_parenthesize</code> in <code>stmt_with.rs</code>; the other case is that in which there's a parenthesized dangling comment, which again implies parentheses.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-14 23:16</div>
+            <div class="timeline-body"><p>As far as I can tell, there's nothing that we need to do here, assuming...</p>
+<ol>
+<li>We only want to support Python 3.7 and later.</li>
+<li>We don't care about <em>downgrading</em> code (e.g., if code was written for Python 3.10, and uses a parenthesized <code>with</code>, then when run under <code>--target-version py37</code>, we consider it validate to <em>retain</em> the parenthesized <code>with</code>).</li>
+</ol>
+<p>Some notes on Black's behavior:</p>
+<ul>
+<li>I believe that Black adheres to (2) -- so if you run over a file with a <code>match</code> statement using <code>--target-version py37</code>, Black will fail. Black uses the target version to determine which <em>parser</em> to use.</li>
+<li>Black has a <code>VERSION_TO_FEATURES</code> concept whereby it detects features that are used in a given file, and uses <em>that</em> to <em>infer</em> the target version, if it's not set (see: <code>detect_target_versions</code>).</li>
+<li>After inferring the target versions, the only version-specific features that affect formatting are <code>Feature.TRAILING_COMMA_IN_CALL</code> and <code>Feature.TRAILING_COMMA_IN_DEF</code> (which apply for Python 3.5 and later, i.e., the versions we support), and <code>Feature.PARENTHESIZED_CONTEXT_MANAGERS</code>.</li>
+</ul>
+<p>This last piece (<code>Feature.PARENTHESIZED_CONTEXT_MANAGERS</code>) is interesting, but is only relevant for preview style: https://black.readthedocs.io/en/stable/the_black_code_style/future_style.html#using-backslashes-for-with-statements. In short, Black is going to wrap multiple <code>with</code> statements using backslashes on older versions or parentheses on newer versions. Right now, it seems like the parenthesized version is implemented in preview mode. So, once we do preview style, we'll need to support that <em>and</em> gate it on target version.</p>
+<p>For example, given:</p>
+<pre><code class="language-python">with a as b, c as d, e(1,) as f:
+    pass
+</code></pre>
+<p>Black stable formats as:</p>
+<pre><code class="language-python">with a as b, c as d, e(
+    1,
+) as f:
+    pass
+</code></pre>
+<p>But preview gives you:</p>
+<pre><code class="language-python">with (
+    a as b,
+    c as d,
+    e(
+        1,
+    ) as f,
+):
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-09-14 23:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-15 13:02</div>
+            <div class="timeline-body"><blockquote>
+<p>(Can see should_parenthesize in stmt_with.rs; the other case is that in which there's a parenthesized dangling comment, which again implies parentheses.)</p>
+</blockquote>
+<p>This may no longer be true if we implement https://github.com/astral-sh/ruff/issues/7243</p>
+<blockquote>
+<p>We don't care about downgrading code (e.g., if code was written for Python 3.10, and uses a parenthesized with, then when run under --target-version py37, we consider it validate to retain the parenthesized with).</p>
+</blockquote>
+<p>I'm unsure whether I would expect my formatter to downgrade the syntax. I guess mainly because I'm just not used to having this setting in a formatter. Removing parentheses raises interesting question when it comes to comments, especially leading and trailing commnts</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-27 13:29</div>
+            <div class="timeline-body"><p>What's the status on this? Do we plan to support this for the Beta?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-27 13:34</div>
+            <div class="timeline-body"><p>My assessment is that there's nothing to do here until we support preview style.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "Formatter: Beta" by @MichaReiser on 2023-09-27 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Stable" by @MichaReiser on 2023-09-27 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-11 13:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:16 UTC
+    </footer>
+</body>
+</html>

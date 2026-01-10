@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B905 not working since 0.0.284 - astral-sh/ruff #7669</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>B905 not working since 0.0.284</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7669">#7669</a>
+        opened by <a href="https://github.com/ergoithz">@ergoithz</a>
+        on 2023-09-26 14:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ergoithz">@ergoithz</a> on 2023-09-26 14:35</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p><strong>Python 3.11.1</strong>
+<strong>ruff 0.0.284...0.0.291</strong></p>
+<p>Creating a file with the current tests https://github.com/astral-sh/ruff/blob/8165925e016a7e5f8fc038db834400288ca33c42/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B905.py#L3-L9  <code>ruff --select B905 ruff_b905.py</code> does not detect any rule violation.</p>
+<pre><code>$ ruff --version
+ruff 0.0.291
+$ cat ruff_b905.py 
+# Errors
+zip()
+zip(range(3))
+zip(&quot;a&quot;, &quot;b&quot;)
+zip(&quot;a&quot;, &quot;b&quot;, *zip(&quot;c&quot;))
+zip(zip(&quot;a&quot;), strict=False)
+zip(zip(&quot;a&quot;, strict=True))
+$ ruff --select B905 ruff_b905.py 
+</code></pre>
+<p>Last known working version was 0.0.283:</p>
+<pre><code>$ ruff --version
+ruff 0.0.283
+$ ruff --select B905 ruff_b905.py 
+ruff_b905.py:2:1: B905 `zip()` without an explicit `strict=` parameter
+ruff_b905.py:3:1: B905 `zip()` without an explicit `strict=` parameter
+ruff_b905.py:4:1: B905 `zip()` without an explicit `strict=` parameter
+ruff_b905.py:5:1: B905 `zip()` without an explicit `strict=` parameter
+ruff_b905.py:5:16: B905 `zip()` without an explicit `strict=` parameter
+ruff_b905.py:6:5: B905 `zip()` without an explicit `strict=` parameter
+ruff_b905.py:7:1: B905 `zip()` without an explicit `strict=` parameter
+Found 7 errors.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "B905 not working after 0.0.284" to "B905 not working since 0.0.284" by @ergoithz on 2023-09-26 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-26 15:21</div>
+            <div class="timeline-body"><p>Thanks! B905 only applies when the target-version is &gt;= Python 3.10 (since the <code>strict</code> parameter was added in Python 3.10). Running with <code>--target-version py310</code> does show the expected violations for me. How are you setting your target version?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">waiting-on-author</span> added by @charliermarsh on 2023-09-26 15:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-09-26 15:29</div>
+            <div class="timeline-body"><p>@ergoithz it seems likely you are affected by the <a href="https://github.com/astral-sh/ruff/blob/main/BREAKING_CHANGES.md#00283--0284">change in the default target Python version</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ergoithz">@ergoithz</a> on 2023-09-26 16:36</div>
+            <div class="timeline-body"><p>I'm genuinely impressed by how this tool can completely ignore python version ruff is installed with and instead pick an old hardcoded version as a target.</p>
+<p>Regardless, since this design quirk is somewhat documented, I'll close the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ergoithz on 2023-09-26 16:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-09-26 16:44</div>
+            <div class="timeline-body"><p>@ergoithz Thanks for your feedback! Ruff doesn't <em>use</em> the Python interpreter it's installed with at all. Ruff is entirely agnostic of the Python interpreter version which makes this a little difficult. However, improving this behavior is on my roadmap as I happen to agree with you :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-26 16:51</div>
+            <div class="timeline-body"><p>For context: using the Python version that Ruff was installed with isn't sufficient to understand the version ranges supported by the project. You could be using Python 3.10 locally on a project that's designed to work with Python 3.7 up, in which case, using the current version would lead to breakages. In the future, we could fall back to the current version for projects that don't declare any such version, but it still wouldn't do what you describe if you had a hardcoded version in the project somewhere.</p>
+<p>FWIW, the suggested way to do this is to set a <code>requires-python</code> in your <code>pyproject.toml</code> (this is also standards-compliant so other tools will respect it too), e.g.:</p>
+<pre><code class="language-toml">[project]
+requires-python = &quot;&gt;=3.10&quot;
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:28 UTC
+    </footer>
+</body>
+</html>

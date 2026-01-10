@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature Request: Ability to set relative python file paths in the reports - astral-sh/ruff #7551</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Feature Request: Ability to set relative python file paths in the reports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7551">#7551</a>
+        opened by <a href="https://github.com/matroscoe">@matroscoe</a>
+        on 2023-09-20 17:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/matroscoe">@matroscoe</a> on 2023-09-20 17:52</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>This is happening with the latest version of ruff</p>
+<pre><code class="language-shell">$ ruff --version 
+&gt; ruff 0.0.290
+</code></pre>
+<p>Trying to integrate ruff into sonar and it is having a hard time parsing the json output from the following command:</p>
+<pre><code class="language-shell">ruff --exit-zero --output-file &quot;ruff_report.json&quot; --format json ./&lt;module&gt; ./tests
+</code></pre>
+<p>The issue seems to be that the ruff report when run in a GitHub action includes the full path so something like:</p>
+<pre><code class="language-shell">/home/runner/work/&lt;repo&gt;/&lt;namespace&gt;/&lt;module&gt;/&lt;module&gt;/&lt;module&gt;/&lt;python-file&gt;.py
+</code></pre>
+<p>if would be nice to have a <code>relative</code> flag so that the report can just use the <code>&lt;repo&gt;/&lt;namespace&gt;/&lt;module&gt;/&lt;module&gt;/&lt;module&gt;/&lt;python-file&gt;.py</code> portion. This is the same behavior as the <a href="https://coverage.readthedocs.io/en/latest/config.html#run-relative-files">relative flag in coverage.py</a></p>
+<p>The error reported by sonar:</p>
+<pre><code class="language-shell">WARN: Failed to resolve 178 file path(s) in Ruff report. No issues imported related to file(s):/home/runner/work/&lt;repo&gt;/&lt;namespace&gt;/&lt;module&gt;/&lt;module&gt;/&lt;module&gt;/&lt;python-file&gt;.py; .... (it goes on to list every file reporting an issue)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @charliermarsh on 2023-09-22 03:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-09-22 03:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matroscoe">@matroscoe</a> on 2023-09-29 18:18</div>
+            <div class="timeline-body"><p>for more background we are trying to have the report generated ingested into <code>sonarcloud</code> as a backup to pre-commit not working or being missed when it is run and sonar seems to be having problems with the fully justified paths that are generated when it is run as an action: https://community.sonarsource.com/t/importing-mypy-report-into-sonarcloud-from-pre-commit/101495/8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-09-29 18:33</div>
+            <div class="timeline-body"><p>I think that the JSON output just uses absolute paths (whereas our default output uses relative paths). Would the addition of a relative path field in our JSON output suffice?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-29 18:37</div>
+            <div class="timeline-body"><p>Hmm, how does ESLint solve this problem? They use absolute paths too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/matroscoe">@matroscoe</a> on 2023-09-29 19:29</div>
+            <div class="timeline-body"><p>I think it would, the absolute paths aren't an issue for us locally it is only causing problems when they are being run as a part of a GitHub action.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/philipp-horstenkamp">@philipp-horstenkamp</a> on 2024-01-19 16:11</div>
+            <div class="timeline-body"><p>I used the ruff pylint style export and imported them as pylint issues. This is not a thing of beauty. But it works.
+But yes i agree. A json export with relativ paths would be nice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/crimsonknave">@crimsonknave</a> on 2024-07-19 22:00</div>
+            <div class="timeline-body"><p>I'm currently using the following workaround for an action where we run ruff inside a docker container and the paths don't match. My app is installed in <code>/app/</code> in the dockerfile. The sed strips that out to give a relative path. I believe that you should be able to do something similar for the json file, but <code>jq</code> might be a better tool there.</p>
+<pre><code class="language-bash">ruff check --output-format=github --output-file=ruff.txt
+cat ruff.txt | sed 's/\/app\///'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PhorstenkampFuzzy">@PhorstenkampFuzzy</a> on 2024-08-30 12:54</div>
+            <div class="timeline-body"><p>We are executing ruff as a fallback in jenkins and import the reports into SonarQube for ease of visualisation / tracking.
+The current implementation with exporting in the pylint format works but isn't quiet as smooth as it could be.
+Is there any way this could be implemented soonish? 🙇</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/badrobit">@badrobit</a> on 2024-10-28 02:01</div>
+            <div class="timeline-body"><p>hey, was checking in to see if there had been any movement on this? it is mainly an issue when feeding into tools for overall quality monitoring such as <code>SonarCloud</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:25 UTC
+    </footer>
+</body>
+</html>

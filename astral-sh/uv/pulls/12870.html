@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write requested python variant to pin file in `uv init` - astral-sh/uv #12870</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Write requested python variant to pin file in <code>uv init</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12870">#12870</a>
+        opened by <a href="https://github.com/j178">@j178</a>
+        on 2025-04-14 04:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/j178">@j178</a> on 2025-04-14 04:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes #12855</p>
+<p>This PR also fixed an issue, where <code>python_request</code> was matched against <code>PythonVersion::Default</code>. Previously, if <code>python_request</code> was <code>3.13t</code>, it would match the last branch, triggering a download of the Python version if it wasn't already installed.</p>
+<p>https://github.com/astral-sh/uv/blob/6b7f60c1eaa840c2e933a0fb056ab46f99c991a5/crates/uv/src/commands/project/init.rs#L421-L448</p>
+<pre><code class="language-console">❯ uv init -v --managed-python --python 3.13t foo
+DEBUG uv 0.6.14 (a4cec56dc 2025-04-09)
+DEBUG Searching for Python 3.13t in managed installations
+DEBUG Searching for managed installations at `/Users/Jo/.local/share/uv/python`
+DEBUG Found managed installation `cpython-3.13.1-macos-aarch64-none`
+DEBUG Found `cpython-3.13.1-macos-aarch64-none` at `/Users/Jo/.local/share/uv/python/cpython-3.13.1-macos-aarch64-none/bin/python3.13` (managed installations)
+DEBUG Skipping interpreter at `/Users/Jo/.local/share/uv/python/cpython-3.13.1-macos-aarch64-none/bin/python3.13` from managed installations: does not satisfy request `3.13t`
+DEBUG Skipping incompatible managed installation `cpython-3.12.8-macos-aarch64-none`
+DEBUG Skipping incompatible managed installation `pypy-3.11.11-macos-aarch64-none`
+DEBUG Requested Python not found, checking for available download...
+DEBUG Acquired lock for `/Users/Jo/.local/share/uv/python`
+DEBUG Using request timeout of 30s
+INFO Fetching requested Python...
+Downloading cpython-3.13.3+freethreaded-macos-aarch64-none (49.9MiB)
+DEBUG Downloading https://github.com/astral-sh/python-build-standalone/releases/download/20250409/cpython-3.13.3%2B20250409-aarch64-apple-darwin-freethreaded%2Bpgo%2Blto-full.tar.zst to temporary location: /Users/Jo/.local/share/uv/python/.temp/.tmpfoOLkE
+DEBUG Extracting cpython-3.13.3%2B20250409-aarch64-apple-darwin-freethreaded%2Bpgo%2Blto-full.tar.zst
+ Downloaded cpython-3.13.3+freethreaded-macos-aarch64-none
+DEBUG Moving /Users/Jo/.local/share/uv/python/.temp/.tmpfoOLkE/python/install to /Users/Jo/.local/share/uv/python/cpython-3.13.3+freethreaded-macos-aarch64-none
+DEBUG Released lock at `/Users/Jo/.local/share/uv/python/.lock`
+DEBUG Writing Python versions to `/private/tmp/foo/.python-version`
+Initialized project `foo` at `/private/tmp/foo`
+
+❯ cat foo/.python-version
+3.13
+</code></pre>
+<p>After this PR, uv will not try to download it:</p>
+<pre><code class="language-console">❯ uv python uninstall 3.13t
+❯ cargo run -- init -v --managed-python --python 3.13t bar
+DEBUG uv 0.6.14+15 (6b7f60c1e 2025-04-12)
+DEBUG Writing Python versions to `/private/tmp/bar/.python-version`
+Initialized project `bar` at `/private/tmp/bar`
+
+❯ cat bar/.python_version
+3.13t
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2025-04-14 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @charliermarsh on 2025-04-14 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-04-14 12:12</div>
+            <div class="timeline-body"><p>Assigning @zanieb who's most familiar here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dotysan">@dotysan</a> approved on 2025-04-14 17:29</div>
+            <div class="timeline-body"><p>Not tested. But looks good, thx!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-04-15 20:28</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-04-15 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-15 20:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-15 22:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:23 UTC
+    </footer>
+</body>
+</html>

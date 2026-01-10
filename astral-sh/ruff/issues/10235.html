@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP032 Failing to Detect `format` based on Length - astral-sh/ruff #10235</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>UP032 Failing to Detect <code>format</code> based on Length</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10235">#10235</a>
+        opened by <a href="https://github.com/max-muoto">@max-muoto</a>
+        on 2024-03-05 05:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/max-muoto">@max-muoto</a> on 2024-03-05 05:51</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Running into a weird edge case where UP032 is not picking up the usage of formats.</p>
+<p>Take this example, UP032 finds nothing wrong here:</p>
+<pre><code class="language-python">idx = 1
+foo = (
+    &quot;This is a test, this is a test, this is a test, this is a test {}, {} test&quot;.format(
+        idx + 1, len([])
+    )
+)
+</code></pre>
+<p>However, if I reduce the length, it gets flagged:</p>
+<pre><code class="language-python">idx = 1
+z = &quot;This is a test, this is a test, {}, {} test&quot;.format(
+   idx + 1, len([])
+)
+</code></pre>
+<p>Ruff Version: 0.3.0
+Command: <code>ruff check .</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-05 12:08</div>
+            <div class="timeline-body"><p>Thanks. Agree, that this is unexpected</p>
+<p>The rule has a specific check to opt out of providing a fix when the fixed string exceeds the configured line length (because it could introduce new lint errors).</p>
+<p>https://github.com/astral-sh/ruff/blob/184241f99affa895c5e8c1a2e144587cfaa2339a/crates/ruff_linter/src/rules/pyupgrade/rules/f_strings.rs#L450-L459</p>
+<p>We do this for a couple of rules but there seems to be no pattern:</p>
+<ol>
+<li>Some rules don't provide a fix if the &quot;fixed&quot; string exceeds the configured line width</li>
+<li>Some rules don't create a diagnostic when the fixed expression exceeds the configured line width.</li>
+</ol>
+<p>I understand 1. but am surprised by 2. Let me see if I can figure out what the reasoning behind it is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-03-05 12:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-03-05 12:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/max-muoto">@max-muoto</a> on 2024-03-06 01:09</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks. Agree, that this is unexpected</p>
+<p>The rule has a specific check to opt out of providing a fix when the fixed string exceeds the configured line length (because it could introduce new lint errors).</p>
+<p>https://github.com/astral-sh/ruff/blob/184241f99affa895c5e8c1a2e144587cfaa2339a/crates/ruff_linter/src/rules/pyupgrade/rules/f_strings.rs#L450-L459</p>
+<p>We do this for a couple of rules but there seems to be no pattern:</p>
+<ol>
+<li>Some rules don't provide a fix if the &quot;fixed&quot; string exceeds the configured line width</li>
+<li>Some rules don't create a diagnostic when the fixed expression exceeds the configured line width.</li>
+</ol>
+<p>I understand 1. but am surprised by 2. Let me see if I can figure out what the reasoning behind it is.</p>
+</blockquote>
+<p>Thank! It would be nice if there was some way (for formatter users) to still fix it, but then reformat the code to fix the now violating line, but not sure how this would work considering how they're detached. Perhaps this would work better as a setting (i.e. fix violating rules even if it leads to a resulting line greater than the line limit).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-03-06 08:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:00 UTC
+    </footer>
+</body>
+</html>

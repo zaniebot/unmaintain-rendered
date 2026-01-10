@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Union not auto-fixed when inside generic - astral-sh/ruff #2447</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Union not auto-fixed when inside generic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2447">#2447</a>
+        opened by <a href="https://github.com/phillipuniverse">@phillipuniverse</a>
+        on 2023-02-01 17:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/phillipuniverse">@phillipuniverse</a> on 2023-02-01 17:12</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+- A minimal code snippet that reproduces the bug.
+- The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+- The current Ruff settings (any relevant sections from your `pyproject.toml`).
+- The current Ruff version (`ruff --version`).
+-->
+
+<pre><code class="language-python">from typing import List, Union
+
+stuff = List[Union[str, int]]
+</code></pre>
+<p><code>pyproject.toml</code> config:</p>
+<pre><code class="language-toml">[tool.ruff]
+target-version = &quot;py311&quot;
+line-length = 100
+
+select = [
+    &quot;I&quot;,  # isort
+    &quot;C4&quot;, # flake8-comprehensions
+    &quot;UP&quot;, # pyupgrade
+    &quot;F&quot;,  # pyflakes
+    &quot;E&quot;,  # pycodestyle
+]
+ignore = [
+    &quot;E501&quot;,  # line too long, handled by black
+    &quot;C401&quot;,  # generator syntax for sets vs always force set comprehension
+    &quot;PLC0414&quot;,  # allow explicit re-exports using 'as' without forcing __all__
+]
+</code></pre>
+<p>Running <code>ruff --fix test.py</code> on this produces:</p>
+<pre><code class="language-python">from typing import Union
+
+stuff = list[Union[str, int]]
+</code></pre>
+<p>So the List -&gt; list is good, but I would expect to autofix to:</p>
+<pre><code class="language-python">stuff = list[str | int]
+</code></pre>
+<p>Current <code>ruff --version</code> is <code>ruff 0.0.239</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phillipuniverse">@phillipuniverse</a> on 2023-02-01 17:14</div>
+            <div class="timeline-body"><p>Just as a sanity check, I confirmed this is autofixed correctly:</p>
+<pre><code class="language-python">from typing import Union
+
+another: Union[str, int] = &quot;hello&quot;
+</code></pre>
+<p>is autofixed to:</p>
+<pre><code class="language-python">another: str | int = &quot;hello&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-01 17:15</div>
+            <div class="timeline-body"><p>This was changed intentionally but I have to look back to remember why. Maybe we're being overly timid.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-01 17:18</div>
+            <div class="timeline-body"><p>#1563 was the relevant PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-01 17:19</div>
+            <div class="timeline-body"><p>I think that should've only been disabled for pre-3.9 code? Maybe that's the error. Can you do <code>str | None</code> etc. on 3.9+?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-01 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/phillipuniverse">@phillipuniverse</a> on 2023-02-01 20:26</div>
+            <div class="timeline-body"><p>Nice! Great fix!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:11 UTC
+    </footer>
+</body>
+</html>

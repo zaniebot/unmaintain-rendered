@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't warn for previously constraint dependencies - astral-sh/uv #11091</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Don't warn for previously constraint dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11091">#11091</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-01-30 11:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-01-30 11:58</div>
+            <div class="timeline-body"><p>Fixes the case reported at https://github.com/astral-sh/uv/issues/8870#issuecomment-2622783511</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-01-30 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-30 14:08</div>
+            <div class="timeline-body"><p>What if a dependency is listed twice in the same optional group, once with a lower bound and once without?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-01-30 14:20</div>
+            <div class="timeline-body"><p>You mean like this? They are already not emitting warnings. (Which looks like a false negative? They are not showing warnings even without the bounds.)</p>
+<pre><code>[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.10&quot;
+dependencies = []
+
+[project.optional-dependencies]
+case_a = [
+  &quot;anyio&quot;,
+  &quot;anyio&gt;=4,&lt;5&quot;,
+]
+case_b1 = [
+  &quot;numpy&quot;,
+]
+case_b2 = [
+  &quot;numpy&gt;=2&quot;,
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-30 14:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/metadata/lowering.rs</code>:49 on 2025-01-30 14:22</div>
+            <div class="timeline-body"><p>We should be using <code>FxHashSet</code> by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-01-30 14:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/metadata/lowering.rs</code>:145 on 2025-01-30 14:25</div>
+            <div class="timeline-body"><p>So, should we remove this? I think it's redundant now? (Also, isn't this wrong? It seems to only look at <code>None</code>, and not the lower bound?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-distribution/src/metadata/lowering.rs</code>:663 on 2025-01-30 14:26</div>
+            <div class="timeline-body"><p>I'm actually slightly confused now, hmm... You have this <code>has_lower_bound</code> check in <code>get_constrained_packages</code>, but here we're not looking at the specifier... We're just warning if there's no constraint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-30 14:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-30 14:28</div>
+            <div class="timeline-body"><p>Becoming slightly confused about the difference between how <code>constrained_packages</code> is populated and when we choose to show these warnings (i.e., checking <code>has_lower_bound</code> vs. checking if the specifiers are <code>None</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-02-03 20:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:19 UTC
+    </footer>
+</body>
+</html>

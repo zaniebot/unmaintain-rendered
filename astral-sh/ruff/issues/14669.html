@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive for PD011 - astral-sh/ruff #14669</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive for PD011</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14669">#14669</a>
+        opened by <a href="https://github.com/Goldziher">@Goldziher</a>
+        on 2024-11-29 06:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Goldziher">@Goldziher</a> on 2024-11-29 06:15</div>
+            <div class="timeline-body"><p>I am getting this:</p>
+<pre><code class="language-text">src/utils/embeddings.py:47:17: PD011 Use `.to_numpy()` instead of `.values`
+   |
+45 |         )
+46 |         logger.info(&quot;Successfully generated embeddings&quot;)
+47 |         return [embedding.values for embedding in embeddings]
+   |                 ^^^^^^^^^^^^^^^^ PD011
+48 |     except ValueError as e:
+49 |         logger.error(&quot;Failed to get embeddings due to an API error: %s&quot;, e)
+</code></pre>
+<p>But the type embedding does not have a <code>.to_numpy</code> method.</p>
+<p>Here is the embedding class:</p>
+<pre><code class="language-python">@dataclasses.dataclass
+class TextEmbedding:
+    &quot;&quot;&quot;Text embedding vector and statistics.&quot;&quot;&quot;
+
+    __module__ = &quot;vertexai.language_models&quot;
+
+    values: List[float]
+    statistics: Optional[TextEmbeddingStatistics] = None
+    _prediction_response: Optional[aiplatform.models.Prediction] = None
+
+    @classmethod
+    def _parse_text_embedding_response(
+        cls, prediction_response: aiplatform.models.Prediction, prediction_index: int
+    ) -&gt; &quot;TextEmbedding&quot;:
+        &quot;&quot;&quot;Creates a `TextEmbedding` object from a prediction.
+
+        Args:
+            prediction_response: `aiplatform.models.Prediction` object.
+
+        Returns:
+            `TextEmbedding` object.
+        &quot;&quot;&quot;
+        prediction = prediction_response.predictions[prediction_index]
+        is_prediction_from_pretrained_models = isinstance(
+            prediction, collections.abc.Mapping
+        )
+        if is_prediction_from_pretrained_models:
+            embeddings = prediction[&quot;embeddings&quot;]
+            embedding_stats = embeddings[&quot;statistics&quot;]
+            return cls(
+                values=embeddings[&quot;values&quot;],
+                statistics=TextEmbeddingStatistics(
+                    token_count=embedding_stats[&quot;token_count&quot;],
+                    truncated=embedding_stats[&quot;truncated&quot;],
+                ),
+                _prediction_response=prediction_response,
+            )
+        else:
+            return cls(values=prediction, _prediction_response=prediction_response)
+</code></pre>
+<p>This code is derived from <code>.venv/lib/python3.12/site-packages/vertexai/language_models/_language_models.py</code>,</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-29 07:28</div>
+            <div class="timeline-body"><p>I think this is the same as https://github.com/astral-sh/ruff/issues/14508</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-02 01:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:54 UTC
+    </footer>
+</body>
+</html>

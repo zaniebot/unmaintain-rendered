@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feature request: report module missing `__all__` - astral-sh/ruff #2098</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feature request: report module missing <code>__all__</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2098">#2098</a>
+        opened by <a href="https://github.com/sbrugman">@sbrugman</a>
+        on 2023-01-22 23:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-22 23:51</div>
+            <div class="timeline-body"><h3>Background</h3>
+<p>For python packages it would be helpful to notify when a non-empty module lacks <code>__all__</code>. Having <a href="https://docs.python.org/3/tutorial/modules.html#importing-from-a-package"><code>__all__</code></a> present forces module developers to continuously decide on sub-modules that should be imported. In practice is prevents errors such as unused imports.</p>
+<p>This is typically one of the checks to have when a code base is maturing, and fits with other best practices.
+At first glance, this is what <a href="https://github.com/python-formate/flake8-dunder-all">flake8-dunder-all</a> provides. The actual implementation however, is close to pyflakes <code>F401</code>: unused-import. Hence, <code>DAL001</code> can be considered an alias for <code>F401</code>.</p>
+<h3>Proposal</h3>
+<p>My proposal is to implement the functionality under the code <code>DAL002</code>. <code>ruff</code> already has quite some functionality related to imports, and this feature should require little code. Autofix is possible and there have been <a href="https://github.com/jongracecox/auto-all">tools</a> <a href="https://github.com/Erotemic/mkinit">that</a> are doing this.</p>
+<h3>Examples</h3>
+<p><code>ruff</code> currently reposes on <code>__init__.py</code> files:</p>
+<p>Example <code>__init__.py</code>:</p>
+<pre><code>from sub.module import foo, bar
+
+foo(3)
+</code></pre>
+<blockquote>
+<p>F401 <code>sub.module.bar</code> imported but unused
+(configured by <a href="https://github.com/charliermarsh/ruff#ignore-init-module-imports">ignore-init-module-imports</a>)</p>
+</blockquote>
+<p>But even for an <code>__init__.py</code> file without unused imports ruff would be welcome to <em>suggest</em> <code>__all__</code>, and ideally offering the possibility to autofix in most cases:</p>
+<pre><code>from sub.module import foo, bar
+
+foo(3)
+bar(2)
+</code></pre>
+<p>Preferably should hint that:</p>
+<blockquote>
+<p>DAL002: module lacks <code>__all__</code></p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-23 00:21</div>
+            <div class="timeline-body"><blockquote>
+<p>Gives no error in my setup (despite <a href="https://github.com/charliermarsh/ruff#ignore-init-module-imports">ignore-init-module-imports</a> should be false).</p>
+</blockquote>
+<p>Interesting... Separate from this proposal, that sounds like a bug, but I can't reproduce:</p>
+<pre><code>❯ cat foo/__init__.py
+───────┬──────────────────────────────────────────────────────────────────────────────────────────────────
+       │ File: foo/__init__.py
+───────┼──────────────────────────────────────────────────────────────────────────────────────────────────
+   1   │ from sub.module import foo, bar
+   2   │
+   3   │ foo(3)
+❯ cargo run foo -n --isolated
+    Finished dev [unoptimized + debuginfo] target(s) in 0.17s
+     Running `target/debug/ruff foo -n --isolated`
+foo/__init__.py:1:29: F401 `sub.module.bar` imported but unused
+Found 1 error(s).
+1 potentially fixable with the --fix option.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-23 00:24</div>
+            <div class="timeline-body"><blockquote>
+<p>Hence, DAL001 can be considered a synonym of F401.</p>
+</blockquote>
+<p>I don't think I fully follow this part... The documentation of the plugin suggests that it does exactly what you describe 😅 Does it do something different in practice?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-23 00:26</div>
+            <div class="timeline-body"><p>Are there any files that, conventionally, should be able to omit an <code>__all__</code> export? Like &quot;private&quot; modules?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluetech">@bluetech</a> on 2023-01-23 08:55</div>
+            <div class="timeline-body"><blockquote>
+<p>Are there any files that, conventionally, should be able to omit an <strong>all</strong> export? Like &quot;private&quot; modules?</p>
+</blockquote>
+<p>In the typing world there is a convention that <code>from .foo import bar as bar</code> is considered an export. This is the rule implemented by mypy's <code>implicit_reexport</code> check, for example (it also supports <code>__all__</code>), but it is not understood at runtime (doesn't affect star imports like <code>__all__</code> does). However I don't think it should affect the lint; if one is using this convention, can just not use the lint.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-23 13:03</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think I fully follow this part... The documentation of the plugin suggests that it does exactly what you describe 😅 Does it do something different in practice?</p>
+</blockquote>
+<p>The wording of the violation &quot;module lacks <code>__all__</code>&quot; is unfortunate. It chooses to add <code>__all__</code> when there are unused imports. It also scans on file level, not on module level/<code>___init__.py</code> as the message suggests (see <a href="https://github.com/python-formate/flake8-dunder-all/tree/master/tests">tests</a> for examples).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2023-01-23 13:04</div>
+            <div class="timeline-body"><blockquote>
+<p>Interesting... Separate from this proposal, that sounds like a bug, but I can't reproduce:</p>
+</blockquote>
+<p>I'll give it another try. Could be that my test just missed isolation. If it persists, I'll open another issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-01-23 17:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/silasary">@silasary</a> on 2023-03-13 09:55</div>
+            <div class="timeline-body"><blockquote>
+<p>It also scans on file level, not on module level/___init__.py as the message suggests</p>
+</blockquote>
+<p>As someone who uses <code>flake8-dunder-all</code>, I <em>want</em> it to scan all modules, not just <code>__init__.py</code> files (packages).<br />
+The biggest value of <code>__all__</code> is in files with logic, because you don't want to be re-exporting your dependencies.   It's slightly useful in <code>__init__.py</code> files, but only because it does count as a use in the context of <code>F401</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/CarrotManMatt">@CarrotManMatt</a> on 2024-01-05 23:49</div>
+            <div class="timeline-body"><p>I would also really appreciate this rule being implemented, especially if it scans every module (not just <code>__init__.py</code> files)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:28:59 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False-positive `PLW1641` when setting `__hash__ = &lt;ParentClass&gt;.__hash__` - astral-sh/ruff #10557</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False-positive <code>PLW1641</code> when setting <code>__hash__ = &lt;ParentClass&gt;.__hash__</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10557">#10557</a>
+        opened by <a href="https://github.com/janosh">@janosh</a>
+        on 2024-03-25 05:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/janosh">@janosh</a> on 2024-03-25 05:55</div>
+            <div class="timeline-body"><p>with v0.3.4, <code>ruff check t.py --select PLW1641</code> on</p>
+<pre><code class="language-python">class A:
+    def __eq__(self, other):
+        return False
+
+    def __hash__(self):
+        return 7
+
+class B(A):
+    def __eq__(self, other):
+        return True
+
+    __hash__ = A.__hash__
+</code></pre>
+<p>issues</p>
+<pre><code class="language-py">PLW1641 Object does not implement `__hash__` method
+   |
+12 | class B(A):
+   |       ^ PLW1641
+13 |     def __eq__(self, other):
+14 |         return True
+</code></pre>
+<p>even though <a href="https://docs.python.org/3/reference/datamodel.html#object.__hash__">the docs explicitly recommend this</a>:</p>
+<blockquote>
+<p>If a class that overrides <a href="https://docs.python.org/3/reference/datamodel.html#object.__eq__"><strong>eq</strong>()</a> needs to retain the implementation of <a href="https://docs.python.org/3/reference/datamodel.html#object.__hash__"><strong>hash</strong>()</a> from a parent class, the interpreter must be told this explicitly by setting <code>__hash__ = &lt;ParentClass&gt;.__hash__</code>.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-03-25 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-03-25 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-03-25 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-29 20:26</div>
+            <div class="timeline-body"><p>This is now fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-29 20:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:16 UTC
+    </footer>
+</body>
+</html>

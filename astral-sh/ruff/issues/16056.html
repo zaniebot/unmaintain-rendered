@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--show-settings` should not search for config files when used with `--isolated` - astral-sh/ruff #16056</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>--show-settings</code> should not search for config files when used with <code>--isolated</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16056">#16056</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-02-09 22:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-09 22:20</div>
+            <div class="timeline-body"><p>Minimal reproducible example:</p>
+<pre><code class="language-shell">$ cd /
+$ ruff check --show-settings --isolated
+</code></pre>
+<p>The second command takes a very long time, but eventually terminates. Presumably, it searches the entire home directory looking for configuration files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-10 07:52</div>
+            <div class="timeline-body"><p>I agree that there's a potential to improve performance but it does change the command's behavior (it no longer checks if there are any python files). I also think that this is a rather obscure use and running the command doesn't take longer than running <code>ruff check</code> would.</p>
+<p>That's why I'm inclined to mark this as &quot;working as intended&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-10 16:35</div>
+            <div class="timeline-body"><p>@MichaReiser I don't think a command can be said to be &quot;working as intended&quot; when it straight-up ignores one of the arguments. Ruff should either comply with (in which case I think outputting the default settings would be most intuitive) or complain about it (similar to how <code>--config file.toml</code> cannot be used with <code>--isolated</code>).</p>
+<p>It was only because I have been using the command a lot (see also #16030) that I discovered this problem. It never came across my thoughts that <code>--show-settings --isolated</code> wouldn't give me the &quot;default&quot; settings for a generic, hypothetical file. That is, until I found myself having to press <kbd>Ctrl</kbd> + <kbd>C</kbd> to terminate the process.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-11 08:24</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think a command can be said to be &quot;working as intended&quot; when it straight-up ignores one of the arguments.</p>
+</blockquote>
+<p>I don't think ruff ignores the <code>--isolated</code> command. I changed the <code>line-length</code> setting to 140 and <code>ruff check --show-settings --isolated</code> shows <code>formatter.line_width = 88</code> which suggests that the <code>--isolated</code> argument isn't ignored.</p>
+<p>Running without <code>--isolated</code> gives me <code>formatter.line_width = 140</code>.</p>
+<blockquote>
+<p>It never came across my thoughts that --show-settings --isolated wouldn't give me the &quot;default&quot; settings for a generic, hypothetical file. That is, until I found myself having to press Ctrl + C to terminate the process.</p>
+</blockquote>
+<p>I agree that scanning the entire directory may not be ideal. But Ruff does the same when not using <code>--isolated,</code> and I don't think we should fix this for isolated only.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-11 16:37</div>
+            <div class="timeline-body"><p>@MichaReiser I guess that makes sense. I'll close this then. What replacement do you suggest for the workaround I'm currently using in #16030?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @InSyncWithFoo on 2025-02-11 16:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:36 UTC
+    </footer>
+</body>
+</html>

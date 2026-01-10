@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split uv-git and uv-git-types - astral-sh/uv #11448</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Split uv-git and uv-git-types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11448">#11448</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-02-12 15:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-02-12 15:59</div>
+            <div class="timeline-body"><p>We want to build <code>uv-build</code> without depending on the network crates. In preparation for that, we split uv-git into uv-git and uv-git-types, where only uv-git depends on reqwest, so that uv-build can use uv-git-types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @konstin on 2025-02-12 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @Gankra by @zanieb on 2025-02-12 16:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-12 16:03</div>
+            <div class="timeline-body"><p>Is the network feature just used for GitHub fast path thing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-12 16:05</div>
+            <div class="timeline-body"><p>The network feature will be deactivated only for <code>uv-build</code>, so uv-build won't have a network dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-12 16:05</div>
+            <div class="timeline-body"><p>👍 Just wondering where they're actually used? Is it just that one route?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-12 16:38</div>
+            <div class="timeline-body"><p>Yes, in another branch, i found that we were pulling in reqwest through uv-git, which was pulled in by uv-pypi-types. Since the build backend does not need any networking features currently (and likely not in the future) and the networking is known to cause build problems, often through the TLS backend, this refactoring makes the upcoming build backend crate build without reqwest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-12 16:42</div>
+            <div class="timeline-body"><p>That all makes sense! As a reviewer, I'm just trying to understand, like, where <code>uv-git</code> uses <code>reqwest</code>, and which parts of <code>uv-git</code> are needed by the build backend. I'm not objecting to the change, I just want that context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-git/src/reference.rs</code>:70 on 2025-02-12 20:26</div>
+            <div class="timeline-body"><p>why does this one need to be cfg'd? dead code lints?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-02-12 20:28</div>
+            <div class="timeline-body"><p>Not applicable to this PR specifically but it's worth noting that testing/building uv-build properly is going to be annoyingly hard, because if you ever build the --workspace it will implicitly have the &quot;network&quot; flipped on by build feature unification.</p>
+<p>You need to explicitly build+test it separately from everything else to avoid picking up bonus features it doesn't ask for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-12 20:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-git/src/reference.rs</code>:70 on 2025-02-12 20:46</div>
+            <div class="timeline-body"><p>:thumbsup: Probably makes sense to not cfg this and just allow unused on it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-12 20:47</div>
+            <div class="timeline-body"><p>I guess the other option would be to split it into two crates?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Optional reqwest in uv-git" to "Split uv-git and uv-git-types" by @konstin on 2025-02-13 10:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-13 11:33</div>
+            <div class="timeline-body"><p>Split the crate into two, much nicer now.</p>
+<p>Figures: The uv workspace inter-crate dependencies, with transitive edges removes (<code>cargo depgraph --dedup-transitive-deps --workspace-only | dot -Tpng</code>).</p>
+<p>Before:</p>
+<p><img src="https://github.com/user-attachments/assets/239c8947-7916-4427-bd8e-bbc2a55d9122" alt="image" /></p>
+<p>After:</p>
+<p><img src="https://github.com/user-attachments/assets/8005222b-edc4-4b43-abee-c0821da55276" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-02-13 14:48</div>
+            <div class="timeline-body"><p>Great, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-13 14:48</div>
+            <div class="timeline-body"><p>I think this is easier to understand (and will be easier to test and maintain).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-02-17 09:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-02-17 09:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-17 09:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

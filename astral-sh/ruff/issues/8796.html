@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seeking improved pytest rules, as `flake8-pytest-style` doesn't align with best practices - astral-sh/ruff #8796</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Seeking improved pytest rules, as <code>flake8-pytest-style</code> doesn't align with best practices</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8796">#8796</a>
+        opened by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a>
+        on 2023-11-20 21:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a> on 2023-11-20 21:00</div>
+            <div class="timeline-body"><p>hi everyone,</p>
+<p>before i evaluated ruff i wasn't even aware of flake8-pytest-styles,
+as one of the pytest maintainers i'm particularly annoyed as the rules don't reflect documented and communicated best practices and the upstream doesn't seem likely to change those details</p>
+<ul>
+<li><code>PT001</code> should be reversed (drop brackets)</li>
+<li><code>PT004</code> is simply incorrect - public no return value fixtures should have public names for both usage in the usefixtures maker and as dependencies in other fixtures</li>
+<li><code>PT005</code> is equally incorrect - internal fixtures return values even if underscores are used - sabotage of that is not ok</li>
+<li><code>PT006</code> undoes the intentionally established pattern of being able to comma separate multiple names in a single string</li>
+<li><code>PT009</code> sabotages intentional usage of unittest (which is sometimes necessary)</li>
+<li><code>PT021</code> sabotages well established patterns for complex fixtures that setup in phases where on needs to ensure teardown but ought not to split them into multiple smaller fixtures</li>
+<li><code>PT023</code> should drop parens on marks by default</li>
+<li><code>PT024/25</code> should warn on any mark on a fixture as no marks are supported on fixtures</li>
+<li><code>PT027</code>also sabotages legitimate usage of unittest patterns</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2023-11-20 21:32</div>
+            <div class="timeline-body"><p>As a user who just started adding ruff to his (somewhat big) codebase I also added config to change the weird defaults WRT parentheses because the defaults were quite weird!</p>
+<p>Just some thoughts on your points:</p>
+<ul>
+<li><code>PT006</code>: Maybe <a href="https://docs.astral.sh/ruff/settings/#flake8-pytest-style-parametrize-names-type">parametrize-names-type</a> (and possibly the other settings related to parametrize as well?) should allow a list of valid types (e.g. <code>['csv', 'tuple']</code> if you don't want lists), and when applying a fix pick the first one in the list (to avoid an extra setting to set the preferred type)?</li>
+<li><code>PT009</code>: I guess this is a matter of old existing vs new/modern codebase? On the latter I absolutely want this enabled because that way someone not familiar with the nice pytest features will immediately get a linter warning if they try to use unittest-style assertions. Personally I'd simply disable it in codebases that make use of it, but I think &quot;supporting legacy stuff&quot; should not be a default... I'm curious, when is using the legacy assertions actually necessary? (My first thought there was &quot;imagine if this was simply autofixable&quot;)</li>
+<li><code>PT021</code>: Would it make sense if this rule only triggered when there's just a single <code>request.addfinalizer()</code> call in a fixture? I guess for most applications it's not common to have truly complex fixtures, so it nicely covers the common cases of someone simply not being aware that they can use <code>yield</code> in their fixtures.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-11-20 21:43</div>
+            <div class="timeline-body"><p>Agreed, except:</p>
+<ul>
+<li><code>PT006</code> - please keep this as-is, I think it is perfect and wherever I have worked people got confused about the types and for multiple prefer the tuple just until now there was no way to enforce it</li>
+<li><code>PT009</code>/<code>PT021</code>/<code>PT027</code> - please keep these as-is, there should be a desire to encourage the &quot;best way&quot; to do things as that is the entire purpose of tools like this</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a> on 2023-11-20 22:34</div>
+            <div class="timeline-body"><p>in that case there should also be a suggestion to drop <code>TestCase</code> base class and xunit setup methods
+imho <code>PT009/PT021/PT027</code>should group under a unittest2pytest style thing - and perhaps take some more code off https://github.com/pytest-dev/unittest2pytest</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-11-21 01:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a> on 2023-11-21 08:54</div>
+            <div class="timeline-body"><p>perhaps it makes sense to trigger the pytest migration rules based on whether a pytest import is in a test file,</p>
+<p>a very neat but expensive way would be to have &quot;migraton&quot; rules/fixes only apply when the line is currently being changed anyway</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ThiefMaster">@ThiefMaster</a> on 2023-11-21 09:20</div>
+            <div class="timeline-body"><blockquote>
+<p>a very neat but expensive way would be to have &quot;migraton&quot; rules/fixes only apply when the line is currently being changed anyway</p>
+</blockquote>
+<p>I would not like that in my own project; It leaves an inconsistent mess and makes PRs harder to review because now they suddenly contain no longer just the main change they are about but also 'infrastructure changes'. I prefer a separate PR for those (which can be more easily skimmed over during review)</p>
+<blockquote>
+<p>perhaps it makes sense to trigger the pytest migration rules based on whether a pytest import is in a test file</p>
+</blockquote>
+<p>but many test files don't contain any pytest imports if they don't use parametrization...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2023-11-22 23:22</div>
+            <div class="timeline-body"><blockquote>
+<p>before i evaluated ruff i wasn't even aware of flake8-pytest-styles,
+as one of the pytest maintainers i'm particularly annoyed as the rules don't reflect documented and communicated best practices and the upstream doesn't seem likely to change those details</p>
+</blockquote>
+<p>I do not use flake8-pytest-style anyway, but. I did notice that it is recommended at https://docs.pytest.org/en/stable/explanation/goodpractices.html#checking-with-flake8-pytest-style</p>
+<p>Should it be removed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a> on 2023-11-23 05:13</div>
+            <div class="timeline-body"><p>Good point</p>
+<p>It should</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-11-24 15:35</div>
+            <div class="timeline-body"><p>FWIW, I have no problem with shipping better pytest rules (though I haven't used pytest extensively so don't feel qualified to have good opinions on the rules themselves). In practice, it may be easiest to ship them under an entirely new pytest prefix / rule set, and mark the <code>flake8-pytest-style</code> rules as deprecated, but we can make that decision later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a> on 2023-11-24 16:33</div>
+            <div class="timeline-body"><p>I'll coordinate with pytest-core to get together a official set</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2023-11-24 16:43</div>
+            <div class="timeline-body"><p>FYI until such time that there is an official set, for Hatch's new <code>fmt</code> command I'm going to by default ignore rules <code>PT001</code>, <code>PT004</code>, <code>PT005</code>, and <code>PT023</code>, while enabling the rest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Mogost">@Mogost</a> on 2023-11-28 10:18</div>
+            <div class="timeline-body"><p>PT001, PT023 styles are configurable by https://docs.astral.sh/ruff/settings/#flake8-pytest-style-fixture-parentheses and https://docs.astral.sh/ruff/settings/#flake8-pytest-style-mark-parentheses</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "requesting alternative rules for pytest as the flake8-pytest-style are neiither coordinated with pytest not considered best practice" to "Seeking improved pytest rules, as `flake8-pytest-style` doesn't align with best practices" by @dhruvmanila on 2023-11-30 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/karolinepauls">@karolinepauls</a> on 2024-01-09 08:38</div>
+            <div class="timeline-body"><p>Would it be possible to disable the most offending rules by default for the time being?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ofek">@ofek</a> on 2024-01-09 15:37</div>
+            <div class="timeline-body"><p>If you would prefer to have a large default selection of &quot;good&quot; rules, you can use Hatch https://hatch.pypa.io/latest/config/static-analysis/</p>
+<p>The undesirable ones that you speak of here are excluded by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jhbuhrman">@jhbuhrman</a> on 2024-04-15 15:31</div>
+            <div class="timeline-body"><blockquote>
+<p>as one of the pytest maintainers i'm particularly annoyed as the rules don't reflect documented and communicated best practices and the upstream doesn't seem likely to change those details</p>
+</blockquote>
+<p>I understand to a large extent what you mean. But the way I see it is that there is a difference between the <em>possibilities</em> of a programming language, a (testing) framework, or a library (API), and the <em>agreements</em> a team wants to make about a uniform usage of those assets.</p>
+<p>As an example, I can understand that a team agrees to <em>always</em> use a decorator <em>with</em> a set of parentheses, even when there are no additional parameters to provide in a particular case, or that a team <em>always</em> uses the list (or tuple) form in specifying the parameter names in <code>@pytest.mark.parametrize</code> instead of specifying them separated by commas in a single string. So I don't see it as a <a href="http://www.catb.org/jargon/html/B/Bad-Thing.html">Bad Thing</a> that these rules exist, ready to be used by any team that wants to do so.</p>
+<p>OTOH, I didn't dive in all the particular rules, but advocating <code>PT004</code> / <code>PT005</code> as a by <code>pytest</code> advocated practice is incorrect IMHO.</p>
+<p>BTW, I think a know where these two rules come from: my line of reasoning is as follows:</p>
+<ul>
+<li>if you need to use a fixture having a side effect but without a useful return value, the fixture will probably return <code>None</code>.</li>
+<li>The developer needs the side effect, so specifies the fixture name as a parameter in their test function, or in another fixture, so a <code>usefixture</code> decorator is not possible.</li>
+<li>Other linters will start complaining that the parameter value is not used in the function.</li>
+<li>There is a &quot;convention&quot; that parameters starting with an underscore are a hint to some linters that it is OK that the value is not being used.</li>
+</ul>
+<p>I assume that this might be the line of reasoning behind <code>PT004</code> / <code>PT005</code>.</p>
+<p>Unfortunately the rule is implemented in a wrong way. Instead of checking the <em>name of the decorated function</em>, the rule should check the <em>name of the fixture</em>. This <em>could</em> be the name of the function, but can also be different if the <code>fixture</code> decorator has a <code>name=</code> parameter, or when <code>pytest_bdd.given</code> for example has a <code>target_fixture=</code>  parameter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bthorsted">@bthorsted</a> on 2024-05-28 09:34</div>
+            <div class="timeline-body"><p>@charliermarsh FYI the latest version of flake8-pytest-style (v2.0.0), which was shipped on april 1st, inverted the defaults for PT001 and PT023 so that they now conform with pytest recommendations. Maybe ruff should push out a similar change soon?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PhorstenkampFuzzy">@PhorstenkampFuzzy</a> on 2024-06-28 12:45</div>
+            <div class="timeline-body"><p>If you do establish a new set of rules around pytest. A rule that warns users on the use of the <code>@pytest.mark.usefixtur</code> and demands the <code>@pytest.mark.usefixturs</code>. I know of a few instances where debugging this caused A LOT of work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/avilaton">@avilaton</a> on 2024-08-10 01:26</div>
+            <div class="timeline-body"><p>If you are using pants (pantsbuild.org) then rule PT004 and PT005 will really hurt. We had a session scoped fixture which for changed from <code>django_db_modify_db_settings</code> into <code>_django_db_modify_db_settings</code> which then caused it to be ignored and was VERY HARD to figure out later. Rule PT004 is a menace IMO.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RonnyPfannschmidt">@RonnyPfannschmidt</a> on 2024-08-10 08:36</div>
+            <div class="timeline-body"><p>@charliermarsh based on this detail i think a release that declares them unsafe or removes them ougth to be expedited</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-10 12:06</div>
+            <div class="timeline-body"><p>@RonnyPfannschmidt -- Neither of these rules have a fix though -- those changes must've been applied manually by the author.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-10 12:12</div>
+            <div class="timeline-body"><p>I'd be fine to deprecate PT004 and PT005 but it will have to wait until the next minor release (we don't deprecate rules in patch releases IIRC).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.6" by @MichaReiser on 2024-08-10 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/PhorstenkampFuzzy">@PhorstenkampFuzzy</a> on 2024-08-11 20:06</div>
+            <div class="timeline-body"><p>Could also a rule be added. I have sometimes seen a problem with <code>pytest.mark.usefixutres</code> vs. <code>pytest.mark.usefixture</code>.
+Could a roule be added that forbides the later?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-11 20:30</div>
+            <div class="timeline-body"><p>Current plan is to deprecate PT004 and PT005 in the upcoming v0.6.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-13 15:56</div>
+            <div class="timeline-body"><p>The upcoming 0.6 release deprecates PT004 and PT005 and changes the defaults for PT001 and PT023.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Removed from milestone "v0.6" by @MichaReiser on 2024-08-13 15:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bje-">@bje-</a> on 2025-03-24 01:15</div>
+            <div class="timeline-body"><p>I'm not a big fan of PT009. I want to use <code>unittest</code> as it's in the Python standard library and doesn't require any additional packages. I'd rather write my tests using <code>unittest</code> and then be free to choose a suitable driver. It seems unsatisfactory to just switch everything to <code>pytest</code>. Happy to receive comments on this approach!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eli-schwartz">@eli-schwartz</a> on 2025-03-24 01:29</div>
+            <div class="timeline-body"><p>I have a similar outlook but also I don't enable <code>PT*</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:03 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix pre-release exclusive comparison operator in uv-pep440 - astral-sh/uv #12836</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix pre-release exclusive comparison operator in uv-pep440</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12836">#12836</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-04-11 12:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-04-11 12:45</div>
+            <div class="timeline-body"><p>From PEP 440:</p>
+<blockquote>
+<p>The exclusive ordered comparison &lt;V MUST NOT allow a pre-release of the specified version unless the specified version is itself a pre-release. Allowing pre-releases that are earlier than, but not equal to a specific pre-release may be accomplished by using &lt;V.rc1 or similar.</p>
+</blockquote>
+<p>We had an additional check that would block this even if the specifier did have a pre-release.</p>
+<p>This likely didn't show up earlier because <code>Ranges</code> uses different code in the resolver.</p>
+<p>I checked these changes against <code>packaging</code> to verify their behavior:</p>
+<pre><code class="language-python">print(SpecifierSet(&quot;&lt;1&quot;).contains(&quot;1a1&quot;, prereleases=True)) # False
+print(SpecifierSet(&quot;&lt;1a2&quot;).contains(&quot;1a1&quot;, prereleases=True)) # True
+print(SpecifierSet(&quot;&lt;1&quot;).contains(&quot;1dev1&quot;, prereleases=True)) # False
+print(SpecifierSet(&quot;&lt;1dev2&quot;).contains(&quot;1dev1&quot;, prereleases=True)) # True
+print(SpecifierSet(&quot;&lt;1a2&quot;).contains(&quot;1dev1&quot;, prereleases=True)) # True
+</code></pre>
+<p>Closes #12834</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2025-04-11 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2025-04-11 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix `0.1a1<0.1a2`" to "Fix prerelease comparisons in uv-pep440" by @konstin on 2025-04-11 12:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix prerelease comparisons in uv-pep440" to "Fix pre-release exclusive comparison operator in uv-pep440" by @konstin on 2025-04-11 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-04-11 14:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-pep440/src/version_specifier.rs</code>:558 on 2025-04-11 14:10</div>
+            <div class="timeline-body"><p>Is there a Reason some of these are Proper operators and others are named methods?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> approved on 2025-04-11 14:12</div>
+            <div class="timeline-body"><p>This took me way too long to review because my brain could not accept that it was actually intended for &lt;3.1 to <em>not</em> match 3.1.dev0 but still match 3.0.dev0... wild!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-04-11 15:33</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2025-04-11 17:37</div>
+            <div class="timeline-body"><blockquote>
+<p>This took me way too long to review because my brain could not accept that it was actually intended for &lt;3.1 to <em>not</em> match 3.1.dev0 but still match 3.0.dev0... wild!</p>
+</blockquote>
+<p>In the Python version spec <code>&lt;</code> does not preserve ordinality, the version numbers themselves are ordinal, e.g. 3.1a1 is less than 3.1b1 is less than 3.1, but while <code>&lt; 3.1b1</code> contains 3.1a1, is is not true that  <code>&lt; 3.1</code> contains 3.1a1.</p>
+<p>You can think of <code>&lt; 3.1</code> being the equivalent of <code>&lt; 3.1dev0</code> but where prereleases are not implied.</p>
+<p>I would be careful testing against packaging, it does not have all of this prerelease spec correctly implemented for SpecifierSet yet: https://github.com/pypa/packaging/pull/872</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-04-12 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-04-12 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-12 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-04-14 08:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pep440/src/version_specifier.rs</code>:558 on 2025-04-14 08:02</div>
+            <div class="timeline-body"><p>Addressed in #12873</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:22 UTC
+    </footer>
+</body>
+</html>

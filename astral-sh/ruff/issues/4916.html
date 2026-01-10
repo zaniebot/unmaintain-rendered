@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incorrect ignore logic - astral-sh/ruff #4916</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Incorrect ignore logic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4916">#4916</a>
+        opened by <a href="https://github.com/dcragusa">@dcragusa</a>
+        on 2023-06-07 03:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dcragusa">@dcragusa</a> on 2023-06-07 03:45</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Ruff version <code>ruff 0.0.271</code>.</p>
+<p>pyproject.toml:</p>
+<pre><code>[tool.ruff]
+select = [&quot;ALL&quot;]
+</code></pre>
+<p>test.py:</p>
+<pre><code class="language-python">&quot;&quot;&quot;Module to test ruff ignores.&quot;&quot;&quot;
+print(&quot;test&quot;)
+a = 20  # TODO
+
+</code></pre>
+<p>Command run: <code>ruff .</code> in project directory.</p>
+<p>Output seen:</p>
+<pre><code>test.py:2:1: T201 `print` found
+test.py:3:11: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
+test.py:3:11: TD004 Missing colon in TODO
+test.py:3:11: TD005 Missing issue description after `TODO`
+test.py:3:11: TD003 Missing issue link on the line following this TODO
+test.py:3:11: T002 Line contains TODO
+</code></pre>
+<p>This is fine. Now we add <code>ignore = [&quot;T20&quot;]</code> to the toml file. Output seen:</p>
+<pre><code>test.py:3:11: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
+test.py:3:11: TD004 Missing colon in TODO
+test.py:3:11: TD005 Missing issue description after `TODO`
+test.py:3:11: TD003 Missing issue link on the line following this TODO
+test.py:3:11: T002 Line contains TODO
+</code></pre>
+<p>This is also fine. But if we change it to <code>ignore = [&quot;T&quot;]</code>, we see:</p>
+<pre><code>test.py:3:11: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
+test.py:3:11: TD004 Missing colon in TODO
+test.py:3:11: TD005 Missing issue description after `TODO`
+test.py:3:11: TD003 Missing issue link on the line following this TODO
+test.py:3:11: T002 Line contains TODO
+</code></pre>
+<p>Instead we should be seeing:</p>
+<pre><code>test.py:2:1: T201 `print` found
+test.py:3:11: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
+test.py:3:11: TD004 Missing colon in TODO
+test.py:3:11: TD005 Missing issue description after `TODO`
+test.py:3:11: TD003 Missing issue link on the line following this TODO
+</code></pre>
+<p>Ruff is confusing T and T20.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-07 03:58</div>
+            <div class="timeline-body"><p>If we change it to <code>ignore = [&quot;T&quot;]</code>, should we not be seeing:</p>
+<pre><code>test.py:3:11: TD002 Missing author in TODO; try: `# TODO(&lt;author_name&gt;): ...`
+test.py:3:11: TD004 Missing colon in TODO
+test.py:3:11: TD005 Missing issue description after `TODO`
+test.py:3:11: TD003 Missing issue link on the line following this TODO
+</code></pre>
+<p>(Your final cell included <code>test.py:2:1: T201 </code>print<code> found</code> at the top?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-06-07 03:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcragusa">@dcragusa</a> on 2023-06-07 04:00</div>
+            <div class="timeline-body"><p>I want to ignore the T rules though, not the T20 rules as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcragusa">@dcragusa</a> on 2023-06-07 04:02</div>
+            <div class="timeline-body"><p>I've double checked, with <code>ignore = [&quot;T&quot;]</code> we still see the T002 rule found.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-06-07 04:06</div>
+            <div class="timeline-body"><p><code>T</code> should select <code>T201</code> and <code>T002</code>, since they both belong under the <code>T</code> prefix. So the bug here is that <code>T002</code> isn't being ignored when <code>ignore = [&quot;T&quot;]</code> is specified.</p>
+<p>If you want to ignore the TODO rules, I'd recommend <code>ignore = [&quot;T0&quot;]</code>, or something that differentiates from the <code>T20</code> rules, which you want to keep. <code>T</code> alone isn't sufficiently discriminant.</p>
+<p>As an aside, I'll likely reindex <code>T002</code> under a more precise prefix in the next release. It was an oversight to reuse <code>T</code> like this, I didn't catch it in the review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-07 21:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:17 UTC
+    </footer>
+</body>
+</html>

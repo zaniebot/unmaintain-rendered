@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv-pep508: add more methods for simplifying `extra`-related expressions - astral-sh/uv #9469</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv-pep508: add more methods for simplifying <code>extra</code>-related expressions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9469">#9469</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-11-27 13:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-11-27 13:35</div>
+            <div class="timeline-body"><p>In the course of working on #9289, I've had to devise some additions to
+our markers. While we are still staying strictly compatible with the
+PEP 508 format, we will be abusing the <code>extra</code> expression to carry a
+lot more information.</p>
+<p>Specifically, we want the following additional operations:</p>
+<ul>
+<li>Simplify <code>extra != 'foo'</code></li>
+<li>Remove all extra expressions</li>
+<li>Remove everything except extra expressions</li>
+</ul>
+<p>My work on #9289 requires all of these (which will be in a future in
+PR).</p>
+<p>This PR also allows the <code>if_not_else</code> Clippy lint. Specifically, the
+lint was flagging this code:</p>
+<pre><code class="language-rust">        if !matches!(node.var, Variable::Extra(_)) {
+            i = NodeId::FALSE;
+            for child in node.children.nodes() {
+                i = self.or(i, child.negate(parent));
+            }
+            if i.is_true() {
+                return NodeId::TRUE;
+            }
+            self.only_extras(i)
+        } else {
+            // Restrict all nodes recursively.
+            let children = node.children.map(i, |node| self.only_extras(node));
+            self.create_node(node.var.clone(), children)
+        }
+</code></pre>
+<p>It wants you to flip the <code>if</code> and <code>else</code> bodies and un-negate the
+condition. But I wanted to keep it as-written because I find it easier
+to read. And I think this applies more generally. I think there are
+<em>some</em> cases where un-negating a condition can be easier to read (in
+particular, double negatives), but I don't think it applies universally
+to the point where we should lint against it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @BurntSushi on 2024-11-27 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-11-27 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pep508/src/marker/algebra.rs</code>:447 on 2024-11-27 17:22</div>
+            <div class="timeline-body"><p>I'm trying to grok what this function does. What would it do with <code>((os_name == ... and extra == foo) or (sys_platform == ... and extra != foo))</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-11-27 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-12-02 13:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pep508/src/marker/algebra.rs</code>:447 on 2024-12-02 13:15</div>
+            <div class="timeline-body"><p>It would give you <code>os_name == ... or sys_platform == ...</code> back. Basically, it removes all <code>extra</code> nodes by assuming they are <code>true</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-12-02 13:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pep508/src/marker/algebra.rs</code>:447 on 2024-12-02 13:15</div>
+            <div class="timeline-body"><p>I added this as an example to the docs of this function.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-12-02 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-12-02 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-02 14:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:15 UTC
+    </footer>
+</body>
+</html>

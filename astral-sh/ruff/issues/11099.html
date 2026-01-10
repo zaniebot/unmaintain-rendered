@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add parser support for PEP 696 - astral-sh/ruff #11099</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add parser support for PEP 696</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11099">#11099</a>
+        opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a>
+        on 2024-04-23 05:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2024-04-23 05:12</div>
+            <div class="timeline-body"><p>Ruff's parser does not support the new syntax introduced by <a href="https://peps.python.org/pep-0696/">PEP 696</a>:</p>
+<pre><code>def f[T=int](): pass
+</code></pre>
+<p>I noticed because I'm adding this syntax to CPython and Ruff started failing in CI :).</p>
+<p>I saw that you recently switched to a handwritten parser. I'm interested in taking a look at that parser, so I'd like to try to implement this myself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-23 06:56</div>
+            <div class="timeline-body"><p>Thank you for notifying us about the new syntax!</p>
+<blockquote>
+<p>I saw that you recently switched to a handwritten parser. I'm interested in taking a look at that parser, so I'd like to try to implement this myself.</p>
+</blockquote>
+<p>Yes, of course! Although the parser crate (<code>ruff_python_parser</code>) lacks a bit of public-facing documentation, specifically a README and an updated CONTRIBUTING guidelines, it shouldn't black you as I can assist with the implementation. That said, I'll be working on the documentation this week.</p>
+<p>I'll need to go through the PEP to list the work items needed to complete this, but for reference, there's the <a href="https://github.com/astral-sh/ruff/issues/6502">PEP 701</a> issue and <a href="https://github.com/astral-sh/ruff/issues/5062">PEP 695</a> issue.</p>
+<p>At a high level, this will impact all of the major areas: the AST, parser, linter, and formatter. If you're solely interested in updating the AST and parser, that's perfectly fine; either I or someone else from the team can handle implementing the changes in the linter and formatter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">parser</span> added by @dhruvmanila on 2024-04-23 06:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">python313</span> added by @dhruvmanila on 2024-04-23 06:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2024-04-23 13:04</div>
+            <div class="timeline-body"><p>Thanks! I'll take a look myself first and let you know if I run into any issues. I expect the PEP 695 issue will provide a good reference as mechanically the new syntax is very similar to the bound syntax in PEP 695.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2024-04-24 01:23</div>
+            <div class="timeline-body"><p>#11120 implements support in all the places I could find in the Ruff codebase. Rust's ADTs were very nice here; the compiler basically told me almost all the places I had to update. There's a test failure that I'll look into soon.</p>
+<p>At runtime this sort of thing is an error:</p>
+<pre><code>&gt;&gt;&gt; type X[T = int, U] = str
+  File &quot;&lt;stdin&gt;-0&quot;, line 1
+SyntaxError: non-default type parameter 'U' follows default type parameter
+</code></pre>
+<p>Since Ruff doesn't detect a few similar cases in the existing syntax (#11118, #11119), I left these error checks out of the PEP 696 support too. It might make sense to add a new lint rule checking for these and similar issues, but that can wait for a different PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-04-24 05:38</div>
+            <div class="timeline-body"><blockquote>
+<p>At runtime this sort of thing is an error:</p>
+<pre><code>&gt;&gt;&gt; type X[T = int, U] = str
+  File &quot;&lt;stdin&gt;-0&quot;, line 1
+SyntaxError: non-default type parameter 'U' follows default type parameter
+</code></pre>
+</blockquote>
+<p>We do detect this specific case for function parameters. For reference:</p>
+<p>https://github.com/astral-sh/ruff/blob/f5c7a62aa65decb9e286bd65ba17f1a3bd1f91e6/crates/ruff_python_parser/src/parser/statement.rs#L3055-L3070</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-04-26 07:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:38 UTC
+    </footer>
+</body>
+</html>

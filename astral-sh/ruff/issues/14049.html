@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLC0208 false positive when a set contains equal values of different types - astral-sh/ruff #14049</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLC0208 false positive when a set contains equal values of different types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14049">#14049</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2024-11-01 18:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2024-11-01 18:02</div>
+            <div class="timeline-body"><p>The fix for <a href="https://docs.astral.sh/ruff/rules/iteration-over-set/"><code>iteration-over-set</code> (PLC0208)</a> has false positives which change behavior. It intentionally ignores sets that contain duplicates, but when detecting duplicates it assumes that literals of different types are never equal. That is not true; for example, <code>False == 0</code>, so <code>{False, 0}</code> contains a duplicate and is actually equal to <code>{False}</code>.</p>
+<pre><code class="language-console">$ ruff --version
+ruff 0.7.2
+
+$ cat plc0208.py
+for x in {False, 0, 0.0, 0j, True, 1, 1.0}:
+    print(x)
+
+$ python plc0208.py 
+False
+True
+
+$ ruff check --isolated --select PLC0208 plc0208.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat plc0208.py
+for x in (False, 0, 0.0, 0j, True, 1, 1.0):
+    print(x)
+
+$ python plc0208.py
+False
+0
+0.0
+0j
+True
+1
+1.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-01 20:37</div>
+            <div class="timeline-body"><p>Related to https://github.com/astral-sh/ruff/issues/12772</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-11-02 20:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-02 20:19</div>
+            <div class="timeline-body"><p>We might want some sort of analogue to <code>ComparableExpr</code> that implements these semantics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-11-03 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-11-03 18:44</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:35 UTC
+    </footer>
+</body>
+</html>

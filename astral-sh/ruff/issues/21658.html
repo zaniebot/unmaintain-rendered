@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff format ignores quote-style = &quot;single&quot; configuration - astral-sh/ruff #21658</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff format ignores quote-style = &quot;single&quot; configuration</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21658">#21658</a>
+        opened by <a href="https://github.com/w0r1dhe110">@w0r1dhe110</a>
+        on 2025-11-27 10:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/w0r1dhe110">@w0r1dhe110</a> on 2025-11-27 10:10</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>I've configured Ruff to use single quotes by setting:</p>
+<pre><code class="language-pyproject.toml">[tool.ruff.format]
+quote-style = &quot;single&quot;
+</code></pre>
+<pre><code class="language-.pre-commit-config.yaml">repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: check-json
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.6
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+</code></pre>
+<p>However, when running <code>uv run pre-commit run -a</code>, it continues to convert single quotes to double quotes instead of preserving single quotes as specified.</p>
+<p><strong>Expected behavior:</strong></p>
+<ul>
+<li>Single quotes should be maintained where used</li>
+<li>No conversion to double quotes should occur</li>
+</ul>
+<p><strong>Actual behavior:</strong></p>
+<ul>
+<li>Single quotes are consistently being changed to double quotes</li>
+<li>The <code>quote-style = &quot;single&quot;</code> setting appears to be ignored</li>
+</ul>
+<p><strong>Environment:</strong></p>
+<ul>
+<li>ruff version:  v0.14.6</li>
+<li>ruff-pre-commit version:  v0.14.6</li>
+<li>OS: Windows 10</li>
+</ul>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @w0r1dhe110 on 2025-11-27 10:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-27 10:32</div>
+            <div class="timeline-body"><p>Can you try running <code>ruff check --show-settings &lt;problematic_file&gt; -v</code>. The <code>-v</code> enables verbose mode, logging more information about the configuration discovery <code>--show-settings</code> logs the resolved settings for that file. For example, in my case, this is</p>
+<pre><code class="language-toml"># Formatter Settings
+formatter.exclude = []
+formatter.unresolved_target_version = 3.10
+formatter.per_file_target_version = {}
+formatter.preview = disabled
+formatter.line_width = 100
+formatter.line_ending = auto
+formatter.indent_style = space
+formatter.indent_width = 4
+formatter.quote_style = double
+formatter.magic_trailing_comma = respect
+formatter.docstring_code_format = disabled
+formatter.docstring_code_line_width = dynamic
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/w0r1dhe110">@w0r1dhe110</a> on 2025-11-28 02:35</div>
+            <div class="timeline-body"><p>When running <code>uv run ruff check --show-settings pyproject.toml -v</code>, the output configuration is as follows:</p>
+<pre><code># Formatter Settings
+formatter.exclude = [
+        &quot;*.pyi&quot;,
+]
+formatter.unresolved_target_version = 3.14
+formatter.per_file_target_version = {}
+formatter.preview = disabled
+formatter.line_width = 88
+formatter.line_ending = auto
+formatter.indent_style = space
+formatter.indent_width = 4
+formatter.quote_style = single
+formatter.magic_trailing_comma = respect
+formatter.docstring_code_format = disabled
+formatter.docstring_code_line_width = dynamic
+</code></pre>
+<p>When executing <code>uv run ruff format</code>, the configuration takes effect. However, when running <code>uv run pre-commit run -a</code>, the configuration does not take effect—single quotes are still being replaced with double quotes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/w0r1dhe110">@w0r1dhe110</a> on 2025-11-28 03:41</div>
+            <div class="timeline-body"><p>After upgrading pre-commit, the issue was resolved.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @w0r1dhe110 on 2025-11-28 03:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:47 UTC
+    </footer>
+</body>
+</html>

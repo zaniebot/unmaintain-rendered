@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positve PD011: using `.values` on a NumPy NamedTuple, not a Pandas Series or Index object - astral-sh/ruff #20874</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positve PD011: using <code>.values</code> on a NumPy NamedTuple, not a Pandas Series or Index object</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20874">#20874</a>
+        opened by <a href="https://github.com/hunterhogan">@hunterhogan</a>
+        on 2025-10-14 21:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hunterhogan">@hunterhogan</a> on 2025-10-14 21:59</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I suspect this situation is infrequent.</p>
+<pre><code class="language-python">...
+import pandas
+
+if TYPE_CHECKING:
+    from numpy.lib._arraysetops_impl import UniqueInverseResult
+...
+        unique: UniqueInverseResult[numpy.uint64] = numpy.unique_inverse(arrayAnalyzed[slicerArcCode])
+
+        state.arrayArcCodes = unique.values
+</code></pre>
+<p><a href="https://github.com/hunterhogan/mapFolding/blob/2ac46a4c15ee06b5a58ea674891ee747766e843d/mapFolding/algorithms/matrixMeandersNumPyndas.py">Snippet from this module</a>, if you want it.</p>
+<p><a href="https://github.com/numpy/numpy/blob/0532af47d6a815298b7841de00bdbc547104b237/numpy/lib/_arraysetops_impl.py#L577-L584"><code>numpy.unique_inverse</code></a> returns a NamedTuple with a 'values' field.</p>
+<p><code>numpy.unique_all</code> and <code>numpy.unique_counts</code> <a href="https://github.com/numpy/numpy/blob/0532af47d6a815298b7841de00bdbc547104b237/numpy/lib/_arraysetops_impl.py#L416-L430">do the same</a>.</p>
+<p>I'm not a NumPy expert, but I'm not aware of other functions that do the same thing, and I did a quick search of NumPy for 'from typing import NamedTuple' and that was the only module.</p>
+<details><summary>Diagnostic</summary>
+<p>
+
+<pre><code class="language-json">[{
+	&quot;resource&quot;: &quot;/c:/apps/mapFolding/mapFolding/algorithms/matrixMeandersNumPyndas.py&quot;,
+	&quot;owner&quot;: &quot;Ruff&quot;,
+	&quot;code&quot;: {
+		&quot;value&quot;: &quot;PD011&quot;,
+		&quot;target&quot;: {
+			&quot;$mid&quot;: 1,
+			&quot;path&quot;: &quot;/ruff/rules/pandas-use-of-dot-values&quot;,
+			&quot;scheme&quot;: &quot;https&quot;,
+			&quot;authority&quot;: &quot;docs.astral.sh&quot;
+		}
+	},
+	&quot;severity&quot;: 4,
+	&quot;message&quot;: &quot;Use `.to_numpy()` instead of `.values`&quot;,
+	&quot;source&quot;: &quot;Ruff&quot;,
+	&quot;startLineNumber&quot;: 44,
+	&quot;startColumn&quot;: 26,
+	&quot;endLineNumber&quot;: 44,
+	&quot;endColumn&quot;: 39,
+	&quot;origin&quot;: &quot;extHost2&quot;
+}]
+</code></pre>
+</p>
+</details> 
+
+<details><summary>Environment</summary>
+<p>
+
+<blockquote>
+<p>Version: 1.106.0-insider (user setup)
+Commit: 359fa23b39bb37e5157e99c2bc5fc81088dd8431
+Date: 2025-10-14T19:15:26.327Z
+Electron: 37.6.0
+ElectronBuildId: 12506819
+Chromium: 138.0.7204.251
+Node.js: 22.19.0
+V8: 13.8.258.32-electron.0
+OS: Windows_NT x64 10.0.26100</p>
+</blockquote>
+<blockquote>
+<p>charliermarsh.ruff
+Version
+2025.28.0
+Last Updated
+6 days ago</p>
+</blockquote>
+</p>
+</details> 
+
+<h3>Version</h3>
+<p>2025.28.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @amyreese on 2025-10-14 23:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-16 08:07</div>
+            <div class="timeline-body"><p>Thanks. This is related to https://github.com/astral-sh/ruff/issues/6432. We mitigated the cases where it's happening but completely avoiding false positives either requires multifile type inference or limiting the rule to cases where Ruff knows for certain that it's a pandas frame, very likely making the rule useless in most cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hunterhogan">@hunterhogan</a> on 2025-10-17 03:09</div>
+            <div class="timeline-body"><p>Ah, I didn't come across that issue when I searched. This seems like a difficult situation to address: good luck!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @hunterhogan on 2025-10-17 03:09</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:35 UTC
+    </footer>
+</body>
+</html>

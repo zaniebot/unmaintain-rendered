@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strings are considered as LiteralStrings - astral-sh/ty #2434</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Strings are considered as LiteralStrings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2434">#2434</a>
+        opened by <a href="https://github.com/Salamandar">@Salamandar</a>
+        on 2026-01-10 10:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Salamandar">@Salamandar</a> on 2026-01-10 10:02</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>There are multiple issues:</p>
+<ul>
+<li>typeshed defines str.split() and str.join() with a return type of LiteralString or list[LiteralString]
+https://github.com/python/typeshed/issues/10887</li>
+<li><code>ty</code> considers str as LiteralString:</li>
+</ul>
+<pre><code class="language-py">a = str()
+reveal_type(a)
+page_lines = &quot;&quot;.join(some_method_returning_str()).split(&quot;\n&quot;)
+reveal_type(page_lines)
+</code></pre>
+<p>gives <code>Literal[&quot;&quot;]</code> and <code>list[LiteralString]</code></p>
+<p>while <code>mypy</code> gives:</p>
+<pre><code>note: Revealed type is &quot;builtins.str&quot;
+note: Revealed type is &quot;builtins.list[builtins.str]&quot;
+</code></pre>
+<p>and as list is invariant, we can't pass <code>list[LiteralString]</code> to functions expecting a list[str]…</p>
+<h3>Platform</h3>
+<p>Linux</p>
+<h3>Version</h3>
+<p>0.0.8, 0.0.11</p>
+<h3>Python version</h3>
+<p>3.13.11</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Salamandar on 2026-01-10 10:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @AlexWaygood on 2026-01-10 11:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-10 11:25</div>
+            <div class="timeline-body"><p>Thanks for the report!</p>
+<p>We intend to soon change our behaviour to mypy's to allow you to use an explicit inline annotation to do a &quot;safe upcast&quot;. In this case, you want ty to infer a <code>str</code> rather than <code>Literal[&quot;&quot;]</code> for your initial assignment, and once we implement this behaviour change, you'd be able to achieve that with</p>
+<pre><code class="language-py">a: str = str()
+</code></pre>
+<p>Apart from that, the other thing ty could do here would be to <em>implicitly</em> infer (even without the annotation) that we need to infer the broader type here at the assignment of <code>a</code> to avoid false positives later on in the scope. That <em>might</em> be possible with sufficiently advanced bidirectional inference, but it seems hard in this specific case.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:02:35 UTC
+    </footer>
+</body>
+</html>

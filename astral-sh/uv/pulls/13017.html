@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forward additional signals to the child process in `uv run` - astral-sh/uv #13017</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Forward additional signals to the child process in <code>uv run</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13017">#13017</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-04-21 15:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-21 15:08</div>
+            <div class="timeline-body"><p>As I suspected quite some time ago (https://github.com/astral-sh/uv/pull/6738#issuecomment-2315466033), it's problematic that we don't handle <em>every</em> signal here. This PR adds handling for all of the Unix signals except <code>SIGCHLD</code>, <code>SIGIO</code>, and <code>SIGPOLL</code> which seem incorrect to forward. Also notable, we <em>cannot</em> handle <code>SIGKILL</code> so if someone sends that to the PID instead of the PGID, they will leave dangling subprocesses.</p>
+<p>Instead, we could use <code>exec</code> and avoid this handling. However, we'd lose the ability to add nice error message on failure (e.g., as someone is trying to add in https://github.com/astral-sh/uv/pull/12201) and, more critically, we'd need to figure out how to clean up resources properly (i.e., temporary directories) which currently happens on <code>Drop</code>. In the long-term, we'll probably want an option to use <code>exec</code> — but we'll need to figure out when to clean up resources or accept that they will dangle. This was last discussed in https://github.com/astral-sh/uv/issues/3095 — discussion on that approach should continue there.</p>
+<p>A note on the implementation: I spent time time trying to write the handler using a tokio stream, so we could dynamically iterate over a list of signals instead of copy/pasting the implementation — I couldn't get it to work though and it didn't seem critical.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/12830</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2025-04-21 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2025-04-21 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2025-04-21 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/run.rs</code>:97 on 2025-04-21 19:32</div>
+            <div class="timeline-body"><p>Nit: &quot;can be have&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-04-21 19:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-04-21 19:34</div>
+            <div class="timeline-body"><p>Nice, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-21 19:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/src/commands/run.rs</code>:97 on 2025-04-21 19:34</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // The following signals are terminal by default, but can have user defined handlers.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-21 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @zanieb on 2025-04-21 19:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-21 19:36</div>
+            <div class="timeline-body"><p>GitHub actions so annoying lately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-04-21 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-21 19:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-21 19:47</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:23 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect empty conditional statements - astral-sh/ruff #13929</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Detect empty conditional statements</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13929">#13929</a>
+        opened by <a href="https://github.com/gpauloski">@gpauloski</a>
+        on 2024-10-25 16:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/gpauloski">@gpauloski</a> on 2024-10-25 16:11</div>
+            <div class="timeline-body"><h2>Problem</h2>
+<p>Code deletion rules in ruff can sometimes leave unnecessary conditional blocks. Consider this common conditional import logic.</p>
+<pre><code class="language-python">import sys
+
+if sys.version_info &gt;= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
+</code></pre>
+<p>If the file is refactored such that <code>Self</code> is no longer used, <code>ruff check --fix</code> will remove the unused imports leaving an empty if-else statement:</p>
+<pre><code class="language-python">import sys
+
+if sys.version_info &gt;= (3, 11):
+    pass
+else:
+    pass
+</code></pre>
+<p>This kind of statement is useless and could easily be overlooked when introduced by auto-formatting.</p>
+<h2>Related</h2>
+<p>This problem was originally raised in #9472, but I'm opening this issue to discuss the scope of a new rule in more detail.</p>
+<p>There are a couple related rules that don't quite cover this problem:</p>
+<ul>
+<li><a href="https://docs.astral.sh/ruff/rules/useless-if-else/"><code>RUF034</code></a> detects useless if-else expressions, but not statements (e.g, <code>foo = x if y else x</code>).</li>
+<li><a href="https://docs.astral.sh/ruff/rules/empty-type-checking-block/#empty-type-checking-block-tch005"><code>TCH005</code></a> can only detect empty <code>TYPE_CHECKING</code> blocks.</li>
+</ul>
+<h2>Proposal</h2>
+<p>A new <code>empty-if-statement</code> rule that detects if/if-else/if-elif-else statements where all arms are empty. This can have an autofix, but it would be an unsafe autofix since the test in the conditional could have a side-effect even if the body is empty.</p>
+<p>As @MichaReiser brought up in #9472, there are some questions about scope:</p>
+<ul>
+<li>Should an empty <code>else</code> in a <code>for</code>/<code>try</code> statement be detected?</li>
+<li>What about an empty <code>elif</code> between a non-empty <code>if</code> and <code>else</code>?</li>
+<li>Potential nuance with typing stubs.</li>
+</ul>
+<p>If we are unsure about the first two, they could be ignored for now and revisited in a followup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-26 08:31</div>
+            <div class="timeline-body"><p>Thanks for writing this up. Such a rule overall seems useful to me.</p>
+<blockquote>
+<p>If we are unsure about the first two, they could be ignored for now and revisited in a followup.</p>
+</blockquote>
+<p>I could see us start with if-statements. The only risk is that adding new control flow statements could require renaming the rule.</p>
+<blockquote>
+<p>What about an empty elif between a non-empty if and else?</p>
+</blockquote>
+<p>I could see us detecting this but not fixing (we can try by inverting the condition).</p>
+<p>CC: @AlexWaygood</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gpauloski">@gpauloski</a> on 2024-10-29 14:31</div>
+            <div class="timeline-body"><blockquote>
+<p>The only risk is that adding new control flow statements could require renaming the rule.</p>
+</blockquote>
+<p>Makes sense. Is there a case for more granular rules? I.e., the following could be added more incrementally: <code>empty-if-else-statement</code>, <code>empty-for-else-statement</code>, <code>empty-try-else-statement</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-29 15:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Makes sense. Is there a case for more granular rules? I.e., the following could be added more incrementally: empty-if-else-statement, empty-for-else-statement, empty-try-else-statement.</p>
+</blockquote>
+<p>We have done that in the past if there are reason why a user would only want to enable one, but not the other. I'm otherwise leaning towards fewer rules because rules have a certain cognitive overhead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gpauloski">@gpauloski</a> on 2024-10-29 20:58</div>
+            <div class="timeline-body"><p>I don't see an obvious reason why one would only enable the check for one of the conditional types, so a single rule makes most sense to me.</p>
+<p>How about changing the name to <code>empty-conditional-statement</code> which checks the following cases:</p>
+<ol>
+<li>Empty <code>if</code> statement where <em>all</em> arms are empty (unsafe autofix since the test could have side-effects).</li>
+<li>Empty <code>else</code> clause in <code>if</code> statement (safe autofix).</li>
+<li>Empty <code>else</code> clause in <code>for</code> statement (safe autofix).</li>
+<li>Empty <code>else</code> clause in <code>try-except</code> statement (safe autofix).</li>
+</ol>
+<p>Does it make sense to not autofix if there's a comment? E.g., detect, but not fix, scenarios like:</p>
+<pre><code class="language-python">if condition:
+    # Comment ...
+    pass
+
+try:
+    foo()
+except FooException:
+    bar()
+else:
+    # Comment ...
+    pass
+</code></pre>
+<blockquote>
+<p>What about an empty elif between a non-empty if and else?
+I could see us detecting this but not fixing (we can try by inverting the condition).</p>
+</blockquote>
+<p>I lean towards not checking this case. The more general name of <code>empty-conditional-statement</code> would support this addition better in the future if it was wanted, but I've also seen empty <code>elif</code> branches used to explicitly indicate a case is being ignored.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/gpauloski">@gpauloski</a> on 2024-10-29 21:45</div>
+            <div class="timeline-body"><p>I was looking at related rules to see how they handle comments. I don't see a clear standard but each of these comes from a different tool anyways.</p>
+<ul>
+<li><a href="https://docs.astral.sh/ruff/rules/empty-type-checking-block/"><code>empty-type-checking-block</code></a> deletes comments in an otherwise empty if statement. E.g.,<pre><code class="language-python">from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    # Comment ...
+    pass
+</code></pre>
+</li>
+<li><a href="https://docs.astral.sh/ruff/rules/useless-try-except/"><code>useless-try-except</code></a> has no autofix so won't delete comments.</li>
+<li><a href="https://docs.astral.sh/ruff/rules/useless-else-on-loop/"><code>useless-else-on-loop</code></a> de-indents the comment.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-10-30 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-30 07:49</div>
+            <div class="timeline-body"><p>This sounds good to me. The name probably requires some more bikeshedding but it shouldn't prevent us from start working towards this rule (awaiting @AlexWaygood input)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-16 11:10</div>
+            <div class="timeline-body"><p>After some internal discussion, we agree that this should be multiple separate rules. I suggest that we scope them similar to clippy:</p>
+<ul>
+<li><a href="https://rust-lang.github.io/rust-clippy/master/index.html#needless_if"><code>needless_if</code></a>: Detects empty <code>if</code> statements, excluding if statements where the body contains comment</li>
+<li><a href="https://rust-lang.github.io/rust-clippy/master/index.html#needless_else"><code>needless_else</code></a> Detects empty <code>else</code> branches (excluding bodies that contain comments)</li>
+<li><a href="https://rust-lang.github.io/rust-clippy/master/index.html#/if_not_else"><code>if_not_else</code></a>: I don't think we should add this rule just yet but we could consider adding it in the future to &quot;clean up&quot; <code>if a: pass else: code</code> after ruff fixes</li>
+</ul>
+<p>The <code>needless_if</code> rule should also help with https://github.com/astral-sh/ruff/issues/9472</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-12-16 12:22</div>
+            <div class="timeline-body"><p>@MichaReiser Does <code>needless_else</code> apply to non-<code>if</code> <code>else</code> clauses too? What about <code>for</code>, <code>while</code> and <code>try</code>/<code>finally</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-16 12:23</div>
+            <div class="timeline-body"><blockquote>
+<p><a href="https://github.com/MichaReiser?rgh-link-date=2024-12-16T12%3A22%3A08.000Z"><img alt="" width="16" height="16" src="https://avatars.githubusercontent.com/u/1203881?s=64&amp;u=a4198e6ec750b50d8f708f7b226cc6fec288b993&amp;v=4">@MichaReiser</a> Does <code>needless_else</code> apply to non-<code>if</code> <code>else</code> clauses too? What about <code>for</code>, <code>while</code> and <code>try</code>/<code>finally</code>?</p>
+</blockquote>
+<p>Yes, I think it should. But maybe I'm overlooking something? Are there cases where you think it should not?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2024-12-16 12:42</div>
+            <div class="timeline-body"><p>The three functions implemented in #14763 are statement-wise (i.e., one for <code>if</code>/<code>elif</code>/<code>else</code>, one for <code>for</code>/<code>else</code>, one for <code>try</code>/<code>else</code>/<code>finally</code>). Each function can thus be neatly placed in a branch (<code>Stmt::If</code>, <code>Stmt::For</code>, <code>Stmt::Try</code>).</p>
+<p>If <code>needless-else</code> applied to all kinds of <code>else</code>, it would need as many implementations as there are such statements (currently 4), since the range of <code>else</code> cannot be determined without looking at the parent statement.</p>
+<p>Rust does not have exotic <code>else</code>s, so one <code>needless-else</code> is all Clippy needs. We, on the other hand, do have those, so it might not be a good idea to just copy Clippy in this specific case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-16 13:05</div>
+            <div class="timeline-body"><blockquote>
+<p>If needless-else applied to all kinds of else, it would need as many implementations as there are such statements (currently 4), since the range of else cannot be determined without looking at the parent statement.</p>
+</blockquote>
+<p>I think that's fine because it's just an implementation detail. I'm mainly concerned about why a user would want the rule to apply only to one kind of node rather than all of them. I currently can't think of any because an empty else block is always useless, regardless of its parent node.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:31 UTC
+    </footer>
+</body>
+</html>

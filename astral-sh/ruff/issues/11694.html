@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLC0208 should only recommend fixes when iterating over literals - astral-sh/ruff #11694</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLC0208 should only recommend fixes when iterating over literals</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/11694">#11694</a>
+        opened by <a href="https://github.com/Skylion007">@Skylion007</a>
+        on 2024-06-02 17:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-06-02 17:00</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>I tried PLC0208 on my codebase, and found several spots where iterating over a set was clearly intentional. Here is a salient example:</p>
+<pre><code class="language-python">for rg in {dtype.is_floating_point, False}:
+</code></pre>
+<p>This will would get corrected to a sequence, when I want this test case to run over <code>True</code> and <code>False</code> is <code>dtype.is_floating_point</code> is true. Otherwise, only False.</p>
+<p>Another useful idiom is:</p>
+<pre><code class="language-python">for index in {0, sparse.shape[dim] // 2, sparse.shape[dim] - 1}:
+</code></pre>
+<p>Where I want to loop over all unique values. If the <code>sparse.shape[dim]</code> is 2, then I only go over index (0, 1) instead of (0, 1, 1). It doesn't seem like this fix can be safe if it doesn't know what it's referencing. At the very least, the fix should be marked unsafe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2024-06-02 17:03</div>
+            <div class="timeline-body"><p>Ugh, looks like https://github.com/astral-sh/ruff/pull/4907 it suppose to cover this, but fails with parameters or getter calls.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-06-02 17:45</div>
+            <div class="timeline-body"><p>I think this is different than #4907? My read is that change was about comprehensions and <code>set</code> calls. Pylint does flag the cases you've included here, though we could consider changing our rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2024-06-02 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rdaysky">@rdaysky</a> on 2024-10-11 03:05</div>
+            <div class="timeline-body"><p>I’ve also just encountered PLC0208 on code like this:</p>
+<pre><code>dt: datetime.datetime = ...
+slightly_earlier = dt - datetime.timedelta(hours=4)
+
+for day in {dt.date(), slightly_earlier.date()}:
+    ...  # could be the same date or two consecutive dates
+</code></pre>
+<p>where the intention is for the loop body to handle each distinct date exactly once.</p>
+<p>Please consider restricting the rule to literals only.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-10-21 11:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:05 UTC
+    </footer>
+</body>
+</html>

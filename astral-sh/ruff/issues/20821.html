@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`PLW1641`: false positive - astral-sh/ruff #20821</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>PLW1641</code>: false positive</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20821">#20821</a>
+        opened by <a href="https://github.com/chirizxc">@chirizxc</a>
+        on 2025-10-12 19:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/chirizxc">@chirizxc</a> on 2025-10-12 19:05</div>
+            <div class="timeline-body"><p>The current <a href="https://docs.astral.sh/ruff/rules/eq-without-hash/"><code>eq-without-hash</code> (PLW1641)</a> rule warns whenever a class defines <code>__eq__</code> without defining <code>__hash__</code>. However, this creates false positives for legitimate use cases.</p>
+<p>Not all classes with <code>__eq__</code> are intended to be used as dictionary keys or set members. For mutable objects, having <code>__hash__ = None</code> is actually the correct behavior according to <a href="https://docs.python.org/3/reference/datamodel.html">Python's data model</a>:
+<img width="1078" height="161" alt="Image" src="https://github.com/user-attachments/assets/49dd2b7e-9d3d-4812-80a6-36fa032004c4" /></p>
+<p>Consider the inverse check instead: warn when a class defines <code>__hash__</code> (and it's not None) but doesn't define <code>__eq__</code>. This would catch cases where the hash/equality contract is violated: objects that are equal must have the same hash value.</p>
+<p><a href="https://play.ruff.rs/109fab87-5be0-47e9-8c17-324ab18ec3db">Playground*</a></p>
+<p><img width="703" height="451" alt="Image" src="https://github.com/user-attachments/assets/70d7c616-8dfc-4a7a-add7-6709d7791899" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Improve rule eq-without-hash (PLW1641)" to "`PLW1641`: false positive" by @chirizxc on 2025-10-13 10:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-13 13:05</div>
+            <div class="timeline-body"><p>I think this might be a duplicate of, or at least closely related to, https://github.com/astral-sh/ruff/issues/18821. As noted there, I don't think there's a good way for us to detect a mutable object or otherwise suppress the error. Explicitly setting <code>__hash__ = None</code> seems like the easiest way to indicate your intention to Ruff. <a href="https://github.com/astral-sh/ruff/issues/18821#issuecomment-3185232691">This comment</a> mentions that this could lead to other linting errors, but I'm not seeing any on the <a href="https://play.ruff.rs/7447950f-a7ab-4ad6-afcf-c1e7fca5f302">playground</a>, at least with my config there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-10-13 13:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-10 17:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:34 UTC
+    </footer>
+</body>
+</html>

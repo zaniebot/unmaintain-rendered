@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve handling of invalid virtual environments during interpreter discovery - astral-sh/uv #8086</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve handling of invalid virtual environments during interpreter discovery</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/8086">#8086</a>
+        opened by <a href="https://github.com/potoo0">@potoo0</a>
+        on 2024-10-10 12:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/potoo0">@potoo0</a> on 2024-10-10 12:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fix #8075.</p>
+<p>Invalid discovered environments in the working directory should be filtered out.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Test python_find</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potoo0">@potoo0</a> on 2024-10-12 03:54</div>
+            <div class="timeline-body"><p>This commit will also affect pip subcommand.</p>
+<pre><code>$ RUST_LOG=debug /tmp/uv pip install idna
+DEBUG uv 0.4.20
+DEBUG Searching for default Python interpreter in system path
+DEBUG Found `cpython-3.12.6-linux-x86_64-gnu` at `/usr/bin/python` (search path)
+DEBUG Ignoring Python interpreter at `/usr/bin/python`: system interpreter not explicitly requested
+DEBUG Found `cpython-3.12.6-linux-x86_64-gnu` at `/usr/bin/python3` (search path)
+DEBUG Ignoring Python interpreter at `/usr/bin/python3`: system interpreter not explicitly requested
+DEBUG Found `cpython-3.12.6-linux-x86_64-gnu` at `/usr/bin/python3.12` (search path)
+DEBUG Ignoring Python interpreter at `/usr/bin/python3.12`: system interpreter not explicitly requested
+error: No virtual environment found; run `uv venv` to create an environment, or pass `--system` to install into a non-virtual environment
+
+$ RUST_LOG=debug uv pip install idna
+DEBUG uv 0.4.20
+DEBUG Searching for default Python interpreter in system path
+error: Broken virtualenv `/home/code/.venv`: `pyvenv.cfg` is missing
+</code></pre>
+<pre><code>$ RUST_LOG=debug uv pip list
+DEBUG uv 0.4.20
+DEBUG Searching for default Python interpreter in system path
+error: Broken virtualenv `/home/code/.venv`: `pyvenv.cfg` is missing
+
+$ RUST_LOG=debug /tmp/uv pip list
+DEBUG uv 0.4.20
+DEBUG Searching for default Python interpreter in system path
+DEBUG Found `cpython-3.12.6-linux-x86_64-gnu` at `/usr/bin/python` (search path)
+Using Python 3.12.6 environment at /usr
+Package            Version
+------------------ ---------
+autocommand        2.2.2
+fail2ban           1.1.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-10-12 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @charliermarsh on 2024-10-12 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-10-12 21:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-14 18:25</div>
+            <div class="timeline-body"><p>Ah we can't just filter there — that will change behavior too much.</p>
+<p>Perhaps at https://github.com/astral-sh/uv/blob/715f28fd398aae1a6347deb312e3d0a27161696b/crates/uv-python/src/discovery.rs#L677 instead? I don't think this change is valid for other operations though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-14 18:25</div>
+            <div class="timeline-body"><p>Can you add a <code>python_find</code> test case covering this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/potoo0">@potoo0</a> on 2024-10-15 07:28</div>
+            <div class="timeline-body"><p>@zanieb</p>
+<p>Maybe I'm using it incorrectly, I previously created virtual nesting under the .venv folder.</p>
+<pre><code class="language-bash">uv venv .venv/jupyter
+
+tree -L 1 .venv
+# .venv
+# ├── huggingface
+# ├── jupyter
+# └── nogil
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-12-10 17:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "fix: drop invalid discovered environment(#8075)" to "Improve handling of invalid virtual environments during interpreter discovery" by @zanieb on 2024-12-10 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-12-10 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-12-10 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-11 02:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:13 UTC
+    </footer>
+</body>
+</html>

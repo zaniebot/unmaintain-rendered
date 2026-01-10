@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S508 and S509 don’t support the current PySNMP API - astral-sh/ruff #21364</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>S508 and S509 don’t support the current PySNMP API</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21364">#21364</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-11-10 14:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-11-10 14:32</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p><a href="https://docs.astral.sh/ruff/rules/snmp-weak-cryptography/"><code>snmp-weak-cryptography</code> (S509)</a> only supports an old API of PySNMP. It should also support the current API, where <code>UsmUserData</code> is available in different modules. <a href="https://play.ruff.rs/435fc0e9-ccf4-4617-842f-d801498cde82">Example</a>:</p>
+<pre><code class="language-console">$ pip3.14 -q install pysnmp==7.1.22
+
+$ cat &gt;s509_new.py &lt;&lt;'# EOF'
+import pysnmp.hlapi.asyncio
+import pysnmp.hlapi.v3arch.asyncio
+import pysnmp.hlapi.v3arch.asyncio.auth
+
+pysnmp.hlapi.asyncio.UsmUserData(&quot;user&quot;)
+pysnmp.hlapi.v3arch.asyncio.UsmUserData(&quot;user&quot;)
+pysnmp.hlapi.v3arch.asyncio.auth.UsmUserData(&quot;user&quot;)
+# EOF
+
+$ python3.14 s509_new.py; echo $?
+0
+
+$ ruff --isolated check s509_new.py --select S509
+All checks passed!
+</code></pre>
+<p>Ditto for <a href="https://docs.astral.sh/ruff/rules/snmp-insecure-version/"><code>snmp-insecure-version</code> (S508)</a> for <code>CommunityData</code>. <a href="https://play.ruff.rs/8f2d8bc4-d4c4-40de-b8f7-f4f8e3b05faf">Example</a>:</p>
+<pre><code class="language-console">$ pip3.14 -q install pysnmp==7.1.22
+
+$ cat &gt;s508_new.py &lt;&lt;'# EOF'
+import pysnmp.hlapi.asyncio
+import pysnmp.hlapi.v1arch
+import pysnmp.hlapi.v1arch.asyncio
+import pysnmp.hlapi.v1arch.asyncio.auth
+import pysnmp.hlapi.v3arch
+import pysnmp.hlapi.v3arch.asyncio
+import pysnmp.hlapi.v3arch.asyncio.auth
+
+pysnmp.hlapi.asyncio.CommunityData(&quot;public&quot;, mpModel=0)
+pysnmp.hlapi.v1arch.asyncio.auth.CommunityData(&quot;public&quot;, mpModel=0)
+pysnmp.hlapi.v1arch.asyncio.CommunityData(&quot;public&quot;, mpModel=0)
+pysnmp.hlapi.v1arch.CommunityData(&quot;public&quot;, mpModel=0)
+pysnmp.hlapi.v3arch.asyncio.auth.CommunityData(&quot;public&quot;, mpModel=0)
+pysnmp.hlapi.v3arch.asyncio.CommunityData(&quot;public&quot;, mpModel=0)
+pysnmp.hlapi.v3arch.CommunityData(&quot;public&quot;, mpModel=0)
+# EOF
+
+$ python3.14 s508_new.py; echo $?
+0
+
+$ ruff --isolated check s508_new.py --select S508
+All checks passed!
+</code></pre>
+<p>S509 is also missing an alternative module providing <code>UsmUserData</code> in the old API. <a href="https://play.ruff.rs/79efa3dd-6488-41b0-ae39-72a0a853c627">Example</a>:</p>
+<pre><code class="language-console">$ pip3.8 -q install pyasn1==0.6.0 pysnmp==4.3.0
+
+$ cat &gt;s509_old.py &lt;&lt;'# EOF'
+import pysnmp.hlapi.auth
+
+pysnmp.hlapi.auth.UsmUserData(&quot;user&quot;)
+# EOF
+
+$ python3.8 s509_old.py; echo $?
+0
+
+$ ruff --isolated check s509_old.py --select S509
+All checks passed!
+</code></pre>
+<p>S508 is also missing an alternative module providing <code>CommunityData</code> in the old API. <a href="https://play.ruff.rs/ca6149f1-c731-4e69-90fb-8d9c292b7a27">Example</a>:</p>
+<pre><code class="language-console">$ pip3.8 -q install pyasn1==0.6.0 pysnmp==4.3.0
+
+$ cat &gt;s508_old.py &lt;&lt;'# EOF'
+import pysnmp.hlapi.auth
+
+pysnmp.hlapi.auth.CommunityData(&quot;public&quot;, mpModel=0)
+# EOF
+
+$ python3.8 s508_old.py; echo $?
+0
+
+$ ruff --isolated check s508_old.py --select S508
+All checks passed!
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.14.4 (c7ff9826d 2025-11-06)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-11-10 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-11-19 20:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:42 UTC
+    </footer>
+</body>
+</html>

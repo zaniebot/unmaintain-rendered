@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docs(GitLab): add entrypoint for distroless image - astral-sh/uv #9093</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Docs(GitLab): add entrypoint for distroless image</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9093">#9093</a>
+        opened by <a href="https://github.com/Tsafaras">@Tsafaras</a>
+        on 2024-11-13 17:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Tsafaras">@Tsafaras</a> on 2024-11-13 17:20</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Update the docs for the GitLab integration, to make it clear that an entrypoint has to be specified, when a distroless image is being used.</p>
+<h2>Test Plan</h2>
+<p>Without specifying an entrypoint when using a distroless image:</p>
+<img src=https://github.com/user-attachments/assets/35499bd5-51d8-4016-b1d0-2d56956f82e6 width=500>
+
+<p><em>It works if you either specify the entrypoint or if the image used in not a distroless one.</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-13 17:23</div>
+            <div class="timeline-body"><p>Hm I thought we removed the custom entrypoint in https://github.com/astral-sh/uv/pull/7054</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tsafaras">@Tsafaras</a> on 2024-11-13 17:25</div>
+            <div class="timeline-body"><p>This is the image I used:</p>
+<pre><code>ghcr.io/astral-sh/uv:python3.8-bookworm
+</code></pre>
+<p>Could this be why? My project is still using that Python version.</p>
+<p>But, as you can see from the images I posted, <code>uv</code>'s version is latest (<code>0.5.1</code>).
+Could also have something to do with GitLab and not with <code>uv</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tsafaras">@Tsafaras</a> on 2024-11-20 19:00</div>
+            <div class="timeline-body"><p>@zanieb Friendly reminder.
+Let me know how you want to move on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-11-21 00:56</div>
+            <div class="timeline-body"><p>@Tsafaras On your first image example you're using the distroless image which is not supported in Gitlab as <code>sh</code> does not exist in it. That's actually one of the reason the non-distroless images were added 😄</p>
+<p>We do not have custom entrypoints on any of the non-distroless images. The distroless does and defaults to uv as it's the only binary in that container image.</p>
+<p>e.g.</p>
+<p>Non-Distroless</p>
+<pre><code class="language-bash">~/ $ docker inspect ghcr.io/astral-sh/uv:0.5-python3.8-bookworm | jq  -r '.[0].Config.Entrypoint'
+null
+</code></pre>
+<p>Distroless</p>
+<pre><code class="language-bash">~/ $ docker inspect ghcr.io/astral-sh/uv:0.5 | jq  -r '.[0].Config.Entrypoint'
+[
+  &quot;/uv&quot;
+]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tsafaras">@Tsafaras</a> on 2024-11-21 10:48</div>
+            <div class="timeline-body"><p>@samypr100 Thank you for the response, especially for the last snippet!
+I tried finding something similar as to what you can see on docker hub (<a href="https://hub.docker.com/layers/library/python/3.13/images/sha256-47db274575b70d4943bb3d408cdd590b8285b5811f10c2e7167ba7f0cada9f2c">example</a>), but I didn't find it on GH's registry. 🤔
+In between tests I never considered I had changed the image.</p>
+<p>Should I edit the PR to make this change in the relative docs then?</p>
+<blockquote>
+<p>If you're using a distroless image ... blah blah</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-11-21 13:01</div>
+            <div class="timeline-body"><blockquote>
+<p>Should I edit the PR to make this change in the relative docs then?</p>
+</blockquote>
+<p>I think it's worth adding a note to the gitlab docs, thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tsafaras">@Tsafaras</a> on 2024-11-21 17:17</div>
+            <div class="timeline-body"><p>@samypr100 @zanieb Turned the correction to a note. Please have a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @zanieb on 2024-11-21 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Docs: missing entrypoint in gitlab integration" to "Docs(GitLab): add entrypoint for distroless image" by @Tsafaras on 2024-11-22 19:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Tsafaras">@Tsafaras</a> on 2024-12-03 23:56</div>
+            <div class="timeline-body"><p>@zanieb Friendly reminder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-12-04 00:19</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-12-04 00:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-12-04 00:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:14 UTC
+    </footer>
+</body>
+</html>

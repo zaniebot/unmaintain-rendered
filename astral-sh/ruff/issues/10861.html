@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`pytest-parametrize-values-wrong-type` (`PT007` ) unsafe fix fails if there is a list of only one item - astral-sh/ruff #10861</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>pytest-parametrize-values-wrong-type</code> (<code>PT007</code> ) unsafe fix fails if there is a list of only one item</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10861">#10861</a>
+        opened by <a href="https://github.com/nyoungstudios">@nyoungstudios</a>
+        on 2024-04-10 16:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/nyoungstudios">@nyoungstudios</a> on 2024-04-10 16:58</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Here is a minimal <code>.ruff.toml</code> file using <code>0.3.5</code>:</p>
+<pre><code class="language-toml">line-length = 120
+
+target-version = &quot;py38&quot;
+
+lint.extend-select = [
+    &quot;W&quot;,  # whitespace
+    &quot;I&quot;,  # imports
+
+    # pytest
+    &quot;PT001&quot;,  # pytest-fixture-incorrect-parentheses-style
+    &quot;PT006&quot;,  # pytest-parametrize-names-wrong-type
+    &quot;PT007&quot;,  # pytest-parametrize-values-wrong-type
+    &quot;PT025&quot;,  # pytest-erroneous-use-fixtures-on-fixture
+    &quot;PT026&quot;,  # pytest-use-fixtures-without-parameters
+]
+
+[ lint.isort ]
+
+known-first-party = [&quot;module&quot;]
+
+[ lint.flake8-pytest-style ]
+
+fixture-parentheses = false
+parametrize-names-type = &quot;csv&quot;
+parametrize-values-row-type = &quot;tuple&quot;
+parametrize-values-type = &quot;tuple&quot;
+</code></pre>
+<p>Here is the code snippet</p>
+<pre><code class="language-python">import pytest
+from pytest_mock import MockFixture
+
+from module.sub import (
+    get_value,
+)
+
+
+@pytest.fixture
+def mock_check_output(mocker: MockFixture, output: bytes):
+    return mocker.patch(&quot;subprocess.check_output&quot;, return_value=output)
+
+
+@pytest.mark.parametrize(
+    &quot;output, expected_result&quot;,
+    [(b&quot;apple&quot;, &quot;apple&quot;)],
+)
+def test_get_value(mock_check_output, expected_result):
+    assert get_value() == expected_result
+    mock_check_output.assert_called_once()
+</code></pre>
+<p>Running this command</p>
+<pre><code class="language-bash">ruff check path/to/file.py --fix --unsafe-fixes
+</code></pre>
+<p>outputs this error</p>
+<pre><code>error: Fix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BFix%20error%5D
+
+...quoting the contents of `path/to/file.py`, the rule codes PT007, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+path/to/file.py:16:5: PT007 Wrong values type in `@pytest.mark.parametrize` expected `tuple` of `tuple`
+Found 1 error.
+[*] 1 fixable with the --fix option.
+</code></pre>
+<p>However, changing the pytest parameterize code block to:</p>
+<pre><code class="language-python">@pytest.mark.parametrize(
+    &quot;output, expected_result&quot;,
+    [(b&quot;apple&quot;, &quot;apple&quot;), (b&quot;banana&quot;, &quot;banana&quot;)],
+)
+</code></pre>
+<p>allows the ruff command to run successfully. And successfully changes the parameterize code block to:</p>
+<pre><code class="language-python">@pytest.mark.parametrize(
+    &quot;output, expected_result&quot;,
+    ((b&quot;apple&quot;, &quot;apple&quot;), (b&quot;banana&quot;, &quot;banana&quot;)),
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-10 17:02</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-04-10 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @charliermarsh on 2024-04-10 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-04-10 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-04-10 18:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:28 UTC
+    </footer>
+</body>
+</html>

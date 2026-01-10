@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C0103/N815: Constant names are not checked against UPPER_CASE naming convention - astral-sh/ruff #2964</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>C0103/N815: Constant names are not checked against UPPER_CASE naming convention</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2964">#2964</a>
+        opened by <a href="https://github.com/Fall1ngStar">@Fall1ngStar</a>
+        on 2023-02-16 18:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Fall1ngStar">@Fall1ngStar</a> on 2023-02-16 18:19</div>
+            <div class="timeline-body"><p>Hi ruff team,</p>
+<p>It looks like ruff doesn't check the name of constants like pylint does, despite <code>invalid-name</code> / <code>C0103</code> (<code>N815</code>) being marked as done in the <a href="https://github.com/charliermarsh/ruff/issues/970">pylint tracking issue</a>.</p>
+<p>PEP 8 recommends UPPER_CASE for constant names (<a href="https://peps.python.org/pep-0008/#constants">ref</a>).</p>
+<h3>Example</h3>
+<pre><code class="language-py"># file.py
+from typing import NamedTuple
+
+Other = NamedTuple(&quot;Other&quot;, &quot;a,b,c&quot;)
+
+not_correct = &quot;tata&quot;
+CORRECT = &quot;&quot;
+ALSO_CORRECT = &quot;&quot;
+
+def foo():
+    print(not_correct)
+</code></pre>
+<pre><code class="language-sh">$ pylint file.py --disable=all --enable=C0103
+************* Module file
+file.py:6:0: C0103: Constant name &quot;not_correct&quot; doesn't conform to UPPER_CASE naming style (invalid-name)
+
+------------------------------------------------------------------
+Your code has been rated at 8.57/10 (previous run: 8.57/10, +0.00)
+
+$ ruff file.py --verbose --no-cache
+[2023-02-16][12:57:12][ruff::commands::run][DEBUG] Identified files to lint in: 226.791µs
+[2023-02-16][12:57:12][ruff::commands::run][DEBUG] Checked 1 files in: 7.339083ms
+
+$ ruff --version
+ruff 0.0.247
+</code></pre>
+<h3>Solutions</h3>
+<p>pep8-naming N816 (mixedCase variable in global scope) already implements a weaker version of this, so I was able to adapt the code to only allow UPPER_CASE variable names in global scope, but the two rules feel a bit redundant together as some constant named <code>thisIs_incorrect</code> would trigger both N816 (because it is a mixed case naming) and C0103 (it does not follow UPPER_CASE convention for constants).</p>
+<p>I guess there are 2 paths forward to solve this issue:</p>
+<ul>
+<li>Implement C0103 as a separate rule, but accept that some variable naming may trigger 2 separate diagnostics</li>
+<li>Modify N816 to only allow UPPER_CASE names, but this would differ from the original <code>pep8-naming</code> package</li>
+</ul>
+<p>In any case, I would be glad to submit a PR to help get this fixed !</p>
+<p><em>PS: Thanks for the awesome work you're all doing !</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-04 22:41</div>
+            <div class="timeline-body"><p>I'm not sure how I want to proceed, but I found this old issue on <code>pep8-naming</code>: https://github.com/PyCQA/pep8-naming/issues/49.</p>
+<p>I suppose I'd be okay with implementing C0103 as a separate rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Fall1ngStar">@Fall1ngStar</a> on 2023-07-05 00:33</div>
+            <div class="timeline-body"><p>I will work on that if that's ok !</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Fall1ngStar">@Fall1ngStar</a> on 2023-07-08 15:12</div>
+            <div class="timeline-body"><p>👋 Looking for a bit of guidance here, should I implement the full <a href="https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/invalid-name.html"><code>invalid-name</code></a> from pylint ? With the checks for every type of names ? There seems to be a lot of overlap with the rules from pep8-naming so I just want to make sure that the scope for this issue is correct before I work on it 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/woodconn">@woodconn</a> on 2023-08-01 21:36</div>
+            <div class="timeline-body"><p>While there are already some N801, N802, etc. rules, it would indeed be ideal to implement the full functionality of this into it's own pylint category of rules.  I'd prefer you just start with rules for the CONSTANT variable.</p>
+<p>Ex. for &quot;SolidNumber&quot;
+enforce-const-naming-style-UPPER (SOLIDNUMBER)
+enforce-const-naming-style-snake-case  (solid_number)
+enforce-const-naming-CapWords (SolidNumber)
+enforce-const-naming-lowercase (solidnumber)</p>
+<p>And ideally we could use both enforce-const-naming-style-UPPER and enforce-const-naming-style-snake-case:
+Meaning the constant variable would be named SOLID_NUMBER</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/RmStorm">@RmStorm</a> on 2025-03-14 14:15</div>
+            <div class="timeline-body"><p>What's the current status on this? I would also really like a rule to enforce upper case constants in the global scope! I think the problem @Fall1ngStar ran into is that <a href="https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/invalid-name.html">C0103</a> has a lot of overlap with the <a href="https://docs.astral.sh/ruff/rules/#pep8-naming-n">pep8-naming (N)</a> rules..</p>
+<p>Actually implementing C0103 seems to come down to implementing this <a href="https://github.com/pylint-dev/pylint/blob/512c8bee6cd237a8e56ab5527ee2876d8070c0d6/pylint/checkers/base/name_checker/naming_style.py#L121C1-L133C2">list of rules from pylint</a>, where every single name in python has a precisely acceptable format. Seems close to incompatible with the (N) rules but maybe they actually are compatible?</p>
+<p>Would a PR implementing C0103 in full be welcome even though it's a rule with a rather large scope?
+Or is a smaller rule only implementing upper case checking on global constant be more desirable?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-03-14 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ansiblejunky">@ansiblejunky</a> on 2025-03-26 15:07</div>
+            <div class="timeline-body"><p>+1 I'd also like to see this rule implemented in order to enforce the pylint C0103 rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jack-mcivor">@jack-mcivor</a> on 2025-04-25 15:48</div>
+            <div class="timeline-body"><blockquote>
+<p>Or is a smaller rule only implementing upper case checking on global constant be more desirable?</p>
+</blockquote>
+<p>I think a partial implementation is still really helpful</p>
+<p>From the <a href="https://pylint.readthedocs.io/en/latest/user_guide/messages/convention/invalid-name.html">C0103 docs</a> and <a href="https://github.com/pylint-dev/pylint/blob/512c8bee6cd237a8e56ab5527ee2876d8070c0d6/pylint/checkers/base/name_checker/naming_style.py#L121C1-L133C2">styles</a>, there are two cases that require UPPER_CASE:</p>
+<ol>
+<li>const: Module-level constants: any name defined at module level that is not bound to a class object nor reassigned.</li>
+<li>class-const: Enum constants and class variables annotated with Final</li>
+</ol>
+<p>Is it easier and less contentious to implement the check just on class-const names? Or even just on enum constants?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:23 UTC
+    </footer>
+</body>
+</html>

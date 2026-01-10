@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enrich messages of SARIF results - astral-sh/ruff #13179</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Enrich messages of SARIF results</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13179">#13179</a>
+        opened by <a href="https://github.com/RussellLuo">@RussellLuo</a>
+        on 2024-08-31 04:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/RussellLuo">@RussellLuo</a> on 2024-08-31 04:37</div>
+            <div class="timeline-body"><p>Given the following code snippet:</p>
+<pre><code class="language-python"># test.py
+import os
+
+def greet():
+    print('hello {name}'.format())
+</code></pre>
+<p>This is the default output:</p>
+<pre><code class="language-bash">$ ruff check test.py
+test.py:1:8: F401 [*] `os` imported but unused
+  |
+1 | import os
+  |        ^^ F401
+2 | 
+3 | def greet():
+  |
+  = help: Remove unused import: `os`
+
+test.py:4:11: F524 `.format` call is missing argument(s) for placeholder(s): name
+  |
+3 | def greet():
+4 |     print('hello {name}'.format())
+  |           ^^^^^^^^^^^^^^^^^^^^^^^ F524
+  |
+
+Found 2 errors.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p>If we try to get the SARIF output:</p>
+<pre><code class="language-bash">ruff check --output-format=sarif test.py
+</code></pre>
+<p>As shown below, the result messages (e.g. <code>UnusedImport</code> and <code>StringDotFormatMissingArguments</code>) are too short to be informative:</p>
+<pre><code class="language-json">{
+  &quot;$schema&quot;: &quot;https://json.schemastore.org/sarif-2.1.0.json&quot;,
+  &quot;runs&quot;: [
+    {
+      &quot;results&quot;: [
+        {
+          &quot;level&quot;: &quot;error&quot;,
+          &quot;locations&quot;: [
+            {
+              &quot;physicalLocation&quot;: {
+                &quot;artifactLocation&quot;: {...},
+                &quot;region&quot;: {
+                  &quot;endColumn&quot;: 10,
+                  &quot;endLine&quot;: 1,
+                  &quot;startColumn&quot;: 8,
+                  &quot;startLine&quot;: 1
+                }
+              }
+            }
+          ],
+          &quot;message&quot;: {
+            &quot;text&quot;: &quot;UnusedImport&quot;
+          },
+          &quot;ruleId&quot;: &quot;F401&quot;
+        },
+        {
+          &quot;level&quot;: &quot;error&quot;,
+          &quot;locations&quot;: [
+            {
+              &quot;physicalLocation&quot;: {
+                &quot;artifactLocation&quot;: {...},
+                &quot;region&quot;: {
+                  &quot;endColumn&quot;: 34,
+                  &quot;endLine&quot;: 4,
+                  &quot;startColumn&quot;: 11,
+                  &quot;startLine&quot;: 4
+                }
+              }
+            }
+          ],
+          &quot;message&quot;: {
+            &quot;text&quot;: &quot;StringDotFormatMissingArguments&quot;
+          },
+          &quot;ruleId&quot;: &quot;F524&quot;
+        }
+      ],
+      &quot;tool&quot;: {...}
+    }
+  ],
+  &quot;version&quot;: &quot;2.1.0&quot;
+}
+</code></pre>
+<p>Also per <a href="https://github.com/microsoft/sarif-tutorials/blob/main/docs/1-Introduction.md#a-simple-example">the SARIF example</a>, the message is as informative as Ruff's default (non-SARIF) one:</p>
+<pre><code class="language-json">&quot;message&quot;: {
+  &quot;text&quot;: &quot;'x' is assigned a value but never used.&quot;
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-09-01 11:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:00 UTC
+    </footer>
+</body>
+</html>

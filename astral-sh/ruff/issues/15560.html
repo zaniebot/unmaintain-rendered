@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F401 false positive and unsafe fix with subclassing generics - astral-sh/ruff #15560</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F401 false positive and unsafe fix with subclassing generics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15560">#15560</a>
+        opened by <a href="https://github.com/cibere">@cibere</a>
+        on 2025-01-17 22:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cibere">@cibere</a> on 2025-01-17 22:17</div>
+            <div class="timeline-body"><p>I'm encountering a scenario where the F401 rule triggers a false positive when subclassing and providing a generic, with ruff also applying a fix that breaks the typing of the class.</p>
+<p>Sample Code:</p>
+<pre><code class="language-py">from __future__ import annotations
+from typing import TYPE_CHECKING, Generic, TypeVar
+
+T = TypeVar(&quot;T&quot;)
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+
+
+class Bar(Generic[T]): ...
+
+
+class Foo(Bar[&quot;Iterable&quot;]): ...
+</code></pre>
+<p>and when checking this file with ruff:</p>
+<pre><code>sample.py:6:33: F401 [*] `collections.abc.Iterable` imported but unused
+  |
+5 | if TYPE_CHECKING:
+6 |     from collections.abc import Iterable
+  |                                 ^^^^^^^^ F401
+  |
+  = help: Remove unused import: `collections.abc.Iterable`
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p>Using the <code>--fix</code> option changes the code to:</p>
+<pre><code class="language-py">from __future__ import annotations
+from typing import TYPE_CHECKING, Generic, TypeVar
+
+T = TypeVar(&quot;T&quot;)
+
+if TYPE_CHECKING:
+    pass
+
+
+class Bar(Generic[T]): ...
+
+
+class Foo(Bar[&quot;Iterable&quot;]): ...
+</code></pre>
+<p>which breaks the typing: <code>&quot;Iterable&quot; is not defined</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cibere">@cibere</a> on 2025-01-17 22:17</div>
+            <div class="timeline-body"><p>just saw #9298</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @cibere on 2025-01-17 22:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:20 UTC
+    </footer>
+</body>
+</html>

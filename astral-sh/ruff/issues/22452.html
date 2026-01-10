@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive for F821 in function with `lambda: var` arg when `del var` is present - astral-sh/ruff #22452</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive for F821 in function with <code>lambda: var</code> arg when <code>del var</code> is present</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/22452">#22452</a>
+        opened by <a href="https://github.com/DeflateAwning">@DeflateAwning</a>
+        on 2026-01-08 04:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DeflateAwning">@DeflateAwning</a> on 2026-01-08 04:20</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>False positive for F821 (&quot;Undefined name <code>var</code> - <a href="https://docs.astral.sh/ruff/rules/undefined-name">F821</a>&quot;) in function with <code>lambda: var</code> argument when <code>del var</code> is present.</p>
+<p>Minimum example:</p>
+<pre><code class="language-python">def main() -&gt; None:
+    def consume(fn) -&gt; None:
+        # Pretend this stores the callable for later use
+        fn()
+
+    x = 1
+
+    consume(lambda: x)  # Ruff flags this lambda as &quot;F821: Undefined name `x`&quot;
+
+    del x  # The warning is silenced if x is deleted here.
+</code></pre>
+<p>Here's a less-minimal example that shows where in our codebase this issue came up:</p>
+<pre><code class="language-python">import polars as pl
+
+records_df: pl.DataFrame = db.read_query_into_polars(&quot;&quot;&quot;
+    SELECT
+        entity_key,
+        group_id,
+        external_ref,
+        internal_id,
+        event_id,
+        source_id
+    FROM app_data.entities
+&quot;&quot;&quot;)
+logger.info(f&quot;entities: {shape_str(records_df)}&quot;)
+
+with log_row_count_change(lambda: records_df, &quot;remove null entity_key&quot;):
+    records_df = records_df.filter(pl.col(&quot;entity_key&quot;).is_not_null())
+
+base_df = base_df.join(records_df, on=[&quot;entity_key&quot;], how=&quot;inner&quot;, validate=&quot;1:m&quot;)
+
+del records_df
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.14.5</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-08 08:13</div>
+            <div class="timeline-body"><p>Thanks. There are multiple similar issues open related to <code>F821</code> and deleting variables (after their use). The closest of those is https://github.com/astral-sh/ruff/issues/9858</p>
+<p>What I'm surprised by is that no type checker reports those uses, including ty. @AlexWaygood is this because we special case <code>lambda</code>'s and assume they're immediately executed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2026-01-08 08:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2026-01-08 13:36</div>
+            <div class="timeline-body"><blockquote>
+<p>What I'm surprised by is that no type checker reports those uses, including ty. <a href="https://github.com/AlexWaygood">@AlexWaygood</a> is this because we special case <code>lambda</code>'s and assume they're immediately executed?</p>
+</blockquote>
+<p>It wouldn't surprise me if other type checkers apply that kind of special-casing (we already have similar special-casing in place for generator expressions, which are similar in that they are also lazy scopes that are nearly always immediately executed). But don't think we do any such special-casing right now. <code>lambda</code> scopes are <a href="https://github.com/astral-sh/ruff/blob/eea9ad83528a7f492662f6427cdbb6fc2f655bb5/crates/ty_python_semantic/src/semantic_index/scope.rs#L218-L226">correctly recognised as lazy</a>. And the false negative also exists for non-lambda functions -- ty also doesn't emit an error for this:</p>
+<pre><code class="language-py">def main() -&gt; None:
+    def consume(fn) -&gt; None:
+        # Pretend this stores the callable for later use
+        fn()
+
+    x = 1
+
+    def closure():
+        print(x)
+
+    del x
+</code></pre>
+<p>I suspect we have some missing logic around <code>del</code> statements that means that ty doesn't notice in this situation that the variable has been deleted prior to the end of the scope here.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:54 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duplicate E712 diagnostics - astral-sh/ruff #17582</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Duplicate E712 diagnostics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17582">#17582</a>
+        opened by <a href="https://github.com/whiskeyboy9">@whiskeyboy9</a>
+        on 2025-04-23 12:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/whiskeyboy9">@whiskeyboy9</a> on 2025-04-23 12:32</div>
+            <div class="timeline-body"><h2>Duplicate diagnostics for RUF001 in VS Code</h2>
+<p><strong>Describe the bug</strong>
+I am seeing the same diagnostic reported twice in the VS Code &quot;Problems&quot; tab when using the Ruff extension. Specifically, the <code>RUF001: Avoid equality comparisons to True; use </code>is True<code> for truth checks</code> error appears two times for the same line of code.</p>
+<p><strong>To Reproduce</strong>
+Steps to reproduce the behavior:</p>
+<ol>
+<li>Set up a Python project using Poetry.</li>
+<li>Add <code>ruff</code> to the development dependencies (<code>poetry add ruff@latest --group dev</code>).</li>
+<li>Ensure the Ruff VS Code extension is installed and enabled.</li>
+<li>Create a Python file with code that triggers the <code>RUF001</code> rule, e.g., <code>if variable == True:</code>.</li>
+<li>Open the file in VS Code.</li>
+<li>Observe the &quot;Problems&quot; tab where the <code>RUF001</code> diagnostic is listed twice for the same location.</li>
+</ol>
+<p><strong>Expected behavior</strong>
+I would expect the diagnostic for the <code>RUF001</code> error to appear only once in the &quot;Problems&quot; tab.</p>
+<p><strong>Screenshots</strong>
+<img src="https://github.com/user-attachments/assets/6246c13b-ec62-4e34-8ff5-5bab44f37e20" alt="Image showing duplicated errors" /></p>
+<p><strong>Environment</strong></p>
+<ul>
+<li><strong>VS Code:</strong><pre><code>Version: 1.99.3 (user setup)
+Commit: 17baf841131aa23349f217ca7c570c76ee87b957
+Date: 2025-04-15T23:18:46.076Z (1 wk ago)
+Electron: 34.3.2
+ElectronBuildId: 11161073
+Chromium: 132.0.6834.210
+Node.js: 20.18.3
+V8: 13.2.152.41-electron.0
+OS: Windows_NT x64 10.0.19045
+</code></pre>
+</li>
+<li><strong>Ruff VS Code Extension:</strong><pre><code>Installation
+Identifier: charliermarsh.ruff
+Version: 2025.22.0
+Last Updated: 2025-04-23, 13:33:23
+Size: 33.03MB
+</code></pre>
+</li>
+<li><strong>Ruff Version (from log):</strong> 0.11.6</li>
+<li><strong>Python Version (from log interpreter path):</strong> Likely 3.11 (based on environment setup with poetry and python = &quot;^3.11&quot;)</li>
+<li><strong>Package Manager:</strong> Poetry</li>
+</ul>
+<p><strong>Relevant Configuration</strong></p>
+<p><code>.venv\Scripts\python.exe</code></p>
+<p><code>pyproject.toml</code>:</p>
+<pre><code class="language-toml">[tool.poetry]
+name = &quot;test_cicd&quot;
+version = &quot;0.0.1&quot;
+description = &quot;testing cicd pipelines&quot;
+authors = [&quot;&quot;]
+readme = &quot;README.md&quot;
+packages = [{include = &quot;dummy&quot;, from = &quot;src&quot;}]
+
+[tool.poetry.dependencies]
+python = &quot;^3.11&quot;
+pydantic = &quot;^2.6.4&quot;
+python-dotenv = &quot;^1.0.1&quot;
+
+numpy = &quot;^2.1.1&quot;
+pandas = &quot;^2.2.3&quot;
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = &quot;^6.29&quot;
+pytest = &quot;^8.1&quot;
+ruff = &quot;^0.11.6&quot;
+
+[build-system]
+requires = [&quot;poetry-core&quot;]
+build-backend = &quot;poetry.core.masonry.api&quot;
+
+[tool.pytest.ini_options]
+pythonpath = [
+  &quot;.&quot;, &quot;src&quot;,
+]
+
+[tool.ruff]
+target-version = &quot;py311&quot;
+line-length = 120
+
+[tool.ruff.lint] # Add this section
+    # select = [&quot;E&quot;, &quot;F&quot;]
+    # ignore = [&quot;E501&quot;] # Example
+    ignore = [
+        &quot;E501&quot;, # line too long, handled by black
+        &quot;B008&quot;, # do not perform function calls in argument defaults
+        &quot;C901&quot;, # too complex
+    ]
+
+    select = [
+        &quot;E&quot;, # pycodestyle errors
+        &quot;W&quot;, # pycodestyle warnings
+        &quot;F&quot;, # pyflakes
+        &quot;I&quot;, # isort
+        &quot;C&quot;, # flake8-comprehensions
+        &quot;B&quot;, # flake8-bugbear
+        &quot;SIM&quot; # simplify
+    ]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-23 13:15</div>
+            <div class="timeline-body"><p>Thanks for the report! I don't think this is a duplicate diagnostic. You're getting one diagnostic for each <code>True</code> value, but each diagnostic highlights the whole comparison expression. If you had <code>PLR0133</code> enabled, you'd get a third diagnostic with the same range: https://play.ruff.rs/68219349-d23f-45a8-91b3-1154d97b805f</p>
+<p>We could arguably limit the ranges to each <code>True</code> separately, but I think it generally makes sense to mark the whole comparison.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-23 13:20</div>
+            <div class="timeline-body"><p>We could try to be a bit more clever and avoid the second diagnostic if both sides are <code>True</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-23 13:22</div>
+            <div class="timeline-body"><p>That sounds reasonable to me. I'll transfer this to the <code>ruff</code> repo because it reproduces in the playground and CLI too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "duplicated diagnostics in ruff - vscode" to "Duplicate E712 diagnostics" by @ntBre on 2025-04-23 13:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-04-23 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-04-28 07:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:19 UTC
+    </footer>
+</body>
+</html>

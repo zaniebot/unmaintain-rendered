@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] `x != 0` is wrongly inferred as `Literal[True]` if type of `x` is any subtype of `~Literal[0]` - astral-sh/ruff #17360</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] <code>x != 0</code> is wrongly inferred as <code>Literal[True]</code> if type of <code>x</code> is any subtype of <code>~Literal[0]</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17360">#17360</a>
+        opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a>
+        on 2025-04-11 17:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-04-11 17:54</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>From <code>type_api.md</code></p>
+<pre><code class="language-py">from knot_extensions import static_assert
+
+def f(x: int) -&gt; None:
+    if x != 0:
+        static_assert(x != 0)
+</code></pre>
+<p>This test is incorrect. An <a href="https://playknot.ruff.rs/13023a56-4887-4a29-83dd-201570ba6dde">explanation by example</a> thanks to @AlexWaygood</p>
+<p>We cannot make any assumptions about <code>int &amp; ~Literal[0]</code> here. I'm not yet sure where this error comes from.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Incorrect static assert on constrained type" to "[red-knot] Incorrect static assert on constrained type" by @MatthewMckee4 on 2025-04-11 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-11 18:01</div>
+            <div class="timeline-body"><p>Thank you.</p>
+<p>The core problem is that the revealed type here is wrong:</p>
+<pre><code class="language-py">from typing import reveal_type
+
+def f(x: int) -&gt; None:
+    if x != 0:
+        reveal_type(x != 0)  # Literal[True]; should be bool.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @sharkdp on 2025-04-11 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-04-11 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-11 18:19</div>
+            <div class="timeline-body"><p>I'd consider this a minimal repro:</p>
+<pre><code class="language-py">from knot_extensions import Not
+from typing import Literal
+
+def f(x: Not[Literal[0]]):
+    reveal_type(x == 0)
+</code></pre>
+<p>The <code>reveal_type</code> call on the last line reveals <code>Literal[False]</code>, but there are many objects that compare equal to <code>0</code> that inhabit the type <code>~Literal[0]</code>. <code>False</code> and <code>0.0</code> are two examples.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-11 18:20</div>
+            <div class="timeline-body"><p>It's probably this code that needs to be fixed (or simply removed?)</p>
+<p>https://github.com/astral-sh/ruff/blob/e5026c08776164cc39dce36c0e657f781de7184d/crates/red_knot_python_semantic/src/types/infer.rs#L5258-L5285</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-11 18:25</div>
+            <div class="timeline-body"><blockquote>
+<p>It's probably this code that needs to be fixed (or simply removed?)</p>
+</blockquote>
+<p>I <em>think</em> we can keep the branches for <code>CmpOp::Is</code> and <code>CmpOp::IsNot</code>, but the branches for <code>CmpOp::Eq</code> and <code>CmpOp::NotEq</code> look like they need to go, yeah</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Incorrect static assert on constrained type" to "[red-knot] `x != 0` is wrongly inferred as `Literal[True]` if type of `x` is `int & ~Literal[0]`" by @carljm on 2025-04-12 00:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] `x != 0` is wrongly inferred as `Literal[True]` if type of `x` is `int & ~Literal[0]`" to "[red-knot] `x != 0` is wrongly inferred as `Literal[True]` if type of `x` is any subtype of `~Literal[0]`" by @AlexWaygood on 2025-04-13 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-04-16 05:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-04-16 05:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadratic formatting cost for many comments between two lines - astral-sh/ruff #17191</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Quadratic formatting cost for many comments between two lines</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17191">#17191</a>
+        opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a>
+        on 2025-04-03 23:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2025-04-03 23:56</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>See for example:</p>
+<pre><code>λ time uvx --from pypyp pyp '&quot;apply(x)\n&quot; + (&quot;# comment comment comment\n&quot;) * 1000 + &quot;apply(x)&quot;' | ruff format --stdin-filename foo --line-length=100 &gt; /dev/null
+uvx --from pypyp pyp   0.04s user 0.02s system 100% cpu 0.066 total
+ruff format --stdin-filename foo --line-length=100 &gt; /dev/null  0.07s user 0.00s system 55% cpu 0.133 total
+λ time uvx --from pypyp pyp '&quot;apply(x)\n&quot; + (&quot;# comment comment comment\n&quot;) * 2000 + &quot;apply(x)&quot;' | ruff format --stdin-filename foo --line-length=100 &gt; /dev/null
+uvx --from pypyp pyp   0.04s user 0.03s system 100% cpu 0.068 total
+ruff format --stdin-filename foo --line-length=100 &gt; /dev/null  0.27s user 0.01s system 82% cpu 0.336 total
+λ time uvx --from pypyp pyp '&quot;apply(x)\n&quot; + (&quot;# comment comment comment\n&quot;) * 3000 + &quot;apply(x)&quot;' | ruff format --stdin-filename foo --line-length=100 &gt; /dev/null
+uvx --from pypyp pyp   0.03s user 0.03s system 99% cpu 0.068 total
+ruff format --stdin-filename foo --line-length=100 &gt; /dev/null  0.60s user 0.01s system 90% cpu 0.670 total
+λ time uvx --from pypyp pyp '&quot;apply(x)\n&quot; + (&quot;# comment comment comment\n&quot;) * 4000 + &quot;apply(x)&quot;' | ruff format --stdin-filename foo --line-length=100 &gt; /dev/null
+uvx --from pypyp pyp   0.04s user 0.03s system 99% cpu 0.068 total
+ruff format --stdin-filename foo --line-length=100 &gt; /dev/null  1.06s user 0.01s system 94% cpu 1.129 total
+λ time uvx --from pypyp pyp '&quot;apply(x)\n&quot; + (&quot;# comment comment comment\n&quot;) * 5000 + &quot;apply(x)&quot;' | ruff format --stdin-filename foo --line-length=100 &gt; /dev/null
+uvx --from pypyp pyp   0.03s user 0.04s system 100% cpu 0.067 total
+ruff format --stdin-filename foo --line-length=100 &gt; /dev/null  1.67s user 0.01s system 96% cpu 1.731 total
+λ time uvx --from pypyp pyp '&quot;apply(x)\n&quot; + (&quot;# comment comment comment\n&quot;) * 6000 + &quot;apply(x)&quot;' | ruff format --stdin-filename foo --line-length=100 &gt; /dev/null
+uvx --from pypyp pyp   0.03s user 0.04s system 99% cpu 0.068 total
+ruff format --stdin-filename foo --line-length=100 &gt; /dev/null  2.47s user 0.01s system 97% cpu 2.538 total
+λ time uvx --from pypyp pyp '&quot;apply(x)\n&quot; + (&quot;# comment comment comment\n&quot;) * 7000 + &quot;apply(x)&quot;' | ruff format --stdin-filename foo --line-length=100 &gt; /dev/null
+uvx --from pypyp pyp   0.04s user 0.03s system 99% cpu 0.069 total
+ruff format --stdin-filename foo --line-length=100 &gt; /dev/null  3.25s user 0.00s system 98% cpu 3.318 total
+λ time uvx --from pypyp pyp '&quot;apply(x)\n&quot; + (&quot;# comment comment comment\n&quot;) * 8000 + &quot;apply(x)&quot;' | ruff format --stdin-filename foo --line-length=100 &gt; /dev/null
+uvx --from pypyp pyp   0.03s user 0.04s system 100% cpu 0.068 total
+ruff format --stdin-filename foo --line-length=100 &gt; /dev/null  4.24s user 0.01s system 98% cpu 4.309 total
+λ time uvx --from pypyp pyp '&quot;apply(x)\n&quot; + (&quot;# comment comment comment\n&quot;) * 9000 + &quot;apply(x)&quot;' | ruff format --stdin-filename foo --line-length=100 &gt; /dev/null
+uvx --from pypyp pyp   0.03s user 0.04s system 99% cpu 0.069 total
+ruff format --stdin-filename foo --line-length=100 &gt; /dev/null  5.37s user 0.01s system 98% cpu 5.436 total
+λ time uvx --from pypyp pyp '&quot;apply(x)\n&quot; + (&quot;# comment comment comment\n&quot;) * 10000 + &quot;apply(x)&quot;' | ruff format --stdin-filename foo --line-length=100 &gt; /dev/null
+uvx --from pypyp pyp   0.04s user 0.03s system 99% cpu 0.068 total
+ruff format --stdin-filename foo --line-length=100 &gt; /dev/null  6.70s user 0.01s system 99% cpu 6.764 total
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.9.10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-04 01:20</div>
+            <div class="timeline-body"><pre><code class="language-shell">awk '
+  /\* [0-9]+/ {printf &quot;%s&quot;, $14}
+  $1 ~ /ruff/ {printf &quot; %s\n&quot;, $(NF-1)}' 17191.dat | 
+gnuplot -e 'plot &quot;-&quot; with lines' -p
+</code></pre>
+<p><img src="https://github.com/user-attachments/assets/1cae7b90-3d06-4f6d-9917-4e3b64e0f9be" alt="Image" /></p>
+<p>Yep looks quadratic. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @ntBre on 2025-04-04 01:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @ntBre on 2025-04-04 01:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-04 06:24</div>
+            <div class="timeline-body"><p>Thanks for reporting. You must have very well documented code :)</p>
+<p>I recorded a profile; you can see it <a href="https://share.firefox.dev/426IgrG">here</a>, and it's entirely different from what I thought it would be.</p>
+<p>The problem is one of those two tokenization calls, which makes sense, because we end up relexing the same tokens over and over again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-04 06:43</div>
+            <div class="timeline-body"><p>The main issue is that we keep re-lexing all preceding comments everywhere where we have <code>SimpleTokenizer::new(before_comment, comment).skip_trivia()</code> because we need to figure out if there's any non-trivia content between the two positions. I suspect we would have to make the comments visitor more stateful and track:</p>
+<ul>
+<li>the end offset to where we checked for non-trivia tokens</li>
+<li>what the kind of token is that we saw in this range</li>
+<li>reset that state after every node</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-04-04 06:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-04 13:06</div>
+            <div class="timeline-body"><p>Could we pass in the <code>parsed.tokens()</code> and use that when extracting the comments data or is the cost of doing multiple binary searches greater than just re-lexing it? We could even create a <code>CachedTokens</code> data structure that remembers each access point for the token methods <code>after</code>, <code>before</code> (similar to preceeding), etc.</p>
+<p>https://github.com/astral-sh/ruff/blob/64e7e1aa648625359fdbdcaf5fe055c34ff5a783/crates/ruff_python_formatter/src/lib.rs#L127-L128</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-04 13:46</div>
+            <div class="timeline-body"><p>I don't think tokens helps. At least, it doesn't change the complexity to be linear. The problem is that we keep scanning <code>previous_statement.end()..current_comment.start()</code>. Using <code>tokens</code> might (or might not) be cheaper but it still performs the same scanning over and over again.</p>
+<p>The solution reduces the window that we scan from <code>previous_statement.end()</code> to <code>previous_statement_or_comment.end()..current_comment.start()</code>, making it linear</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-05 07:24</div>
+            <div class="timeline-body"><p>Another, statement specific, solution is to skip some of those operations when the preceding and following nodes are both statements. This at least works at least for where we handle parenthesized nodes because two statements can never have parentheses in-between. This might even be possible when the enclosing node is parenthesized. But I'm not a 100%.</p>
+<p>The downside of this approach is that it doesn't fix the exponential runtime for a large number of comments between two expressions</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:09 UTC
+    </footer>
+</body>
+</html>

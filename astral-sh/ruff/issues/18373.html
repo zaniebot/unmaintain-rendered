@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Failed to rename cache file when trying to run ruff - astral-sh/ruff #18373</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Failed to rename cache file when trying to run ruff</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18373">#18373</a>
+        opened by <a href="https://github.com/zoeelkins">@zoeelkins</a>
+        on 2025-05-29 15:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/zoeelkins">@zoeelkins</a> on 2025-05-29 15:43</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>This issue seems to be similar/related to <a href="https://github.com/astral-sh/ruff/issues/9490">Issue #9490</a>.</p>
+<p>I am using Databricks and install ruff and uv via pip, particularly using Databricks' magic command (<code>%pip</code>).</p>
+<pre><code>%pip install uv
+%pip install ruff
+%restart_python
+</code></pre>
+<p>I checked my version of ruff with this command:</p>
+<pre><code>$ uv run --active ruff --version
+   ruff 0.11.12
+</code></pre>
+<p>When I run a check on my directory using ruff, I find the following error:</p>
+<pre><code>$ uv run --active ruff --isolated check file.ipynb
+ruff failed
+  Cause: Failed to rename temporary cache file to /Workspace/Users/ze@email.com/sandbox/.ruff_cache/0.11.12/16841316555859280395
+  Cause: failed to persist temporary file: No such file or directory (os error 2)
+  Cause: No such file or directory (os error 2)
+</code></pre>
+<p>Any help is appreciated! Thanks!</p>
+<h3>Version</h3>
+<p>ruff 0.11.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-29 16:51</div>
+            <div class="timeline-body"><p>Hmm. I'm unfamiliar with databrick</p>
+<p>Does the directory /Workspace/Users/ze@email.com/sandbox/.ruff_cache/ exist?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zoeelkins">@zoeelkins</a> on 2025-05-29 17:10</div>
+            <div class="timeline-body"><p>@MichaReiser yes it does -- as does the 0.11.12 folder!</p>
+<p>Databricks is an &quot;all in one&quot;-type data science solution. Put more simply, it's an .ipynb GUI with datalake &amp; SQL bells &amp; whistles. When you want to execute code, you establish a connection to a compute cluster (unix based), install dependencies, and run the code.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-29 18:51</div>
+            <div class="timeline-body"><p>I think we're using this <a href="https://docs.rs/tempfile/latest/tempfile/struct.NamedTempFile.html#method.persist"><code>persist</code></a> method from the <code>tempfile</code> crate here, which says</p>
+<blockquote>
+<p>Note: Temporary files cannot be persisted across filesystems. Also neither the file contents nor the containing directory are synchronized, so the update may not yet have reached the disk when persist returns.</p>
+</blockquote>
+<p>Is it possible that your system's temporary directory is on a different filesystem than <code>/Workspace</code>? It sounds like <code>/Workspace</code> could even be on a remote filesystem.</p>
+<p>As a workaround, you should be able to disable the caching with the <code>--no-cache</code> flag.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zoeelkins">@zoeelkins</a> on 2025-05-29 19:06</div>
+            <div class="timeline-body"><p>@ntBre thank you! That makes sense. Because, yes -- <code>/Workspace</code> is a remote filesystem separate from the cluster's temporary directory (<a href="https://docs.databricks.com/aws/en/files">DBFS</a>). I hadn't even considered that. Passing the <code>--no-cache</code> flag resolved the issue!</p>
+<p>For reference, here is the command that worked on Databricks:</p>
+<pre><code>$ uv run --active ruff check --no-cache file.ipynb
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zoeelkins on 2025-05-29 19:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:33 UTC
+    </footer>
+</body>
+</html>

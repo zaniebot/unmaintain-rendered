@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encode mutually-incompatible pairs of markers - astral-sh/uv #9444</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Encode mutually-incompatible pairs of markers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9444">#9444</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-11-26 15:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-26 15:54</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is an alternative to #9344. If accepted, I need to audit the codebase and call sites to apply it everywhere, but the basic idea is: rather than encoding mutually-incompatible pairs of markers in the representation itself, we have an additional method on <code>MarkerTree</code> that expands the false-y definition to take into account assumptions about which markers can be true alongside others. We then check if the the current marker implies that at least one of them is true.</p>
+<p>So, for example, we know that <code>sys_platform == 'win32'</code> and <code>platform_system == 'Darwin'</code> are mutually exclusive. When given a marker expression like <code>python_version &gt;= '3.7'</code>, we test if <code>python_version &gt;= '3.7'</code> and <code>sys_platform != 'win32' or platform_system != 'Darwin'</code> are disjoint, i.e., if the following can't be satisfied:</p>
+<pre><code>python_version &gt;= '3.7' and (sys_platform != 'win32' or platform_system != 'Darwin')
+</code></pre>
+<p>Since, if this can't be satisfied, it implies that the left-hand expression requires <code>sys_platform == 'win32'</code> and <code>platform_system == 'Darwin'</code> to be true at the same time.</p>
+<p>I think the main downsides here are:</p>
+<ol>
+<li>We can't <em>simplify</em> markers based on these implications. So we'd still write markers like <code>sys_platform == 'win32' and platform_system != 'Darwin'</code>, even though we know the latter expression is redundant.</li>
+<li>It might be expensive? I'm not sure. I don't think we test for falseness <em>that</em> often though.</li>
+</ol>
+<p>Closes #7760.
+Closes #9275.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-11-26 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-11-26 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @charliermarsh on 2024-11-26 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-11-26 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-11-26 15:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-26 15:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pep508/src/marker/tree.rs</code>:845 on 2024-11-26 15:54</div>
+            <div class="timeline-body"><p>On the bright side, this is highly flexible so we can encode more known incompatibilities, like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-26 15:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:497 on 2024-11-26 15:55</div>
+            <div class="timeline-body"><p>I need to do this in more places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-26 15:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:497 on 2024-11-26 15:59</div>
+            <div class="timeline-body"><p>It might be a pain... Right now, <code>env_marker.is_disjoint(&amp;not_marker)</code> returns <code>true</code> if either of the expressions are false, but that doesn't include the <code>is_conflicting</code> definition here -- it only looks at the <code>FALSE</code> node.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-11-26 16:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:497 on 2024-11-26 16:35</div>
+            <div class="timeline-body"><p>You could make <code>is_conflicting</code> into <code>simplify_conflicting(...) -&gt; MarkerTree</code> that returns a FALSE node if it matched one of the impossible cases, that might simplify</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-26 17:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:497 on 2024-11-26 17:03</div>
+            <div class="timeline-body"><p>Do you think the approach makes sense though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-11-26 19:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-11-26 20:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:497 on 2024-11-26 20:01</div>
+            <div class="timeline-body"><p>we'd have to try it out, but it does sound more elegant in theory</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-11-26 20:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pep508/src/marker/tree.rs</code>:861 on 2024-11-26 20:02</div>
+            <div class="timeline-body"><p>We may want to cache those, @ibraheemdev will know the perf characteristics</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-11-27 15:45</div>
+            <div class="timeline-body"><p>I think the idea here is sound.</p>
+<p>My main concern is probably what you might expect: that you have to remember to call this in a bunch of places around the code. I suppose the mitigation to that is that this isn't a correctness issue but a simplification issue.</p>
+<p>Is there any way to do this simplification via <code>MarkerTree</code>'s smart constructors? Before @ibraheemdev's work, we had this problem of markers possibly being simplified or not, and we'd call the simplification routine in various spots. But now we have a nice guarantee that markers are always simplified, as guaranteed by the smart constructors. Maybe we can do that in our <code>MarkerTree::and</code> and <code>MarkerTree::or</code> methods?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-27 16:00</div>
+            <div class="timeline-body"><p>Yeah I like that idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-11-27 16:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/environment.rs</code>:497 on 2024-11-27 16:28</div>
+            <div class="timeline-body"><p>andrew's idea is even better than that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-11-27 23:29</div>
+            <div class="timeline-body"><p>I wonder if you could even define <code>MarkerTree::TRUE</code> and <code>MarkerTree::FALSE</code> to be the set of known impossible states.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-11-27 23:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-pep508/src/marker/tree.rs</code>:861 on 2024-11-27 23:30</div>
+            <div class="timeline-body"><p>This is in a <code>OnceCell</code> so it should be good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-28 01:14</div>
+            <div class="timeline-body"><p>Ok, the version I pushed does this in the smart constructors...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-28 01:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pep508/src/marker/tree.rs</code>:719 on 2024-11-28 01:15</div>
+            <div class="timeline-body"><p>Is it better to hold the lock and re-use it in <code>simplify</code>, or re-<code>lock()</code> as I'm doing here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-11-28 02:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-pep508/src/marker/tree.rs</code>:719 on 2024-11-28 02:33</div>
+            <div class="timeline-body"><p>Probably re-use it, these are pretty much only used by a single thread.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-28 03:07</div>
+            <div class="timeline-body"><p>I think what I have here works, but I'm worried about the performance costs and complexity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pep508/src/marker/tree.rs</code>:734 on 2024-11-28 08:42</div>
+            <div class="timeline-body"><p>Took me a while to understand that this is <code>is_disjoint</code> and not <code>!is_disjoint</code> because <code>MUTUAL_EXCLUSIONS</code> is the negated exclusions, so it's the valid space.</p>
+<p><img src="https://github.com/user-attachments/assets/28d16937-db91-4603-b8a2-dafce9ea9b8c" alt="image" /></p>
+<p>Plus when reading the code you need to consider we call this every time while building the marker, so when only B from <code>A or B</code> (we previously saw in a lockfile) lies in the excluded area, we still get A because B was converted to FALSE upon construction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-11-28 08:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pep508/src/marker/tree.rs</code>:734 on 2024-11-28 14:24</div>
+            <div class="timeline-body"><p>Should I be changing something in response to this comment? :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-28 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-11-28 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pep508/src/marker/tree.rs</code>:734 on 2024-11-28 14:48</div>
+            <div class="timeline-body"><p>Could you add an inline comment like:</p>
+<blockquote>
+<p><code>MUTUAL_EXCLUSIONS</code> is the possible space, if the markers are <code>is_disjoint</code> with it, they are solely in the impossible space.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-11-28 14:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-pep508/src/marker/tree.rs</code>:734 on 2024-11-28 14:49</div>
+            <div class="timeline-body"><p>(I'll leave the smart constructor review to andrew/ibraheem)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-11-29 18:58</div>
+            <div class="timeline-body"><p>Ok, I think <em>this</em> version should have a minimal performance hit. I moved the logic into the algebra itself, and we now only perform this check when merging nodes that could yield a conflict (i.e., two marker trees that contain variables that could conflict). Per @ibraheemdev suggestion, I made those variables &quot;highest-priority&quot;, so if they aren't present at the top of the marker tree, we know they aren't present anywhere beneath it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-11-29 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pep508/src/marker/algebra.rs</code>:818 on 2024-11-29 19:04</div>
+            <div class="timeline-body"><p>I need the above methods because I need versions that <em>don't</em> recursively call <code>.exclusions()</code>. If I just use <code>and</code> and <code>or</code> here, I create an infinite loop.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pep508/src/marker/algebra.rs</code>:822 on 2024-11-29 19:04</div>
+            <div class="timeline-body"><p>I assume it's fine to just use an <code>Option</code> here rather than a <code>OnceCell</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pep508/src/marker/algebra.rs</code>:461 on 2024-11-29 19:06</div>
+            <div class="timeline-body"><p>Not a huge fan of having this entirely separate method. But it's equivalent to <code>is_disjoint</code>, except it doesn't do the mutually-incompatible marker check. If it <em>did</em>, we'd create an infinite loop, since <code>is_disjoint</code> calls <code>and</code> in that case which then calls <code>disjointness</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-29 19:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-11-29 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-pep508/src/marker/algebra.rs</code>:339 on 2024-11-29 19:24</div>
+            <div class="timeline-body"><p>The idea is to give the &quot;possibly-conflicting&quot; markers highest priority, so they're always at the top of the tree.</p>
+<p>As such, when we AND two expressions, we only have to perform the &quot;possibly-conflicting&quot; check if they both have a conflicting variable at the very top.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-29 19:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-01 14:26</div>
+            <div class="timeline-body"><p>Ok, I added some sorting to the DNF to minimize the amount of churn in the expressions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pep508/src/marker/tree.rs</code>:499 on 2024-12-03 13:27</div>
+            <div class="timeline-body"><p>Is this <em>only</em> used for backcompat sorting? If so, it might be useful to add a comment indicating as such. And that the order here matters?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pep508/src/marker/algebra.rs</code>:461 on 2024-12-03 13:48</div>
+            <div class="timeline-body"><p>Yeah I feel like a little copying here is probably the way to go. I don't see a simple way of unifying them without making it more obscure.</p>
+<p>Might be worth moving this comment into the code, for future wranglers wondering about it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pep508/src/marker/algebra.rs</code>:818 on 2024-12-03 13:51</div>
+            <div class="timeline-body"><p>Makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-pep508/src/marker/algebra.rs</code>:822 on 2024-12-03 13:51</div>
+            <div class="timeline-body"><p>Yeah. Rust wouldn't let you mess this up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-12-03 13:52</div>
+            <div class="timeline-body"><p>I think this makes sense to me. And I like that this doesn't require any sort of knowledge on the callers part to explicitly simplify the markers. Nice work. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-12-07 01:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-07 01:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-07 01:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:15 UTC
+    </footer>
+</body>
+</html>

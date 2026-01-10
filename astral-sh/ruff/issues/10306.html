@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PLE0237 false positive - astral-sh/ruff #10306</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>PLE0237 false positive</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10306">#10306</a>
+        opened by <a href="https://github.com/henryiii">@henryiii</a>
+        on 2024-03-09 02:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/henryiii">@henryiii</a> on 2024-03-09 02:21</div>
+            <div class="timeline-body"><p>Currently, PLE0237 will report &quot;Attribute <code>other</code> is not defined in class's <code>__slots__</code>&quot; on a class like this:</p>
+<pre><code class="language-python">class A:
+    __slots__ = (&quot;pub&quot;,)
+
+    def __init__(self) -&gt; None:
+        self.other = &quot;hi&quot;
+</code></pre>
+<p>Which is correct. But it also reports the same error on the following correct class:</p>
+<pre><code class="language-python">class B:
+    __slots__ = (&quot;pub&quot;, &quot;__dict__&quot;)
+
+    def __init__(self) -&gt; None:
+        self.other = &quot;hi&quot;
+</code></pre>
+<p>This is incorrect; since the class has a <code>__dict__</code> in it's <code>__slots__</code>, it has a dict to put <code>other</code> in. This is described in https://docs.python.org/3/reference/datamodel.html#slots (both <code>__dict__</code> and <code>__weakref__</code> can be declared in <code>__slots__</code>), and is an important technique for wrapper classes, where the wrapped object is declared in slots, so that the <code>__dict__</code> has everything except the wrapped object.</p>
+<p>Incorrect check result seen in https://github.com/scikit-hep/boost-histogram/pull/914.</p>
+<ul>
+<li>Command <code>ruff check --select=ALL --isolated tmp.py</code></li>
+<li>Ruff version: ruff 0.3.1</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-09 02:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-09 02:30</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-09 03:23</div>
+            <div class="timeline-body"><p>So is it correct to effectively turn off this check when <code>__dict__</code> is present?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-03-09 05:40</div>
+            <div class="timeline-body"><p>Basically. The condition is actually if a class has a <code>__dict__</code>, not if it has <code>__slots__</code>. Classes without <code>__slots__</code> (anywhere in the inheritance chain) automatically get a <code>__dict__</code>. Classes with <code>__slots__</code> (including in every parent) only get a dict if it's added manually in <code>__slots__</code>.</p>
+<p>I assume you couldn't handle complex cases, but in the most common simple case of of a <code>__slots__</code> having a string <code>&quot;__dict__&quot;</code>, I assume you could treat that like a dict class?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> added by @zanieb on 2024-03-11 16:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2024-03-11 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-11 22:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:33:05 UTC
+    </footer>
+</body>
+</html>

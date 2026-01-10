@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RUF100 fix removes remaining comment - astral-sh/ruff #20762</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>RUF100 fix removes remaining comment</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20762">#20762</a>
+        opened by <a href="https://github.com/adamtheturtle">@adamtheturtle</a>
+        on 2025-10-08 10:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adamtheturtle">@adamtheturtle</a> on 2025-10-08 10:48</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I use <code>ruff</code> and <code>pylint</code>.
+I used to have to ignore errors for each on the same line, so I added the following ignore:</p>
+<pre><code class="language-python">&quot;&quot;&quot;Demonstrate ruff removal of pylint disable.&quot;&quot;&quot;
+
+import ast
+
+
+class A(ast.NodeVisitor):
+    &quot;&quot;&quot;Subclass of ast.NodeVisitor.&quot;&quot;&quot;
+
+    def visit_ImportFrom(  # noqa: N802, pylint: disable=invalid-name
+        self,
+        node: ast.ImportFrom,
+    ) -&gt; None:
+        &quot;&quot;&quot;Override method.&quot;&quot;&quot;
+</code></pre>
+<p><code>ruff check --select=ALL ruff_example.py</code> gives:</p>
+<pre><code>RUF100 [*] Unused `noqa` directive (unused: `N802`)
+  --&gt; ruff_example.py:9:28
+   |
+ 7 |     &quot;&quot;&quot;Subclass of ast.NodeVisitor.&quot;&quot;&quot;
+ 8 |
+ 9 |     def visit_ImportFrom(  # noqa: N802, pylint: disable=invalid-name
+   |                            ^^^^^^^^^^^^
+10 |         self,
+11 |         node: ast.ImportFrom,
+   |
+help: Remove unused `noqa` directive
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+</code></pre>
+<p>Adding <code>--fix</code> unexpectedly removes the <code>pylint</code> disable part of the comment (meaning that <code>pylint</code> errors).</p>
+<h3>Version</h3>
+<p>0.14.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-08 13:25</div>
+            <div class="timeline-body"><p>I was looking through other <code>RUF100</code> issues, and it looks like this was actually an intentional change in https://github.com/astral-sh/ruff/issues/12251 to assume that the rest of the comment is a description of the noqa code. The recommended workaround is to use a second <code>#</code> in the comment to separate the suppression comments like:</p>
+<pre><code class="language-py">def visit_ImportFrom(  # noqa: N802 # pylint: disable=invalid-name
+</code></pre>
+<p><code>RUF100</code> won't delete past the second <code>#</code> in this case: <a href="https://play.ruff.rs/363341bf-d6a1-42e3-b367-39ec140dab6d">playground</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-10-08 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamtheturtle">@adamtheturtle</a> on 2025-10-08 15:02</div>
+            <div class="timeline-body"><p>Thank you for taking a look.</p>
+<p>I think that this should be documented in https://docs.astral.sh/ruff/rules/unused-noqa/.
+I also think perhaps the fix should be marked unsafe in the case that it will remove other comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @ntBre on 2025-10-08 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-10-08 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @ntBre on 2025-10-08 19:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-08 19:54</div>
+            <div class="timeline-body"><p>Yeah, I think those both make sense!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-10 05:27</div>
+            <div class="timeline-body"><p>I agree with the documentation but I don't think the fix should be marked as unsafe. Marking fixes as unsafe comes at a cost, they stop working out of the box. In this case, the fix does work as intended and follows noqa semantics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @amyreese on 2026-01-09 17:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:32 UTC
+    </footer>
+</body>
+</html>

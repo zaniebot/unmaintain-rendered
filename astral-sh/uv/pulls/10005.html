@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`metadata_directory` already contains dist-info directory - astral-sh/uv #10005</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>metadata_directory</code> already contains dist-info directory</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10005">#10005</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-12-18 15:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-12-18 15:45</div>
+            <div class="timeline-body"><p>From PEP 517:</p>
+<pre><code class="language-python">def prepare_metadata_for_build_wheel(metadata_directory, config_settings=None):
+    ...
+</code></pre>
+<blockquote>
+<p>Must create a .dist-info directory containing wheel metadata inside the specified metadata_directory (i.e., creates a directory like {metadata_directory}/{package}-{version}.dist-info/).</p>
+</blockquote>
+<pre><code class="language-python">def build_wheel(wheel_directory, config_settings=None, metadata_directory=None):
+    ...
+</code></pre>
+<blockquote>
+<p>If the build frontend has previously called prepare_metadata_for_build_wheel and depends on the wheel resulting from this call to have metadata matching this earlier call, then it should provide the path to the created .dist-info directory as the metadata_directory argument.</p>
+</blockquote>
+<p>Notice that the <code>metadata_directory</code> is different for the both hooks: For <code>prepare_metadata_for_build_wheel</code> is doesn't contain the <code>.dist-info</code> directory as final segment, for <code>build_wheel</code> it does.</p>
+<p>Previously, the code assumed that both directories didn't contain the <code>.dist-info</code> for both cases.</p>
+<p>Checked with:</p>
+<pre><code>maturin build
+uv init test-uv-build-backend --build-backend uv
+cd test-uv-build-backend
+uv build --sdist --preview
+cd ..
+UV_PREVIEW=1 pip install test-uv-build-backend/dist/test_uv_build_backend-0.1.0.tar.gz --no-index --find-links target/wheels/ -v --no-cache-dir
+</code></pre>
+<p>Fixes #9969</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @konstin on 2024-12-18 15:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-12-18 16:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-12-18 16:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @konstin on 2024-12-18 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @konstin on 2024-12-18 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-12-18 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-12-18 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-18 19:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:16 UTC
+    </footer>
+</body>
+</html>

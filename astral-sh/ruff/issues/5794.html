@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Does `crates/ruff/resources/test/fixtures/pyupgrade/UP014.py` contain incorrect `NamedTuple` calls? - astral-sh/ruff #5794</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Does <code>crates/ruff/resources/test/fixtures/pyupgrade/UP014.py</code> contain incorrect <code>NamedTuple</code> calls?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/5794">#5794</a>
+        opened by <a href="https://github.com/harupy">@harupy</a>
+        on 2023-07-16 02:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/harupy">@harupy</a> on 2023-07-16 02:43</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>https://github.com/astral-sh/ruff/blob/f012ed2d77272bfdd75f6988c2658e36fbf63102/crates/ruff/resources/test/fixtures/pyupgrade/UP014.py#L7-L12</p>
+<p>Is this a valid <code>NamedTuple</code> call?</p>
+<pre><code>&gt; python3 --version
+Python 3.11.4
+
+&gt; cat a.py
+from typing import NamedTuple
+
+MyType = NamedTuple(
+    &quot;MyType&quot;,
+    [(&quot;a&quot;, int), (&quot;b&quot;, str), (&quot;c&quot;, list[bool])],
+    defaults=[&quot;foo&quot;, [True]],
+)
+
+&gt; python a.py
+Traceback (most recent call last):
+  File &quot;/home/haru/Desktop/repositories/ruff/a.py&quot;, line 3, in &lt;module&gt;
+    MyType = NamedTuple(
+             ^^^^^^^^^^^
+  File &quot;/home/haru/miniconda3/envs/py311/lib/python3.11/typing.py&quot;, line 2916, in NamedTuple
+    raise TypeError(&quot;Either list of fields or keywords&quot;
+TypeError: Either list of fields or keywords can be provided to NamedTuple, not both
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Does `crates/ruff/resources/test/fixtures/pyupgrade/UP014.py` contains incorrect `NamedTuple` calls?" to "Does `crates/ruff/resources/test/fixtures/pyupgrade/UP014.py` contain incorrect `NamedTuple` calls?" by @harupy on 2023-07-16 02:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-16 03:21</div>
+            <div class="timeline-body"><p>or is this intended?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cnpryer">@cnpryer</a> on 2023-07-16 03:22</div>
+            <div class="timeline-body"><blockquote>
+<p>Is this a valid NamedTuple call?</p>
+</blockquote>
+<p>If I understand this function signature correctly, no, right?</p>
+<p>https://github.com/python/cpython/blob/8c177294899b621fe04ae755abd41b4d319dd4b5/Lib/typing.py#L2770</p>
+<pre><code class="language-py">def NamedTuple(typename, fields=_sentinel, /, **kwargs):
+</code></pre>
+<p>edit: <a href="https://github.com/python/cpython/pull/105609/files#diff-ddb987fca5f5df0c9a2f5521ed687919d70bb3d64eaeb8021f98833a2a716887">it's recently changed</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cnpryer">@cnpryer</a> on 2023-07-16 03:25</div>
+            <div class="timeline-body"><blockquote>
+<p>or is this intended?</p>
+</blockquote>
+<p>Is this what you saw?</p>
+<pre><code class="language-py">from typing import NamedTuple
+ 
+MyType = NamedTuple(
+    &quot;MyType&quot;,
+    [(&quot;a&quot;, int), (&quot;b&quot;, str), (&quot;c&quot;, list[bool])],
+    defaults=[&quot;foo&quot;, [True]],
+)
+</code></pre>
+<pre><code>crates/ruff_python_formatter/scratch.py:6:16: F821 Undefined name `foo`
+Found 1 error.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-16 03:31</div>
+            <div class="timeline-body"><p>I saw that, and then found this issue. What I meant by <code>is this intended</code> was:</p>
+<pre><code class="language-python">MyType = NamedTuple(
+    &quot;MyType&quot;,
+    [(&quot;a&quot;, int), (&quot;b&quot;, str), (&quot;c&quot;, list[bool])],
+    defaults=[1, &quot;foo&quot;, [True]],
+)
+</code></pre>
+<p>is an invalid <code>NamedTuple</code> call, but syntactically correct. It could be useful if ruff automatically fixes this to:</p>
+<pre><code class="language-python">class MyType(NamedTuple):
+    a: int = 1
+    b: str = &quot;foo&quot;
+    c: list[bool] = [True]
+</code></pre>
+<p>Ruff currently does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-16 04:18</div>
+            <div class="timeline-body"><p>I think it's intended, just to see how we would handle that case, even if it's not valid at runtime.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-16 04:29</div>
+            <div class="timeline-body"><p>Makes sense. Is F821 on <code>foo</code> unintended (https://github.com/astral-sh/ruff/issues/5794#issuecomment-1636970152)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-16 04:49</div>
+            <div class="timeline-body"><p>Is passing <code>defaults</code> as a list supported at all? I wonder why we support that at all? (Maybe that's why you opened the issue and I just misunderstood.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-16 04:50</div>
+            <div class="timeline-body"><p>(I assumed there was some case in which passing a list of defaults was supported, just that you couldn't mix it with specifying the fields that way.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-16 04:56</div>
+            <div class="timeline-body"><pre><code class="language-python">from typing import NamedTuple
+
+# valid
+MyType = NamedTuple(
+    &quot;MyType&quot;,
+    defaults=str,
+)
+
+# valid
+MyType = NamedTuple(
+    &quot;MyType&quot;,
+    defaults=list[str],
+)
+
+# invalid, doesn't throw but doesn't make sense because `[str]` is not a valid type annotation
+MyType = NamedTuple(
+    &quot;MyType&quot;,
+    defaults=[str],
+)
+
+# invalid, throws `TypeError: Either list of fields or keywords can be provided to NamedTuple, not both`
+MyType = NamedTuple(
+    &quot;MyType&quot;,
+    [(&quot;a&quot;, int), (&quot;b&quot;, str), (&quot;c&quot;, list[bool])],
+    defaults=[1, &quot;foo&quot;, [True]],
+)
+</code></pre>
+<p>You can pass a list to <code>defaults</code> as the third example does, but that makes no sense (it would make sense if <code>[str]</code> was an alias for <code>list[str]</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-16 05:07</div>
+            <div class="timeline-body"><p>In each case, <code>defaults</code> is just treated as a standard field though, right? I feel like UP014 is under the mistaken impression that you can provide a list of default values via <code>defaults</code>... If so, we should remove that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-16 05:08</div>
+            <div class="timeline-body"><p>Yeah, we should remove all the special-casing around <code>defaults</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-07-16 05:10</div>
+            <div class="timeline-body"><p>E.g., this and related code seems unnecessary:</p>
+<pre><code class="language-rust">/// Match the `defaults` keyword in a `NamedTuple(...)` call.
+fn match_defaults(keywords: &amp;[Keyword]) -&gt; Result&lt;&amp;[Expr]&gt; {
+    let defaults = keywords.iter().find(|keyword| {
+        if let Some(arg) = &amp;keyword.arg {
+            arg == &quot;defaults&quot;
+        } else {
+            false
+        }
+    });
+    match defaults {
+        Some(defaults) =&gt; match &amp;defaults.value {
+            Expr::List(ast::ExprList { elts, .. }) =&gt; Ok(elts),
+            Expr::Tuple(ast::ExprTuple { elts, .. }) =&gt; Ok(elts),
+            _ =&gt; bail!(&quot;Expected defaults to be `Expr::List` | `Expr::Tuple`&quot;),
+        },
+        None =&gt; Ok(&amp;[]),
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-16 05:12</div>
+            <div class="timeline-body"><p>I agree.</p>
+<blockquote>
+<p>In each case, defaults is just treated as a standard field though, right?</p>
+</blockquote>
+<p><code>defaults</code> is visited as a type annotation:</p>
+<p>https://github.com/astral-sh/ruff/blob/d692ed08961cbdc56a9f254fba906bd6d3b711d8/crates/ruff/src/checkers/ast/mod.rs#L3690-L3695</p>
+<p>Ruff thinks <code>&quot;foo&quot;</code> is a forward ref, but no <code>foo</code> exists, F821 is thrown on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/harupy">@harupy</a> on 2023-07-16 05:23</div>
+            <div class="timeline-body"><p>Happy to file a PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-07-17 01:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:42 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>N818 ErrorSuffixOnExceptionName should apply recursively to sub-subclasses of Exception - astral-sh/ruff #20936</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>N818 ErrorSuffixOnExceptionName should apply recursively to sub-subclasses of Exception</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20936">#20936</a>
+        opened by <a href="https://github.com/maltevesper">@maltevesper</a>
+        on 2025-10-17 10:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/maltevesper">@maltevesper</a> on 2025-10-17 10:04</div>
+            <div class="timeline-body"><p>This is created to reraise #783, as requested by @ntBre in <a href="https://github.com/astral-sh/ruff/issues/783#issuecomment-3410784877">#783</a>_</p>
+<p>From the original issue:</p>
+<blockquote>
+<p>This triggers <code>N818 exception name 'Bar' should be named with an Error suffix</code> in pep8-naming but not in Ruff:</p>
+<p>class FooError(Exception):
+pass</p>
+<p>class Bar(FooError):
+pass
+pep8-naming checks this by <a href="https://github.com/PyCQA/pep8-naming/blob/b3492eeede12a26d35c0ee9e6b9c37a7e5484bf6/src/pep8ext_naming.py#L283-L293">recursively searching</a> all ancestor classes, although it may be nearly as effective to just check whether an immediate parent class has a name ending in <code>Error</code>.</p>
+</blockquote>
+<p>I think there are a few reasons to reconsider recursivly checking baseclass for <code>Exception</code> to make the lint more viable.</p>
+<pre><code>pydantic.ValidationErrr(ValueError): # typo missing O
+</code></pre>
+<p>or for projects defining their own Exception base class on which they base all other exceptions, one example would be <a href="https://github.com/python-gitlab/python-gitlab/blob/3859aa0ff3a77b31651b770585f5cfe81c9d244a/gitlab/exceptions.py#L37">gitlab-python</a>.</p>
+<pre><code>class GitlabAuthenticationError(GitlabError):
+    pass
+
+
+class RedirectError(GitlabError):
+    pass
+</code></pre>
+<p>If it is still not viable it would be nice to have a rational like &quot;prohibitve performance impact&quot; statet for reference.
+If you can point me to another lint already recursively inspecting bases I <em>might</em> have a go at a PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-17 17:56</div>
+            <div class="timeline-body"><p>Thanks for spinning off the separate issue! I think this makes sense but will require type inference, or at least multi-file analysis, in the general case where base classes might come from different modules. As noted above, we currently just check if any of the immediate base classes is <code>Exception</code> or ends with <code>Error</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/c7e2bfd7592d765df07b87ad64755d5fa9037fa4/crates/ruff_linter/src/rules/pep8_naming/rules/error_suffix_on_exception_name.rs#L65</p>
+<p>We could try using <a href="https://github.com/astral-sh/ruff/blob/c7e2bfd7592d765df07b87ad64755d5fa9037fa4/crates/ruff_python_semantic/src/analyze/class.rs#L29"><code>any_base_class</code></a>, which I think will do the recursive traversal within a single file, in the meantime though.</p>
+<p><code>N818</code> is a stable rule now, so if anyone gives this a try, we'll need to make it a <a href="https://github.com/astral-sh/ruff/blob/c0fb235a703684bca1cc1767015bb7e19ab1c22f/crates/ruff_linter/src/preview.rs#L16-L19"><code>preview</code></a> change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-10-17 17:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-10-17 18:03</div>
+            <div class="timeline-body"><p>I think it's fine making this change as it leads to fewer diagnostics (unless it results in a very large diff of errors)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-17 18:12</div>
+            <div class="timeline-body"><p>I think this could actually lead to more diagnostics since we'll inspect more super classes. We only flag <code>FooErrr</code> in this <a href="https://play.ruff.rs/dcef67b1-93a6-42eb-9aac-ec8788eda95d">example</a> currently, but would also flag <code>Bar</code> if we resolved its base classes recursively:</p>
+<pre><code class="language-py">class FooErrr(Exception): ...
+
+class Bar(FooErrr): ...
+</code></pre>
+<p>if I'm understanding correctly.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:36 UTC
+    </footer>
+</body>
+</html>

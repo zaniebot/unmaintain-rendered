@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conditionalize more tests that require PyPI - astral-sh/uv #13699</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Conditionalize more tests that require PyPI</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13699">#13699</a>
+        opened by <a href="https://github.com/musicinmybrain">@musicinmybrain</a>
+        on 2025-05-28 11:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2025-05-28 11:42</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Use the existing <code>pypi</code> feature to conditionalize a number of tests that attempt to access https://pypi.org and/or https://files.pythonhosted.org. See https://github.com/astral-sh/uv/issues/8970#issuecomment-2466794088.</p>
+<p>There is no reason to believe that these are <em>all</em> of the tests that need to be conditionalized on the <code>pypi</code> feature, but this should be a solid step in the right direction.</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>This allows me to build and run the integration tests in <a href="https://src.fedoraproject.org/rpms/uv">Fedora’s <code>uv</code> package</a> without having to manually skip tests that try to access PyPI. I confirmed that this appears to accomplish that goal.</p>
+<p>Otherwise, this should be tested by building and running the tests as usual. As mentioned in https://github.com/astral-sh/uv/issues/8970#issuecomment-2516181501, a more complete solution would include CI tests that confirm these features are working as intended. I’m not in a position to offer that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-28 12:01</div>
+            <div class="timeline-body"><p>For <code>pip_check.rs</code> and <code>workspace.rs</code>, should we gate the entire modules instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2025-05-28 12:20</div>
+            <div class="timeline-body"><blockquote>
+<p>For <code>pip_check.rs</code> and <code>workspace.rs</code>, should we gate the entire modules instead?</p>
+</blockquote>
+<p>For <code>pip_check.rs</code>, sure, assuming you feel that it will most likely continue to contain only PyPI-requiring tests. While I haven’t tried to make the <code>python</code> feature work as it should, I suspect that <code>pip_check</code> should probably require it as well, like most of the existing conditionals:</p>
+<p>https://github.com/astral-sh/uv/blob/de64f1dfa87b11d3dc572d19eed6363daa44306a/crates/uv/tests/it/main.rs#L63-L64</p>
+<p>For <code>workspace.rs</code>, a number of tests do seem to be able to run without network access and therefore without PyPI: at least <code>workspace_to_workspace_paths_dependencies</code>, <code>workspace_empty_member</code>, <code>workspace_hidden_files</code>, <code>workspace_hidden_member</code>, <code>workspace_non_included_member</code>, <code>workspace_inherit_sources</code>, and <code>test_path_hopping</code>. (I didn’t conditionalize <code>transitive_dep_in_git_workspace_no_root</code> and <code>transitive_dep_in_git_workspace_with_root</code> on <code>pypi</code> because the <code>git</code> feature is disabled for my offline builds, so I couldn’t trivially evaluate whether or not they <em>also</em> needed <code>pypi</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2025-05-28 12:26</div>
+            <div class="timeline-body"><p>I see also that I made an error in <code>crates/uv-client/tests/it/remote_metadata.rs</code>:</p>
+<pre><code>error: unexpected `cfg` condition value: `pypi`
+  --&gt; crates/uv-client/tests/it/remote_metadata.rs:13:7
+   |
+13 | #[cfg(feature = &quot;pypi&quot;)]
+   |       ^^^^^^^^^^^^^^^^ help: remove the condition
+   |
+   = note: no expected values for `feature`
+   = help: consider adding `pypi` as a feature in `Cargo.toml`
+   = note: see &lt;https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html&gt; for more information about checking conditional configuration
+   = note: `-D unexpected-cfgs` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(unexpected_cfgs)]`
+</code></pre>
+<p>This <em>does</em> need to be conditionalized on PyPI access somehow, but the <code>pypi</code> feature is available only in the <code>uv</code> crate, not in <code>uv-client</code>. I think that puts that particular test beyond the scope of this PR, and I’ll need to keep explicitly skipping that test downstream for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-28 12:30</div>
+            <div class="timeline-body"><p>We can expose the a <code>pypi</code> feature in <code>uv-client</code> too and activate it from the uv feature to handle that case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2025-05-28 14:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/musicinmybrain">@musicinmybrain</a> on 2025-05-31 00:32</div>
+            <div class="timeline-body"><p>Rebased on <code>main</code> without other changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-05-31 00:48</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/uv/branches/musicinmybrain%3Aadd-pypi-cfg">CodSpeed Walltime Performance Report</a></h2>
+<h3>Merging #13699 will <strong>improve performances by 15.79%</strong></h3>
+<p><sub>Comparing <code>musicinmybrain:add-pypi-cfg</code> (2d77f60) with <code>main</code> (13a86a2)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements<br />
+<code>✅ 11</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>wheelname_parsing_failure[flyte-long-extension]</code> | 110 ns | 95 ns | +15.79% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-06-02 07:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-06-02 07:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-06-02 07:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:25 UTC
+    </footer>
+</body>
+</html>

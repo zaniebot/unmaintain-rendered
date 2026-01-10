@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-pyi`] Add autofix for `unused-private-type-var` (`PYI018`) - astral-sh/ruff #15940</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-pyi</code>] Add autofix for <code>unused-private-type-var</code> (<code>PYI018</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/15940">#15940</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-02-04 15:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-04 15:08</div>
+            <div class="timeline-body"><p>We currently offer a diagnostic for unused private type variables like these:</p>
+<pre><code class="language-python">import typing
+import typing_extensions
+
+_T = typing.TypeVar(&quot;_T&quot;)
+_Ts = typing_extensions.TypeVarTuple(&quot;_Ts&quot;)
+</code></pre>
+<p>But it would be nice to offer a fix to delete them too. This came up in #15682 because a PYI018 autofix would finish the transformation of pre-PEP-695 code like this:</p>
+<pre><code class="language-python">from typing import Generic, TypeVar
+
+_T = TypeVar(&quot;_T&quot;)
+
+class Foo(Generic[_T]):
+    var: _T
+</code></pre>
+<p>to</p>
+<pre><code class="language-python">class Foo[T]:
+    var: T
+</code></pre>
+<p>by converting from <code>Generic</code> + standalone <code>TypeVar</code> to PEP-695 generics (<a href="https://docs.astral.sh/ruff/rules/non-pep695-generic-class/">UP046</a>, renaming the private generic (<a href="https://github.com/astral-sh/ruff/pull/15862">UP051</a>), and then removing the now-unused private type variable (PYI018 after this issue).</p>
+<p>The function implementing this rule can be found <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/flake8_pyi/rules/unused_private_type_definition.rs#L161">here</a>. I think <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/fix/edits.rs#L38"><code>delete_stmt</code></a> may help with the implementation, with some examples of its usage <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/flake8_pie/rules/duplicate_class_field_definition.rs#L104">here</a> and <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/pyflakes/rules/unused_variable.rs#L181">here</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-02-04 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">good first issue</span> added by @ntBre on 2025-02-04 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-02-04 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-06 18:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:32 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>unwanted ARG001 for @singledispatch - astral-sh/ruff #18654</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>unwanted ARG001 for @singledispatch</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18654">#18654</a>
+        opened by <a href="https://github.com/belm0">@belm0</a>
+        on 2025-06-12 21:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/belm0">@belm0</a> on 2025-06-12 21:55</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When using <code>@singledispatch</code>, the base function args are often unused, which triggers <code>ARG001 Unused function argument</code>.</p>
+<p>While technically the args are unused, it's important to have the real arg names for readability, especially since popular tooling (e.g. vscode/pylance) will only follow single-dispatch calls to the base function.</p>
+<p>When combined with something like Black formatting, which might force one arg per line, we're having to write an explicit <code># noqa: ARG001</code> per arg as a workaround.</p>
+<h3>Version</h3>
+<p>ruff 0.7.0</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-06-12 22:27</div>
+            <div class="timeline-body"><p>Related: https://github.com/astral-sh/ruff/issues/17372</p>
+<p>It's a different decorator, but if there are enough cases like this it could potentially justify one of the config options @MichaReiser mentioned <a href="https://github.com/astral-sh/ruff/issues/17372#issuecomment-2820790538">here</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-06-12 22:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @ntBre on 2025-06-12 22:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/belm0">@belm0</a> on 2025-06-13 02:27</div>
+            <div class="timeline-body"><p><code>unused-function-argument</code> intends to catch some code problems such as 1) defined an arg but forgot to use it, 2) have an existing arg that is no longer needed.   But there are language constructs where the heuristic doesn't fit, such as abstract base classes, method overrides, and single dispatch.  In these cases there is a strict set of args defined by an API, and it's much less likely that an unused arg is a mistake or indicating that the arg should be removed.   Workarounds like underbar prefix are not satisfying because, for example, we want someone reading a method override to know the <em>actual</em> arg names of the API.  Similarly for implementations registered for singledispatch, we're finding it normal that args go unused, and an annoyance to mark them with <code>noqa</code> or mangle the name with a prefix.  Unless the decorator exclusion would apply transitively to registered functions, it doesn't seem to satisfy the issue.</p>
+<p>At least on my project, there isn't consensus on the value of enabling <code>unused-function-argument</code>.  The heuristic is too rough and forces a choice between a <em>potential</em> to catch bugs or refactor opportunities and a very tangible impact on readability.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-06-13 06:54</div>
+            <div class="timeline-body"><p>Could you share an example? That would make it easier for me to understand the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/nathanjmcdougall">@nathanjmcdougall</a> on 2025-10-27 02:03</div>
+            <div class="timeline-body"><p>Here's an example:</p>
+<pre><code class="language-Python">
+@singledispatch
+def _extract_step_from_item(
+    item: StepItem | StageItem,
+    step_name: str,
+    items: list[StepItem | StageItem],
+    idx: int,
+) -&gt; Step | None:
+    raise NotImplementedError
+
+@_extract_step_from_item.register
+def _(
+    item: StepItem,
+    step_name: str,
+    items: list[StepItem | StageItem],
+    idx: int,
+) -&gt; Step | None:
+    if get_step(item.step) == step_name:
+        # Remove this item from the list
+        items.pop(idx)
+        return item.step
+    return None
+
+@_extract_step_from_item.register
+def _(
+    item: StageItem,  # noqa: ARG001
+    step_name: str,  # noqa: ARG001
+    items: list[StepItem | StageItem],  # noqa: ARG001
+    idx: int,  # noqa: ARG001
+) -&gt; Step | None:
+    return None
+</code></pre>
+<p>Here's the context:
+https://github.com/usethis-python/usethis-python/blob/228fd3dd20dd830b7ef1a35c9fb8088df41aeef5/src/usethis/_integrations/ci/bitbucket/pipeweld.py#L201-L273</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:40 UTC
+    </footer>
+</body>
+</html>

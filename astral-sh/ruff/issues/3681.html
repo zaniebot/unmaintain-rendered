@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title># noqa ignored in docstrings - astral-sh/ruff #3681</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><h1>noqa ignored in docstrings</h1></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3681">#3681</a>
+        opened by <a href="https://github.com/staticf0x">@staticf0x</a>
+        on 2023-03-23 09:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/staticf0x">@staticf0x</a> on 2023-03-23 09:20</div>
+            <div class="timeline-body"><p>The <code># noqa</code> seems to be ignored in docstrings, e.g.:</p>
+<p>Let's say I have some long string:</p>
+<pre><code class="language-py">&quot;&quot;&quot;
+URL = &quot;https://github.com/pulp/pulp_docker/blob/master/pulp_docker/app/tasks/recursive_remove.py&quot;
+&quot;&quot;&quot;
+
+URL = &quot;https://github.com/pulp/pulp_docker/blob/master/pulp_docker/app/tasks/recursive_remove.py&quot;
+</code></pre>
+<p>Run <code>ruff test.py</code> and I get this:</p>
+<pre><code>$ ruff test.py
+test.py:2:89: E501 Line too long (97 &gt; 88 characters)
+test.py:5:89: E501 Line too long (97 &gt; 88 characters)
+Found 2 errors.
+</code></pre>
+<p>which is correct, but if I add <code># noqa</code> to both lines:</p>
+<pre><code class="language-py">&quot;&quot;&quot;
+URL = &quot;https://github.com/pulp/pulp_docker/blob/master/pulp_docker/app/tasks/recursive_remove.py&quot;  # noqa
+&quot;&quot;&quot;
+
+URL = &quot;https://github.com/pulp/pulp_docker/blob/master/pulp_docker/app/tasks/recursive_remove.py&quot;  # noqa
+</code></pre>
+<p>And again run <code>ruff test.py</code>, I get this:</p>
+<pre><code>$ ruff test.py
+test.py:2:89: E501 Line too long (105 &gt; 88 characters)
+Found 1 error.
+</code></pre>
+<p>So now the actual code line is ignored as expected, but the one in docstring is not.</p>
+<p>For comparison, here's <code>flake8 test.py</code></p>
+<p>Without <code># noqa</code>:</p>
+<pre><code>$ flake8 test.py
+test.py:2:89: E501 line too long (97 &gt; 88 characters)
+test.py:5:89: E501 line too long (97 &gt; 88 characters)
+</code></pre>
+<p>With <code># noqa</code> (on both lines):</p>
+<pre><code>$ flake8 test.py
+</code></pre>
+<p>no errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "# noqa causes error in docstrings" to "# noqa ignored in docstrings" by @staticf0x on 2023-03-23 09:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JonathanPlasse">@JonathanPlasse</a> on 2023-03-23 09:45</div>
+            <div class="timeline-body"><p>I guess you do not want a <code>noqa</code> in the text of your docstring.
+You need to put a <code>noqa</code> after the docstring like below.</p>
+<pre><code class="language-python">&quot;&quot;&quot;
+URL = &quot;https://github.com/pulp/pulp_docker/blob/master/pulp_docker/app/tasks/recursive_remove.py&quot;
+&quot;&quot;&quot;  # noqa: E501
+
+URL = &quot;https://github.com/pulp/pulp_docker/blob/master/pulp_docker/app/tasks/recursive_remove.py&quot;  # noqa: E501
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/onerandomusername">@onerandomusername</a> on 2023-03-23 10:27</div>
+            <div class="timeline-body"><p>For what it's worth, this IS different behavior from flake8, but it's arguably much better than what flake8 requires.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/staticf0x">@staticf0x</a> on 2023-03-23 10:30</div>
+            <div class="timeline-body"><p>Thanks @JonathanPlasse that makes sense</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-23 13:59</div>
+            <div class="timeline-body"><p>Ah yeah, this is by design. Obligatory link to the docs for future readers: https://beta.ruff.rs/docs/configuration/#error-suppression</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-23 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">noqa</span> added by @charliermarsh on 2023-03-23 13:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:43 UTC
+    </footer>
+</body>
+</html>

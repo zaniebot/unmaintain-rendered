@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter: multiline conditionals wrap differently - astral-sh/ruff #7314</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter: multiline conditionals wrap differently</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7314">#7314</a>
+        opened by <a href="https://github.com/DanCardin">@DanCardin</a>
+        on 2023-09-12 19:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DanCardin">@DanCardin</a> on 2023-09-12 19:29</div>
+            <div class="timeline-body"><p>Black wants to split boolean operators across lines, where they're being forced (at least here due to the comment) onto multiple lines:</p>
+<pre><code class="language-python">some_example_var = &quot;&quot;
+if not some_example_var or (
+    # A comment in the middle
+    some_example_var
+    and some_example_var not in some_example_var
+):
+    pass
+</code></pre>
+<p>whereas ruff wants to combine them onto one line:</p>
+<pre><code class="language-python">some_example_var = &quot;&quot;
+if not some_example_var or (
+    # A comment in the middle
+    some_example_var and some_example_var not in some_example_var
+):
+    pass
+</code></pre>
+<p>I dont really have a preference, it was just one of 3 total formatting diffs over 30k LOC (one being a documented intentional diff).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @charliermarsh on 2023-09-12 19:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @charliermarsh on 2023-09-12 19:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-13 07:30</div>
+            <div class="timeline-body"><p>Thanks for reporting this deviation. It isn't specific to bool expression but more generally that Black expands the commented node whereas Ruff does not (because associate the comment with the outer most vs inner most node):</p>
+<p><strong>Input</strong></p>
+<pre><code class="language-python"># A comment in the middle
+some_example_var and some_example_var not in some_example_var
+
+a = (
+    # test
+    a if b else c
+)
+
+a = x[
+    #test
+    a + b : b + c
+]
+
+a = (
+    # A comment in the middle
+    some_example_var and some_example_var not in some_example_var
+)
+</code></pre>
+<p><strong>Black</strong></p>
+<pre><code class="language-python"># A comment in the middle
+some_example_var and some_example_var not in some_example_var
+
+a = (
+    # test
+    a
+    if b
+    else c
+)
+
+a = x[
+    # test
+    a
+    + b : b
+    + c
+]
+
+a = (
+    # A comment in the middle
+    some_example_var
+    and some_example_var not in some_example_var
+)
+</code></pre>
+<p><strong>Ruff</strong></p>
+<pre><code class="language-python"># A comment in the middle
+some_example_var and some_example_var not in some_example_var
+
+a = (
+    # test
+    a if b else c
+)
+
+a = x[
+    # test
+    a + b : b + c
+]
+
+a = (
+    # A comment in the middle
+    some_example_var and some_example_var not in some_example_var
+)
+
+</code></pre>
+<p>I generally prefer Ruff's formatting because it avoids unnecessary line breaks. But eager to hear more opinions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @MichaReiser on 2023-09-13 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> added by @MichaReiser on 2023-09-13 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "Formatter: Beta" by @MichaReiser on 2023-09-13 07:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanCardin">@DanCardin</a> on 2023-09-13 13:08</div>
+            <div class="timeline-body"><p>Ultimately i think the effect is very marginal either way, but I think perhaps I agree.</p>
+<p>Particularly with the deviations regarding inline comments, it seems like this gives more control over where the comment &quot;targets&quot;, as you can insert more comments to arrive at the same formatting decision otherwise, if it's important to the block of code.</p>
+<p>Mostly posted so it could get added to the list of intentional deviations, if you were going to keep it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-09-14 07:21</div>
+            <div class="timeline-body"><blockquote>
+<p>Mostly posted so it could get added to the list of intentional deviations, if you were going to keep it.</p>
+</blockquote>
+<p>Thank you for reporting it. It's extremely helpful for us to have a collection of all deviations because we should either:</p>
+<ul>
+<li>Document them or</li>
+<li>fix them.</li>
+</ul>
+<p>So thanks again :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-27 15:02</div>
+            <div class="timeline-body"><p>We're going to mark this as an intentional deviation for now. Can be closed once it's documented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @MichaReiser on 2023-09-27 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wontfix</span> removed by @MichaReiser on 2023-09-27 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-09-27 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-29 17:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-09-29 17:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:19 UTC
+    </footer>
+</body>
+</html>

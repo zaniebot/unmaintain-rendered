@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emit dedicated error message for Conda environment.yml files - astral-sh/uv #12669</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Emit dedicated error message for Conda environment.yml files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/12669">#12669</a>
+        opened by <a href="https://github.com/christeefy">@christeefy</a>
+        on 2025-04-04 12:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/christeefy">@christeefy</a> on 2025-04-04 12:25</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Fixes #12606.</p>
+<p>Two options considered, thanks to @zanieb's guidance are:</p>
+<ol>
+<li>Special-casing on parse error and encountering the <code>environment.yml</code> filename, possibly at <code>RequirementsTxt::parse</code></li>
+<li>Adding a new <code>RequirementsSource::EnvironmentYml</code> variant and erroring on <code>RequirementSpecification::from_source</code></li>
+</ol>
+<p>I went with the latter for the following reasons:</p>
+<ul>
+<li>This edge case is explicitly modelled within the type system. However, it changes the semantics of <code>RequirementsSource</code> to also model <em>unsupported</em> sources.</li>
+<li>(<strong>Separation of concerns</strong>) The special-casing would occur in the <code>uv-requirements-txt</code> crate, which seems to be relatively deep in the guts of the codebase. In my opinion, maintainers working in <code>uv-requirements-txt</code> would reasonably assume the input file to be a <code>requirements.txt</code> file, instead of having to be concerned with it being another file format (<code>environment.yml</code>, <code>pyproject.toml</code>, etc.)</li>
+</ul>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<h2>Test Plan</h2>
+<p>Manually tested as follows:</p>
+<pre><code class="language-sh">&gt;&gt;&gt; cargo run -- pip install -r environment.yml
+error: Conda environment file `environment.yml` is not supported
+
+&gt;&gt;&gt; cargo run -- add -r environment.yml
+error: Conda environment file `environment.yml` is not supported
+</code></pre>
+<p>If you can point me to the appropriate test module, I can write up tests for these to use <code>insta</code>.</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Produce dedicated error message on for Conda environment.yml files" to "Produce dedicated error message for Conda environment.yml files" by @christeefy on 2025-04-04 12:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Produce dedicated error message for Conda environment.yml files" to "Emit dedicated error message for Conda environment.yml files" by @christeefy on 2025-04-04 12:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-04 16:31</div>
+            <div class="timeline-body"><p>Nice, can you add a couple unit tests? e.g., in <code>it/edit.rs</code> and <code>it/pip_install.rs</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2025-04-04 16:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/christeefy">@christeefy</a> on 2025-04-04 20:45</div>
+            <div class="timeline-body"><p>Done! Thanks for the help, Zanie 😊</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/christeefy">@christeefy</a> on 2025-04-04 20:55</div>
+            <div class="timeline-body"><p>By the way, I noticed a couple of things:</p>
+<ul>
+<li>In the tests, should the exit code be 1 (user input error) instead of 2 (unexpected error)?</li>
+<li>I think <code>RequirementsSource::from_requirements_txt</code> isn't used anywhere in the repo—should we consider removing it?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-04-04 23:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/edit.rs</code>:3694 on 2025-04-04 23:14</div>
+            <div class="timeline-body"><p>I'd probably say something like</p>
+<blockquote>
+<p>Conda environment files (i.e., <code>{}</code>) are not support</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-04 23:16</div>
+            <div class="timeline-body"><blockquote>
+<p>In the tests, should the exit code be 1 (user input error) instead of 2 (unexpected error)?</p>
+</blockquote>
+<p>It'd probably be &quot;better&quot;, but I think it's fine as is. We're not strict about this right now.</p>
+<blockquote>
+<p>I think RequirementsSource::from_requirements_txt isn't used anywhere in the repo—should we consider removing it?</p>
+</blockquote>
+<p>Oh, interesting. I presume it's fine to remove. @charliermarsh?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-04-04 23:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/christeefy">@christeefy</a> reviewed on 2025-04-05 12:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/christeefy">@christeefy</a> on <code>crates/uv/tests/it/edit.rs</code>:3694 on 2025-04-05 12:26</div>
+            <div class="timeline-body"><p>Makes sense; updated</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/christeefy">@christeefy</a> on 2025-04-06 22:38</div>
+            <div class="timeline-body"><blockquote>
+<p>It'd probably be &quot;better&quot;, but I think it's fine as is. We're not strict about this right now.</p>
+</blockquote>
+<p>Got it.</p>
+<p>By the way, the <code>deadsnakes</code> CI timed out — seems to be transient. Appreciate if you can help to re-run it :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-04-07 23:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-04-07 23:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-04-07 23:16</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-08 11:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Seagh0098">@Seagh0098</a> approved on 2025-04-13 17:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Seagh0098">@Seagh0098</a> approved on 2025-04-13 17:05</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:22 UTC
+    </footer>
+</body>
+</html>

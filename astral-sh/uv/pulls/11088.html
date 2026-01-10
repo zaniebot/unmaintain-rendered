@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Percent-decode URLs in canonical comparisons - astral-sh/uv #11088</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Percent-decode URLs in canonical comparisons</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11088">#11088</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-01-30 03:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-30 03:44</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds an additional normalization step to <code>CanonicalUrl</code> whereby we now percent-decode the path, to ensure that (e.g.) <code>torch-2.5.1%2Bcpu.cxx11.abi-cp39-cp39-linux_x86_64.whl</code> and <code>torch-2.5.1+cpu.cxx11.abi-cp39-cp39-linux_x86_64.whl</code> are considered equal. Further, when generating the &quot;reinstall&quot; report, we use the canonical URL rather than the verbatim URL.</p>
+<p>In making this change, I also learned that we don't apply any of the normalization passes to <code>file://</code> URLs. I inadvertently removed it in https://github.com/astral-sh/uv/pull/3010/commits/93d606aba20c39149390a9191879e82194ea4e91, since setting the password or URL on <code> file://</code> URL errors -- but now suppress those errors anyway.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/11082.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Downloaded a <a href="https://download.pytorch.org/whl/cpu-cxx11-abi/torch-2.5.1%2Bcpu.cxx11.abi-cp39-cp39-linux_x86_64.whl">PyTorch wheel</a></li>
+<li><code>python3.9 -m pip install torch-2.5.1+cpu.cxx11.abi-cp39-cp39-linux_x86_64.whl --platform linux_x86_64 --target foo --no-deps</code></li>
+<li><code>cargo run pip install torch-2.5.1+cpu.cxx11.abi-cp39-cp39-linux_x86_64.whl --python-platform linux --python-version 3.9 --target foo --no-deps</code></li>
+<li>Verified that the package had the <code>~</code> symbol for the reinstall.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2025-01-30 03:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2025-01-30 03:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2025-01-30 03:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-30 03:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-cache-key/src/canonical_url.rs</code>:90 on 2025-01-30 03:46</div>
+            <div class="timeline-body"><p>Hmm, this actually might be wrong. What if a slash is percent-encoded? We'd be changing it to a path segment.</p>
+<p>I guess we could go the other way -- always percent-encode the URL?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-30 03:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-cache-key/src/canonical_url.rs</code>:90 on 2025-01-30 03:50</div>
+            <div class="timeline-body"><p>But that's also not quite right... Because if the URL is already percent-encoded, we'd be re-encoding it. It's not idempotent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-30 03:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-cache-key/src/canonical_url.rs</code>:90 on 2025-01-30 03:51</div>
+            <div class="timeline-body"><p>I guess we want to percent-decode each path segment, but <em>not</em> slashes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-30 03:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-cache-key/src/canonical_url.rs</code>:90 on 2025-01-30 03:55</div>
+            <div class="timeline-body"><p>Okay, I'm actually not totally sure how to do this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-01-30 10:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cache-key/src/canonical_url.rs</code>:90 on 2025-01-30 10:43</div>
+            <div class="timeline-body"><p>I tried figuring this out with https://url.spec.whatwg.org but it's still unclear how to handle file urls vs. https urls. If we're eager there is a complete decoding algorithm there though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-cache-key/src/canonical_url.rs</code>:90 on 2025-01-30 17:42</div>
+            <div class="timeline-body"><p>My first inclination here was to wonder why the <code>url</code> crate wasn't handling this for us automatically, or at least, provide an option to do so. It looks like <a href="https://github.com/servo/rust-url/issues/695"><code>+</code> is actually somewhat special</a>. For example, if you parse <code>https://burntsushi.net/foo bar</code> and <code>https://burntsushi.net/foo%20bar</code> into a <code>Url</code>, then the resulting <code>Url</code> values compare as equivalent. But if you parse <code>https://burntsushi.net/foo+bar</code> and <code>https://burntsushi.net/foo%2Bbar</code> into <code>Url</code> values, then they are <em>not</em> equivalent.</p>
+<p>Decoding each path segment on its own seems plausible, but it seems like that could also bork things if URL parsing decodes them? But no, I don't think it does:</p>
+<pre><code class="language-rust">use url::Url;
+
+fn main() {
+    let url1: Url = &quot;https://burntsushi.net/foo%2520bar&quot;.parse().unwrap();
+    assert_eq!(url1.path(), &quot;/foo%2520bar&quot;);
+}
+</code></pre>
+<p>The above assert passes.</p>
+<p>So hmmm, without reading the URL spec, it seems like decoding each segment should be fine?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-01-30 17:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-30 17:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-cache-key/src/canonical_url.rs</code>:90 on 2025-01-30 17:47</div>
+            <div class="timeline-body"><p>What if the segment contains a percent-encoded slash, though?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-30 17:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-cache-key/src/canonical_url.rs</code>:90 on 2025-01-30 17:47</div>
+            <div class="timeline-body"><p>Honestly, we could also consider just decoding <code>+</code>, if it's &quot;special&quot; (or something like that).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-01-30 18:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-cache-key/src/canonical_url.rs</code>:90 on 2025-01-30 18:12</div>
+            <div class="timeline-body"><p>I think the <code>url</code> crate helps you here: https://docs.rs/url/latest/url/struct.PathSegmentsMut.html#method.extend</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-01-30 18:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-cache-key/src/canonical_url.rs</code>:90 on 2025-01-30 18:12</div>
+            <div class="timeline-body"><blockquote>
+<p>Each segment is percent-encoded like in Url::parse or Url::join, except that % and / characters are also encoded (to %25 and %2F). This is unlike Url::parse where % is left as-is in case some of the input is already percent-encoded, and / denotes a path segment separator.)</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-01-30 20:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cache-key/src/canonical_url.rs</code>:90 on 2025-01-30 20:16</div>
+            <div class="timeline-body"><p>from the spec it also seems that file:// and https:// have different rules, so we should test that our solution works for both</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-01-31 20:37</div>
+            <div class="timeline-body"><p>LGTM!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-01-31 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-31 20:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-31 20:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:19 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Should there be a generic docstring formatting checker - astral-sh/ruff #17806</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Should there be a generic docstring formatting checker</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17806">#17806</a>
+        opened by <a href="https://github.com/kivicode">@kivicode</a>
+        on 2025-05-03 04:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/kivicode">@kivicode</a> on 2025-05-03 04:31</div>
+            <div class="timeline-body"><h3>Question</h3>
+<p>Hi,
+I'm currently building a tool for docstring linting.
+The idea is to verify whether a docstring matches a given format, based on an arbitrary template defined in Mustache.</p>
+<p>I know that Ruff already supports some degree of validation against common formats (e.g., Google, NumPy, etc.).
+My question is: would the Astral team be interested in adding this kind of functionality into Ruff, or should it remain as a separate tool?</p>
+<p>If you're open to the idea, I’d be happy to handle the Rust rewrite myself and would just need some support with integration at the later stages.</p>
+<h3>Version</h3>
+<p><em>No response</em></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @kivicode on 2025-05-03 04:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-03 13:52</div>
+            <div class="timeline-body"><p>Can you share some more details on how such a template in Mustache looks like and how it would do the matching?</p>
+<p>This does sound interesting, but it will require some figuring out how this fits into our rules structure (we plan to change it in the near future). We're currently very thin stretched, which is why I don't think we'll get to this anytime soon. I'm sorry.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kivicode">@kivicode</a> on 2025-05-03 15:38</div>
+            <div class="timeline-body"><p>I'm basing the syntax off the autoDocstring extension for VSCode, a typical mustache template would look something like <a href="https://github.com/NilsJPWerner/autoDocstring/blob/master/src/docstring/templates/google.mustache">this</a>.</p>
+<details>
+<summary> Example </summary>
+
+<pre><code class="language-mustache">{{! Google Docstring Template }}
+{{summaryPlaceholder}}
+
+{{extendedSummaryPlaceholder}}
+{{#parametersExist}}
+
+Args:
+{{#args}}
+    {{var}} ({{typePlaceholder}}): {{descriptionPlaceholder}}
+{{/args}}
+{{#kwargs}}
+    {{var}} ({{typePlaceholder}}, optional): {{descriptionPlaceholder}}. Defaults to {{&amp;default}}.
+{{/kwargs}}
+{{/parametersExist}}
+{{#exceptionsExist}}
+
+Raises:
+{{#exceptions}}
+    {{type}}: {{descriptionPlaceholder}}
+{{/exceptions}}
+{{/exceptionsExist}}
+{{#returnsExist}}
+
+Returns:
+{{#returns}}
+    {{typePlaceholder}}: {{descriptionPlaceholder}}
+{{/returns}}
+{{/returnsExist}}
+{{#yieldsExist}}
+
+Yields:
+{{#yields}}
+    {{typePlaceholder}}: {{descriptionPlaceholder}}
+{{/yields}}
+{{/yieldsExist}}
+</code></pre>
+</details>
+
+<p>My current implementation is at about the POC stage at the moment, but the core idea is to use a function signature information to match the &quot;static/literal&quot; parts of the template and then attempt to assign the rest of the sections with backtracking.</p>
+<p>I'm still figuring out some customization and reporting details, but it should be able to report stuff like <code>&quot;Invalid argument docstring for parameter A of function foo&quot;</code>. At the moment, I'm implementing it in python, but I wouldn't expect many problems porting it to rust.</p>
+<p>To be clear, I have no problem keeping it as a separate tool, just curious if that would fit the ruff narrative :)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:23 UTC
+    </footer>
+</body>
+</html>

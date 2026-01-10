@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive: B031 - astral-sh/ruff #3829</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive: B031</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3829">#3829</a>
+        opened by <a href="https://github.com/AA-Turner">@AA-Turner</a>
+        on 2023-03-31 16:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2023-03-31 16:16</div>
+            <div class="timeline-body"><p>Ruff 0.0.260</p>
+<p>Reproducer:</p>
+<pre><code class="language-pwsh">(sphinx) PS I:\Development\sphinx&gt; ruff -V                                                
+ruff 0.0.260
+(sphinx) PS I:\Development\sphinx&gt; type bug_b031.py
+from itertools import groupby
+
+
+def f():
+    for w, g in groupby('string', len):
+        if w == 1:
+            return (''.join(g)).split(&quot; &quot;)
+        else:
+            return list(g)  # Ruff indicates B031 here
+
+
+def g():
+    for w, g in groupby('string', len):
+        tmp = [*g]  # by introducing an interstitial variable, we avoid B031
+        if w == 1:
+            return (''.join(tmp)).split(&quot; &quot;)
+        else:
+            return list(tmp)
+(sphinx) PS I:\Development\sphinx&gt; ruff --isolated --show-source --select B031 bug_b031.py
+bug_b031.py:9:25: B031 Using the generator returned from `itertools.groupby()` more than once will do nothing on the second usage
+  |
+9 |             return list(g)  # Ruff indicates B031 here
+  |                         ^ B031
+  |
+
+Found 1 error.
+(sphinx) PS I:\Development\sphinx&gt; 
+</code></pre>
+<details>
+<summary> <code>bug_b031.py</code> </summary>
+
+<pre><code class="language-python">from itertools import groupby
+
+
+def f():
+    for w, g in groupby('string', len):
+        if w == 1:
+            return (''.join(g)).split(&quot; &quot;)
+        else:
+            return list(g)  # Ruff indicates B031 here
+
+
+def g():
+    for w, g in groupby('string', len):
+        tmp = [*g]  # by introducing an interstitial variable, we avoid B031
+        if w == 1:
+            return (''.join(tmp)).split(&quot; &quot;)
+        else:
+            return list(tmp)
+</code></pre>
+</details>
+
+<p>Sorry for the rather contrived example, this was reduced from some code in Sphinx. Broadly I think that the error comes from the heuristic checking <em>any</em> re-use, whereas here as the symbol <code>g</code> is used twice, but only once per branch of an if/elif/else chain.</p>
+<p>Please would it be possible to add some heuristic for tracking usages like this, in if/elif/else chains?</p>
+<p>Thanks,
+Adam</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-31 16:22</div>
+            <div class="timeline-body"><p>👍 I think this is the same as #3801. <code>flake8-bugbear</code> also has this problem. I think we should be able to avoid it though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-03-31 16:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AA-Turner">@AA-Turner</a> on 2023-03-31 16:23</div>
+            <div class="timeline-body"><p>Ahh, sorry--should have had a quick look before submitting this!</p>
+<p>Thanks,
+Adam</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-31 16:24</div>
+            <div class="timeline-body"><p>All good, it's useful to know that others have hit this too and to see another example!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-03-31 16:55</div>
+            <div class="timeline-body"><p>I'll try to look into it over the weekend but I guess it would be better to track it in one issue. We could move the example in the other one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-03-31 17:11</div>
+            <div class="timeline-body"><p>@dhruvmanila - Sounds good, I'm going to mark as a duplicate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-03-31 17:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:48 UTC
+    </footer>
+</body>
+</html>

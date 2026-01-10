@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write the path of the parent environment to an `extends-environment` key in the `pyvenv.cfg` file of an ephemeral environment - astral-sh/uv #13598</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Write the path of the parent environment to an <code>extends-environment</code> key in the <code>pyvenv.cfg</code> file of an ephemeral environment</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13598">#13598</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-05-22 17:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-22 17:18</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Ephemeral environments created by <code>uv run --with</code> extend a parent (virtual or system) environment by adding a <code>.pth</code> file to the ephemeral environment's <code>site-packages</code> directory. The <code>pth</code> file contains Python code to dynamically add the parent environment's <code>site-packages</code> directory to Python's import search paths in addition to the ephemeral environment's <code>site-packages</code> directory. This works well at runtime, but is not currently understood by static analysis tools like ty.</p>
+<p>As discussed in https://github.com/astral-sh/ty/issues/320, ty <em>could</em> implement support for these virtual environments by attempting to parse the Python code uv is writing into these <code>.pth</code> files. This has many disadvantages however:</p>
+<ul>
+<li>It seems somewhat error-prone. The specific Python code uv is writing into the <code>.pth</code> files could change at any time -- and if another tool implements a similar ephemeral-environment feature, it could use different Python idioms.</li>
+<li>It would not be particularly efficient for ty to have to attempt to parse Python snippets in every <code>.pth</code> file in the <code>site-packages</code> directory (it could hurt our ability to effectively implement a persistent cache even if it doesn't cost that much in wall time, since we need to know the import search paths very early on).</li>
+<li>Philosophically, it feels out of spirit with the kind of analysis a static type checker should be expected to do.</li>
+</ul>
+<p>Instead, this PR implements a feature where uv additionally writes the <code>sys.prefix</code> of the parent environment to a new <code>extends-environment</code> key of the ephemeral environment's <code>pyvenv.cfg</code> file. This should make it much easier for ty -- and potentially other static-analysis tools -- to statically and reliably understand the relationship between the two environments. If ty sees that a <code>pyvenv.cfg</code> file has a <code>uv</code> key in it and also has a <code>extends-environment</code> key in it, it will be able to easily add the <code>site-packages</code> directory of the parent environment to its resolved search paths as well as the <code>site-packages</code> directory of the ephemeral child environment.</p>
+<p>A question was raised in https://github.com/astral-sh/ty/issues/320#issuecomment-2877865480 about whether it was standards-compliant to add new keys to <code>pyvenv.cfg</code> files created by uv. I think it is. <code>pyvenv.cfg</code> files are in general very under-specified: only a small handful of keys are currently consistent between virtual-environment creation tools. Different tools already often add bespoke keys to their <code>pyvenv.cfg</code> files -- see https://github.com/astral-sh/ty/issues/320#issuecomment-2877881334 for some comparisons between uv, the virtualenv Python library, and the standard-library <code>venv</code> module.</p>
+<h2>Test Plan</h2>
+<p>I added a test that demonstrates that the <code>extends-environment</code> key is written with the correct value to the <code>pyvenv.cfg</code> file of an ephemeral environment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">virtualenv</span> added by @AlexWaygood on 2025-05-22 17:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-22 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/it/run.rs</code>:1269 on 2025-05-22 17:20</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// Test that an ephemeral environment writes the path of its parent environment to the `extends-environment` key
+/// of its `pyvenv.cfg` file. This feature makes it easier for static-analysis tools like ty to resolve which import
+/// search paths are available in these ephemeral environments.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-22 18:20</div>
+            <div class="timeline-body"><p>As a note, this will suffer from the same issue as reported in https://github.com/astral-sh/uv/issues/12889 — but it won't be &quot;worse&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-22 18:25</div>
+            <div class="timeline-body"><p>Argh, well, it seems I need some help with getting the venv directory filtering to work on Windows. (I haven't actually changed anything to do with the filtering there -- not sure why it's not working on this snapshot?)</p>
+<p>Other than that, this is ready for review!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-05-22 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-05-22 18:30</div>
+            <div class="timeline-body"><blockquote>
+<p>(I haven't actually changed anything to do with the filtering there -- not sure why it's not working on this snapshot?)</p>
+</blockquote>
+<p>I don't think we've ever filtered <code>escape_for_python</code> paths (which I guess differ on Windows).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-22 20:22</div>
+            <div class="timeline-body"><p>Well, the test is finally passing on all platforms... If there's a better way to write a test for this, LMK!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-05-27 12:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-05-27 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-27 12:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-05-27 12:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:25 UTC
+    </footer>
+</body>
+</html>

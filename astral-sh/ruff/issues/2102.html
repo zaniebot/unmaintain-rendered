@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement flynt's &quot;join and concat to f-string&quot; transforms - astral-sh/ruff #2102</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement flynt's &quot;join and concat to f-string&quot; transforms</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2102">#2102</a>
+        opened by <a href="https://github.com/akx">@akx</a>
+        on 2023-01-23 08:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/akx">@akx</a> on 2023-01-23 08:28</div>
+            <div class="timeline-body"><p><a href="https://github.com/ikamensh/flynt#readme"><code>flynt</code></a> is a specialized linter for f-string usage.</p>
+<p><a href="https://github.com/charliermarsh/ruff/pull/1905">UP031 and UP032</a> implement <code>flynt</code>'s core features, but the two extra transforms</p>
+<pre><code>  -tc, --transform-concats
+                        Replace string concatenations (defined as +
+                        operations involving string literals) with
+                        f-strings. Available only if flynt is
+                        installed with 3.8+ interpreter.
+  -tj, --transform-joins
+                        Replace static joins (where the joiner is a
+                        string literal and the joinee is a static-
+                        length list) with f-strings. Available only
+                        if flynt is installed with 3.8+ interpreter.
+</code></pre>
+<p>i.e.</p>
+<pre><code class="language-diff"> a = &quot;Hello&quot;
+-msg = a + &quot; World&quot;
++msg = f&quot;{a} World&quot;
+-msg2 = &quot;Finally, &quot; + a + &quot; World&quot;
++msg2 = &quot;Finally, {a} World&quot;
+</code></pre>
+<p>and</p>
+<pre><code class="language-diff"> a = &quot;Hello&quot;
+-msg1 = &quot; &quot;.join([a, &quot; World&quot;])
+-msg2 = &quot;&quot;.join([&quot;Finally, &quot;, a, &quot; World&quot;])
+-msg3 = &quot;x&quot;.join((&quot;1&quot;, &quot;2&quot;, &quot;3&quot;))
+-msg4 = &quot;x&quot;.join({&quot;4&quot;, &quot;5&quot;, &quot;yee&quot;})
+-msg5 = &quot;y&quot;.join([1, 2, 3])  # Should be transformed
++msg1 = f&quot;{a}  World&quot;
++msg2 = f&quot;Finally, {a} World&quot;
++msg3 = &quot;1x2x3&quot;
++msg4 = &quot;4x5xyee&quot;
++msg5 = f&quot;{1}y{2}y{3}&quot;  # Should be transformed
+ msg6 = a.join([&quot;1&quot;, &quot;2&quot;, &quot;3&quot;])  # Should not be transformed (not a static joiner)
+ msg7 = &quot;a&quot;.join(a)  # Should not be transformed (not a static joinee)
+ msg8 = &quot;a&quot;.join([a, a, *a])  # Should not be transformed (not a static length)
+</code></pre>
+<p>respectively could be implemented in Ruff too. (I'd like to work on them! 😄) Should these be <code>FLY</code> series, or should they be <code>RUF</code>?</p>
+<ul>
+<li>[ ] <code>FLY001</code>: consider replacing string concatenation with f-string</li>
+<li>[x] <code>FLY002</code>: consider replacing static string joining with f-string (#4196)</li>
+</ul>
+<p>Refs https://github.com/charliermarsh/ruff/issues/2097 (relating to f-strings)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-23 17:40</div>
+            <div class="timeline-body"><p>Let's put these in <code>FLY</code> (but we should do a quick check to verify that <code>FLY</code> isn't used by any other popular plugins). Then, we can mark <code>UP031</code> and <code>UP032</code> as aliases of <code>FLY</code> rules once we support rule aliasing, so all the string upgrade stuff is in one place (or vice versa -- add <code>FLY</code> rules that alias the <code>UP</code> rules).</p>
+<p>Separately, have you been using <code>UP031</code> and <code>UP032</code> much? Any issues in practice? Any notable false negatives? There are a few cases we <em>don't</em> yet fix (e.g., if you put the <code>%</code> in a percent-formatted string on its own line, we abort to avoid wonky formatting).</p>
+<p><em>Separately</em>, do you have an opinion on whether <code>UP031</code> and <code>UP032</code> should <em>always</em> flag <code>%</code> and <code>.format</code> calls? Or only flag the ones it can fix? Right now, it does the latter. But doing the former would effectively implement #2097.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-01-23 17:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-01-25 08:12</div>
+            <div class="timeline-body"><p>I have UP031 and UP032 enabled by way of <code>select = &quot;UP&quot;</code> and haven't seen any issues yet! 👍</p>
+<p>Maybe (and this is tangential to the #2142 RUF005 discussion) UP03[12] should have a &quot;suggestion&quot; flag for <code>%</code> and <code>.format</code> they can't auto-fix, like &quot;Consider using an f-string&quot;.
+That said, I could see it being a nuisance if we had to noqa places like <code>&quot;foo {bar} {baz}&quot;.format(**something_dynamic)</code> (though that's better served by <code>format_map</code> anyway), or <code>&quot;foo %(bar)s %(baz)s&quot; % something_dynamic</code>)...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2024-08-19 05:36</div>
+            <div class="timeline-body"><p>Idk if <code>transform-concats</code>/<code>FLY001</code> is always desirable on only two items. Especially given possible overrides of <code>__add__</code> and <code>__radd__</code>. And it's not even more concise.</p>
+<p>But for 3 items, especially when a variable is inserted between two strings*, is definitely something I've been looking for.</p>
+<p>* I think it's safe to expect people shouldn't be writing code where <code>&quot;a&quot; + b + &quot;c&quot;</code> does not return a string using b's string representation. Or just not use <code>FLY001</code> at that point.</p>
+<hr />
+<p>I'm also for keeping these different rules. Makes adoption easier, especially when gradually linting or if a rule's style change is undesired.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:28:59 UTC
+    </footer>
+</body>
+</html>

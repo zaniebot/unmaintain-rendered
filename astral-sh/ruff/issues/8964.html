@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule suggestion: lint against the use of `in` with compound comparisons - astral-sh/ruff #8964</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule suggestion: lint against the use of <code>in</code> with compound comparisons</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8964">#8964</a>
+        opened by <a href="https://github.com/tjkuson">@tjkuson</a>
+        on 2023-12-02 13:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-12-02 13:39</div>
+            <div class="timeline-body"><p>The use of <code>in</code> with compound comparisons often leads to unintended/surprising behaviour.</p>
+<pre><code class="language-python">False == False in [False]  # True
+</code></pre>
+<p>A solution would be to use parentheses.</p>
+<pre><code class="language-python">(False == False) in [False]  # False
+False == (False in [False])  # False
+</code></pre>
+<p>Similar to #8721, but the AST produced by <code>False or False and False</code> is quite different, so might be a different rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @charliermarsh on 2023-12-02 13:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2023-12-02 16:21</div>
+            <div class="timeline-body"><p>Agree this would be useful to lint against. There are a few more variations of compound <code>Compare</code> that probably don't make sense either: <code>a &lt; b is c</code>, <code>a is b is not c</code>.</p>
+<p>Arguably we should lint against all compound Compares <em>except</em> the following:</p>
+<ul>
+<li>Both compares are <code>is</code>: <code>a is b is c</code></li>
+<li>Both compares are <code>==</code>: <code>a == b ==c</code></li>
+<li>Both compares are one of <code>&lt;</code>, <code>&lt;=</code>: <code>a &lt;= b &lt; c</code> (probably the most common use  of compound Compare)</li>
+<li>Both compares are one of <code>&gt;</code>, <code>&gt;=</code>: <code>a &gt;= b &gt; c</code></li>
+</ul>
+<p>Maybe there are other uses of compound Compare that also make sense and that I didn't think of, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2024-01-25 20:38</div>
+            <div class="timeline-body"><p>I'll submit a PR implementing this rule this weekend, assuming it's been accepted @charliermarsh</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:09 UTC
+    </footer>
+</body>
+</html>

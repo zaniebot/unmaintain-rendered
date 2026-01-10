@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`docstring-code-line-length = &quot;dynamic&quot;` not Working Correctly - astral-sh/ruff #14984</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>docstring-code-line-length = &quot;dynamic&quot;</code> not Working Correctly</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14984">#14984</a>
+        opened by <a href="https://github.com/Bibo-Joshi">@Bibo-Joshi</a>
+        on 2024-12-15 14:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Bibo-Joshi">@Bibo-Joshi</a> on 2024-12-15 14:44</div>
+            <div class="timeline-body"><p>Hey. I found another instance where <code>docstring-code-line-length = &quot;dynamic&quot;</code> is not corking correctly. I've already seen https://github.com/astral-sh/ruff/issues/13358, but the fix for that apparently is not sufficient for the following example:</p>
+<pre><code class="language-python">&quot;&quot;&quot;This is a module docstring
+
+
+Example:
+    .. code-block:: python
+
+        SomeClass(long_param_name_1=&quot;long_param_value_1&quot;, a_very_long_param_name_2=&quot;long_param_value_2&quot;)
+&quot;&quot;&quot;
+
+
+class SampleClass:
+    &quot;&quot;&quot;This is a class docstring
+
+    Example:
+        .. code-block:: python
+
+            SomeClass(
+                long_param_name_1=&quot;long_param_value_1&quot;, a_very_long_param_name_2=&quot;long_param_value_2&quot;
+            )
+    &quot;&quot;&quot;
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-bash">(.venv313) ~\PycharmProjects\chango git:[section-note]
+ruff --version
+ruff 0.8.3
+(.venv313) ~\PycharmProjects\chango git:[section-note]
+ruff format foo.py --line-length 99
+1 file left unchanged
+(.venv313) ~\PycharmProjects\chango git:[section-note]
+ruff check foo.py --line-length 99
+foo.py:7:100: E501 Line too long (104 &gt; 99)
+  |
+5 |     .. code-block:: python
+6 | 
+7 |         SomeClass(long_param_name_1=&quot;long_param_value_1&quot;, a_very_long_param_name_2=&quot;long_param_value_2&quot;)
+  |                                                                                                    ^^^^^ E501
+8 | &quot;&quot;&quot;
+  |
+
+foo.py:18:100: E501 Line too long (101 &gt; 99)
+   |
+17 |             SomeClass(
+18 |                 long_param_name_1=&quot;long_param_value_1&quot;, a_very_long_param_name_2=&quot;long_param_value_2&quot;
+   |                                                                                                    ^^ E501
+19 |             )
+20 |     &quot;&quot;&quot;
+   |
+
+Found 2 errors.
+</code></pre>
+<p>Unfortunately, I don't know enough about rust to dig into this myself.</p>
+<p>Thanks for the great tool, btw ❤</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2024-12-15 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2024-12-15 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-15 15:09</div>
+            <div class="timeline-body"><p>Hi.</p>
+<p>Can you tell me more about what settings you're using (line lengths, preview mode?).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Bibo-Joshi">@Bibo-Joshi</a> on 2024-12-15 15:59</div>
+            <div class="timeline-body"><p>Ah, damn, I forgot the <code>--isolated</code> … But Apparently you can't set <code>docstring-code-format</code> via the command line, so I reduced my config to this minimal set:</p>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 99
+
+[tool.ruff.lint]
+select = [&quot;E501&quot;]
+
+[tool.ruff.format]
+docstring-code-format = true
+</code></pre>
+<p>Sorry, should have thought of that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-15 16:11</div>
+            <div class="timeline-body"><p>No worries and thanks for the details. I can reproduce your problem when <code>format.preview = false</code>. This makes sense to me because the fix for #13358 hasn't been promoted to the stable style yet, because it can change the formatting of existing code.</p>
+<p>Can you try setting <code>tool.ruff.format.preview = true</code> but be careful to have a backup of your code (e.g. commit all your changes) because the preview style has a few experimental formattings that you might not like. Or you can try it in our <a href="https://play.ruff.rs/1be035e8-cd1d-4944-9057-6deb4af46844">Playground</a> (here with <code>preview = true</code>).</p>
+<p>You can subscribe to #13371 to be notified when we promote the fix to stable. We plan to do so in early January.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Bibo-Joshi">@Bibo-Joshi</a> on 2024-12-15 20:24</div>
+            <div class="timeline-body"><p>Awesome, thanks for the explanation! I'll close, then :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Bibo-Joshi on 2024-12-15 20:24</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:03 UTC
+    </footer>
+</body>
+</html>

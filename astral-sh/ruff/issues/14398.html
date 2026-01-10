@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suggestion to improve TRY003 rule - astral-sh/ruff #14398</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Suggestion to improve TRY003 rule</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14398">#14398</a>
+        opened by <a href="https://github.com/Booplicate">@Booplicate</a>
+        on 2024-11-17 13:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Booplicate">@Booplicate</a> on 2024-11-17 13:19</div>
+            <div class="timeline-body"><h3>Issue</h3>
+<p>I want to propose to change how TRY003 works with some of the builtin exceptions. While I like how the rule applies to custom exceptions and &quot;base&quot; <code>Exception</code>, I think it's incorrect in the case of errors like <code>TypeError</code> and <code>ValueError</code>. It's a common pattern and is widely recommended to use those exceptions when type or value don't match the expectations.
+<a href="https://github.com/astral-sh/ruff/issues/2246#issuecomment-1406479505">Here</a> you suggest to define a subclass of <code>Exception</code>, but not only defining a separate exception for <em>every</em> case is redundant and would bloat the code, I'm pretty sure using <code>ValueError</code> would <em>more correct</em>.</p>
+<p>You already ignore <code>NotImplementedError</code>, which was a decision in the right direction! It doesn't make sense to subclass it every time. I think the same applies for at least <code>ValueError</code> and <code>TypeError</code>.</p>
+<h3>Solution</h3>
+<p>Currently you have such code to ignore <code>NotImplementedError</code>:
+https://github.com/astral-sh/ruff/blob/abb34828bdbce0eff28d4350b8f188436e57be78/crates/ruff_linter/src/rules/tryceratops/rules/raise_vanilla_args.rs#L71-L78
+sadly it seems that <code>match_builtin_expr</code> can only take a single <code>symbol</code>. While we could call it multiple times, I think it'd be slightly ineffective? A better approach might be changing this method (or defining a new one), so it can take an array of symbols to match against.</p>
+<h3>Info</h3>
+<p>Related issues: #2246 #6528</p>
+<p>Sample code:</p>
+<pre><code class="language-py">def compute(a: int, b: int) -&gt; int:
+     if a &lt;= 0:
+         raise ValueError(&quot;a must be &gt; 0&quot;)  # Ruff: Avoid specifying long messages outside the exception class [TRY003]
+     if not b:
+         raise ValueError(&quot;b must be != 0&quot;)  # Ruff: Avoid specifying long messages outside the exception class [TRY003]
+     return a + b
+</code></pre>
+<p><code>ruff</code> command: <code>ruff check --no-fix</code></p>
+<p><code>ruff</code> version: 0.7.4</p>
+<p><code>ruff</code> settings:</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+select = [&quot;TRY003&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2024-11-17 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @dylwil3 on 2024-11-17 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bcyran">@bcyran</a> on 2025-05-22 05:55</div>
+            <div class="timeline-body"><p>I think the most universal solution would be to make the ignored exceptions list configurable. But I certainly support adding <code>ValueError</code> and <code>TypeError</code> to the ignored values by default.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/edwinvehmaanpera">@edwinvehmaanpera</a> on 2025-09-20 20:57</div>
+            <div class="timeline-body"><p>Full configurability would be ideal, but if not then I would suggest also adding <code>AssertionError</code> to the ignored exceptions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bedlamzd">@bedlamzd</a> on 2025-11-04 21:42</div>
+            <div class="timeline-body"><p>Another candidate is <code>ExceptionGroup</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/k4lizen">@k4lizen</a> on 2026-01-02 05:11</div>
+            <div class="timeline-body"><p>I came to raise an issue about <code>AssertionError</code> and found this. I think its completely uncontraversial that <code>AssertionError</code> should be added alongside <code>NotImplementedError</code>.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:46 UTC
+    </footer>
+</body>
+</html>

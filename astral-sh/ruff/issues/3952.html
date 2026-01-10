@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False negative: `ARG002` is not triggered for methods decorated with `typing_extensions.override` - astral-sh/ruff #3952</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False negative: <code>ARG002</code> is not triggered for methods decorated with <code>typing_extensions.override</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/3952">#3952</a>
+        opened by <a href="https://github.com/bryanforbes">@bryanforbes</a>
+        on 2023-04-12 22:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/bryanforbes">@bryanforbes</a> on 2023-04-12 22:20</div>
+            <div class="timeline-body"><p>Ruff version: 0.0.261</p>
+<p>Given the following file <code>foo.py</code>:</p>
+<pre><code class="language-python">from __future__ import annotations
+
+from typing_extensions import override
+
+
+class Foo:
+    def do_something(self, arg: int) -&gt; None:
+        print('here')
+
+
+class Bar(Foo):
+    @override
+    def do_something(self, arg: int) -&gt; None:
+        print('here as well')
+</code></pre>
+<p>And the following invocation:</p>
+<pre><code class="language-sh">ruff --select ARG --isolated --no-cache foo.py
+</code></pre>
+<p>The following output is produced:</p>
+<pre><code>foo.py:7:28: ARG002 Unused method argument: `arg`
+</code></pre>
+<p>There should be another error reported at line 13. For reference, <a href="https://peps.python.org/pep-0698/">PEP-698</a> defines <code>@override</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-13 02:14</div>
+            <div class="timeline-body"><p>I believe this is intentional, the reason being that if you're overriding a method, you can't really control the signature. For the same reason, we ignore unused arguments in abstract methods. It looks like these are configuration options in the originating plugin (<a href="https://pypi.org/project/flake8-unused-arguments/">flake8-unused-arguments</a>).</p>
+<p>What would you consider to be the right thing to do here, as a user? Underscore-prefix the variable name?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-04-13 02:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2023-04-13 13:53</div>
+            <div class="timeline-body"><p>To add to the discussion:
+https://peps.python.org/pep-0698/#no-new-rules-for-override-compatibility explicitly doesn't mention anything about the overridden argument name. (yet, it may come in further PEPs)</p>
+<p>Because it's in the context of overriding, there's a couple reasons to keep the arguments the same. Especially when it comes to static type-checking, passing keyword arguments, and having a consistent signature (which is what <code>@override</code> is for in the first place). My editor (VScode+Pylance) also marks unused arguments by graying them out.</p>
+<p>Otherwise, prepending a variable with an underscore to mark unused variables is a convention I use as well in Python, TypeScript and C#. As long as it's an option I don't really mind because the current behaviour with <code>@override</code> is desirable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bryanforbes">@bryanforbes</a> on 2023-04-13 13:59</div>
+            <div class="timeline-body"><blockquote>
+<p>I believe this is intentional, the reason being that if you're overriding a method, you can't really control the signature.</p>
+</blockquote>
+<p>This makes sense and I should have thought of that. Let's blame it on all the meetings I was in yesterday.</p>
+<blockquote>
+<p>It looks like these are configuration options in the originating plugin (<a href="https://pypi.org/project/flake8-unused-arguments/">flake8-unused-arguments</a>).</p>
+</blockquote>
+<p>It might be nice to give users the option to do this, but after reading that first sentence, I'm not sure that's even needed.</p>
+<blockquote>
+<p>What would you consider to be the right thing to do here, as a user? Underscore-prefix the variable name?</p>
+</blockquote>
+<p>For clarity's sake, the original method I was working with had a positional-only argument. If we take a look at all of the types of arguments:</p>
+<pre><code class="language-python">class Foo:
+    def do_something(
+        self, arg: int, /, arg2: str, *, arg3: str, arg4: str | None = None
+    ) -&gt; None:
+        print('here')
+
+
+class Bar(Foo):
+    @override
+    def do_something(
+        self, arg: int, /, arg2: str, *, arg3: str, arg4: str | None = None
+    ) -&gt; None:
+        print('here as well')
+</code></pre>
+<p>In this case, <code>arg</code> could be renamed since it can never be called as a named argument, but none of the rest can be since they can all be called as named arguments. Positional-only arguments are the only case I can think of where I could see ruff flagging an argument as unused in an overridden method since they can be renamed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bryanforbes">@bryanforbes</a> on 2023-04-13 14:01</div>
+            <div class="timeline-body"><p>@Avasam</p>
+<blockquote>
+<p>Otherwise, prepending a variable with an underscore to mark unused variables is a convention I use as well in Python</p>
+</blockquote>
+<p>As I pointed out above, the only arguments you can do that with are positional-only arguments. The rest technically can't be renamed since they have to match the name of the method you're overriding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bryanforbes">@bryanforbes</a> on 2023-04-13 14:17</div>
+            <div class="timeline-body"><blockquote>
+<p>To add to the discussion:
+https://peps.python.org/pep-0698/#no-new-rules-for-override-compatibility explicitly doesn't mention anything about the overridden argument name. (yet, it may come in further PEPs)</p>
+</blockquote>
+<p>@Avasam sorry for the second ping, but I forgot something in my last reply. The PEP doesn't need to mention anything about overridden argument names because that is covered by basic type checking for <a href="https://mypy.readthedocs.io/en/stable/error_code_list.html?highlight=liskov#check-validity-of-overrides-override">method overrides</a>. If a type checker isn't already checking that before it implements PEP-698, it's not doing its job.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-04-13 20:11</div>
+            <div class="timeline-body"><p>Yeah this all makes sense -- I follow what you're saying RE positional-only arguments. I think the current behavior is reasonable, I think it would be surprising to users that positional-only arguments are flagged while all others aren't, even if it'd actually be totally fine to rename them. I'm gonna close but always open to follow-up questions :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-04-13 20:11</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:52 UTC
+    </footer>
+</body>
+</html>

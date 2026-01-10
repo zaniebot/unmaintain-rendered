@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for named and explicit indexes - astral-sh/uv #7481</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for named and explicit indexes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7481">#7481</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-09-18 01:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-18 01:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds a first-class API for defining registry indexes, beyond our existing <code>--index-url</code> and <code>--extra-index-url</code> setup.</p>
+<p>Specifically, you now define indexes like so in a <code>uv.toml</code> or <code>pyproject.toml</code> file:</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;pytorch&quot;
+url = &quot;https://download.pytorch.org/whl/cu121&quot;
+</code></pre>
+<p>You can also provide indexes via <code>--index</code> and <code>UV_INDEX</code>, and override the default index with <code>--default-index</code> and <code>UV_DEFAULT_INDEX</code>.</p>
+<h3>Index priority</h3>
+<p>Indexes are prioritized in the order in which they're defined, such that the first-defined index has highest priority.</p>
+<p>Indexes are also inherited from parent configuration (e.g., the user-level <code>uv.toml</code>), but are placed after any indexes in the current project, matching our semantics for other array-based configuration values.</p>
+<p>You can mix <code>--index</code> and <code>--default-index</code> with the legacy <code>--index-url</code> and <code>--extra-index-url</code> settings; the latter two are merely treated as unnamed <code>[[tool.uv.index]]</code> entries.</p>
+<h3>Index pinning</h3>
+<p>If an index includes a name (which is optional), it can then be referenced via <code>tool.uv.sources</code>:</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;pytorch&quot;
+url = &quot;https://download.pytorch.org/whl/cu121&quot;
+
+[tool.uv.sources]
+torch = { index = &quot;pytorch&quot; }
+</code></pre>
+<p>If an index is marked as <code>explicit = true</code>, it can <em>only</em> be used via such references, and will never be searched implicitly:</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;pytorch&quot;
+url = &quot;https://download.pytorch.org/whl/cu121&quot;
+explicit = true
+
+[tool.uv.sources]
+torch = { index = &quot;pytorch&quot; }
+</code></pre>
+<p>Indexes defined outside of the current project (e.g., in the user-level <code>uv.toml</code>) can <em>not</em> be explicitly selected.</p>
+<p>(As of now, we only support using a single index for a given <code>tool.uv.sources</code> definition.)</p>
+<h3>Default index</h3>
+<p>By default, we include PyPI as the default index. This remains true even if the user defines a <code>[[tool.uv.index]]</code> -- PyPI is still used as a fallback. You can mark an index as <code>default = true</code> to (1) disable the use of PyPI, and (2) bump it to the bottom of the prioritized list, such that it's used only if a package does not exist on a prior index:</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;pytorch&quot;
+url = &quot;https://download.pytorch.org/whl/cu121&quot;
+default = true
+</code></pre>
+<h3>Name reuse</h3>
+<p>If a name is reused, the higher-priority index with that name is used, while the lower-priority indexes are ignored entirely.</p>
+<p>For example, given:</p>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;pytorch&quot;
+url = &quot;https://download.pytorch.org/whl/cu121&quot;
+
+[[tool.uv.index]]
+name = &quot;pytorch&quot;
+url = &quot;https://test.pypi.org/simple&quot;
+</code></pre>
+<p>The <code>https://test.pypi.org/simple</code> index would be ignored entirely, since it's lower-priority than <code>https://download.pytorch.org/whl/cu121</code> but shares the same name.</p>
+<p>Closes #171.</p>
+<h2>Future work</h2>
+<ul>
+<li>Users should be able to provide authentication for named indexes via environment variables.</li>
+<li><code>uv add</code> should automatically write <code>--index</code> entries to the <code>pyproject.toml</code> file.</li>
+<li>Users should be able to provide multiple indexes for a given package, stratified by platform:</li>
+</ul>
+<pre><code class="language-toml">[tool.uv.sources]
+torch = [
+  { index = &quot;cpu&quot;, markers = &quot;sys_platform == 'darwin'&quot; },
+  { index = &quot;gpu&quot;, markers = &quot;sys_platform != 'darwin'&quot; },
+]
+</code></pre>
+<ul>
+<li>Users should be able to specify a proxy URL for a given index, to avoid writing user-specific URLs to a lockfile:</li>
+</ul>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;test&quot;
+url = &quot;https://private.org/simple&quot;
+proxy = &quot;http://&lt;omitted&gt;/pypi/simple&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-09-18 01:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-18 02:08</div>
+            <div class="timeline-body"><p>This still needs docs (beyond the inline documentation), but I'd like to align on the semantics described in the PR summary first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-18 02:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/index_source.rs</code>:60 on 2024-09-18 02:08</div>
+            <div class="timeline-body"><p>I left this in for now but can remove before merging. Eventually I want this to support <code>--find-links</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-09-18 02:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-18 03:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Any indexes defined via [[tool.uv.index]] take priority over any indexes defined via --index-url or --extra-index-url.</p>
+<p>(This is problematic, since as of now, there's no way to provide a [[tool.uv.index]] on the command line, so you can never override in-file configuration with command-line configuration.)</p>
+</blockquote>
+<p>Yeah this seems wrong. Why is it this way?</p>
+<p>Do we need an explicit <code>explicit</code> tag or can we just use the presence of a name? I guess the name is useful for providing credentials externally so... I guess the explicit tag is important.</p>
+<p>Do we set the explicit tag during a <code>uv add --index-url &lt;url&gt; &lt;pkg&gt;</code> operation?</p>
+<p>How does index pinning work for transitive dependencies?</p>
+<p>How can we teach the PyPI fallback behavior? Are there any bad user experiences where we could suggest adding <code>default = true</code> to their index definition?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-18 04:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Yeah this seems wrong. Why is it this way?</p>
+</blockquote>
+<p>Well... we could just invert the priority, if that's what you mean (such that the new index stuff comes last, and the legacy arguments come first). Then the CLI arguments would work as expected. As-is, though, we don't have a way to differentiate between indexes passed on the command line (with <code>--index-url</code> or <code>--extra-index-url</code>) and indexes defined in a file via <code>index-url</code> and <code>extra-index-url</code>... So, like, we can't have <code>index-url</code> from the <code>uv.toml</code> be lower priority than <code>tool.uv.index</code>, but <code>--index-url</code> be higher priority. Alternatively, we could add a new command-line argument (<code>--index</code>?) for these <code>tool.uv.index</code> sources, which would also solve the problem?</p>
+<blockquote>
+<p>Do we need an explicit explicit tag or can we just use the presence of a name? I guess the name is useful for providing credentials externally so... I guess the explicit tag is important.</p>
+</blockquote>
+<p>Yeah roughly this.</p>
+<blockquote>
+<p>Do we set the explicit tag during a uv add --index-url <url> <pkg> operation?</p>
+</blockquote>
+<p>We don't as of this PR... We can though. I think we probably should? I guess by default we add the index, and make it explicit for that package? The unfortunate thing is that we need a name for the index in that case (as we discussed on Discord). Alternatively, we could just add a <code>tool.uv.index</code>, and not make it explicit.</p>
+<blockquote>
+<p>How does index pinning work for transitive dependencies?</p>
+</blockquote>
+<p>It doesn't have any effect on transitive dependencies. I don't know that it can or should, honestly, because transitive dependencies can be required from multiple different first-party dependencies that could come from different indexes. I think this would be extremely hard to implement correctly and could lead to confusing behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/inflation">@inflation</a> on 2024-09-18 04:27</div>
+            <div class="timeline-body"><p>I prefer to make <code>explicit=true</code> the default behavior, since the first foot gun in the current situation after adding <code>extra-index-url</code>, are packages in the <code>pytorch</code> channel taking precedence over <code>pypi</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/smphhh">@smphhh</a> on 2024-09-18 08:28</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>How does index pinning work for transitive dependencies?</p>
+</blockquote>
+<p>It doesn't have any effect on transitive dependencies. I don't know that it can or should, honestly, because transitive dependencies can be required from multiple different first-party dependencies that could come from different indexes. I think this would be extremely hard to implement correctly and could lead to confusing behavior.</p>
+</blockquote>
+<p>Did you consider allowing pinning packages to indexes using glob-patterns as mentioned <a href="https://github.com/astral-sh/uv/issues/171#issuecomment-2302093785">here</a>? AFAIK that is the only solution for pinning transitive dependencies that is straightforward enough but still useful for a set of real use-cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-18 14:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Did you consider allowing pinning packages to indexes using glob-patterns as mentioned https://github.com/astral-sh/uv/issues/171#issuecomment-2302093785? AFAIK that is the only solution for pinning transitive dependencies that is straightforward enough but still useful for a set of real use-cases.</p>
+</blockquote>
+<p>There's nothing stopping us from supporting that in addition to the schema described above. It strikes me as somewhat backwards but I understand why it's useful. My only concern is that we're complicating the schema and creating two ways to assign a package to an index.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/corleyma">@corleyma</a> on 2024-09-20 18:41</div>
+            <div class="timeline-body"><p>@charliermarsh I know it's painful/stupid/messy, but the regex assignment is still really useful for handling transitive dependencies in corporate environments.  I don't think there are easy alternatives given the default assumption that python wants to make about indices being equivalent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-09-20 18:48</div>
+            <div class="timeline-body"><p>I wonder if we should have a separate schema for pinning transitive packages to a defined index? It could allow globs as well. I'm not sure what all the trade-offs are.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-20 19:43</div>
+            <div class="timeline-body"><p>@zanieb -- That's a good call. Instead of putting this on the index schema, we could have a separate table for assigning packages to named indexes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-26 18:27</div>
+            <div class="timeline-body"><p>I'll probably be pushing to this branch a lot over the next few days, so you may want to unsubscribe if the notifications are annoying!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-27 01:41</div>
+            <div class="timeline-body"><p>Ok @zanieb -- I think this is ready for review. It now includes docs too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/j178">@j178</a> on 2024-09-27 05:05</div>
+            <div class="timeline-body"><p>While playing with this, I found an issue that the lockfile is always ignored due to missing remote index:</p>
+<pre><code class="language-console">DEBUG Ignoring existing lockfile due to missing remote index: `idna` `3.4` from `https://download.pytorch.org/whl/cu121`
+</code></pre>
+<p>A reproduction:</p>
+<pre><code class="language-console">$ cat pyproject.toml
+[project]
+name = &quot;foo&quot;
+version = &quot;0.1.0&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;idna&gt;=3.4&quot;,
+]
+
+[[tool.uv.index]]
+name = &quot;pytorch&quot;
+url = &quot;https://download.pytorch.org/whl/cu121&quot;
+explicit = true
+
+[tool.uv.sources]
+idna = { index = &quot;pytorch&quot; }
+
+$ cargo run -- lock
+$ cargo run -- lock
+</code></pre>
+<p>Seems like <code>explict</code> indexes are not included in the <code>locations.indexes()</code>, so that <code>remotes</code> does not contain <code>explict</code> indexes:
+https://github.com/astral-sh/uv/blob/805f1bd6f548f142acd592e5089597b31a012a7c/crates/uv-resolver/src/lock/mod.rs#L1046-L1067</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-09-27 12:37</div>
+            <div class="timeline-body"><p>Thanks, good catch.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-09-28 19:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/configuration/indexes.md</code>:17 on 2024-09-30 08:38</div>
+            <div class="timeline-body"><p>Nit: We now prefer PEP 691 – JSON-based Simple API for Python Package Indexes because it's better to parse json than html.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/configuration/indexes.md</code>:23 on 2024-09-30 08:44</div>
+            <div class="timeline-body"><p>Does that mean if I have an index in xdg config <code>uv.toml</code>, that one is tried first, then the one in my project? Is there a way to enumerate the indexes and their to be used by project in <code>pyproject.toml</code> explicitly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>docs/configuration/indexes.md</code>:82 on 2024-09-30 08:48</div>
+            <div class="timeline-body"><p>This is a bit more far-fetched, but can i use constraints + sources to pin transitive dependencies to an index?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/pypi-types/src/requirement.rs</code>:322 on 2024-09-30 08:49</div>
+            <div class="timeline-body"><p>Shouldn't this refer to an index name, rather than a URL? By defining a name, we comment on the indexes meaning and avoid repeating the URL each time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/show_settings.rs</code>:3682 on 2024-09-30 09:31</div>
+            <div class="timeline-body"><p>Stale comment</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-09-30 09:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 22:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/index.rs</code>:29 on 2024-09-30 22:37</div>
+            <div class="timeline-body"><p>Perhaps</p>
+<pre><code class="language-suggestion">    /// Explicit indexes will _only_ be used when explicitly requested via a `[tool.uv.sources]`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 22:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/index.rs</code>:51 on 2024-09-30 22:40</div>
+            <div class="timeline-body"><p>I thought it was the opposite?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/index.rs</code>:73 on 2024-09-30 22:41</div>
+            <div class="timeline-body"><p>Is this addressed elsewhere?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 22:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 22:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/index.rs</code>:117 on 2024-09-30 22:43</div>
+            <div class="timeline-body"><p>I presume this check is intended to avoid collisions with usernames after the scheme?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 22:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/index_url.rs</code>:455 on 2024-09-30 22:52</div>
+            <div class="timeline-body"><p>I don't quite follow the &quot;pip perspective&quot; part.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-30 22:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/index.rs</code>:73 on 2024-09-30 22:54</div>
+            <div class="timeline-body"><p>No it's a TODO. I intentionally left it in but I don't feel strongly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-30 22:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/index.rs</code>:51 on 2024-09-30 22:54</div>
+            <div class="timeline-body"><p>Yeah sorry, this comment looks stale. It is the opposite.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-30 22:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/index.rs</code>:117 on 2024-09-30 22:55</div>
+            <div class="timeline-body"><p>I think I just wouldn't want to detect <code>https://foo=bar.com</code> as a name <code>https://foo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 22:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pypi-types/src/requirement.rs</code>:322 on 2024-09-30 22:55</div>
+            <div class="timeline-body"><p>The comment seems wrong as-is</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 23:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-settings/src/settings.rs</code>:772 on 2024-09-30 23:11</div>
+            <div class="timeline-body"><p>Same comment as earlier.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 23:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-settings/src/settings.rs</code>:754 on 2024-09-30 23:12</div>
+            <div class="timeline-body"><p>Should we refer to index strategies here too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 23:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/lock.rs</code>:11825 on 2024-09-30 23:15</div>
+            <div class="timeline-body"><p>Just &quot;named&quot; right? There's no explicit declaration here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 23:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/lock.rs</code>:11893 on 2024-09-30 23:15</div>
+            <div class="timeline-body"><p>Might be safer to use <code>example.com</code> or something so the test fails if it's used?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 23:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/lock.rs</code>:12154 on 2024-09-30 23:16</div>
+            <div class="timeline-body"><p>What if I provided the named index <em>again</em> via the CLI?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 23:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/concepts/dependencies.md</code>:73 on 2024-09-30 23:18</div>
+            <div class="timeline-body"><p>I worry the use of &quot;explicit&quot; here will be conflated with the <code>explicit</code> index marker</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 23:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/environment.md</code>:6 on 2024-09-30 23:19</div>
+            <div class="timeline-body"><p>Is &quot;base index&quot; right right idea here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 23:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/environment.md</code>:6 on 2024-09-30 23:19</div>
+            <div class="timeline-body"><p>Can't be multiple values right? I think these might be roughly swapped but both need some work.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 23:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/indexes.md</code>:5 on 2024-09-30 23:20</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">private indexes, via the `[[tool.uv.index]]` configuration option (and `--index`, the analogous
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 23:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/indexes.md</code>:15 on 2024-09-30 23:21</div>
+            <div class="timeline-body"><p>Would avoid the use of &quot;explicit&quot; here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 23:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/indexes.md</code>:17 on 2024-09-30 23:21</div>
+            <div class="timeline-body"><p>I'd discuss the expected format somewhere else, I think. It seems too irrelevant to most users to put here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 23:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/index.md</code>:8 on 2024-09-30 23:22</div>
+            <div class="timeline-body"><p>Just wondering, why here instead of in <code>Concepts</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 23:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/indexes.md</code>:23 on 2024-09-30 23:23</div>
+            <div class="timeline-body"><p>I think project configuration always takes precedence over configuration outside the project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 23:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/indexes.md</code>:34 on 2024-09-30 23:23</div>
+            <div class="timeline-body"><p>Interesting thing missing here. What if I want to disable having a default index entirely?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 23:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/indexes.md</code>:57 on 2024-09-30 23:24</div>
+            <div class="timeline-body"><p>Is this supposed to be</p>
+<blockquote>
+<p>... to ensure that <em>only</em> <code>torch</code> is installed from ...</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 23:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/indexes.md</code>:70 on 2024-09-30 23:26</div>
+            <div class="timeline-body"><p>As far as I can tell, we silently ignore if we receive a command-line argument that interacts with a named index right?</p>
+<p>Separately, why this limitation? What happened to being able to override a named index on a single invocation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 23:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/pip/compatibility.md</code>:151 on 2024-09-30 23:27</div>
+            <div class="timeline-body"><p>Should we refer to &quot;searching across multiple indexes&quot; and deduplicate the content above?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-09-30 23:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/index.rs</code>:117 on 2024-09-30 23:28</div>
+            <div class="timeline-body"><p>Sorry I was thinking about <code>@</code> — anyway yeah this seems right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-09-30 23:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/configuration/indexes.md</code>:70 on 2024-09-30 23:32</div>
+            <div class="timeline-body"><blockquote>
+<p>Separately, why this limitation? What happened to being able to override a named index on a single invocation?</p>
+</blockquote>
+<p>It's an implementation detail... It probably should work, but it's hard because those get merged into settings, and we don't look in the settings when resolving explicit, named indexes (we just look in the current workspace).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 00:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/configuration/indexes.md</code>:23 on 2024-10-01 00:29</div>
+            <div class="timeline-body"><p>Correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 00:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/configuration/indexes.md</code>:82 on 2024-10-01 00:29</div>
+            <div class="timeline-body"><p>I think you would need to make it a direct dependency.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 00:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/requirement.rs</code>:322 on 2024-10-01 00:30</div>
+            <div class="timeline-body"><p>This is correct as a URL. This isn't the user-facing type. But the comment is wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 00:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/lock.rs</code>:12154 on 2024-10-01 00:37</div>
+            <div class="timeline-body"><p>The CLI wins!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 00:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/configuration/indexes.md</code>:34 on 2024-10-01 00:40</div>
+            <div class="timeline-body"><p><code>--no-index</code> does that, but otherwise there's no such thing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 00:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/configuration/index.md</code>:8 on 2024-10-01 00:40</div>
+            <div class="timeline-body"><p>I'm not sure. To me it was similar to authentication.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 00:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/lock.rs</code>:12154 on 2024-10-01 00:47</div>
+            <div class="timeline-body"><p>Added <code>lock_repeat_named_index_cli</code> for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 00:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/pip/compatibility.md</code>:151 on 2024-10-01 00:49</div>
+            <div class="timeline-body"><p>I could go either way. I don't mind having dedicated content here on how it differs from pip.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 00:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-cli/src/lib.rs</code>:3871 on 2024-10-01 00:51</div>
+            <div class="timeline-body"><p>@zanieb -- Should we... hide these?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-01 02:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:3871 on 2024-10-01 02:16</div>
+            <div class="timeline-body"><p>In a future release, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 04:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/configuration/indexes.md</code>:70 on 2024-10-01 04:31</div>
+            <div class="timeline-body"><p>I'm working on this, but it will be a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 04:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/configuration/indexes.md</code>:70 on 2024-10-01 04:44</div>
+            <div class="timeline-body"><p>I'm considering tracking the &quot;source&quot; of every index (CLI, configuration file, etc.), as field on the index type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-01 04:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/indexes.md</code>:34 on 2024-10-01 04:57</div>
+            <div class="timeline-body"><p>I think it'll be fairly common to want to disable PyPI entirely?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-10-01 04:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 12:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/configuration/indexes.md</code>:34 on 2024-10-01 12:04</div>
+            <div class="timeline-body"><p>That’s the same as defining a different default index.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-01 12:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>docs/configuration/indexes.md</code>:34 on 2024-10-01 12:13</div>
+            <div class="timeline-body"><p>Yes, but it seems weird to need to do that. I might not want to mark my other index as a default for some reason? I don't fully understand the trade-offs. We can wait and see if it comes up, it doesn't block this pull request.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-10-01 13:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>docs/configuration/indexes.md</code>:34 on 2024-10-01 13:00</div>
+            <div class="timeline-body"><p>Yeah, I think what you're getting at here is that <code>default = true</code> does two things: (1) replaces PyPI, (2) changes priority.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/szobov">@szobov</a> on 2024-10-07 15:24</div>
+            <div class="timeline-body"><p>Hey @charliermarsh
+Thanks a lot for the work you're doing to improve python's ecosystem.
+I'm very much looking forward for this feature since I'm currently blocked by it.</p>
+<p>I wanted to ask what are the steps to get it merged and released and if I can somehow assist you?</p>
+<p>I tested it locally by installing <code>uv</code> from the branch and it worked smoothly :tada:</p>
+<details>
+<summary>details on the setup</summary>
+
+<pre><code>```
+$ uv version
+uv 0.4.18 (f9ee2a9e2 2024-10-03)
+
+$ cat pyproject.toml
+[project]
+name = &quot;inference&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+requires-python = &quot;&gt;=3.12&quot;
+dependencies = [
+    &quot;numpy&gt;=2.1.2&quot;,
+    &quot;torch==2.4.0+cu118&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.uv.sources]
+torch = { index = &quot;pytorch&quot; }
+
+[[tool.uv.index]]
+name = &quot;pytorch&quot;
+url = &quot;https://download.pytorch.org/whl/cu118&quot;
+explicit = true
+
+$ cat uv.lock
+....
+[[package]]
+name = &quot;torch&quot;
+version = &quot;2.4.0+cu118&quot;
+source = { registry = &quot;https://download.pytorch.org/whl/cu118&quot; }
+dependencies = [
+    { name = &quot;filelock&quot; },
+    { name = &quot;fsspec&quot; },
+    { name = &quot;jinja2&quot; },
+    { name = &quot;networkx&quot; },
+    { name = &quot;nvidia-cublas-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
+    { name = &quot;nvidia-cuda-cupti-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
+    { name = &quot;nvidia-cuda-nvrtc-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
+    { name = &quot;nvidia-cuda-runtime-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
+    { name = &quot;nvidia-cudnn-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
+    { name = &quot;nvidia-cufft-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
+    { name = &quot;nvidia-curand-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
+    { name = &quot;nvidia-cusolver-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
+    { name = &quot;nvidia-cusparse-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
+    { name = &quot;nvidia-nccl-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
+    { name = &quot;nvidia-nvtx-cu11&quot;, marker = &quot;platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
+    { name = &quot;setuptools&quot; },
+    { name = &quot;sympy&quot; },
+    { name = &quot;triton&quot;, marker = &quot;python_full_version &lt; '3.13' and platform_machine == 'x86_64' and platform_system == 'Linux'&quot; },
+    { name = &quot;typing-extensions&quot; },
+]
+wheels = [
+    { url = &quot;https://download.pytorch.org/whl/cu118/torch-2.4.0%2Bcu118-cp312-cp312-linux_x86_64.whl&quot;, hash = &quot;sha256:d38bd98e5faf9565f04d2b59a481cf576cdf4078444cdf24868fbf5ad685dc4d&quot; },
+    { url = &quot;https://download.pytorch.org/whl/cu118/torch-2.4.0%2Bcu118-cp312-cp312-win_amd64.whl&quot;, hash = &quot;sha256:bd16a12a003fe58276d7b7394a3760d576eb8dbfb4bacea025eb52a1eaf5172b&quot; },
+]
+```</code></pre>
+</details>
+
+<p>Thanks in advance :pray:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-07 15:55</div>
+            <div class="timeline-body"><p>I’m planning to release it early next week. Sorry for the delay — I’m on vacation today, then at EuroRust later in the week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pythonbyte">@pythonbyte</a> on 2024-10-10 12:53</div>
+            <div class="timeline-body"><p>Hey @charliermarsh</p>
+<p>Amazing work, would be amazing if in this PR we could have the
+<code>uv add should automatically write --index entries to the pyproject.toml file.</code></p>
+<p>That would help my team and me not to add a library to write/dump the data.toml file 🙏🏽</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/odie5533">@odie5533</a> on 2024-10-10 14:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Hey @charliermarsh</p>
+<p>Amazing work, would be amazing if in this PR we could have the <code>uv add should automatically write --index entries to the pyproject.toml file.</code></p>
+<p>That would help my team and me not to add a library to write/dump the data.toml file 🙏🏽</p>
+</blockquote>
+<p>See PRs #7746 and #7747</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pythonbyte">@pythonbyte</a> on 2024-10-10 15:42</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Hey @charliermarsh
+Amazing work, would be amazing if in this PR we could have the <code>uv add should automatically write --index entries to the pyproject.toml file.</code>
+That would help my team and me not to add a library to write/dump the data.toml file 🙏🏽</p>
+</blockquote>
+<p>See PRs #7746 and #7747</p>
+</blockquote>
+<p>That's awesome, thank you so much, really excited about these features 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-10-15 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-10-15 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-15 22:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danieleades">@danieleades</a> on 2024-10-22 07:05</div>
+            <div class="timeline-body"><p>does this support, or is support planned for, using API keys for authentication against private registries (ie artifactory) rather than using username/password?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-22 11:33</div>
+            <div class="timeline-body"><p>You can use an API key in the PASSWORD variable — it works for anything that supports HTTP Basic Authentication.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danieleades">@danieleades</a> on 2024-10-22 12:30</div>
+            <div class="timeline-body"><blockquote>
+<p>You can use an API key in the PASSWORD variable — it works for anything that supports HTTP Basic Authentication.</p>
+</blockquote>
+<p>thanks for the support!</p>
+<p>i'm trying this now and seeing issues. For context, i have a project which has one dependency from a private artifactory registry.</p>
+<p>with or without credentials exported to the environment i see the following output:</p>
+<pre><code>uv sync
+  × No solution found when resolving dependencies:
+  ╰─▶ Because my-private-package was not found in the package registry and your project depends on my-private-package&gt;=2.0.0,&lt;2.1.dev0, we can conclude that your project's requirements are unsatisfiable.
+
+      hint: my-private-package was requested with a pre-release marker (e.g., sb-qag-sphinx&gt;=2.0.0,&lt;2.1.dev0), but pre-releases weren't enabled (try: `--prerelease=allow`)
+</code></pre>
+<p>the dependencies are specified as follows:</p>
+<pre><code class="language-toml">dependencies = [
+    &quot;my-private-package~=2.0.0&quot;,
+    # ...
+]
+
+[tool.uv.sources]
+my-private-package = {index = &quot;mycompany-py-release&quot;}
+
+[[tool.uv.index]]
+name = &quot;artifactory-pypi&quot;
+url = &quot;https://artifactory.mycompany.com/artifactory/api/pypi/pypi/simple&quot;
+default = true
+
+[[tool.uv.index]]
+# Requires:
+name = &quot;mycompany-py-release&quot;
+url = &quot;https://artifactory.mycompany.com/artifactory/api/pypi/my-private-package/simple&quot;
+explicit = true
+</code></pre>
+<p>with</p>
+<pre><code class="language-sh">export UV_INDEX_MYCOMPANY_PY_RELEASE_USERNAME={username}
+export UV_INDEX_MYCOMPANY_PY_RELEASE_PASSWORD={artifactory token}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-22 12:38</div>
+            <div class="timeline-body"><p>You should open a new issue for this and we can discuss there</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dariocurr">@dariocurr</a> on 2024-11-15 03:52</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li>Users should be able to specify a proxy URL for a given index, to avoid writing user-specific URLs to a lockfile:</li>
+</ul>
+<pre><code class="language-toml">[[tool.uv.index]]
+name = &quot;test&quot;
+url = &quot;https://private.org/simple&quot;
+proxy = &quot;http://&lt;omitted&gt;/pypi/simple&quot;
+</code></pre>
+</blockquote>
+<p>Any news about this feature? This is critical for some users</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:13 UTC
+    </footer>
+</body>
+</html>

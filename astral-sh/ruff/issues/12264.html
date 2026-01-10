@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mismatched diagnostics with and without cache with hierarchical configs - astral-sh/ruff #12264</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Mismatched diagnostics with and without cache with hierarchical configs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12264">#12264</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2024-07-10 04:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-10 04:07</div>
+            <div class="timeline-body"><p>Consider the following project structure:</p>
+<pre><code>.
+├── baz
+│   ├── egg
+│   │   └── t3.py
+│   ├── pyproject.toml
+│   └── t2.py
+├── pyproject.toml
+└── t1.py
+</code></pre>
+<blockquote>
+<p>Zipped folder: <a href="https://github.com/user-attachments/files/16155043/foo.zip">foo.zip</a></p>
+</blockquote>
+<p>All Python files contain the same code which raises <code>undefined-name</code>:</p>
+<pre><code class="language-py">print(name)
+</code></pre>
+<p>And both <code>pyproject.toml</code> file contain:</p>
+<pre><code class="language-toml">[tool.ruff.lint]
+ignore = [&quot;F821&quot;]
+</code></pre>
+<h3>Steps:</h3>
+<ol>
+<li>Make sure there's no cache: <code>ruff clean</code></li>
+<li>Run a fresh <code>ruff check .</code> which should give no diagnostics because they're currently ignored</li>
+<li>Comment the <code>ignore</code> line in nested config: <code>baz/pyproject.toml</code></li>
+<li>Run <code>ruff check .</code> and you'll see a single diagnostic for <code>baz/egg/t3.py</code></li>
+<li>Run <code>ruff check --no-cache .</code> and you'll see two diagnostics for <code>baz/t2.py</code> and <code>baz/egg/t3.py</code></li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-07-10 04:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-10 07:06</div>
+            <div class="timeline-body"><p>Huh, that's confusing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-07-10 10:25</div>
+            <div class="timeline-body"><blockquote>
+<p>Huh, that's confusing</p>
+</blockquote>
+<p>What's confusing? Is it the issue description or the issue itself? I can make it clear if it's the former :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-10 11:04</div>
+            <div class="timeline-body"><p>Haha no, the description is clear. It's unclear to me how / why the cache gets into an invalid state.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cache</span> added by @dhruvmanila on 2024-07-11 04:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-07 06:05</div>
+            <div class="timeline-body"><p>Hmm, I'm unable to reproduce this. Changes to the <code>pyproject.toml</code> are correctly reflected when running <code>ruff check</code> in the <code>foo</code> directory</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-08-07 19:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:20 UTC
+    </footer>
+</body>
+</html>

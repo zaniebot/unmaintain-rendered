@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v0.1.6: Overriding sub-setting category nulls other inherited settings (#4348) - astral-sh/ruff #9872</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>v0.1.6: Overriding sub-setting category nulls other inherited settings (#4348)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9872">#9872</a>
+        opened by <a href="https://github.com/LTourinho">@LTourinho</a>
+        on 2024-02-07 12:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/LTourinho">@LTourinho</a> on 2024-02-07 12:02</div>
+            <div class="timeline-body"><p>Very similar to the issue described in https://github.com/astral-sh/ruff/issues/4348. I have a root dir with a file that looks a bit like:</p>
+<p>proj/.ruff.toml:</p>
+<blockquote>
+<p>[lint.isort]
+section-order = [&quot;standard-library&quot;, &quot;common_pkgs&quot;, &quot;third-party&quot;, &quot;same_subcomp&quot;]
+[lint.isort.sections]
+&quot;common_pkgs&quot; = [&quot;numpy&quot;, &quot;behave&quot;, <other examples>]
+&quot;same_subcomp&quot;= []</p>
+</blockquote>
+<p>proj/subdir/.ruff.toml:</p>
+<blockquote>
+<p>extend = &quot;../.ruff.toml&quot;
+[lint.isort.sections]
+&quot;same_subcomp&quot; = [&quot;&lt;pattern&gt;&quot;]</p>
+</blockquote>
+<p>Using a command such as ruff proj/subdir/&lt;some_file&gt; returns me an error like:</p>
+<blockquote>
+<p>warning: <code>section-order</code> contains unknown section: <code>UserDefined(&quot;common_pkgs&quot;)</code></p>
+</blockquote>
+<p>Which means that isort.sections is being completely overwritten, when I expected to only overwrite the value of &quot;same_subcomp&quot;. I can also confirm that the sorting of imports is not behaving as expected, as it will put numpy in the middle of the third party, when I want it to have its own block.</p>
+<p>If this is the intended behavior, which I assumed it wasn't given issue #4348, is there a simple way I can achieve <em>my</em> intended behavior without copying the definition of common_pkgs to the .ruff.toml in every subdir?</p>
+<p>Thanks in advance.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "At version 0.1.6, I am experiencing the same bug as shown in https://github.com/astral-sh/ruff/issues/4348" to "v0.1.6: Overriding sub-setting category nulls other inherited settings (#4348)" by @zanieb on 2024-02-07 14:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-02-07 14:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-11 03:15</div>
+            <div class="timeline-body"><p>Yeah, I think this should probably be considered a bug.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LTourinho">@LTourinho</a> on 2024-02-21 09:04</div>
+            <div class="timeline-body"><p>Hi, I see that the PR is approved and checks are green. What would be the ETA on this bugfix delivery?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-26 15:55</div>
+            <div class="timeline-body"><p>@LTourinho -- It's technically a breaking change, so it will go out in v0.3.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-01 02:05</div>
+            <div class="timeline-body"><p>@LTourinho -- Sorry for the delay, we decided to defer this to v0.4 because we need to figure out a way to allow extended configs to <em>unset</em> these.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LTourinho">@LTourinho</a> on 2024-03-01 08:42</div>
+            <div class="timeline-body"><blockquote>
+<p>@LTourinho -- Sorry for the delay, we decided to defer this to v0.4 because we need to figure out a way to allow extended configs to <em>unset</em> these.</p>
+</blockquote>
+<p>No problem. Is the suggestion of setting to an &quot;empty&quot; object too bad in that regard? (The comment I made on the PR)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LTourinho">@LTourinho</a> on 2024-03-08 10:59</div>
+            <div class="timeline-body"><p>Hi @charliermarsh, as the PR was closed, what are the plans on fixing this issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-08 11:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Hi @charliermarsh, as the PR was closed, what are the plans on fixing this issue?</p>
+</blockquote>
+<p>Sorry that was not intentional. I cleaned up my stale branches and thought it's safe to delete any branch starting with <code>charliemarsh</code>. I restored the branch and reopened the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 15:18</div>
+            <div class="timeline-body"><p>Thanks Micha, I meant to ask about that too :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LTourinho">@LTourinho</a> on 2024-04-29 09:27</div>
+            <div class="timeline-body"><p>Hi guys, is there a reason this was postponed to 0.5? No agreement on how to unset values?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-29 14:01</div>
+            <div class="timeline-body"><blockquote>
+<p>Hi guys, is there a reason this was postponed to 0.5? No agreement on how to unset values?</p>
+</blockquote>
+<p>There was no specific reason other than time constraints. We didn't want to block the 0.4 release by making this decision.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-04-29 14:02</div>
+            <div class="timeline-body"><p>0.4 was focused on the parser, we punted other breaking changes to 0.5 which we expect to release in the next few weeks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-06-25 08:31</div>
+            <div class="timeline-body"><p>To confirm the behavior change. We'll now start merging the following options:</p>
+<ul>
+<li><code>per_file_ignores</code></li>
+<li><code>extend-per-file-ignores</code> (Do we still need the <code>extend</code>?)</li>
+<li><code>flake8_import_convention_options.aliases</code></li>
+<li><code>flake8_import_convention_options.extend_aliases</code></li>
+<li><code>flake8_import_convention_options.banned_aliases</code></li>
+<li><code>flake8_import_convention_options.banned_from</code></li>
+<li><code>flake8_tidy_imports.banned_api</code></li>
+<li><code>isort.sections</code></li>
+</ul>
+<p>I'm not sure whether the new behavior is correct for all settings, or at least it becomes less clear why we would still need the <code>extend-</code> options when &quot;extending&quot; becomes the new default for tables.</p>
+<p>The new <code>CombineOptions</code> allows us to use different merging behaviors for different settings, but I'm worried this will be confusing.</p>
+<p>This makes me hesitant to merge this change. @charliermarsh what are your thoughts on this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LTourinho">@LTourinho</a> on 2024-07-04 14:32</div>
+            <div class="timeline-body"><p>Hi, I see that the previous solution pull request was closed. Is there no alternatives? Is this being picked up in any way?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-04 14:36</div>
+            <div class="timeline-body"><p>Unfortunately, I know of no alternative. We aren't actively working on this right now but are open to ideas. As little as I like that, a short-term solution could be an <code>extend</code> option. <a href="https://github.com/astral-sh/ruff/pull/9927#issuecomment-2191086650">This comment</a> explains why the other PR was closed)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/LTourinho">@LTourinho</a> on 2024-07-04 15:17</div>
+            <div class="timeline-body"><p>Could there be a different keyword? E.g.: merge-into = &quot;../.base_ruff.toml&quot;</p>
+<p>Then the breaking functionality would only happen to those who explicitly use the new keyword.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-05 08:05</div>
+            <div class="timeline-body"><blockquote>
+<p>Could there be a different keyword? E.g.: merge-into = &quot;../.base_ruff.toml&quot;</p>
+</blockquote>
+<p>I would prefer not to but I won't rule it out. Either way, deciding on adding a different extension strategy isn't something we want to do lightly because it adds a lot of complexity and also makes it harder for users to understand what's happening.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2024-07-11 04:50</div>
+            <div class="timeline-body"><ul>
+<li>Related (duplicate?) #7696</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2024-12-09 11:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2024-12-09 11:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:42 UTC
+    </footer>
+</body>
+</html>

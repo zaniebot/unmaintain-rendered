@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>:wrench: add `--install-dir` arg to `uv python` commands - astral-sh/uv #7920</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>:wrench: add <code>--install-dir</code> arg to <code>uv python</code> commands</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7920">#7920</a>
+        opened by <a href="https://github.com/danielgafni">@danielgafni</a>
+        on 2024-10-04 10:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/danielgafni">@danielgafni</a> on 2024-10-04 10:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds <code>--install-dir</code> argument for the following commands:</p>
+<ul>
+<li><code>uv python install</code></li>
+<li><code>uv python uninstall</code></li>
+</ul>
+<p>The <code>UV_PYTHON_INSTALL_DIR</code> env variable can be used to set it (previously it was also used internally).</p>
+<p>Any more commands we would want to add this to?</p>
+<h2>Test Plan</h2>
+<p>For now just manual test (works on my machine hehe)</p>
+<pre><code>❯ ./target/debug/uv python install --install-dir /tmp/pythons 3.8.12
+Searching for Python versions matching: Python 3.8.12
+Installed Python 3.8.12 in 4.31s
+ + cpython-3.8.12-linux-x86_64-gnu
+❯ /tmp/pythons/cpython-3.8.12-linux-x86_64-gnu/bin/python --help
+usage: /tmp/pythons/cpython-3.8.12-linux-x86_64-gnu/bin/python [option] ... [-c cmd | -m mod | file | -] [arg] ...
+</code></pre>
+<p>Open to add some tests after the initial feedback.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielgafni">@danielgafni</a> on 2024-10-04 10:56</div>
+            <div class="timeline-body"><p>Warning: my Rust is very very weak so be prepared to encounter something which is not ideal :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielgafni">@danielgafni</a> on 2024-10-04 21:07</div>
+            <div class="timeline-body"><p>@zanieb pinging you since</p>
+<blockquote>
+<p>I'd also be down to accept a target directory in the CLI.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-10-04 21:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-python/src/managed.rs</code>:68 on 2024-10-14 20:26</div>
+            <div class="timeline-body"><p>Instead, I'd update <code>from_settings</code> to take an <code>Option&lt;PathBuf&gt;</code> like we do for the <code>Cache</code> struct</p>
+<p>https://github.com/astral-sh/uv/blob/d0dda3798d2514350ab29e4dc3870cd56479a713/crates/uv-cache/src/cli.rs#L42</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-14 20:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:4241 on 2024-10-14 20:27</div>
+            <div class="timeline-body"><p>Can you drop this trailing whitespace?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-14 20:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-10-14 20:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:3562 on 2024-10-14 20:28</div>
+            <div class="timeline-body"><p>In the existing documentation we say</p>
+<blockquote>
+<p>the directory where uv will store managed Python installations.</p>
+</blockquote>
+<p>Should we be changing it here? Should we change this to say something similar like</p>
+<blockquote>
+<p>The directory to store the Python installation in.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-14 20:29</div>
+            <div class="timeline-body"><p>Thank you! A couple minor comments. We can't quite add tests for this yet because we currently avoid downloading managed Python installations in the test suite.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-10-14 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/danielgafni">@danielgafni</a> reviewed on 2024-10-16 22:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/danielgafni">@danielgafni</a> on <code>crates/uv/tests/it/pip_sync.rs</code>:66 on 2024-10-16 22:40</div>
+            <div class="timeline-body"><p>is this expected? it has my absolute path here...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/danielgafni">@danielgafni</a> on 2024-10-17 11:36</div>
+            <div class="timeline-body"><p>@zanieb could you take a look again please?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @danielgafni on 2024-10-17 11:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-10 15:14</div>
+            <div class="timeline-body"><p>@danielgafni</p>
+<p>My sincere apologies for the delay, I lost track of this one. I was actually confused yesterday because I thought this had been merged already but couldn't find the feature.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-12-10 15:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-12-10 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-12-10 17:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:13 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skip root when assessing prefix viability - astral-sh/uv #9823</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Skip root when assessing prefix viability</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9823">#9823</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-12-11 19:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-11 19:45</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>In CPython, it appears that <code>/</code> is not considered as a valid path in <code>search_up</code>:</p>
+<pre><code class="language-c">static PyObject *
+getpath_dirname(PyObject *Py_UNUSED(self), PyObject *args)
+{
+    PyObject *path;
+    if (!PyArg_ParseTuple(args, &quot;U&quot;, &amp;path)) {
+        return NULL;
+    }
+    Py_ssize_t end = PyUnicode_GET_LENGTH(path);
+    Py_ssize_t pos = PyUnicode_FindChar(path, SEP, 0, end, -1);
+    if (pos &lt; 0) {
+        return PyUnicode_FromStringAndSize(NULL, 0);
+    }
+    return PyUnicode_Substring(path, 0, pos);
+}
+</code></pre>
+<pre><code class="language-python">def search_up(prefix, *landmarks, test=isfile):
+    while prefix:
+        if any(test(joinpath(prefix, f)) for f in landmarks):
+            return prefix
+        prefix = dirname(prefix)
+</code></pre>
+<p>Closes https://github.com/astral-sh/uv/issues/9818.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-12-11 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-12-11 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-12-11 19:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-12-11 19:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-12-11 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-12-11 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-11 19:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:16 UTC
+    </footer>
+</body>
+</html>

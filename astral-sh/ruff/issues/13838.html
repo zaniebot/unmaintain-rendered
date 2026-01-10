@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`triple-single-quotes` (`D300`) - false positive when docstring ends with a double quote - astral-sh/ruff #13838</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>triple-single-quotes</code> (<code>D300</code>) - false positive when docstring ends with a double quote</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13838">#13838</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2024-10-21 00:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-10-21 00:54</div>
+            <div class="timeline-body"><p>if i have a docstring that ends with a double quote, it's a syntax error:</p>
+<pre><code class="language-py">def foo():
+    &quot;&quot;&quot;this function does &quot;a thing&quot;&quot;&quot;&quot; # syntax error
+</code></pre>
+<p>so i decided to use single quotes instead, but this triggers D300:</p>
+<pre><code class="language-py">def foo():
+    '''this function does &quot;a thing&quot;''' # error: Use triple double quotes `&quot;&quot;&quot;`
+</code></pre>
+<p>an alternative workaround would be to split the docstring onto multiple lines, but that triggers D200:</p>
+<pre><code class="language-py">def bar():
+    # error: One-line docstring should fit on one line
+    &quot;&quot;&quot;
+    this function does &quot;a thing&quot;
+    &quot;&quot;&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-10-21 00:58</div>
+            <div class="timeline-body"><p>I think this has come up before, and I personally consider it correct to still flag <code>D300</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-10-21 01:07</div>
+            <div class="timeline-body"><p>what would you recommend in cases like this where the docstring needs to end with a double quote?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-21 08:26</div>
+            <div class="timeline-body"><p>I'm leaning towards making this change because it increases formatter compatibility.</p>
+<p>The formatter accepts the single quotes in this specific use case. An alternative form of writing the above is to escape the quote:</p>
+<pre><code class="language-python">def foo():
+    &quot;&quot;&quot;this function does &quot;a thing\&quot;&quot;&quot;&quot; # syntax error
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-10-21 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TheRealBecks">@TheRealBecks</a> on 2024-10-21 08:40</div>
+            <div class="timeline-body"><p>At least that one is wrong in general:</p>
+<pre><code>def foo():
+    &quot;&quot;&quot;this function does &quot;a thing&quot;&quot;&quot;&quot;
+</code></pre>
+<p>Should be:</p>
+<pre><code>def foo():
+    &quot;&quot;&quot;this function does &quot;a thing&quot;.&quot;&quot;&quot;
+</code></pre>
+<p>-&gt;  Adding a <code>.</code> does the trick and the validation is working again, so you will get several other <code>D</code> errors (that's a good thing!). <code>The first line should end with a period</code> is rule <code>D400</code>.</p>
+<p>In general a multiline docstring will be like:</p>
+<pre><code>&quot;&quot;&quot;
+Replace a value.
+
+Here comes more text for &quot;a thing&quot;.
+&quot;&quot;&quot;
+</code></pre>
+<p>So it looks like <code>ruff</code> is always failing due to <code>&quot;&quot;&quot;&quot;</code> (4x <code>&quot;</code>) instead of <code>&quot;&quot;&quot;</code>. If that one gets fixed the parsing will work again for singleline and multiline comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @AlexWaygood on 2024-10-21 08:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/TheRealBecks">@TheRealBecks</a> on 2024-10-21 14:06</div>
+            <div class="timeline-body"><p>...I had to think about it again: Maybe it's not an issue as the Pylance linter in VS Code is also complaining with <code>String literal is unterminated</code>. So I tested it with your example <strong>without</strong> the <code>.</code>:</p>
+<pre><code>import inspect
+
+
+def docstring_test():
+    &quot;&quot;&quot;this function does &quot;a thing&quot;&quot;&quot;&quot;
+
+
+print(docstring_test.__doc__)
+</code></pre>
+<pre><code>$ uv run temp.py 
+  File &quot;/..../temp.py&quot;, line 5
+    &quot;&quot;&quot;this function does &quot;a thing&quot;&quot;&quot;&quot;
+                                     ^
+SyntaxError: unterminated string literal (detected at line 5)
+</code></pre>
+<p>-&gt; Python exception</p>
+<p>...and <strong>with</strong> <code>.</code>:</p>
+<pre><code>import inspect
+
+
+def docstring_test():
+    &quot;&quot;&quot;this function does &quot;a thing&quot;.&quot;&quot;&quot;
+
+
+print(docstring_test.__doc__)
+</code></pre>
+<pre><code>$ uv run temp.py 
+this function does &quot;a thing&quot;.
+</code></pre>
+<p>-&gt; works</p>
+<p>So we're talking about a Python systax error here (I wasn't aware of that when I wrote my first comment).</p>
+<p>The question is: Can the ruff linter provide a solution or is it not working as the language server is throwing the syntax error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2024-10-21 22:16</div>
+            <div class="timeline-body"><p>yeah the reason i wanted to use single quotes was to avoid the syntax error. but your previous comment about ending the line with a <code>.</code> sounds like the best solution. i just happened to have the rule that enforces it disabled. closing this issue</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @DetachHead on 2024-10-21 22:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:29 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use structured types for parsing and formatting language and ABI tags - astral-sh/uv #10525</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use structured types for parsing and formatting language and ABI tags</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/10525">#10525</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-01-11 22:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-01-11 22:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I need to be able to do non-lexicographic comparisons between tags (e.g., so I can sort <code>cp313</code> as greater than <code>cp39</code>). It ended up being easiest to just create structured types for all the tags we support, with <code>FromStr</code> and <code>Display</code> implementations.</p>
+<p>We don't currently store these in <code>Tags</code> or in <code>WheelFilename</code>. We may want to, since they're really small (and <code>Copy</code>), but I need to benchmark to determine whether parsing these in <code>WheelFilename</code> is prohibitively slow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2025-01-11 22:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2025-01-11 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2025-01-11 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-11 23:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-platform-tags/src/abi.rs</code>:91 on 2025-01-11 23:22</div>
+            <div class="timeline-body"><p>This parsing code is incredibly verbose... It's fairly rote though, and comes with tests. Open to input on how to trim it down. I could perhaps remove all the error-handling...? And just return <code>None</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-platform-tags/src/abi_tag.rs</code>:97 on 2025-01-13 14:47</div>
+            <div class="timeline-body"><p>I think below (<code>.get(1..)</code>) you are treating this as an ASCII string, so you might as well fully commit and elide UTF-8 decoding here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-platform-tags/src/abi_tag.rs</code>:107 on 2025-01-13 14:48</div>
+            <div class="timeline-body"><p>I've been using things like <code>u8::try_from(..).unwrap()</code> lately in my crusade to avoid <code>as</code> as much as possible. While my approach is way more verbose, it does convert silent truncation into loud truncation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-platform-tags/src/abi_tag.rs</code>:154 on 2025-01-13 14:51</div>
+            <div class="timeline-body"><p>I think my comments from above apply here too.</p>
+<p>I <em>personally</em> am a fan of very granular error reporting like you have here. I've just been bitten so many times by overly generic and unhelpful error messages that I like this granular style much more. Like, it's more code, but I don't see this changing much or otherwise being hard to maintain personally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2025-01-13 14:54</div>
+            <div class="timeline-body"><p>I'm happy with this personally. As I said in the comments, I'm a fan of the granular error reporting, even when it makes the code chonky.</p>
+<p>I will say that I find the code pretty easy to follow. It reads nicely to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-platform-tags/src/abi_tag.rs</code>:239 on 2025-01-13 17:32</div>
+            <div class="timeline-body"><p>You could split the error into the input value and the error kind with context, which should cut down the error handling boilerplate in <code>AbiTag::from_str</code>:</p>
+<pre><code class="language-rust">#[error(&quot;{kind} ABI tag: {tag}&quot;)]
+struct ParseAbiTagError {
+    tag: String,
+    kind: ParseAbiTagErrorKind,
+}
+
+enum ParseAbiTagErrorKind {
+    #[error(&quot;Unknown format for&quot;)]
+    UnknownFormat,
+    #[error(&quot;Missing major version in {0}&quot;)]
+    MissingMajorVersion(&amp;'static str),
+    // ...
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-platform-tags/src/abi_tag.rs</code>:171 on 2025-01-13 17:33</div>
+            <div class="timeline-body"><p><code>split_once</code> should be able to remove the potentially panicking string indexing (and it's a line less)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-01-13 17:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-platform-tags/src/abi_tag.rs</code>:16 on 2025-01-13 17:42</div>
+            <div class="timeline-body"><p>Just wondering, why this naming? We use &quot;freethreaded&quot; elsewhere and that avoids a double-negative (e.g., gil disabled = false is slightly harder to reason about)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-01-13 17:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-01-13 17:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-platform-tags/src/abi_tag.rs</code>:16 on 2025-01-13 17:45</div>
+            <div class="timeline-body"><p>Dear goodness it comes from <code>Py_GIL_DISABLED</code> and is present elsewhere in our code. I defer to you on what's best here, but have a preference for &quot;freethreaded&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-01-13 18:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-13 23:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-platform-tags/src/abi_tag.rs</code>:16 on 2025-01-13 23:04</div>
+            <div class="timeline-body"><p>Lol</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-01-13 23:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-platform-tags/src/abi_tag.rs</code>:16 on 2025-01-13 23:35</div>
+            <div class="timeline-body"><p>I'll just leave it for now and revisit in a separate PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-01-14 00:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-01-14 00:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-14 00:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:17 UTC
+    </footer>
+</body>
+</html>

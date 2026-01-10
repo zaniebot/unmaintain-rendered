@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eagerly reject unsupported Git schemes - astral-sh/uv #11514</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Eagerly reject unsupported Git schemes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11514">#11514</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-02-14 16:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-02-14 16:40</div>
+            <div class="timeline-body"><p>Initially, we were limiting Git schemes to HTTPS and SSH as only supported schemes. We lost this validation in #3429. This incidentally allowed file schemes, which apparently work with Git out of the box.</p>
+<p>A caveat for this is that in tool.uv.sources, we parse the git field always as URL. This caused a problem with #11425: repo = { git = 'c:\path\to\repo', rev = &quot;xxxxx&quot; } was parsed as a URL where c: is the scheme, causing a bad error message down the line.</p>
+<p>This PR:</p>
+<ul>
+<li>Puts Git URL validation back in place. It bans everything but HTTPS, SSH, and file URLs. This could be a breaking change, if users were using a git transport protocol were not aware of, even though never intentionally supported.</li>
+<li>Allows file: URL in Git: This seems to be supported by Git and we were supporting it albeit unintentionally, so it's reasonable to continue to support it.</li>
+<li>It does not allow relative paths in the git field in tool.uv.sources. Absolute file URLs are supported, whether we want relative file URLs for Git too should be discussed separately.</li>
+</ul>
+<p>Closes #3429: We reject the input with a proper error message, while hinting the user towards file:. If there's still desire for relative path support, we can keep it open.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2025-02-14 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-02-14 16:47</div>
+            <div class="timeline-body"><p>@konstin -- I'm wondering if we should instead put this in the <code>GitUrl</code> constructors?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-17 16:49</div>
+            <div class="timeline-body"><p>Refactored <code>RequirementSource::Git</code> for catching this directly in <code>GitUrl</code> without adding more error paths, same errors being caught still.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-18 01:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/pip_install.rs</code>:8783 on 2025-02-18 01:59</div>
+            <div class="timeline-body"><p>Stray comment, copy-pasted from above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-18 02:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/it/pip_install.rs</code>:8781 on 2025-02-18 02:01</div>
+            <div class="timeline-body"><p>I think this should be <code>scheme</code> like the others.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2025-02-18 02:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">no-build</span> added by @charliermarsh on 2025-02-18 02:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2025-02-18 02:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2025-02-18 02:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-18 02:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

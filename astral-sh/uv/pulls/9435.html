@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Initialize rayon lazily - astral-sh/uv #9435</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Initialize rayon lazily</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9435">#9435</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-11-26 09:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-11-26 09:03</div>
+            <div class="timeline-body"><p>When performing a noop sync, we don't need the rayon threadpool, yet we pay for its initialization:</p>
+<p><img src="https://github.com/user-attachments/assets/d918f50d-b5b7-4bdd-820d-cbe71b633aaa" alt="Screenshot from 2024-11-26 08-59-07" /></p>
+<p>Be making the initialization lazy, we avoid that cost:</p>
+<p><img src="https://github.com/user-attachments/assets/193baea0-667f-4b9d-9a75-886a86f0f837" alt="Screenshot from 2024-11-26 09-53-08" /></p>
+<p>This code runs every time before user code in <code>uv run</code>.</p>
+<p>This means that before calling rayon, one now needs to call <code>LazyLock::force(&amp;RAYON_INITIALIZE);</code>.</p>
+<p>Performance mode (CPU 0 is a perf core):</p>
+<pre><code>$ taskset -c 0 hyperfine --warmup 5 -N &quot;/home/konsti/projects/uv/uv-main sync&quot; &quot;/home/konsti/projects/uv/target/profiling/uv sync&quot;
+Benchmark 1: /home/konsti/projects/uv/uv-main sync
+  Time (mean ± σ):       4.5 ms ±   0.1 ms    [User: 2.7 ms, System: 1.8 ms]
+  Range (min … max):     4.4 ms …   6.4 ms    640 runs
+ 
+  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet system without any interferences from other programs. It might help to use the '--warmup' or '--prepare' options.
+ 
+Benchmark 2: /home/konsti/projects/uv/target/profiling/uv sync
+  Time (mean ± σ):       4.4 ms ±   0.1 ms    [User: 2.7 ms, System: 1.6 ms]
+  Range (min … max):     4.3 ms …   5.0 ms    679 runs
+ 
+Summary
+  /home/konsti/projects/uv/target/profiling/uv sync ran
+    1.03 ± 0.04 times faster than /home/konsti/projects/uv/uv-main sync
+</code></pre>
+<p>Power saver mode:</p>
+<pre><code>$ hyperfine --warmup 5 -N &quot;/home/konsti/projects/uv/uv-main sync&quot; &quot;/home/konsti/projects/uv/target/profiling/uv sync&quot;
+Benchmark 1: /home/konsti/projects/uv/uv-main sync
+  Time (mean ± σ):      28.1 ms ±   1.2 ms    [User: 15.5 ms, System: 20.3 ms]
+  Range (min … max):    25.7 ms …  31.9 ms    102 runs
+ 
+Benchmark 2: /home/konsti/projects/uv/target/profiling/uv sync
+  Time (mean ± σ):      24.0 ms ±   1.2 ms    [User: 13.8 ms, System: 9.9 ms]
+  Range (min … max):    22.2 ms …  28.2 ms    122 runs
+ 
+Summary
+  /home/konsti/projects/uv/target/profiling/uv sync ran
+    1.17 ± 0.08 times faster than /home/konsti/projects/uv/uv-main sync
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @konstin on 2024-11-26 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-11-26 14:02</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-11-26 14:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/lib.rs</code>:8 on 2024-11-26 14:18</div>
+            <div class="timeline-body"><p>I normally don't comment on this stuff but can we keep this as <code>std</code> then third-party? (Only because this moves a lot of imports around unnecessarily.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-11-26 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-11-26 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-11-26 14:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-11-26 15:34</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:15 UTC
+    </footer>
+</body>
+</html>

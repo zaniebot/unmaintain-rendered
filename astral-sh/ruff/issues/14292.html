@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Feature Request] Guard against unnecessary `int` call on functions that already return integer - astral-sh/ruff #14292</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[Feature Request] Guard against unnecessary <code>int</code> call on functions that already return integer</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14292">#14292</a>
+        opened by <a href="https://github.com/DanielYang59">@DanielYang59</a>
+        on 2024-11-12 05:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DanielYang59">@DanielYang59</a> on 2024-11-12 05:46</div>
+            <div class="timeline-body"><p>While cleaning up our code base, I noticed the following anti-patterns (?) which seem pretty well-spread:</p>
+<pre><code class="language-python">num = 0.5
+
+# `round` with `ndigits=None` (default value) already gives int
+int(round(num)) 
+
+# I believe `int(round(num, 0))` gives the same result as `round(num)`
+int(round(num, 0))
+
+# The same applies to `len`
+int(len([1, 2, 3])
+
+# `sourcery` seems to have a rule to suggest against the following
+# WARNING: `//` is the floor division, for negative results their behaviors are different
+int(non_negative_number / 2)  # -&gt; non_negative_number // 2
+
+# Some `math` functions also give int only (perhaps there are more that I'm missing):
+- math.ceil
+- math.comb
+- math.floor
+- math.factorial
+- math.gcd
+- math.lcm
+
+int(math.ceil(num))
+
+</code></pre>
+<hr />
+<p>Also calling <code>int</code> on <code>round(num, ndigits)</code> (with <code>ndigits</code> not as <code>None</code>) in general might be a bad idea as results may very likely be suprising:</p>
+<pre><code class="language-python">round(2.994, 2)  # -&gt; 2.99
+round(2.995, 2)  # -&gt; 3.0
+
+int(round(2.994, 2))  # -&gt; 2
+int(round(2.995, 2))  # -&gt; 3
+
+round(2.994)  # -&gt; 3
+round(2.995)  # -&gt; 3
+</code></pre>
+<hr />
+<p>On top of the unnecessary verbosity, this also comes with performance penalty, trying to work on 10 floats for 1_000_000 repetitions:</p>
+<pre><code>Time taken for round(): 0.805204 seconds
+Time taken for int(round()): 0.946426 seconds
+Time taken for math.ceil(): 0.429992 seconds
+Time taken for int(math.ceil()): 0.524181 seconds
+</code></pre>
+<details>
+
+<summary> Test script (by GPT) </summary>
+
+<pre><code class="language-python">import timeit
+import math
+
+
+def round_function(value):
+    return round(value)
+
+def int_round_function(value):
+    return int(round(value))
+
+def int_ceil_function(value):
+    return int(math.ceil(value))
+
+def ceil_function(value):
+    return math.ceil(value)
+
+# Set up the test data
+test_values = [0.1, 1.5, 2.3, 3.7, 4.8, 5.9999, -1.5, -2.3, -3.7, -4.8]
+
+# Number of repetitions for the benchmarking
+repetitions = 1_000_000
+
+# Benchmarking round()
+time_round = timeit.timeit(
+    stmt='for v in test_values: round_function(v)',
+    setup='from __main__ import round_function, test_values',
+    number=repetitions
+)
+
+# Benchmarking int(round())
+time_int_round = timeit.timeit(
+    stmt='for v in test_values: int_round_function(v)',
+    setup='from __main__ import int_round_function, test_values',
+    number=repetitions
+)
+
+# Benchmarking int(math.ceil())
+time_int_ceil = timeit.timeit(
+    stmt='for v in test_values: int_ceil_function(v)',
+    setup='from __main__ import int_ceil_function, test_values',
+    number=repetitions
+)
+
+# Benchmarking math.ceil()
+time_ceil = timeit.timeit(
+    stmt='for v in test_values: ceil_function(v)',
+    setup='from __main__ import ceil_function, test_values',
+    number=repetitions
+)
+
+print(f'Time taken for round(): {time_round:.6f} seconds')
+print(f'Time taken for int(round()): {time_int_round:.6f} seconds')
+print(f'Time taken for math.ceil(): {time_ceil:.6f} seconds')
+print(f'Time taken for int(math.ceil()): {time_int_ceil:.6f} seconds')
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2024-11-12 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @dylwil3 on 2024-11-12 12:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-13 08:59</div>
+            <div class="timeline-body"><p>Thanks for the suggestion and the detailed write up! this makes sense to me. I merge this into https://github.com/astral-sh/ruff/issues/11412</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-11-13 08:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DanielYang59">@DanielYang59</a> on 2024-12-07 13:53</div>
+            <div class="timeline-body"><p>Thanks a ton @MichaReiser and sorry I missed this somehow</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[Feature Request] Guard against unnecessary `int` call on functions that already yield integer" to "[Feature Request] Guard against unnecessary `int` call on functions that already return integer" by @DanielYang59 on 2024-12-07 14:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:42 UTC
+    </footer>
+</body>
+</html>

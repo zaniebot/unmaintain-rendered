@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>&quot;Invalid `# ruff: noqa`&quot; warnings should be an error - astral-sh/ruff #8157</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>&quot;Invalid <code># ruff: noqa</code>&quot; warnings should be an error</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8157">#8157</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2023-10-24 06:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2023-10-24 06:09</div>
+            <div class="timeline-body"><pre><code class="language-py"># ruff: noqa: asdfas
+</code></pre>
+<pre><code>&gt;ruff asdf.py
+warning: Invalid `# ruff: noqa` directive at asdf.py:1: expected a comma-separated list of codes (e.g., `# noqa: F401, F841`).
+</code></pre>
+<p>currently there seems to be no way to make ruff fail on invalid noqa comments. i think this should be a normal rule that causes ruff to fail, not a warning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-24 16:45</div>
+            <div class="timeline-body"><p>It does seems reasonable to include a rule code for this, but given that we cannot parse the noqa directive it could be troublesome as you won't be able to ignore problems.</p>
+<p>Separately from whether or not this is something we want, I think it'd be a little tricky to implement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">noqa</span> added by @zanieb on 2023-10-24 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @zanieb on 2023-10-24 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andy-maier">@andy-maier</a> on 2024-04-09 07:14</div>
+            <div class="timeline-body"><p>I have this warning too, but in my case it was caused by the use of <code>noga: 501</code> which apparently works for flake8 but causes the warning for ruff. We addressed that by changing that to <code>noga: E501</code>.</p>
+<p>However, since flake8 supports the notation <code>noga: 501</code>, it would probably be good if ruff did that, too.</p>
+<p>Apart from that, I tend to agree that invalid noqa statements should be errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2025-02-06 02:15</div>
+            <div class="timeline-body"><p>related: #15682</p>
+<p>i think when i raised this only <code># ruff: noqa:</code> comments had this issue, but now the same thing happens with <code># noqa:</code> comments.</p>
+<p>i think this warning can probably just be removed once those issues with <code>RUF100</code> are fixed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-02-06 02:16</div>
+            <div class="timeline-body"><p>why don't these warnings show in the lsp? i don't think anyone would ever even notice that they exist otherwise</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-06 07:50</div>
+            <div class="timeline-body"><p>It's because they're not using our regular diagnostic system (because all our diagnostics are errors at the moment). A first step is to support warning level diagnostics (@BurntSushi is working on this). A next step is to change the rule to generate diagnostics but that's probably a bit more involved and the final step would be to allow making this an error instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/KotlinIsland">@KotlinIsland</a> on 2025-02-07 03:08</div>
+            <div class="timeline-body"><p>if a warning is emitted, will it still cause the ci to fail? I can't really see any use-case for it otherwise</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-07 07:40</div>
+            <div class="timeline-body"><p>No, CI won't fail which is the same as for other warnings emitted by Ruff, e.g. warnings about incorrect or conflicting configurations, failures to read the cache, etc. This behavior is intentional (in the absence of an explicit warning severity and a <code>--error-on-warning</code> flag).</p>
+<p>My assessment here: Invalid noqa comments should be its own rule that uses the warning severity. So this is blocked on adding support for warning severities (which we support in Red Knot and where we have a dedicate rule just for this)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> removed by @MichaReiser on 2025-02-07 07:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2025-02-07 07:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-09 06:06</div>
+            <div class="timeline-body"><p>One thing we could try is to see if we can setup a custom tracing subscriber that records if it has seen any warning log message, and, if so, return with an error exit code if <code>error-on-warning</code> is enabled in the configuration.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:41 UTC
+    </footer>
+</body>
+</html>

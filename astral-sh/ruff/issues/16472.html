@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FURB116 has false positives and unsafe fixes - astral-sh/ruff #16472</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>FURB116 has false positives and unsafe fixes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16472">#16472</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-03-03 14:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-03-03 14:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The fix for <a href="https://docs.astral.sh/ruff/rules/f-string-number-format/">f-string-number-format (FURB116)</a> only works on non-negative integers. If the argument isn’t an <code>int</code> or <code>bool</code> literal (or a variable that was set to one of those, or any other expression that Ruff can prove is a non-negative integer), the rule should be marked unsafe. The fix can also introduce a syntax error for certain complex expressions that the rule was probably not intended to handle.</p>
+<p>The fix changes behavior for negative integers.</p>
+<pre><code class="language-console">$ cat &gt;furb116_1.py &lt;&lt;'# EOF'
+x = -1
+print(bin(x)[2:])
+# EOF
+
+$ python furb116_1.py
+b1
+
+$ ruff --isolated check --preview --select FURB116 furb116_1.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat furb116_1.py
+x = -1
+print(f&quot;{x:b}&quot;)
+
+$ python furb116_1.py
+-1
+</code></pre>
+<p>FURB116 applies to all number literals, but <code>float</code> and <code>complex</code> literals are false positives which the rule should ignore.</p>
+<pre><code class="language-console">$ cat &gt;furb116_2.py &lt;&lt;'# EOF'
+bin(1.0)[2:]
+# EOF
+
+$ python furb116_2.py 2&gt;&amp;1 | tail -n 1
+TypeError: 'float' object cannot be interpreted as an integer
+
+$ ruff --isolated check --preview --select FURB116 furb116_2.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ python furb116_2.py 2&gt;&amp;1 | tail -n 1
+ValueError: Unknown format code 'b' for object of type 'float'
+</code></pre>
+<p>In general, the fix should be marked unsafe, except when it can be proved to be safe. Otherwise, the fix changes behavior, sometimes by changing the error type as in the previous example, and sometimes by changing behavior in other ways.</p>
+<pre><code class="language-console">$ cat &gt;furb116_3.py &lt;&lt;'# EOF'
+import datetime
+d = datetime.datetime.now(tz=datetime.UTC)
+print(bin(d)[2:])
+# EOF
+
+$ python furb116_3.py 2&gt;&amp;1 | tail -n 1
+TypeError: 'datetime.datetime' object cannot be interpreted as an integer
+
+$ ruff --isolated check --preview --select FURB116 furb116_3.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat furb116_3.py
+import datetime
+d = datetime.datetime.now(tz=datetime.UTC)
+print(f&quot;{d:b}&quot;)
+
+$ python furb116_3.py
+b
+</code></pre>
+<p>The fix introduces a syntax error when the argument begins with a brace.</p>
+<pre><code class="language-console">$ cat &gt;furb116_4.py &lt;&lt;'# EOF'
+print(bin({0: 1}[0].numerator)[2:])
+# EOF
+
+$ python furb116_4.py
+1
+
+$ ruff --isolated check --preview --select FURB116 furb116_4.py --diff 2&gt;&amp;1 | grep error:
+error: Fix introduced a syntax error. Reverting all changes.
+</code></pre>
+<p>The fix introduces a syntax error in Python 3.11 and earlier when the argument contains the same kind of quotation marks as the fix’s f-string.</p>
+<pre><code class="language-console">$ cat &gt;furb116_5.py &lt;&lt;'# EOF'
+print(bin(len(&quot;xyz&quot;).numerator)[2:])
+# EOF
+
+$ python3.11 furb116_5.py
+11
+
+$ ruff --isolated check --target-version py311 --preview --select FURB116 furb116_5.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat furb116_5.py
+print(f&quot;{len(&quot;xyz&quot;).numerator:b}&quot;)
+
+$ python3.11 furb116_5.py 2&gt;&amp;1 | tail -n 1
+SyntaxError: f-string: unmatched '('
+</code></pre>
+<p>The fix introduces a syntax error in Python 3.11 and earlier when the argument contains a backslash.</p>
+<pre><code class="language-console">$ cat &gt;furb116_6.py &lt;&lt;'# EOF'
+print(bin(ord(&quot;\\&quot;).numerator)[2:])
+# EOF
+
+$ python3.11 furb116_6.py
+1011100
+
+$ ruff --isolated check --target-version py311 --preview --select FURB116 furb116_6.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat furb116_6.py
+print(f&quot;{ord(&quot;\\&quot;).numerator:b}&quot;)
+
+$ python3.11 furb116_6.py 2&gt;&amp;1 | tail -n 1
+SyntaxError: unexpected character after line continuation character
+</code></pre>
+<p>The fix introduces a syntax error in Python 3.11 and earlier when the argument spans multiple lines.</p>
+<pre><code class="language-console">$ cat &gt;furb116_7.py &lt;&lt;'# EOF'
+import sys
+print(hex(sys
+.maxunicode)[2:])
+# EOF
+
+$ python3.11 furb116_7.py
+10ffff
+
+$ ruff --isolated check --target-version py311 --preview --select FURB116 furb116_7.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat furb116_7.py
+import sys
+print(f&quot;{sys
+.maxunicode:x}&quot;)
+
+$ python3.11 furb116_7.py 2&gt;&amp;1 | tail -n 1
+SyntaxError: unterminated string literal (detected at line 2)
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.9.9 (091d0af2a 2025-02-28)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-03-03 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-03-03 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @ntBre on 2025-03-03 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-05-03 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @MichaReiser on 2025-05-03 13:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-05-12 20:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:47 UTC
+    </footer>
+</body>
+</html>

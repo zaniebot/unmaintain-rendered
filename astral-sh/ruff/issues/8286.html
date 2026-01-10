@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Format Should Preserve Type Ignore Sub Expression - astral-sh/ruff #8286</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Format Should Preserve Type Ignore Sub Expression</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/8286">#8286</a>
+        opened by <a href="https://github.com/saulshanabrook">@saulshanabrook</a>
+        on 2023-10-27 18:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/saulshanabrook">@saulshanabrook</a> on 2023-10-27 18:03</div>
+            <div class="timeline-body"><p>It seems that the ruff formatter will collapse a multi line expression with a <code># type: ignore</code> to one line, unlike black.</p>
+<p>I would like to keep the existing line split, if possible, since this limits the type ignore to one piece of the statement, instead of all of it. That way, if there is a type error in one of the other parts of the statement they are still caught by the type checker.</p>
+<p>This is similar to https://github.com/astral-sh/ruff/issues/7730 but the issue here is not that the line ends up being too long, but that it changes the semantics of the type checker.</p>
+<p>Example:</p>
+<pre><code class="language-diff">$ ruff format . --diff
+--- python/egglog/egraph.py
++++ python/egglog/egraph.py
+@@ -536,9 +536,7 @@
+ 
+         # If this is the class for this method and we have a paramaterized class, recurse
+         if (
+-            cls_type_and_name
+-            and isinstance(tp, _GenericAlias)
+-            and tp.__origin__ == cls_type_and_name[0]  # type: ignore
++            cls_type_and_name and isinstance(tp, _GenericAlias) and tp.__origin__ == cls_type_and_name[0]  # type: ignore
+         ):
+             return TypeRefWithVars(
+                 cls_type_and_name[1],
+
+1 file would be reformatted, 25 files left unchanged
+$ ruff --version
+ruff 0.1.3
+</code></pre>
+<p>Settings:</p>
+<pre><code class="language-toml">[tool.ruff]
+# Allow lines to be as long as 120.
+line-length = 120
+ignore = [
+    # allow star imports
+    &quot;F405&quot;,
+    &quot;F403&quot;,
+    # Dont care if cls isnt typed explicitly in classmethod
+    &quot;ANN102&quot;,
+    # Same for self
+    &quot;ANN101&quot;,
+    # Allow single line docstrings on multiple lines
+    &quot;D200&quot;,
+    &quot;D212&quot;,
+    # Inconsistant formatting
+    &quot;D203&quot;,
+    &quot;COM812&quot;,
+    &quot;COM819&quot;,
+    &quot;E501&quot;,
+    &quot;ISC001&quot;,
+    &quot;Q001&quot;,
+    &quot;Q002&quot;,
+    &quot;Q003&quot;,
+    &quot;W191&quot;,
+    &quot;Q000&quot;,
+    &quot;D206&quot;,
+    # TODO: Remove the rest of these eventually
+    # Allow public methods to not have docstrings
+    &quot;D102&quot;,
+    # Allow longer messages for custom errors
+    &quot;TRY003&quot;,
+    # Allow f-string in exceptions
+    &quot;EM102&quot;,
+]
+src = [&quot;python&quot;]
+select = [&quot;ALL&quot;]
+extend-exclude = [&quot;python/tests&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-27 18:17</div>
+            <div class="timeline-body"><p>I agree this should remain split to narrow the type pragma, I'm surprised by this behavior.</p>
+<p>Thanks for the well written issue! (I read this backwards at first so I modified the code highlighting to be a <code>diff</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2023-10-27 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @zanieb on 2023-10-27 18:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-27 18:29</div>
+            <div class="timeline-body"><p>I can take a look at this though @MichaReiser will probably know the immediate answer. My guess is that the comment is attached to the overall binary expression rather than the <code>tp.__origin__ == cls_type_and_name[0]</code> term, so it doesn't cause the expression to expand.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-10-27 18:32</div>
+            <div class="timeline-body"><p>Looks correct https://play.ruff.rs/b126b941-44e2-44bf-9cca-68370dc14b9c?secondary=Comments</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-27 19:31</div>
+            <div class="timeline-body"><p>I think you need to increase the line length (e.g., to 120).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-28 00:30</div>
+            <div class="timeline-body"><p>I suspect this is actually quite hard to support given that you don’t always want to expand on trailing comments here, and you don’t want to expand even with a type ignore if the line is already collapsed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2023-10-29 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2023-10-29 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> added by @MichaReiser on 2023-10-29 23:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2023-10-29 23:58</div>
+            <div class="timeline-body"><blockquote>
+<p>My guess is that the comment is attached to the overall binary expression rather than the tp.<strong>origin</strong> == cls_type_and_name[0] term,</p>
+</blockquote>
+<p>I think that's correct. We could refine how pragma comments get associated in binary expressions but I'm not sure how. I first thought of always assign the comment to the most inner operand but it doesn't necessary yield the desired result, e.g. the above would roughly be formatted as:</p>
+<pre><code class="language-python">if (
+    cls_type_and_name
+    and isinstance(tp, _GenericAlias)
+    and tp.__origin__ 
+    == cls_type_and_name[0]  # type: ignore
+):
+    pass
+</code></pre>
+<p>We could try to be &quot;clever&quot; and also take the source formatting into consideration, by associating the type ignore comment with the outer most operand that is on the same line as the type ignore</p>
+<p>A workaround is to use parentheses to guide the formatter, but I agree that this isn't ideal</p>
+<pre><code class="language-python">if (
+    cls_type_and_name
+    and isinstance(tp, _GenericAlias)
+    and (
+        tp.__origin__ == cls_type_and_name[0]  # type: ignore
+    )
+):
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-30 01:09</div>
+            <div class="timeline-body"><p>I feel like the ideal solution needs to somehow take into account which nodes are on the same line as the ignore. If we just assign to the inner-most operand, we'd have the opposite problem -- e.g., given <code>cls_type_and_name and isinstance(tp, _GenericAlias) and tp.__origin__ == cls_type_and_name[0]  # type: ignore</code>, we'd end up breaking that over multiple lines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/romuald">@romuald</a> on 2023-11-13 10:17</div>
+            <div class="timeline-body"><p>Not sure if this is related but I'm having a similar issue inside list comprehension and long lines. Example:</p>
+<pre><code class="language-diff">     todo: List[Optional[int]] = list(range(5))
+ 
+     result = [
+-        very_long_name_1234567 + 1 for very_long_name_1234567 in todo  # type: ignore
++        very_long_name_1234567 + 1
++        for very_long_name_1234567 in todo  # type: ignore
+     ]
+ 
+     assert result == [0, 1, 2, 3, 4]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">style</span> removed by @MichaReiser on 2023-11-28 06:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pfmoore">@pfmoore</a> on 2024-01-15 16:15</div>
+            <div class="timeline-body"><p>On pip we have a similar issue:</p>
+<pre><code>    rmtree_errorhandler(
+        mock_func, path, sys.exc_info()  # type: ignore[arg-type]
+</code></pre>
+<p>gets reformatted to</p>
+<pre><code>    rmtree_errorhandler(
+        mock_func,
+        path,
+        sys.exc_info()  # type: ignore[arg-type]
+
+</code></pre>
+<p>This causes <code>mock_func</code> and <code>path</code> to now get type-checked, when previously they would not.</p>
+<p>IMO reformatting should <em>never</em> change semantics like this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MaksimZayats">@MaksimZayats</a> on 2024-03-06 20:20</div>
+            <div class="timeline-body"><p>Hi @charliermarsh, any plans on this ?</p>
+<p>IMO, it would be nice if ruff had the config option to skip formatting lines with <code>#type: ignore</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MaksimZayats">@MaksimZayats</a> on 2024-03-06 20:25</div>
+            <div class="timeline-body"><p>Related black issue: https://github.com/psf/black/issues/997</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-07 08:30</div>
+            <div class="timeline-body"><p>Hi @MaksimZayats</p>
+<p>I'll reply briefly here, but I recommend you open a new discussion if you want to follow up to avoid going off-topic on this issue.</p>
+<p>Thanks for the linked issue. The scenario outlined by Guido is something I considered when <a href="https://github.com/astral-sh/ruff/discussions/6670">designing pragma comment support</a> for ruff's formatter. What I understand from the linked issue is, and I agree with, is that it's annoying when the code gets reformatted <em>after</em> I had to add a <code>type: ignore</code> comment. That's why Ruff's formatter doesn't account pragma comments to the line width.</p>
+<p>Unfortunately, this doesn't help if you reformat your code with ruff the first time. It can then happen that the <code>type: ignore</code> comment gets moved, e.g. because the formatter now splits a list of arguments onto multiple lines. I agree this isn't ideal because it requires manually moving the pragma comments to the right position. That's why we tried to design the handling in a way that tooling would at least warn you when a comment gets moved to avoid e.g. suppressing type checking for more code without you noticing (which could silence typing errors).</p>
+<p>We also considered not to format lines with a <code>type: ignore</code>, but we considered this a bad trade-off because you lose out on the functionality of the formatter.</p>
+<blockquote>
+<p>People use formatters to avoid discussing formatting decisions. Disabling formatting, or reduced formatting resurfaces the very same problem that people try to avoid by using a formatter. This isn't the same as us not caring about pragma comments or not wanting to use any pragma comment specific formatting. It only means that we don't want to use solutions that disable or limit formatting in a significant way.</p>
+</blockquote>
+<p>I hope this is helpful and sets some of our decision-making into context.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/saulshanabrook">@saulshanabrook</a> on 2024-03-08 21:39</div>
+            <div class="timeline-body"><p>Thank you @MichaReiser for the link to your design document regarding comment support! It seems very thorough.</p>
+<p>After reading it, there are a few pieces in it that confuse me, since they seem to suggest that this issue wouldn't happen under those design constraints, although I am probably just missing something. It's quite a subtle issue!</p>
+<p>When you discuss alternatives you discarded, I read the last sentence (emphasized by me) as suggesting that there is a way to manually move the type comment to preserve the intended semantics, i.e. that only one sub-expression should be ignored by the type checker, not the whole line. Is that how you meant it? If so, is there a way I can format the original example so that <code>ruff</code> will preserve those semantics?</p>
+<blockquote>
+<ul>
+<li>Disable line breaks for type: comments similar to Black [https://github.com/psf/black/pull/1040]. I understand its motivation but believe that limiting formatting for entire lines removes the advantage of using a formatter. Not counting pragma comments towards the line width balances &quot;reducing the frustration when placing pragma comments&quot; with &quot;the benefits of using a formatter&quot; better IMO. I admit that this approach doesn't solve the issue when you format a new project or extend the width of an existing line. <strong>But moving the comment manually is a reasonable ask in these situations.</strong></li>
+</ul>
+</blockquote>
+<p>In &quot;Case 1: Suppress single argument/expression&quot; you do give an example of how <code>ruff</code> preserves the scope of a pragma comment. I am realizing that the issue I raised here only occurs when the pragma happens to fall on the last sub-expression that could be reformated into a line. For example, <code>ruff</code> properly preserves the line breaks with this example:</p>
+<pre><code class="language-python">if (
+    cls_type_and_name
+    and isinstance(tp, _GenericAlias)
+    and tp.__origin__ # type: ignore
+    == cls_type_and_name[0]  
+):
+    pass
+</code></pre>
+<p>However, if the pragma is on the last line, like in my original example, they are all reformated into one line:</p>
+<pre><code class="language-python">if (
+    cls_type_and_name
+    and isinstance(tp, _GenericAlias)
+    and tp.__origin__ 
+    == cls_type_and_name[0]  # type: ignore
+):
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-18 14:44</div>
+            <div class="timeline-body"><blockquote>
+<p>When you discuss alternatives you discarded, I read the last sentence (emphasized by me) as suggesting that there is a way to manually move the type comment to preserve the intended semantics, i.e. that only one sub-expression should be ignored by the type checker, not the whole line.</p>
+</blockquote>
+<p>Yes, that's the intention of the last line.</p>
+<blockquote>
+<p>However, if the pragma is on the last line, like in my original example, they are all reformated into one line:</p>
+</blockquote>
+<p>I assume you're using a line-length of 120 or similar, in which case you get:</p>
+<pre><code class="language-python">if (
+    cls_type_and_name and isinstance(tp, _GenericAlias) and tp.__origin__ == cls_type_and_name[0]  # type: ignore
+):
+    pass
+
+</code></pre>
+<p>The formatter doesn't allow you to narrow the <code>type: ignore</code> comment because it always collapses the line. The reason it collapse the comment this way is to make the operation reversible if a line expands:</p>
+<pre><code class="language-python">a = (
+    cls_type_and_name and isinstance(tp, _GenericAlias) and tp.__origin__ == cls_type_and_naeeeeeeeme[0]  # aaaaaaaaaaaaaa
+)
+</code></pre>
+<p>becomes</p>
+<pre><code class="language-python">
+a = (
+    cls_type_and_name
+    and isinstance(tp, _GenericAlias)
+    and tp.__origin__ == cls_type_and_naeeeeeeeme[0]  # aaaaaaaaaaaaaa
+)
+</code></pre>
+<p>and then collapse back to if it is shortened:</p>
+<pre><code class="language-python">
+a = (
+    cls_type_and_name and isinstance(tp, _GenericAlias) and tp.__origin__ == cls_type_and_naeme[0]  # aaaaaaaaaaaaaa
+)
+</code></pre>
+<p>A possible solution is to change the comment association logic in <code>placement.rs</code> for binary like expression to associate any trailing comment with the last comparison (<code>tp.__origin__ == cls_type_and_name[0]</code>) instead of making it a trailing binary expression comment  <strong>if</strong> the binary expression is formatted across multiple lines. However, it comes with the downside that splitting a binary expression with a trailing comment becomes nonreversible. I'm not sure if this is a good tradeoff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/xavdid-stripe">@xavdid-stripe</a> on 2024-05-10 21:53</div>
+            <div class="timeline-body"><p>We're seeing this when formatting a long import:</p>
+<pre><code class="language-py">from stripe.request_options import RequestOptions as RequestOptionsStripeRequestOptions  # type: ignore
+</code></pre>
+<p>becomes</p>
+<pre><code class="language-py">from stripe.request_options import (
+    RequestOptions as RequestOptionsStripeRequestOptions,
+)  # type: ignore
+</code></pre>
+<p>which starts failing in type checking. +1 to the idea that formatting shouldn't cause CI failures.</p>
+<p>It works if you keep the <code>#ignore</code> on the middle line, but i'm not sure that you could determine that programatically.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> removed by @MichaReiser on 2024-09-16 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ktbarrett">@ktbarrett</a> on 2025-05-24 17:59</div>
+            <div class="timeline-body"><p>I'm guessing this is a problem that will only be solved once ruff becomes more type-aware. Then it can decide which subexpressions the pragma applies to and move/duplicate as necessary?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:46 UTC
+    </footer>
+</body>
+</html>

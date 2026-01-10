@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pydantic model not detected by RUF012 - astral-sh/ruff #13630</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Pydantic model not detected by RUF012</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13630">#13630</a>
+        opened by <a href="https://github.com/cbornet">@cbornet</a>
+        on 2024-10-04 16:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cbornet">@cbornet</a> on 2024-10-04 16:08</div>
+            <div class="timeline-body"><ul>
+<li>List of keywords you searched for before creating this issue: pydantic ruf012</li>
+<li>The current Ruff version : 0.5.0</li>
+</ul>
+<p>RUF012 normally ignores pydantic models but not when the class inherits from an imported model.
+Eg:  file b.py</p>
+<pre><code class="language-python">from pydantic import BaseModel
+
+class B(BaseModel):
+    pass
+</code></pre>
+<p>file a.py</p>
+<pre><code class="language-python">from pydantic import BaseModel
+from b import B
+
+class Foo(B):
+    foo: list[str] = []
+
+class C(BaseModel):
+    pass
+
+class Bar(C):
+    bar: list[str] = []
+</code></pre>
+<p>Then run ruff</p>
+<pre><code class="language-sh">ruff check --select RUF012
+a.py:5:22: RUF012 Mutable class attributes should be annotated with `typing.ClassVar`
+  |
+4 | class Foo(B):
+5 |     foo: list[str] = []
+  |                      ^^ RUF012
+6 |
+7 | class C(BaseModel):
+  |
+
+Found 1 error.
+</code></pre>
+<p>I would expect ruff to not error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-04 17:20</div>
+            <div class="timeline-body"><p>Ruff doesn't support multi-file analysis yet, we can't inspect the type across the import boundary</p>
+<p>xref https://github.com/astral-sh/ruff/issues/7447</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> added by @zanieb on 2024-10-04 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbornet">@cbornet</a> on 2024-10-04 18:55</div>
+            <div class="timeline-body"><p>Thanks for the info. I'll follow #7447 with interest then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-04 21:23</div>
+            <div class="timeline-body"><p>We're actively working on it, but it's a ways out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-10-24 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> removed by @MichaReiser on 2024-10-24 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jankatins">@jankatins</a> on 2025-02-07 16:54</div>
+            <div class="timeline-body"><p>I nice workaround would be to make it possible to extend <code>has_default_copy_semantics()</code> list:</p>
+<p>https://github.com/astral-sh/ruff/blob/10d3e64ccdf69d90c3252a15b3408a4238427792/crates/ruff_linter/src/rules/ruff/rules/helpers.rs#L166C1-L183C2</p>
+<pre><code class="language-rust">/// Returns `true` if the given class has &quot;default copy&quot; semantics.
+///
+/// For example, Pydantic `BaseModel` and `BaseSettings` subclassses copy attribute defaults on
+/// instance creation. As such, the use of mutable default values is safe for such classes.
+pub(super) fn has_default_copy_semantics(
+    class_def: &amp;ast::StmtClassDef,
+    semantic: &amp;SemanticModel,
+) -&gt; bool {
+    analyze::class::any_qualified_base_class(class_def, semantic, &amp;|qualified_name| {
+        matches!(
+            qualified_name.segments(),
+            [&quot;pydantic&quot;, &quot;BaseModel&quot; | &quot;BaseSettings&quot; | &quot;BaseConfig&quot;]
+                | [&quot;pydantic_settings&quot;, &quot;BaseSettings&quot;]
+                | [&quot;msgspec&quot;, &quot;Struct&quot;]
+                | [&quot;sqlmodel&quot;, &quot;SQLModel&quot;]
+        )
+    })
+}
+</code></pre>
+<p>Would you be open to take such a PR?</p>
+<p>(such a solution would pobably also &quot;close&quot; https://github.com/astral-sh/ruff/issues/5639)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sjdemartini">@sjdemartini</a> on 2025-02-07 17:04</div>
+            <div class="timeline-body"><p>Making that configurable was discussed a bit here https://github.com/astral-sh/ruff/issues/14892#issuecomment-2536960816, and it sounded like the preference is to hold off in favor of using type inference, once ruff supports that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cbornet">@cbornet</a> on 2025-09-10 08:44</div>
+            <div class="timeline-body"><p>Similar to #5639. Maybe this issue can be closed and followed in the other one for multiple files ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-09-10 14:57</div>
+            <div class="timeline-body"><p>That makes sense to me, they do sound like the same root issue. Thanks for following up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-09-10 14:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:19 UTC
+    </footer>
+</body>
+</html>

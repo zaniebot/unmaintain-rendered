@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProgressReporter: align progress bars by largest name length - astral-sh/uv #13266</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ProgressReporter: align progress bars by largest name length</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13266">#13266</a>
+        opened by <a href="https://github.com/eduardorittner">@eduardorittner</a>
+        on 2025-05-02 14:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/eduardorittner">@eduardorittner</a> on 2025-05-02 14:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Related to https://github.com/astral-sh/uv/issues/12492</p>
+<p>This change makes all progress bars vertically aligned. This is still a WIP and so is not complete, in the current design I store <code>max_len</code> in <code>BarState</code> and update it on every <code>on_request_start</code>, however this is problematic since order matters, and if the largest name is not sent first, the alignment is not complete. To mitigate this we'd probably have to update all previous bars by &quot;iterating&quot; through the <code>bars</code> field in <code>BarState</code> and update all request bars.</p>
+<p>Below is an image of what happens when the largest name (<code>nvidia-cusparselt-cu12</code>) is not the first (in this case, it was the second to last).</p>
+<p><img src="https://github.com/user-attachments/assets/ac6f2205-5f30-4fe3-a2c3-f980e36b7cf7" alt="2025-05-02T10:56:54-03:00" /></p>
+<h2>Test Plan</h2>
+<p>There are currently no tests, and I'm not sure how to design them since from what I gather the <code>uv_snapshot</code> facilities record the final output, not the intermediate stages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2025-05-09 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @zanieb on 2025-05-09 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2025-05-09 14:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/src/commands/reporters.rs</code>:69 on 2025-05-09 17:35</div>
+            <div class="timeline-body"><p>You should be able to clean this up a little bit.</p>
+<pre><code class="language-suggestion">            headers: 0,
+            sizes: Vec::default(),
+            bars: FxHashMap::default(),
+            size: FxHashMap::default(),
+            id: 0,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/src/commands/reporters.rs</code>:189 on 2025-05-09 17:38</div>
+            <div class="timeline-body"><p>You can write this as a nice one-liner (and get rid of the method).</p>
+<pre><code class="language-suggestion">        self.max_len = cmp::max(self.max_len, len);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-05-09 17:39</div>
+            <div class="timeline-body"><p>Just left a couple of nits. I think you're right that we need to update previous bars to keep things aligned, but that shouldn't be too hard.</p>
+<p>It might be a little odd if the padding changes for all bars dynamically, maybe we should at least increase the default from 10?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2025-05-09 17:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/src/commands/reporters.rs</code>:245 on 2025-05-09 17:41</div>
+            <div class="timeline-body"><p>Right here is where you should be able to iterate through the <code>multi_progress</code> and realign everything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>--</code>:1 on 2025-05-13 18:46</div>
+            <div class="timeline-body"><p>This file looks accidental</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-05-13 18:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-13 18:48</div>
+            <div class="timeline-body"><p>Hi, and sorry for the late review. Could you change the code so that when we have a new longest progress bar, it updates all running progress bars to the new template with the new length (as you suggested), to avoid a pattern like below?</p>
+<p><img src="https://github.com/user-attachments/assets/7abd500e-f59d-49d6-b646-fd3645a2cfca" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eduardorittner">@eduardorittner</a> on 2025-05-14 13:20</div>
+            <div class="timeline-body"><p>Thank you for all the comments and suggestions! I'm having a busy month with school and work but will work on this when I have time 😁</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/eduardorittner">@eduardorittner</a> reviewed on 2025-05-14 20:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/eduardorittner">@eduardorittner</a> on <code>crates/uv/src/commands/reporters.rs</code>:245 on 2025-05-14 20:18</div>
+            <div class="timeline-body"><p>This is what I'm having a hard time with, indicatif's <code>MultiProgress</code> only has an <code>insert</code> method, with no way of iterating or getting/setting specific values inside it. Which means I should probably be iterating through a field in <code>BarState</code>? But I'm not sure which one, since IDs are only stored in maps, not vectors. Maybe I could figure out from <code>BarState.headers</code> and <code>BarState.id</code>, how many headers are downloads (<code>BarState.id - BarState.headers</code>?) and then iterate from <code>BarState.id - BarState.headers</code> to <code>BarState.id</code> accessing the relevant bar in <code>BarState.bars</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eduardorittner">@eduardorittner</a> on 2025-05-14 20:23</div>
+            <div class="timeline-body"><p>I mentioned this in the PR description, but do you have any ideas on how to test this feature? Since we care about the intermediate state while downloads are happening (dynamically adjusting bar length) not only the final one, should we have several snapshots of the output? How can we simulate downloads without actually hitting the network?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eduardorittner">@eduardorittner</a> on 2025-05-14 20:23</div>
+            <div class="timeline-body"><blockquote>
+<p>It might be a little odd if the padding changes for all bars dynamically, maybe we should at least increase the default from 10?</p>
+</blockquote>
+<p>Changed it to 20, let me know what you think!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/eduardorittner">@eduardorittner</a> reviewed on 2025-05-14 20:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/eduardorittner">@eduardorittner</a> on <code>--</code>:1 on 2025-05-14 20:27</div>
+            <div class="timeline-body"><p>Whoops, removed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/eduardorittner">@eduardorittner</a> reviewed on 2025-05-14 20:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/eduardorittner">@eduardorittner</a> on <code>crates/uv/src/commands/reporters.rs</code>:245 on 2025-05-14 20:28</div>
+            <div class="timeline-body"><p>I just did the dumb thing and iterated through <code>0..BarState.id</code> and it <em>seems</em> to work, I'm not sure if there's a situation where it breaks or does something unexpected.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eduardorittner">@eduardorittner</a> on 2025-05-14 20:29</div>
+            <div class="timeline-body"><p>Another question I have is if I should write similar logic in <code>on_build_start</code>? If so, any tips on what/how to build with uv? I've only ever downloaded packages with it so I'm unsure</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @eduardorittner on 2025-05-14 20:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/eduardorittner">@eduardorittner</a> on 2025-05-14 20:36</div>
+            <div class="timeline-body"><blockquote>
+<p>Hi, and sorry for the late review. Could you change the code so that when we have a new longest progress bar, it updates all running progress bars to the new template with the new length (as you suggested), to avoid a pattern like below?</p>
+<p><img src="https://private-user-images.githubusercontent.com/6826232/443354257-7abd500e-f59d-49d6-b646-fd3645a2cfca.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NDcyNTM0ODQsIm5iZiI6MTc0NzI1MzE4NCwicGF0aCI6Ii82ODI2MjMyLzQ0MzM1NDI1Ny03YWJkNTAwZS1mNTlkLTQ5ZDYtYjY0Ni1mZDM2NDVhMmNmY2EucG5nP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LUNyZWRlbnRpYWw9QUtJQVZDT0RZTFNBNTNQUUs0WkElMkYyMDI1MDUxNCUyRnVzLWVhc3QtMSUyRnMzJTJGYXdzNF9yZXF1ZXN0JlgtQW16LURhdGU9MjAyNTA1MTRUMjAwNjI0WiZYLUFtei1FeHBpcmVzPTMwMCZYLUFtei1TaWduYXR1cmU9ZTMyMGMwMDhmNzY2YzZkYTUzOTdkNmU2OGUwNmY4NGM5NzNlM2Q2MTI1YmI4MTM2MDczYzFlMmNkOTI4YzQ4MyZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QifQ.N1c7jpuxjfJtZUYZyQvCU9QlTDX-J4ufPSCDxDZuS54" alt="image" /></p>
+</blockquote>
+<p>Also which package are you downloading here? I wanted to test this with a lot of packages but <code>torch</code> is only pulling like 10 dependencies</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-15 06:31</div>
+            <div class="timeline-body"><blockquote>
+<p>I mentioned this in the PR description, but do you have any ideas on how to test this feature? Since we care about the intermediate state while downloads are happening (dynamically adjusting bar length) not only the final one, should we have several snapshots of the output? How can we simulate downloads without actually hitting the network?</p>
+</blockquote>
+<p>We test this manually part manually, we don't have snapshots for non-static text.</p>
+<blockquote>
+<p>Another question I have is if I should write similar logic in <code>on_build_start</code>? If so, any tips on what/how to build with uv? I've only ever downloaded packages with it so I'm unsure</p>
+</blockquote>
+<p>The builds use a spinner instead of a progress bar (we can't tell how long they will take), so this is only relevant for <code>on_*_progress</code> bars.</p>
+<blockquote>
+<p>Also which package are you downloading here? I wanted to test this with a lot of packages but <code>torch</code> is only pulling like 10 dependencies</p>
+</blockquote>
+<p>I'm using</p>
+<pre><code>uv venv -p 3.11 &amp;&amp; cargo run pip install -r scripts/requirements/transformers-extras.in
+</code></pre>
+<p>sometimes with <code>--no-cache</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-05-15 07:12</div>
+            <div class="timeline-body"><p>I've updated the code to use an enum to only apply this logic to numeric progress while skipping progress spinners, and I've rebased for the merge conflict with main.</p>
+<p><a href="https://github.com/user-attachments/assets/8901a989-567c-42fe-961c-640cfc08528c">Screencast from 2025-05-15 09-11-13.webm</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-05-15 07:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-05-15 07:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:24 UTC
+    </footer>
+</body>
+</html>

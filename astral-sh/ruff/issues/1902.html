@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`SIM117` incorrect believes you can merge `async with` and `with` - astral-sh/ruff #1902</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>SIM117</code> incorrect believes you can merge <code>async with</code> and <code>with</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1902">#1902</a>
+        opened by <a href="https://github.com/thomasdesr">@thomasdesr</a>
+        on 2023-01-16 02:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/thomasdesr">@thomasdesr</a> on 2023-01-16 02:16</div>
+            <div class="timeline-body"><p>SIM117 should:</p>
+<ul>
+<li>Not trigger when nesting a context manager within an async context manager since you can't generally merge an async context manager with a sync context manager.</li>
+<li>Should trigger when nesting two async context managers (edit: actually maybe should be a separate lint?)</li>
+</ul>
+<p>Example of permutations and their results as of <code>0.0.222</code>:</p>
+<pre><code class="language-python">import asyncio
+from contextlib import asynccontextmanager, contextmanager
+
+
+@asynccontextmanager
+async def async_ctx_mgr():
+    yield &quot;async&quot;
+
+
+@contextmanager
+def sync_ctx_mgr():
+    yield &quot;sync&quot;
+
+
+async def main():
+    # True Positive, correctly suggests to minimize
+    with sync_ctx_mgr() as first:
+        with sync_ctx_mgr() as second:
+            print(&quot;sync sync&quot;, first, second)
+
+    # False positive, incorrectly suggests to minimize
+    async with async_ctx_mgr() as first:
+        with sync_ctx_mgr() as second:
+            print(&quot;async sync&quot;, first, second)
+
+    # True negative, correctly doesn't flag as an issue
+    with sync_ctx_mgr() as first:
+        async with async_ctx_mgr() as second:
+            print(&quot;sync async&quot;, first, second)
+
+    # False negative, incorrectly fails to suggest to minimize
+    async with async_ctx_mgr() as first:
+        async with async_ctx_mgr() as second:
+            print(&quot;async async&quot;, first, second)
+
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())
+</code></pre>
+<p>Output from <code>ruff</code> on ^</p>
+<pre><code>$ ruff --isolated --select SIM ./SIM117-repro.py
+SIM117-repro.py:16:5: SIM117 Use a single `with` statement with multiple contexts instead of nested `with` statements
+SIM117-repro.py:20:5: SIM117 Use a single `with` statement with multiple contexts instead of nested `with` statements
+Found 2 error(s).
+</code></pre>
+<pre><code>$ ruff --version
+ruff 0.0.222
+</code></pre>
+<p>Note: <code>flake8-simplify</code> seems to do the right thing here even though their tests are missing coverage of this case.</p>
+<p>Thanks as always!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "SIM117 incorrect believes you can merge `async with` and `with`" to "`SIM117` incorrect believes you can merge `async with` and `with`" by @thomasdesr on 2023-01-16 02:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-16 02:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-16 02:19</div>
+            <div class="timeline-body"><p>Good call.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-01-16 02:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-16 02:20</div>
+            <div class="timeline-body"><p>I'll try to fix this tonight :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thomasdesr">@thomasdesr</a> on 2023-01-16 02:20</div>
+            <div class="timeline-body"><p>Thanks a bunch &lt;3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-16 02:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thomasdesr">@thomasdesr</a> on 2023-01-16 03:05</div>
+            <div class="timeline-body"><p>So fast!</p>
+<p>Re-ran with a main build and the sync context manager case looks fixed. Thanks ❤️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-16 03:08</div>
+            <div class="timeline-body"><p>Awesome :) I opted to just turn it off entirely in the async case. I think it's safe to combine multiple async context managers, but honestly I've done so little async Python that I'd have to check.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-16 03:08</div>
+            <div class="timeline-body"><p>(Also I'm going to cut a new build tonight, so this will be out in a bit.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thomasdesr">@thomasdesr</a> on 2023-01-16 03:34</div>
+            <div class="timeline-body"><p>Sounds good! Thanks so much :D</p>
+<p>I also believe its fine to merge async context managers, but double checking sgtm xD</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:28:53 UTC
+    </footer>
+</body>
+</html>

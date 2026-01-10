@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Allow `ruff analyze` to be run across a uv workspace packages - astral-sh/ruff #16598</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Allow <code>ruff analyze</code> to be run across a uv workspace packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16598">#16598</a>
+        opened by <a href="https://github.com/mjclarke94">@mjclarke94</a>
+        on 2025-03-10 11:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/mjclarke94">@mjclarke94</a> on 2025-03-10 11:00</div>
+            <div class="timeline-body"><p>We currently have a monorepo setup where customer specific packages load in logic from several core (shared) libraries. It would be useful to be able to use ruff graph analyze to identify recursively what the minimum set of files from our other packages that is required to run the customer code package, enabling sparse checkouts.</p>
+<p>This is also useful when wanting to run test suites in a way where tests which might be impacted by code changes are run first/exclusively.</p>
+<p>There is a related feature in <a href="https://www.pantsbuild.org/dev/docs/using-pants/advanced-target-selection#running-over-changed-files-with---changed-since">Pants</a> which would be a great feature to have parity with.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-10 11:07</div>
+            <div class="timeline-body"><p>Hi @mjclarke94</p>
+<p>I'm not sure I understand the feature you're requesting, or it's unclear if you're requesting multiple features. Can you tell me more about how it's related to uv workspaces and how it is related to Pant's <code>changed-since</code> feature (I didn't see any mention of changed-since)?</p>
+<p>It would also be useful to have a more concrete example on how you'd want to use it. E.g. what commands do you want to run to enable what?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2025-03-10 11:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">analyze</span> added by @AlexWaygood on 2025-03-10 11:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mjclarke94">@mjclarke94</a> on 2025-03-10 12:33</div>
+            <div class="timeline-body"><p>Sorry, I brain dumped a bit there and realize now there was a lot of context missing! Ok, taking the layout from the
+<a href="https://github.com/astral-sh/uv/tree/aa629c4a54c31d6132ab1655b90dd7542c17d120/scripts/workspaces/albatross-virtual-workspace">albatross virtual workspace</a> as an example, where albatross depends on bird-feeder, which depends on seeds.</p>
+<p>Currently were I to do <code> ruff analyze graph packages/albatross/</code> I'd get:</p>
+<pre><code>{
+  &quot;packages/albatross/check_installed_albatross.py&quot;: [
+    &quot;packages/albatross/src/albatross/__init__.py&quot;
+  ],
+  &quot;packages/albatross/src/albatross/__init__.py&quot;: []
+}
+</code></pre>
+<p>So it correctly identifies the dependencies within the package. That said, <code>albatross/__init__.py</code> actually imports the workspace member <code>bird_feeder</code>.</p>
+<p>So ideally, I would want to see:</p>
+<pre><code>{
+  &quot;packages/albatross/check_installed_albatross.py&quot;: [
+    &quot;packages/albatross/src/albatross/__init__.py&quot;
+    &quot;packages/albatross/src/bird_feeder/__init__.py&quot;
+  ],
+  &quot;packages/albatross/src/albatross/__init__.py&quot;: [
+     &quot;packages/albatross/src/bird_feeder/__init__.py&quot;
+  ]
+}
+</code></pre>
+<p>So feature request one would be something along the lines of &quot;Can we have the graph analyze command work across workspaces rather than just within a single package.&quot; I don't know if this is something that exists in another form in <code>red-knot</code>, or even at a more granular level (say, understanding the hierarchical relationship at the function level rather than at the file level).</p>
+<p>Once that exists, there's then the &quot;why&quot; element. One useful thing this enables is running test suites in a targeted way. Pants builds a similar graph of files across the whole repo, and then the <code>changed-since</code> flag enables you to filter this graph to only include files which have changed since the last git commit (or some other milestone). You might for example have modified a function and want to understand what tests feasibly could have been impacted by this change and only run those.</p>
+<p>Again, a function level implementation of this would be even more powerful (not rerunning all tests downstream of a file just because someone updated a docstring).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-14 09:13</div>
+            <div class="timeline-body"><p>Thanks, that makes sense to me. @AlexWaygood please correct me if I'm talking nonsense but the way this would be supported in Red Knot is that all packages would be linked as editable installs into your virtual environment (uv does that for you) and the virtual environment is part of the module resolvers search path. I'd have to play with <code>ruff analyze</code> but this might not be too hard to support if we add a configuration option for additional search paths (it would then also start picking up third party dependencies, unless you don't want that).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> removed by @MichaReiser on 2025-03-14 09:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2025-03-14 09:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mik-laj">@mik-laj</a> on 2025-04-07 11:37</div>
+            <div class="timeline-body"><p>In the Apache Airflow project, we also encountered this problem. We use <code>ruff analyze graph</code> to detect invalid imports between provider packages as part of pre-commit hook - <code>check-imports-in-providers</code> . but after we started using uv workspace this hook no longer detects anything. For details, see: https://github.com/apache/airflow/issues/48870</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-07 11:47</div>
+            <div class="timeline-body"><p>CC: @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-07 18:04</div>
+            <div class="timeline-body"><p>@ntBre maybe one of the bug fixes you could look into. It's more an extension than a bug fix but it could help to unblock airflow and it shouldn't be too much work (a <code>--python</code> argument that takes a path to a venv and passing that along to red knot's module resolver should do the trick)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-05-01 15:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:52 UTC
+    </footer>
+</body>
+</html>

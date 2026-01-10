@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support `python find --script` - astral-sh/uv #11891</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support <code>python find --script</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11891">#11891</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-03-02 12:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-02 12:55</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #11794.</p>
+<p>When <code>uv python find</code> is given a <code>--script</code> option, either the existing environment for that script or the Python executable that would be used to create it will be returned. If neither are found, the command exits with exit code 1.</p>
+<p><code>--script</code> is incompatible with all other options to the same command.</p>
+<h2>Test Plan</h2>
+<p>Unit tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-03-02 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @InSyncWithFoo on 2025-03-02 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-03-03 11:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-05 21:10</div>
+            <div class="timeline-body"><p>How did you choose to exit with a non-zero code if the environment does not exist rather than showing the interpreter we would use to create the environment? I think there's probably a use case for <code>uv python find --script &lt;path&gt;</code> that shows the interpreter that fulfills the <code>requires-python</code> range, right? The downside here is that a user then needs to do more analysis to understand if the interpreter is for the synced environment or not.</p>
+<p>Separately, if we're going to exit with a non-zero code, we need to show a message indicating why we failed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-05 21:41</div>
+            <div class="timeline-body"><p>@zanieb I was thinking about my use case: An <em>existing</em> environment is needed to power language features. Showing the base interpreter would be misleading, since it won't have access to the dependencies of the script. Additionally, if an environment doesn't exist, the user should have a chance to decide whether it should be created or not.</p>
+<p>As for the exit code and error messages, I don't have a strong opinion. Maybe exit code 0 should be used even when an interpreter cannot be found.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-05 21:46</div>
+            <div class="timeline-body"><p>For your use-case, why wouldn't you always run a <code>sync</code> operation first?</p>
+<p>The problem with failing if the environment doesn't exist is that it's inconsistent with how this interface normally behaves, e.g.:</p>
+<pre><code>❯ uv python find
+/Users/zb/.local/share/uv/python/cpython-3.13.0-macos-aarch64-none/bin/python3.13
+❯ uv sync
+❯ uv python find
+/Users/zb/workspace/uv/example/.venv/bin/python3
+</code></pre>
+<p>We could consider <code>--script</code> &quot;opt-in&quot; to requiring the script's environment to be found, but then there's no way for users to recover the behavior I described where you want to inspect what interpreter would be used for a given script.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-05 22:18</div>
+            <div class="timeline-body"><p><code>sync</code> is a potentially expensive process; running it &quot;just&quot; to retrieve the interpreter is very likely not desirable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-05 22:21</div>
+            <div class="timeline-body"><p>If the environment doesn't exist, I would probably expect <code>uv python find --script</code> to show me where the script environment <em>would be</em>, rather than the interpreter that would be used to create it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-05 22:23</div>
+            <div class="timeline-body"><p>@charliermarsh That is also undesirable: Tools might run the interpreter to retrieve its version. If I recall correctly, both PyCharm and Pyright do this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-03-05 22:25</div>
+            <div class="timeline-body"><p>Either way they have to handle the environment not existing, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-05 22:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Either way they have to handle the environment not existing, right?</p>
+</blockquote>
+<p>👍 that's my point.</p>
+<blockquote>
+<p>Tools might run the interpreter to retrieve its version.</p>
+</blockquote>
+<p>If all you want is the interpreter for metadata, <code>uv python find</code> makes sense. It'd be bad if it showed you the path to an interpreter that does not exist. You don't need the virtual environment to know what Python interpreter uv would use.</p>
+<blockquote>
+<p>sync is a potentially expensive process; running it &quot;just&quot; to retrieve the interpreter is very likely not desirable.</p>
+</blockquote>
+<p>If you are trying to provide up-to-date type information, this seems like what you need though? As Charlie said, you need to handle the case where it doesn't exist regardless.</p>
+<blockquote>
+<p>If the environment doesn't exist, I would probably expect uv python find --script to show me where the script environment would be, rather than the interpreter that would be used to create it.</p>
+</blockquote>
+<p>That's not how it works for projects, though I'd be willing to consider changing that. I think it's more like <code>uv env find</code> (or <code>uv python find --env</code>) at that point? I worry quite a bit about returning the path to an interpreter that does not exist. We don't have a good way to signal that to the user.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-06 00:14</div>
+            <div class="timeline-body"><blockquote>
+<p>If you are trying to provide up-to-date type information, this seems like what you need though? As Charlie said, you need to handle the case where it doesn't exist regardless.</p>
+</blockquote>
+<p>In my opinion, such expensive processes should not be run without explicit user consent. Here's how I think the logic should be:</p>
+<ul>
+<li>If the interpreter exists and it is up-to-date, that's great.</li>
+<li>If the interpreter exists but not up-to-date, the user will be asked if they want to synchronize it (e.g., in the form of a quick fix to an &quot;unresolved import&quot; error).</li>
+<li>If the interpreter does not exist, the user will be asked if they want to create it.</li>
+</ul>
+<p>If the installation is known to take a long time, the user might not want to create an environment on their development machine (especially if they don't intend to do any significant changes). Even if they <em>do</em> want to, prompting gives them a chance to check the script metadata block for any potential problems, like a typo in a dependency specifier.</p>
+<p>The interpreter given must be one that belongs to the environment of that script. Otherwise, tools might have to do things twice, one for the global/base interpreter and one for the new interpreter (PyCharm would reindex the standard library, for example).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-06 00:31</div>
+            <div class="timeline-body"><blockquote>
+<p>In my opinion, such expensive processes should not be run without explicit user consent</p>
+</blockquote>
+<p>This is roughly the antithesis of the design of this tool. We do these things transparently in the background all the time. We invest in making them fast enough that this is not expensive.</p>
+<p>Regardless... if we return to your use-case, I think all you need is <code>uv sync --dry-run</code>?</p>
+<pre><code>❯ uv init --script foo.py
+Initialized script at `foo.py`
+❯ uv sync --script foo.py --dry-run
+Would create script environment at: /Users/zb/.cache/uv/environments-v2/foo-2a05ce447f85797e
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-06 00:57</div>
+            <div class="timeline-body"><blockquote>
+<p>We invest in making them fast enough that this is not expensive.</p>
+</blockquote>
+<p>That's just uv itself. Downloading takes time, and I have seen many complaints about how PyCharm's indexing takes seemingly forever.</p>
+<p>Using <code>uv sync --dry-run</code> has two disadvantages:</p>
+<ul>
+<li>The path is that of the virtual environment directory, rather than the interpreter. Monkeypatching client-side is simple enough, but I'd rather not to.</li>
+<li>It would happily return the path to a potentially non-existent directory, which is undesired. The messages can be used to differentiate the two cases, but this is rather fragile.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-06 04:29</div>
+            <div class="timeline-body"><blockquote>
+<p>The path is that of the virtual environment directory, rather than the interpreter. Monkeypatching client-side is simple enough, but I'd rather not to.</p>
+</blockquote>
+<p>I think this is well within scope for a consumer, but we could definitely add the &quot;supposed&quot; interpreter path to a JSON output format.</p>
+<blockquote>
+<p>It would happily return the path to a potentially non-existent directory, which is undesired. The messages can be used to differentiate the two cases, but this is rather fragile.</p>
+</blockquote>
+<p>I think you'd use a JSON output mode to differentiate between these cases, so it's not fragile.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-03-06 12:52</div>
+            <div class="timeline-body"><blockquote>
+<p>I think you'd use a JSON output mode to differentiate between these cases, so it's not fragile.</p>
+</blockquote>
+<p>That would be right, except <code>sync</code> doesn't support <code>--format</code>. This would be within the scope of #3199.</p>
+<p>Return to the PR at hand: The hypothetical <code>sync --dry-run --format=json</code> doesn't exist just yet (and tackling that would require even more design), so I'm inclined to keep this PR as it is, save for the exit code and such. What do you say?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-07 14:37</div>
+            <div class="timeline-body"><p>I don't think I'm wiling to compromise on the consistency of the <code>uv python find</code> behavior to fulfill a use-case that would better filled in another interface.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-20 15:46</div>
+            <div class="timeline-body"><p>Thanks for updating the branch. I'll review again today so it doesn't go stale again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-20 18:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/python_find.rs</code>:783 on 2025-03-20 18:46</div>
+            <div class="timeline-body"><p>Oh it's actually quite surprising we'd pull the Python from the virtual environment here. I wonder if we should avoid selecting active virtual environments during script Python discovery? That's a separate issue from this PR though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-20 18:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/python_find.rs</code>:820 on 2025-03-20 18:46</div>
+            <div class="timeline-body"><p>There's <code>TestContext::with_filtered_python_sources</code> for this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-03-20 18:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/it/python_find.rs</code>:748 on 2025-03-20 18:47</div>
+            <div class="timeline-body"><p>There's <code>TestContext::with_filtered_exe_suffix</code>, <code>with_filtered_virtualenv_bin</code>, and <code>with_filtered_python_names</code> for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-03-20 18:48</div>
+            <div class="timeline-body"><p>Thanks for your patience here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-03-21 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-03-21 01:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-03-21 01:50</div>
+            <div class="timeline-body"><p>w.r.t. adding an <code>--output-format</code> to <code>uv sync</code> (ref https://github.com/astral-sh/uv/pull/11891#issuecomment-2703765832) — at some point I want a holistic design for https://github.com/astral-sh/uv/issues/3199 but I don't think that needs to block commands where JSON output will unblock a concrete use-case. If you're interested in adding that, I'm supportive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-03-21 06:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:21 UTC
+    </footer>
+</body>
+</html>

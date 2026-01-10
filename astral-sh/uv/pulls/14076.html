@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix handling of changes to `requires-python` - astral-sh/uv #14076</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix handling of changes to <code>requires-python</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/14076">#14076</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-06-16 14:50
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-06-16 14:50</div>
+            <div class="timeline-body"><p>When using <code>uv lock --upgrade-package=python</code> after changing
+<code>requires-python</code>, it was possible to get into a state where the fork
+markers produced corresponded to the empty set. This in turn resulted in
+an empty lock file.</p>
+<p>There was already some infrastructure in place that I think was perhaps
+intended to handle this. In particular, <code>Lock::check_marker_coverage</code>
+checks whether the fork markers have some overlap with the supported
+environments (including the <code>requires-python</code>). But there were two
+problems with this.</p>
+<p>First is that in lock validation, this marker coverage check came
+<em>after</em> a path that returned <code>Preferable</code> (meaning that the fork markers
+should be kept) when <code>--upgrade-package</code> was used. Second is that the
+marker coverage check used the <code>requires-python</code> in the lock file and
+<em>not</em> the <code>requires-python</code> in the now updated <code>pyproject.toml</code>.</p>
+<p>We attempt to solve this conundrum by slightly re-arranging lock file
+validation and by explicitly checking whether the <em>new</em>
+<code>requires-python</code> is disjoint from the fork markers in the lock file. If
+it is, then we return <code>Versions</code> from lock file validation (indicating
+that the fork markers should be dropped).</p>
+<p>Fixes #13951</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2025-06-16 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">lock</span> added by @BurntSushi on 2025-06-16 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2025-06-16 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2025-06-16 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-06-17 10:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-06-17 11:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/lock.rs</code>:999 on 2025-06-17 11:49</div>
+            <div class="timeline-body"><p>Hmm, are you sure this should be a user-facing warning? I don’t think any of the other lockfile-invalidation messages are user-facing. They just go through tracing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-06-17 11:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/commands/project/lock.rs</code>:999 on 2025-06-17 11:53</div>
+            <div class="timeline-body"><p>Oh, I didn't do that. That's what is on <code>main</code>: https://github.com/astral-sh/uv/blob/5c1ebf902bad2ed8058b57deaca9645de1286eca/crates/uv/src/commands/project/lock.rs#L1026-L1034</p>
+<p>It looks like it was a user facing warning from the beginning: https://github.com/astral-sh/uv/pull/10682</p>
+<p>I in turn copied this to the disjoint <code>requires-python</code> check as well. Do you want me to make both of them traces instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-06-17 13:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/project/lock.rs</code>:999 on 2025-06-17 13:54</div>
+            <div class="timeline-body"><p>Ah ok. Just leave it as-is then, thanks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-06-17 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-06-17 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-17 15:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:26 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catch broken `mac_ver()` - astral-sh/uv #11396</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Catch broken <code>mac_ver()</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11396">#11396</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-02-10 19:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-02-10 19:00</div>
+            <div class="timeline-body"><p>A user reported a homebrew Python that would raise an exception in the interpreter probing script because <code>platform.mac_ver()</code> returned <code>('', ('', '', ''), '')</code> on his installation due to https://github.com/Homebrew/homebrew-core/issues/206778</p>
+<p>This is easy enough to catch and show a proper error message instead of the Python backtrace.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2025-02-10 19:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-02-10 20:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2025-02-10 20:05</div>
+            <div class="timeline-body"><pre><code>  × Failed to inspect Python interpreter from provided path at `/usr/local/Cellar/nox/2025.2.9/libexec/bin/python`
+  ╰─▶ Querying Python at `/usr/local/Cellar/nox/2025.2.9/libexec/bin/python` failed with exit status exit status: 1
+
+      [stdout]
+      {&quot;result&quot;: &quot;error&quot;, &quot;kind&quot;: &quot;broken_mac_ver&quot;}
+
+      [stderr]
+      Traceback (most recent call last):
+        File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+          import sys; sys.path = [&quot;/Users/henryschreiner/.cache/uv/.tmpDksnYo&quot;] + sys.path; from python.get_interpreter_info import main; main()
+                                                                                                                                          ~~~~^^
+        File &quot;/Users/henryschreiner/.cache/uv/.tmpDksnYo/python/get_interpreter_info.py&quot;, line 543, in main
+          os_and_arch = get_operating_system_and_architecture()
+        File &quot;/Users/henryschreiner/.cache/uv/.tmpDksnYo/python/get_interpreter_info.py&quot;, line 499, in get_operating_system_and_architecture
+          &quot;major&quot;: int(version[0]),
+                   ~~~^^^^^^^^^^^^
+      ValueError: invalid literal for int() with base 10: ''
+</code></pre>
+<p>Here is the new output.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-02-10 20:38</div>
+            <div class="timeline-body"><p>Sorry to ask again, do you mind trying with the new commit?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2025-02-10 21:40</div>
+            <div class="timeline-body"><p>They uploaded a macOS Sequoia binary an hour ago, so I can't now, that fixed the problem. (https://github.com/Homebrew/homebrew-core/pull/207165)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2025-02-10 21:44</div>
+            <div class="timeline-body"><p>If I fake it by modifying <code>/usr/local/Cellar/python@3.13/3.13.2/Frameworks/Python.framework/Versions/3.13/lib/python3.13/platform.py</code>, I get:</p>
+<pre><code>  × Failed to inspect Python interpreter from provided path at `/usr/local/Cellar/nox/2025.2.9/libexec/bin/python`
+  ├─▶ Can't use Python at `/usr/local/Cellar/nox/2025.2.9/libexec/bin/python`
+  ╰─▶ Broken Python installation, `platform.mac_ver()` returned an empty value, please reinstall Python
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-02-10 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-02-10 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-10 21:49</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

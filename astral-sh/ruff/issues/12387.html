@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split the `publish_wasm` job into a build and publish step - astral-sh/ruff #12387</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Split the <code>publish_wasm</code> job into a build and publish step</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12387">#12387</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-07-18 17:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-07-18 17:10</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/12317 added a publishing pipeline for our WASM crate to NPM. We should split that pipeline into two workflows:</p>
+<ol>
+<li>Builds the binaries</li>
+<li>Publish step to NPM</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2024-07-18 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">ci</span> added by @MichaReiser on 2024-07-18 17:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bybrooks">@bybrooks</a> on 2026-01-08 11:54</div>
+            <div class="timeline-body"><p>Hi!
+I'd like to work on this issue.
+Before I start implementing, I want to confirm my understanding is correct.</p>
+<h3>My Understanding</h3>
+<p>Currently, <code>publish-wasm.yml</code> performs both building and publishing to NPM within a single job.
+I'm proposing to split this into:</p>
+<ol>
+<li><strong><code>build-wasm.yml</code> (new)</strong>: Build WASM binaries and upload as artifacts</li>
+<li><strong><code>publish-wasm.yml</code> (modified)</strong>: Download artifacts and publish to NPM</li>
+</ol>
+<h3>Additional Features Under Consideration</h3>
+<p>Following the pattern of <code>build-binaries.yml</code>, I'm also considering adding these features:</p>
+<p>| Feature | Description |
+|---------|-------------|
+| <strong>PR trigger</strong> | Automatically run build tests when <code>crates/ruff_wasm/**</code> or <code>.github/workflows/build-wasm.yml</code> is changed |
+| <strong>concurrency</strong> | Cancel older runs when duplicate runs occur on the same branch |
+| <strong>Least privilege principle</strong> | Set <code>permissions: {}</code> at workflow level, granting only necessary permissions at job level |
+| <strong><code>no-build</code> label support</strong> | Skip build when PR has the <code>no-build</code> label |</p>
+<h3>Design Questions</h3>
+<ol>
+<li><p>Should I implement these additional features, or should I keep the changes minimal (just the split)?</p>
+</li>
+<li><p>Are there any requirements or considerations I might have missed?</p>
+</li>
+</ol>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2026-01-08 13:03</div>
+            <div class="timeline-body"><p>Awesome!</p>
+<blockquote>
+<p>Currently, publish-wasm.yml performs both building and publishing to NPM within a single job.
+I'm proposing to split this into:</p>
+</blockquote>
+<p>This sounds about right to me</p>
+<blockquote>
+<p>Automatically run build tests when crates/ruff_wasm/** or .github/workflows/build-wasm.yml is changed</p>
+</blockquote>
+<p>Changes to <code>build-wasm</code> do make sense to me. I'm not sure we want to run it on every <code>ruff_wasm</code> change. Maybe limit it to changes to the <code>package.json</code> <code>package-lock</code>.json`</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:23 UTC
+    </footer>
+</body>
+</html>

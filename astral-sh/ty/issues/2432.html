@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Truthy checks in a boolean statement resolve to incorrect type - astral-sh/ty #2432</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Truthy checks in a boolean statement resolve to incorrect type</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ty/issues/2432">#2432</a>
+        opened by <a href="https://github.com/goodspark">@goodspark</a>
+        on 2026-01-10 05:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/goodspark">@goodspark</a> on 2026-01-10 05:01</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Playground: https://play.ty.dev/fddded41-5c96-4852-9849-bd44cdf03074</p>
+<pre><code class="language-py">from datetime import datetime, timedelta
+from dataclasses import dataclass
+
+@dataclass
+class Obj:
+    x: datetime
+
+a: Obj | None = Obj(datetime.now())
+# Since a is always truthy, the boolean statement continues and returns datetime
+b = (a and a.x - timedelta(days=1))
+# c should always be datetime here, so the diagnostic is incorrect
+c = datetime.now() + timedelta(days=1) &gt; b
+# Operator `&gt;` is not supported between objects of type `datetime` and `(Obj &amp; ~AlwaysTruthy) | datetime`
+</code></pre>
+<p>If <code>a</code> was just <code>datetime | None</code>, this would work fine, but this use case is meaningful as often container data types might be None (ex. a DB row lookup).</p>
+<p>To be fair, this diagnostic is useful <em>if <code>a</code> was not AlwaysTruthy, such as through a function call (which is more realistic)</em>. However, the diagnostic message is misleading as it currently is. One could argue instead we should write code using an if or ternary expression.</p>
+<pre><code class="language-py">b = None
+if a:
+    b = a.x - timedelta(days=1)
+# or ...
+b = None if a is None else a.x - timedelta(days=1)
+</code></pre>
+<p>With this change, ty will correctly infer <code>b</code> is always datetime and have no issue. And it will also correctly error with an accurate message if <code>a</code> was not AlwaysTruthy (ie. None can't be compared to datetime).</p>
+<hr />
+<p>Terms used to find already-reported issues:</p>
+<ul>
+<li><code>unsupported-operation boolean</code></li>
+<li><code>unsupported-operation and</code></li>
+<li><code>unsupported-operation truthy</code></li>
+</ul>
+<p>#1972 might be a match. It talks about types being constrained by values. In a way, the type of <code>b</code> does get constrained by the resulting value of evaluating the compound boolean expression. But my example is not using a direct value but instead the resulting value of an operation.</p>
+<h3>Version</h3>
+<p>0.0.11</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:42:08 UTC
+    </footer>
+</body>
+</html>

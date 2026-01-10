@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Missing D10* for &quot;public&quot; class / function / module in &quot;private&quot; module - astral-sh/ruff #9561</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Missing D10* for &quot;public&quot; class / function / module in &quot;private&quot; module</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9561">#9561</a>
+        opened by <a href="https://github.com/szleb">@szleb</a>
+        on 2024-01-17 09:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/szleb">@szleb</a> on 2024-01-17 09:35</div>
+            <div class="timeline-body"><p>Hi there,</p>
+<p>imagine you have the following folder with files
+package
+├── __init__.py
+└── _private.py</p>
+<p>Content of _private.py:</p>
+<pre><code>class PublicClass:
+    pass
+</code></pre>
+<p>Content of __init__.py:</p>
+<pre><code>from ._private import PublicClass
+
+__all__ = [&quot;PublicClass&quot;]
+</code></pre>
+<p>If you now run
+<code>ruff package --select D</code>
+the output is
+<code>package\__init__.py:1:1: D104 Missing docstring in public package</code></p>
+<p>I miss the error
+<code>package\_private.py:1:7: D101 Missing docstring in public class</code></p>
+<p>Running pydocstyle does show D101 but unfortunately no matter whether __init__.py does export PublicClass or not.</p>
+<p>In my opinion the optimal behavior would be to raise D101 when PublicClass is exported in __init__.py and to NOT raise the error when PublicClass is not exported in a public package (or module) but hidden by the &quot;private&quot; module _private.py. But I have no idea if this is feasible. If not, I would prefer the behavior of pydocstyle which seems just raise D10* for any function, module or class not starting with a single underline.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2024-01-17 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> added by @AlexWaygood on 2024-01-17 13:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-21 13:21</div>
+            <div class="timeline-body"><p>This is an interesting case because it shows that there's a cycle:</p>
+<ul>
+<li><code>__init__.py</code> depends on <code>_private.py</code> to know the type of <code>PublicClass</code></li>
+<li><code>PublicClass</code> (<code>_private.py</code>) depends on <code>__init__.py</code> to know that <code>PublicClass</code> is public.</li>
+</ul>
+<p>This is related to https://github.com/astral-sh/ruff/issues/7154</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @MichaReiser on 2024-10-24 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">multifile-analysis</span> removed by @MichaReiser on 2024-10-24 14:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:29 UTC
+    </footer>
+</body>
+</html>

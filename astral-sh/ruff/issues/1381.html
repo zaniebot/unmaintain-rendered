@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Different import sorting order between isort and ruff if import is aliased. - astral-sh/ruff #1381</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Different import sorting order between isort and ruff if import is aliased.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1381">#1381</a>
+        opened by <a href="https://github.com/ghuls">@ghuls</a>
+        on 2022-12-26 10:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ghuls">@ghuls</a> on 2022-12-26 10:30</div>
+            <div class="timeline-body"><p>Differnt import sorting order between isort and ruff if import is aliased.</p>
+<pre><code class="language-python"># isort --profile=black input.py
+$ cat /tmp/isorted_output.py
+from numpy import cos, int8, int16, int32, int64
+from numpy import sin as np_sin
+from numpy import tan, uint8, uint16, uint32, uint64
+
+$ ruff --select I001 --ignore F401 --fix input.py
+$ cat /tmp/ruff_isorted_output.py
+from numpy import cos, int8, int16, int32, int64, tan, uint8, uint16, uint32, uint64
+from numpy import sin as np_sin
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @charliermarsh on 2022-12-26 12:12</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-12-26 14:45</div>
+            <div class="timeline-body"><p>Good call, thank you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Differnt import sorting order between isort and ruff if import is aliased." to "Different import sorting order between isort and ruff if import is aliased." by @charliermarsh on 2022-12-26 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/andersk">@andersk</a> on 2022-12-27 09:30</div>
+            <div class="timeline-body"><p>Related: PyCQA/isort#1952</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ghuls">@ghuls</a> on 2022-12-27 11:48</div>
+            <div class="timeline-body"><p>Personally I like the ruff behavior more than the isort behavior. So I hope isort changes their behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/artpelling">@artpelling</a> on 2023-01-04 14:28</div>
+            <div class="timeline-body"><p>I get a completely different sorting when using <code>isort</code> and <code>ruff</code>. In my project, <code>isort file.py</code> gives me:</p>
+<pre><code class="language-python">from abc import abstractmethod
+from contextlib import contextmanager
+
+from numpy import concatenate, int32, zeros
+from traits.api import Dict, Float, Str, cached_property
+
+import tapy.core.config as config
+from tapy.core.base import BasicObject
+</code></pre>
+<p>whereas <code>ruff --select I001 --ignore F401 --fix file.py</code> gives me</p>
+<pre><code class="language-python">from abc import abstractmethod
+from contextlib import contextmanager
+
+import tapy.core.config as config
+from numpy import concatenate, int32, zeros
+from tapy.core.base import BasicObject
+from traits.api import Dict, Float, Str, cached_property
+</code></pre>
+<p>Any idea what is going on here? I don't think it is an issue with my config.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-04 14:43</div>
+            <div class="timeline-body"><p>It looks like it’s not registering tapy as a first-party module. Would you mind posting your pyproject.toml and project structure?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/artpelling">@artpelling</a> on 2023-01-04 17:18</div>
+            <div class="timeline-body"><blockquote>
+<p>It looks like it’s not registering tapy as a first-party module. Would you mind posting your pyproject.toml and project structure?</p>
+</blockquote>
+<p>Hi. Thanks for the swift reply! Sure thing, I have a <code>src</code> structure, so submodules are contained in <code>src/tapy/submodule</code> with <code>__init__.py</code> in <code>tapy</code> and <code>submodule</code> directories. The relevant part of my <code>pyproject.toml</code> is</p>
+<pre><code class="language-toml">[project]
+name = &quot;tapy&quot;
+...
+requires-python = &quot;&gt;=3.9&quot;
+...
+dependencies = [
+    &quot;tqdm&quot;,
+    &quot;traits&quot;
+]
+
+[project.optional-dependencies]
+dev = [
+    &quot;ipython&quot;,
+    &quot;pre-commit&quot;,
+    &quot;ruff&quot;,
+    &quot;sphinx&quot;,
+    &quot;sphinx-autoapi&quot;,
+    &quot;nbsphinx&quot;,
+    &quot;sphinx-rtd-theme&quot;,
+    &quot;sphinx-gallery&quot;
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+
+[tool.ruff]
+ignore = [
+    &quot;D100&quot;, &quot;D101&quot;, &quot;D102&quot;, &quot;D103&quot;, &quot;D104&quot;, &quot;D105&quot;, &quot;D107&quot;,
+    &quot;D203&quot;, &quot;D213&quot;,
+    &quot;B905&quot;,
+    &quot;F401&quot;,
+    &quot;N806&quot;]
+line-length = 120
+select = [&quot;B&quot;, &quot;D&quot;, &quot;E&quot;, &quot;F&quot;, &quot;I&quot;, &quot;N&quot;, &quot;Q&quot;, &quot;W&quot;]
+
+[tool.ruff.flake8-quotes]
+inline-quotes = &quot;single&quot;
+
+[tool.ruff.pydocstyle]
+convention = &quot;numpy&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-04 17:21</div>
+            <div class="timeline-body"><p>Can you try adding the following?</p>
+<pre><code class="language-toml">[tool.ruff]
+src = [&quot;src&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-04 17:21</div>
+            <div class="timeline-body"><p>(By default, we use <code>src = [&quot;.&quot;]</code> which wouldn't pick up your modules.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/artpelling">@artpelling</a> on 2023-01-04 17:39</div>
+            <div class="timeline-body"><p>OK, so I just found the section in the readme regarding <code>known-first-party</code> modules with <code>tool.ruff.isort</code> which I have not set. However, now everything works without setting <code>src</code> nor <code>known-first-party</code> which is very peculiar.</p>
+<p>Thanks for helping out. I don't want to hijack this issue. If I encounter this problem again, I will give an update. For now, it seems to 'just work again'...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-04 17:40</div>
+            <div class="timeline-body"><p>(Is it possible you were missing an <code>__init__.py</code> somewhere? Feel free to file another issue if you have any follow-ups :))</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/artpelling">@artpelling</a> on 2023-01-04 17:47</div>
+            <div class="timeline-body"><p>Yes, exactly I just found it out, too. I had an <code>__init__.py</code> in <code>src</code> that produces that behaviour without setting <code>src</code>.</p>
+<p>So either no <code>__init__.py</code> in <code>src</code> or setting <code>src = [&quot;src&quot;]</code> works correctly. Thanks a lot. Sorry for the clutter, I thought this was related due to the import alias.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-04 17:58</div>
+            <div class="timeline-body"><p>No prob at all, glad it’s resolved!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-23 17:33</div>
+            <div class="timeline-body"><p>I added a note on this to the docs. I think I view this as a known, but acceptable deviation for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-23 17:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:28:41 UTC
+    </footer>
+</body>
+</html>

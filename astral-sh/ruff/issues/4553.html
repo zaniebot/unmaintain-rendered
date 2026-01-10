@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FA100 doesn't catch using modern annotation syntax when target version is 3.9 - astral-sh/ruff #4553</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>FA100 doesn't catch using modern annotation syntax when target version is 3.9</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4553">#4553</a>
+        opened by <a href="https://github.com/akx">@akx</a>
+        on 2023-05-20 21:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/akx">@akx</a> on 2023-05-20 21:45</div>
+            <div class="timeline-body"><p>As I'm reading it, FA100 should add a <code>from __future__ import annotations</code> import when a file already uses modern annotation syntax and the configuration targets Python 3.9, but it doesn't:</p>
+<p>Refs https://github.com/AUTOMATIC1111/stable-diffusion-webui/pull/10580</p>
+<pre><code>$ cat a.py
+def foo(x: str | None):
+	pass
+$ ruff --version
+ruff 0.0.269
+$ ruff --target-version=py39 --select=FA100 --isolated a.py
+$ ~/.pyenv/versions/3.9.16/bin/python3.9 a.py
+Traceback (most recent call last):
+  File &quot;a.py&quot;, line 1, in &lt;module&gt;
+    def foo(x: str | None):
+TypeError: unsupported operand type(s) for |: 'type' and 'NoneType'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-21 19:24</div>
+            <div class="timeline-body"><p>I believe the intent of <code>FA100</code> is that it should trigger when it finds a type annotation you <em>could</em> rewrite <em>if</em> you enabled future annotations. So, e.g., if you had <code>x: Optional[str]</code>, <em>then</em> it might trigger. But I don't believe it's intended to trigger in the case you outlined above. Am I misunderstanding? Or are the docs misrepresenting the rule in some way?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @charliermarsh on 2023-05-21 19:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-05-21 19:31</div>
+            <div class="timeline-body"><p>Well, in that case another FA* rule that would address this would probably be useful?</p>
+<p>I.e. if the target Python version is &lt;= 3.9, then any file using modern type annotations would also have to have a <code>from __future__ import annotations</code> . (PyCharm's &quot;version compatibility&quot; lint does this, FWIW.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-21 19:33</div>
+            <div class="timeline-body"><p>I think that might be <code>FA102</code>: https://pypi.org/project/flake8-future-annotations/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/akx">@akx</a> on 2023-05-21 19:38</div>
+            <div class="timeline-body"><p>@charliermarsh Ah, yeah, thanks! Someone oughta get implementing FA102 in Ruff then, I guess 😂</p>
+<p>Closing this, I guess the rest of FA* is tracked in https://github.com/charliermarsh/ruff/issues/3072</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @akx on 2023-05-21 19:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-21 19:42</div>
+            <div class="timeline-body"><p>Lol yes :joy:</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:09 UTC
+    </footer>
+</body>
+</html>

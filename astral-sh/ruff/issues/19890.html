@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sort of Numpy not stable - astral-sh/ruff #19890</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Sort of Numpy not stable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/19890">#19890</a>
+        opened by <a href="https://github.com/ax3l">@ax3l</a>
+        on 2025-08-13 05:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ax3l">@ax3l</a> on 2025-08-13 05:49</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Hi,</p>
+<p>I use ruff to clean up my pybind11-stubgen generated files.</p>
+<p>Since a recent updated, I noticed that the sorting off</p>
+<pre><code class="language-py">import numpy
+import numpy as np
+</code></pre>
+<p>does not result in stable sorts, flipping the two lines semingly randomly. See the commits <code>Update Stub Files</code>, e.g., <a href="https://github.com/BLAST-ImpactX/impactx/commit/2cde3d7cdfcdbb3b09411a4baf4ad9c94ce3aa74">here</a> and <a href="https://github.com/BLAST-ImpactX/impactx/commit/711eb54d48f2feeb46e39014d7554d81117f131e">here</a>
+https://github.com/BLAST-ImpactX/impactx/commits/development/</p>
+<p>While the import appears a bit useless, this is auto-generated code for module bindings of pybind11 and not really controllable/cleanable by hand.</p>
+<h3>Version</h3>
+<p>ruff v0.12.8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-13 06:35</div>
+            <div class="timeline-body"><p>Hmm, interesting and thanks for reporting.</p>
+<p>From looking at your <code>pyproject.toml</code> I can see that you also configured isort. Can you try disabling isort and only use ruff? Can you tell me more about how you run Ruff, specifically in the situations that resulted in the stub file changes?</p>
+<p>Running ruff on 2cde3d7cdfcdbb3b09411a4baf4ad9c94ce3aa74 changes the import order of numpy in <code>distribution_input_helpers.pyi</code> to</p>
+<pre><code class="language-py">from __future__ import annotations
+
+import numpy
+import numpy as np
+</code></pre>
+<p>Ruff makes more changes to other files that aren't numpy-related.</p>
+<p>Ruff doesn't change any numpy import (other than adding a blank line) for 711eb54d48f2feeb46e39014d7554d81117f131e</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-08-13 06:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ax3l">@ax3l</a> on 2025-08-19 16:12</div>
+            <div class="timeline-body"><p>Thanks @MichaReiser!</p>
+<p>I do indeed have the old isort configs in my <code>pyproject.toml</code>, but I do not use it in <a href="https://github.com/BLAST-ImpactX/impactx/blob/25.08/.pre-commit-config.yaml">pre-commits</a> anymore. Is that option for isort interfering?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-19 16:31</div>
+            <div class="timeline-body"><p>It should not. I just wonder if VS code or any other tool picks it up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ax3l">@ax3l</a> on 2025-08-19 16:38</div>
+            <div class="timeline-body"><p>Yep, so my workflow just to make it as reproducible as possible is:</p>
+<ul>
+<li>I run a <a href="https://github.com/BLAST-ImpactX/impactx/blob/25.08/.github/workflows/stubs.yml">GitHub action</a> that:<ul>
+<li><a href="https://github.com/BLAST-ImpactX/impactx/blob/25.08/.github/update_stub.sh">regenerates <code>.pyi</code> files</a> via <a href="https://github.com/sizmailov/pybind11-stubgen">pybind11-stubgen</a></li>
+<li>via <a href="https://github.com/BLAST-ImpactX/impactx/blob/25.08/.github/update_stub.sh">pre-commit</a> using <code>pre-commit run -a || true</code>, I run ruff-format on those files to clean them up and make the produced files stable (e.g., imports)</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-19 16:45</div>
+            <div class="timeline-body"><p>Yeah, not sure what's happening. I suggest running ruff locally the next time this happens with the commit before/after.</p>
+<p>The only case where we've seen similar issues is if there's a <code>numpy</code> folder in your project (even if not commited), because Ruff would then start categorizing <code>numpy</code> as first party (because you have a local <code>numpy</code> package)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ax3l">@ax3l</a> on 2025-08-19 17:48</div>
+            <div class="timeline-body"><p>Interesting! I exclusively run this in GH actions on <code>development</code> and never locally. I always have <code>numpy</code> installed there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ax3l">@ax3l</a> on 2025-08-19 19:55</div>
+            <div class="timeline-body"><p>The flipping I see is between</p>
+<pre><code class="language-py">from __future__ import annotations
+import numpy as np
+import numpy
+
+__all__: list[str] = [&quot;np&quot;, &quot;twiss&quot;]
+</code></pre>
+<p>and</p>
+<pre><code class="language-py">from __future__ import annotations
+import numpy
+import numpy as np
+
+__all__: list[str] = [&quot;np&quot;, &quot;twiss&quot;]
+</code></pre>
+<p>The <code>import numpy as np</code> import is actually unused (<a href="https://github.com/BLAST-ImpactX/impactx/blob/25.08/src/python/impactx/distribution_input_helpers.pyi">in the <code>.pyi</code> file</a>). In the <a href="https://github.com/BLAST-ImpactX/impactx/blob/25.08/src/python/impactx/distribution_input_helpers.py">original <code>.py</code> file</a> it is used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-20 13:43</div>
+            <div class="timeline-body"><p>Running ruff in your repository (on the given commit) gives me the following output:</p>
+<pre><code>uvx ruff@latest check --output-format=concise --select I001
+Installed 1 package in 1ms
+src/python/impactx/MADXParser.pyi:1:1: I001 [*] Import block is un-sorted or un-formatted
+src/python/impactx/__init__.pyi:15:1: I001 [*] Import block is un-sorted or un-formatted
+src/python/impactx/distribution_input_helpers.pyi:1:1: I001 [*] Import block is un-sorted or un-formatted
+src/python/impactx/extensions/KnownElementsList.pyi:10:1: I001 [*] Import block is un-sorted or un-formatted
+src/python/impactx/extensions/__init__.pyi:1:1: I001 [*] Import block is un-sorted or un-formatted
+src/python/impactx/impactx_pybind/__init__.pyi:15:1: I001 [*] Import block is un-sorted or un-formatted
+src/python/impactx/impactx_pybind/distribution.pyi:5:1: I001 [*] Import block is un-sorted or un-formatted
+src/python/impactx/impactx_pybind/elements/__init__.pyi:5:1: I001 [*] Import block is un-sorted or un-formatted
+src/python/impactx/impactx_pybind/elements/mixin.pyi:5:1: I001 [*] Import block is un-sorted or un-formatted
+src/python/impactx/impactx_pybind/elements/transformation.pyi:5:1: I001 [*] Import block is un-sorted or un-formatted
+src/python/impactx/impactx_pybind/wakeconvolution.pyi:1:1: I001 [*] Import block is un-sorted or un-formatted
+src/python/impactx/madx_to_impactx.pyi:1:1: I001 [*] Import block is un-sorted or un-formatted
+src/python/impactx/plot/__init__.pyi:1:1: I001 [*] Import block is un-sorted or un-formatted
+Found 13 errors.
+[*] 13 fixable with the `--fix` option.
+</code></pre>
+<p>and, for <code>distributions</code>, the fix flips the ordering of the numpy import and adds a blank line between the <code>from __future__</code> import</p>
+<p>However, running pre-commit with <code>--all-files</code> doesn't flag any of the erros, unless if I remove the <code>types_or: [ python ]</code> configuration. I'm not familiar with pre-commit myself but it seems that <code>python</code> excludes <code>pyi</code> files?</p>
+<p>Ruff's pre commit uses <code>types_or: [python, pyi, jupyter]</code> by default. So you can either remove the <code>types_or</code> in your configuration (if you don't have any notebooks or if you're okay with Ruff checking them too), or use <code>types_or: [python, pyi]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ax3l">@ax3l</a> on 2025-08-20 15:43</div>
+            <div class="timeline-body"><blockquote>
+<p>However, running pre-commit with --all-files doesn't flag any of the errors, unless if I remove the <code>types_or: [ python ]</code> configuration. I'm not familiar with pre-commit myself but it seems that python excludes pyi files?</p>
+</blockquote>
+<p>Yes, I removed  the <code>pyi</code> files since pybind11 v3 w/ pybind11-stubgen generated some missing imports. So I only ran ruff formatting on it, not run checks.</p>
+<p>I think if I kept the old logic: running ruff check first (which removes the unused import) and then ruff format it would not have the flip issue.</p>
+<p>It seems that I have to anyway get the generated <code>.pyi</code> code to be valid enough to pass ruff check, which will once it works again remove the unused extra numpy import...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-20 15:45</div>
+            <div class="timeline-body"><blockquote>
+<p>It seems that I have to anyway get the generated .pyi code to be valid enough to pass ruff check, which will once it works again remove the unused extra numpy import...</p>
+</blockquote>
+<p>You could consider enabling a subset of the rules (or none at all) for generated files:</p>
+<p>https://docs.astral.sh/ruff/settings/#lint_extend-per-file-ignores</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ax3l">@ax3l</a> on 2025-08-20 16:41</div>
+            <div class="timeline-body"><p>I worked on a post-generation replace fix for the stubs now so ruff check can run again.</p>
+<p>https://github.com/BLAST-ImpactX/impactx/pull/1106</p>
+<p>I notice though that it still does the sorting, so I manually rewrote the file that also uses <code>import numpy as np</code> so I only see one public import left.</p>
+<p>I still think there is a formatting bug in ruff format that causes the unstable rotation, but luckily can avoid the pattern for this one file for now where I saw it.</p>
+<pre><code class="language-py">from __future__ import annotations
+import numpy as np
+import numpy
+
+__all__: list[str] = [&quot;np&quot;, &quot;twiss&quot;]
+
+def twiss(
+    beta_x: numpy.float64
+   ):
+   &quot;&quot;&quot;Docstring&quot;&quot;&quot;
+</code></pre>
+<p>now written as</p>
+<pre><code class="language-py">from __future__ import annotations
+import numpy
+
+__all__: list[str] = [&quot;numpy&quot;, &quot;twiss&quot;]
+
+def twiss(
+    beta_x: numpy.float64
+   ):
+   &quot;&quot;&quot;Docstring&quot;&quot;&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-08-20 16:46</div>
+            <div class="timeline-body"><p>I'm not sure what you mean by unstable rotation.</p>
+<p>Can you share the two inputs that resulted in unstable sorting?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/futurewasfree">@futurewasfree</a> on 2025-09-14 10:13</div>
+            <div class="timeline-body"><p>Same or related here, also I change after 0.13 upgrade.
+Most likely related to this: https://astral.sh/blog/ruff-v0.13.0#full-module-paths-are-now-used-to-verify-first-party-modules
+numpy ends up moved to third-party group. Haven't observed the same with 0.12</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-mre</span> added by @MichaReiser on 2025-09-15 08:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-15 08:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Same or related here, also I change after 0.13 upgrade. Most likely related to this: <a href="https://astral.sh/blog/ruff-v0.13.0#full-module-paths-are-now-used-to-verify-first-party-modules">astral.sh/blog/ruff-v0.13.0#full-module-paths-are-now-used-to-verify-first-party-modules</a> numpy ends up moved to third-party group. Haven't observed the same with 0.12</p>
+</blockquote>
+<p>This sounds correct to me. Do you have a local <code>numpy</code> directory (which would explain why the behavior changed with 0.13)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/futurewasfree">@futurewasfree</a> on 2025-09-15 13:17</div>
+            <div class="timeline-body"><p>nope. I could only find occurrences under <code>.venv</code>.  Is there anything else I could check on my side?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-15 14:58</div>
+            <div class="timeline-body"><p>Not sure. Could you share your configuration? If public, could you share the commit where the ordering &quot;changed&quot;?</p>
+<p>@dylwil3 do you have any other ideas?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-09-15 15:15</div>
+            <div class="timeline-body"><p>I think I'd need a little more info to try to reproduce/investigate. Also I am probably misunderstanding something basic:</p>
+<blockquote>
+<p>numpy ends up moved to third-party group.</p>
+</blockquote>
+<p>is it not <em>correct</em> to have <code>numpy</code> in the &quot;third-party&quot; group?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-15 15:39</div>
+            <div class="timeline-body"><blockquote>
+<p>is it not correct to have numpy in the &quot;third-party&quot; group?</p>
+</blockquote>
+<p>It is. I guess at this point it's more about understanding why it changed ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/futurewasfree">@futurewasfree</a> on 2025-09-16 06:38</div>
+            <div class="timeline-body"><p>No problem with numpy under 3rd party group :)</p>
+<p>My config:</p>
+<pre><code>fix = true
+show-fixes = true
+src = [&quot;.&quot;]
+target-version = &quot;py312&quot;
+[format]
+quote-style = &quot;double&quot;
+[lint]
+ignore = [&quot;E712&quot;]
+extend-select = [&quot;I&quot;]
+</code></pre>
+<p>I also observe way more inconsistencies with a new version:</p>
+<ol>
+<li>1st party dependencies are not always alphabetically sorted</li>
+<li>I see 3rd party dependencies appearing after all 1st parties. E.g. it was the case for <code>httpx</code></li>
+<li>Sometimes it's even one 1st party group, then <code>dagster_k8s</code>, another group of 1st parties.</li>
+</ol>
+<p>Overall, unfortunately it seems quite broken in the latest version. Problem is also that VSCode gives me users the latest version of extension (and ruff). So it's either I upgrade and live with all incorrect sorting, or need to install and specify certain binary outside of extension.</p>
+<p>Sorry, it's not a public repo and I can not share.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-16 07:49</div>
+            <div class="timeline-body"><p>Hmm, it's difficult to help without a more concrete example (especially given that the error seem to be all over the place).</p>
+<p>Are you only experiencing this issue in VS Code or on the CLI too? Does the result differ if you run ruff without caching (<code>ruff check --no-cache</code>)?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-09-16 12:06</div>
+            <div class="timeline-body"><p>I'm sorry to hear there seems to be some trouble @futurewasfree ! I'm not quite sure how the change would have caused (1) and (3) - In theory, the new behavior should only ever result in some packages that used to be classified as first-party now being classified as third-party.</p>
+<p>Certainly the most helpful thing would be something we could reproduce, but one thing you could do to help diagnose yourself would be to inspect the debug output <code>ruff check -v path/to/yourfile.py</code> and see if certain packages are being classified as first/third-party that you don't expect. If so, you could see if there are any possible conflicts in the directory structure of your project where certain file paths are named the same as module import paths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">isort</span> added by @dylwil3 on 2025-09-16 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/futurewasfree">@futurewasfree</a> on 2025-09-16 14:14</div>
+            <div class="timeline-body"><p>Yes, I’ll try debugging on my own using verbose flags.
+I might also create a reproducible example to share publicly when I have time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/futurewasfree">@futurewasfree</a> on 2025-09-21 11:58</div>
+            <div class="timeline-body"><p>I think I understand what’s happening now: it’s mainly related to editable installs specified via <code>tool.uv.sources</code>, which are now being listed as third-party dependencies. This was the main change since 0.12.</p>
+<p>I saw a similar thread discussing this, and in my opinion, such dependencies should also be treated as first-party.</p>
+<p>For now, the known-first-party setting under <code>lint.isort</code> seems like a good workaround.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-09-22 08:26</div>
+            <div class="timeline-body"><p>@futurewasfree would you be able to create an example project that demonstrates the issue?</p>
+<p>Like do you have something like this:</p>
+<pre><code>libs/
+  - utility/
+    - python code
+
+services/
+  - service-a
+	- python code
+	- depends on utility
+</code></pre>
+<p>Where <code>utility</code> is a dependency of <code>service</code> and installed as an editable install?</p>
+<p>If so, you can try using <a href="https://docs.astral.sh/ruff/settings/#src"><code>src</code></a> and set it to <code>src = [&quot;libs&quot;, &quot;services&quot;]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-12-10 17:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:11 UTC
+    </footer>
+</body>
+</html>

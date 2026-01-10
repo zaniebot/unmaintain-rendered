@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>rule to detect unnecessary `is True`/`is False` - astral-sh/ruff #6543</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>rule to detect unnecessary <code>is True</code>/<code>is False</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6543">#6543</a>
+        opened by <a href="https://github.com/DetachHead">@DetachHead</a>
+        on 2023-08-14 02:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/DetachHead">@DetachHead</a> on 2023-08-14 02:18</div>
+            <div class="timeline-body"><pre><code class="language-py">def foo(value: bool):
+    if value is True: # should be `if value`
+        ...
+    if value is False: # should be: `if not value`
+        ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/heidi666">@heidi666</a> on 2023-08-14 06:23</div>
+            <div class="timeline-body"><p>These aren't equivalent though, unless you're taking the type hint into account when you're evaluating the rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2023-08-14 09:46</div>
+            <div class="timeline-body"><p>yeah it should take the type into account</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2023-08-14 23:08</div>
+            <div class="timeline-body"><blockquote>
+<p>These aren't equivalent though, unless you're taking the type hint into account when you're evaluating the rule.</p>
+</blockquote>
+<p>You're right that they're not equivalent.</p>
+<p>I'm not sure if you're arguing against there being a rule, but I think that there should be a rule irrespective of type inference.  If you want to check the type and its value, then I prefer:</p>
+<pre><code class="language-python">if isinstance(value, bool) and value: ...
+</code></pre>
+<p>or</p>
+<pre><code class="language-python">match value:
+    case True: ...
+</code></pre>
+<p>These constructs (<code>isinstance</code> and <code>match</code>) make it clear that switching on type is happening.</p>
+<p>So I think even without the annotation, this should be a rule.</p>
+<p>As far as I know, Ruff doesn't have the type inference capabilities of type checkers, so it may not be feasible to expect it to deduce the type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/DetachHead">@DetachHead</a> on 2023-08-14 23:48</div>
+            <div class="timeline-body"><p>i think #3893 should be prioritized, since it would make implementing rules like this easier</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/NeilGirdhar">@NeilGirdhar</a> on 2023-08-15 02:11</div>
+            <div class="timeline-body"><blockquote>
+<p>I disagree. Checking with <code>is</code> is the commonly used and recommended way (see <a href="https://peps.python.org/pep-0008/#programming-recommendations">PEP8</a>) to check for singletons like None, True, False etc. As</p>
+</blockquote>
+<p>Yes, it's recommended for <code>None</code>.  Is there anyone recommends it for <code>True</code> and <code>False</code>?  The <a href="https://google.github.io/styleguide/pyguide.html">Google Python style guide</a> forbids using <code>==</code>, and explicitly recommends <code>if x</code>.  I see your point that they're singletons, but they're also values of the type <code>bool</code></p>
+<p>I realize that this may be opinionated, so do you have any examples in code where <code>if x is True</code> is beneficial?  We may be able to get a clearer picture by examining a code search.</p>
+<p>To me, it seems problematic in both ways that it comes up:</p>
+<ul>
+<li>it seems unnecessarily wordy in the case of a known <code>bool</code> (a common beginner error), and</li>
+<li>it makes code hard to type check and hard to read when it's used as an implicit type switch.</li>
+</ul>
+<p>Here's an example of an implicit type switch:</p>
+<pre><code class="language-python">if x is True:
+  ...
+elif x is False:
+  ...
+else:
+  ... # The type checker won't deduce that x is not Boolean here.
+</code></pre>
+<p>versus the explicit type switch:</p>
+<pre><code class="language-python">if isinstance(x, bool):
+  if x:
+    ...
+  else:
+    ...
+else:
+  ... # the type checker knows that x is not Boolean here.
+</code></pre>
+<p>I think the latter code is much clearer and easier to type check.  (Or maybe the type checkers should change, but we should probably see how often this pattern is used.)</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:58 UTC
+    </footer>
+</body>
+</html>

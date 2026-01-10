@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatter undocumented deviation: extra unnecessary wrapping of arguments and extra parenthesis for long return types - astral-sh/ruff #14143</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Formatter undocumented deviation: extra unnecessary wrapping of arguments and extra parenthesis for long return types</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14143">#14143</a>
+        opened by <a href="https://github.com/Avasam">@Avasam</a>
+        on 2024-11-06 23:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Avasam">@Avasam</a> on 2024-11-06 23:34</div>
+            <div class="timeline-body"><ul>
+<li>List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+undocumented deviation black return</li>
+</ul>
+<p>This is similar to https://github.com/astral-sh/ruff/issues/11791, but for return type annotations rather than variable annotations.</p>
+<ul>
+<li>A minimal code snippet that reproduces the bug.</li>
+</ul>
+<p>With <code>preview = True</code>:</p>
+<p>Black:</p>
+<pre><code class="language-py">class Polygon:
+    def cut_section(self, line) -&gt; tuple[
+        RegularPolygon | Polygon | Triangle | Point | Point2D | Point3D | Segment2D | Segment3D | Segment | None,
+        RegularPolygon | Polygon | Triangle | Point | Point2D | Point3D | Segment2D | Segment3D | Segment | None,
+    ]: ...
+</code></pre>
+<p>Ruff:</p>
+<pre><code class="language-py">class Polygon:
+    def cut_section(
+        self, line
+    ) -&gt; tuple[
+        RegularPolygon | Polygon | Triangle | Point | Point2D | Point3D | Segment2D | Segment3D | Segment | None,
+        RegularPolygon | Polygon | Triangle | Point | Point2D | Point3D | Segment2D | Segment3D | Segment | None,
+    ]: ...
+</code></pre>
+<p>See https://github.com/microsoft/python-type-stubs/commit/9eb6bb50ec2d16eccde13e8d51fc03f11a7c0807 for a lot more examples</p>
+<p>As an added note, with <code>preview = False</code>, I also get the following deviation:</p>
+<p>Black:</p>
+<pre><code class="language-py">def get_basis_vectors() -&gt; tuple[
+    tuple[Literal[1], Literal[0], Literal[0]],
+    tuple[Literal[0], Literal[1], Literal[0]],
+    tuple[Literal[0], Literal[0], Literal[1]],
+]: ...
+</code></pre>
+<p>Ruff:</p>
+<pre><code class="language-py">def get_basis_vectors() -&gt; (
+    tuple[
+        tuple[Literal[1], Literal[0], Literal[0]],
+        tuple[Literal[0], Literal[1], Literal[0]],
+        tuple[Literal[0], Literal[0], Literal[1]],
+    ]
+): ...
+</code></pre>
+<ul>
+<li><p>The command you invoked (e.g., <code>ruff /path/to/file.py --fix</code>), ideally including the <code>--isolated</code> flag.
+<code>ruff format</code></p>
+</li>
+<li><p>The current Ruff settings (any relevant sections from your <code>pyproject.toml</code>).</p>
+</li>
+</ul>
+<pre><code class="language-toml">[tool.ruff]
+line-length = 130
+# Target oldest supported Python version
+target-version = &quot;py39&quot;
+preview = true
+</code></pre>
+<ul>
+<li>The current Ruff version (<code>ruff --version</code>).
+<code>ruff 0.7.2</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @AlexWaygood on 2024-11-07 00:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-07 07:16</div>
+            <div class="timeline-body"><p>Thanks. We're aware of the deviation with <code>preview=False</code> but the way this gets formatted with <code>preview=True</code> is rather bad</p>
+<pre><code class="language-py">class Polygon:
+    def cut_section(
+        self, line
+    ) -&gt; tuple[
+        RegularPolygon
+        | Polygon
+        | Triangle
+        | Point
+        | Point2D
+        | Point3D
+        | Segment2D
+        | Segment3D
+        | Segment
+        | None,
+        RegularPolygon
+        | Polygon
+        | Triangle
+        | Point
+        | Point2D
+        | Point3D
+        | Segment2D
+        | Segment3D
+        | Segment
+        | None,
+    ]: ...
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-11-07 08:24</div>
+            <div class="timeline-body"><p>Interestingly, prettier does the exact same <a href="https://prettier.io/playground/#N4Igxg9gdgLgprEAuEAzArlMMCW0AEA+jAE4CGUAzqhCQLaFgAWFUcANgBQKkCeS+AILoAJjhgAZCAHMAorBK8ANPhFkYZAQHkADrmhl2AbQDKUCAHdU7MgGs4AXQCUAzgB0o+fLv1RDRgFUoPE8AH3wyACMwADoAcXQcdhEAYRYoNnZ8cK1IgCs4bDhiktKy8orK8ocPJ3xgDy8mnFR8TjUNfABeLvwAOWg4OobPJrH8EjgYdBJPAbZGsYBfRabmVg5u-B5FGOlE5L2pxnTMzhxYdvUyJydVr0np2fx1jM3QnPzCmHORLo6bh4VlAPBgsL4iKQKNRaAxXmcdvwhKJxFI5ApeC42osfCF-EEQtkItF4gdUqd3t4vkUqrS6XSalBhvd8C02gDur15kN6iyxo8ZnNBizgeN4Zteoi9mSjjAThsuBcfgDbiyBc9xVkPlSCthfv9rncoMCPKaoGDsISwOg5ZRviF3KNxvg7exUCp2Bc4PcsdMdOw4EY+V4AEpwfY2EgABQg7F40mgwaJMbjCZBTvG4QAKiQcBRpAGk+EY0qi-gS7AAEwAETLFZgAGZaxmxuETOG6Dwa2X29JO7Amz2Ozwy9yy2GI2Ro7H44mW01izO02Wc3moAXvfOvIvS1vkxAld29zuB83ndv8L3+zAj+eiVeeIPj5fh7BR8KMw56ib02aLRDrVte1oEdO9XVQH0BD9AMgz3Cd0EjFNZ3TO9F1TOdUPwVd80LZ96zrA8qzPc8T0bYjnTbV8b3IzMXz7R8aNbOjr3fBZn3gxClwwkjyy4lCeOw9dcMw-C8MI6iCKVJ9MIfIih3o095JY58x0-b8PBAJQQAgPQQkoZBQCnEhLCjKcEH0lBDAsMheH0rTInIMB7BgEwyE7CQvWQVBDDtezHOckwdDIMALmkZBSHQOAtLtOgcHCkhIq0uAAA8dDgXNr0MLN0r8XM4As7z2F8kBKFCgMAEV0AgeAvJ8qKQDyShkpMMq4Eq6q4Fqor6oARyq+Ao2MnQLJAMhKAAWjYOARGmzSQChJJQpSCA6DoMhkFG9h2Dm0qhLgQQYFIHBIhtOAo3Sjy2C64qmBgOh2AAdSYcR8qCsA4HbKhxBwAA3cReA2sBKDskAfsigBJKAZtgEwwFzPRBChkwYF4ANrvqnRjLtB7yB0DbMfy9Kfs6rSLjtEgYEGsg+3WpBCuKoKSHJjaUbSyg4ZwPQ5sxpUHpwEQYCYZAAA4AAYtMmPqcEmKmafRrSNEiPmBaFpBKy09A7SzKICrqpK6EiaaZpECR83Qam4AAMVhdRcHXDayBtCAQCWJYgA">playground</a></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:38 UTC
+    </footer>
+</body>
+</html>

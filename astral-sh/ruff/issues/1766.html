@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM108 autofix produces code that breaks E501 - astral-sh/ruff #1766</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM108 autofix produces code that breaks E501</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1766">#1766</a>
+        opened by <a href="https://github.com/Czaki">@Czaki</a>
+        on 2023-01-10 10:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Czaki">@Czaki</a> on 2023-01-10 10:20</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+- A minimal code snippet that reproduces the bug.
+- The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+- The current Ruff settings (any relevant sections from your `pyproject.toml`).
+- The current Ruff version (`ruff --version`).
+-->
+
+<p>When bumpy ruff from 207 to 217 (If I correctly check, the problem was introduced in 213) I got multiple autofixes from SIM108 that led to multiple errors reports from E501 as it creates very long lines (always creates single line if)</p>
+<p>https://github.com/4DNucleome/PartSeg/pull/879</p>
+<p>Sample diff</p>
+<pre><code>--- a/package/PartSeg/_launcher/check_version.py
++++ b/package/PartSeg/_launcher/check_version.py
+@@ -67,24 +67,7 @@ class CheckVersionThread(QThread):
+         my_version = packaging.version.parse(self.base_release)
+         remote_version = packaging.version.parse(self.release)
+         if remote_version &gt; my_version:
+-            if getattr(sys, &quot;frozen&quot;, False):
+-                message = QMessageBox(
+-                    QMessageBox.Information,
+-                    &quot;New release&quot;,
+-                    f&quot;You use outdated version of PartSeg. &quot;
+-                    f&quot;Your version is {my_version} and current is {remote_version}. &quot;
+-                    f&quot;You can download next release form {self.url}&quot;,
+-                    QMessageBox.Ok | QMessageBox.Ignore,
+-                )
+-            else:
+-                message = QMessageBox(
+-                    QMessageBox.Information,
+-                    &quot;New release&quot;,
+-                    f&quot;You use outdated version of PartSeg. &quot;
+-                    f&quot;Your version is {my_version} and current is {remote_version}. &quot;
+-                    &quot;You can update it from pypi (pip install -U PartSeg)&quot;,
+-                    QMessageBox.Ok | QMessageBox.Ignore,
+-                )
++            message = QMessageBox(QMessageBox.Information, &quot;New release&quot;, f&quot;You use outdated version of PartSeg. Your version is {my_version} and current is {remote_version}. You can download next release form {self.url}&quot;, QMessageBox.Ok | QMessageBox.Ignore) if getattr(sys, &quot;frozen&quot;, False) else QMessageBox(QMessageBox.Information, &quot;New release&quot;, f&quot;You use outdated version of PartSeg. Your version is {my_version} and current is {remote_version}. You can update it from pypi (pip install -U PartSeg)&quot;, QMessageBox.Ok | QMessageBox.Ignore)
+</code></pre>
+<p>For me, at least SIM108 should create E501 compatible code or even not fix it if the line is too long (as it will reduce readability).</p>
+<p>In this example, even black cannot help as it concatenates strings.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @charliermarsh on 2023-01-10 12:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-01-12 00:21</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:28:49 UTC
+    </footer>
+</body>
+</html>

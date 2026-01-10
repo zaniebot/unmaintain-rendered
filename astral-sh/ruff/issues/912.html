@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`--add-noqa` alternates between two different rule codes - astral-sh/ruff #912</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>--add-noqa</code> alternates between two different rule codes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/912">#912</a>
+        opened by <a href="https://github.com/hofrob">@hofrob</a>
+        on 2022-11-26 13:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/hofrob">@hofrob</a> on 2022-11-26 13:08</div>
+            <div class="timeline-body"><p>I just discovered this tool and am very happy with it. While implementing it into our CI I discovered that the <code>--add-noqa</code> has buggy behavior when it discovers multiple failures on one line.</p>
+<h1>Problematic code</h1>
+<pre><code class="language-py">def foo():
+    return &quot;use some weird characters in a very long line. for example `’`, nbsp characters or a character looking similar to brackets `）`&quot;
+</code></pre>
+<h1>Command</h1>
+<pre><code class="language-bash">ruff --select E --select RUF --add-noqa foo.py
+</code></pre>
+<p>This will trigger <code>RUF001</code> and <code>E501</code> but the <code>--add-noqa</code> flag will alternately add <code># noqa: RUF001</code> and <code># noqa: E501</code> on each run. In other situations it correctly adds <code># noqa: E501, RUF001</code> once.</p>
+<p>Nothing too serious though. <code>ruff</code> is a lovely addition to the python eco system. Thanks a lot!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2022-11-26 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-26 15:02</div>
+            <div class="timeline-body"><p>Thank you! Will take a look at it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-26 15:13</div>
+            <div class="timeline-body"><p>Am I right that you have <code>--line-length 140</code> set in your config too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hofrob">@hofrob</a> on 2022-11-26 15:20</div>
+            <div class="timeline-body"><p><code>--line-length 88</code> in this case. But I can remove it and still reproduce it.</p>
+<p>Now that I tried it again: the first time it works correctly (adding both rules). When you remove one, it will start alternating. I guess it's because I was working through the rules/rule sets one by one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-26 15:24</div>
+            <div class="timeline-body"><p>Yeah, the issue is that it's not preserving the existing codes. So if <code>noqa: E501</code> is present, it'll run the linter, <em>ignore</em> <code>E501</code>, flag <code>RUF001</code>, and then set <code>noqa: RUF001</code> (removing <code>E501</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-26 15:25</div>
+            <div class="timeline-body"><p>Question: do you have codes listed in <code>noqa</code> that aren't supported by Ruff? Like <code>noqa: E203</code> or whatever? (Codes that exist in Flake8, but not Ruff.)</p>
+<p>The initial intent was to remove those codes here too, to set <code>noqa</code> to the <em>exact</em> list of Ruff violations... but not sure if that's too disruptive.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2022-11-26 15:37</div>
+            <div class="timeline-body"><p>(Another example is that if you have <code># noqa</code> (the blank catch-all), Ruff's <code>--add-noqa</code> will replace that with the precise <code># noqa</code> needed, like <code># noqa: E501</code>. That could also cause issues for other compatibility with other tools, but illustrates the intent of the command.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2022-11-26 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hofrob">@hofrob</a> on 2022-11-27 11:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Question: do you have codes listed in noqa that aren't supported by Ruff? Like noqa: E203 or whatever? (Codes that exist in Flake8, but not Ruff.)</p>
+</blockquote>
+<p>Nope.</p>
+<blockquote>
+<p>#913</p>
+</blockquote>
+<p>Replied, fixed, merged and released in less than 12h. Wow, that was fast. Thanks a lot!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:10:15 UTC
+    </footer>
+</body>
+</html>

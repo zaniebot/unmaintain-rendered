@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ability to add a reason along with `--add-noqa` - astral-sh/ruff #10070</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ability to add a reason along with <code>--add-noqa</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/10070">#10070</a>
+        opened by <a href="https://github.com/ashrub-holvi">@ashrub-holvi</a>
+        on 2024-02-21 13:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ashrub-holvi">@ashrub-holvi</a> on 2024-02-21 13:21</div>
+            <div class="timeline-body"><p>Hi!</p>
+<p><a href="https://docs.astral.sh/ruff/linter/#inserting-necessary-suppression-comments">Ruff can automatically add <code>noqa</code> directives</a>, but they don't have any info about how they were added:</p>
+<pre><code>  # noqa: S308
+</code></pre>
+<p>and it may be difficult to distinguish intentionally/manually added <code>noqa</code> and those automatically added.</p>
+<p>I think, main use case is migration to ruff for existing codebase without fixing everything at once, but it should be clear that those <code>noqa</code> added automatically and should be handled at some point, something like that:</p>
+<pre><code>  # noqa: S308 FIXME when you are here
+</code></pre>
+<p>Downside of it - adding longer comment will produce more formatting changes, so, perhaps</p>
+<pre><code>  # noqa: S308 auto
+</code></pre>
+<p>or even ruff may have some argument for provide the text of comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-01-23 22:01</div>
+            <div class="timeline-body"><p>Do you really want to <code># noqa</code> them if you intend to fix them?</p>
+<p>In our CI we have say 10000 ruff lint violations, and we accept if this number shrinks but fail if it ever increases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> added by @MichaReiser on 2025-01-24 08:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashrub-holvi">@ashrub-holvi</a> on 2025-01-24 08:56</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you really want to <code># noqa</code> them if you intend to fix them?</p>
+</blockquote>
+<p>Yes, first of all it makes it much more visible - when you read the code you see that lines you are touching can be improved - ruff is working on file level, so linter can show issues in lines you are not intended to touch. Also, marking all existing issues as noqa really simplifies to see new issues, approach with number of errors also may work in average, but same time it might be you fixed two old, but introduced a new.
+Something like https://github.com/astral-sh/ruff/issues/1149 may also be useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/kaddkaka">@kaddkaka</a> on 2025-01-26 12:06</div>
+            <div class="timeline-body"><p>Thanks now I understand the situation much better. For me #1149 would be a more valuable feature.</p>
+<p>If you really want to do this it can be done using ruff+other tool.</p>
+<p>Example on how to achieve this today with ruff+git+vim:</p>
+<pre><code>$ ruff check --add-noqa
+$ git jump diff 
+:cdo normal! A (added automatically by ruff) 
+</code></pre>
+<p>Perhaps this eliminates the feature need in ruff?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Additional comment to noqa added by ruff" to "Ability to add a reason along with `--add-noqa`" by @MichaReiser on 2025-11-04 13:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-04 13:22</div>
+            <div class="timeline-body"><p>This should be fairly easy to implement and shouldn't even need a new CLI flag if we make <code>--add-noqa</code> accept a value.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2025-11-04 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-11-04 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">wish</span> removed by @MichaReiser on 2025-11-04 13:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @MichaReiser by @MichaReiser on 2025-11-06 14:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-11-11 13:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/engnatha">@engnatha</a> on 2025-12-23 19:45</div>
+            <div class="timeline-body"><p>This isn't working for me on <code>0.14.10</code>. <code>--add-noqa</code> works fine, but providing a reason silently exits without fixing any errors.</p>
+<p>Edit: Ah I was missing the <code>requires_equals</code></p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:52 UTC
+    </footer>
+</body>
+</html>

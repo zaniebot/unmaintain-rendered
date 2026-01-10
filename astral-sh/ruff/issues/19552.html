@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Watch does not show output format error message from clearing too late - astral-sh/ruff #19552</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Check Watch does not show output format error message from clearing too late</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/19552">#19552</a>
+        opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a>
+        on 2025-07-25 06:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-07-25 06:09</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>I found this while helping on #19550. When running <code>check</code> in <code>watch</code> mode with a non-full <code>output-format</code>, this error:</p>
+<pre><code>warning: `--output-format full` is always used in watch mode.
+</code></pre>
+<p>Does not get displayed due to the terminal being cleared directly after. Here's the contents of <code>out.txt</code> I get when running <code>uvx ruff check --watch . --output-format json 2&gt;&amp;1 &gt; out.txt</code>:</p>
+<pre><code>warning: `--output-format full` is always used in watch mode.
+[H[2J[3J[23:04:31 PM] Starting linter in watch mode...
+
+[23:04:31 PM] Found 7 errors. Watching for file changes.
+
+... normal error output here
+</code></pre>
+<p>I assume <code>�[H�[2J�[3J</code> is the magic characters that cause a terminal clear in PowerShell, which shows that it's erasing the warning. This should be fixable by clearing the terminal prior to warnings being output, though I haven't looked at the code to see how easy it would be.</p>
+<p>Also just a side tangent thought, but it might be better if the error said <code>concise</code> instead of <code>full</code>, since it definitely does not give the same output as non-watch check on <code>full</code>.</p>
+<h3>Version</h3>
+<p>ruff 0.12.5 (d13228ab8 2025-07-24)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-07-25 06:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @MichaReiser on 2025-07-25 06:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-25 13:31</div>
+            <div class="timeline-body"><p>Possibly even more surprising is the fact that <code>--preview</code> enables the <code>full</code> format:</p>
+<p>https://github.com/astral-sh/ruff/blob/6663571c9000a081f42ccb9c9f20a6f6905d9942/crates/ruff/src/printer.rs#L460-L462</p>
+<p>Compare the <code>with_show_source</code> call to the <code>write_once</code> implementation:</p>
+<p>https://github.com/astral-sh/ruff/blob/6663571c9000a081f42ccb9c9f20a6f6905d9942/crates/ruff/src/printer.rs#L262-L265</p>
+<p>But yeah, without <code>--preview</code>, the default is definitely <code>concise</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeleppane">@mikeleppane</a> on 2025-07-31 11:33</div>
+            <div class="timeline-body"><p>Hi! I've addressed the main issue, but I have a few comments regarding the output formatting:</p>
+<ul>
+<li>What is the reason for using only &quot;one&quot; formatting output logic in <code>--watch</code> mode compared to non-watch mode?</li>
+<li>As mentioned earlier, is it an oversight that the <code>--preview</code> option enables full mode formatting?</li>
+<li>Is the warning: <code>warning: </code>--output-format full<code> is always used in watch mode.</code> needed in the first place? Or is it trying to say that in <code>watch</code> mode, we only apply <code>full</code> mode?</li>
+</ul>
+<p>Note: I looked at the <a href="https://github.com/astral-sh/ruff/issues/19550">#19550</a> for more details. I think these two can be combined and tackled together.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-07-31 13:07</div>
+            <div class="timeline-body"><p>Those are good questions. I'm not sure I know the exact answers, but I can at least weigh in :)</p>
+<ul>
+<li>I'm sure there was a reason at some point only to use one output format with <code>--watch</code>, but I think it makes sense to support <code>--output-format</code> now (possibly <code>--watch</code> was added well before we had multiple output formats)</li>
+<li>I think I view the <code>--preview</code> flag as changing the default output format, in the context of adding <code>--output-format</code> support. I think we can do both by continuing to default to <code>concise</code> output (with no <code>--ouput-format</code> specified) but default to <code>full</code> when <code>--preview</code> is specified. We should still stabilize that behavior in a future minor release. We should probably open a separate issue for that and add it to the 0.13 milestone. However, it might be a bit less necessary with <code>--output-format</code> support, so we could also consider dropping the preview feature. In either case, we should hold off there until the next minor release.</li>
+<li>If we add <code>--output-format</code> support, we should be able to drop the warning entirely, as you suggested.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-07-31 15:13</div>
+            <div class="timeline-body"><blockquote>
+<p>What is the reason for using only &quot;one&quot; formatting output logic in --watch mode compared to non-watch mode?</p>
+</blockquote>
+<p>I don't know the reason but there's an argument that some output formats seem less useful with <code>--watch</code>. I'm not sure if it's worth restricting the output formats because of it but it could make sense to take a quick look at what other tools support with <code>--watch</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-07-31 19:53</div>
+            <div class="timeline-body"><p>It might have been to maintain backwards compatibility? Since very old versions of ruff only supported concise-style outputs, and it looks like the decision to only support one output style with watch was made here https://github.com/astral-sh/ruff/issues/181#issuecomment-1246711236</p>
+<p>Edit: I did some more searching, and it looks also like <code>watch</code> got forgotten about when https://github.com/astral-sh/ruff/issues/7350 happened, since prior to that change (in <code>ruff@0.1</code>) <code>--watch</code> with <code>--show-source</code> does work, but after (in <code>ruff@0.2</code> +) it no longer works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.15" by @MichaReiser on 2025-11-22 14:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-11-22 14:25</div>
+            <div class="timeline-body"><p>We should stabilize https://github.com/astral-sh/ruff/pull/21097 in the next release which will fix this issue (I assigned this issue to 0.15) to make sure we stabilizie the behavior change</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:03 UTC
+    </footer>
+</body>
+</html>

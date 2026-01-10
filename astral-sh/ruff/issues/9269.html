@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>unsafe ANN autofix seems to ignore return in for loop - astral-sh/ruff #9269</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>unsafe ANN autofix seems to ignore return in for loop</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9269">#9269</a>
+        opened by <a href="https://github.com/twoertwein">@twoertwein</a>
+        on 2023-12-25 03:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/twoertwein">@twoertwein</a> on 2023-12-25 03:13</div>
+            <div class="timeline-body"><p><code>ruff --select &quot;ANN001,ANN2&quot; --fix-only</code> (version 0.1.9) on the following code snippet seems to ignore the return statement in the for loop</p>
+<p>https://github.com/pandas-dev/pandas/blob/b0c2e45997e8f164a181ce8e896dfb414e3eb60c/pandas/_version.py#L120</p>
+<pre><code class="language-py">def versions_from_parentdir(parentdir_prefix, root, verbose): ###   ruff adds  -&gt; NoReturn
+    &quot;&quot;&quot;Try to determine the version from the parent directory name.
+
+    Source tarballs conventionally unpack into a directory that includes both
+    the project name and a version string. We will also support searching up
+    two directory levels for an appropriately named parent directory
+    &quot;&quot;&quot;
+    rootdirs = []
+    
+    for _ in range(3):
+        dirname = os.path.basename(root)
+        if dirname.startswith(parentdir_prefix):
+            return { ###   return statement!
+                &quot;version&quot;: dirname[len(parentdir_prefix) :],
+                &quot;full-revisionid&quot;: None,
+                &quot;dirty&quot;: False,
+                &quot;error&quot;: None,
+                &quot;date&quot;: None,
+            }
+        rootdirs.append(root)
+        root = os.path.dirname(root)  # up a level
+
+    if verbose:
+        print(
+            f&quot;Tried directories {str(rootdirs)} \
+            but none started with prefix {parentdir_prefix}&quot;
+        )
+    raise NotThisMethod(&quot;rootdir doesn't start with parentdir_prefix&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-12-25 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-12-25 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-25 13:11</div>
+            <div class="timeline-body"><p>Thanks! Will take a look.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-25 13:51</div>
+            <div class="timeline-body"><p>Will be fixed in the next release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/twoertwein">@twoertwein</a> on 2023-12-25 14:45</div>
+            <div class="timeline-body"><p>The same issue happens here with if/else: https://github.com/pandas-dev/pandas/blob/b0c2e45997e8f164a181ce8e896dfb414e3eb60c/pandas/util/<strong>init</strong>.py#L1 ruff thinks <code>__getattr__</code> should 'return' <code>NoReturn</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-25 15:20</div>
+            <div class="timeline-body"><p>Yeah all the same bug. I overlooked an interaction when I implemented the NoReturn.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-12-29 16:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:18 UTC
+    </footer>
+</body>
+</html>

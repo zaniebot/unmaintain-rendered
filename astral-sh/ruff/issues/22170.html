@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cannot use `**` in `known-third-party` - astral-sh/ruff #22170</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Cannot use <code>**</code> in <code>known-third-party</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/22170">#22170</a>
+        opened by <a href="https://github.com/felixfontein">@felixfontein</a>
+        on 2025-12-24 08:01
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/felixfontein">@felixfontein</a> on 2025-12-24 08:01</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>When trying to use <a href="https://docs.rs/globset/latest/globset/#syntax"><code>**</code></a> in <a href="https://docs.astral.sh/ruff/settings/#lint_isort_known-third-party"><code>known-third-party</code></a>, I get an error.</p>
+<p><code>ruff.toml</code>:</p>
+<pre><code class="language-toml">[lint.isort]
+known-third-party = [
+    &quot;ansible_collections.community.internal_test_tools.**&quot;,
+]
+</code></pre>
+<p>Output:</p>
+<pre><code>ruff failed
+  Cause: invalid known third-party pattern: Pattern syntax error near position 49: recursive wildcards must form a single path component
+  Cause: Pattern syntax error near position 49: recursive wildcards must form a single path component
+</code></pre>
+<p>This seems to indicate that the glob patterns used for <code>known-third-party</code> do not use <code>.</code> as a directory separator, and thus <code>*</code> does the same I would expect <code>**</code> to do. So maybe this is more a documentation issue than an actual bug.</p>
+<h3>Version</h3>
+<p>ruff 0.14.9 (3f63ea4b5 2025-12-11)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-24 14:57</div>
+            <div class="timeline-body"><p>Thanks for the report! Yeah, I think we need to update the documentation here. I don't see a way to avoid this error in the <code>glob</code> docs.</p>
+<p>A bit of an aside, but these <a href="https://github.com/astral-sh/ruff/blob/741896447084e90ab2d2985f14ed2f0f0b149017/crates/ruff_linter/src/rules/isort/categorize.rs#L286">patterns</a> are actually from the <code>glob</code> crate, not the <code>globset</code> crate as the setting documentation suggests, but I believe the syntax is the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @ntBre on 2025-12-24 14:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-24 17:38</div>
+            <div class="timeline-body"><p>We could parse the glob ourselves and replace any (not escaped <code>.</code>) with <code>\.</code> I'd have to think about what we should do with <code>.</code> that are already escaped and if we need a special meaning for <code>**</code> (which would include <code>.</code> whereas <code>*</code> only includes one path segment.</p>
+<p>This would be similar to what glob does internally. In the end, it's all about mapping some well-defined syntax to a regex.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-24 17:49</div>
+            <div class="timeline-body"><p>This isn't actually about <code>.</code> itself, it's about <code>**</code> needing to follow or precede a path separator <code>/</code> in the globs. But path separators obviously aren't valid for Python module names, so <code>**</code> is essentially not allowed in the configuration for these globs.</p>
+<p>But in general I agree, we could just turn <code>**</code> into <code>*</code> if we want to process the globs a bit. That might be nicer than just documenting the issue.</p>
+<p>Globs don't really feel right here, so we could also consider just using regexes instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/felixfontein">@felixfontein</a> on 2025-12-24 18:13</div>
+            <div class="timeline-body"><p>Replacing <code>.</code> by <code>/</code> in both the pattern and the module name to match would also work, but would break backwards compatibility when users already expect <code>*</code> to match multiple parts separated by periods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-12-24 19:12</div>
+            <div class="timeline-body"><p>Yeah I think we would have to establish our own glob syntax where we map <code>*</code> (unless it's escaped) to <code>.*</code> (excluding <code>.</code>), etc.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:51 UTC
+    </footer>
+</body>
+</html>

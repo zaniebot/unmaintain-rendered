@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Show retries for HTTP status code errors - astral-sh/uv #13897</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Show retries for HTTP status code errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13897">#13897</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2025-06-07 10:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2025-06-07 10:53</div>
+            <div class="timeline-body"><p>Using a companion change in the middleware (https://github.com/TrueLayer/reqwest-middleware/pull/235, forked&amp;tagged pending review), we can check and show retries for HTTP status core errors, to consistently report retries again.</p>
+<p>We fix two cases:</p>
+<ul>
+<li>Show retries for status code errors for cache client requests</li>
+<li>Show retries for status code errors for Python download requests</li>
+</ul>
+<p>Not handled:</p>
+<ul>
+<li>Show previous retries when a distribution download fails mid-streaming</li>
+<li>Perform retries when a distribution download fails mid-streaming</li>
+<li>Show previous retries when a Python download fails mid-streaming</li>
+<li>Perform retries when a Python download fails mid-streaming</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @jtfmumm by @konstin on 2025-06-07 10:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @konstin on 2025-06-16 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2025-06-16 08:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @konstin on 2025-06-16 08:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-client/src/cached_client.rs</code>:123 on 2025-06-16 09:16</div>
+            <div class="timeline-body"><p>Can this <code>impl</code> line be removed now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-client/src/cached_client.rs</code>:649 on 2025-06-16 09:23</div>
+            <div class="timeline-body"><p>This same logic appears below. Would it be worth breaking this match out into a <code>CachedClientError</code> method?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-client/src/registry_client.rs</code>:618 on 2025-06-16 09:25</div>
+            <div class="timeline-body"><p>Can you use the <code>error</code> method?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-distribution/src/distribution_database.rs</code>:815 on 2025-06-16 09:27</div>
+            <div class="timeline-body"><p>Is there a reason you use <code>err: source</code> here and in the following but not in the cases above and below?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-16 09:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-client/src/cached_client.rs</code>:123 on 2025-06-16 09:44</div>
+            <div class="timeline-body"><p>It's used as the non-consuming conversion <code>is_extended_transient_error</code>, while the <code>From</code>s consume <code>Self</code>. Could be a deref or a <code>From</code> with <code>&amp;Self</code> too, not sure what the most intuitive here is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-16 09:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> reviewed on 2025-06-16 09:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jtfmumm">@jtfmumm</a> on <code>crates/uv-client/src/cached_client.rs</code>:123 on 2025-06-16 09:51</div>
+            <div class="timeline-body"><p>What I meant was that it looks like <code>retries()</code> and <code>error()</code> can be under one instance of that line:</p>
+<pre><code class="language-rust">impl&lt;CallbackError: std::error::Error + 'static&gt; CachedClientError&lt;CallbackError&gt; {
+    fn retries(&amp;self) -&gt; Option&lt;u32&gt; {
+        match self {
+            CachedClientError::Client { retries, .. } =&gt; *retries,
+            CachedClientError::Callback { retries, .. } =&gt; *retries,
+        }
+    }
+
+    fn error(&amp;self) -&gt; &amp;dyn std::error::Error {
+        match self {
+            CachedClientError::Client { err, .. } =&gt; err,
+            CachedClientError::Callback { err, .. } =&gt; err,
+        }
+    }
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution/src/distribution_database.rs</code>:815 on 2025-06-16 09:52</div>
+            <div class="timeline-body"><p>Good catch</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-16 09:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-client/src/cached_client.rs</code>:123 on 2025-06-16 09:53</div>
+            <div class="timeline-body"><p>oh, yes sure that's better!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-16 09:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jtfmumm">@jtfmumm</a> approved on 2025-06-16 10:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2025-06-16 10:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2025-06-16 10:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-16 10:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:25 UTC
+    </footer>
+</body>
+</html>

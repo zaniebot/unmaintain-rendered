@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detect infinite recursion in uv run. - astral-sh/uv #11386</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Detect infinite recursion in uv run.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/11386">#11386</a>
+        opened by <a href="https://github.com/ssanderson">@ssanderson</a>
+        on 2025-02-10 14:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ssanderson">@ssanderson</a> on 2025-02-10 14:47</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Handle potential infinite recursion if <code>uv run</code> recursively invokes <code>uv run</code>. This can happen if the shebang line of a script includes <code>uv run</code>, but does not pass <code>--script</code>.</p>
+<p>Handled by adding a new environment variable <code>UV_RUN_RECURSION_DEPTH</code>, which contains a counter of the number of times that uv run has been recursively invoked. If unset, it defaults to zero, and each time uv run starts a subprocess we increment the counter, erroring if the value is greater than a configurable (but not currently exposed or documented) threshold.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/11220.</p>
+<h2>Test Plan</h2>
+<p>I've added a snapshot test to <code>uv/crates/uv/tests/it/run</code> that tests the end-to-end recursion detection flow. I've currently made it a unix-only test because I'm not sure offhand how uv run will interact with shebang lines on windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ssanderson">@ssanderson</a> reviewed on 2025-02-10 14:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ssanderson">@ssanderson</a> on <code>crates/uv-cli/src/lib.rs</code>:2938 on 2025-02-10 14:49</div>
+            <div class="timeline-body"><p>I marked both of these as hidden b/c they didn't seem useful enough to users to warrant polluting the <code>uv run</code> output. I think the <code>RECURSION_DEPTH</code> argument at least should probably stay hidden. I could see an argument for <code>max_recursion_depth</code> being made visible in case someone is implementing some weird recursive algorithm with uv subprocesses and legitimately needs to raise the limit, but that seems pretty unlikely to me as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ssanderson">@ssanderson</a> reviewed on 2025-02-10 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ssanderson">@ssanderson</a> on <code>crates/uv-static/src/env_vars.rs</code>:618 on 2025-02-10 14:50</div>
+            <div class="timeline-body"><p>This is implemented mostly be squinting at what already exists and trying to follow the existing pattern. Happy to adjust as needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ssanderson">@ssanderson</a> reviewed on 2025-02-10 14:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ssanderson">@ssanderson</a> on <code>crates/uv/src/commands/project/run.rs</code>:97 on 2025-02-10 14:50</div>
+            <div class="timeline-body"><p>This check could be pushed up higher in the call stack, but it seemed nice to have the logic for the check and the logic for setting/incrementing the counter in the same place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ssanderson">@ssanderson</a> reviewed on 2025-02-10 15:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ssanderson">@ssanderson</a> on <code>crates/uv/src/settings.rs</code>:310 on 2025-02-10 15:08</div>
+            <div class="timeline-body"><p>At a depth of 100 this takes about 2.5 seconds to error on a relatively beefy laptop. The time to detection scales more or less linearly with this value, so I think the way to set this is basically to pick something large enough to be unlikely to cause problems, but low enough that we actually detect recursion in enough time to be useful.</p>
+<p>The 2.5s number above is from running in debug, so if a target error time of ~2s sounds ok, then this can probably be bumped up to 500-1000 in release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2025-02-10 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-10 17:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:2938 on 2025-02-10 17:56</div>
+            <div class="timeline-body"><p>I think it'd make sense to read this directly without using Clap / adding a flag to the CLI.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-cli/src/lib.rs</code>:2943 on 2025-02-10 17:57</div>
+            <div class="timeline-body"><p>I can see a case for adding this to the CLI but... we could also just read it directly. Since you already did this, it seems okay to leave it (as a hidden option).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2025-02-10 17:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-02-10 17:58</div>
+            <div class="timeline-body"><p>Thanks for contributing! This looks pretty good to me.</p>
+<p>It's fine to gate the test case to Unix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ssanderson">@ssanderson</a> on <code>crates/uv-cli/src/lib.rs</code>:2938 on 2025-02-10 19:44</div>
+            <div class="timeline-body"><p>Pushed up an update to move this to no longer use clap. The main downside of this is we have to do a bit more manual parsing/error handling, but I think this makes sense if you want to think of this as an implementation detail rather than part of the uv run interface.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ssanderson">@ssanderson</a> reviewed on 2025-02-10 19:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ssanderson">@ssanderson</a> reviewed on 2025-02-10 19:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ssanderson">@ssanderson</a> on <code>crates/uv-cli/src/lib.rs</code>:2943 on 2025-02-10 19:46</div>
+            <div class="timeline-body"><p>Yeah, I made this configurable primarily to support testing (without this being configurable the test for this takes 2-3 seconds in debug), but this seemed like something that a user could theoretically want to control, and it isn't too hard to plumb this to where it needs to go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2025-02-12 13:43</div>
+            <div class="timeline-body"><p>I made some small changes. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-02-12 18:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-02-12 18:58</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:20 UTC
+    </footer>
+</body>
+</html>

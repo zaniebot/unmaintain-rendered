@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F811 Redefinition of unused import not silenced by noqa for grouped imports - astral-sh/ruff #2063</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F811 Redefinition of unused import not silenced by noqa for grouped imports</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2063">#2063</a>
+        opened by <a href="https://github.com/alisaifee">@alisaifee</a>
+        on 2023-01-21 16:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/alisaifee">@alisaifee</a> on 2023-01-21 16:57</div>
+            <div class="timeline-body"><p>When there are conditional (re)imports which are subsequently exported the <code>noqa</code> directive doesn't silence the F811 rule.</p>
+<p>This can be demonstrated by the following example:</p>
+<ul>
+<li><p>reimport.py</p>
+<pre><code class="language-python">from typing import (
+    TYPE_CHECKING,
+    Dict,
+    List,
+)
+
+if not TYPE_CHECKING:
+    from beartype.typing import (  # noqa: F811
+        Dict,
+        List
+    )
+
+__all__ = [
+    &quot;Dict&quot;,
+    &quot;List&quot;
+]
+</code></pre>
+<blockquote>
+<p><strong>Note</strong>
+If I change the second import to:</p>
+<pre><code>if not TYPE_CHECKING:
+   from beartype.typing import Dict  # noqa: F811
+   from beartype.typing import List  # noqa: F811
+</code></pre>
+<p>the <code>noqa</code> is respected.</p>
+</blockquote>
+</li>
+<li><p>ruff version:</p>
+<pre><code class="language-shell">$ ruff --version
+ruff 0.0.225
+</code></pre>
+</li>
+<li><p>ruff output:</p>
+<pre><code class="language-shell">$ ruff reimport.py
+reimport.py:11:9: F811 Redefinition of unused `Dict` from line 5
+reimport.py:12:9: F811 Redefinition of unused `List` from line 6
+Found 2 error(s).
+</code></pre>
+</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 16:59</div>
+            <div class="timeline-body"><p>Ah yeah. We can support this. (<code>noqa</code> after <code>(</code> works for unused imports, but it's special-cased. We can do the same for F811.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-01-21 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-21 17:00</div>
+            <div class="timeline-body"><p>You should also be able to do this:</p>
+<pre><code class="language-py">if not TYPE_CHECKING:
+    from beartype.typing import (
+        Dict,  # noqa: F811
+        List,  # noqa: F811
+    )
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alisaifee">@alisaifee</a> on 2023-01-21 17:20</div>
+            <div class="timeline-body"><blockquote>
+<p>You should also be able to do this:</p>
+<pre><code class="language-python">if not TYPE_CHECKING:
+    from beartype.typing import (
+        Dict,  # noqa: F811
+        List,  # noqa: F811
+    )
+</code></pre>
+<p>A few observations (nothing to do with ruff, but perhaps interesting):</p>
+</blockquote>
+<ul>
+<li><code>flake8</code> doesn't like the above and complains <code>redefinition of unused import</code></li>
+<li><code>isort</code> says <code>Imports are incorrectly sorted and/or formatted</code> and &quot;fixes&quot; that by flattening them</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-02-03 19:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-03 19:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/alisaifee">@alisaifee</a> on 2023-02-03 21:04</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-03 21:07</div>
+            <div class="timeline-body"><p>No problem! It'll go out later today.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:28:59 UTC
+    </footer>
+</body>
+</html>

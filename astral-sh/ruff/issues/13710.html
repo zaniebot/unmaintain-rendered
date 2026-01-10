@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] red-knot panics by looking at certain Python files within ruff's repo - astral-sh/ruff #13710</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] red-knot panics by looking at certain Python files within ruff's repo</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13710">#13710</a>
+        opened by <a href="https://github.com/rtpg">@rtpg</a>
+        on 2024-10-11 01:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/rtpg">@rtpg</a> on 2024-10-11 01:07</div>
+            <div class="timeline-body"><p>The following is a log of the 24 files caught by a <code>crates/**/*.py</code> glob that will panic if <code>red_knot</code> looks at them. These are grouped by the panic output, which should give an idea of the scale of each error.</p>
+<p>I put the script I used to get this below, the short version is that the script copies single files into a temporary directory and then points <code>red_knot</code> at that.</p>
+<pre><code>Failures
+-------
+thread '&lt;unnamed&gt;' panicked at crates/red_knot_python_semantic/src/semantic_index/builder.rs:882:17:
+assertion failed: self.current_assignment.is_none()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Rayon: detected unexpected panic; aborting
+
+^^^^
+(Hit by the following 2 files)
+[PosixPath('crates/ruff_python_parser/resources/invalid/statements/invalid_augmented_assignment_target.py'), PosixPath('crates/ruff_python_parser/resources/invalid/statements/invalid_assignment_targets.py')]
+------------
+thread '&lt;unnamed&gt;' panicked at crates/red_knot_python_semantic/src/types/infer.rs:2993:17:
+name in a type expression is always 'load' but got: 'Invalid'
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Rayon: detected unexpected panic; aborting
+
+^^^^
+(Hit by the following 6 files)
+[PosixPath('crates/ruff_python_parser/resources/invalid/statements/match/as_pattern_2.py'), PosixPath('crates/ruff_python_parser/resources/inline/err/if_stmt_misspelled_elif.py'), PosixPath('crates/ruff_python_parser/resources/inline/err/try_stmt_misspelled_except.py'), PosixPath('crates/ruff_python_formatter/resources/test/fixtures/ruff/range_formatting/clause_header.py'), PosixPath('crates/ruff_python_formatter/resources/test/fixtures/ruff/range_formatting/range_narrowing.py'), PosixPath('crates/ruff_python_formatter/resources/test/fixtures/ruff/range_formatting/decorators.py')]
+------------
+thread '&lt;unnamed&gt;' panicked at crates/red_knot_python_semantic/src/types/infer.rs:1714:9:
+assertion `left == right` failed
+  left: Some(Unknown)
+ right: None
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Rayon: detected unexpected panic; aborting
+
+^^^^
+(Hit by the following 2 files)
+[PosixPath('crates/ruff_python_parser/resources/invalid/expressions/if/missing_test_expr_0.py'), PosixPath('crates/ruff_python_parser/resources/invalid/expressions/if/missing_test_expr_1.py')]
+------------
+thread '&lt;unnamed&gt;' panicked at crates/red_knot_python_semantic/src/semantic_index/builder.rs:215:9:
+assertion `left == right` failed
+  left: Some(Definition { [salsa id]: Id(1401), file: File { [salsa id]: Id(c00), path: System(&quot;/var/folders/qp/0fmxxq1x0vx9kfgn_qpjkj7r0000gn/T/tmpn08eo1bp/file.py&quot;), permissions: Some(33188), revision: FileRevision(31887187922474138777644432830), status: Exists, count: Count { ghost: PhantomData&lt;fn(ruff_db::files::File)&gt; } }, file_scope: FileScopeId(0), symbol: ScopedSymbolId(0), kind: NamedExpression(AstNodeRef(ExprNamed { range: 92..108, target: List(ExprList { range: 92..98, elts: [Name(ExprName { range: 93..94, id: Name(&quot;x&quot;), ctx: Store }), Name(ExprName { range: 96..97, id: Name(&quot;y&quot;), ctx: Store })], ctx: Store }), value: List(ExprList { range: 102..108, elts: [NumberLiteral(ExprNumberLiteral { range: 103..104, value: Int(1) }), NumberLiteral(ExprNumberLiteral { range: 106..107, value: Int(2) })], ctx: Load }) })), count: Count { ghost: PhantomData&lt;fn(red_knot_python_semantic::semantic_index::definition::Definition)&gt; } })
+ right: None
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Rayon: detected unexpected panic; aborting
+
+^^^^
+(Hit by the following 1 files)
+[PosixPath('crates/ruff_python_parser/resources/invalid/expressions/named/invalid_target.py')]
+------------
+thread '&lt;unnamed&gt;' panicked at crates/red_knot_python_semantic/src/semantic_index/builder.rs:215:9:
+assertion `left == right` failed
+  left: Some(Definition { [salsa id]: Id(1402), file: File { [salsa id]: Id(c00), path: System(&quot;/var/folders/qp/0fmxxq1x0vx9kfgn_qpjkj7r0000gn/T/tmpn08eo1bp/file.py&quot;), permissions: Some(33188), revision: FileRevision(31887187996261115071827318172), status: Exists, count: Count { ghost: PhantomData&lt;fn(ruff_db::files::File)&gt; } }, file_scope: FileScopeId(0), symbol: ScopedSymbolId(3), kind: AnnotatedAssignment(AstNodeRef(StmtAnnAssign { range: 84..100, target: Tuple(ExprTuple { range: 84..88, elts: [Name(ExprName { range: 84..85, id: Name(&quot;x&quot;), ctx: Store }), Name(ExprName { range: 87..88, id: Name(&quot;y&quot;), ctx: Store })], ctx: Store, parenthesized: false }), annotation: Name(ExprName { range: 90..93, id: Name(&quot;int&quot;), ctx: Load }), value: Some(Tuple(ExprTuple { range: 96..100, elts: [NumberLiteral(ExprNumberLiteral { range: 96..97, value: Int(1) }), NumberLiteral(ExprNumberLiteral { range: 99..100, value: Int(2) })], ctx: Load, parenthesized: false })), simple: false })), count: Count { ghost: PhantomData&lt;fn(red_knot_python_semantic::semantic_index::definition::Definition)&gt; } })
+ right: None
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Rayon: detected unexpected panic; aborting
+
+^^^^
+(Hit by the following 1 files)
+[PosixPath('crates/ruff_python_parser/resources/inline/err/ann_assign_stmt_invalid_target.py')]
+------------
+thread '&lt;unnamed&gt;' panicked at crates/red_knot_python_semantic/src/types/infer.rs:2265:22:
+Expected the symbol table to create a symbol for every Name node
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Rayon: detected unexpected panic; aborting
+
+^^^^
+(Hit by the following 3 files)
+[PosixPath('crates/ruff_python_parser/resources/inline/err/class_def_unclosed_type_param_list.py'), PosixPath('crates/ruff_python_formatter/resources/test/fixtures/ruff/fmt_skip/type_params.py'), PosixPath('crates/ruff_python_formatter/resources/test/fixtures/ruff/statement/class_definition.py')]
+------------
+thread '&lt;unnamed&gt;' panicked at crates/red_knot_python_semantic/src/types/infer.rs:194:25:
+no entry found for key
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Rayon: detected unexpected panic; aborting
+
+^^^^
+(Hit by the following 7 files)
+[PosixPath('crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/fstring.py'), PosixPath('crates/ruff_python_formatter/resources/test/fixtures/black/cases/pep_701.py'), PosixPath('crates/ruff_python_formatter/resources/test/fixtures/black/cases/preview_long_strings__regression.py'), PosixPath('crates/ruff_linter/resources/test/fixtures/pyupgrade/UP039.py'), PosixPath('crates/ruff_linter/resources/test/fixtures/pyflakes/F811_19.py'), PosixPath('crates/ruff_linter/resources/test/fixtures/pyflakes/F821_0.py'), PosixPath('crates/ruff_linter/resources/test/fixtures/pyflakes/F821_26.py')]
+------------
+thread '&lt;unnamed&gt;' panicked at crates/red_knot_python_semantic/src/semantic_index/ast_ids.rs:41:22:
+no entry found for key
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+Rayon: detected unexpected panic; aborting
+
+^^^^
+(Hit by the following 2 files)
+[PosixPath('crates/ruff_linter/resources/test/fixtures/flake8_pie/PIE790.py'), PosixPath('crates/ruff_linter/resources/test/fixtures/pyflakes/F821_17.py')]
+------------
+</code></pre>
+<details>
+<summary>My checking script for getting the above</summary>
+
+<pre><code class="language-py"># /// script
+# dependencies = [
+#   &quot;tqdm&quot;
+# ]
+# ///
+
+import argparse
+from collections import defaultdict
+import shutil
+import subprocess
+import pathlib
+
+import tqdm
+
+from tempfile import TemporaryDirectory
+
+parser = argparse.ArgumentParser(
+    description=&quot;Run red_knot against a file or set of files (individually) and check if they cause panics&quot;
+)
+
+parser.add_argument(
+    &quot;filename&quot;,
+    nargs=&quot;?&quot;,
+    help=&quot;The name of a single file to process.&quot;,
+    type=str,
+)
+parser.add_argument(
+    &quot;--glob&quot;,
+    help=&quot;A glob pattern to match multiple files (e.g., '*.txt').&quot;,
+    type=str,
+)
+
+args = parser.parse_args()
+
+if not args.filename and not args.glob:
+    parser.error(&quot;You need to provide at least filename or glob&quot;)
+
+
+def run_checker(target_file: pathlib.Path, tmp_dir, capture_output):
+    # copy the file over into our sample directory
+    copied_file = shutil.copy(target_file, tmp_dir / &quot;file.py&quot;)
+    try:
+        result = subprocess.run(
+            [&quot;target/debug/red_knot&quot;, &quot;--current-directory&quot;, str(tmp_dir)],
+            capture_output=capture_output,
+        )
+        # return whether the run aborted
+        aborted = result.returncode == -6
+        return (aborted, result.stderr)
+    finally:
+        copied_file.unlink()
+
+
+def run_single_check(path, tmp_dir):
+    failed, _= run_checker(path, tmp_dir, capture_output=False)
+    print(f&quot;Aborted? {failed}&quot;)
+
+
+def run_bulk_check(glob, tmp_dir):
+    files_to_check = list(pathlib.Path(&quot;.&quot;).glob(glob))
+    file_iter = tqdm.tqdm(files_to_check)
+    failures_by_msg = defaultdict(list)
+    failure_count = 0
+    file_iter.set_description(f&quot;({failure_count} aborted so far)&quot;)
+    for f in file_iter:
+        aborted, stderr = run_checker(f, tmp_dir, capture_output=True)
+        if aborted:
+            failures_by_msg[stderr].append(f)
+            failure_count += 1
+            file_iter.set_description(f&quot;({failure_count} aborted so far)&quot;)
+    print(&quot;Failures\n-------&quot;)
+    for msg, affected_files in failures_by_msg.items():
+        print(msg.decode(&quot;utf-8&quot;))
+        print(&quot;^^^^&quot;)
+        print(f&quot;(Hit by the following {len(affected_files)} files)&quot;)
+        print(affected_files)
+        print(&quot;------------&quot;)
+    print(&quot;Done.&quot;)
+
+
+with TemporaryDirectory() as tmp_dir_path:
+    tmp_dir = pathlib.Path(tmp_dir_path)
+    if args.filename:
+        run_single_check(pathlib.Path(args.filename), tmp_dir)
+    elif args.glob:
+        run_bulk_check(args.glob, tmp_dir)
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2024-10-11 04:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-11 04:17</div>
+            <div class="timeline-body"><p>Thanks.</p>
+<blockquote>
+<p>The following is a log of the 24 files caught by a <code>crates/**/*.py</code> glob that will panic if <code>red_knot</code> looks at them.</p>
+</blockquote>
+<p>A side note that this glob will include the files that contains syntax errors (like the ones used for the parser tests) and they will likely panic because red knot doesn't have error resilience.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rtpg">@rtpg</a> on 2024-10-11 06:39</div>
+            <div class="timeline-body"><p>I've spent way too much free time on this so I'm going to drop some of the cases I found going into this.</p>
+<pre><code>x = [ 0 ]
+x[0 if y := 2 else 1 ] = 1
+</code></pre>
+<p>^ the above crashes because <code>SemanticIndexBuilder</code> assumes you could only have one assignment target being handled at a time. This is an easy fix IMO (<code>assignment_target: Option&lt;...&gt; -&gt; assignment_targets: Vec&lt;...&gt;</code>), but unfortunately after fixing that I started hitting other issues. <a href="https://github.com/astral-sh/ruff/pull/13711">This PR</a> has a patch for this one</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rtpg">@rtpg</a> on 2024-10-11 06:42</div>
+            <div class="timeline-body"><pre><code>class A:
+   pass
+
+class B[T](A):
+   pass
+</code></pre>
+<p>^ the above fails with a failed lookup on <code>A</code>. Why? Because when there's a type parameter the semantic index creates a new scope to hold onto the type parameters. While this scope gets used by the class body, it doesn't get used for the arguments to the class.</p>
+<p>End result is the code has trouble finding things, because the inference code doesn't seem to pull up that type scope again (except for the body).</p>
+<p>I am legitimately confused as to how the semantic index builder is supposed to work with scoping, I can't quite wrap my head around it enough to debug some of the issues I found.</p>
+<p>EDIT: I do think there's one issue here where arguments end up being type inference targets, but we don't call <code>add_standalone_expression</code> to them. That might be all that's needed for this specific case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rtpg">@rtpg</a> on 2024-10-11 06:44</div>
+            <div class="timeline-body"><pre><code>class B[T](A):
+   pass
+</code></pre>
+<p>^ bit related to the previous one, but with an unbound <code>A</code>. This is a bit more clear cut: the semantic index builder creates an <code>A</code> symbol inside of the &quot;type parameter'd&quot; class scope. But later on when doing type inference, the &quot;file-level&quot; scope is used to try and lookup <code>A</code>, and can't find it.</p>
+<p>Hence <code>Expected the symbol table to create a symbol for every Name node</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @carljm on 2024-10-11 14:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-11 19:45</div>
+            <div class="timeline-body"><p>Thanks for looking at these! PEP 695 generic function and class definitions definitely aren't working correctly yet, so that's a known gap. I took a look at your other PR and it looks great, the failing test wasn't due to scoping issues, but due to the example being invalid syntax, which we aren't resilient to yet.</p>
+<p>If you have specific questions about how scopes are supposed to work (in the semantic index builder or in inference), feel free to ask (maybe in Discord?) and I'm happy to shed some light if I can.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-10-16 16:04</div>
+            <div class="timeline-body"><p>The generic classes case is now fixed (thanks @rtpg!). I guess we can leave this issue open to track specifically &quot;can run without panic over all Python files in ruff repo&quot;. I've created https://github.com/astral-sh/ruff/issues/13778 to track the issue of error-resilience, which I suspect is the root cause of most of the remaining panics here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2024-11-14 10:08</div>
+            <div class="timeline-body"><p>@rtpg Thank you for this ticket (and the script!). With your contribution, as well as #14091, #14306, #14312, #14317, #14325, and #14326 merged, we can now run your script (<code>uv run find_crashes.py --glob '**/*.py'</code>) without uncovering any problems. So the <em>&quot;can run without panic over all Python files in ruff repo&quot;</em> part is definitely resolved.</p>
+<p>In fact, we can now run red knot on the full ruff repository, including <code>*.ipynb</code> notebooks and <code>*.pyi</code> stub files, and there is only one remaining problem which is documented here: #14333. So I'm going to close this ticket for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2024-11-14 10:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:25 UTC
+    </footer>
+</body>
+</html>

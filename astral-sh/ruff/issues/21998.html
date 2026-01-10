@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARG001 - Ignore None type arguments - astral-sh/ruff #21998</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ARG001 - Ignore None type arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/21998">#21998</a>
+        opened by <a href="https://github.com/Philipp-Thiel">@Philipp-Thiel</a>
+        on 2025-12-16 09:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Philipp-Thiel">@Philipp-Thiel</a> on 2025-12-16 09:11</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Pytest fixtures can be used for side effects and reasonably often those fixtures do not need to return anything, but are still included in the test relying on it. Can function arguments with type None be excluded from ARG001, as they can not in any meaningful way be &quot;used&quot; anyway?</p>
+<p>If you are interested in this change, I can implement it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-16 14:13</div>
+            <div class="timeline-body"><p>Do you mean a parameter annotated with <code>None</code>?</p>
+<pre><code class="language-py">import pytest
+
+@pytest.fixture
+def some_fixture(): ...
+
+def test_something(some_fixture: None):
+    do_something()
+</code></pre>
+<p>It sounds kind of interesting, but it also seems like an unintuitive way to suppress the error and not too much different from using a more clear <code>noqa</code> comment, at least to me. But I'm curious what others think.</p>
+<p>cc @amyreese</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @ntBre on 2025-12-16 14:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Philipp-Thiel">@Philipp-Thiel</a> on 2025-12-16 14:31</div>
+            <div class="timeline-body"><p>Exactly like that.</p>
+<p>I'm a bit torn on the unintuitive point. I mean, what else would the point of adding an argument that can only take one value be? Using it as an argument directly makes little sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-16 15:25</div>
+            <div class="timeline-body"><p>Sorry I should have expanded a bit more. I just meant that it would feel non-obvious to me, if I saw an ARG001 diagnostic, that I could annotate the parameter as <code>None</code> to suppress the diagnostic. Usually the fix is to prefix the parameter name with <code>_</code> (or whatever <a href="https://docs.astral.sh/ruff/settings/#lint_dummy-variable-rgx">lint.dummy-variable-rgx</a> matches), but that would require changing the name of the fixture in this case.</p>
+<p>But maybe that pattern is common in other contexts or only feels unintuitive to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/amyreese">@amyreese</a> on 2025-12-16 17:53</div>
+            <div class="timeline-body"><p>I've never seen this sort of pattern used outside of pytest, and I would generally expect a parameter annotated as <code>None</code> to actually cause a type error in a well-typed codebase (that wasn't depending on magic like pytest to call/pass arguments).</p>
+<p>I'd be more inclined to say the &quot;correct&quot; fix is to disable ARG001 on your test cases, using something like <a href="https://docs.astral.sh/ruff/settings/#lint_per-file-ignores"><code>per-file-ignores</code></a>, rather than adding edge cases to the rule itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Philipp-Thiel">@Philipp-Thiel</a> on 2025-12-17 07:59</div>
+            <div class="timeline-body"><blockquote>
+<p>I just meant that it would feel non-obvious to me, if I saw an ARG001 diagnostic, that I could annotate the parameter as None to suppress the diagnostic.</p>
+</blockquote>
+<p>Ah that makes sense. I was thinking about it from the other side, already having a mostly typed codebase and wanting to introduce the rule to it. It's understandable though if you don't want to introduce edge cases for that.</p>
+<blockquote>
+<p>I'd be more inclined to say the &quot;correct&quot; fix is to disable ARG001 on your test cases, using something like <a href="https://docs.astral.sh/ruff/settings/#lint_per-file-ignores">per-file-ignores</a>, rather than adding edge cases to the rule itself.</p>
+</blockquote>
+<p>I'd prefer not to blanket disable the rule for tests, but I'm looking into that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Philipp-Thiel">@Philipp-Thiel</a> on 2025-12-17 16:28</div>
+            <div class="timeline-body"><p>OK, so I spent the day trying stuff and here are my results:</p>
+<p>Trying to exclude the fixtures based on names has not really worked out. Since fixtures can but don't have to return values, sometimes things called &quot;fixture&quot; should be excluded, sometimes not. I tried some other regexes but, at least in our code base, there is no consistent scheme that would allow me to just select the side effect fixtures.</p>
+<p>The issue I have with excluding the lint for the tests is that while applying the rule to the tests I found quite a few places where duplicate work was done, because fixture returns were unused. So I would love to have the rule on tests, but it turns out way too many false positives for that to be feasible.</p>
+<p>That basically returns me to the start. The thing I want is for the linter to ignore variables with a None type annotation, because that is the only way I found to identify fixtures that exclusively produce side effects.
+If that is not a compelling reason for you, feel free to close the issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-17 17:08</div>
+            <div class="timeline-body"><p>Thanks for looking into it. I'll label this explicitly as <code>needs-decision</code> and we can see what others think or if they've also run into this. I'm still not totally convinced we should skip parameters annotated with <code>None</code>, but I also empathize and think it would be nice to do something here.</p>
+<p>Another option that comes to mind is skipping arguments that match <code>@pytest.fixture</code>-decorated functions, but this would require multi-file analysis that Ruff doesn't currently support unless they're defined in the same file.</p>
+<p>One other workaround you could try is to apply <code>noqa</code> comments automatically with <code>ruff check --add-noqa</code>. That's a bit more targeted than ignoring the rule outright but could also cause a lot of changes if you use this pattern a lot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> removed by @ntBre on 2025-12-17 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-12-17 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @ntBre on 2025-12-17 17:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Philipp-Thiel">@Philipp-Thiel</a> on 2025-12-17 23:08</div>
+            <div class="timeline-body"><p>The fixture solution seems technically more difficult and also prone to some false negatives, but would be a major improvement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-12-22 21:06</div>
+            <div class="timeline-body"><p>I realized today that we have a somewhat related rule in <a href="https://docs.astral.sh/ruff/rules/pytest-fixture-param-without-value/#pytest-fixture-param-without-value-pt019">pytest-fixture-param-without-value (PT019)</a> that recommends using <code>@pytest.mark.usefixtures</code> (<a href="https://docs.pytest.org/en/stable/how-to/fixtures.html#use-fixtures-in-classes-and-modules-with-usefixtures">pytest docs</a>). That could be another workaround here that also seems to be recommended by pytest.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Philipp-Thiel">@Philipp-Thiel</a> on 2026-01-05 10:53</div>
+            <div class="timeline-body"><p>Hey, that looks pretty good. Still lots of work fixing all our cases, but a lot nicer.</p>
+<p>I'll try implementing the PT set, and then circle back to ARG, as on a second look some of our issues are not addressed by PT019, namely fixtures using fixtures returning <code>None</code>. As those cannot use <code>@pytest.mark.usefixtures</code>. Will reopen once I know more and can confidently state whether we still have issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Philipp-Thiel on 2026-01-05 10:53</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:50 UTC
+    </footer>
+</body>
+</html>

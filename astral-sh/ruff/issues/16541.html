@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B905 not being raised when &quot;B&quot; rules enabled - astral-sh/ruff #16541</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>B905 not being raised when &quot;B&quot; rules enabled</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16541">#16541</a>
+        opened by <a href="https://github.com/jackdent">@jackdent</a>
+        on 2025-03-06 18:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jackdent">@jackdent</a> on 2025-03-06 18:26</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>Example code to reproduce:</p>
+<pre><code>some_list = [1, 2, 3]
+for first_second in zip(some_list, some_list[1:]):
+    print(first_second)
+</code></pre>
+<p>What I've tried:</p>
+<ul>
+<li>Adding both <code>B</code> and <code>B905</code> to my <code>extend-select</code> lint config (this <em>doesn't</em> work)</li>
+<li>Disabling <code>B</code> and adding <code>B905</code> to my <code>extend-select</code> lint config (this <em>does</em> work)</li>
+</ul>
+<p>Is there a way to enable <code>B905</code> but leave the default <code>B</code> rules on by default? I noticed that opinionated <code>B9xx</code> rules are disabled by default (see <a href="https://github.com/astral-sh/ruff/issues/4054#issuecomment-1539338629">this thread</a>), but I can't figure out how to turn them on. The suggestions in <a href="https://github.com/astral-sh/ruff/issues/4102">this thread</a> didn't work unfortunately.</p>
+<h3>Version</h3>
+<p>0.9.3</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @MichaReiser on 2025-03-06 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-06 18:29</div>
+            <div class="timeline-body"><p>Would you be able to share your entire configuration? Using <code>extend-select=[&quot;B&quot;]</code> on its own should be sufficient. So there must be something else going on. You can also try <code>ruff check --show-settings</code> to see what settings Ruff resolves to (and <code>ruff check -v --show-settings</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jackdent">@jackdent</a> on 2025-03-06 18:37</div>
+            <div class="timeline-body"><ul>
+<li>Lint configuration: https://gist.github.com/jackdent/090d3b4aa4419592f1df96de89c6eb67</li>
+<li><code>ruff check --show-settings</code>: https://gist.github.com/jackdent/bad0809a5ff715c36ab656a0931560b4</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-03-07 01:54</div>
+            <div class="timeline-body"><p>It looks like your target version is being defaulted to 3.9 so the rule is not being applied. I don't understand why this magically changes things:</p>
+<blockquote>
+<p>Disabling B and adding B905 to my extend-select lint config (this does work)</p>
+</blockquote>
+<p>Could you help us reproduce with some minimal setup instructions?</p>
+<p>In the meantime you could try specifying your <code>target-version</code> in your <code>ruff</code> configuration and see if that solves the immediate concern.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jackdent">@jackdent</a> on 2025-03-07 02:29</div>
+            <div class="timeline-body"><p>Setting <code>target-version = &quot;py311&quot;</code> in my ruff.toml does work, thank you! (We have <code>requires-python = &quot;&gt;=3.11&quot;</code> in our <code>pyproject.toml</code>)</p>
+<p>Would a reproduction still be helpful or does that give you all the info you need?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-03-07 03:35</div>
+            <div class="timeline-body"><p>Great to hear!</p>
+<blockquote>
+<p>We have requires-python = &quot;&gt;=3.11&quot; in our pyproject.toml</p>
+</blockquote>
+<p>does your <code>pyrpoject.toml</code> have a <code>[tool.ruff]</code> section? If not, then this is a known issue that should be resolved by https://github.com/astral-sh/ruff/pull/16319</p>
+<p>If so, then I'd be interested in reproducing the problem so it'd be helpful to learn more</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jackdent">@jackdent</a> on 2025-03-07 06:54</div>
+            <div class="timeline-body"><p>Our <code>pyproject.toml</code> does not have a <code>[tool.ruff]</code> section.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-03-07 11:13</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:50 UTC
+    </footer>
+</body>
+</html>

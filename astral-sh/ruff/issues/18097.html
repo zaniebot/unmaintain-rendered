@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Floating/unattached strings/docstrings - astral-sh/ruff #18097</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Floating/unattached strings/docstrings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18097">#18097</a>
+        opened by <a href="https://github.com/IlanCosman">@IlanCosman</a>
+        on 2025-05-14 16:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/IlanCosman">@IlanCosman</a> on 2025-05-14 16:39</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>There should be a lint against floating/unattached strings/docstring literals:</p>
+<pre><code class="language-python">def foo():
+    foo = 1
+    &quot;hello&quot;
+    return foo
+
+
+def bar():
+    bar = 2
+    &quot;&quot;&quot;world&quot;&quot;&quot;
+    return bar
+</code></pre>
+<p>These string statements have no effects, and are almost certainly mistakes.</p>
+<p>Use case: I mistakenly copy-pasted some stuff to a function, and accidentally put it above the docstring, thereby rendering the docstring useless. It would be nice if Ruff detected this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-05-14 17:01</div>
+            <div class="timeline-body"><p>Interesting, I actually thought we had a rule for this, but I'm not seeing anything when selecting all rules in the <a href="https://play.ruff.rs/6340b9b7-a62b-4833-aadb-12979ea66a31">playground</a>. There's some overlap with the missing docstring rules in this case, but they'd still be a likely error if the function had a docstring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-05-14 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/berzi">@berzi</a> on 2025-05-15 06:35</div>
+            <div class="timeline-body"><blockquote>
+<p>These string statements have no effects, and are almost certainly mistakes.</p>
+</blockquote>
+<p>Oh but they do! Editors treat them as docstrings and attach them to the variables above, similarly to what happens if you put them on the next line to a <code>def</code>, <code>class</code>, or an attribute on a class.</p>
+<p><img src="https://github.com/user-attachments/assets/0b02107d-e73c-47e9-9043-14d34df35495" alt="Image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-15 06:46</div>
+            <div class="timeline-body"><p>It seems there's some precedence for allowing &quot;docstrings&quot; after variables</p>
+<p>https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html</p>
+<p>I think it's also somewhat common to document enum members.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IlanCosman">@IlanCosman</a> on 2025-05-15 06:46</div>
+            <div class="timeline-body"><blockquote>
+<p>Oh but they do! Editors treat them as docstrings and attach them to the variables above, similarly to what happens if you put them on the next line to a def, class, or an attribute on a class.</p>
+</blockquote>
+<p>Fair point, though in VSCode/Pylance there is a slightly more nuanced behavior that I've just explored a little bit.</p>
+<p>In global scope or class scope, strings will be attached to the variable above. In functions/methods, strings will not be attached. An exception is the <code>__init__</code> method, where strings do get attached.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-design</span> added by @MichaReiser on 2025-05-15 06:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-05-15 06:47</div>
+            <div class="timeline-body"><p>I think this needs some more research on where different tools and docstring styles allow comments and how this rule would avoid false positives</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/berzi">@berzi</a> on 2025-05-15 06:54</div>
+            <div class="timeline-body"><p>One easy and permissive implementation could be to warn on floating strings that have 1+ empty/whitespace line above them. This is anecdotal, but I've never seen a case of &quot;floating string as docstring&quot; where the string was separated from the variable instead of directly below it. Any such case could be easily interpreted as unintended.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IlanCosman">@IlanCosman</a> on 2025-05-15 21:29</div>
+            <div class="timeline-body"><p>Another safe and reasonably strong heuristic would be to check if the code above is a variable type declaration or initialization. If so, the string is allowed because it might be getting attached to the variable. If not, the string isn't allowed.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:27 UTC
+    </footer>
+</body>
+</html>

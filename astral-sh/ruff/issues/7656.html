@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FURB148 generates invalid fix when arg is a generator - astral-sh/ruff #7656</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>FURB148 generates invalid fix when arg is a generator</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/7656">#7656</a>
+        opened by <a href="https://github.com/Skylion007">@Skylion007</a>
+        on 2023-09-25 13:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-09-25 13:43</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<pre><code class="language-python">a = (b for b in range(1, 100))
+for i, _ in enumerate(a):
+    print(i)
+</code></pre>
+<p>gets autofixed to:</p>
+<pre><code class="language-python">a = (b for b in range(1, 100))
+for i in range(len(a)):
+    print(i)
+</code></pre>
+<p>but a is a generator, and <code>len</code>, surprisingly cannot take a generator (len needs a SizedSequence). Running the code in this autofix will generate the following error:</p>
+<pre><code>Traceback (most recent call last):
+  File &quot;test_file.py&quot;, line 2, in &lt;module&gt;
+    for i in range(len(a)):
+TypeError: object of type 'generator' has no len()
+</code></pre>
+<p>So while this would work if object was a SizedSequence like a tuple, list, dict, or set, it does not work in this case and will generate invalid.</p>
+<p>As an aside, using enumerate to generate an index here when it's a generator is rather nifty, not sure there is an easier way to actually get a range length on generator, using enumerate might actually be most efficient in this case.</p>
+<p>The command run is <code>ruff test_file.py --select FURB148 --preview --fix</code>
+on <code>ruff 0.0.291</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-09-25 13:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-09-25 13:58</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2023-09-26 02:04</div>
+            <div class="timeline-body"><p>This will probably require type inference as the variable might be defined outside the <code>enumerate</code> call site as is in this example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">type-inference</span> added by @dhruvmanila on 2023-09-26 02:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2023-09-30 16:00</div>
+            <div class="timeline-body"><p>@dhruvmanila True, but in the meantime we shouldn't suggest or force the change because if the arg is a generator, enumerate might strictly be better than range (I can't think of a cleaner way to do it).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-10-02 22:51</div>
+            <div class="timeline-body"><p>Suppressing the fix would still have the rule trigger, which is less destructive but still frustrating for the user who has to figure out it's a false negative and suppress the rule. Limiting the rule to known safe sequences (for example, using <code>ruff_python_semantic::analyze::typing::is_list</code>) would eliminate this, but result in a whole load of false negatives. We could do that to eventually promote the rule out of the preview category, and then create an issue for generator discrimination when Ruff has better type inference?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-10-02 22:53</div>
+            <div class="timeline-body"><p>Yeah, I think my suggestion would be to only trigger the enumerate case if <code>is_list</code> or <code>is_set</code> or <code>is_dict</code> or <code>is_tuple</code> (i.e., it's a known container) is truthy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-10-02 23:00</div>
+            <div class="timeline-body"><p>Feel free to assign to me, I can work on a merge request tomorrow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @tjkuson by @charliermarsh on 2023-10-02 23:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-10-03 14:39</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:28 UTC
+    </footer>
+</body>
+</html>

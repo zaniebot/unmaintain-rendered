@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support reading dependency-groups from pyproject.tomls with no project - astral-sh/uv #13742</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support reading dependency-groups from pyproject.tomls with no project</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/13742">#13742</a>
+        opened by <a href="https://github.com/Gankra">@Gankra</a>
+        on 2025-05-30 20:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-30 20:02</div>
+            <div class="timeline-body"><p>(or legacy tool.uv.workspace).</p>
+<p>This cleaves out a dedicated SourcedDependencyGroups type based on RequiresDist but with only the DependencyGroup handling implemented. This allows <code>uv pip</code> to read <code>dependency-groups</code> from pyproject.tomls that only have that table defined, per PEP 735, and as implemented by <code>pip</code>.</p>
+<p>However we want our implementation to respect various uv features when they're available:</p>
+<ul>
+<li><code>tool.uv.sources</code></li>
+<li><code>tool.uv.index</code></li>
+<li><code>tool.uv.dependency-groups.mygroup.requires-python</code> (#13735)</li>
+</ul>
+<p>As such we want to opportunistically detect &quot;as much as possible&quot; while doing as little as possible when things are missing. The issue with the old RequiresDist path was that it fundamentally wanted to build the package, and if <code>[project]</code> was missing it would try to desperately run setuptools on the pyproject.toml to try to find metadata and make a hash of things.</p>
+<p>At the same time, the old code also put in a lot of effort to try to pretend that <code>uv pip</code> dependency-groups worked like <code>uv</code> dependency-groups with defaults and non-only semantics, only to separate them back out again. By explicitly separating them out, we confidently get the expected behaviour.</p>
+<p>Note that dependency-group support is still included in RequiresDist, as some <code>uv</code> paths still use it. It's unclear to me if those paths want this same treatment -- for now I conclude no.</p>
+<p>Fixes #13138</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-05-30 20:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-distribution/src/metadata/dependency_groups.rs</code>:93 on 2025-05-30 20:05</div>
+            <div class="timeline-body"><p>This unfortunately merge-conflicts with the FlatDependencyGroups change in #13735 but the fix is trivial (just copy the impl from RequiresDist).</p>
+<p>(This is why I was working on both of these at the same time, I couldn't work out how much they interdepended or would simplify eachother -- in the end they were fairly orthogonal).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-05-30 20:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-workspace/src/workspace.rs</code>:1545 on 2025-05-30 20:08</div>
+            <div class="timeline-body"><p>This part is why the existing virtual workspace support is insufficient (at least one test fails if I try to do this universally -- although it's a test that specifically checks that we error out if <code>[project]</code> and <code>[tool.uv.workspace]</code> are missing).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-05-30 20:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:215 on 2025-05-30 20:09</div>
+            <div class="timeline-body"><p>TODO....</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-05-30 20:10</div>
+            <div class="timeline-body"><p>As always: this requires Way More Tests...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-05-30 20:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:215 on 2025-05-30 20:12</div>
+            <div class="timeline-body"><p>I think the assert is telling me I'm <em>still</em> using the wrong API though:</p>
+<blockquote>
+<p>This method requires an absolute path and panics otherwise, i.e. this method only supports discovering the main workspace.</p>
+</blockquote>
+<p>I think this is saying it won't properly detect a package under a workspace?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @Gankra on 2025-05-30 20:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-05-30 20:20</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/uv/branches/gankra%2Fgroup-refactor">CodSpeed Walltime Performance Report</a></h2>
+<h3>Merging #13742 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>gankra/group-refactor</code> (fb63a50) with <code>main</code> (5021840)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 12</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @konstin on 2025-06-02 16:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2025-06-02 22:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-02 22:27</div>
+            <div class="timeline-body"><p>@konstin I think it's good for Charlie to review, but it'd be good for you to own other support that's needed here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/pip/install.rs</code>:257 on 2025-06-06 16:44</div>
+            <div class="timeline-body"><p>Why do we need to check this here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:13 on 2025-06-06 16:47</div>
+            <div class="timeline-body"><p>nit: import sorting</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution/src/metadata/dependency_groups.rs</code>:46 on 2025-06-06 16:48</div>
+            <div class="timeline-body"><p>Can you add a docstring?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution/src/metadata/dependency_groups.rs</code>:72 on 2025-06-06 18:18</div>
+            <div class="timeline-body"><p>Should this be included in the workspace discovery caching, could this reparse our entire workspace?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution/src/metadata/dependency_groups.rs</code>:47 on 2025-06-06 18:20</div>
+            <div class="timeline-body"><p>Can we simplify the code by reordering and doing an early return on SourceStrategy::Disabled instead, or is there a symmetry reason to keep this structure?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution/src/metadata/dependency_groups.rs</code>:175 on 2025-06-06 18:41</div>
+            <div class="timeline-body"><p>Maybe silly question, but what happens if the group exists in the workspace root but not in the pyproject.toml we're currently in?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-workspace/src/workspace.rs</code>:1444 on 2025-06-06 18:44</div>
+            <div class="timeline-body"><p>Shouldn't we rather forego workspace discovery then and have some kind of <code>Workspace::for_non_project_pyproject_toml</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-06 18:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-06-10 18:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/src/commands/pip/install.rs</code>:257 on 2025-06-10 18:23</div>
+            <div class="timeline-body"><p>This is an eager exit for &quot;no work to do&quot; which now needs to check if there are groups because we don't shove those things in the source_trees anymore.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-06-10 18:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-distribution/src/metadata/dependency_groups.rs</code>:47 on 2025-06-10 18:27</div>
+            <div class="timeline-body"><p>...huh that's clever yeah</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-06-10 18:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-distribution/src/metadata/dependency_groups.rs</code>:175 on 2025-06-10 18:36</div>
+            <div class="timeline-body"><p>It won't be found.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-06-10 18:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-workspace/src/workspace.rs</code>:1444 on 2025-06-10 18:38</div>
+            <div class="timeline-body"><p>So the issue is that we <em>do</em> want to do workspace discovery <em>if we can</em>. Because we want to respect tool.uv sources/indexes (potentially defined in the parent workspace toml) if they are defined, but we also don't want to error if that kind of stuff is missing.</p>
+<p>The entire impl is trying to perform graceful degradation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-06-10 18:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv-distribution/src/metadata/dependency_groups.rs</code>:72 on 2025-06-10 18:40</div>
+            <div class="timeline-body"><p>Say more? (I am passing in the cache, and it can require reparsing the workspace yes.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-11 11:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-distribution/src/metadata/dependency_groups.rs</code>:72 on 2025-06-11 11:11</div>
+            <div class="timeline-body"><p>ah it already has the right cache</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-11 13:29</div>
+            <div class="timeline-body"><p>(nb this is temporarily based on top of #13735 because the two merge conflict)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/pip/install.rs</code>:257 on 2025-06-12 09:25</div>
+            <div class="timeline-body"><p>my question is more like, don't the groups get folded into the regular requirements in a way that we can fast-path them in <code>site_packages.satisfies_spec</code> too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-12 09:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-06-12 13:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/src/commands/pip/install.rs</code>:257 on 2025-06-12 13:24</div>
+            <div class="timeline-body"><p>No, they're kept completely separate at this point, they get merged after this check (like, I had to add this &amp;&amp; to fix the tests).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-06-12 13:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:215 on 2025-06-12 13:51</div>
+            <div class="timeline-body"><p>Ok I now properly understand this code and the assert and my solution are both essentially correct, but the scary &quot;this can only discover the root&quot; warning is wrong or misleading. Cleaned it up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-12 14:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/pip/install.rs</code>:257 on 2025-06-12 14:18</div>
+            <div class="timeline-body"><p>Does that mean we always take the slow path if <code>--group</code> is provided, even if we're in a noop case? It doesn't necessarily need to happen in this PR, but I'd want to avoid we're an order of magnitude slower for a noop <code>pip install --group</code> than a noop <code>pip install</code> without groups.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-06-12 14:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/src/commands/pip/install.rs</code>:257 on 2025-06-12 14:30</div>
+            <div class="timeline-body"><p>Before this PR the source_trees wouldn't be empty and so this check also failed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2025-06-12 14:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/pip/install.rs</code>:257 on 2025-06-12 14:44</div>
+            <div class="timeline-body"><p>I see, let's track this separately: https://github.com/astral-sh/uv/issues/13999</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:251 on 2025-06-12 14:58</div>
+            <div class="timeline-body"><p>Can we make this an option instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-13 09:53</div>
+            <div class="timeline-body"><p>Could you add like a table for the different cases of  the current interactions of workspace and sources when we read dependency groups? E.g., a no-project file that is {member,root} of a workspace where the {root, a member} defines sources. I know these didn't change with this PR, but it would be helpful to have them documented.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-06-13 13:33</div>
+            <div class="timeline-body"><p>If they're not changing in this pull request we probably shouldn't block this pull request on it? Can we open an issue for that and follow-up there?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-13 13:39</div>
+            <div class="timeline-body"><p>We don't change the behavior for workspace discovery and sources here, but we apply them to a new class of inputs, and it helps for reviewing to have a clear understanding which semantics we're applying, especially with non-project <code>pyproject.toml</code> in workspace being somewhat of an odd case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-13 14:12</div>
+            <div class="timeline-body"><blockquote>
+<p>E.g., a no-project file that is {member,root} of a workspace where the {root, a member} defines sources.</p>
+</blockquote>
+<p>So I think the crux of &quot;nothing interesting has changed here&quot; is that a no-project file cannot be a member of a workspace. It can only be the root of a workspace. The mode I added just allows you to omit the [tool.uv.workspace] file, in which case it's the only member of its workspace.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Gankra">@Gankra</a> on 2025-06-13 14:13</div>
+            <div class="timeline-body"><p>Furthermore, this ultra-special case I've added is <em>only</em> permitted by <code>uv pip --group</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2025-06-13 14:16</div>
+            <div class="timeline-body"><blockquote>
+<p>So I think the crux of &quot;nothing interesting has changed here&quot; is that a no-project file cannot be a member of a workspace. It can only be the root of a workspace.</p>
+</blockquote>
+<p>I see, that explains it!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2025-06-13 16:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Gankra">@Gankra</a> reviewed on 2025-06-13 18:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Gankra">@Gankra</a> on <code>crates/uv/src/commands/pip/operations.rs</code>:251 on 2025-06-13 18:00</div>
+            <div class="timeline-body"><p>Huh ok this is used way less than I thought, literally only in this one place. Cool fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @Gankra on 2025-06-13 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @Gankra on 2025-06-13 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-06-13 22:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:25 UTC
+    </footer>
+</body>
+</html>

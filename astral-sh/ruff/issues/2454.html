@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gitlab ci configuration - astral-sh/ruff #2454</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Gitlab ci configuration</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/2454">#2454</a>
+        opened by <a href="https://github.com/arist0v">@arist0v</a>
+        on 2023-02-01 19:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/arist0v">@arist0v</a> on 2023-02-01 19:46</div>
+            <div class="timeline-body"><p>Hello, i try settings up ruff for Gitlab Ci code quality, i checked up lot of google result, but still can'T figure out how to make it work</p>
+<p>my gitlab-ci.yml:</p>
+<pre><code>stages:
+  - test
+
+include:
+  - template: Code-Quality.gitlab-ci.yml
+
+Testing:
+  stage: test
+
+  rules:
+    - if: &quot;$CI_PIPELINE_SOURCE == 'merge_request_event'&quot;
+    - if: &quot;$CI_COMMIT_TAG =~ /^v(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-alpha\\d*|-debug\\d*|-beta\\d*|-rc\\d*|)$/&quot;
+
+  image: &quot;python:3.10&quot;
+
+  before_script:
+    - 'pip3 install pytest pytest-asyncio pytest-automock pytest-cov pytest-html-reporter ruff junit2html'
+
+  script:
+    - pytest -m GCI -rap --junitxml=gci_test_report.xml
+    - ruff ./ --format gitlab &gt; gl-code-quality-report.json
+
+
+  artifacts:
+    name: &quot;${CI_PROJECT_NAME}_tests_reports&quot;
+    when: always
+    reports:
+      codequality: gl-code-quality-report.json
+      junit: gci_test_report.xml
+    expire_in: never
+
+</code></pre>
+<p>the result:
+<img src="https://user-images.githubusercontent.com/6615040/216147329-7e435d61-6a05-45d6-8316-3da06c224f14.png" alt="image" /></p>
+<p>any tips or information on how i could make it work (also a section in the documentation for github/gitlab integration could be really nice)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-01 21:09</div>
+            <div class="timeline-body"><p>I've never used Gitlab, but there might be some helpful comments in the original PR? See: #1424.</p>
+<p>@saadmk11 may be able to answer a question about it too, if he's available.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arist0v">@arist0v</a> on 2023-02-01 21:11</div>
+            <div class="timeline-body"><p>Yeah i already tested that without success :(</p>
+<p>Le mer. 1 févr. 2023, 16 h 09, Charlie Marsh <em><strong>@</strong></em>.***&gt; a
+écrit :</p>
+<blockquote>
+<p>I've never used Gitlab, but there might be some helpful comments in the
+original PR? See: #1424 <a href="https://github.com/charliermarsh/ruff/pull/1424">https://github.com/charliermarsh/ruff/pull/1424</a>.</p>
+<p>@saadmk11 <a href="https://github.com/saadmk11">https://github.com/saadmk11</a> may be able to answer a question
+about it too, if he's available.</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/charliermarsh/ruff/issues/2454#issuecomment-1412725331">https://github.com/charliermarsh/ruff/issues/2454#issuecomment-1412725331</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/ABSPAADEJR7ORFLIBAPRVT3WVLGHZANCNFSM6AAAAAAUOERPGQ">https://github.com/notifications/unsubscribe-auth/ABSPAADEJR7ORFLIBAPRVT3WVLGHZANCNFSM6AAAAAAUOERPGQ</a>
+.
+You are receiving this because you authored the thread.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/saadmk11">@saadmk11</a> on 2023-02-01 21:14</div>
+            <div class="timeline-body"><p>When I implemented this, I used this config to test it on GitLab CI:</p>
+<pre><code class="language-yaml">include:
+  - template: Code-Quality.gitlab-ci.yml
+
+
+code_quality:
+  image: python:3.10-slim
+  allow_failure: false
+  script:
+    - pip install ruff
+    - ruff . --format gitlab &gt; gl-code-quality-report.json
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+</code></pre>
+<p>Does only using this work?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arist0v">@arist0v</a> on 2023-02-01 21:55</div>
+            <div class="timeline-body"><p>Is it On pipeline or on autodevops?</p>
+<p>Le mer. 1 févr. 2023, 16 h 14, Maksudul Haque <em><strong>@</strong></em>.***&gt; a
+écrit :</p>
+<blockquote>
+<p>When I implemented this, I used this config to test it on GitLab CI:</p>
+<p>include:</p>
+<ul>
+<li>template: Code-Quality.gitlab-ci.yml</li>
+</ul>
+<p>code_quality:
+image: python:3.10-slim
+allow_failure: false
+script:
+- pip install ruff
+- ruff . --format gitlab &gt; gl-code-quality-report.json
+artifacts:
+reports:
+codequality: gl-code-quality-report.json</p>
+<p>—
+Reply to this email directly, view it on GitHub
+<a href="https://github.com/charliermarsh/ruff/issues/2454#issuecomment-1412731806">https://github.com/charliermarsh/ruff/issues/2454#issuecomment-1412731806</a>,
+or unsubscribe
+<a href="https://github.com/notifications/unsubscribe-auth/ABSPAACQLQLKTS3XIAQT4NLWVLG2JANCNFSM6AAAAAAUOERPGQ">https://github.com/notifications/unsubscribe-auth/ABSPAACQLQLKTS3XIAQT4NLWVLG2JANCNFSM6AAAAAAUOERPGQ</a>
+.
+You are receiving this because you authored the thread.Message ID:
+<em><strong>@</strong></em>.***&gt;</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arist0v">@arist0v</a> on 2023-02-02 01:22</div>
+            <div class="timeline-body"><p>i copy/pasted the @saadmk11 code example,</p>
+<p>i tested with and without the include</p>
+<p>and i still have the same error message (gitlab 14)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arist0v">@arist0v</a> on 2023-02-02 01:25</div>
+            <div class="timeline-body"><p>there is the code i tested</p>
+<pre><code>include:
+  - template: Code-Quality.gitlab-ci.yml
+
+
+code_quality:
+  image: andrejreznik/python-gdal:py3.10.0-gdal3.2.3
+  allow_failure: false
+  script:
+    - pip install ruff
+    - ruff . --format gitlab &gt; gl-code-quality-report.json
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arist0v">@arist0v</a> on 2023-02-02 01:56</div>
+            <div class="timeline-body"><p>so i don'T know why, after few try and stop it's now working.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @arist0v on 2023-02-02 01:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-02 01:58</div>
+            <div class="timeline-body"><p>Glad it's working! Sorry I couldn't be more helpful!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arist0v">@arist0v</a> on 2023-02-02 02:08</div>
+            <div class="timeline-body"><p>no worry, my ci is simple but complex, it's only an include with override. so we create standard ci pipeline for all project</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @arist0v on 2023-02-02 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arist0v">@arist0v</a> on 2023-02-02 15:22</div>
+            <div class="timeline-body"><p>so, new branch, new merge request, same issue, so back to the beginning</p>
+<p>edit:
+if my branch was already merged once, and i still work on the same branch, then i will have a base pipeline report and it will work,  this beahvior is dumb, it's like if i have to create a new branch to work, then create a first MR and merge it so only THEN i could have the codequality working,</p>
+<p>maybe i have to set a rule to run the coverage on branch creation instead of on merge request only???</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/saadmk11">@saadmk11</a> on 2023-02-02 15:42</div>
+            <div class="timeline-body"><p>You can checkout the troubleshooting section of GitLab Code Quality Docs: https://docs.gitlab.com/ee/ci/testing/code_quality.html#troubleshooting</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arist0v">@arist0v</a> on 2023-02-02 15:51</div>
+            <div class="timeline-body"><p>Ok so look like it'S working now,</p>
+<p>there is a small recap in case you would like to documente the step in the official documentation:</p>
+<pre><code># could be any name if you don't use the template (the template is not required for the process to work)
+code_quality:
+  stage: test
+ # not sure if you could use a different stage
+
+   rules:
+    - if: &quot;$CI_PIPELINE_SOURCE == 'merge_request_event'&quot;
+    # run pipeline on merge request event (mr open or update)
+    - if: $CI_COMMIT_BRANCH &amp;&amp; $CI_OPEN_MERGE_REQUESTS
+      when: never
+    # don'T run branch pipeline if a MR is open(avoid double run)
+    - if: &quot;$CI_PIPELINE_SOURCE == 'push' &amp;&amp; $CI_COMMIT_BRANCH != $CI_DEFAULT_BRANCH&quot;
+    # run test on push (allow to have the basepipeline coverage to compare to
+    # also don't run if in the default branch(avoir running the pipeline after merge completed
+
+
+  image: &quot;python:3.10&quot;
+
+  before_script:
+    - 'pip3 install ruff'
+    # don't forger to install ruff 
+
+  script:
+    - ruff ./ --format gitlab &gt; gl-code-quality-report.json
+    # redirect output to a json file(could be any name)
+
+
+  artifacts:
+    name: &quot;${CI_PROJECT_NAME}_code_quality&quot; 
+    #artifact could have any name
+    when: always
+    # i want the artifact to be created even if test failed
+    reports:
+      # the artifact is a reports object
+      codequality: gl-code-quality-report.json
+      # artifact is a codequality artifact this must be your json name (any name)
+      
+    expire_in: never
+
+</code></pre>
+<p>inform me if you need more details</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-02-02 15:58</div>
+            <div class="timeline-body"><p>Awesome, thanks for following up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-02-02 15:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arist0v">@arist0v</a> on 2023-02-02 16:00</div>
+            <div class="timeline-body"><p>i still have a fix to do, the pipeline run on main after i merged, i want to prevent that to happend, i update my post in few min with the final answer</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arist0v">@arist0v</a> on 2023-02-02 16:40</div>
+            <div class="timeline-body"><p>OK i think i have it all fixed</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/arist0v">@arist0v</a> on 2023-02-06 13:15</div>
+            <div class="timeline-body"><p>So new update to my ci, and now i can confirm it's working :</p>
+<pre><code>stages:
+  - code_quality
+
+code_quality:
+  stage: code_quality
+
+  rules:
+    - if: '$CODE_QUALITY_DISABLED'# don'T run if codequality disabled
+      when: never
+    - if: $CI_COMMIT_BRANCH &amp;&amp; $CI_OPEN_MERGE_REQUESTS # don'T run on branch if MR is open
+      when: never
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' # RUN IN MERGE REQUEST PIPELINE
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH # RUN QUALITY JOB IN PIPELINE ON THE DEFAULT BRANCH(BUT NOT IN OTHER BRANCH)
+    - if: $CI_COMMIT_TAG # RUN IN PIPELINE FOR TAGS
+    
+ 
+  image: your_ci/image:version # CHANGE THIS TO YOUR CI IMAGE
+
+  script:
+    - ruff ./ --exclude conftest.py --format gitlab &gt; ruff_report.json
+
+  artifacts:
+    name: &quot;${CI_PROJECT_NAME}_code_quality&quot;
+    when: always
+    reports:
+      codequality: ruff_report.json
+      
+    expire_in: never
+
+</code></pre>
+<p>this was the important missing line :</p>
+<pre><code>    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH # RUN QUALITY JOB IN PIPELINE ON THE DEFAULT BRANCH(BUT NOT IN OTHER BRANCH)
+</code></pre>
+<p>this make ruff run against the main branch when you commit, so you have main version to compare to</p>
+<p>also on my side i don't wan't to push if the code_quality ruff check failed, if you want you need to allow failure by adding:</p>
+<pre><code>allow_failure: true
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:29:11 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>False positive for `PLR1706` - astral-sh/ruff #9007</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>False positive for <code>PLR1706</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/9007">#9007</a>
+        opened by <a href="https://github.com/UnknownPlatypus">@UnknownPlatypus</a>
+        on 2023-12-05 14:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/UnknownPlatypus">@UnknownPlatypus</a> on 2023-12-05 14:08</div>
+            <div class="timeline-body"><p>Here is a minimal example for the issue I had with PLR1706 and the autofix using ruff v0.1.7.</p>
+<pre><code class="language-diff">-print(True and False or 2) # This print '2'
++print(False if True else 2) # This print 'False'
+</code></pre>
+<p>I used this command:</p>
+<pre><code class="language-shell">echo &quot;print(True and False or 2)&quot; &gt; t.py
+ruff check --select PLR1706 --isolated --preview --fix --unsafe-fixes t.py
+</code></pre>
+<p>Generally speaking, <code>A and B or C</code> is transformed into <code>B if A else C</code> but this is not equivalent when <code>A</code> is truphy and <code>B</code> is falsy because the first one returns <code>C</code> and the second returns <code>B</code>.</p>
+<p>Let me know if I'm missing something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-12-05 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-05 14:45</div>
+            <div class="timeline-body"><p>Does look like a bug, thanks for filing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-05 19:50</div>
+            <div class="timeline-body"><p>It turns out that this rule relies on type inference. If <code>B</code> is false-y, we shouldn't be triggering it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-05 19:55</div>
+            <div class="timeline-body"><p>Specifically, you have to be able to resolve <code>B</code> to a <em>specific</em> value.</p>
+<p>Even <code>x &gt;= y and x or y</code> is not safe to convert when <code>x</code> and <code>y</code> are both integers -- it fails for <code>x, y = 0, -1</code>. (Pylint correctly does not flag this example, but I'm more pointing out that it's a very limited rule.)</p>
+<p>We may want to deprecate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/UnknownPlatypus">@UnknownPlatypus</a> on 2023-12-05 20:37</div>
+            <div class="timeline-body"><p>Ye I feel like with the current infrastructure it might be hard to get this right.
+This rule is targeting a very limited use case anyway since it's supposed to be a pattern for python &lt;2.5.</p>
+<p>I would probably deprecate it too, and remove the autofix altogether (it only introduced behavior changes when I tried it myself so I'd rather let people do manual changes if they really want the rule).</p>
+<p>Anyway thanks for the quick reply and it's a pleasure to use ruff.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-12-05 21:25</div>
+            <div class="timeline-body"><p>👍 Makes sense. I'll mark it in the 0.2.0 issue. Thanks for the kind words, I appreciate it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Added to milestone "v0.2.0" by @MichaReiser on 2024-01-19 14:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-01-30 01:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-01-30 01:23</div>
+            <div class="timeline-body"><p>See #9691 which removes this rule</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-02-01 19:35</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:32:10 UTC
+    </footer>
+</body>
+</html>

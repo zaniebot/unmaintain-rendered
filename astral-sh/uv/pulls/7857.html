@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add templates for popular build backends - astral-sh/uv #7857</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add templates for popular build backends</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/7857">#7857</a>
+        opened by <a href="https://github.com/samypr100">@samypr100</a>
+        on 2024-10-02 04:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/samypr100">@samypr100</a> on 2024-10-02 04:03</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Closes #6299</p>
+<p>This adds basic support on <code>uv init</code> to a couple additional build backends (pure and binary ones): <code>pdm</code>, <code>flit</code>, <code>setuptools</code>, <code>maturin</code>, and <code>scikit-build-core</code>.</p>
+<p>I didn't replace the existing <code>--package</code> flag for backwards compatibility, nor did I added a &quot;None&quot; build backend to imply <code>--no-package</code> at this time. Instead, currently when <code>--app --package</code> or <code>--lib</code> is specified, <code>--build-backend</code> can be used to change the existing hatchling backend with a different one.</p>
+<p>Since this also adds some build backend that support building binaries, I also added the generation of additional files needed for the ones supported in this PR inspired by https://github.com/scientific-python/cookie</p>
+<p>This also allows room for the upcoming uv build backend (which I assume could become the default later on) in uv init while still allowing other ones to remain functional.</p>
+<h2>Test Plan</h2>
+<p>Added additional tests for <code>flit</code>, <code>maturin</code>, and <code>scikit</code>.
+For backends that build binaries, only maturin will do so in tests since we have rust dev tooling already 😆. <code>scikit</code> does not build binaries in tests as it would require additional tooling and environment configuration to be available. For these, I manually tested them on Windows and Linux.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-10-02 04:03</div>
+            <div class="timeline-body"><p>~~Still need to add docs 📝 if the changes are acceptable~~  Added initial docs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @samypr100 on 2024-10-02 12:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-10-04 20:06</div>
+            <div class="timeline-body"><p>I tested the meson build, saw this, but I'm not sure what it means.</p>
+<p>If I build twice - the second time it will have a stale/older <code>build/</code> directory in the project. The second build it fails with an error.</p>
+<p>building twice was done something like this where the project name is <code>withmeson</code>.</p>
+<pre><code>uv sync -v --no-cache --reinstall-package withmeson
+uv sync -v --no-cache --reinstall-package withmeson
+</code></pre>
+<pre><code>FAILED: _core.cpython-311-x86_64-linux-gnu.so.p/src_main.cpp.o 
+ccache c++ -I_core.cpython-311-x86_64-linux-gnu.so.p -I. -I../.. -I/home/user/.local/share/uv/python/cpython-3.11.7-linux-x86_64-gnu/include/python3.11 -I/tmp/.tmprmOyLK/builds-v0/.tmp9amD3K/lib/python3.11/site-packages/pybind11/include -I/install/include/python3.11 -fvisibility=hidden -fvisibility-inlines-hidden -fdiagnostics-color=always -DNDEBUG -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -std=c++11 -O3 -fPIC -MD -MQ _core.cpython-311-x86_64-linux-gnu.so.p/src_main.cpp.o -MF _core.cpython-311-x86_64-linux-gnu.so.p/src_main.cpp.o.d -o _core.cpython-311-x86_64-linux-gnu.so.p/src_main.cpp.o -c ../../src/main.cpp
+../../src/main.cpp:1:10: fatal error: pybind11/pybind11.h: No such file or directory
+    1 | #include &lt;pybind11/pybind11.h&gt;
+      |          ^~~~~~~~~~~~~~~~~~~~~
+
+</code></pre>
+<p>I think the reason is this: the build folder has some cached stuff. And it references an include directory in <code>/tmp/.tmprmOyLK/builds-v0/.tmp9amD3K/lib/python3.11/site-packages/pybind11/include</code>  which was from a temporary build directory used in the first build. That's now gone, with the second build.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/bluss">@bluss</a> on 2024-10-04 20:14</div>
+            <div class="timeline-body"><p>Also meson uses ninja from /usr/bin/ninja in this case - is that an external dependency (not covered by build requirements?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-10-04 23:31</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the reason is this: the build folder has some cached stuff. And it references an include directory in /tmp/.tmprmOyLK/builds-v0/.tmp9amD3K/lib/python3.11/site-packages/pybind11/include which was from a temporary build directory used in the first build. That's now gone, with the second build.</p>
+</blockquote>
+<p>@bluss I noticed the same thing and assumed this was the issue as well. I briefly searched for a way to clear the config cache via mesonpy, but didn't spent too much time on it since I'm not a meson expert.</p>
+<p>The config derived from https://github.com/scientific-python/cookie, maybe @henryiii or @rgommers have some ideas?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-10-04 23:50</div>
+            <div class="timeline-body"><p>For the ninja comment: ninja is only requested if it's not on the system (or is too old). Otherwise you wouldn't be able to support all the platforms without wheels.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rgommers">@rgommers</a> on 2024-10-05 20:25</div>
+            <div class="timeline-body"><blockquote>
+<p>I think the reason is this: the build folder has some cached stuff. And it references an include directory in <code>/tmp/.tmprmOyLK/builds-v0/.tmp9amD3K/lib/python3.11/site-packages/pybind11/include</code> which was from a temporary build directory used in the first build. That's now gone, with the second build.</p>
+</blockquote>
+<p>This indicates an issue: a <em>fixed</em> build directory (which is then reused) is pointing at a <em>temporary</em> build environment with a build dependency that's disappearing. That is fundamentally problematic. There are only two ways to do things correctly in principle:</p>
+<ol>
+<li>You want full rebuilds - in that case use a temporary directory for the build dir.</li>
+<li>You want to use caching for efficient rebuilds - in that case ensure that both the build environment and the build directory are in fixed locations.</li>
+</ol>
+<p>Different backends may be more or less tolerant of building against build dependencies located in a tmpdir (e.g., because they redo the configure stage of the build even for incremental rebuilds), but it can't be correct to do so.</p>
+<p>I can't see from the traceback how the environment is set up and how the build backend is invoked, but I think that's where things go wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-10-05 22:05</div>
+            <div class="timeline-body"><blockquote>
+<p>I can't see from the traceback how the environment is set up and how the build backend is invoked, but I think that's where things go wrong.</p>
+</blockquote>
+<p>Attached debug logs for windows (in case this helps)</p>
+<details><summary>First uv + meson build logs</summary>
+<p>
+
+<pre><code>.\target\debug\uv.exe sync -v --no-cache
+DEBUG uv 0.4.18
+DEBUG Found project root: `D:\RustDev\uv\mesontest`
+DEBUG Project is contained in non-workspace project: `D:\RustDev\uv`
+DEBUG No workspace root found, using project root
+DEBUG Reading requests from `D:\RustDev\uv\mesontest\.python-version`
+DEBUG Searching for Python 3.12 in system path or `py` launcher
+DEBUG Found `cpython-3.12.7-windows-x86_64-none` at `C:\Users\Sandbox\AppData\Local\Programs\Python\Python312\python.exe` (search path)
+Using CPython 3.12.7 interpreter at: C:\Users\Sandbox\AppData\Local\Programs\Python\Python312\python.exe
+Creating virtual environment at: .venv
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: mesontest @ file:///D:/RustDev/uv/mesontest
+DEBUG Project is contained in non-workspace project: `D:\RustDev\uv`
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 1 package in 8ms
+DEBUG Using request timeout of 30s
+DEBUG Identified uncached distribution: mesontest @ file:///D:/RustDev/uv/mesontest
+DEBUG Acquired lock for `C:\Users\Sandbox\AppData\Local\Temp\.tmpEsFjbV\sdists-v4\editable\3b0dc5127cb60fe2`
+WARN Failed to read metadata for file: The system cannot find the file specified. (os error 2)
+WARN Failed to read metadata for file: The system cannot find the file specified. (os error 2)
+DEBUG Building: mesontest @ file:///D:/RustDev/uv/mesontest
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.12.7
+DEBUG Solving with target Python version: &gt;=3.12.7
+DEBUG Adding direct dependency: meson-python*
+DEBUG Adding direct dependency: pybind11*
+DEBUG No cache entry for: https://pypi.org/simple/meson-python/
+DEBUG No cache entry for: https://pypi.org/simple/pybind11/
+DEBUG Searching for a compatible version of meson-python (*)
+DEBUG Selecting: meson-python==0.16.0 [compatible] (meson_python-0.16.0-py3-none-any.whl)
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/91/c0/104cb6244c83fe6bc3886f144cc433db0c0c78efac5dc00e409a5a08c87d/meson_python-0.16.0-py3-none-any.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/13/2f/0f24b288e2ce56f51c920137620b4434a38fd80583dbbe24fc2a1656c388/pybind11-2.13.6-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for meson-python==0.16.0: meson{python_full_version &gt;= '3.12'}&gt;=1.2.3
+DEBUG Adding transitive dependency for meson-python==0.16.0: packaging&gt;=19.0
+DEBUG Adding transitive dependency for meson-python==0.16.0: pyproject-metadata&gt;=0.7.1
+DEBUG Searching for a compatible version of pybind11 (*)
+DEBUG Selecting: pybind11==2.13.6 [compatible] (pybind11-2.13.6-py3-none-any.whl)
+DEBUG No cache entry for: https://pypi.org/simple/meson/
+DEBUG No cache entry for: https://pypi.org/simple/packaging/
+DEBUG No cache entry for: https://pypi.org/simple/pyproject-metadata/
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of meson{python_full_version &gt;= '3.12'} (&gt;=1.2.3)
+DEBUG Selecting: meson==1.5.2 [compatible] (meson-1.5.2-py3-none-any.whl)
+DEBUG Adding transitive dependency for meson==1.5.2: meson==1.5.2
+DEBUG Adding transitive dependency for meson==1.5.2: meson{python_full_version &gt;= '3.12'}==1.5.2
+DEBUG Searching for a compatible version of meson{python_full_version &gt;= '3.12'} (==1.5.2)
+DEBUG Selecting: meson==1.5.2 [compatible] (meson-1.5.2-py3-none-any.whl)
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/55/a6/47b9353c331318a13eb050887eacfd61eb075746285f9baf7ef7de6ae235/meson-1.5.2-py3-none-any.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/aa/5f/bb5970d3d04173b46c9037109f7f05fc8904ff5be073ee49bb6ff00301bc/pyproject_metadata-0.8.0-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of meson (==1.5.2)
+DEBUG Selecting: meson==1.5.2 [compatible] (meson-1.5.2-py3-none-any.whl)
+DEBUG Searching for a compatible version of packaging (&gt;=19.0)
+DEBUG Selecting: packaging==24.1 [compatible] (packaging-24.1-py3-none-any.whl)
+DEBUG Searching for a compatible version of pyproject-metadata (&gt;=0.7.1)
+DEBUG Selecting: pyproject-metadata==0.8.0 [compatible] (pyproject_metadata-0.8.0-py3-none-any.whl)
+DEBUG Adding transitive dependency for pyproject-metadata==0.8.0: packaging&gt;=19.0
+DEBUG Tried 5 versions: meson 1, meson-python 1, packaging 1, pybind11 1, pyproject-metadata 1
+DEBUG Split specific environment resolution took 0.276s
+DEBUG Installing in meson==1.5.2, meson-python==0.16.0, packaging==24.1, pybind11==2.13.6, pyproject-metadata==0.8.0 in C:\Users\Sandbox\AppData\Local\Temp\.tmpEsFjbV\builds-v0\.tmpD9fGuR
+DEBUG Identified uncached distribution: meson==1.5.2
+DEBUG Identified uncached distribution: meson-python==0.16.0
+DEBUG Identified uncached distribution: packaging==24.1
+DEBUG Identified uncached distribution: pybind11==2.13.6
+DEBUG Identified uncached distribution: pyproject-metadata==0.8.0
+DEBUG Downloading and building requirements for build: meson==1.5.2, meson-python==0.16.0, packaging==24.1, pybind11==2.13.6, pyproject-metadata==0.8.0
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/55/a6/47b9353c331318a13eb050887eacfd61eb075746285f9baf7ef7de6ae235/meson-1.5.2-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/13/2f/0f24b288e2ce56f51c920137620b4434a38fd80583dbbe24fc2a1656c388/pybind11-2.13.6-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/91/c0/104cb6244c83fe6bc3886f144cc433db0c0c78efac5dc00e409a5a08c87d/meson_python-0.16.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/aa/5f/bb5970d3d04173b46c9037109f7f05fc8904ff5be073ee49bb6ff00301bc/pyproject_metadata-0.8.0-py3-none-any.whl
+DEBUG Installing build requirements: pyproject-metadata==0.8.0, meson-python==0.16.0, packaging==24.1, pybind11==2.13.6, meson==1.5.2
+DEBUG Extracting file name=PackageName(&quot;pyproject-metadata&quot;)
+DEBUG Extracting file name=PackageName(&quot;meson-python&quot;)
+DEBUG Extracted 6 files name=PackageName(&quot;pyproject-metadata&quot;)
+DEBUG No entrypoints name=PackageName(&quot;pyproject-metadata&quot;)
+DEBUG No data name=PackageName(&quot;pyproject-metadata&quot;)
+DEBUG Writing extra metadata name=PackageName(&quot;pyproject-metadata&quot;)
+DEBUG Writing record name=PackageName(&quot;pyproject-metadata&quot;)
+DEBUG Extracted 11 files name=PackageName(&quot;meson-python&quot;)
+DEBUG Extracting file name=PackageName(&quot;packaging&quot;)
+DEBUG No entrypoints name=PackageName(&quot;meson-python&quot;)
+DEBUG No data name=PackageName(&quot;meson-python&quot;)
+DEBUG Writing extra metadata name=PackageName(&quot;meson-python&quot;)
+DEBUG Writing record name=PackageName(&quot;meson-python&quot;)
+DEBUG Extracted 21 files name=PackageName(&quot;packaging&quot;)
+DEBUG Extracting file name=PackageName(&quot;meson&quot;)
+DEBUG Extracting file name=PackageName(&quot;pybind11&quot;)
+DEBUG No entrypoints name=PackageName(&quot;packaging&quot;)
+DEBUG No data name=PackageName(&quot;packaging&quot;)
+DEBUG Writing extra metadata name=PackageName(&quot;packaging&quot;)
+DEBUG Writing record name=PackageName(&quot;packaging&quot;)
+DEBUG Extracted 57 files name=PackageName(&quot;pybind11&quot;)
+DEBUG Writing entrypoints name=PackageName(&quot;pybind11&quot;)
+DEBUG No data name=PackageName(&quot;pybind11&quot;)
+DEBUG Writing extra metadata name=PackageName(&quot;pybind11&quot;)
+DEBUG Writing record name=PackageName(&quot;pybind11&quot;)
+DEBUG Extracted 244 files name=PackageName(&quot;meson&quot;)
+DEBUG Writing entrypoints name=PackageName(&quot;meson&quot;)
+DEBUG Installing data name=PackageName(&quot;meson&quot;)
+DEBUG Writing extra metadata name=PackageName(&quot;meson&quot;)
+DEBUG Writing record name=PackageName(&quot;meson&quot;)
+DEBUG Creating PEP 517 build environment
+DEBUG Calling `mesonpy.get_requires_for_build_editable()`
+DEBUG Calling `mesonpy.build_editable(&quot;C:\\Users\\Sandbox\\AppData\\Local\\Temp\\.tmpEsFjbV\\sdists-v4\\editable\\3b0dc5127cb60fe2\\2SI-UfXgTs-o2MAwpsL4m\\.tmpLXpwHC&quot;, {}, None)`
+DEBUG + meson setup D:\RustDev\uv\mesontest D:\RustDev\uv\mesontest\build\cp312 -Dbuildtype=release -Db_ndebug=if-release -Db_vscrt=md --native-file=D:\RustDev\uv\mesontest\build\cp312\meson-python-native-file.ini
+DEBUG The Meson build system
+DEBUG Version: 1.5.2
+DEBUG Source dir: D:\RustDev\uv\mesontest
+DEBUG Build dir: D:\RustDev\uv\mesontest\build\cp312
+DEBUG Build type: native build
+DEBUG Project name: mesontest
+DEBUG Project version: 0.1.0
+DEBUG C++ compiler for the host machine: cl (msvc 19.39.33519 &quot;Microsoft (R) C/C++ Optimizing Compiler Version 19.39.33519 for x64&quot;)
+DEBUG C++ linker for the host machine: link link 14.39.33519.0
+DEBUG Host machine cpu family: x86_64
+DEBUG Host machine cpu: x86_64
+DEBUG Program python found: YES (C:\Users\Sandbox\AppData\Local\Temp\.tmpEsFjbV\builds-v0\.tmpD9fGuR\Scripts\python.exe)
+DEBUG Found pkg-config: YES (D:\msys64\mingw64\bin\pkg-config.exe) 2.3.0
+DEBUG pybind11-config found: YES (C:\Users\Sandbox\AppData\Local\Temp\.tmpEsFjbV\builds-v0\.tmpD9fGuR\Scripts\pybind11-config.exe) 2.13.6
+DEBUG Run-time dependency pybind11 found: YES 2.13.6
+DEBUG Run-time dependency python found: YES 3.12
+DEBUG Build targets in project: 1
+DEBUG
+DEBUG mesontest 0.1.0
+DEBUG
+DEBUG   User defined options
+DEBUG     Native files: D:\RustDev\uv\mesontest\build\cp312\meson-python-native-file.ini
+DEBUG     buildtype   : release
+DEBUG     b_ndebug    : if-release
+DEBUG     b_vscrt     : md
+DEBUG
+DEBUG Found ninja.exe-1.12.1 at D:\msys64\mingw64\bin\ninja.exe
+DEBUG WARNING: msvc does not support C++11; attempting best effort; setting the standard to C++14
+DEBUG + meson compile
+DEBUG [1/2] Compiling C++ object _core.cp312-win_amd64.pyd.p/src_main.cpp.obj
+DEBUG [2/2] Linking target _core.cp312-win_amd64.pyd
+DEBUG    Creating library _core.cp312-win_amd64.lib and object _core.cp312-win_amd64.exp
+DEBUG INFO: autodetecting backend as ninja
+DEBUG INFO: calculating backend command to run: D:\msys64\mingw64\bin\ninja.exe
+DEBUG Finished building: mesontest @ file:///D:/RustDev/uv/mesontest
+DEBUG Released lock at `C:\Users\Sandbox\AppData\Local\Temp\.tmpEsFjbV\sdists-v4\editable\3b0dc5127cb60fe2\.lock`
+Prepared 1 package in 15.89s
+DEBUG Extracting file name=PackageName(&quot;mesontest&quot;)
+DEBUG Extracted 6 files name=PackageName(&quot;mesontest&quot;)
+DEBUG No entrypoints name=PackageName(&quot;mesontest&quot;)
+DEBUG No data name=PackageName(&quot;mesontest&quot;)
+DEBUG Writing extra metadata name=PackageName(&quot;mesontest&quot;)
+DEBUG Writing record name=PackageName(&quot;mesontest&quot;)
+Installed 1 package in 30ms
+ + mesontest==0.1.0 (from file:///D:/RustDev/uv/mesontest)
+</code></pre>
+</p>
+</details> 
+
+<details><summary>Second uv + meson build logs (has errors)</summary>
+<p>
+
+<pre><code>.\target\debug\uv.exe sync -v --no-cache --reinstall
+DEBUG uv 0.4.18
+DEBUG Found project root: `D:\RustDev\uv\mesontest`
+DEBUG Project is contained in non-workspace project: `D:\RustDev\uv`
+DEBUG No workspace root found, using project root
+DEBUG Reading requests from `D:\RustDev\uv\mesontest\.python-version`
+DEBUG Searching for Python 3.12 in system path or `py` launcher
+DEBUG Found `cpython-3.12.7-windows-x86_64-none` at `C:\Users\Sandbox\AppData\Local\Programs\Python\Python312\python.exe` (search path)
+Using CPython 3.12.7 interpreter at: C:\Users\Sandbox\AppData\Local\Programs\Python\Python312\python.exe
+Creating virtual environment at: .venv
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: mesontest @ file:///D:/RustDev/uv/mesontest
+DEBUG Project is contained in non-workspace project: `D:\RustDev\uv`
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 1 package in 8ms
+DEBUG Using request timeout of 30s
+DEBUG Identified uncached distribution: mesontest @ file:///D:/RustDev/uv/mesontest
+DEBUG Acquired lock for `C:\Users\Sandbox\AppData\Local\Temp\.tmpEsFjbV\sdists-v4\editable\3b0dc5127cb60fe2`
+WARN Failed to read metadata for file: The system cannot find the file specified. (os error 2)
+WARN Failed to read metadata for file: The system cannot find the file specified. (os error 2)
+DEBUG Building: mesontest @ file:///D:/RustDev/uv/mesontest
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.12.7
+DEBUG Solving with target Python version: &gt;=3.12.7
+DEBUG Adding direct dependency: meson-python*
+DEBUG Adding direct dependency: pybind11*
+DEBUG No cache entry for: https://pypi.org/simple/meson-python/
+DEBUG No cache entry for: https://pypi.org/simple/pybind11/
+DEBUG Searching for a compatible version of meson-python (*)
+DEBUG Selecting: meson-python==0.16.0 [compatible] (meson_python-0.16.0-py3-none-any.whl)
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/91/c0/104cb6244c83fe6bc3886f144cc433db0c0c78efac5dc00e409a5a08c87d/meson_python-0.16.0-py3-none-any.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/13/2f/0f24b288e2ce56f51c920137620b4434a38fd80583dbbe24fc2a1656c388/pybind11-2.13.6-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for meson-python==0.16.0: meson{python_full_version &gt;= '3.12'}&gt;=1.2.3
+DEBUG Adding transitive dependency for meson-python==0.16.0: packaging&gt;=19.0
+DEBUG Adding transitive dependency for meson-python==0.16.0: pyproject-metadata&gt;=0.7.1
+DEBUG Searching for a compatible version of pybind11 (*)
+DEBUG Selecting: pybind11==2.13.6 [compatible] (pybind11-2.13.6-py3-none-any.whl)
+DEBUG No cache entry for: https://pypi.org/simple/meson/
+DEBUG No cache entry for: https://pypi.org/simple/packaging/
+DEBUG No cache entry for: https://pypi.org/simple/pyproject-metadata/
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of meson{python_full_version &gt;= '3.12'} (&gt;=1.2.3)
+DEBUG Selecting: meson==1.5.2 [compatible] (meson-1.5.2-py3-none-any.whl)
+DEBUG Adding transitive dependency for meson==1.5.2: meson==1.5.2
+DEBUG Adding transitive dependency for meson==1.5.2: meson{python_full_version &gt;= '3.12'}==1.5.2
+DEBUG Searching for a compatible version of meson{python_full_version &gt;= '3.12'} (==1.5.2)
+DEBUG Selecting: meson==1.5.2 [compatible] (meson-1.5.2-py3-none-any.whl)
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/55/a6/47b9353c331318a13eb050887eacfd61eb075746285f9baf7ef7de6ae235/meson-1.5.2-py3-none-any.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/aa/5f/bb5970d3d04173b46c9037109f7f05fc8904ff5be073ee49bb6ff00301bc/pyproject_metadata-0.8.0-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of meson (==1.5.2)
+DEBUG Selecting: meson==1.5.2 [compatible] (meson-1.5.2-py3-none-any.whl)
+DEBUG Searching for a compatible version of packaging (&gt;=19.0)
+DEBUG Selecting: packaging==24.1 [compatible] (packaging-24.1-py3-none-any.whl)
+DEBUG Searching for a compatible version of pyproject-metadata (&gt;=0.7.1)
+DEBUG Selecting: pyproject-metadata==0.8.0 [compatible] (pyproject_metadata-0.8.0-py3-none-any.whl)
+DEBUG Adding transitive dependency for pyproject-metadata==0.8.0: packaging&gt;=19.0
+DEBUG Tried 5 versions: meson 1, meson-python 1, packaging 1, pybind11 1, pyproject-metadata 1
+DEBUG Split specific environment resolution took 0.276s
+DEBUG Installing in meson==1.5.2, meson-python==0.16.0, packaging==24.1, pybind11==2.13.6, pyproject-metadata==0.8.0 in C:\Users\Sandbox\AppData\Local\Temp\.tmpEsFjbV\builds-v0\.tmpD9fGuR
+DEBUG Identified uncached distribution: meson==1.5.2
+DEBUG Identified uncached distribution: meson-python==0.16.0
+DEBUG Identified uncached distribution: packaging==24.1
+DEBUG Identified uncached distribution: pybind11==2.13.6
+DEBUG Identified uncached distribution: pyproject-metadata==0.8.0
+DEBUG Downloading and building requirements for build: meson==1.5.2, meson-python==0.16.0, packaging==24.1, pybind11==2.13.6, pyproject-metadata==0.8.0
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/55/a6/47b9353c331318a13eb050887eacfd61eb075746285f9baf7ef7de6ae235/meson-1.5.2-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/13/2f/0f24b288e2ce56f51c920137620b4434a38fd80583dbbe24fc2a1656c388/pybind11-2.13.6-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/91/c0/104cb6244c83fe6bc3886f144cc433db0c0c78efac5dc00e409a5a08c87d/meson_python-0.16.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/aa/5f/bb5970d3d04173b46c9037109f7f05fc8904ff5be073ee49bb6ff00301bc/pyproject_metadata-0.8.0-py3-none-any.whl
+DEBUG Installing build requirements: pyproject-metadata==0.8.0, meson-python==0.16.0, packaging==24.1, pybind11==2.13.6, meson==1.5.2
+DEBUG Extracting file name=PackageName(&quot;pyproject-metadata&quot;)
+DEBUG Extracting file name=PackageName(&quot;meson-python&quot;)
+DEBUG Extracted 6 files name=PackageName(&quot;pyproject-metadata&quot;)
+DEBUG No entrypoints name=PackageName(&quot;pyproject-metadata&quot;)
+DEBUG No data name=PackageName(&quot;pyproject-metadata&quot;)
+DEBUG Writing extra metadata name=PackageName(&quot;pyproject-metadata&quot;)
+DEBUG Writing record name=PackageName(&quot;pyproject-metadata&quot;)
+DEBUG Extracted 11 files name=PackageName(&quot;meson-python&quot;)
+DEBUG Extracting file name=PackageName(&quot;packaging&quot;)
+DEBUG No entrypoints name=PackageName(&quot;meson-python&quot;)
+DEBUG No data name=PackageName(&quot;meson-python&quot;)
+DEBUG Writing extra metadata name=PackageName(&quot;meson-python&quot;)
+DEBUG Writing record name=PackageName(&quot;meson-python&quot;)
+DEBUG Extracted 21 files name=PackageName(&quot;packaging&quot;)
+DEBUG Extracting file name=PackageName(&quot;meson&quot;)
+DEBUG Extracting file name=PackageName(&quot;pybind11&quot;)
+DEBUG No entrypoints name=PackageName(&quot;packaging&quot;)
+DEBUG Writing extra metadata name=PackageName(&quot;packaging&quot;)
+DEBUG Writing record name=PackageName(&quot;packaging&quot;)
+DEBUG Extracted 57 files name=PackageName(&quot;pybind11&quot;)
+DEBUG Writing entrypoints name=PackageName(&quot;pybind11&quot;)
+DEBUG No data name=PackageName(&quot;pybind11&quot;)
+DEBUG Writing extra metadata name=PackageName(&quot;pybind11&quot;)
+DEBUG Writing record name=PackageName(&quot;pybind11&quot;)
+DEBUG Extracted 244 files name=PackageName(&quot;meson&quot;)
+DEBUG Writing entrypoints name=PackageName(&quot;meson&quot;)
+DEBUG Installing data name=PackageName(&quot;meson&quot;)
+DEBUG Writing extra metadata name=PackageName(&quot;meson&quot;)
+DEBUG Writing record name=PackageName(&quot;meson&quot;)
+DEBUG Creating PEP 517 build environment
+DEBUG Calling `mesonpy.get_requires_for_build_editable()`
+DEBUG Calling `mesonpy.build_editable(&quot;C:\\Users\\Sandbox\\AppData\\Local\\Temp\\.tmpEsFjbV\\sdists-v4\\editable\\3b0dc5127cb60fe2\\2SI-UfXgTs-o2MAwpsL4m\\.tmpLXpwHC&quot;, {}, None)`
+DEBUG + meson setup D:\RustDev\uv\mesontest D:\RustDev\uv\mesontest\build\cp312 -Dbuildtype=release -Db_ndebug=if-release -Db_vscrt=md --native-file=D:\RustDev\uv\mesontest\build\cp312\meson-python-native-file.ini
+DEBUG The Meson build system
+DEBUG Version: 1.5.2
+DEBUG Source dir: D:\RustDev\uv\mesontest
+DEBUG Build dir: D:\RustDev\uv\mesontest\build\cp312
+DEBUG Build type: native build
+DEBUG Project name: mesontest
+DEBUG Project version: 0.1.0
+DEBUG C++ compiler for the host machine: cl (msvc 19.39.33519 &quot;Microsoft (R) C/C++ Optimizing Compiler Version 19.39.33519 for x64&quot;)
+DEBUG C++ linker for the host machine: link link 14.39.33519.0
+DEBUG Host machine cpu family: x86_64
+DEBUG Host machine cpu: x86_64
+DEBUG Program python found: YES (C:\Users\Sandbox\AppData\Local\Temp\.tmpEsFjbV\builds-v0\.tmpD9fGuR\Scripts\python.exe)
+DEBUG Found pkg-config: YES (D:\msys64\mingw64\bin\pkg-config.exe) 2.3.0
+DEBUG pybind11-config found: YES (C:\Users\Sandbox\AppData\Local\Temp\.tmpEsFjbV\builds-v0\.tmpD9fGuR\Scripts\pybind11-config.exe) 2.13.6
+DEBUG Run-time dependency pybind11 found: YES 2.13.6
+DEBUG Run-time dependency python found: YES 3.12
+DEBUG Build targets in project: 1
+DEBUG
+DEBUG mesontest 0.1.0
+DEBUG
+DEBUG   User defined options
+DEBUG     Native files: D:\RustDev\uv\mesontest\build\cp312\meson-python-native-file.ini
+DEBUG     buildtype   : release
+DEBUG     b_ndebug    : if-release
+DEBUG     b_vscrt     : md
+DEBUG
+DEBUG Found ninja.exe-1.12.1 at D:\msys64\mingw64\bin\ninja.exe
+DEBUG WARNING: msvc does not support C++11; attempting best effort; setting the standard to C++14
+DEBUG + meson compile
+DEBUG [1/2] Compiling C++ object _core.cp312-win_amd64.pyd.p/src_main.cpp.obj
+DEBUG [2/2] Linking target _core.cp312-win_amd64.pyd
+DEBUG    Creating library _core.cp312-win_amd64.lib and object _core.cp312-win_amd64.exp
+DEBUG INFO: autodetecting backend as ninja
+DEBUG INFO: calculating backend command to run: D:\msys64\mingw64\bin\ninja.exe
+DEBUG Finished building: mesontest @ file:///D:/RustDev/uv/mesontest
+DEBUG Released lock at `C:\Users\Sandbox\AppData\Local\Temp\.tmpEsFjbV\sdists-v4\editable\3b0dc5127cb60fe2\.lock`
+Prepared 1 package in 15.89s
+DEBUG Extracting file name=PackageName(&quot;mesontest&quot;)
+DEBUG Extracted 6 files name=PackageName(&quot;mesontest&quot;)
+DEBUG No entrypoints name=PackageName(&quot;mesontest&quot;)
+DEBUG No data name=PackageName(&quot;mesontest&quot;)
+DEBUG Writing extra metadata name=PackageName(&quot;mesontest&quot;)
+DEBUG Writing record name=PackageName(&quot;mesontest&quot;)
+Installed 1 package in 30ms
+ + mesontest==0.1.0 (from file:///D:/RustDev/uv/mesontest)
+PS D:\RustDev\uv\mesontest&gt; ..\target\debug\uv.exe sync -v --no-cache --reinstall
+DEBUG uv 0.4.18
+DEBUG Found project root: `D:\RustDev\uv\mesontest`
+DEBUG Project is contained in non-workspace project: `D:\RustDev\uv`
+DEBUG No workspace root found, using project root
+DEBUG Reading requests from `D:\RustDev\uv\mesontest\.python-version`
+DEBUG The virtual environment's Python version satisfies `Python 3.12`
+DEBUG Using request timeout of 30s
+DEBUG Found static `pyproject.toml` for: mesontest @ file:///D:/RustDev/uv/mesontest
+DEBUG Project is contained in non-workspace project: `D:\RustDev\uv`
+DEBUG No workspace root found, using project root
+DEBUG Existing `uv.lock` satisfies workspace requirements
+Resolved 1 package in 5ms
+DEBUG Using request timeout of 30s
+DEBUG Must revalidate requirement: mesontest
+DEBUG Acquired lock for `C:\Users\Sandbox\AppData\Local\Temp\.tmpRFFhNx\sdists-v4\editable\3b0dc5127cb60fe2`
+WARN Failed to read metadata for file: The system cannot find the file specified. (os error 2)
+WARN Failed to read metadata for file: The system cannot find the file specified. (os error 2)
+DEBUG Building: mesontest @ file:///D:/RustDev/uv/mesontest
+DEBUG Ignoring empty directory
+DEBUG Resolving build requirements
+DEBUG Solving with installed Python version: 3.12.7
+DEBUG Solving with target Python version: &gt;=3.12.7
+DEBUG Adding direct dependency: meson-python*
+DEBUG Adding direct dependency: pybind11*
+DEBUG No cache entry for: https://pypi.org/simple/meson-python/
+DEBUG No cache entry for: https://pypi.org/simple/pybind11/
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/13/2f/0f24b288e2ce56f51c920137620b4434a38fd80583dbbe24fc2a1656c388/pybind11-2.13.6-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of meson-python (*)
+DEBUG Selecting: meson-python==0.16.0 [compatible] (meson_python-0.16.0-py3-none-any.whl)
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/91/c0/104cb6244c83fe6bc3886f144cc433db0c0c78efac5dc00e409a5a08c87d/meson_python-0.16.0-py3-none-any.whl.metadata
+DEBUG Adding transitive dependency for meson-python==0.16.0: meson{python_full_version &gt;= '3.12'}&gt;=1.2.3
+DEBUG Adding transitive dependency for meson-python==0.16.0: packaging&gt;=19.0
+DEBUG Adding transitive dependency for meson-python==0.16.0: pyproject-metadata&gt;=0.7.1
+DEBUG Searching for a compatible version of pybind11 (*)
+DEBUG Selecting: pybind11==2.13.6 [compatible] (pybind11-2.13.6-py3-none-any.whl)
+DEBUG No cache entry for: https://pypi.org/simple/meson/
+DEBUG No cache entry for: https://pypi.org/simple/packaging/
+DEBUG No cache entry for: https://pypi.org/simple/pyproject-metadata/
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of meson{python_full_version &gt;= '3.12'} (&gt;=1.2.3)
+DEBUG Selecting: meson==1.5.2 [compatible] (meson-1.5.2-py3-none-any.whl)
+DEBUG Adding transitive dependency for meson==1.5.2: meson==1.5.2
+DEBUG Adding transitive dependency for meson==1.5.2: meson{python_full_version &gt;= '3.12'}==1.5.2
+DEBUG Searching for a compatible version of meson{python_full_version &gt;= '3.12'} (==1.5.2)
+DEBUG Selecting: meson==1.5.2 [compatible] (meson-1.5.2-py3-none-any.whl)
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/55/a6/47b9353c331318a13eb050887eacfd61eb075746285f9baf7ef7de6ae235/meson-1.5.2-py3-none-any.whl.metadata
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/aa/5f/bb5970d3d04173b46c9037109f7f05fc8904ff5be073ee49bb6ff00301bc/pyproject_metadata-0.8.0-py3-none-any.whl.metadata
+DEBUG Searching for a compatible version of meson (==1.5.2)
+DEBUG Selecting: meson==1.5.2 [compatible] (meson-1.5.2-py3-none-any.whl)
+DEBUG Searching for a compatible version of packaging (&gt;=19.0)
+DEBUG Selecting: packaging==24.1 [compatible] (packaging-24.1-py3-none-any.whl)
+DEBUG Searching for a compatible version of pyproject-metadata (&gt;=0.7.1)
+DEBUG Selecting: pyproject-metadata==0.8.0 [compatible] (pyproject_metadata-0.8.0-py3-none-any.whl)
+DEBUG Adding transitive dependency for pyproject-metadata==0.8.0: packaging&gt;=19.0
+DEBUG Tried 5 versions: meson 1, meson-python 1, packaging 1, pybind11 1, pyproject-metadata 1
+DEBUG Split specific environment resolution took 0.239s
+DEBUG Installing in meson==1.5.2, meson-python==0.16.0, packaging==24.1, pybind11==2.13.6, pyproject-metadata==0.8.0 in C:\Users\Sandbox\AppData\Local\Temp\.tmpRFFhNx\builds-v0\.tmpqptYLW
+DEBUG Must revalidate requirement: meson
+DEBUG Must revalidate requirement: meson-python
+DEBUG Must revalidate requirement: packaging
+DEBUG Must revalidate requirement: pybind11
+DEBUG Must revalidate requirement: pyproject-metadata
+DEBUG Downloading and building requirements for build: meson==1.5.2, meson-python==0.16.0, packaging==24.1, pybind11==2.13.6, pyproject-metadata==0.8.0
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/55/a6/47b9353c331318a13eb050887eacfd61eb075746285f9baf7ef7de6ae235/meson-1.5.2-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/13/2f/0f24b288e2ce56f51c920137620b4434a38fd80583dbbe24fc2a1656c388/pybind11-2.13.6-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/08/aa/cc0199a5f0ad350994d660967a8efb233fe0416e4639146c089643407ce6/packaging-24.1-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/91/c0/104cb6244c83fe6bc3886f144cc433db0c0c78efac5dc00e409a5a08c87d/meson_python-0.16.0-py3-none-any.whl
+DEBUG No cache entry for: https://files.pythonhosted.org/packages/aa/5f/bb5970d3d04173b46c9037109f7f05fc8904ff5be073ee49bb6ff00301bc/pyproject_metadata-0.8.0-py3-none-any.whl
+DEBUG Installing build requirements: pyproject-metadata==0.8.0, meson-python==0.16.0, packaging==24.1, pybind11==2.13.6, meson==1.5.2
+DEBUG Extracting file name=PackageName(&quot;meson-python&quot;)
+DEBUG Extracting file name=PackageName(&quot;pyproject-metadata&quot;)
+DEBUG Extracted 6 files name=PackageName(&quot;pyproject-metadata&quot;)
+DEBUG No entrypoints name=PackageName(&quot;pyproject-metadata&quot;)
+DEBUG No data name=PackageName(&quot;pyproject-metadata&quot;)
+DEBUG Writing extra metadata name=PackageName(&quot;pyproject-metadata&quot;)
+DEBUG Writing record name=PackageName(&quot;pyproject-metadata&quot;)
+DEBUG Extracted 11 files name=PackageName(&quot;meson-python&quot;)
+DEBUG No entrypoints name=PackageName(&quot;meson-python&quot;)
+DEBUG No data name=PackageName(&quot;meson-python&quot;)
+DEBUG Writing extra metadata name=PackageName(&quot;meson-python&quot;)
+DEBUG Writing record name=PackageName(&quot;meson-python&quot;)
+DEBUG Extracting file name=PackageName(&quot;packaging&quot;)
+DEBUG Extracted 21 files name=PackageName(&quot;packaging&quot;)
+DEBUG No entrypoints name=PackageName(&quot;packaging&quot;)
+DEBUG No data name=PackageName(&quot;packaging&quot;)
+DEBUG Writing extra metadata name=PackageName(&quot;packaging&quot;)
+DEBUG Writing record name=PackageName(&quot;packaging&quot;)
+DEBUG Extracting file name=PackageName(&quot;meson&quot;)
+DEBUG Extracting file name=PackageName(&quot;pybind11&quot;)
+DEBUG Extracted 57 files name=PackageName(&quot;pybind11&quot;)
+DEBUG Writing entrypoints name=PackageName(&quot;pybind11&quot;)
+DEBUG No data name=PackageName(&quot;pybind11&quot;)
+DEBUG Writing extra metadata name=PackageName(&quot;pybind11&quot;)
+DEBUG Writing record name=PackageName(&quot;pybind11&quot;)
+DEBUG Extracted 244 files name=PackageName(&quot;meson&quot;)
+DEBUG Writing entrypoints name=PackageName(&quot;meson&quot;)
+DEBUG Installing data name=PackageName(&quot;meson&quot;)
+DEBUG Writing extra metadata name=PackageName(&quot;meson&quot;)
+DEBUG Writing record name=PackageName(&quot;meson&quot;)
+DEBUG Creating PEP 517 build environment
+DEBUG Calling `mesonpy.get_requires_for_build_editable()`
+DEBUG Calling `mesonpy.build_editable(&quot;C:\\Users\\Sandbox\\AppData\\Local\\Temp\\.tmpRFFhNx\\sdists-v4\\editable\\3b0dc5127cb60fe2\\U4fIuzClRy9QsLopv6vUY\\.tmphJXwfl&quot;, {}, None)`
+DEBUG + meson setup --reconfigure D:\RustDev\uv\mesontest D:\RustDev\uv\mesontest\build\cp312 -Dbuildtype=release -Db_ndebug=if-release -Db_vscrt=md --native-file=D:\RustDev\uv\mesontest\build\cp312\meson-python-native-file.ini
+DEBUG Cleaning... 0 files.
+DEBUG The Meson build system
+DEBUG Version: 1.5.2
+DEBUG Source dir: D:\RustDev\uv\mesontest
+DEBUG Build dir: D:\RustDev\uv\mesontest\build\cp312
+DEBUG Build type: native build
+DEBUG Project name: mesontest
+DEBUG Project version: 0.1.0
+DEBUG C++ compiler for the host machine: cl (msvc 19.39.33519 &quot;Microsoft (R) C/C++ Optimizing Compiler Version 19.39.33519 for x64&quot;)
+DEBUG C++ linker for the host machine: link link 14.39.33519.0
+DEBUG Host machine cpu family: x86_64
+DEBUG Host machine cpu: x86_64
+DEBUG Program python found: YES (C:\Users\Sandbox\AppData\Local\Temp\.tmpRFFhNx\builds-v0\.tmpqptYLW\Scripts\python.exe)
+DEBUG Dependency pybind11 found: YES 2.13.6 (cached)
+DEBUG Run-time dependency python found: YES 3.12
+DEBUG Build targets in project: 1
+DEBUG
+DEBUG mesontest 0.1.0
+DEBUG
+DEBUG   User defined options
+DEBUG     Native files: D:\RustDev\uv\mesontest\build\cp312\meson-python-native-file.ini
+DEBUG     buildtype   : release
+DEBUG     b_ndebug    : if-release
+DEBUG     b_vscrt     : md
+DEBUG
+DEBUG Found ninja.exe-1.12.1 at D:\msys64\mingw64\bin\ninja.exe
+DEBUG WARNING: msvc does not support C++11; attempting best effort; setting the standard to C++14
+DEBUG + meson compile
+DEBUG [1/2] Compiling C++ object _core.cp312-win_amd64.pyd.p/src_main.cpp.obj
+DEBUG FAILED: _core.cp312-win_amd64.pyd.p/src_main.cpp.obj
+DEBUG &quot;cl&quot; &quot;-I_core.cp312-win_amd64.pyd.p&quot; &quot;-I.&quot; &quot;-I..\..&quot; &quot;-IC:\Users\Sandbox\AppData\Local\Programs\Python\Python312\Include&quot; &quot;-IC:\Users\Sandbox\AppData\Local\Temp\.tmpEsFjbV\builds-v0\.tmpD9fGuR\Lib\site-packages\pybind11\include&quot; &quot;-DNDEBUG&quot; &quot;/MD&quot; &quot;/nologo&quot; &quot;/showIncludes&quot; &quot;/utf-8&quot; &quot;/Zc:__cplusplus&quot; &quot;/W2&quot; &quot;/EHsc&quot; &quot;/std:c++14&quot; &quot;/permissive-&quot; &quot;/O2&quot; &quot;/Gw&quot; &quot;/Fd_core.cp312-win_amd64.pyd.p\src_main.cpp.pdb&quot; /Fo_core.cp312-win_amd64.pyd.p/src_main.cpp.obj &quot;/c&quot; ../../src/main.cpp
+DEBUG ../../src/main.cpp(1): fatal error C1083: Cannot open include file: 'pybind11/pybind11.h': No such file or directory
+DEBUG ninja: build stopped: subcommand failed.
+DEBUG INFO: autodetecting backend as ninja
+DEBUG INFO: calculating backend command to run: D:\msys64\mingw64\bin\ninja.exe
+DEBUG Released lock at `C:\Users\Sandbox\AppData\Local\Temp\.tmpRFFhNx\sdists-v4\editable\3b0dc5127cb60fe2\.lock`
+error: Failed to prepare distributions
+  Caused by: Failed to fetch wheel: mesontest @ file:///D:/RustDev/uv/mesontest
+  Caused by: Build backend failed to build editable through `build_editable()` (exit code: 1)
+--- stdout:
++ meson setup --reconfigure D:\RustDev\uv\mesontest D:\RustDev\uv\mesontest\build\cp312 -Dbuildtype=release -Db_ndebug=if-release -Db_vscrt=md --native-file=D:\RustDev\uv\mesontest\build\cp312\meson-python-native-file.ini
+Cleaning... 0 files.
+The Meson build system
+Version: 1.5.2
+Source dir: D:\RustDev\uv\mesontest
+Build dir: D:\RustDev\uv\mesontest\build\cp312
+Build type: native build
+Project name: mesontest
+Project version: 0.1.0
+C++ compiler for the host machine: cl (msvc 19.39.33519 &quot;Microsoft (R) C/C++ Optimizing Compiler Version 19.39.33519 for x64&quot;)
+C++ linker for the host machine: link link 14.39.33519.0
+Host machine cpu family: x86_64
+Host machine cpu: x86_64
+Program python found: YES (C:\Users\Sandbox\AppData\Local\Temp\.tmpRFFhNx\builds-v0\.tmpqptYLW\Scripts\python.exe)
+Dependency pybind11 found: YES 2.13.6 (cached)
+Run-time dependency python found: YES 3.12
+Build targets in project: 1
+
+mesontest 0.1.0
+
+  User defined options
+    Native files: D:\RustDev\uv\mesontest\build\cp312\meson-python-native-file.ini
+    buildtype   : release
+    b_ndebug    : if-release
+    b_vscrt     : md
+
+Found ninja.exe-1.12.1 at D:\msys64\mingw64\bin\ninja.exe
+WARNING: msvc does not support C++11; attempting best effort; setting the standard to C++14
++ meson compile
+[1/2] Compiling C++ object _core.cp312-win_amd64.pyd.p/src_main.cpp.obj
+FAILED: _core.cp312-win_amd64.pyd.p/src_main.cpp.obj
+&quot;cl&quot; &quot;-I_core.cp312-win_amd64.pyd.p&quot; &quot;-I.&quot; &quot;-I..\..&quot; &quot;-IC:\Users\Sandbox\AppData\Local\Programs\Python\Python312\Include&quot; &quot;-IC:\Users\Sandbox\AppData\Local\Temp\.tmpEsFjbV\builds-v0\.tmpD9fGuR\Lib\site-packages\pybind11\include&quot; &quot;-DNDEBUG&quot; &quot;/MD&quot; &quot;/nologo&quot; &quot;/showIncludes&quot; &quot;/utf-8&quot; &quot;/Zc:__cplusplus&quot; &quot;/W2&quot; &quot;/EHsc&quot; &quot;/std:c++14&quot; &quot;/permissive-&quot; &quot;/O2&quot; &quot;/Gw&quot; &quot;/Fd_core.cp312-win_amd64.pyd.p\src_main.cpp.pdb&quot; /Fo_core.cp312-win_amd64.pyd.p/src_main.cpp.obj &quot;/c&quot; ../../src/main.cpp
+../../src/main.cpp(1): fatal error C1083: Cannot open include file: 'pybind11/pybind11.h': No such file or directory
+ninja: build stopped: subcommand failed.
+INFO: autodetecting backend as ninja
+INFO: calculating backend command to run: D:\msys64\mingw64\bin\ninja.exe
+--- stderr:
+
+---
+</code></pre>
+</p>
+</details>
+
+<details><summary>meson.build</summary>
+<p>
+
+<pre><code class="language-meson">project(
+    'mesontest',
+    'cpp',
+    version: '0.1.0',
+    meson_version: '&gt;= 1.2.3',
+    default_options: [
+        'cpp_std=c++11',
+        'python.install_env=venv',
+    ],
+)
+
+py = import('python').find_installation(pure: false)
+pybind11_dep = dependency('pybind11')
+
+py.extension_module('_core',
+    'src/main.cpp',
+    subdir: 'mesontest',
+    install: true,
+    dependencies : [pybind11_dep],
+)
+
+install_subdir('src/mesontest', install_dir: py.get_install_dir() / 'mesontest', strip_directory: true)
+</code></pre>
+</p>
+</details> 
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-10-05 23:35</div>
+            <div class="timeline-body"><p>@bluss digging around meson docs for a bit, I found that <code>--clearcache</code> allows it to work with uv sync on second runs as expected. I'll update the PR to include this so that it works with uv a bit better.</p>
+<pre><code>[tool.meson-python.args]
+setup = [&quot;--clearcache&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/rgommers">@rgommers</a> reviewed on 2024-10-06 07:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/rgommers">@rgommers</a> on <code>crates/uv/src/commands/project/init.rs</code>:907 on 2024-10-06 07:34</div>
+            <div class="timeline-body"><p>This line should be removed. A regular package shouldn't have to know what the name is of the environment it's going to be installed in.</p>
+<p>Other than that, the <code>meson.build</code> file produced looks good to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/rgommers">@rgommers</a> on 2024-10-06 08:00</div>
+            <div class="timeline-body"><blockquote>
+<p>I found that <code>--clearcache</code> allows it to work with uv sync on second runs as expected.</p>
+</blockquote>
+<p>I think this is not going to help beyond being a band aid for this specific scenario. For one, editable installs will be invoking <code>ninja</code>, and you happen to have it installed at <code>D:\msys64\mingw64\bin\ninja.exe</code>. But if the user doesn't have it, it's going to be in the temporary build env and then discarded, so even importing an editable install won't work then. See the docs at https://mesonbuild.com/meson-python/how-to-guides/editable-installs.html#build-dependencies</p>
+<p>For regular installs things look fine from the logs as far as I can tell. For editable installs, build isolation should be disabled for things to work well. This probably requires a bit of context, so here it is:</p>
+<p>Editable installs were not designed well for dealing with packages with compiled code. The <code>pip</code> defaults completely ignore compiled code and assume what <code>setuptools</code> does: force the user to manually rebuild the package with either <code>pip install</code> or <code>python setup.py build_ext -i</code> (which is a bad experience). <code>meson-python</code> is primarily used for projects with compiled code (as is <code>scikit-build-core</code>, which has similar capabilities to <code>meson-python</code>) and hence tries to do better - it will auto-rebuild whenever one touches compiled code so that the experience of working on C/C++/Cython code is very similar to working on pure Python code. For that to happen, one needs to have build dependencies available in the dev env, or at least in a fixed location. For <code>pip</code>, it's up to the user of the editable install to add <code>--no-build-isolation</code> to the install command for things to work as intended with auto-rebuilds. Hopefully <code>uv</code> has the chance to offer a better experience here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv/src/commands/project/init.rs</code>:907 on 2024-10-06 14:56</div>
+            <div class="timeline-body"><blockquote>
+<p>A regular package shouldn't have to know what the name is of the environment it's going to be installed in.</p>
+</blockquote>
+<p>I see, I made the change per suggestion from https://mesonbuild.com/Python-module.html / https://mesonbuild.com/Builtin-options.html#python-module as I was having some issues at first locally with meson. I'll remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-10-06 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-10-06 14:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv/src/commands/project/init.rs</code>:907 on 2024-10-06 14:58</div>
+            <div class="timeline-body"><p>6794774</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-10-06 16:07</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>I found that <code>--clearcache</code> allows it to work with uv sync on second runs as expected.</p>
+</blockquote>
+<p>I think this is not going to help beyond being a band aid for this specific scenario. For one, editable installs will be invoking <code>ninja</code>, and you happen to have it installed at <code>D:\msys64\mingw64\bin\ninja.exe</code>. But if the user doesn't have it, it's going to be in the temporary build env and then discarded, so even importing an editable install won't work then. See the docs at https://mesonbuild.com/meson-python/how-to-guides/editable-installs.html#build-dependencies</p>
+<p>For regular installs things look fine from the logs as far as I can tell. For editable installs, build isolation should be disabled for things to work well. This probably requires a bit of context, so here it is:</p>
+<p>Editable installs were not designed well for dealing with packages with compiled code. The <code>pip</code> defaults completely ignore compiled code and assume what <code>setuptools</code> does: force the user to manually rebuild the package with either <code>pip install</code> or <code>python setup.py build_ext -i</code> (which is a bad experience). <code>meson-python</code> is primarily used for projects with compiled code (as is <code>scikit-build-core</code>, which has similar capabilities to <code>meson-python</code>) and hence tries to do better - it will auto-rebuild whenever one touches compiled code so that the experience of working on C/C++/Cython code is very similar to working on pure Python code. For that to happen, one needs to have build dependencies available in the dev env, or at least in a fixed location. For <code>pip</code>, it's up to the user of the editable install to add <code>--no-build-isolation</code> to the install command for things to work as intended with auto-rebuilds. Hopefully <code>uv</code> has the chance to offer a better experience here.</p>
+</blockquote>
+<p>All great points, thanks for the links and meson context. Maybe we could consider having a default section for meson in particular with <code>[tool.uv] no-build-isolation = true</code> in the <code>pyproject.toml</code> to support editable installs better? Although that will give a user an error on their first experience with the uv meson scaffolding.</p>
+<p>As a starting point, I was originally of the mindset that having to use <code>--reinstall</code> with <code>uv</code> for editable cases in the binary build backends was acceptable given the goal of the <code>init</code> command. Of course, this has led to the issues aformentioned with meson. Alternatively, the recommendation for using <code>uv sync / uv run</code> with meson could be to not support editable installs by using <code>--no-editable</code> instead (an get rid of the <code>--clearcache</code> from meson setup args).</p>
+<blockquote>
+<p>Hopefully uv has the chance to offer a better experience here.</p>
+</blockquote>
+<p>I think there's definitely further work to improve on this area as this PR mainly is a starting cookiecutter that introduces leveraging other build backends with uv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-10-06 17:09</div>
+            <div class="timeline-body"><p>If uv didn't use a different random path every time, but cached the build environment, then that would be solved, I think. Might be something to look into? It would be a big time savings for both meson-python and scikit-build-core, as they could take advantage of caching then. Meson-python should also detect a moving build environment and rerun from scratch if it's detected, a feature I recently added to scikit-build-core.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-10-06 23:26</div>
+            <div class="timeline-body"><blockquote>
+<p>Meson-python should also detect a moving build environment and rerun from scratch if it's detected, a feature I recently added to scikit-build-core.</p>
+</blockquote>
+<p>That would be great (if possible).</p>
+<p>I've removed <code>--clearcache</code> for the time being and documented the observations with meson-python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @zanieb by @zanieb on 2024-10-08 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @konstin by @zanieb on 2024-10-08 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/init.rs</code>:669 on 2024-10-12 14:46</div>
+            <div class="timeline-body"><p>nit: move inside if block, since it is only used inside the if block</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-cli/src/lib.rs</code>:2466 on 2024-10-12 14:52</div>
+            <div class="timeline-body"><p>The second sentence is redundant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/init.rs</code>:978 on 2024-10-12 15:06</div>
+            <div class="timeline-body"><p>Currently, this function both writes some files (effectful) and returns the contents of a file (pure). It should either return all files or write all files, so it's clearly to the reader that this is either just a template-filling function or an effectful function: When I read <code>generate_package_script</code> in <code>init_application</code>, I assumed it did only generate the file it returned and not also write other files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/init.rs</code>:800 on 2024-10-12 15:09</div>
+            <div class="timeline-body"><p>Do these build backend have forever stability guarantees (somewhere in their docs/github issues where we can link them?) or do we need to put version bounds on them?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/commands/project/init.rs</code>:916 on 2024-10-12 15:13</div>
+            <div class="timeline-body"><p>we're just in time to switch to 3.9 as starter default minimum version (https://devguide.python.org/versions/)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-10-12 15:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv/src/commands/project/init.rs</code>:978 on 2024-10-12 15:45</div>
+            <div class="timeline-body"><p>Agreed, it was a last minute add</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-10-12 15:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-10-12 15:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv/src/commands/project/init.rs</code>:800 on 2024-10-12 15:46</div>
+            <div class="timeline-body"><p>Good question, we currently don't put bounds on hatchling either, do we want to upper bound all of them?  I follow each's build backend suggested version constraints I saw on their guides.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-10-12 15:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv/src/commands/project/init.rs</code>:916 on 2024-10-12 15:46</div>
+            <div class="timeline-body"><p>♥️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-12 16:49</div>
+            <div class="timeline-body"><p>Hi!</p>
+<p>Adding more build backend is a great idea and the code looks good, i left some mostly style comments.</p>
+<p>I certainly see the struggle of native build backends with the current constraints, PEP 517 left a lot missing for non-pure Python projects. From uv's perspective though, it's important that build backends work correctly as long as a valid PEP 517 environment is given (https://peps.python.org/pep-0517/#build-environment). <code>--no-build-isolation</code> in particular breaks uv's workflows. I'm hesistant to include meson if it fails with changing venv paths and meson and scikit-build-core given they recommend deactivating build isolation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-10-12 17:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv/src/commands/project/init.rs</code>:669 on 2024-10-12 17:30</div>
+            <div class="timeline-body"><p>✔️ a090e8f286e41bb2be8d81999d19eb3571fc4bda</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-10-12 17:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv-cli/src/lib.rs</code>:2466 on 2024-10-12 17:30</div>
+            <div class="timeline-body"><p>✔️ a090e8f286e41bb2be8d81999d19eb3571fc4bda</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-10-12 17:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv/src/commands/project/init.rs</code>:978 on 2024-10-12 17:30</div>
+            <div class="timeline-body"><p>✔️ a090e8f286e41bb2be8d81999d19eb3571fc4bda</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-10-12 17:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv/src/commands/project/init.rs</code>:916 on 2024-10-12 17:30</div>
+            <div class="timeline-body"><p>✔️ a090e8f286e41bb2be8d81999d19eb3571fc4bda</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-10-14 22:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Hi!</p>
+<p>Adding more build backend is a great idea and the code looks good, i left some mostly style comments.</p>
+<p>I certainly see the struggle of native build backends with the current constraints, PEP 517 left a lot missing for non-pure Python projects. From uv's perspective though, it's important that build backends work correctly as long as a valid PEP 517 environment is given (https://peps.python.org/pep-0517/#build-environment). <code>--no-build-isolation</code> in particular breaks uv's workflows. I'm hesistant to include meson if it fails with changing venv paths and meson and scikit-build-core given they recommend deactivating build isolation.</p>
+</blockquote>
+<p>Sounds good, should I remove <code>meson-python</code> as well as <code>scikit-build-core</code>? <code>scikit-build-core</code> seems to work with build isolation, so I'd prefer to keep it but I'll let others chime in.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/henryiii">@henryiii</a> on 2024-10-14 23:00</div>
+            <div class="timeline-body"><p><code>scikit-build-core</code> works fine with build isolation.</p>
+<p>(and I’ll look into meson-python soon)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-15 07:35</div>
+            <div class="timeline-body"><p>Then let's start with <code>scikit-build-core</code> and add <code>meson-python</code> in a follow-up PR once the bug is fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-10-15 08:18</div>
+            <div class="timeline-body"><p>@henryiii What's the stability policy for <code>scikit-build-core</code> and <code>pybind11</code>? I.e., if we put the following in a published package, do they guarantee that there's never a breaking change released for those projects that may break a publish source dist, or should we add bounds?</p>
+<pre><code class="language-toml">[build-system]
+requires = [&quot;scikit-build-core&quot;, &quot;pybind11&quot;]
+build-backend = &quot;scikit_build_core.build&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-10-15 21:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Then let's start with <code>scikit-build-core</code> and add <code>meson-python</code> in a follow-up PR once the bug is fixed.</p>
+</blockquote>
+<p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-10-16 11:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "feat(init): support different init build backends" to "Add templates for popular build backends" by @konstin on 2024-10-16 11:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-10-16 12:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-10-16 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-10-16 12:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-16 12:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lucascolley">@lucascolley</a> on 2024-12-26 11:36</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this is not going to help beyond being a band aid for this specific scenario. For one, editable installs will be invoking ninja, and you happen to have it installed at D:\msys64\mingw64\bin\ninja.exe. But if the user doesn't have it, it's going to be in the temporary build env and then discarded, so even importing an editable install won't work then.</p>
+</blockquote>
+<p>I just hit this trying to develop scikit-learn with uv. Is this issue on your radar @konstin @zanieb ? Or should I open an issue on the tracker?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-12-28 17:07</div>
+            <div class="timeline-body"><p>@lucascolley I wasn't following this, but now I am :)</p>
+<p>A dedicated issue seems nice since we've had a couple links to this pull request already. I'm not entirely sure what needs to happen, i.e., if there needs to be a change in meson or uv.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:13 UTC
+    </footer>
+</body>
+</html>

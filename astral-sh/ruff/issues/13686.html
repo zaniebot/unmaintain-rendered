@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruff server pegs CPU and blocks VSCode when changing many files - astral-sh/ruff #13686</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ruff server pegs CPU and blocks VSCode when changing many files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/13686">#13686</a>
+        opened by <a href="https://github.com/adamh-oai">@adamh-oai</a>
+        on 2024-10-09 00:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adamh-oai">@adamh-oai</a> on 2024-10-09 00:19</div>
+            <div class="timeline-body"><p>In our large mostly-python monorepo, when using the VSCode ruff extension + ruff server, if I update to a commit has many changed files, <code>ruff server</code> will consume lots of CPU (up to 1000% in some cases), and I cannot save in VSCode because it is blocked on &quot;Getting code actions (..., &quot;Ruff&quot;)&quot;.</p>
+<img width="443" alt="image" src="https://github.com/user-attachments/assets/2deb6677-f0bb-40d8-a438-b8c1a4bc973c">
+
+<p>Sample of debug logs:</p>
+<pre><code>2024-10-08 14:39:50.935 [info] Falling back to bundled executable: /Users/adamh/.vscode/extensions/charliermarsh.ruff-2024.50.0-darwin-arm64/bundled/libs/bin/ruff
+2024-10-08 14:39:50.955 [info] Resolved 'ruff.nativeServer: auto' to use the native server
+2024-10-08 14:39:50.955 [info] Found Ruff 0.6.6 at /Users/adamh/.vscode/extensions/charliermarsh.ruff-2024.50.0-darwin-arm64/bundled/libs/bin/ruff
+...
+2024-10-08 17:00:20.165 [info] [Trace - 5:00:20 PM]    0.427054875s DEBUG ThreadId(06) ruff_server::session::index::ruff_settings: Ignored path via `exclude`: ...
+2024-10-08 17:00:20.241 [info] [Trace - 5:00:20 PM] Sending notification '$/cancelRequest'.
+2024-10-08 17:00:20.241 [info] [Trace - 5:00:20 PM] Sending request 'textDocument/codeAction - (6)'.
+...
+
+024-10-08 17:10:03.895 [info] [Trace - 5:10:03 PM]  584.158088958s DEBUG ThreadId(57) ruff_server::session::index::ruff_settings: Ignored path via `exclude`:
+...
+</code></pre>
+<p>There are lots and lots of the &quot;ignored&quot;, which isn't surprising since I run with a config that excludes most paths in the repo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamh-oai">@adamh-oai</a> on 2024-10-09 00:21</div>
+            <div class="timeline-body"><p>@hauntsaninja said I should tag @dhruvmanila since you've been talking about this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">server</span> added by @dhruvmanila on 2024-10-09 03:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-09 03:59</div>
+            <div class="timeline-body"><p>Thanks! I'll need to try to reproduce this somehow using a large repository, maybe I'll pickup home-assistant/core for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamh-oai">@adamh-oai</a> on 2024-10-09 05:45</div>
+            <div class="timeline-body"><p>Looks like ours is about 5x larger than home-assistant/core.  I can reproduce this pretty easily, if you want to give me something to test.  A few other details:</p>
+<ul>
+<li>It actually seems to crawl at low CPU usage for a while, possibly because of a different VSCode issue on large updates that spawns 50 (!) ripgrep processes for find, and so it's mostly waiting on disk</li>
+<li>Once those rg finish it starts using a ton of CPU.  It's been chugging at 700% CPU for ~20 minutes now.</li>
+<li>The &quot;ignored path&quot; log entries are repeated many times, I count 25x for each directory, and this isn't the full log file.  This isn't 25x in a row, they just happen over and over again.</li>
+</ul>
+<p>Both this and the 50-copies-of-rg issue sort of feel like VSCode is triggering a whole bunch of update notifications and they queue up somewhere and then are processed even though they all represent the same change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-09 06:25</div>
+            <div class="timeline-body"><p>@adamh-oai is there a high likelihood that each pull changes some pyproject.toml?</p>
+<blockquote>
+<p>Both this and the 50-copies-of-rg issue sort of feel like VSCode is triggering a whole bunch of update notifications and they queue up somewhere and then are processed even though they all represent the same change.</p>
+</blockquote>
+<p>That's what I suspect as well</p>
+<ul>
+<li>If there are many changes, file watchers might give up on tracking every file and instead assume everything has changed until the changes settle down.</li>
+<li>As a result, Ruff is notified that a settings file may have changed, possibly several times, making Ruff reindex your project by walking the entire tree.</li>
+<li>Ruff's VS code extension hasn't implemented cancellation messages yet. That means that Ruff might finish requests to completion that are now stale.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-09 06:44</div>
+            <div class="timeline-body"><p>If they're representing the same changes, then there's a chance that VS Code must be sending the cancel requests as well (as also noted in your logs). It might become important to implement that in the server although I'd need to verify.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamh-oai">@adamh-oai</a> on 2024-10-21 23:08</div>
+            <div class="timeline-body"><p>@dhruvmanila this hits us pretty regularly, is there anything I can test to narrow it down?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-10-22 06:33</div>
+            <div class="timeline-body"><p>@dhruvmanila I wonder if it's time to change our settings discovery to be lazy instead of doing it eagerly. It would not only help with the single file case but also reduce the indexing cost here because the LSP would only ever discover the settings for the files currently open in the editor instead of all settings (and only traverse upwards, but never downwards)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-22 06:57</div>
+            <div class="timeline-body"><p>Yeah, I think we might want to prioritize that. And, even if we add support for cancellation, lazy settings discovery would still be more beneficial comparatively.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-22 14:20</div>
+            <div class="timeline-body"><p>I experimented a bit using <code>home-assistant/core</code> and I think we might be re-indexing the entire project multiple times.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-25 05:39</div>
+            <div class="timeline-body"><p>@adamh-oai Can I know how many Ruff configuration files exists in your project? It could be either <code>pyproject.toml</code> / <code>ruff.toml</code> / <code>.ruff.toml</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2024-10-25 06:59</div>
+            <div class="timeline-body"><p>We have well over a thousand pyproject.toml in the repo, only about 150 of which contain <code>tool.ruff</code>. It's common to have a per-project ruff setup that <code>extend</code>-s from the root ruff config. Looks like there are two ruff.toml</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2024-10-25 09:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-10-25 09:03</div>
+            <div class="timeline-body"><p>Thanks, that's very useful. I think we've narrowed down the problem and will be working towards a fix for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dhruvmanila by @dhruvmanila on 2024-10-25 09:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2024-11-12 09:24</div>
+            <div class="timeline-body"><p>This is still on our mind. I'm planning to pick it up either next or the following week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-15 13:25</div>
+            <div class="timeline-body"><p>Hi @adamh-oai / @hauntsaninja, I've started tackling the issue this week and one of the things that I want to check is the fix in #15495. It would be very helpful to know if that fix helps in your scenario as lazy indexing is somewhat complex to implement. I'm planning to get that PR released as soon as possible but I wanted to know if it would be possible from your end to get the version tested this or the coming week.</p>
+<p>For context, the server indexes the entire project eagerly when the server starts and similarly whenever any of the configuration file changes. This is an expensive process for very large projects for which lazy indexing is one of the solution which would only resolve the configuration for all the open files in an editor and update it's state whenever there are any changes related to the configuration files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamh-oai">@adamh-oai</a> on 2025-01-15 18:24</div>
+            <div class="timeline-body"><p>Awesome.  I'll give it a try, but do you know when the next release of ruff with this change will happen?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-15 19:03</div>
+            <div class="timeline-body"><p>We plan on releasing a new patch version tomorrow</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-17 09:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Awesome. I'll give it a try, but do you know when the next release of ruff with this change will happen?</p>
+</blockquote>
+<p>Ruff 0.9.2 has been released with the patch to avoid indexing the workspace multiple times.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-27 08:34</div>
+            <div class="timeline-body"><p>Hi @adamh-oai / @hauntsaninja, just want to follow-up on this issue. Has the experience improved in terms of performance or does the server still consume lots of CPU?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/adamh-oai">@adamh-oai</a> on 2025-02-27 23:34</div>
+            <div class="timeline-body"><p>@dhruvmanila I've tried to repro and haven't seen it with the new version.  We're re-enabling the native server and I'll ping this thread if we get any reports.  Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hauntsaninja">@hauntsaninja</a> on 2025-03-03 20:45</div>
+            <div class="timeline-body"><p>I think it's been better! I would tentatively close this issue. Thanks for fixing!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-03-05 03:08</div>
+            <div class="timeline-body"><p>Thank you both. I'll close this now but feel free to comment or open a new issue if the problem arises again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-03-05 03:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:22 UTC
+    </footer>
+</body>
+</html>

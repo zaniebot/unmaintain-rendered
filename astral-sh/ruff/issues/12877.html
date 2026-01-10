@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warn about un-annotated attributes in dataclass definition - astral-sh/ruff #12877</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Warn about un-annotated attributes in dataclass definition</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12877">#12877</a>
+        opened by <a href="https://github.com/adigitoleo">@adigitoleo</a>
+        on 2024-08-14 05:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/adigitoleo">@adigitoleo</a> on 2024-08-14 05:39</div>
+            <div class="timeline-body"><p>This is a feature request. The proposal is for a warning which would be triggered if a dataclass definition contains un-annotated attribute declarations. Attributes <code>d</code> and <code>e</code> in the following example would trigger the warning:</p>
+<pre><code class="language-python">from dataclasses import dataclass
+
+@dataclass
+class Foo:  # Public API of a package.
+    a: float = 4.2
+    b: int = 42
+    c: tuple = (4.2, 42)
+
+@dataclass
+class Bar(Foo):  # User-defined subclass.
+    d = 999
+    e = &quot;foo&quot;
+</code></pre>
+<p><strong>Pitch</strong></p>
+<p>By default, all attributes defined in a dataclass definition are class attrtibutes. Those annotated with a type also become instance attributes, unless their annotation is <code>typing.ClassVar</code>. This leads to the potentially surprising behaviour that un-annotated attributes are automatically <em>only class attributes</em>. Doing <code>Bar(d=1)</code> or <code>Bar(e=&quot;bar&quot;)</code> using the above definition leads to an &quot;unexpected keyword argument&quot; error, which itself does not immediately indicate (to novice Python programmers) that <code>d</code> and <code>e</code> are class attributes. This is especially dangerous when considering to offer a dataclass as public API for users to subclass (comments in the example).</p>
+<p>I propose that ruff could at least prompt developers to clarify that they intend for an attribute to be a class attribute by using <code>typing.ClassVar</code>. Type annotations are frequently described as &quot;optional&quot;, however in this case, by leaving them out, the semantics of the attribute declaration changes. The decision on whether to prompt the addition of &quot;optional&quot; type annotations is also being discussed in https://github.com/astral-sh/ruff/issues/5243, which is about the related <a href="https://docs.astral.sh/ruff/rules/mutable-class-default/">RUF012</a> rule. However, that rule only covers the case of mutable class attributes (if <code>e</code> were a list, in the above example), and its scope extends beyond dataclasses. Because the use of dataclasses arguably implies the use of annotations, I think it is reasonable to warn when they are missing.</p>
+<p>I'm not sure if this would be best proposed as a Pylint warning, or as a Ruff-only rule, but considering the classification of RUF012 I chose to propose it here.</p>
+<p>I also opened a possibly premature issue <a href="https://github.com/python/mypy/issues/17666">over at mypy</a> and started a discussion on <a href="https://discuss.python.org/t/optionally-disallow-un-annotated-class-attributes-for-dataclass/60708/11">the forum</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-08-21 06:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-triage</span> added by @MichaReiser on 2024-08-21 06:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-14 06:08</div>
+            <div class="timeline-body"><p>I'm in favor of adding this rule - It seems like a clear &quot;gotcha&quot; to me.</p>
+<p>It should not be difficult to implement (there is already an <code>is_dataclass</code> helper method, and the logic for recommending a <code>ClassVar</code> annotation exists in RUF012). The documentation should include a reference to this part of the Python docs: https://docs.python.org/3/library/dataclasses.html#class-variables</p>
+<p>The hardest part will be figuring out which number RUF rule it will be since there are a lot of open PRs out right now for those... 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-triage</span> removed by @dhruvmanila on 2024-11-18 06:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @MichaReiser on 2024-11-18 08:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-02-15 15:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-02-15 15:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:43 UTC
+    </footer>
+</body>
+</html>

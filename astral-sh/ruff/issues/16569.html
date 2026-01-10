@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule proposal: `in-empty-collection` - astral-sh/ruff #16569</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule proposal: <code>in-empty-collection</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16569">#16569</a>
+        opened by <a href="https://github.com/naslundx">@naslundx</a>
+        on 2025-03-08 19:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/naslundx">@naslundx</a> on 2025-03-08 19:53</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>After discussions in https://github.com/astral-sh/ruff/pull/15732 and https://github.com/astral-sh/ruff/issues/15729 an idea was proposed to add a rule for checking unnecessary membership test in empty collections.</p>
+<p>This would reinstate the old behavior in rule PLR6201 to explicitly check for things like <code>if 1 in []</code> or <code>if 'a' not in ''</code>.</p>
+<p>Should ruff include it?</p>
+<p>Example implementation is here: #16480</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Rule proposal: InEmptyCollection" to "Rule proposal: `in-empty-collection`" by @MichaReiser on 2025-03-10 11:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-03-10 11:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-10 11:11</div>
+            <div class="timeline-body"><p>Unrelated on whether we decide to add this rule. I think I'd prefer naming it <code>in-empty-sequence</code> to match python's semantics OR exclude <code>str</code> from the rule</p>
+<blockquote>
+<p>Strings are immutable <a href="https://docs.python.org/3/library/stdtypes.html#typesseq">sequences</a> of Unicode code points. String literals are written in a variety of ways:
+<a href="https://docs.python.org/3/library/stdtypes.html#text-sequence-type-str">source</a></p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-10 11:12</div>
+            <div class="timeline-body"><p>I think having this as a rule does make sense. What would you suggest as proposed fix?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-28 07:21</div>
+            <div class="timeline-body"><p>@dylwil3 you asked in #16480 to open this issue. Do you have any concerns with the rule or should we accept this request and land the PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-04-28 22:00</div>
+            <div class="timeline-body"><p>I'm personally happy with the rule, was just checking boxes - sorry for the bureaucratic red tape! @naslundx would you like to sync with main, respond to the remaining comments on the PR and we can get this landed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-04-29 00:34</div>
+            <div class="timeline-body"><p>On the name semantics, <code>in</code> is the operator for <code>__contains__</code> * (see message below for caveat), and <code>typing.Container</code> is the Protocol for <code>def __contains__</code>. So <code>in-empty-container</code> ?
+That covers strings, lists, tuples, dicts, sets, deque, and I'm sure many other stdlib containers I'm forgetting.
+Ok, these are all collections... tbh I'm having a hard time finding a stdlib container that isn't a collection XD</p>
+<p>Btw sequences are collections with a few extra methods. So the originally proposed name <code>in-empty-collection</code> still works whilst including strings imo.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Avasam">@Avasam</a> on 2025-04-29 01:04</div>
+            <div class="timeline-body"><p><code>&quot;&quot; in iter(())</code> and <code>&quot;&quot; in iter(&quot;&quot;)</code> (ie: <code>Iterator[Never]</code>) seem to be in the spirit of this rule, but not a <code>Container</code> in the Protocol sense. But <code>in</code> also works for Iterables and implementers of <code>__getitem__()</code>  https://docs.python.org/3/reference/expressions.html#in</p>
+<p>Actually, any empty <code>&lt;whatever this rule checks for&gt;</code> passed to <code>iter</code> I guess.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/naslundx">@naslundx</a> on 2025-05-04 17:25</div>
+            <div class="timeline-body"><p>Not a problem at all @dylwil3 , sorry for dropping this for a while.</p>
+<p>Agree with @Avasam that <code>collection</code> seems like the more proper name considering it doesn't just apply to sequences.</p>
+<p>I will polish up the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-05-06 17:48</div>
+            <div class="timeline-body"><p>Resolved in https://github.com/astral-sh/ruff/pull/16480</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-05-06 17:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:51 UTC
+    </footer>
+</body>
+</html>

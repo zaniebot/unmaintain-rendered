@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F821 On class's type in type signature within the same class. - astral-sh/ruff #6991</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>F821 On class's type in type signature within the same class.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/6991">#6991</a>
+        opened by <a href="https://github.com/0x6d6e647a">@0x6d6e647a</a>
+        on 2023-08-29 18:28
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/0x6d6e647a">@0x6d6e647a</a> on 2023-08-29 18:28</div>
+            <div class="timeline-body"><p>I'm using Ruff v0.0.286 in the following.</p>
+<p>For the following Python code:</p>
+<pre><code class="language-python">#!/usr/bin/env python
+
+class Foo:
+    def __init__(self, name: str) -&gt; None:
+        self._name = str
+
+    @staticmethod
+    def from_int(n: int) -&gt; Foo:
+        return Foo(str(n))
+
+x = Foo.from_int(5)
+</code></pre>
+<p>Ruff generates the following error:</p>
+<pre><code class="language-shell">user@host $ ruff test.py
+test.py:8:29: F821 Undefined name `Foo`
+Found 1 error.
+</code></pre>
+<p>Whereas Mypy says there is no error:</p>
+<pre><code class="language-shell">user@host $ mypy test.py
+Success: no issues found in 1 source file
+</code></pre>
+<p>It seems that Ruff is not aware of a class's type definition from within the same class but only in side a type signature.</p>
+<p>Please note that Ruff <strong>correctly</strong> does not error on the next line <code>return Foo(str(n))</code>. The issue seems to only happen within type signatures.</p>
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-29 18:46</div>
+            <div class="timeline-body"><p>Hi!</p>
+<p>I believe our behavior is correct here, the class is <em>not</em> available in the method signature scope:</p>
+<pre><code>❯ python example.py
+Traceback (most recent call last):
+  File &quot;/Users/mz/eng/src/astral-sh/ruff/example.py&quot;, line 3, in &lt;module&gt;
+    class Foo:
+  File &quot;/Users/mz/eng/src/astral-sh/ruff/example.py&quot;, line 8, in Foo
+    def from_int(n: int) -&gt; Foo:
+                            ^^^
+NameError: name 'Foo' is not defined
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">question</span> added by @zanieb on 2023-08-29 18:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/0x6d6e647a">@0x6d6e647a</a> on 2023-08-29 18:56</div>
+            <div class="timeline-body"><p>You're correct! I fixed the code as follows:</p>
+<pre><code class="language-python">#!/usr/bin/env python
+from typing import Self
+
+class Foo:
+    def __init__(self, name: str) -&gt; None:
+        self._name = str
+
+    @classmethod
+    def from_int(cls, n: int) -&gt; Self:
+        return cls(str(n))
+
+x = Foo.from_int(5)
+</code></pre>
+<p>Sorry for wasting your time. I really appreciate the quick reply! Thank you very much!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @0x6d6e647a on 2023-08-29 18:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-29 18:57</div>
+            <div class="timeline-body"><p>No problem! You can also use <code>&quot;Foo&quot;</code> but <code>Self</code> is a great new feature.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:31:10 UTC
+    </footer>
+</body>
+</html>

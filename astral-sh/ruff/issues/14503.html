@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B024: false negative with annotated, unassigned instance variables of a class - astral-sh/ruff #14503</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>B024: false negative with annotated, unassigned instance variables of a class</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/14503">#14503</a>
+        opened by <a href="https://github.com/cmp0xff">@cmp0xff</a>
+        on 2024-11-20 20:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/cmp0xff">@cmp0xff</a> on 2024-11-20 20:59</div>
+            <div class="timeline-body"><p>This issue derives from https://github.com/astral-sh/ruff/issues/14455#issuecomment-2489472624.</p>
+<p>[copied from other issue] Meanwhile, upon checking the <a href="https://docs.python.org/3/library/typing.html#typing.ClassVar">Python documentation</a>, it turns out that only when subscribed by typing.ClassVar is an annotate variable considered a class variable. Copied from the above-mentioned documentation:</p>
+<pre><code class="language-python">class Starship:
+    stats: ClassVar[dict[str, int]] = {} # class variable
+    damage: int = 10                     # instance variable
+</code></pre>
+<p>What I had as an example in the original post is therefore an instance variable, not a class variable. This contradicts the discussion in https://github.com/PyCQA/flake8-bugbear/issues/293, which only has to do with typing.ClassVar.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dylwil3 on 2024-11-20 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-decision</span> added by @dylwil3 on 2024-11-20 21:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dylwil3">@dylwil3</a> on 2024-11-20 21:13</div>
+            <div class="timeline-body"><p>To clarify, the suggestion here is this:</p>
+<pre><code class="language-python">from abc import ABC
+
+class Foo(ABC):
+    a: ClassVar[int]              #&lt;--- should not trigger B024
+
+class Bar(ABC):
+    b: int              #&lt;--- should trigger B024 because it is not annotated as a class variable
+</code></pre>
+<p>this makes some sense to me but I'd have to read the documentation to make sure I'm understanding correctly, so I'm not sure whether to adopt this behavior just yet.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:35:47 UTC
+    </footer>
+</body>
+</html>

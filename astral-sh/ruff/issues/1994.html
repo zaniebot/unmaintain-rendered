@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM118 Use `key in vd` instead of `key in vd.keys()` assumes `__iter__` is over `keys()` - astral-sh/ruff #1994</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>SIM118 Use <code>key in vd</code> instead of <code>key in vd.keys()</code> assumes <code>__iter__</code> is over <code>keys()</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/1994">#1994</a>
+        opened by <a href="https://github.com/taldcroft">@taldcroft</a>
+        on 2023-01-19 11:13
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/taldcroft">@taldcroft</a> on 2023-01-19 11:13</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+- A minimal code snippet that reproduces the bug.
+- The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+- The current Ruff settings (any relevant sections from your `pyproject.toml`).
+- The current Ruff version (`ruff --version`).
+-->
+
+<p>Example code:</p>
+<pre><code>class ValuesDict:
+   &quot;&quot;&quot;Dict-like container that iterates over the values.&quot;&quot;&quot;
+    def __init__(self, value):
+        self.value = value
+
+    def __iter__(self):
+        yield from self.values()
+
+    def keys(self):
+        return self.value.keys()
+
+    def values(self):
+        return self.value.values()
+
+
+d = {&quot;a&quot;: 1, &quot;b&quot;: 2, &quot;c&quot;: 3}
+vd = ValuesDict(d)
+
+for key in vd.keys():
+    print(key)
+</code></pre>
+<p>This is the original expected output:</p>
+<pre><code>$ python row.py
+a
+b
+c
+</code></pre>
+<p>Applying fixes for SIM118:</p>
+<pre><code>$ ruff --select=SIM118 --fix row.py
+Found 1 error(s) (1 fixed, 0 remaining).
+
+$ git diff
+diff --git a/row.py b/row.py
+index 1e7536d..7751a3b 100644
+--- a/row.py
++++ b/row.py
+@@ -18,5 +18,5 @@ class ValuesDict:
+ d = {&quot;a&quot;: 1, &quot;b&quot;: 2, &quot;c&quot;: 3}
+ vd = ValuesDict(d)
+ 
+-for key in vd.keys():
++for key in vd:
+     print(key)
+</code></pre>
+<p>This changes the code behavior:</p>
+<pre><code>$ python row.py                                 
+1
+2
+3
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/not-my-profile">@not-my-profile</a> on 2023-01-19 15:10</div>
+            <div class="timeline-body"><p>Yes I think we currently have many lints that assume a conventional implementation of some <code>__dunder__</code> methods. I agree that we should categorize the applicability of such rules, I just opened #1997 for that :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-01-19 15:15</div>
+            <div class="timeline-body"><p>Yeah this is probably impossible to avoid completely right now. But we should categorize fixes as described in the issue and consider requiring opt-in for those that could be &quot;dangerous&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/taldcroft">@taldcroft</a> on 2023-01-19 17:59</div>
+            <div class="timeline-body"><p>Thanks, sounds like a plan. This one certainly caught me by surprise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @charliermarsh by @charliermarsh on 2023-06-08 16:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-06-08 17:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:28:57 UTC
+    </footer>
+</body>
+</html>

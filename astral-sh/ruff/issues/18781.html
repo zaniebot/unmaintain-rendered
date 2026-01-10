@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add lint rule for specific exceptions with empty handlers? - astral-sh/ruff #18781</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add lint rule for specific exceptions with empty handlers?</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/18781">#18781</a>
+        opened by <a href="https://github.com/IndrajeetPatil">@IndrajeetPatil</a>
+        on 2025-06-19 03:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/IndrajeetPatil">@IndrajeetPatil</a> on 2025-06-19 03:29</div>
+            <div class="timeline-body"><h2>TLDR</h2>
+<p>Request for a new lint rule to flag specific exception handlers that only contain <code>pass</code> (or are otherwise empty), as these often hide important errors.</p>
+<h2>Current behaviour</h2>
+<p>Ruff flags bare <code>except: pass</code> but doesn't consistently flag specific exceptions with empty handlers:</p>
+<pre><code class="language-python"># Currently flagged by existing rules
+try:
+    foo()
+except:
+    pass
+
+# Not flagged, but arguably should be
+try:
+    foo()
+except ValueError:
+    pass  # Silent failure - debugging nightmare
+
+try:
+    foo()
+except (KeyError, AttributeError):
+    pass  # Multiple specific exceptions, still problematic
+</code></pre>
+<h2>Proposed rule</h2>
+<p>Flag specific exception handlers with only <code>pass</code> or empty bodies. This would catch &quot;exception swallowing&quot; that can hide real problems.</p>
+<p><strong>Should flag:</strong></p>
+<ul>
+<li><code>except SpecificError: pass</code></li>
+<li><code>except (Error1, Error2): pass</code></li>
+<li>Empty except blocks (just whitespace/comments)</li>
+</ul>
+<p><strong>Should not flag:</strong></p>
+<ul>
+<li><code>except: pass</code> (already handled by existing rules)</li>
+<li>Exception handlers with any substantive content (logging, return, etc.)</li>
+</ul>
+<h2>Rationale</h2>
+<p>Empty specific exception handlers are usually incomplete error handling that silently masks failures. Unlike bare <code>except:</code>, these appear more intentional, but are often equally problematic. For source code, a linter rule requiring at least a comment explaining why the exception is being ignored would be valuable. E.g. this is far better:</p>
+<pre><code class="language-python">try:
+    foo()
+except ValueError:
+    pass  # Explicitly ignoring lint rule: explanation of why 
+</code></pre>
+<h2>Relationship to existing rules</h2>
+<p>Ruff already has <code>S110</code> (try-except-pass) which catches some cases, but it appears focused on bare <code>except:</code> blocks. Not sure if this should extend <code>S110</code> or be a separate rule since the specific exception case has different implications.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MeGaGiGaGon">@MeGaGiGaGon</a> on 2025-06-19 03:41</div>
+            <div class="timeline-body"><p>That does already exist as <code>SIM105</code> <a href="https://play.ruff.rs/ee87b988-7a14-40d1-a80a-785420973487">playground</a>
+https://docs.astral.sh/ruff/rules/suppressible-exception/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/IndrajeetPatil">@IndrajeetPatil</a> on 2025-06-19 03:54</div>
+            <div class="timeline-body"><p>Awesome! Thanks for the playground example :)</p>
+<p>Sorry for missing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @IndrajeetPatil on 2025-06-19 03:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:44 UTC
+    </footer>
+</body>
+</html>

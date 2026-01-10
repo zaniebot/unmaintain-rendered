@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rule idea: Unnecessary use of `re` - astral-sh/ruff #12283</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Rule idea: Unnecessary use of <code>re</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/12283">#12283</a>
+        opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a>
+        on 2024-07-10 21:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2024-07-10 21:22</div>
+            <div class="timeline-body"><p>I recently saw someone write <code>re.sub('\\\$', '', s)</code> when they could have just written <code>s.replace('$', '')</code>. Similarly, <code>re.match(&quot;abc&quot;, s)</code> could be replaced with <code>s.startswith(&quot;abc&quot;)</code>, <code>re.search(&quot;abc&quot;, s)</code> could be replaced with <code>&quot;abc&quot; in s</code>, <code>re.fullmatch(&quot;abc&quot;, s)</code> could be replaced with <code>s == &quot;abc&quot;</code>, <code>re.split(&quot;abc&quot;, s)</code> could be replaced with <code>s.split(&quot;abc&quot;)</code>.</p>
+<p>Why is it better to use the str methods directly? It makes the code simpler and therefore easier to understand, may require less escaping, and it's probably usually faster.</p>
+<p>Some thoughts on what the implementation could look like: We'd have to inspect the pattern string and ensure it doesn't contain any characters that are special for the regex engine, other than <code>\</code> (for escaping) and in some cases <code>^</code> and <code>$</code> for the beginning and end of the string. The implementation would also need to check whether any other flags are passed to the regex function (e.g., <code>re.IGNORECASE</code> would mean that a regex that contains alphabetical characters is no longer replaceable). There are other subtleties that I haven't fully thought through; for example, <code>$</code> also matches right before a newline at the end of a string. An initial implementation could limit itself to simpler cases, and leave possible more complex cases for later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-07-10 21:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @AlexWaygood on 2024-11-24 22:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @AlexWaygood on 2024-11-24 22:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdulcet">@tdulcet</a> on 2024-12-01 12:50</div>
+            <div class="timeline-body"><p>Here are some slightly more complex examples not supported by the initial implementation in #14659:</p>
+<pre><code class="language-py">re.search(r&quot;abc&quot;, s) is None       # ⇒ &quot;abc&quot; not in s
+re.search(r&quot;abc&quot;, s) is not None   # ⇒ &quot;abc&quot; in s
+re.sub(r&quot;abc&quot;, &quot;&quot;, s, count=1)     # ⇒ s.replace(&quot;abc&quot;, &quot;&quot;, count=1)
+re.split(r&quot;abc&quot;, s, maxsplit=1)    # ⇒ s.split(&quot;abc&quot;, maxsplit=1)
+re.search(r&quot;^abc&quot;, s)              # ⇒ s.startswith(&quot;abc&quot;)
+re.search(r&quot;abc$&quot;, s)              # ⇒ s.endswith(&quot;abc&quot;)
+re.search(r&quot;^abc$&quot;, s)             # ⇒ s == &quot;abc&quot;
+re.match(r&quot;abc|xyz|123&quot;, s)        # ⇒ s.startswith((&quot;abc&quot;, &quot;xyz&quot;, &quot;123&quot;))
+re.search(r&quot;^abc|^xyz|^123&quot;, s)
+re.search(r&quot;^(?:abc|xyz|123)&quot;, s)
+re.search(r&quot;abc$|xyz$|123$&quot;, s)    # ⇒ s.endswith((&quot;abc&quot;, &quot;xyz&quot;, &quot;123&quot;))
+re.search(r&quot;(?:abc|xyz|123)$&quot;, s)
+re.fullmatch(r&quot;abc|xyz|123&quot;, s)    # ⇒ s in {&quot;abc&quot;, &quot;xyz&quot;, &quot;123&quot;}
+re.search(r&quot;^(?:abc|xyz|123)$&quot;, s)
+re.match(r&quot;[abc]&quot;, s)              # ⇒ s.startswith((&quot;a&quot;, &quot;b&quot;, &quot;c&quot;))
+re.search(r&quot;[abc]$&quot;, s)            # ⇒ s.endswith((&quot;a&quot;, &quot;b&quot;, &quot;c&quot;))
+re.fullmatch(r&quot;[abc]&quot;, s)          # ⇒ s in {&quot;a&quot;, &quot;b&quot;, &quot;c&quot;}
+# Handle the ignore case flag
+re.match(r&quot;AbC&quot;, s, re.I)          # ⇒ s.casefold().startswith(&quot;abc&quot;)
+re.search(r&quot;AbC&quot;, s, re.I)         # ⇒ &quot;abc&quot; in s.casefold()
+re.fullmatch(r&quot;AbC&quot;, s, re.I)      # ⇒ &quot;abc&quot; == s.casefold()
+# Handle any escaped special characters
+re.fullmatch(r&quot;&quot;&quot;!&quot;\#\$%\&amp;'\(\)\*\+,\-\./:;&lt;=&gt;\?@\[\\\]\^_`\{\|\}\~&quot;&quot;&quot;, s) # ⇒ s == &quot;&quot;&quot;!&quot;#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~&quot;&quot;&quot;
+</code></pre>
+<p>Edit: The <code>.endswith()</code> examples would be unsafe, per https://github.com/astral-sh/ruff/issues/12283#issuecomment-2509831070.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/JelleZijlstra">@JelleZijlstra</a> on 2024-12-01 15:42</div>
+            <div class="timeline-body"><p>Great to see that the rule was implemented!</p>
+<blockquote>
+<p><code>re.search(r&quot;abc$&quot;, s)              # ⇒ s.endswith(&quot;abc&quot;)</code></p>
+</blockquote>
+<p>This is not equivalent:</p>
+<pre><code class="language-python">&gt;&gt;&gt; s = &quot;abc\n&quot;
+&gt;&gt;&gt; re.search(r&quot;abc$&quot;, s)
+&lt;re.Match object; span=(0, 3), match='abc'&gt;
+&gt;&gt;&gt; s.endswith(&quot;abc&quot;)
+False
+</code></pre>
+<p>I'm also not sure about the <code>re.I</code> ones; are those transformations correct in the presence of exotic casing conventions like in Turkish?</p>
+<p>And I'm not sure the replacement is worth it in cases where the replacement is a little more complex (e.g., passing a tuple to startswith). The goal of the rule should be to make code simpler; with those transformations, that may not be the case any more.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tdulcet">@tdulcet</a> on 2024-12-01 16:48</div>
+            <div class="timeline-body"><blockquote>
+<p>This is not equivalent</p>
+</blockquote>
+<p>Thanks. I edited my comment to note that they would be unsafe. If necessary, assuming Python 3.9+, one could always do something like <code>s.removesuffix(&quot;\n&quot;).endswith(&quot;abc&quot;)</code>.</p>
+<blockquote>
+<p>I'm also not sure about the <code>re.I</code> ones; are those transformations correct in the presence of exotic casing conventions like in Turkish?</p>
+</blockquote>
+<p>I believe these would be safe as long as the user is not using the <code>re.L/re.LOCALE</code> flag, as otherwise both the re library and <a href="https://docs.python.org/3/library/stdtypes.html#str.lower"><code>str.lower()</code></a> should be using the same standard Unicode conventions. However, I changed my examples to use <a href="https://docs.python.org/3/library/stdtypes.html#str.casefold"><code>str.casefold()</code></a> for good measure.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-12-02 17:29</div>
+            <div class="timeline-body"><p>I created a new issue to track the scope extension. I'll close this issue because the rule itself and what's been asked in the original issue has been implemented as RUF055</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-12-02 17:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:34:21 UTC
+    </footer>
+</body>
+</html>

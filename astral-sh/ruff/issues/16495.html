@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ruff-mutable-default (RUF008) not not catching mutable default passed to attrs.field. - astral-sh/ruff #16495</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>ruff-mutable-default (RUF008) not not catching mutable default passed to attrs.field.</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/16495">#16495</a>
+        opened by <a href="https://github.com/ashb">@ashb</a>
+        on 2025-03-04 10:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/ashb">@ashb</a> on 2025-03-04 10:29</div>
+            <div class="timeline-body"><p>Simple repro case</p>
+<pre><code>❯ cat tst.py
+import attrs
+
+@attrs.define
+class B :
+    mutable_default: list[int] = []
+    mutable_default2: list[int] = attrs.field(default=[])
+
+❯ uvx ruff@0.9.9 check --extend-select RUF008,B006 --preview -n --isolated  tst.py
+All checks passed!
+</code></pre>
+<p><em>Originally posted by @ashb in https://github.com/astral-sh/ruff/issues/14327#issuecomment-2696968093</em></p>
+<p>Output:</p>
+<pre><code>tst.py:5:34: RUF008 Do not use mutable default values for dataclass attributes
+  |
+3 | @attrs.define
+4 | class B :
+5 |     mutable_default: list[int] = []
+  |                                  ^^ RUF008
+6 |     mutable_default2: list[int] = attrs.field(default=[])
+  |
+</code></pre>
+<p>I was hoping it would catch the same error on <code>mutable_default2</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-04 10:33</div>
+            <div class="timeline-body"><p>Can you tell me more about what diagnostics you'd expect?</p>
+<p>E.g. this raises RUF012 for the <code>mutable_default</code> field https://play.ruff.rs/98850596-5ef1-4a1e-a3e5-fa07ed757a81</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> added by @MichaReiser on 2025-03-04 10:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-03-04 10:35</div>
+            <div class="timeline-body"><p>I think this might only check <code>attrs</code> classes if preview mode is enabled. @ashb do you have <code>preview</code> mode enabled in your ruff config?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-04 10:36</div>
+            <div class="timeline-body"><blockquote>
+<p>I think this might only check <code>attrs</code> classes if preview mode is enabled. <a href="https://github.com/ashb?rgh-link-date=2025-03-04T10%3A35%3A03.000Z">@ashb</a> do you have <code>preview</code> mode enabled in your ruff config?</p>
+</blockquote>
+<p>Preview mode is enabled, see the CLI command</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-04 10:37</div>
+            <div class="timeline-body"><p>Shouldn't it be <code>@attrs.define</code> instead of <code>@attrs.deinfe</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ashb">@ashb</a> on 2025-03-04 10:41</div>
+            <div class="timeline-body"><p>🤦🏻 Okay, so that fixes the first one, but not the second. I guess it's up for debate if the second should be caught or not.</p>
+<p>Updated top post</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ruff-mutable-default (RUF008) not working for attrs classes" to "ruff-mutable-default (RUF008) not not catching mutable default passed to attrs.field." by @ashb on 2025-03-04 10:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-03-04 10:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">help wanted</span> added by @MichaReiser on 2025-03-04 10:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">needs-info</span> removed by @MichaReiser on 2025-03-04 10:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">no-test</span> added by @MichaReiser on 2025-03-04 10:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-03-04 10:45</div>
+            <div class="timeline-body"><p>Thanks for updating the summary. Adding support for <code>attrs.field</code> (in preview) does make sense to me, considering that https://github.com/astral-sh/ruff/pull/14327#issuecomment-2696968093 introduced attrs support.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">no-test</span> removed by @MichaReiser on 2025-03-04 10:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:36:48 UTC
+    </footer>
+</body>
+</html>

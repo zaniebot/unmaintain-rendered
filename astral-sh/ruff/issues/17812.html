@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type `&lt;module 'hashlib'&gt;` has no attribute `sha256` - astral-sh/ruff #17812</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Type <code>&lt;module 'hashlib'&gt;</code> has no attribute <code>sha256</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/17812">#17812</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2025-05-03 14:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2025-05-03 14:19</div>
+            <div class="timeline-body"><pre><code class="language-python">import hashlib
+
+m = hashlib.sha256()
+m.update(b&quot;Nobody inspects&quot;)
+m.update(b&quot; the spammish repetition&quot;)
+m.digest()
+</code></pre>
+<p>https://types.ruff.rs/ead42c11-58c3-465a-a842-40f3df8191f8</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @charliermarsh on 2025-05-03 14:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-05-03 14:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-03 14:32</div>
+            <div class="timeline-body"><p>Explanation of why this is a duplicate of astral-sh/ty#199:</p>
+<p>In general, symbols imported into stub files are not considered &quot;re-exported&quot; by that stub file; they are considered &quot;private to the stub&quot;.</p>
+<p>In other words, if a stub file has this:</p>
+<pre><code class="language-py"># foo.pyi
+from typing import Iterable
+</code></pre>
+<p>the type checker is meant to disallow this:</p>
+<pre><code class="language-py">from foo import Iterable
+</code></pre>
+<p><em>However</em>, there are several exceptions to this:</p>
+<ol>
+<li>If an import uses the &quot;redundant alias convention&quot;, it is considered &quot;re-exported&quot; from a stub file (<code>from typing import Iterable as iterable</code>)</li>
+<li>If a symbol is imported into a stub file using a <code>*</code> import, it is considered re-exported from the stub file</li>
+<li>If a symbol is included in <code>__all__</code>, it is considered re-exported from the stub file.</li>
+</ol>
+<p>We understand exceptions (1) and (2) currently, but not exception (3), which is astral-sh/ty#199. The symbol <code>sha256</code> is only re-exported from <code>hashlib.pyi</code> in typeshed (the canonical stub file for the stdlib <code>hashlib</code> module) due to exception (3).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-05-03 14:40</div>
+            <div class="timeline-body"><p>References:</p>
+<ul>
+<li>Typing spec docs on the re-export convention: https://typing.python.org/en/latest/spec/distributing.html#library-interface-public-and-private-symbols</li>
+<li>Definition of <code>sha256</code> in our vendored typeshed stub for <code>hashlib</code>. It does not use a &quot;redundant alias&quot; or a <code>*</code> import to define the symbol, so neither exception (1) nor exception (2) applies: https://github.com/astral-sh/ruff/blob/91481a8be75446c7b404211fdeccd65c68a371ff/crates/red_knot_vendored/vendor/typeshed/stdlib/hashlib.pyi#L3-L20</li>
+<li><code>__all__</code> definition in our vendored typeshed stub for <code>hashlib</code> (which includes <code>sha256</code>): https://github.com/astral-sh/ruff/blob/91481a8be75446c7b404211fdeccd65c68a371ff/crates/red_knot_vendored/vendor/typeshed/stdlib/hashlib.pyi#L26-L46</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-05-03 14:51</div>
+            <div class="timeline-body"><p>This should be fixed soon, I'm working on it.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:37:23 UTC
+    </footer>
+</body>
+</html>

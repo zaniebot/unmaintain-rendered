@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`PLR1714` doesn't check for Yoda conditions - astral-sh/ruff #5987</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>PLR1714</code> doesn't check for Yoda conditions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/5987">#5987</a>
+        opened by <a href="https://github.com/dosisod">@dosisod</a>
+        on 2023-07-22 20:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dosisod">@dosisod</a> on 2023-07-22 20:48</div>
+            <div class="timeline-body"><p>See https://github.com/astral-sh/ruff/issues/1348#issuecomment-1646520368.</p>
+<p>Ruff doesn't detect Yoda conditions for the following:</p>
+<pre><code class="language-python">x = &quot;&quot;
+
+_ = x == &quot;abc&quot; or &quot;def&quot; == x
+_ = &quot;abc&quot; == x or &quot;def&quot; == x
+_ = &quot;abc&quot; == x or x == &quot;def&quot;
+</code></pre>
+<p>Ruff doesn't output anything.</p>
+<p>For comparison, Refurb outputs errors for each line:</p>
+<pre><code>$ refurb x.py
+x.py:3:5 [FURB108]: Replace `x == y or z == x` with `x in (y, z)`
+x.py:4:5 [FURB108]: Replace `x == y or z == y` with `y in (x, z)`
+x.py:5:5 [FURB108]: Replace `x == y or y == z` with `y in (x, z)`
+</code></pre>
+<p>If you disable/don't fix the Yoda errors you won't get the <code>PLR1714</code> errors. If you do fix the Yoda errors, you will get the proper/expected error, <code>PLR1714</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-07-22 21:02</div>
+            <div class="timeline-body"><p>Are Yoda conditions like this common? I had an implementation of this rule that did consider Yoda conditions, but it was more complicated and had a performance hit. Though, if people use Yoda conditions, I could open a PR to re-add that logic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dosisod">@dosisod</a> on 2023-07-22 21:16</div>
+            <div class="timeline-body"><p>I didn't see that you explicitly mentioned Yoda conditions in your PR, thanks for pointing that out. I can't give you an exact number on how many people use Yoda conditions, I was more concerned with handling all the cases as opposed to the canonical ones (and, Refurb doesn't detect Yoda conditions).</p>
+<p>For what it's worth, this is how Refurb handles the Yoda case checking (<a href="https://github.com/dosisod/refurb/blob/71a2d3dc97bc1a5a4e29d04bc5454e4f16c19738/refurb/checks/common.py#L187-L217">link</a>):</p>
+<pre><code class="language-python">def get_common_expr_in_comparison_chain(
+    node: OpExpr, oper: str, cmp_oper: str = &quot;==&quot;
+) -&gt; tuple[Expression, tuple[int, int]] | None:
+    &quot;&quot;&quot;
+    This function finds the first expression shared between 2 comparison
+    expressions in the binary operator `oper`.
+
+    For example, an OpExpr that looks like the following:
+
+    1 == 2 or 3 == 1
+
+    Will return a tuple containing the first common expression (`IntExpr(1)` in
+    this case), and the indices of the common expressions as they appear in the
+    source (`0` and `3` in this case). The indices are to be used for display
+    purposes by the caller.
+
+    If the binary operator is not composed of 2 comparison operators, or if
+    there are no common expressions, `None` is returned.
+    &quot;&quot;&quot;
+
+    match extract_binary_oper(oper, node):
+        case (
+            ComparisonExpr(operators=[lhs_oper], operands=[a, b]),
+            ComparisonExpr(operators=[rhs_oper], operands=[c, d]),
+        ) if (
+            lhs_oper == rhs_oper == cmp_oper
+            and (indices := get_common_expr_positions(a, b, c, d))
+        ):
+            return a, indices
+
+    return None  # pragma: no cover
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-07-22 22:37</div>
+            <div class="timeline-body"><p>IIRC, the ruff implementation uses a hash map, where each key maps an LHS value to a vector of RHS values. This was efficient but difficult to make work with Yoda conditions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-07-22 22:41</div>
+            <div class="timeline-body"><p>Actually, there is value in the rule being order-agnostic beyond just supporting Yoda conditions. I don't believe the current implementation will emit a warning on the following, entirely plausible code.</p>
+<pre><code class="language-python">foo == bar or baz == foo or qux == foo
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2023-07-23 00:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">accepted</span> added by @charliermarsh on 2023-07-23 00:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-08-14 17:53</div>
+            <div class="timeline-body"><p>@tjkuson are you interested in addressing the yoda condition issue and/or the additional issue you raised?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tjkuson">@tjkuson</a> on 2023-08-14 18:21</div>
+            <div class="timeline-body"><p>Sure! I wasn't able to find a good solution before, but the issue has been open for a while, and I am probably better at Rust now, so would be interested in having a go this week.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-08-23 03:45</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:47 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug: `C419` autofix removing `list` within `any`/`all` causes undesirable short circuiting - astral-sh/ruff #4320</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Bug: <code>C419</code> autofix removing <code>list</code> within <code>any</code>/<code>all</code> causes undesirable short circuiting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/4320">#4320</a>
+        opened by <a href="https://github.com/jamesbraza">@jamesbraza</a>
+        on 2023-05-09 18:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-05-09 18:22</div>
+            <div class="timeline-body"><!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+<p>Please see the below code:</p>
+<pre><code class="language-python">class Worker:
+    &quot;&quot;&quot;Asynchronous worker.&quot;&quot;&quot;
+
+    def wait(self) -&gt; bool:
+        &quot;&quot;&quot;Wait for worker thread to join.&quot;&quot;&quot;
+        # Code wraps threading.Event.wait()
+
+
+def wait_all(*workers: Worker) -&gt; bool:
+    return all([w.wait() for w in workers])  # List stops short circuit
+</code></pre>
+<p>With <code>ruff==0.0.265</code>, and running <code>ruff --select=C419 --fix a.py</code>, it removes the <code>list</code> cast:</p>
+<pre><code class="language-python">def wait_all(*workers: Worker) -&gt; bool:
+    return all(w.wait() for w in workers)  # List stops short circuit
+</code></pre>
+<p>However, this actually added a subtle bug, because now the <code>all</code> statement will be short-circuited.  This short circuiting (in my scenario here) will cause all workers beyond the first <code>w.wait()</code> return of <code>False</code> to not be awaited.</p>
+<p>I think <code>C4</code> autofixing should not be applied within <code>all</code>/<code>any</code>, as these can be short circuited, which can cause undesirable side effects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">autofix</span> added by @charliermarsh on 2023-05-09 18:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2023-05-09 18:53</div>
+            <div class="timeline-body"><p>Ah yeah, this is intentional. In the future we'll probably qualify this as a suggested, and not an automated fix, since it changes the semantics of the program, but I wouldn't want to remove it entirely, since this is the entire rule and it's generally the correct fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2023-05-09 18:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2023-05-09 18:55</div>
+            <div class="timeline-body"><p>We can make that change as part of https://github.com/charliermarsh/ruff/issues/4181, specifically https://github.com/charliermarsh/ruff/issues/4184 which should be ready to work on once #4303 is merged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/jamesbraza">@jamesbraza</a> on 2023-05-09 19:14</div>
+            <div class="timeline-body"><blockquote>
+<p>but I wouldn't want to remove it entirely, since this is the entire rule and it's generally the correct fix.</p>
+</blockquote>
+<p>Just to share my two cents here, I agree removing extra <code>list</code> casts is generally the correct fix, especially with argument unpacking into <code>*args</code>.</p>
+<p>I would argue though, when short circuiting can happen, that <code>C4</code> actually changes the core behavior.  Imo autofixes should not be able to change fundamental behaviors.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:30:02 UTC
+    </footer>
+</body>
+</html>

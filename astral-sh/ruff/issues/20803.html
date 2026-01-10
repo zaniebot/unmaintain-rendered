@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`missing-f-string-syntax` (RUF027) should apply before `unused-import` (F401) - astral-sh/ruff #20803</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>missing-f-string-syntax</code> (RUF027) should apply before <code>unused-import</code> (F401)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/issues/20803">#20803</a>
+        opened by <a href="https://github.com/dscorbett">@dscorbett</a>
+        on 2025-10-10 12:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Issue opened by <a href="https://github.com/dscorbett">@dscorbett</a> on 2025-10-10 12:51</div>
+            <div class="timeline-body"><h3>Summary</h3>
+<p>The fixes for <a href="https://docs.astral.sh/ruff/rules/unused-import/"><code>unused-import</code> (F401)</a> and <a href="https://docs.astral.sh/ruff/rules/missing-f-string-syntax/"><code>missing-f-string-syntax</code> (RUF027)</a> apply simultaneously, introducing a runtime error if a string meant to be an f-string references an otherwise unused import. The fix for RUF027 should apply first, blocking F401. <a href="https://play.ruff.rs/29e13e64-3222-4b28-9a0b-0b0bfcac2ada">Example</a>:</p>
+<pre><code class="language-console">$ cat &gt;f401_ruf027.py &lt;&lt;'# EOF'
+from sys import byteorder
+print(&quot;Byte order: {byteorder}-endian&quot;)
+# EOF
+
+$ python f401_ruf027.py
+Byte order: {byteorder}-endian
+
+$ ruff --isolated check f401_ruf027.py --select F401,RUF027 --preview --unsafe-fixes --fix
+Found 2 errors (2 fixed, 0 remaining).
+
+$ cat f401_ruf027.py
+print(f&quot;Byte order: {byteorder}-endian&quot;)
+
+$ python f401_ruf027.py 2&gt;&amp;1 | tail -n 1
+NameError: name 'byteorder' is not defined
+</code></pre>
+<h3>Version</h3>
+<p>ruff 0.14.0 (beea8cdfe 2025-10-07)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-10-10 16:14</div>
+            <div class="timeline-body"><p>This might be a bit tricky. I don't think we have a good way to enforce an ordering of fixes besides setting the <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_diagnostics/src/fix.rs#L164"><code>Fix</code> isolation level</a>. And the existing uses of <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/checkers/ast/mod.rs#L506"><code>Checker::isolation</code></a> apply to specific statements. We might have to isolate these fixes at the module level, or something like that.</p>
+<p>Even isolation won't fix the ordering, though. If the import rule runs first, it would just deactivate RUF027, which isn't really ideal either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-10-10 16:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 11:38:33 UTC
+    </footer>
+</body>
+</html>

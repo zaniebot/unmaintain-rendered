@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support dates for `exclude-newer` tool setting - astral-sh/uv #8553</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Support dates for <code>exclude-newer</code> tool setting</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/8553">#8553</a>
+        opened by <a href="https://github.com/manzt">@manzt</a>
+        on 2024-10-25 03:12
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/manzt">@manzt</a> on 2024-10-25 03:12</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>hey! I was poking around with the tool support for exclude newer in juv (think this would be awesome to use to make Jupyter notebooks more standalone/reproducible) and ran into an issue.</p>
+<p>The settings documentation for <a href="https://docs.astral.sh/uv/reference/settings/#exclude-newer"><code>exclude-newer</code></a> says that it supports both dates and timestamp.</p>
+<p>However, with uv v0.4.26:</p>
+<pre><code class="language-sh">uv init foo
+cd foo
+echo &quot;[tool.uv]\nexclude-newer = '2022-01-01'&quot; &gt;&gt; pyproject.toml
+uv run hello.py
+#  warning: Failed to parse `pyproject.toml` during settings discovery:
+#   TOML parse error at line 9, column 17
+#     |
+#   9 | exclude-newer = &quot;2022-01-01&quot;
+#     |                 ^^^^^^^^^^^^
+#   failed to find time component in &quot;2022-01-01&quot;, which is required for parsing a timestamp
+</code></pre>
+<p>I believe this is because the derive'd Deserialize from jiff only supports timestamps and doesn't use the more flexible FromStr implemention implemented for <code>ExlcudeNewer</code></p>
+<h2>Test Plan</h2>
+<p>Added a test with a date string</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Support dates for exclude-newer tool setting" to "Support dates for `exclude-newer` tool setting" by @manzt on 2024-10-25 03:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-25 04:13</div>
+            <div class="timeline-body"><p>What timezone does this use? UTC?</p>
+<p>I'm not sure if this is quite the same, but we discussed something like this in https://github.com/astral-sh/uv/pull/6562 and decided against the change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-10-25 04:31</div>
+            <div class="timeline-body"><p>The docs say:</p>
+<blockquote>
+<p>Accepts both RFC 3339 timestamps (e.g., 2006-12-02T02:07:43Z) and local dates in the same format (e.g., 2006-12-02) in your system's configured time zone.</p>
+</blockquote>
+<p>So I'm guessing whatever the system's time zone is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-10-25 04:31</div>
+            <div class="timeline-body"><p>Looking at the <code>from_str</code> implementation for ExcludeNewer, it looks like that way:</p>
+<pre><code class="language-rust">            .and_then(|date| date.to_zoned(TimeZone::system()))
+</code></pre>
+<p>https://github.com/manzt/uv/blob/2e795ffc4b4976584b5bb67b6860681e6492f687/crates/uv-resolver/src/exclude_newer.rs#L34-L68</p>
+<p>If that's not the intention, than maybe we should change <a href="https://docs.astral.sh/uv/reference/settings/#exclude-newer">the example</a> in the docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-25 04:41</div>
+            <div class="timeline-body"><p>Yeah I think we might want to change the docs or, if we want to accept a simple date, use UTC. I think the intent is that we want a stable time in <code>exclude-newer</code> encoded in files. For example, if someone clones your repository they shouldn't get a different resolution because they have a different system time.</p>
+<p>@BurntSushi has the most context on this though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-10-25 04:54</div>
+            <div class="timeline-body"><blockquote>
+<p>For example, if someone clones your repository they shouldn't get a different resolution because they have a different system time.</p>
+</blockquote>
+<p>Makes total sense. I'm thinking the main &quot;push&quot; for flexibility here (as mentioned in #6562) is convenience (i.e., actually typing out the timestamp is annoying), but not that someone adamantly wants ambiguity. Maybe something to consider is just a convenient high-level API for adding this setting correctly:</p>
+<pre><code class="language-sh">uv add --timestamp
+uv add --script foo.py --timestamp
+uv add --timestamp=2024-01-01 
+</code></pre>
+<p>General idea is that you could have something conveniently resolve the users local time to something correct, keeping strictness with the target. (Maybe <code>add</code> isn't the right namespace but just first thing that came to mind).</p>
+<p>EDIT: another idea</p>
+<pre><code class="language-sh">uv init --with-timestamp --script foo.py
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-10-25 05:10</div>
+            <div class="timeline-body"><p>Ahh, seeing you already suggested a command in #6562... just catching up</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-25 13:50</div>
+            <div class="timeline-body"><p>Yeah I think this kind of needs to wait for a <code>uv config set</code> command</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-10-28 12:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-10-28 13:58</div>
+            <div class="timeline-body"><p>Yeah, I basically think that we probably should not support writing unadorned dates in a persistent configuration that is meant to be shared among folks that may be in different time zones. It just makes the date ambiguous. Even if we defaulted to UTC, it's still not immediately obvious to someone reading the config file that it would be UTC. And it seems much more natural to <em>assume</em> it isn't UTC but actually local, which would lead to folks reading the date incorrectly in some cases.</p>
+<p>I think a hypothetical <code>uv config set</code> command that owns the &quot;interpretation of the date as local, but writes it as an unambiguous timestamp&quot; is a good idea.</p>
+<p>There are other options for writing timestamps to config files that are maybe a little more user friendly. For example, we could support <code>2024-10-28T00:00:00-04[US/Eastern]</code>. But probably just writing out <code>2024-10-28T00:00:00Z</code> is the way to go.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-10-28 14:07</div>
+            <div class="timeline-body"><p>Sounds like we should update the documentation to clarify this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-10-28 14:30</div>
+            <div class="timeline-body"><blockquote>
+<p>I think a hypothetical <code>uv config set</code> command that owns the &quot;interpretation of the date as local, but writes it as an unambiguous timestamp&quot; is a good idea.</p>
+</blockquote>
+<p>Sounds good to me! Not something I'd considered and appreciate the thoughtfulness and explanation by you both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @manzt on 2024-10-28 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-10-28 14:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/manzt">@manzt</a> on 2024-11-13 19:44</div>
+            <div class="timeline-body"><p>Until a built-in command exists, I’ve added <code>stamp</code> command to <a href="https://github.com/manzt/juv">juv</a> for pinning unambiguous timestamps directly into inline script metadata (in both notebooks and scripts).</p>
+<pre><code class="language-sh">uv init --script foo.py
+uv add --script foo.py polars
+uvx juv stamp foo.py --date=2021-07-07
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:13 UTC
+    </footer>
+</body>
+</html>

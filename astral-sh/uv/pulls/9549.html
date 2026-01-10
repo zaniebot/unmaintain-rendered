@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignore dynamic version in source dist - astral-sh/uv #9549</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignore dynamic version in source dist</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/9549">#9549</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-12-01 09:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-12-01 09:05</div>
+            <div class="timeline-body"><p>When encountering <code>dynamic = [&quot;version&quot;]</code> in the pyproject.toml of a source dist, we can ignore that and treat it as a statically known metadata distribution, since the filename tells us the version and that version must not change on build.</p>
+<p>This fixed locking PyGObject 3.50.0 from <code>pygobject-3.50.0.tar.gz</code> (minimized):</p>
+<pre><code class="language-toml">[project]
+name = &quot;PyGObject&quot;
+description = &quot;Python bindings for GObject Introspection&quot;
+requires-python = &quot;&gt;=3.9, &lt;4.0&quot;
+dependencies = [
+    &quot;pycairo&gt;=1.16&quot;
+]
+dynamic = [&quot;version&quot;]
+</code></pre>
+<p>Afterwards, <code>uv add --no-sync toga</code> passes on Ubuntu 24.04 without the pygobject build deps, when previously it needed <code>{ name = &quot;pygobject&quot;, version = &quot;3.50.0&quot;, requires-dist = [], requires-python = &quot;&gt;=3.9&quot; }</code>.</p>
+<p>I've added a check that source distribution versions are respected after build.</p>
+<p>Fixes #9548</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-12-01 12:41</div>
+            <div class="timeline-body"><p>This makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-01 13:47</div>
+            <div class="timeline-body"><p>Works on macOS (and fails with released <code>uv</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-12-02 19:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-12-02 21:48</div>
+            <div class="timeline-body"><p>I think the only downside here is that if the built version <em>doesn't</em> match the declared version, we no longer catch it. Today, we'd raise an error. After this PR, we'd assume the declared version is correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-12-04 09:39</div>
+            <div class="timeline-body"><p>At least in <code>uv build</code>, we weren't checking version matching at all: https://github.com/astral-sh/uv/pull/9633 (though that PR also only checks filenames, not pyproject.toml and METADATA, too; the filename mismatch is something that the installer wouldn't catch).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-12-04 09:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @konstin on 2024-12-04 09:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-12-04 11:08</div>
+            <div class="timeline-body"><p>We're also missing the check with static metadata atm, let me see how hard that is.</p>
+<pre><code class="language-rust">#[test]
+fn test_version_sdist_wrong_version() -&gt; Result&lt;()&gt; {
+    let context = TestContext::new(&quot;3.12&quot;);
+
+    let pyproject_toml = r#&quot;
+    [project]
+    name = &quot;foo&quot;
+    requires-python = &quot;&gt;=3.9&quot;
+    dependencies = []
+    version = &quot;10.11.12&quot;
+    &quot;#;
+
+    let setup_py = indoc! {r#&quot;
+    from setuptools import setup
+
+    setup(name=&quot;foo&quot;, version=&quot;10.11.12&quot;)
+    &quot;#};
+
+    let source_dist = context.temp_dir.child(&quot;foo-1.2.3.tar.gz&quot;);
+    // Flush and close after finishing.
+    {
+        let file = File::create(source_dist.path())?;
+        let enc = GzEncoder::new(file, flate2::Compression::default());
+        let mut tar = tar::Builder::new(enc);
+
+        for (path, contents) in [
+            (&quot;foo-1.2.3/pyproject.toml&quot;, pyproject_toml),
+            (&quot;foo-1.2.3/setup.py&quot;, setup_py),
+        ] {
+            let mut header = tar::Header::new_gnu();
+            header.set_size(contents.len() as u64);
+            header.set_mode(0o644);
+            header.set_cksum();
+            tar.append_data(&amp;mut header, path, Cursor::new(contents))?;
+        }
+        tar.finish()?;
+    }
+
+    uv_snapshot!(context.filters(), context
+        .pip_install()
+        .arg(source_dist.path()), @r###&quot;
+    success: true
+    exit_code: 0
+    ----- stdout -----
+
+    ----- stderr -----
+    Resolved 1 package in [TIME]
+    Prepared 1 package in [TIME]
+    Installed 1 package in [TIME]
+     + foo==10.11.12 (from file://[TEMP_DIR]/foo-1.2.3.tar.gz)
+    &quot;###
+    );
+
+    Ok(())
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-12-04 11:31</div>
+            <div class="timeline-body"><p>I've added a check and a test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-12-04 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-12-04 11:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-12-04 11:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 12:31:15 UTC
+    </footer>
+</body>
+</html>
