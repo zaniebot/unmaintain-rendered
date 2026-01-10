@@ -1,0 +1,399 @@
+```yaml
+number: 9435
+title: Bump the actions group with 4 updates
+type: pull_request
+state: closed
+author: dependabot
+labels:
+  - internal
+assignees: []
+base: main
+head: dependabot/github_actions/actions-b93a201fcc
+created_at: 2024-01-08T08:51:27Z
+updated_at: 2024-01-13T23:34:07Z
+url: https://github.com/astral-sh/ruff/pull/9435
+synced_at: 2026-01-10T22:57:09Z
+```
+
+# Bump the actions group with 4 updates
+
+---
+
+_Pull request opened by @dependabot on 2024-01-08 08:51_
+
+Bumps the actions group with 4 updates: [tj-actions/changed-files](https://github.com/tj-actions/changed-files), [actions/upload-artifact](https://github.com/actions/upload-artifact), [actions/download-artifact](https://github.com/actions/download-artifact) and [cloudflare/wrangler-action](https://github.com/cloudflare/wrangler-action).
+
+Updates `tj-actions/changed-files` from 40 to 41
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href="https://github.com/tj-actions/changed-files/releases">tj-actions/changed-files's releases</a>.</em></p>
+<blockquote>
+<h2>v41</h2>
+<h1>Changes in v41.0.1</h1>
+<h2>What's Changed</h2>
+<ul>
+<li>Upgraded to v41 by <a href="https://github.com/tj-actions-bot"><code>@​tj-actions-bot</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1811">tj-actions/changed-files#1811</a></li>
+<li>chore(deps): update dependency eslint-plugin-prettier to v5.1.2 by <a href="https://github.com/renovate"><code>@​renovate</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1813">tj-actions/changed-files#1813</a></li>
+<li>fix: update characters escaped by safe output by <a href="https://github.com/jackton1"><code>@​jackton1</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1815">tj-actions/changed-files#1815</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a href="https://github.com/tj-actions/changed-files/compare/v41...v41.0.1">https://github.com/tj-actions/changed-files/compare/v41...v41.0.1</a></p>
+<hr />
+<h1>Changes in v41.0.0</h1>
+<h2>🔥 🔥 BREAKING CHANGE 🔥 🔥</h2>
+<p>A new <code>safe_output</code> input is now available to prevent outputting unsafe filename characters (Enabled by default). This would escape characters in the filename that could be used for command injection.</p>
+<blockquote>
+<p>[!NOTE]
+This can be disabled by setting the <code>safe_output</code> to false this comes with a recommendation to store all outputs generated in an environment variable first before using them.</p>
+</blockquote>
+<h4>Example</h4>
+<pre lang="yaml"><code>...
+    - name: Get changed files
+      id: changed-files
+      uses: tj-actions/changed-files@v40
+      with:
+        safe_output: false # set to false because we are using an environment variable to store the output and avoid command injection.
+<pre><code>- name: List all added files
+  env:
+    ADDED_FILES: ${{ steps.changed-files.outputs.added_files }}
+  run: |
+    for file in &amp;quot;$ADDED_FILES&amp;quot;; do
+      echo &amp;quot;$file was added&amp;quot;
+    done
+</code></pre>
+<p>...
+</code></pre></p>
+<h2>What's Changed</h2>
+<ul>
+<li>chore(deps): update typescript-eslint monorepo to v6.15.0 by <a href="https://github.com/renovate"><code>@​renovate</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1801">tj-actions/changed-files#1801</a></li>
+<li>Upgraded to v40.2.3 by <a href="https://github.com/tj-actions-bot"><code>@​tj-actions-bot</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1800">tj-actions/changed-files#1800</a></li>
+<li>chore(deps): update dependency eslint-plugin-prettier to v5.1.0 by <a href="https://github.com/renovate"><code>@​renovate</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1802">tj-actions/changed-files#1802</a></li>
+<li>chore(deps): lock file maintenance by <a href="https://github.com/renovate"><code>@​renovate</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1803">tj-actions/changed-files#1803</a></li>
+<li>chore(deps): update dependency eslint-plugin-prettier to v5.1.1 by <a href="https://github.com/renovate"><code>@​renovate</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1804">tj-actions/changed-files#1804</a></li>
+<li>fix: update safe output regex and the docs by <a href="https://github.com/tj-actions-bot"><code>@​tj-actions-bot</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1805">tj-actions/changed-files#1805</a></li>
+<li>Revert &quot;chore(deps): update actions/download-artifact action to v4&quot; by <a href="https://github.com/jackton1"><code>@​jackton1</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1806">tj-actions/changed-files#1806</a></li>
+<li>Update README.md by <a href="https://github.com/jackton1"><code>@​jackton1</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1808">tj-actions/changed-files#1808</a></li>
+</ul>
+<!-- raw HTML omitted -->
+</blockquote>
+<p>... (truncated)</p>
+</details>
+<details>
+<summary>Changelog</summary>
+<p><em>Sourced from <a href="https://github.com/tj-actions/changed-files/blob/main/HISTORY.md">tj-actions/changed-files's changelog</a>.</em></p>
+<blockquote>
+<h1>Changelog</h1>
+<h1><a href="https://github.com/tj-actions/changed-files/compare/v41.0.0...v41.0.1">41.0.1</a> - (2023-12-24)</h1>
+<h2><!-- raw HTML omitted -->🐛 Bug Fixes</h2>
+<ul>
+<li>Update characters escaped by safe output (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1815">#1815</a>) (<a href="https://github.com/tj-actions/changed-files/commit/716b1e13042866565e00e85fd4ec490e186c4a2f">716b1e1</a>)  - (Tonye Jack)</li>
+</ul>
+<h2><!-- raw HTML omitted -->⚙️ Miscellaneous Tasks</h2>
+<ul>
+<li><strong>deps:</strong> Update dependency eslint-plugin-prettier to v5.1.2 (<a href="https://github.com/tj-actions/changed-files/commit/7aaf10d9eef19e8a2432a967b88124171152caaf">7aaf10d</a>)  - (renovate[bot])</li>
+</ul>
+<h2><!-- raw HTML omitted -->⬆️ Upgrades</h2>
+<ul>
+<li>Upgraded to v41 (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1811">#1811</a>)</li>
+</ul>
+<p>Co-authored-by: jackton1 <a href="mailto:jackton1@users.noreply.github.com">jackton1@users.noreply.github.com</a> (<a href="https://github.com/tj-actions/changed-files/commit/cc08e170f4447237bcaf8acaacfa615b9cb86612">cc08e17</a>)  - (tj-actions[bot])</p>
+<h1><a href="https://github.com/tj-actions/changed-files/compare/v40.2.3...v41.0.0">41.0.0</a> - (2023-12-23)</h1>
+<h2><!-- raw HTML omitted -->🐛 Bug Fixes</h2>
+<ul>
+<li>Update safe output regex and the docs (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1805">#1805</a>) (<a href="https://github.com/tj-actions/changed-files/commit/ff2f6e6b91913a7be42be1b5917330fe442f2ede">ff2f6e6</a>)  - (tj-actions[bot])</li>
+</ul>
+<h2><!-- raw HTML omitted -->⏪ Reverts</h2>
+<ul>
+<li>Revert &quot;chore(deps): update actions/download-artifact action to v4&quot; (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1806">#1806</a>)</li>
+</ul>
+<p>(<a href="https://github.com/tj-actions/changed-files/commit/4f573fed06c9abb5da4c72f75c1c320718114ff7">4f573fe</a>)  - (Tonye Jack)</p>
+<h2><!-- raw HTML omitted -->🔄 Update</h2>
+<ul>
+<li>Update README.md (<a href="https://github.com/tj-actions/changed-files/commit/6e79d6e3dbe48946636c2939c80ff5c84ff7f9fe">6e79d6e</a>)  - (Tonye Jack)</li>
+<li>Update README.md (<a href="https://github.com/tj-actions/changed-files/commit/d13ac1942fb3c1d7d32017915bb082cebe8a272a">d13ac19</a>)  - (Tonye Jack)</li>
+<li>Update README.md (<a href="https://github.com/tj-actions/changed-files/commit/bb89f97963be96b39e1a303e64d5b91a1af4c340">bb89f97</a>)  - (Tonye Jack)</li>
+<li>Updated README.md (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1810">#1810</a>)</li>
+</ul>
+<p>Co-authored-by: renovate[bot] <!-- raw HTML omitted --> (<a href="https://github.com/tj-actions/changed-files/commit/1864078d0afadf68ba489e671ecc09fefe8b70ab">1864078</a>)  - (tj-actions[bot])</p>
+<ul>
+<li>Update README.md (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1808">#1808</a>)</li>
+</ul>
+<p>(<a href="https://github.com/tj-actions/changed-files/commit/47371c50e97c089212d9eb92ca26c8453224e78e">47371c5</a>)  - (Tonye Jack)</p>
+<h2><!-- raw HTML omitted -->📝 Other</h2>
+<ul>
+<li>Merge pull request from GHSA-mcph-m25j-8j63</li>
+</ul>
+<ul>
+<li>
+<p>feat: add <code>safe_output</code> input enabled by default</p>
+</li>
+<li>
+<p>fix: migrate README to safe uses of interpolation</p>
+</li>
+</ul>
+<!-- raw HTML omitted -->
+</blockquote>
+<p>... (truncated)</p>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href="https://github.com/tj-actions/changed-files/commit/716b1e13042866565e00e85fd4ec490e186c4a2f"><code>716b1e1</code></a> fix: update characters escaped by safe output (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1815">#1815</a>)</li>
+<li><a href="https://github.com/tj-actions/changed-files/commit/7aaf10d9eef19e8a2432a967b88124171152caaf"><code>7aaf10d</code></a> chore(deps): update dependency eslint-plugin-prettier to v5.1.2</li>
+<li><a href="https://github.com/tj-actions/changed-files/commit/cc08e170f4447237bcaf8acaacfa615b9cb86612"><code>cc08e17</code></a> Upgraded to v41 (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1811">#1811</a>)</li>
+<li><a href="https://github.com/tj-actions/changed-files/commit/6e79d6e3dbe48946636c2939c80ff5c84ff7f9fe"><code>6e79d6e</code></a> Update README.md</li>
+<li><a href="https://github.com/tj-actions/changed-files/commit/d13ac1942fb3c1d7d32017915bb082cebe8a272a"><code>d13ac19</code></a> Update README.md</li>
+<li><a href="https://github.com/tj-actions/changed-files/commit/bb89f97963be96b39e1a303e64d5b91a1af4c340"><code>bb89f97</code></a> Update README.md</li>
+<li><a href="https://github.com/tj-actions/changed-files/commit/1864078d0afadf68ba489e671ecc09fefe8b70ab"><code>1864078</code></a> Updated README.md (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1810">#1810</a>)</li>
+<li><a href="https://github.com/tj-actions/changed-files/commit/f495a0321d3fffa62da2573adf70b77d5eb2f57a"><code>f495a03</code></a> chore(deps): lock file maintenance</li>
+<li><a href="https://github.com/tj-actions/changed-files/commit/47371c50e97c089212d9eb92ca26c8453224e78e"><code>47371c5</code></a> Update README.md (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1808">#1808</a>)</li>
+<li><a href="https://github.com/tj-actions/changed-files/commit/4f573fed06c9abb5da4c72f75c1c320718114ff7"><code>4f573fe</code></a> Revert &quot;chore(deps): update actions/download-artifact action to v4&quot; (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1806">#1806</a>)</li>
+<li>Additional commits viewable in <a href="https://github.com/tj-actions/changed-files/compare/v40...v41">compare view</a></li>
+</ul>
+</details>
+<br />
+
+Updates `actions/upload-artifact` from 3 to 4
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href="https://github.com/actions/upload-artifact/releases">actions/upload-artifact's releases</a>.</em></p>
+<blockquote>
+<h2>v4.0.0</h2>
+<h2>What's Changed</h2>
+<p>The release of upload-artifact@v4 and download-artifact@v4 are major changes to the backend architecture of Artifacts. They have numerous performance and behavioral improvements.</p>
+<p>For more information, see the <a href="https://github.com/actions/toolkit/tree/main/packages/artifact"><code>@​actions/artifact</code></a> documentation.</p>
+<h2>New Contributors</h2>
+<ul>
+<li><a href="https://github.com/vmjoseph"><code>@​vmjoseph</code></a> made their first contribution in <a href="https://redirect.github.com/actions/upload-artifact/pull/464">actions/upload-artifact#464</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a href="https://github.com/actions/upload-artifact/compare/v3...v4.0.0">https://github.com/actions/upload-artifact/compare/v3...v4.0.0</a></p>
+<h2>v3.1.3</h2>
+<h2>What's Changed</h2>
+<ul>
+<li>chore(github): remove trailing whitespaces by <a href="https://github.com/ljmf00"><code>@​ljmf00</code></a> in <a href="https://redirect.github.com/actions/upload-artifact/pull/313">actions/upload-artifact#313</a></li>
+<li>Bump <code>@​actions/artifact</code> version to v1.1.2 by <a href="https://github.com/bethanyj28"><code>@​bethanyj28</code></a> in <a href="https://redirect.github.com/actions/upload-artifact/pull/436">actions/upload-artifact#436</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a href="https://github.com/actions/upload-artifact/compare/v3...v3.1.3">https://github.com/actions/upload-artifact/compare/v3...v3.1.3</a></p>
+<h2>v3.1.2</h2>
+<ul>
+<li>Update all <code>@actions/*</code> NPM packages to their latest versions- <a href="https://redirect.github.com/actions/upload-artifact/issues/374">#374</a></li>
+<li>Update all dev dependencies to their most recent versions - <a href="https://redirect.github.com/actions/upload-artifact/issues/375">#375</a></li>
+</ul>
+<h2>v3.1.1</h2>
+<ul>
+<li>Update actions/core package to latest version to remove <code>set-output</code> deprecation warning <a href="https://redirect.github.com/actions/upload-artifact/issues/351">#351</a></li>
+</ul>
+<h2>v3.1.0</h2>
+<h2>What's Changed</h2>
+<ul>
+<li>Bump <code>@​actions/artifact</code> to v1.1.0 (<a href="https://redirect.github.com/actions/upload-artifact/pull/327">actions/upload-artifact#327</a>)
+<ul>
+<li>Adds checksum headers on artifact upload (<a href="https://redirect.github.com/actions/toolkit/pull/1095">actions/toolkit#1095</a>) (<a href="https://redirect.github.com/actions/toolkit/pull/1063">actions/toolkit#1063</a>)</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href="https://github.com/actions/upload-artifact/commit/c7d193f32edcb7bfad88892161225aeda64e9392"><code>c7d193f</code></a> Merge pull request <a href="https://redirect.github.com/actions/upload-artifact/issues/466">#466</a> from actions/v4-beta</li>
+<li><a href="https://github.com/actions/upload-artifact/commit/13131bb095770b4070a7477c3cd2d96e1c16d9f4"><code>13131bb</code></a> licensed cache</li>
+<li><a href="https://github.com/actions/upload-artifact/commit/4a6c273b9834f66a1d05c170dc3f80f9cdb9def1"><code>4a6c273</code></a> Merge branch 'main' into v4-beta</li>
+<li><a href="https://github.com/actions/upload-artifact/commit/f391bb91a3d3118aeca171c365bb319ece276b37"><code>f391bb9</code></a> Merge pull request <a href="https://redirect.github.com/actions/upload-artifact/issues/465">#465</a> from actions/robherley/v4-documentation</li>
+<li><a href="https://github.com/actions/upload-artifact/commit/9653d03c4b74c32144e02dae644fea70e079d4b3"><code>9653d03</code></a> Apply suggestions from code review</li>
+<li><a href="https://github.com/actions/upload-artifact/commit/875b63076402f25ef9d52c294c86ba4f97810575"><code>875b630</code></a> add limitations section</li>
+<li><a href="https://github.com/actions/upload-artifact/commit/ecb21463e93740a6be75c3116242169bfdbcb15a"><code>ecb2146</code></a> add compression example</li>
+<li><a href="https://github.com/actions/upload-artifact/commit/5e7604f84a055838f64ed68bb9904751523081ae"><code>5e7604f</code></a> trim some repeated info</li>
+<li><a href="https://github.com/actions/upload-artifact/commit/d6437d07581fe318a364512e6cf6b1dca6b4f92c"><code>d6437d0</code></a> naming</li>
+<li><a href="https://github.com/actions/upload-artifact/commit/1b561557037b4957d7d184e9aac02bec86c771eb"><code>1b56155</code></a> s/v4-beta/v4/g</li>
+<li>Additional commits viewable in <a href="https://github.com/actions/upload-artifact/compare/v3...v4">compare view</a></li>
+</ul>
+</details>
+<br />
+
+Updates `actions/download-artifact` from 3 to 4
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href="https://github.com/actions/download-artifact/releases">actions/download-artifact's releases</a>.</em></p>
+<blockquote>
+<h2>v4.0.0</h2>
+<h2>What's Changed</h2>
+<p>The release of upload-artifact@v4 and download-artifact@v4 are major changes to the backend architecture of Artifacts. They have numerous performance and behavioral improvements.</p>
+<p>For more information, see the <a href="https://github.com/actions/toolkit/tree/main/packages/artifact"><code>@​actions/artifact</code></a> documentation.</p>
+<h2>New Contributors</h2>
+<ul>
+<li><a href="https://github.com/bflad"><code>@​bflad</code></a> made their first contribution in <a href="https://redirect.github.com/actions/download-artifact/pull/194">actions/download-artifact#194</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a href="https://github.com/actions/download-artifact/compare/v3...v4.0.0">https://github.com/actions/download-artifact/compare/v3...v4.0.0</a></p>
+<h2>v3.0.2</h2>
+<ul>
+<li>Bump <code>@actions/artifact</code> to v1.1.1 - <a href="https://redirect.github.com/actions/download-artifact/pull/195">actions/download-artifact#195</a></li>
+<li>Fixed a bug in Node16 where if an HTTP download finished too quickly (&lt;1ms, e.g. when it's mocked) we attempt to delete a temp file that has not been created yet <a href="hhttps://redirect.github.com/actions/toolkit/pull/1278">actions/toolkit#1278</a></li>
+</ul>
+<h2>v3.0.1</h2>
+<ul>
+<li><a href="https://redirect.github.com/actions/download-artifact/pull/178">Bump <code>@​actions/core</code> to 1.10.0</a></li>
+</ul>
+</blockquote>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href="https://github.com/actions/download-artifact/commit/f44cd7b40bfd40b6aa1cc1b9b5b7bf03d3c67110"><code>f44cd7b</code></a> Merge pull request <a href="https://redirect.github.com/actions/download-artifact/issues/259">#259</a> from actions/robherley/glob-downloads</li>
+<li><a href="https://github.com/actions/download-artifact/commit/3181fe853d2c9a606cd326853bf4c5b8ced5df02"><code>3181fe8</code></a> add some migration docs</li>
+<li><a href="https://github.com/actions/download-artifact/commit/aaaac7b403f278b6b7eebdca69ca1658616f1c57"><code>aaaac7b</code></a> licensed cache</li>
+<li><a href="https://github.com/actions/download-artifact/commit/7c9182f0e18dadedfbca3189ab7a22a416aa6714"><code>7c9182f</code></a> update readme</li>
+<li><a href="https://github.com/actions/download-artifact/commit/b94e7015566b40b2de5eeeda514f239968da2dd7"><code>b94e701</code></a> licensed cache</li>
+<li><a href="https://github.com/actions/download-artifact/commit/0b55470e40ab7435f445813ebc18b1107ecf7e32"><code>0b55470</code></a> add test case for globbed downloads to same directory</li>
+<li><a href="https://github.com/actions/download-artifact/commit/0b51c2ef9042b581aded9711127e4a6d5f71c550"><code>0b51c2e</code></a> update prettier/eslint versions</li>
+<li><a href="https://github.com/actions/download-artifact/commit/c4c6db724f9510b2b3cff5ebcc417c87a2b2fa97"><code>c4c6db7</code></a> support globbing artifact list &amp; merging download directory</li>
+<li><a href="https://github.com/actions/download-artifact/commit/1bd0606e08fcaa4c28afc1fc7d45830ab5482dac"><code>1bd0606</code></a> Merge pull request <a href="https://redirect.github.com/actions/download-artifact/issues/252">#252</a> from stchr/patch-1</li>
+<li><a href="https://github.com/actions/download-artifact/commit/eff4d42b1f6ff704c7a0f37152ed8793673560ef"><code>eff4d42</code></a> fix default for run-id</li>
+<li>Additional commits viewable in <a href="https://github.com/actions/download-artifact/compare/v3...v4">compare view</a></li>
+</ul>
+</details>
+<br />
+
+Updates `cloudflare/wrangler-action` from 3.3.2 to 3.4.0
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href="https://github.com/cloudflare/wrangler-action/releases">cloudflare/wrangler-action's releases</a>.</em></p>
+<blockquote>
+<h2>v3.4.0</h2>
+<h3>Minor Changes</h3>
+<ul>
+<li>
+<p><a href="https://redirect.github.com/cloudflare/wrangler-action/pull/213">#213</a> <a href="https://github.com/cloudflare/wrangler-action/commit/d13856dfc92816473ebf47f66e263a2668a97896"><code>d13856dfc92816473ebf47f66e263a2668a97896</code></a> Thanks <a href="https://github.com/GrantBirki"><code>@​GrantBirki</code></a>! - This change introduces three new GitHub Actions output variables. These variables are as follows:</p>
+<ul>
+<li><code>command-output</code> - contains the string results of <code>stdout</code></li>
+<li><code>command-stderr</code> - contains the string results of <code>stderr</code></li>
+<li><code>deployment-url</code> - contains the string results of the URL that was deployed (ex: <code>https://&lt;your_pages_site&gt;.pages.dev</code>)</li>
+</ul>
+<p>These output variables are intended to be used by more advanced workflows that require the output results or deployment url from Wrangler commands in subsequent workflow steps.</p>
+</li>
+</ul>
+<h3>Patch Changes</h3>
+<ul>
+<li>
+<p><a href="https://redirect.github.com/cloudflare/wrangler-action/pull/216">#216</a> <a href="https://github.com/cloudflare/wrangler-action/commit/9aba9c34daabca23a88191a5fe1b81fa721c1f11"><code>9aba9c34daabca23a88191a5fe1b81fa721c1f11</code></a> Thanks <a href="https://github.com/Cherry"><code>@​Cherry</code></a>! - Fixes issues with semver comparison, where version parts were treated lexicographically instead of numerically.</p>
+<p>Bulk secret uploading was introduced in wrangler <code>3.4.0</code>, and this action tries to check if the version used is greater than <code>3.4.0</code>, and then if so, using the new bulk secret API which is faster. Due to a bug in the semver comparison, <code>3.19.0</code> was being considered less than <code>3.4.0</code>, and then using an older and slower method for uploading secrets.</p>
+<p>Now the semver comparison is fixed, the faster bulk method is used for uploading secrets when available.</p>
+</li>
+</ul>
+</blockquote>
+</details>
+<details>
+<summary>Changelog</summary>
+<p><em>Sourced from <a href="https://github.com/cloudflare/wrangler-action/blob/main/CHANGELOG.md">cloudflare/wrangler-action's changelog</a>.</em></p>
+<blockquote>
+<h2>3.4.0</h2>
+<h3>Minor Changes</h3>
+<ul>
+<li>
+<p><a href="https://redirect.github.com/cloudflare/wrangler-action/pull/213">#213</a> <a href="https://github.com/cloudflare/wrangler-action/commit/d13856dfc92816473ebf47f66e263a2668a97896"><code>d13856dfc92816473ebf47f66e263a2668a97896</code></a> Thanks <a href="https://github.com/GrantBirki"><code>@​GrantBirki</code></a>! - This change introduces three new GitHub Actions output variables. These variables are as follows:</p>
+<ul>
+<li><code>command-output</code> - contains the string results of <code>stdout</code></li>
+<li><code>command-stderr</code> - contains the string results of <code>stderr</code></li>
+<li><code>deployment-url</code> - contains the string results of the URL that was deployed (ex: <code>https://&lt;your_pages_site&gt;.pages.dev</code>)</li>
+</ul>
+<p>These output variables are intended to be used by more advanced workflows that require the output results or deployment url from Wrangler commands in subsequent workflow steps.</p>
+</li>
+</ul>
+<h3>Patch Changes</h3>
+<ul>
+<li>
+<p><a href="https://redirect.github.com/cloudflare/wrangler-action/pull/216">#216</a> <a href="https://github.com/cloudflare/wrangler-action/commit/9aba9c34daabca23a88191a5fe1b81fa721c1f11"><code>9aba9c34daabca23a88191a5fe1b81fa721c1f11</code></a> Thanks <a href="https://github.com/Cherry"><code>@​Cherry</code></a>! - Fixes issues with semver comparison, where version parts were treated lexicographically instead of numerically.</p>
+<p>Bulk secret uploading was introduced in wrangler <code>3.4.0</code>, and this action tries to check if the version used is greater than <code>3.4.0</code>, and then if so, using the new bulk secret API which is faster. Due to a bug in the semver comparison, <code>3.19.0</code> was being considered less than <code>3.4.0</code>, and then using an older and slower method for uploading secrets.</p>
+<p>Now the semver comparison is fixed, the faster bulk method is used for uploading secrets when available.</p>
+</li>
+</ul>
+</blockquote>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href="https://github.com/cloudflare/wrangler-action/commit/a8be0ea72a399752dd2735fa16ea0d424f2335ca"><code>a8be0ea</code></a> Automatic compilation</li>
+<li><a href="https://github.com/cloudflare/wrangler-action/commit/2de0b3dfd821734f23719394c81a9e6bfc68d07c"><code>2de0b3d</code></a> Merge pull request <a href="https://redirect.github.com/cloudflare/wrangler-action/issues/218">#218</a> from cloudflare/changeset-release/main</li>
+<li><a href="https://github.com/cloudflare/wrangler-action/commit/f2d9b652c497c83796c1dac2663630c8502bd4e2"><code>f2d9b65</code></a> Version Packages</li>
+<li><a href="https://github.com/cloudflare/wrangler-action/commit/0e62acaf21e5944375ec414754eaf9a3b0574b5a"><code>0e62aca</code></a> Merge pull request <a href="https://redirect.github.com/cloudflare/wrangler-action/issues/213">#213</a> from GrantBirki/write-results-to-a-file</li>
+<li><a href="https://github.com/cloudflare/wrangler-action/commit/bd3857047ec97154684d566de2728ae35bafe237"><code>bd38570</code></a> Apply suggestions from code review</li>
+<li><a href="https://github.com/cloudflare/wrangler-action/commit/d13856dfc92816473ebf47f66e263a2668a97896"><code>d13856d</code></a> add changeset</li>
+<li><a href="https://github.com/cloudflare/wrangler-action/commit/f88aee49537788fdc0efe28624731acab64cc6b4"><code>f88aee4</code></a> Merge branch 'main' into write-results-to-a-file</li>
+<li><a href="https://github.com/cloudflare/wrangler-action/commit/a5f361f3f0ef519c75891f014f99c3fa2e6901f2"><code>a5f361f</code></a> Update src/index.ts</li>
+<li><a href="https://github.com/cloudflare/wrangler-action/commit/9aba9c34daabca23a88191a5fe1b81fa721c1f11"><code>9aba9c3</code></a> fix: semver comparison (<a href="https://redirect.github.com/cloudflare/wrangler-action/issues/216">#216</a>)</li>
+<li><a href="https://github.com/cloudflare/wrangler-action/commit/9dd38ad7904f65b85f8c11fc181be64f854f9f25"><code>9dd38ad</code></a> Update package.json</li>
+<li>Additional commits viewable in <a href="https://github.com/cloudflare/wrangler-action/compare/v3.3.2...v3.4.0">compare view</a></li>
+</ul>
+</details>
+<br />
+
+
+Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+
+[//]: # (dependabot-automerge-start)
+[//]: # (dependabot-automerge-end)
+
+---
+
+<details>
+<summary>Dependabot commands and options</summary>
+<br />
+
+You can trigger Dependabot actions by commenting on this PR:
+- `@dependabot rebase` will rebase this PR
+- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
+- `@dependabot merge` will merge this PR after your CI passes on it
+- `@dependabot squash and merge` will squash and merge this PR after your CI passes on it
+- `@dependabot cancel merge` will cancel a previously requested merge and block automerging
+- `@dependabot reopen` will reopen this PR if it is closed
+- `@dependabot close` will close this PR and stop Dependabot recreating it. You can achieve the same result by closing it manually
+- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency
+- `@dependabot ignore <dependency name> major version` will close this group update PR and stop Dependabot creating any more for the specific dependency's major version (unless you unignore this specific dependency's major version or upgrade to it yourself)
+- `@dependabot ignore <dependency name> minor version` will close this group update PR and stop Dependabot creating any more for the specific dependency's minor version (unless you unignore this specific dependency's minor version or upgrade to it yourself)
+- `@dependabot ignore <dependency name>` will close this group update PR and stop Dependabot creating any more for the specific dependency (unless you unignore this specific dependency or upgrade to it yourself)
+- `@dependabot unignore <dependency name>` will remove all of the ignore conditions of the specified dependency
+- `@dependabot unignore <dependency name> <ignore condition>` will remove the ignore condition of the specified dependency and ignore conditions
+
+
+</details>
+
+---
+
+_Label `internal` added by @dependabot[bot] on 2024-01-08 08:51_
+
+---
+
+_Comment by @github-actions[bot] on 2024-01-08 09:10_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+---
+
+_Closed by @charliermarsh on 2024-01-13 23:33_
+
+---
+
+_Comment by @dependabot[bot] on 2024-01-13 23:34_
+
+This pull request was built based on a group rule. Closing it will not ignore any of these versions in future pull requests.
+
+---
+
+_Branch deleted on 2024-01-13 23:34_
+
+---

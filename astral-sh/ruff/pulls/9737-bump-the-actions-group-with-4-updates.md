@@ -1,0 +1,538 @@
+```yaml
+number: 9737
+title: Bump the actions group with 4 updates
+type: pull_request
+state: merged
+author: dependabot
+labels:
+  - internal
+assignees: []
+merged: true
+base: main
+head: dependabot/github_actions/actions-e3d4e3ac8d
+created_at: 2024-01-31T15:22:04Z
+updated_at: 2024-01-31T15:40:12Z
+url: https://github.com/astral-sh/ruff/pull/9737
+synced_at: 2026-01-10T22:57:09Z
+```
+
+# Bump the actions group with 4 updates
+
+---
+
+_Pull request opened by @dependabot on 2024-01-31 15:22_
+
+Bumps the actions group with 4 updates: [tj-actions/changed-files](https://github.com/tj-actions/changed-files), [actions/cache](https://github.com/actions/cache), [peter-evans/find-comment](https://github.com/peter-evans/find-comment) and [peter-evans/create-or-update-comment](https://github.com/peter-evans/create-or-update-comment).
+
+Updates `tj-actions/changed-files` from 41 to 42
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href="https://github.com/tj-actions/changed-files/releases">tj-actions/changed-files's releases</a>.</em></p>
+<blockquote>
+<h2>v42</h2>
+<h1>Changes in v42.0.2</h1>
+<h2>What's Changed</h2>
+<ul>
+<li>Upgraded to v42.0.1 by <a href="https://github.com/tj-actions-bot"><code>@​tj-actions-bot</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1884">tj-actions/changed-files#1884</a></li>
+<li>feat: enhance error handling for non-git directories by <a href="https://github.com/jackton1"><code>@​jackton1</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1885">tj-actions/changed-files#1885</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a href="https://github.com/tj-actions/changed-files/compare/v42...v42.0.2">https://github.com/tj-actions/changed-files/compare/v42...v42.0.2</a></p>
+<hr />
+<h1>Changes in v42.0.1</h1>
+<h2>What's Changed</h2>
+<ul>
+<li>Upgraded to v42 by <a href="https://github.com/tj-actions-bot"><code>@​tj-actions-bot</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1874">tj-actions/changed-files#1874</a></li>
+<li>chore(deps): update tj-actions/eslint-changed-files action to v23 by <a href="https://github.com/renovate"><code>@​renovate</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1875">tj-actions/changed-files#1875</a></li>
+<li>chore(deps): lock file maintenance by <a href="https://github.com/renovate"><code>@​renovate</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1876">tj-actions/changed-files#1876</a></li>
+<li>chore: update README.md by <a href="https://github.com/jackton1"><code>@​jackton1</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1877">tj-actions/changed-files#1877</a></li>
+<li>chore: rename example worflows from test to example by <a href="https://github.com/jackton1"><code>@​jackton1</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1878">tj-actions/changed-files#1878</a></li>
+<li>chore(deps): lock file maintenance by <a href="https://github.com/renovate"><code>@​renovate</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1879">tj-actions/changed-files#1879</a></li>
+<li>chore(deps): update dependency ts-jest to v29.1.2 by <a href="https://github.com/renovate"><code>@​renovate</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1880">tj-actions/changed-files#1880</a></li>
+<li>chore(deps): update typescript-eslint monorepo to v6.19.1 by <a href="https://github.com/renovate"><code>@​renovate</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1881">tj-actions/changed-files#1881</a></li>
+<li>chore(deps): update dependency <code>@​types/node</code> to v20.11.6 by <a href="https://github.com/renovate"><code>@​renovate</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1883">tj-actions/changed-files#1883</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a href="https://github.com/tj-actions/changed-files/compare/v42...v42.0.1">https://github.com/tj-actions/changed-files/compare/v42...v42.0.1</a></p>
+<hr />
+<h1>Changes in v42.0.0</h1>
+<h2>🔥🔥 BREAKING CHANGE 🔥🔥</h2>
+<ul>
+<li>Input file patterns that end with a <code>/</code> would now match all sub-files within the directory without requiring you to specify the globstar pattern.</li>
+</ul>
+<h3></h3>
+<pre lang="yaml"><code>...
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v42
+        with:
+          files: 'dir/'  # Would also be the same as dir/** 
+</code></pre>
+<h2>What's Changed</h2>
+<ul>
+<li>Upgraded to v41.1.2 by <a href="https://github.com/tj-actions-bot"><code>@​tj-actions-bot</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1869">tj-actions/changed-files#1869</a></li>
+<li>chore(deps): update dependency prettier to v3.2.4 by <a href="https://github.com/renovate"><code>@​renovate</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1871">tj-actions/changed-files#1871</a></li>
+<li>fix: update input warning by <a href="https://github.com/jackton1"><code>@​jackton1</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1870">tj-actions/changed-files#1870</a></li>
+<li>rename: unsupported REST API inputs constant name by <a href="https://github.com/jackton1"><code>@​jackton1</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1872">tj-actions/changed-files#1872</a></li>
+<li>feat: add support for include/exclude all nested files when a directory is specified and ends with a slash by <a href="https://github.com/jackton1"><code>@​jackton1</code></a> in <a href="https://redirect.github.com/tj-actions/changed-files/pull/1873">tj-actions/changed-files#1873</a></li>
+</ul>
+<!-- raw HTML omitted -->
+</blockquote>
+<p>... (truncated)</p>
+</details>
+<details>
+<summary>Changelog</summary>
+<p><em>Sourced from <a href="https://github.com/tj-actions/changed-files/blob/main/HISTORY.md">tj-actions/changed-files's changelog</a>.</em></p>
+<blockquote>
+<h1>Changelog</h1>
+<h1><a href="https://github.com/tj-actions/changed-files/compare/v42.0.1...v42.0.2">42.0.2</a> - (2024-01-25)</h1>
+<h2><!-- raw HTML omitted -->🚀 Features</h2>
+<ul>
+<li>Enhance error handling for non-git directories (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1885">#1885</a>) (<a href="https://github.com/tj-actions/changed-files/commit/90a06d6ba9543371ab4df8eeca0be07ca6054959">90a06d6</a>)  - (Tonye Jack)</li>
+</ul>
+<h2><!-- raw HTML omitted -->⬆️ Upgrades</h2>
+<ul>
+<li>Upgraded to v42.0.1 (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1884">#1884</a>)</li>
+</ul>
+<p>Co-authored-by: jackton1 <a href="mailto:jackton1@users.noreply.github.com">jackton1@users.noreply.github.com</a> (<a href="https://github.com/tj-actions/changed-files/commit/2cb2c9234e9dc3b8eaac2ababc3f355e80e47963">2cb2c92</a>)  - (tj-actions[bot])</p>
+<h1><a href="https://github.com/tj-actions/changed-files/compare/v42.0.0...v42.0.1">42.0.1</a> - (2024-01-24)</h1>
+<h2><!-- raw HTML omitted -->➕ Add</h2>
+<ul>
+<li>Added missing changes and modified dist assets.
+(<a href="https://github.com/tj-actions/changed-files/commit/ea024b2d7f80389ba16e7084b20265cb7dfe230f">ea024b2</a>)  - (GitHub Action)</li>
+<li>Added missing changes and modified dist assets.
+(<a href="https://github.com/tj-actions/changed-files/commit/3af07c2040da68166f613248bd8e9cd28fb581e3">3af07c2</a>)  - (GitHub Action)</li>
+</ul>
+<h2><!-- raw HTML omitted -->🔄 Update</h2>
+<ul>
+<li>Update env.ts (<a href="https://github.com/tj-actions/changed-files/commit/3680129aa2971333ef3d148024520cdc5327a6b7">3680129</a>)  - (Tonye Jack)</li>
+</ul>
+<h2><!-- raw HTML omitted -->⚙️ Miscellaneous Tasks</h2>
+<ul>
+<li><strong>deps:</strong> Update dependency <code>@​types/node</code> to v20.11.6 (<a href="https://github.com/tj-actions/changed-files/commit/ac21d93904fb48e7f76ce4bd2a4d197f67e34abe">ac21d93</a>)  - (renovate[bot])</li>
+<li><strong>deps:</strong> Update typescript-eslint monorepo to v6.19.1 (<a href="https://github.com/tj-actions/changed-files/commit/a4637ea6e7d9a502f6edb845b6c65086c5bce55f">a4637ea</a>)  - (renovate[bot])</li>
+<li><strong>deps:</strong> Update dependency ts-jest to v29.1.2 (<a href="https://github.com/tj-actions/changed-files/commit/fd9998cf5fcac4b0fff205a58ec694bf596169c8">fd9998c</a>)  - (renovate[bot])</li>
+<li><strong>deps:</strong> Lock file maintenance (<a href="https://github.com/tj-actions/changed-files/commit/db4e5848448e4b540e7e7dcbdc7aab3c88bfcf47">db4e584</a>)  - (renovate[bot])</li>
+<li>Rename example worflows from test to example (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1878">#1878</a>) (<a href="https://github.com/tj-actions/changed-files/commit/c6543c497aea61c2263b735dece03b23383441f0">c6543c4</a>)  - (Tonye Jack)</li>
+<li>Update README.md (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1877">#1877</a>) (<a href="https://github.com/tj-actions/changed-files/commit/88f9f3efbb5a8fe2acff4139babc1d6aeafa5e72">88f9f3e</a>)  - (Tonye Jack)</li>
+<li><strong>deps:</strong> Lock file maintenance (<a href="https://github.com/tj-actions/changed-files/commit/5d866cbe77002ed91912202826ed253b808a9133">5d866cb</a>)  - (renovate[bot])</li>
+<li><strong>deps:</strong> Update tj-actions/eslint-changed-files action to v23 (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1875">#1875</a>) (<a href="https://github.com/tj-actions/changed-files/commit/346f237a1734287fa772ee254047beecabcdbdf2">346f237</a>)  - (renovate[bot])</li>
+</ul>
+<h2><!-- raw HTML omitted -->⬆️ Upgrades</h2>
+<ul>
+<li>Upgraded to v42 (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1874">#1874</a>)</li>
+</ul>
+<p>Co-authored-by: jackton1 <a href="mailto:jackton1@users.noreply.github.com">jackton1@users.noreply.github.com</a> (<a href="https://github.com/tj-actions/changed-files/commit/c037f1e7c56c7884b2d7d24c36cd8a0bc2c20687">c037f1e</a>)  - (tj-actions[bot])</p>
+<h1><a href="https://github.com/tj-actions/changed-files/compare/v41.1.2...v42.0.0">42.0.0</a> - (2024-01-18)</h1>
+<h2><!-- raw HTML omitted -->🚀 Features</h2>
+<ul>
+<li>Add support for include/exclude all nested files when a directory is specified and ends with a slash (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1873">#1873</a>) (<a href="https://github.com/tj-actions/changed-files/commit/ae82ed4ae04587b665efad2f206578aa6f0e8539">ae82ed4</a>)  - (Tonye Jack)</li>
+</ul>
+<!-- raw HTML omitted -->
+</blockquote>
+<p>... (truncated)</p>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href="https://github.com/tj-actions/changed-files/commit/90a06d6ba9543371ab4df8eeca0be07ca6054959"><code>90a06d6</code></a> feat: enhance error handling for non-git directories (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1885">#1885</a>)</li>
+<li><a href="https://github.com/tj-actions/changed-files/commit/2cb2c9234e9dc3b8eaac2ababc3f355e80e47963"><code>2cb2c92</code></a> Upgraded to v42.0.1 (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1884">#1884</a>)</li>
+<li><a href="https://github.com/tj-actions/changed-files/commit/ac21d93904fb48e7f76ce4bd2a4d197f67e34abe"><code>ac21d93</code></a> chore(deps): update dependency <code>@​types/node</code> to v20.11.6</li>
+<li><a href="https://github.com/tj-actions/changed-files/commit/a4637ea6e7d9a502f6edb845b6c65086c5bce55f"><code>a4637ea</code></a> chore(deps): update typescript-eslint monorepo to v6.19.1</li>
+<li><a href="https://github.com/tj-actions/changed-files/commit/fd9998cf5fcac4b0fff205a58ec694bf596169c8"><code>fd9998c</code></a> chore(deps): update dependency ts-jest to v29.1.2</li>
+<li><a href="https://github.com/tj-actions/changed-files/commit/ea024b2d7f80389ba16e7084b20265cb7dfe230f"><code>ea024b2</code></a> Added missing changes and modified dist assets.</li>
+<li><a href="https://github.com/tj-actions/changed-files/commit/db4e5848448e4b540e7e7dcbdc7aab3c88bfcf47"><code>db4e584</code></a> chore(deps): lock file maintenance</li>
+<li><a href="https://github.com/tj-actions/changed-files/commit/c6543c497aea61c2263b735dece03b23383441f0"><code>c6543c4</code></a> chore: rename example worflows from test to example (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1878">#1878</a>)</li>
+<li><a href="https://github.com/tj-actions/changed-files/commit/88f9f3efbb5a8fe2acff4139babc1d6aeafa5e72"><code>88f9f3e</code></a> chore: update README.md (<a href="https://redirect.github.com/tj-actions/changed-files/issues/1877">#1877</a>)</li>
+<li><a href="https://github.com/tj-actions/changed-files/commit/3af07c2040da68166f613248bd8e9cd28fb581e3"><code>3af07c2</code></a> Added missing changes and modified dist assets.</li>
+<li>Additional commits viewable in <a href="https://github.com/tj-actions/changed-files/compare/v41...v42">compare view</a></li>
+</ul>
+</details>
+<br />
+
+Updates `actions/cache` from 3 to 4
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href="https://github.com/actions/cache/releases">actions/cache's releases</a>.</em></p>
+<blockquote>
+<h2>v4.0.0</h2>
+<h2>What's Changed</h2>
+<ul>
+<li>Update action to node20 by <a href="https://github.com/takost"><code>@​takost</code></a> in <a href="https://redirect.github.com/actions/cache/pull/1284">actions/cache#1284</a></li>
+<li>feat: save-always flag by <a href="https://github.com/to-s"><code>@​to-s</code></a> in <a href="https://redirect.github.com/actions/cache/pull/1242">actions/cache#1242</a></li>
+</ul>
+<h2>New Contributors</h2>
+<ul>
+<li><a href="https://github.com/takost"><code>@​takost</code></a> made their first contribution in <a href="https://redirect.github.com/actions/cache/pull/1284">actions/cache#1284</a></li>
+<li><a href="https://github.com/to-s"><code>@​to-s</code></a> made their first contribution in <a href="https://redirect.github.com/actions/cache/pull/1242">actions/cache#1242</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a href="https://github.com/actions/cache/compare/v3...v4.0.0">https://github.com/actions/cache/compare/v3...v4.0.0</a></p>
+<h2>v3.3.3</h2>
+<h2>What's Changed</h2>
+<ul>
+<li>Cache v3.3.3 by <a href="https://github.com/robherley"><code>@​robherley</code></a> in <a href="https://redirect.github.com/actions/cache/pull/1302">actions/cache#1302</a></li>
+</ul>
+<h2>New Contributors</h2>
+<ul>
+<li><a href="https://github.com/robherley"><code>@​robherley</code></a> made their first contribution in <a href="https://redirect.github.com/actions/cache/pull/1302">actions/cache#1302</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a href="https://github.com/actions/cache/compare/v3...v3.3.3">https://github.com/actions/cache/compare/v3...v3.3.3</a></p>
+<h2>v3.3.2</h2>
+<h2>What's Changed</h2>
+<ul>
+<li>Fixed readme with new segment timeout values by <a href="https://github.com/kotewar"><code>@​kotewar</code></a> in <a href="https://redirect.github.com/actions/cache/pull/1133">actions/cache#1133</a></li>
+<li>Readme fixes by <a href="https://github.com/kotewar"><code>@​kotewar</code></a> in <a href="https://redirect.github.com/actions/cache/pull/1134">actions/cache#1134</a></li>
+<li>Updated description of the lookup-only input for main action by <a href="https://github.com/kotewar"><code>@​kotewar</code></a> in <a href="https://redirect.github.com/actions/cache/pull/1130">actions/cache#1130</a></li>
+<li>Change two new actions mention as quoted text by <a href="https://github.com/bishal-pdMSFT"><code>@​bishal-pdMSFT</code></a> in <a href="https://redirect.github.com/actions/cache/pull/1131">actions/cache#1131</a></li>
+<li>Update Cross-OS Caching tips by <a href="https://github.com/pdotl"><code>@​pdotl</code></a> in <a href="https://redirect.github.com/actions/cache/pull/1122">actions/cache#1122</a></li>
+<li>Bazel example (Take <a href="https://redirect.github.com/actions/cache/issues/2">#2</a>️⃣) by <a href="https://github.com/vorburger"><code>@​vorburger</code></a> in <a href="https://redirect.github.com/actions/cache/pull/1132">actions/cache#1132</a></li>
+<li>Remove actions to add new PRs and issues to a project board by <a href="https://github.com/jorendorff"><code>@​jorendorff</code></a> in <a href="https://redirect.github.com/actions/cache/pull/1187">actions/cache#1187</a></li>
+<li>Consume latest toolkit and fix dangling promise bug by <a href="https://github.com/chkimes"><code>@​chkimes</code></a> in <a href="https://redirect.github.com/actions/cache/pull/1217">actions/cache#1217</a></li>
+<li>Bump action version to 3.3.2 by <a href="https://github.com/bethanyj28"><code>@​bethanyj28</code></a> in <a href="https://redirect.github.com/actions/cache/pull/1236">actions/cache#1236</a></li>
+</ul>
+<h2>New Contributors</h2>
+<ul>
+<li><a href="https://github.com/vorburger"><code>@​vorburger</code></a> made their first contribution in <a href="https://redirect.github.com/actions/cache/pull/1132">actions/cache#1132</a></li>
+<li><a href="https://github.com/jorendorff"><code>@​jorendorff</code></a> made their first contribution in <a href="https://redirect.github.com/actions/cache/pull/1187">actions/cache#1187</a></li>
+<li><a href="https://github.com/chkimes"><code>@​chkimes</code></a> made their first contribution in <a href="https://redirect.github.com/actions/cache/pull/1217">actions/cache#1217</a></li>
+<li><a href="https://github.com/bethanyj28"><code>@​bethanyj28</code></a> made their first contribution in <a href="https://redirect.github.com/actions/cache/pull/1236">actions/cache#1236</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a href="https://github.com/actions/cache/compare/v3...v3.3.2">https://github.com/actions/cache/compare/v3...v3.3.2</a></p>
+<h2>v3.3.1</h2>
+<h2>What's Changed</h2>
+<ul>
+<li>Reduced download segment size to 128 MB and timeout to 10 minutes by <a href="https://github.com/kotewar"><code>@​kotewar</code></a> in <a href="https://redirect.github.com/actions/cache/pull/1129">actions/cache#1129</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a href="https://github.com/actions/cache/compare/v3...v3.3.1">https://github.com/actions/cache/compare/v3...v3.3.1</a></p>
+<h2>v3.3.0</h2>
+<h2>What's Changed</h2>
+<ul>
+<li>Bug: Permission is missing in cache delete example by <a href="https://github.com/kotokaze"><code>@​kotokaze</code></a> in <a href="https://redirect.github.com/actions/cache/pull/1123">actions/cache#1123</a></li>
+</ul>
+<!-- raw HTML omitted -->
+</blockquote>
+<p>... (truncated)</p>
+</details>
+<details>
+<summary>Changelog</summary>
+<p><em>Sourced from <a href="https://github.com/actions/cache/blob/main/RELEASES.md">actions/cache's changelog</a>.</em></p>
+<blockquote>
+<h1>Releases</h1>
+<h3>3.0.0</h3>
+<ul>
+<li>Updated minimum runner version support from node 12 -&gt; node 16</li>
+</ul>
+<h3>3.0.1</h3>
+<ul>
+<li>Added support for caching from GHES 3.5.</li>
+<li>Fixed download issue for files &gt; 2GB during restore.</li>
+</ul>
+<h3>3.0.2</h3>
+<ul>
+<li>Added support for dynamic cache size cap on GHES.</li>
+</ul>
+<h3>3.0.3</h3>
+<ul>
+<li>Fixed avoiding empty cache save when no files are available for caching. (<a href="https://redirect.github.com/actions/cache/issues/624">issue</a>)</li>
+</ul>
+<h3>3.0.4</h3>
+<ul>
+<li>Fixed tar creation error while trying to create tar with path as <code>~/</code> home folder on <code>ubuntu-latest</code>. (<a href="https://redirect.github.com/actions/cache/issues/689">issue</a>)</li>
+</ul>
+<h3>3.0.5</h3>
+<ul>
+<li>Removed error handling by consuming actions/cache 3.0 toolkit, Now cache server error handling will be done by toolkit. (<a href="https://redirect.github.com/actions/cache/pull/834">PR</a>)</li>
+</ul>
+<h3>3.0.6</h3>
+<ul>
+<li>Fixed <a href="https://redirect.github.com/actions/cache/issues/809">#809</a> - zstd -d: no such file or directory error</li>
+<li>Fixed <a href="https://redirect.github.com/actions/cache/issues/833">#833</a> - cache doesn't work with github workspace directory</li>
+</ul>
+<h3>3.0.7</h3>
+<ul>
+<li>Fixed <a href="https://redirect.github.com/actions/cache/issues/810">#810</a> - download stuck issue. A new timeout is introduced in the download process to abort the download if it gets stuck and doesn't finish within an hour.</li>
+</ul>
+<h3>3.0.8</h3>
+<ul>
+<li>Fix zstd not working for windows on gnu tar in issues <a href="https://redirect.github.com/actions/cache/issues/888">#888</a> and <a href="https://redirect.github.com/actions/cache/issues/891">#891</a>.</li>
+<li>Allowing users to provide a custom timeout as input for aborting download of a cache segment using an environment variable <code>SEGMENT_DOWNLOAD_TIMEOUT_MINS</code>. Default is 60 minutes.</li>
+</ul>
+<h3>3.0.9</h3>
+<ul>
+<li>Enhanced the warning message for cache unavailablity in case of GHES.</li>
+</ul>
+<h3>3.0.10</h3>
+<ul>
+<li>Fix a bug with sorting inputs.</li>
+<li>Update definition for restore-keys in README.md</li>
+</ul>
+<!-- raw HTML omitted -->
+</blockquote>
+<p>... (truncated)</p>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href="https://github.com/actions/cache/commit/13aacd865c20de90d75de3b17ebe84f7a17d57d2"><code>13aacd8</code></a> Merge pull request <a href="https://redirect.github.com/actions/cache/issues/1242">#1242</a> from to-s/main</li>
+<li><a href="https://github.com/actions/cache/commit/53b35c543921fe2e8b288765ff817de9de8d906f"><code>53b35c5</code></a> Merge branch 'main' into main</li>
+<li><a href="https://github.com/actions/cache/commit/65b8989fab3bb394817bdb845a453dff480c2b51"><code>65b8989</code></a> Merge pull request <a href="https://redirect.github.com/actions/cache/issues/1284">#1284</a> from takost/update-to-node-20</li>
+<li><a href="https://github.com/actions/cache/commit/d0be34d54485f31ca2ccbe66e6ea3d96544a807b"><code>d0be34d</code></a> Fix dist</li>
+<li><a href="https://github.com/actions/cache/commit/66cf064d47313d2cccf392d01bd10925da2bd072"><code>66cf064</code></a> Merge branch 'main' into update-to-node-20</li>
+<li><a href="https://github.com/actions/cache/commit/1326563738ddb735c5f2ce85cba8c79f33b728cd"><code>1326563</code></a> Merge branch 'main' into main</li>
+<li><a href="https://github.com/actions/cache/commit/e71876755e268d6cc25a5d3e3c46ae447e35290a"><code>e718767</code></a> Fix format</li>
+<li><a href="https://github.com/actions/cache/commit/01229828ffa049a8dee4db27bcb23ed33f2b451f"><code>0122982</code></a> Apply workaround for earlyExit</li>
+<li><a href="https://github.com/actions/cache/commit/3185ecfd6135856ca6d904ae032cff4f39b8b365"><code>3185ecf</code></a> Update &quot;only-&quot; actions to node20</li>
+<li><a href="https://github.com/actions/cache/commit/25618a0a675e8447e5ffc8ed9b7ddb2aaf927f65"><code>25618a0</code></a> Bump version</li>
+<li>Additional commits viewable in <a href="https://github.com/actions/cache/compare/v3...v4">compare view</a></li>
+</ul>
+</details>
+<br />
+
+Updates `peter-evans/find-comment` from 2 to 3
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href="https://github.com/peter-evans/find-comment/releases">peter-evans/find-comment's releases</a>.</em></p>
+<blockquote>
+<h2>Find Comment v3.0.0</h2>
+<p>⚙️  Updated runtime to Node.js 20</p>
+<ul>
+<li>The action now requires a minimum version of <a href="https://github.com/actions/runner/releases/tag/v2.308.0">v2.308.0</a> for the Actions runner. Update self-hosted runners to v2.308.0 or later to ensure compatibility.</li>
+</ul>
+<h2>What's Changed</h2>
+<ul>
+<li>build(deps-dev): bump prettier from 2.8.7 to 2.8.8 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/173">peter-evans/find-comment#173</a></li>
+<li>build(deps-dev): bump <code>@​types/node</code> from 18.15.13 to 18.16.3 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/175">peter-evans/find-comment#175</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/parser</code> from 5.59.0 to 5.59.1 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/176">peter-evans/find-comment#176</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/eslint-plugin</code> from 5.59.0 to 5.59.1 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/174">peter-evans/find-comment#174</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/eslint-plugin</code> from 5.59.1 to 5.59.2 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/177">peter-evans/find-comment#177</a></li>
+<li>build(deps-dev): bump eslint from 8.39.0 to 8.40.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/179">peter-evans/find-comment#179</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/parser</code> from 5.59.1 to 5.59.2 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/178">peter-evans/find-comment#178</a></li>
+<li>build(deps-dev): bump <code>@​types/node</code> from 18.16.3 to 18.16.5 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/180">peter-evans/find-comment#180</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/eslint-plugin</code> from 5.59.2 to 5.59.5 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/181">peter-evans/find-comment#181</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/parser</code> from 5.59.2 to 5.59.5 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/183">peter-evans/find-comment#183</a></li>
+<li>build(deps-dev): bump <code>@​types/node</code> from 18.16.5 to 18.16.9 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/182">peter-evans/find-comment#182</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/parser</code> from 5.59.5 to 5.59.6 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/184">peter-evans/find-comment#184</a></li>
+<li>build(deps-dev): bump eslint from 8.40.0 to 8.41.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/186">peter-evans/find-comment#186</a></li>
+<li>build(deps-dev): bump <code>@​types/node</code> from 18.16.9 to 18.16.13 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/187">peter-evans/find-comment#187</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/eslint-plugin</code> from 5.59.5 to 5.59.6 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/185">peter-evans/find-comment#185</a></li>
+<li>build(deps-dev): bump <code>@​types/node</code> from 18.16.13 to 18.16.16 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/188">peter-evans/find-comment#188</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/parser</code> from 5.59.6 to 5.59.7 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/190">peter-evans/find-comment#190</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/eslint-plugin</code> from 5.59.6 to 5.59.7 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/189">peter-evans/find-comment#189</a></li>
+<li>build(deps-dev): bump eslint from 8.41.0 to 8.42.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/191">peter-evans/find-comment#191</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/parser</code> from 5.59.7 to 5.59.8 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/193">peter-evans/find-comment#193</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/eslint-plugin</code> from 5.59.7 to 5.59.8 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/194">peter-evans/find-comment#194</a></li>
+<li>build(deps-dev): bump eslint-plugin-github from 4.7.0 to 4.8.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/192">peter-evans/find-comment#192</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/eslint-plugin</code> from 5.59.8 to 5.59.9 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/195">peter-evans/find-comment#195</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/parser</code> from 5.59.8 to 5.59.9 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/197">peter-evans/find-comment#197</a></li>
+<li>build(deps-dev): bump <code>@​types/node</code> from 18.16.16 to 18.16.17 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/196">peter-evans/find-comment#196</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/parser</code> from 5.59.9 to 5.59.11 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/198">peter-evans/find-comment#198</a></li>
+<li>build(deps-dev): bump eslint from 8.42.0 to 8.43.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/199">peter-evans/find-comment#199</a></li>
+<li>build(deps-dev): bump <code>@​types/node</code> from 18.16.17 to 18.16.18 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/200">peter-evans/find-comment#200</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/eslint-plugin</code> from 5.59.9 to 5.59.11 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/201">peter-evans/find-comment#201</a></li>
+<li>build(deps-dev): bump eslint-plugin-jest from 27.2.1 to 27.2.2 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/202">peter-evans/find-comment#202</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/eslint-plugin</code> from 5.59.11 to 5.60.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/203">peter-evans/find-comment#203</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/parser</code> from 5.59.11 to 5.60.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/204">peter-evans/find-comment#204</a></li>
+<li>build(deps-dev): bump <code>@​types/node</code> from 18.16.18 to 18.16.19 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/205">peter-evans/find-comment#205</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/parser</code> from 5.60.0 to 5.60.1 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/206">peter-evans/find-comment#206</a></li>
+<li>build(deps-dev): bump eslint from 8.43.0 to 8.44.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/207">peter-evans/find-comment#207</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/eslint-plugin</code> from 5.60.0 to 5.60.1 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/208">peter-evans/find-comment#208</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/eslint-plugin</code> from 5.60.1 to 5.61.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/209">peter-evans/find-comment#209</a></li>
+<li>build(deps): bump tough-cookie from 4.1.2 to 4.1.3 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/211">peter-evans/find-comment#211</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/parser</code> from 5.60.1 to 5.61.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/210">peter-evans/find-comment#210</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/eslint-plugin</code> from 5.61.0 to 5.62.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/212">peter-evans/find-comment#212</a></li>
+<li>build(deps-dev): bump eslint from 8.44.0 to 8.45.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/214">peter-evans/find-comment#214</a></li>
+<li>build(deps-dev): bump eslint-plugin-jest from 27.2.2 to 27.2.3 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/215">peter-evans/find-comment#215</a></li>
+<li>build(deps-dev): bump <code>@​typescript-eslint/parser</code> from 5.61.0 to 5.62.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/213">peter-evans/find-comment#213</a></li>
+<li>build(deps-dev): bump eslint-plugin-github from 4.8.0 to 4.9.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/216">peter-evans/find-comment#216</a></li>
+<li>build(deps-dev): bump word-wrap from 1.2.3 to 1.2.4 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/find-comment/pull/217">peter-evans/find-comment#217</a></li>
+</ul>
+<!-- raw HTML omitted -->
+</blockquote>
+<p>... (truncated)</p>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href="https://github.com/peter-evans/find-comment/commit/d5fe37641ad8451bdd80312415672ba26c86575e"><code>d5fe376</code></a> feat: update runtime to node 20 (<a href="https://redirect.github.com/peter-evans/find-comment/issues/282">#282</a>)</li>
+<li><a href="https://github.com/peter-evans/find-comment/commit/e3754082ec6536fb0f8c4c6ebb4c2682cf6efa67"><code>e375408</code></a> build(deps-dev): bump <code>@​types/node</code> from 18.19.6 to 18.19.8 (<a href="https://redirect.github.com/peter-evans/find-comment/issues/279">#279</a>)</li>
+<li><a href="https://github.com/peter-evans/find-comment/commit/6f781399d61362a4f5121bab933bbad888ecd659"><code>6f78139</code></a> build(deps-dev): bump prettier from 3.2.1 to 3.2.4 (<a href="https://redirect.github.com/peter-evans/find-comment/issues/278">#278</a>)</li>
+<li><a href="https://github.com/peter-evans/find-comment/commit/663f5b8fd865055f01a344810af292dd4b5f0d5b"><code>663f5b8</code></a> build(deps-dev): bump eslint-plugin-jest from 27.6.1 to 27.6.3 (<a href="https://redirect.github.com/peter-evans/find-comment/issues/276">#276</a>)</li>
+<li><a href="https://github.com/peter-evans/find-comment/commit/1950d4859087e02b21eefc8ad70c114702f3daba"><code>1950d48</code></a> build(deps-dev): bump prettier from 3.1.1 to 3.2.1 (<a href="https://redirect.github.com/peter-evans/find-comment/issues/277">#277</a>)</li>
+<li><a href="https://github.com/peter-evans/find-comment/commit/4c49b27bc3472947b5de8b4ed6732a81960286a8"><code>4c49b27</code></a> build(deps-dev): bump eslint-plugin-prettier from 5.1.2 to 5.1.3 (<a href="https://redirect.github.com/peter-evans/find-comment/issues/275">#275</a>)</li>
+<li><a href="https://github.com/peter-evans/find-comment/commit/141f79c0a836a288f9e9108fa5fb9128b0166869"><code>141f79c</code></a> build(deps-dev): bump <code>@​types/node</code> from 18.19.4 to 18.19.6 (<a href="https://redirect.github.com/peter-evans/find-comment/issues/274">#274</a>)</li>
+<li><a href="https://github.com/peter-evans/find-comment/commit/90d027df0ed038f7d73baa358f32756bececd141"><code>90d027d</code></a> build(deps-dev): bump eslint-plugin-jest from 27.6.0 to 27.6.1 (<a href="https://redirect.github.com/peter-evans/find-comment/issues/273">#273</a>)</li>
+<li><a href="https://github.com/peter-evans/find-comment/commit/4541d1b6b0e618acc24284e118743fc5ad0bc5de"><code>4541d1b</code></a> build(deps-dev): bump eslint-plugin-prettier from 5.1.1 to 5.1.2 (<a href="https://redirect.github.com/peter-evans/find-comment/issues/272">#272</a>)</li>
+<li><a href="https://github.com/peter-evans/find-comment/commit/3e2c601e8c32795632a106e9c0ae030f1699756e"><code>3e2c601</code></a> build(deps-dev): bump <code>@​types/node</code> from 18.19.3 to 18.19.4 (<a href="https://redirect.github.com/peter-evans/find-comment/issues/271">#271</a>)</li>
+<li>Additional commits viewable in <a href="https://github.com/peter-evans/find-comment/compare/v2...v3">compare view</a></li>
+</ul>
+</details>
+<br />
+
+Updates `peter-evans/create-or-update-comment` from 3 to 4
+<details>
+<summary>Release notes</summary>
+<p><em>Sourced from <a href="https://github.com/peter-evans/create-or-update-comment/releases">peter-evans/create-or-update-comment's releases</a>.</em></p>
+<blockquote>
+<h2>Create or Update Comment v4.0.0</h2>
+<p>⚙️  Updated runtime to Node.js 20</p>
+<ul>
+<li>The action now requires a minimum version of <a href="https://github.com/actions/runner/releases/tag/v2.308.0">v2.308.0</a> for the Actions runner. Update self-hosted runners to v2.308.0 or later to ensure compatibility.</li>
+</ul>
+<h2>What's Changed</h2>
+<ul>
+<li>build(deps): bump actions/setup-node from 3 to 4 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/273">peter-evans/create-or-update-comment#273</a></li>
+<li>build(deps-dev): bump <code>@​vercel/ncc</code> from 0.38.0 to 0.38.1 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/274">peter-evans/create-or-update-comment#274</a></li>
+<li>build(deps-dev): bump eslint-plugin-jest from 27.4.2 to 27.4.3 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/276">peter-evans/create-or-update-comment#276</a></li>
+<li>build(deps-dev): bump <code>@​types/node</code> from 18.18.5 to 18.18.6 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/277">peter-evans/create-or-update-comment#277</a></li>
+<li>build(deps-dev): bump eslint from 8.51.0 to 8.52.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/275">peter-evans/create-or-update-comment#275</a></li>
+<li>build(deps-dev): bump eslint-plugin-jest from 27.4.3 to 27.6.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/278">peter-evans/create-or-update-comment#278</a></li>
+<li>build(deps-dev): bump <code>@​types/node</code> from 18.18.6 to 18.18.8 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/279">peter-evans/create-or-update-comment#279</a></li>
+<li>build(deps-dev): bump eslint from 8.52.0 to 8.53.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/280">peter-evans/create-or-update-comment#280</a></li>
+<li>build(deps-dev): bump <code>@​types/node</code> from 18.18.8 to 18.18.9 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/281">peter-evans/create-or-update-comment#281</a></li>
+<li>build(deps-dev): bump prettier from 3.0.3 to 3.1.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/282">peter-evans/create-or-update-comment#282</a></li>
+<li>build(deps-dev): bump <code>@​types/node</code> from 18.18.9 to 18.18.12 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/283">peter-evans/create-or-update-comment#283</a></li>
+<li>build(deps-dev): bump eslint from 8.53.0 to 8.54.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/284">peter-evans/create-or-update-comment#284</a></li>
+<li>build(deps-dev): bump <code>@​types/node</code> from 18.18.12 to 18.18.13 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/285">peter-evans/create-or-update-comment#285</a></li>
+<li>build(deps-dev): bump eslint from 8.54.0 to 8.55.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/286">peter-evans/create-or-update-comment#286</a></li>
+<li>build(deps-dev): bump <code>@​types/node</code> from 18.18.13 to 18.19.2 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/287">peter-evans/create-or-update-comment#287</a></li>
+<li>build(deps): bump chuhlomin/render-template from 1.8 to 1.9 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/288">peter-evans/create-or-update-comment#288</a></li>
+<li>build(deps-dev): bump <code>@​types/node</code> from 18.19.2 to 18.19.3 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/289">peter-evans/create-or-update-comment#289</a></li>
+<li>build(deps-dev): bump prettier from 3.1.0 to 3.1.1 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/290">peter-evans/create-or-update-comment#290</a></li>
+<li>build(deps-dev): bump eslint-plugin-prettier from 5.0.1 to 5.1.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/292">peter-evans/create-or-update-comment#292</a></li>
+<li>build(deps-dev): bump eslint from 8.55.0 to 8.56.0 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/293">peter-evans/create-or-update-comment#293</a></li>
+<li>build(deps): bump actions/download-artifact from 3 to 4 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/295">peter-evans/create-or-update-comment#295</a></li>
+<li>build(deps-dev): bump eslint-plugin-prettier from 5.1.0 to 5.1.2 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/296">peter-evans/create-or-update-comment#296</a></li>
+<li>build(deps-dev): bump eslint-plugin-jest from 27.6.0 to 27.6.1 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/297">peter-evans/create-or-update-comment#297</a></li>
+<li>build(deps-dev): bump <code>@​types/node</code> from 18.19.3 to 18.19.4 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/298">peter-evans/create-or-update-comment#298</a></li>
+<li>build(deps-dev): bump eslint-plugin-prettier from 5.1.2 to 5.1.3 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/299">peter-evans/create-or-update-comment#299</a></li>
+<li>build(deps-dev): bump <code>@​types/node</code> from 18.19.4 to 18.19.6 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/300">peter-evans/create-or-update-comment#300</a></li>
+<li>build(deps-dev): bump prettier from 3.1.1 to 3.2.3 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/301">peter-evans/create-or-update-comment#301</a></li>
+<li>build(deps-dev): bump eslint-plugin-jest from 27.6.1 to 27.6.3 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/302">peter-evans/create-or-update-comment#302</a></li>
+<li>build(deps-dev): bump <code>@​types/node</code> from 18.19.6 to 18.19.7 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/303">peter-evans/create-or-update-comment#303</a></li>
+<li>build(deps-dev): bump <code>@​types/node</code> from 18.19.7 to 18.19.8 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/304">peter-evans/create-or-update-comment#304</a></li>
+<li>build(deps-dev): bump prettier from 3.2.3 to 3.2.4 by <a href="https://github.com/dependabot"><code>@​dependabot</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/305">peter-evans/create-or-update-comment#305</a></li>
+<li>feat: update runtime to node 20 by <a href="https://github.com/peter-evans"><code>@​peter-evans</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/306">peter-evans/create-or-update-comment#306</a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a href="https://github.com/peter-evans/create-or-update-comment/compare/v3.1.0...v4.0.0">https://github.com/peter-evans/create-or-update-comment/compare/v3.1.0...v4.0.0</a></p>
+<h2>Create or Update Comment v3.1.0</h2>
+<h2>What's Changed</h2>
+<ul>
+<li>Add truncate warning to body of comment by <a href="https://github.com/ethanmdavidson"><code>@​ethanmdavidson</code></a> and <a href="https://github.com/peter-evans"><code>@​peter-evans</code></a> in <a href="https://redirect.github.com/peter-evans/create-or-update-comment/pull/272">peter-evans/create-or-update-comment#272</a></li>
+<li>46 dependency updates by <a href="https://github.com/dependabot"><code>@​dependabot</code></a></li>
+</ul>
+<p><strong>Full Changelog</strong>: <a href="https://github.com/peter-evans/create-or-update-comment/compare/v3.0.2...v3.1.0">https://github.com/peter-evans/create-or-update-comment/compare/v3.0.2...v3.1.0</a></p>
+<h2>Create or Update Comment v3.0.2</h2>
+<h2>What's Changed</h2>
+<!-- raw HTML omitted -->
+</blockquote>
+<p>... (truncated)</p>
+</details>
+<details>
+<summary>Commits</summary>
+<ul>
+<li><a href="https://github.com/peter-evans/create-or-update-comment/commit/71345be0265236311c031f5c7866368bd1eff043"><code>71345be</code></a> feat: update runtime to node 20 (<a href="https://redirect.github.com/peter-evans/create-or-update-comment/issues/306">#306</a>)</li>
+<li><a href="https://github.com/peter-evans/create-or-update-comment/commit/d41bfe36e5af6ca183ce8b04db32e4aa6412e693"><code>d41bfe3</code></a> build(deps-dev): bump prettier from 3.2.3 to 3.2.4 (<a href="https://redirect.github.com/peter-evans/create-or-update-comment/issues/305">#305</a>)</li>
+<li><a href="https://github.com/peter-evans/create-or-update-comment/commit/73b4b9e4e37f8cbefbb82ca2abd9085a1afa1562"><code>73b4b9e</code></a> build(deps-dev): bump <code>@​types/node</code> from 18.19.7 to 18.19.8 (<a href="https://redirect.github.com/peter-evans/create-or-update-comment/issues/304">#304</a>)</li>
+<li><a href="https://github.com/peter-evans/create-or-update-comment/commit/b865fac7facb67bed02e0032aedefe6acf790c75"><code>b865fac</code></a> build(deps-dev): bump <code>@​types/node</code> from 18.19.6 to 18.19.7 (<a href="https://redirect.github.com/peter-evans/create-or-update-comment/issues/303">#303</a>)</li>
+<li><a href="https://github.com/peter-evans/create-or-update-comment/commit/52b668a9280a255397527f4131ff02f5005274c8"><code>52b668a</code></a> build(deps-dev): bump eslint-plugin-jest from 27.6.1 to 27.6.3 (<a href="https://redirect.github.com/peter-evans/create-or-update-comment/issues/302">#302</a>)</li>
+<li><a href="https://github.com/peter-evans/create-or-update-comment/commit/974f56a1c3e9a9d05f2847c575dccf35c038e80e"><code>974f56a</code></a> build(deps-dev): bump prettier from 3.1.1 to 3.2.3 (<a href="https://redirect.github.com/peter-evans/create-or-update-comment/issues/301">#301</a>)</li>
+<li><a href="https://github.com/peter-evans/create-or-update-comment/commit/2cbfe8b17bb3ba59cdb477ae1d88d14caa96100e"><code>2cbfe8b</code></a> build(deps-dev): bump <code>@​types/node</code> from 18.19.4 to 18.19.6 (<a href="https://redirect.github.com/peter-evans/create-or-update-comment/issues/300">#300</a>)</li>
+<li><a href="https://github.com/peter-evans/create-or-update-comment/commit/761872a701dedf6fcfe4c794d7e117dfbba8a4fb"><code>761872a</code></a> build(deps-dev): bump eslint-plugin-prettier from 5.1.2 to 5.1.3 (<a href="https://redirect.github.com/peter-evans/create-or-update-comment/issues/299">#299</a>)</li>
+<li><a href="https://github.com/peter-evans/create-or-update-comment/commit/72c3238a4904d35331b8ad94c0eb21d799fb86c4"><code>72c3238</code></a> build(deps-dev): bump <code>@​types/node</code> from 18.19.3 to 18.19.4 (<a href="https://redirect.github.com/peter-evans/create-or-update-comment/issues/298">#298</a>)</li>
+<li><a href="https://github.com/peter-evans/create-or-update-comment/commit/07daf7bbdb1bf17ee35e4a8f3a541ecb83c0253d"><code>07daf7b</code></a> build(deps-dev): bump eslint-plugin-jest from 27.6.0 to 27.6.1 (<a href="https://redirect.github.com/peter-evans/create-or-update-comment/issues/297">#297</a>)</li>
+<li>Additional commits viewable in <a href="https://github.com/peter-evans/create-or-update-comment/compare/v3...v4">compare view</a></li>
+</ul>
+</details>
+<br />
+
+
+Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+
+[//]: # (dependabot-automerge-start)
+[//]: # (dependabot-automerge-end)
+
+---
+
+<details>
+<summary>Dependabot commands and options</summary>
+<br />
+
+You can trigger Dependabot actions by commenting on this PR:
+- `@dependabot rebase` will rebase this PR
+- `@dependabot recreate` will recreate this PR, overwriting any edits that have been made to it
+- `@dependabot merge` will merge this PR after your CI passes on it
+- `@dependabot squash and merge` will squash and merge this PR after your CI passes on it
+- `@dependabot cancel merge` will cancel a previously requested merge and block automerging
+- `@dependabot reopen` will reopen this PR if it is closed
+- `@dependabot close` will close this PR and stop Dependabot recreating it. You can achieve the same result by closing it manually
+- `@dependabot show <dependency name> ignore conditions` will show all of the ignore conditions of the specified dependency
+- `@dependabot ignore <dependency name> major version` will close this group update PR and stop Dependabot creating any more for the specific dependency's major version (unless you unignore this specific dependency's major version or upgrade to it yourself)
+- `@dependabot ignore <dependency name> minor version` will close this group update PR and stop Dependabot creating any more for the specific dependency's minor version (unless you unignore this specific dependency's minor version or upgrade to it yourself)
+- `@dependabot ignore <dependency name>` will close this group update PR and stop Dependabot creating any more for the specific dependency (unless you unignore this specific dependency or upgrade to it yourself)
+- `@dependabot unignore <dependency name>` will remove all of the ignore conditions of the specified dependency
+- `@dependabot unignore <dependency name> <ignore condition>` will remove the ignore condition of the specified dependency and ignore conditions
+
+
+</details>
+
+---
+
+_Label `internal` added by @dependabot[bot] on 2024-01-31 15:22_
+
+---
+
+_Merged by @zanieb on 2024-01-31 15:39_
+
+---
+
+_Closed by @zanieb on 2024-01-31 15:39_
+
+---
+
+_Branch deleted on 2024-01-31 15:39_
+
+---
+
+_Comment by @github-actions[bot] on 2024-01-31 15:40_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+ℹ️ ecosystem check **encountered format errors**. (no format changes; 1 project error)
+
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+
+```
+warning: Detected debug build without --no-cache.
+error: Failed to parse examples/dalle/Image_generations_edits_and_variations_with_DALL-E.ipynb:3:7:8: Unexpected token 'prompt'
+```
+
+</p>
+</details>
+
+### Formatter (preview)
+ℹ️ ecosystem check **encountered format errors**. (no format changes; 1 project error)
+
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (error)</summary>
+<p>
+<pre>ruff format --preview</pre>
+</p>
+<p>
+
+```
+warning: Detected debug build without --no-cache.
+error: Failed to parse examples/dalle/Image_generations_edits_and_variations_with_DALL-E.ipynb:3:7:8: Unexpected token 'prompt'
+```
+
+</p>
+</details>
+
+
+
+
+---

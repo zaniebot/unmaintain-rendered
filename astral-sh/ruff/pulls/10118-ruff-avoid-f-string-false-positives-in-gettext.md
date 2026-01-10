@@ -1,0 +1,144 @@
+```yaml
+number: 10118
+title: "[`ruff`] Avoid f-string false positives in `gettext` calls (`RUF027`)"
+type: pull_request
+state: merged
+author: robincaloudis
+labels:
+  - bug
+assignees: []
+merged: true
+base: main
+head: rc-fix-false-positive-translation-strings
+created_at: 2024-02-25T11:52:04Z
+updated_at: 2024-02-26T05:05:03Z
+url: https://github.com/astral-sh/ruff/pull/10118
+synced_at: 2026-01-10T22:57:10Z
+```
+
+# [`ruff`] Avoid f-string false positives in `gettext` calls (`RUF027`)
+
+---
+
+_Pull request opened by @robincaloudis on 2024-02-25 11:52_
+
+## Summary
+
+It is a convention to use the `_()` alias for `gettext()`. We want to avoid
+statement expressions and assignments related to aliases of the gettext API.
+See https://docs.python.org/3/library/gettext.html for details. When one
+uses `_() to mark a string for translation, the tools look for these markers
+and replace the original string with its translated counterpart. If the
+string contains variable placeholders or formatting, it can complicate the
+translation process, lead to errors or incorrect translations.
+
+## Test Plan
+
+* Test file `RUF027_1.py` was extended such that the test reproduces the false-positive 
+
+Closes https://github.com/astral-sh/ruff/issues/10023.
+
+
+---
+
+_Comment by @github-actions[bot] on 2024-02-25 12:31_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+0 -4 violations, +0 -0 fixes in 1 projects; 42 projects unchanged)
+
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -4 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/zulip/zulip/blob/30aa0a19fe80d2e2a0ec295ec54e86357fad9411/zerver/actions/streams.py#L1575'>zerver/actions/streams.py:1575:13:</a> RUF027 Possible f-string without an `f` prefix
+- <a href='https://github.com/zulip/zulip/blob/30aa0a19fe80d2e2a0ec295ec54e86357fad9411/zerver/actions/streams.py#L1576'>zerver/actions/streams.py:1576:13:</a> RUF027 Possible f-string without an `f` prefix
+- <a href='https://github.com/zulip/zulip/blob/30aa0a19fe80d2e2a0ec295ec54e86357fad9411/zerver/actions/streams.py#L1577'>zerver/actions/streams.py:1577:13:</a> RUF027 Possible f-string without an `f` prefix
+- <a href='https://github.com/zulip/zulip/blob/30aa0a19fe80d2e2a0ec295ec54e86357fad9411/zerver/lib/typed_endpoint.py#L366'>zerver/lib/typed_endpoint.py:366:32:</a> RUF027 Possible f-string without an `f` prefix
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF027 | 4 | 0 | 4 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-02-25 21:09_
+
+---
+
+_Review requested from @charliermarsh by @charliermarsh on 2024-02-25 21:09_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-02-25 21:09_
+
+---
+
+_Comment by @charliermarsh on 2024-02-25 21:09_
+
+Thank you! Will review.
+
+---
+
+_Comment by @charliermarsh on 2024-02-25 21:09_
+
+(The ecosystem checks look good.)
+
+---
+
+_@charliermarsh approved on 2024-02-25 23:02_
+
+Thanks!
+
+---
+
+_Review comment by @charliermarsh on `crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs`:74 on 2024-02-25 23:02_
+
+I had to generalize this to look at all parent expressions, to catch cases like: `print(_("formatting of {partial} in a translation string is bad practice"))`
+
+---
+
+_@charliermarsh reviewed on 2024-02-25 23:02_
+
+---
+
+_Renamed from "Fix false-positive in RUF027" to "[`ruff`] Avoid f-string false positives in `gettext` calls (`RUF027`)" by @charliermarsh on 2024-02-25 23:03_
+
+---
+
+_Merged by @charliermarsh on 2024-02-25 23:17_
+
+---
+
+_Closed by @charliermarsh on 2024-02-25 23:17_
+
+---
+
+_@robincaloudis reviewed on 2024-02-26 05:05_
+
+---
+
+_Review comment by @robincaloudis on `crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs`:74 on 2024-02-26 05:05_
+
+Great additions! Thanks. 
+
+---

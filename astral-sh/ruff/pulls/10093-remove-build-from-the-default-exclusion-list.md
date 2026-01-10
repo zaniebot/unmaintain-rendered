@@ -1,0 +1,256 @@
+```yaml
+number: 10093
+title: "Remove `build` from the default exclusion list"
+type: pull_request
+state: merged
+author: charliermarsh
+labels:
+  - breaking
+  - configuration
+assignees: []
+merged: true
+base: main
+head: charlie/build
+created_at: 2024-02-23T05:10:26Z
+updated_at: 2024-02-28T16:36:40Z
+url: https://github.com/astral-sh/ruff/pull/10093
+synced_at: 2026-01-10T22:57:10Z
+```
+
+# Remove `build` from the default exclusion list
+
+---
+
+_Pull request opened by @charliermarsh on 2024-02-23 05:10_
+
+## Summary
+
+This is a not-unpopular directory name, and it's led to tons of issues and user confusion (most recently: https://github.com/astral-sh/ruff-pre-commit/issues/69). I've wanted to remove it for a long time, but we need to do so as part of a minor release.
+
+---
+
+_Added to milestone `v0.3.0` by @charliermarsh on 2024-02-23 05:10_
+
+---
+
+_Label `configuration` added by @charliermarsh on 2024-02-23 05:10_
+
+---
+
+_@MichaReiser approved on 2024-02-23 07:35_
+
+Do you remember the motiviation for including `build` in the exclude by default?
+
+Nit: Extend your PR summary with an example on how to change the configuration when upgrading ruff for people that rely on `build` being excluded.
+
+---
+
+_Label `breaking` added by @MichaReiser on 2024-02-23 07:35_
+
+---
+
+_Comment by @gotmax23 on 2024-02-23 14:55_
+
+> Do you remember the motiviation for including `build` in the exclude by default?
+
+Doesn't setuptools use that directory for building extension modules?
+
+---
+
+_Comment by @gotmax23 on 2024-02-23 15:43_
+
+> > Do you remember the motiviation for including `build` in the exclude by default?
+> 
+> Doesn't setuptools use that directory for building extension modules?
+
+And sometimes, it seems bdist_wheel copies the project's actual Python files to the build/ directory. In those cases, including that directory would cause the project to be linted twice.
+
+---
+
+_@zanieb approved on 2024-02-23 15:46_
+
+---
+
+_Comment by @charliermarsh on 2024-02-23 16:01_
+
+It's fine if some users need to ignore `build` -- we already respect the `.gitignore`, so if it's in there, this won't have any effect. Similarly, they can add it to `extend-exclude`.
+
+---
+
+_Comment by @github-actions[bot] on 2024-02-26 16:04_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+26 -0 violations, +0 -0 fixes in 2 projects; 41 projects unchanged)
+
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+22 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/commands/build/build_context.py#L581'>samcli/commands/build/build_context.py:581:46:</a> E741 Ambiguous variable name: `l`
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/commands/build/build_context.py#L5'>samcli/commands/build/build_context.py:5:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/commands/build/build_context.py#L610'>samcli/commands/build/build_context.py:610:21:</a> E741 Ambiguous variable name: `l`
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/commands/build/build_context.py#L642'>samcli/commands/build/build_context.py:642:46:</a> E741 Ambiguous variable name: `l`
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/commands/build/command.py#L25'>samcli/commands/build/command.py:25:5:</a> F401 [*] `samcli.commands._utils.options.terraform_plan_file_option` imported but unused
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/commands/build/command.py#L5'>samcli/commands/build/command.py:5:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/commands/build/core/options.py#L5'>samcli/commands/build/core/options.py:5:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/app_builder.py#L1003'>samcli/lib/build/app_builder.py:1003:28:</a> PLR2004 Magic value used in comparison, consider replacing `-32601` with a constant variable
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/app_builder.py#L45'>samcli/lib/build/app_builder.py:45:44:</a> F401 [*] `samcli.local.docker.exceptions.ContainerNotStartableException` imported but unused
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/app_builder.py#L5'>samcli/lib/build/app_builder.py:5:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/app_builder.py#L991'>samcli/lib/build/app_builder.py:991:16:</a> PLR2004 Magic value used in comparison, consider replacing `400` with a constant variable
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/app_builder.py#L991'>samcli/lib/build/app_builder.py:991:34:</a> PLR2004 Magic value used in comparison, consider replacing `500` with a constant variable
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/app_builder.py#L995'>samcli/lib/build/app_builder.py:995:28:</a> PLR2004 Magic value used in comparison, consider replacing `505` with a constant variable
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/build_graph.py#L5'>samcli/lib/build/build_graph.py:5:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/build_strategy.py#L30'>samcli/lib/build/build_strategy.py:30:51:</a> F401 [*] `samcli.lib.utils.architecture.ARM64` imported but unused
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/build_strategy.py#L5'>samcli/lib/build/build_strategy.py:5:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/bundler.py#L10'>samcli/lib/build/bundler.py:10:50:</a> F401 [*] `samcli.commands.local.lib.exceptions.InvalidHandlerPathError` imported but unused
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/bundler.py#L7'>samcli/lib/build/bundler.py:7:27:</a> F401 [*] `pathlib.PosixPath` imported but unused
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/dependency_hash_generator.py#L3'>samcli/lib/build/dependency_hash_generator.py:3:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/utils.py#L5'>samcli/lib/build/utils.py:5:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/workflow_config.py#L5'>samcli/lib/build/workflow_config.py:5:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/workflow_config.py#L7'>samcli/lib/build/workflow_config.py:7:42:</a> F401 [*] `typing.Tuple` imported but unused
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pypa/pip">pypa/pip</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/pypa/pip/blob/0ad4c94be74cc24874c6feb5bb3c2152c398a18e/src/pip/_internal/operations/build/build_tracker.py#L6'>src/pip/_internal/operations/build/build_tracker.py:6:47:</a> F401 [*] `typing.Set` imported but unused
++ <a href='https://github.com/pypa/pip/blob/0ad4c94be74cc24874c6feb5bb3c2152c398a18e/src/pip/_internal/operations/build/build_tracker.py#L8'>src/pip/_internal/operations/build/build_tracker.py:8:39:</a> F401 [*] `pip._internal.models.link.Link` imported but unused
++ <a href='https://github.com/pypa/pip/blob/0ad4c94be74cc24874c6feb5bb3c2152c398a18e/src/pip/_internal/operations/build/wheel_legacy.py#L43'>src/pip/_internal/operations/build/wheel_legacy.py:43:15:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/pypa/pip/blob/0ad4c94be74cc24874c6feb5bb3c2152c398a18e/src/pip/_internal/operations/build/wheel_legacy.py#L49'>src/pip/_internal/operations/build/wheel_legacy.py:49:15:</a> UP032 [*] Use f-string instead of `format` call
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (5 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| I001 | 9 | 9 | 0 | 0 | 0 |
+| F401 | 8 | 8 | 0 | 0 | 0 |
+| PLR2004 | 4 | 4 | 0 | 0 | 0 |
+| E741 | 3 | 3 | 0 | 0 | 0 |
+| UP032 | 2 | 2 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+45 -0 violations, +0 -0 fixes in 2 projects; 41 projects unchanged)
+
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+41 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/commands/build/build_context.py#L53'>samcli/commands/build/build_context.py:53:1:</a> PLR0904 Too many public methods (26 > 20)
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/commands/build/build_context.py#L54'>samcli/commands/build/build_context.py:54:9:</a> PLR0917 Too many positional arguments (26/5)
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/commands/build/build_context.py#L581'>samcli/commands/build/build_context.py:581:46:</a> E741 Ambiguous variable name: `l`
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/commands/build/build_context.py#L5'>samcli/commands/build/build_context.py:5:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/commands/build/build_context.py#L610'>samcli/commands/build/build_context.py:610:21:</a> E741 Ambiguous variable name: `l`
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/commands/build/build_context.py#L642'>samcli/commands/build/build_context.py:642:46:</a> E741 Ambiguous variable name: `l`
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/commands/build/command.py#L139'>samcli/commands/build/command.py:139:5:</a> PLR0917 Too many positional arguments (25/5)
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/commands/build/command.py#L200'>samcli/commands/build/command.py:200:5:</a> PLR0917 Too many positional arguments (22/5)
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/commands/build/command.py#L228'>samcli/commands/build/command.py:228:5:</a> PLC0415 `import` should be at the top-level of a file
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/commands/build/command.py#L25'>samcli/commands/build/command.py:25:5:</a> F401 [*] `samcli.commands._utils.options.terraform_plan_file_option` imported but unused
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/commands/build/command.py#L5'>samcli/commands/build/command.py:5:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/commands/build/core/options.py#L5'>samcli/commands/build/core/options.py:5:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/app_builder.py#L1003'>samcli/lib/build/app_builder.py:1003:28:</a> PLR2004 Magic value used in comparison, consider replacing `-32601` with a constant variable
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/app_builder.py#L458'>samcli/lib/build/app_builder.py:458:9:</a> PLR0917 Too many positional arguments (10/5)
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/app_builder.py#L45'>samcli/lib/build/app_builder.py:45:44:</a> F401 [*] `samcli.local.docker.exceptions.ContainerNotStartableException` imported but unused
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/app_builder.py#L593'>samcli/lib/build/app_builder.py:593:9:</a> PLR0917 Too many positional arguments (11/5)
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/app_builder.py#L5'>samcli/lib/build/app_builder.py:5:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/app_builder.py#L732'>samcli/lib/build/app_builder.py:732:9:</a> PLR0917 Too many positional arguments (8/5)
+... 7 additional changes omitted for rule PLR0917
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/app_builder.py#L991'>samcli/lib/build/app_builder.py:991:16:</a> PLR2004 Magic value used in comparison, consider replacing `400` with a constant variable
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/app_builder.py#L991'>samcli/lib/build/app_builder.py:991:34:</a> PLR2004 Magic value used in comparison, consider replacing `500` with a constant variable
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/app_builder.py#L995'>samcli/lib/build/app_builder.py:995:28:</a> PLR2004 Magic value used in comparison, consider replacing `505` with a constant variable
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/build_graph.py#L379'>samcli/lib/build/build_graph.py:379:13:</a> PLW1514 `open` in text mode without explicit `encoding` argument
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/build_graph.py#L471'>samcli/lib/build/build_graph.py:471:13:</a> PLW1514 `open` in text mode without explicit `encoding` argument
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/build_graph.py#L515'>samcli/lib/build/build_graph.py:515:7:</a> PLW1641 Object does not implement `__hash__` method
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/build_graph.py#L579'>samcli/lib/build/build_graph.py:579:7:</a> PLW1641 Object does not implement `__hash__` method
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/build_graph.py#L5'>samcli/lib/build/build_graph.py:5:1:</a> I001 [*] Import block is un-sorted or un-formatted
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/build_strategy.py#L30'>samcli/lib/build/build_strategy.py:30:51:</a> F401 [*] `samcli.lib.utils.architecture.ARM64` imported but unused
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/build_strategy.py#L5'>samcli/lib/build/build_strategy.py:5:1:</a> I001 [*] Import block is un-sorted or un-formatted
+... 4 additional changes omitted for rule I001
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/bundler.py#L10'>samcli/lib/build/bundler.py:10:50:</a> F401 [*] `samcli.commands.local.lib.exceptions.InvalidHandlerPathError` imported but unused
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/bundler.py#L7'>samcli/lib/build/bundler.py:7:27:</a> F401 [*] `pathlib.PosixPath` imported but unused
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/utils.py#L17'>samcli/lib/build/utils.py:17:28:</a> PLR6201 Use a `set` literal when testing for membership
++ <a href='https://github.com/aws/aws-sam-cli/blob/cd539c5f8aa94f9020d2188b6d09a2348cd93190/samcli/lib/build/workflow_config.py#L7'>samcli/lib/build/workflow_config.py:7:42:</a> F401 [*] `typing.Tuple` imported but unused
+... 1 additional changes omitted for rule F401
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pypa/pip">pypa/pip</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pypa/pip/blob/0ad4c94be74cc24874c6feb5bb3c2152c398a18e/src/pip/_internal/operations/build/build_tracker.py#L6'>src/pip/_internal/operations/build/build_tracker.py:6:47:</a> F401 [*] `typing.Set` imported but unused
++ <a href='https://github.com/pypa/pip/blob/0ad4c94be74cc24874c6feb5bb3c2152c398a18e/src/pip/_internal/operations/build/build_tracker.py#L8'>src/pip/_internal/operations/build/build_tracker.py:8:39:</a> F401 [*] `pip._internal.models.link.Link` imported but unused
++ <a href='https://github.com/pypa/pip/blob/0ad4c94be74cc24874c6feb5bb3c2152c398a18e/src/pip/_internal/operations/build/wheel_legacy.py#L43'>src/pip/_internal/operations/build/wheel_legacy.py:43:15:</a> UP032 [*] Use f-string instead of `format` call
++ <a href='https://github.com/pypa/pip/blob/0ad4c94be74cc24874c6feb5bb3c2152c398a18e/src/pip/_internal/operations/build/wheel_legacy.py#L49'>src/pip/_internal/operations/build/wheel_legacy.py:49:15:</a> UP032 [*] Use f-string instead of `format` call
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (11 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLR0917 | 12 | 12 | 0 | 0 | 0 |
+| I001 | 9 | 9 | 0 | 0 | 0 |
+| F401 | 8 | 8 | 0 | 0 | 0 |
+| PLR2004 | 4 | 4 | 0 | 0 | 0 |
+| E741 | 3 | 3 | 0 | 0 | 0 |
+| PLW1514 | 2 | 2 | 0 | 0 | 0 |
+| PLW1641 | 2 | 2 | 0 | 0 | 0 |
+| UP032 | 2 | 2 | 0 | 0 | 0 |
+| PLR0904 | 1 | 1 | 0 | 0 | 0 |
+| PLC0415 | 1 | 1 | 0 | 0 | 0 |
+| PLR6201 | 1 | 1 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Comment by @MichaReiser on 2024-02-28 16:20_
+
+We need to remove `build` from the `Options` documentation
+
+https://github.com/charliermarsh/ruff/blob/ab4bd7175510b0bb81bcdeada06b903b8708f273/crates/ruff_workspace/src/options.rs#L180
+
+---
+
+_Comment by @charliermarsh on 2024-02-28 16:20_
+
+@MichaReiser - I'll do it now and merge this.
+
+---
+
+_Merged by @charliermarsh on 2024-02-28 16:30_
+
+---
+
+_Closed by @charliermarsh on 2024-02-28 16:30_
+
+---
+
+_Branch deleted on 2024-02-28 16:30_
+
+---

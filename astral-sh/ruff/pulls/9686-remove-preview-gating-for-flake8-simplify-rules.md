@@ -1,0 +1,367 @@
+```yaml
+number: 9686
+title: "Remove preview gating for `flake8-simplify` rules"
+type: pull_request
+state: merged
+author: charliermarsh
+labels: []
+assignees: []
+merged: true
+base: release/0.2.0
+head: charlie/simp
+created_at: 2024-01-29T18:54:46Z
+updated_at: 2024-01-29T19:53:38Z
+url: https://github.com/astral-sh/ruff/pull/9686
+synced_at: 2026-01-10T22:57:09Z
+```
+
+# Remove preview gating for `flake8-simplify` rules
+
+---
+
+_Pull request opened by @charliermarsh on 2024-01-29 18:54_
+
+## Summary
+
+Un-gates detecting `dict.get` rewrites in `if` expressions (rather than just `if` statements).
+
+
+---
+
+_Added to milestone `v0.2.0` by @charliermarsh on 2024-01-29 18:54_
+
+---
+
+_Comment by @github-actions[bot] on 2024-01-29 19:09_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+1026 -3 violations, +6066 -0 fixes in 14 projects; 29 projects unchanged)
+
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+5 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/.github/tests/test_download_pretrained.py#L10'>.github/tests/test_download_pretrained.py:10:29:</a> RUF100 [*] Unused `noqa` directive (unused: `E402`)
++ <a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/.github/tests/test_mr_generate_summary.py#L4'>.github/tests/test_mr_generate_summary.py:4:49:</a> RUF100 [*] Unused `noqa` directive (unused: `E402`)
++ <a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/.github/tests/test_mr_publish_results.py#L7'>.github/tests/test_mr_publish_results.py:7:35:</a> RUF100 [*] Unused `noqa` directive (unused: `E402`)
++ <a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/.github/tests/test_validate_gpus.py#L8'>.github/tests/test_validate_gpus.py:8:22:</a> RUF100 [*] Unused `noqa` directive (unused: `E402`)
++ <a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/.github/tests/test_validate_gpus.py#L9'>.github/tests/test_validate_gpus.py:9:23:</a> RUF100 [*] Unused `noqa` directive (unused: `E402`)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+14 -1 violations, +186 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/c36c4db3f723ccb43add4b562a1820dcae523753/airflow/cli/commands/task_command.py#L80'>airflow/cli/commands/task_command.py:80:21:</a> PYI030 Multiple literal members in a union. Use a single literal, e.g. `Literal[False, "db", "memory"]`
++ <a href='https://github.com/apache/airflow/blob/c36c4db3f723ccb43add4b562a1820dcae523753/airflow/cli/commands/task_command.py#L80'>airflow/cli/commands/task_command.py:80:21:</a> PYI030 [*] Multiple literal members in a union. Use a single literal, e.g. `Literal[False, "db", "memory"]`
++ <a href='https://github.com/apache/airflow/blob/c36c4db3f723ccb43add4b562a1820dcae523753/airflow/configuration.py#L1640'>airflow/configuration.py:1640:9:</a> PLW0120 [*] `else` clause on loop without a `break` statement; remove the `else` and dedent its contents
+- <a href='https://github.com/apache/airflow/blob/c36c4db3f723ccb43add4b562a1820dcae523753/airflow/configuration.py#L1640'>airflow/configuration.py:1640:9:</a> PLW0120 `else` clause on loop without a `break` statement; remove the `else` and dedent its contents
+- <a href='https://github.com/apache/airflow/blob/c36c4db3f723ccb43add4b562a1820dcae523753/airflow/configuration.py#L628'>airflow/configuration.py:628:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href='https://github.com/apache/airflow/blob/c36c4db3f723ccb43add4b562a1820dcae523753/airflow/configuration.py#L628'>airflow/configuration.py:628:9:</a> PLR5501 [*] Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href='https://github.com/apache/airflow/blob/c36c4db3f723ccb43add4b562a1820dcae523753/airflow/jobs/backfill_job_runner.py#L523'>airflow/jobs/backfill_job_runner.py:523:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href='https://github.com/apache/airflow/blob/c36c4db3f723ccb43add4b562a1820dcae523753/airflow/jobs/backfill_job_runner.py#L523'>airflow/jobs/backfill_job_runner.py:523:17:</a> PLR5501 [*] Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href='https://github.com/apache/airflow/blob/c36c4db3f723ccb43add4b562a1820dcae523753/airflow/models/dag.py#L1850'>airflow/models/dag.py:1850:13:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href='https://github.com/apache/airflow/blob/c36c4db3f723ccb43add4b562a1820dcae523753/airflow/models/dag.py#L1850'>airflow/models/dag.py:1850:13:</a> PLR5501 [*] Use `elif` instead of `else` then `if`, to reduce indentation
+... 99 additional changes omitted for rule PLR5501
+... 191 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+0 -0 violations, +6 -0 fixes)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/aws/aws-sam-cli/blob/5dedfbb2af6a7de96c9ef10b98f1b9a167379832/tests/integration/logs/test_logs_command.py#L218'>tests/integration/logs/test_logs_command.py:218:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href='https://github.com/aws/aws-sam-cli/blob/5dedfbb2af6a7de96c9ef10b98f1b9a167379832/tests/integration/logs/test_logs_command.py#L218'>tests/integration/logs/test_logs_command.py:218:17:</a> PLR5501 [*] Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href='https://github.com/aws/aws-sam-cli/blob/5dedfbb2af6a7de96c9ef10b98f1b9a167379832/tests/unit/commands/deploy/test_deploy_context.py#L10'>tests/unit/commands/deploy/test_deploy_context.py:10:47:</a> F811 Redefinition of unused `DeployFailedError` from line 8
++ <a href='https://github.com/aws/aws-sam-cli/blob/5dedfbb2af6a7de96c9ef10b98f1b9a167379832/tests/unit/commands/deploy/test_deploy_context.py#L10'>tests/unit/commands/deploy/test_deploy_context.py:10:47:</a> F811 [*] Redefinition of unused `DeployFailedError` from line 8
+- <a href='https://github.com/aws/aws-sam-cli/blob/5dedfbb2af6a7de96c9ef10b98f1b9a167379832/tests/unit/local/docker/test_lambda_image.py#L8'>tests/unit/local/docker/test_lambda_image.py:8:27:</a> F811 Redefinition of unused `parameterized` from line 5
++ <a href='https://github.com/aws/aws-sam-cli/blob/5dedfbb2af6a7de96c9ef10b98f1b9a167379832/tests/unit/local/docker/test_lambda_image.py#L8'>tests/unit/local/docker/test_lambda_image.py:8:27:</a> F811 [*] Redefinition of unused `parameterized` from line 5
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+4 -0 violations, +2982 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/basic/annotations/arrow.py#L1'>examples/basic/annotations/arrow.py:1:1:</a> D300 Use triple double quotes `"""`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/basic/annotations/arrow.py#L1'>examples/basic/annotations/arrow.py:1:1:</a> D300 [*] Use triple double quotes `"""`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/basic/annotations/arrowheads.py#L1'>examples/basic/annotations/arrowheads.py:1:1:</a> D300 Use triple double quotes `"""`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/basic/annotations/arrowheads.py#L1'>examples/basic/annotations/arrowheads.py:1:1:</a> D300 [*] Use triple double quotes `"""`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/basic/annotations/band.py#L1'>examples/basic/annotations/band.py:1:1:</a> D300 Use triple double quotes `"""`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/basic/annotations/band.py#L1'>examples/basic/annotations/band.py:1:1:</a> D300 [*] Use triple double quotes `"""`
+... 2941 additional changes omitted for rule D300
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/setup.py#L10'>setup.py:10:1:</a> E401 Multiple imports on one line
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/setup.py#L10'>setup.py:10:1:</a> E401 [*] Multiple imports on one line
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/handlers/code_runner.py#L108'>src/bokeh/application/handlers/code_runner.py:108:25:</a> SIM910 [*] Use `d.get('__doc__')` instead of `d.get('__doc__', None)`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/client/session.py#L458'>src/bokeh/client/session.py:458:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/client/session.py#L458'>src/bokeh/client/session.py:458:9:</a> PLR5501 [*] Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/query.py#L210'>src/bokeh/core/query.py:210:17:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/query.py#L210'>src/bokeh/core/query.py:210:17:</a> PLR5501 [*] Use `elif` instead of `else` then `if`, to reduce indentation
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/serialization.py#L149'>src/bokeh/core/serialization.py:149:25:</a> PYI030 Multiple literal members in a union. Use a single literal, e.g. `Literal["bool", "object"]`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/serialization.py#L149'>src/bokeh/core/serialization.py:149:25:</a> PYI030 [*] Multiple literal members in a union. Use a single literal, e.g. `Literal["bool", "object"]`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/serialization.py#L718'>src/bokeh/core/serialization.py:718:9:</a> PLR5501 Use `elif` instead of `else` then `if`, to reduce indentation
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/serialization.py#L718'>src/bokeh/core/serialization.py:718:9:</a> PLR5501 [*] Use `elif` instead of `else` then `if`, to reduce indentation
+... 11 additional changes omitted for rule PLR5501
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/models/plots.py#L471'>src/bokeh/models/plots.py:471:17:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/models/plots.py#L471'>src/bokeh/models/plots.py:471:17:</a> SIM114 [*] Combine `if` branches using logical `or` operator
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/models/plots.py#L478'>src/bokeh/models/plots.py:478:17:</a> SIM114 Combine `if` branches using logical `or` operator
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/models/plots.py#L478'>src/bokeh/models/plots.py:478:17:</a> SIM114 [*] Combine `if` branches using logical `or` operator
+... 2965 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/demisto/content">demisto/content</a> (+969 -0 violations, +2830 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Documentation/common_server_docs.py#L178'>Documentation/common_server_docs.py:178:32:</a> SIM910 [*] Use `PY_IRREGULAR_FUNCS.get(a)` instead of `PY_IRREGULAR_FUNCS.get(a, None)`
++ <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Documentation/common_server_docs.py#L185'>Documentation/common_server_docs.py:185:32:</a> SIM910 [*] Use `PY_IRREGULAR_FUNCS.get(a)` instead of `PY_IRREGULAR_FUNCS.get(a, None)`
+- <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/AMP/Integrations/AMPv2/AMPv2.py#L3240'>Packs/AMP/Integrations/AMPv2/AMPv2.py:3240:11:</a> UP007 Use `X | Y` for type annotations
++ <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/AMP/Integrations/AMPv2/AMPv2.py#L3240'>Packs/AMP/Integrations/AMPv2/AMPv2.py:3240:11:</a> UP007 [*] Use `X | Y` for type annotations
+- <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/AMP/Integrations/AMPv2/AMPv2.py#L3241'>Packs/AMP/Integrations/AMPv2/AMPv2.py:3241:16:</a> UP007 Use `X | Y` for type annotations
++ <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/AMP/Integrations/AMPv2/AMPv2.py#L3241'>Packs/AMP/Integrations/AMPv2/AMPv2.py:3241:16:</a> UP007 [*] Use `X | Y` for type annotations
+- <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/AMP/Integrations/AMPv2/AMPv2.py#L3242'>Packs/AMP/Integrations/AMPv2/AMPv2.py:3242:12:</a> UP007 Use `X | Y` for type annotations
++ <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/AMP/Integrations/AMPv2/AMPv2.py#L3242'>Packs/AMP/Integrations/AMPv2/AMPv2.py:3242:12:</a> UP007 [*] Use `X | Y` for type annotations
+... 2491 additional changes omitted for rule UP007
+- <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/ANYRUN/Integrations/ANYRUN/ANYRUN.py#L924'>Packs/ANYRUN/Integrations/ANYRUN/ANYRUN.py:924:12:</a> SIM118 Use `key in dict` instead of `key in dict.keys()`
++ <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/ANYRUN/Integrations/ANYRUN/ANYRUN.py#L924'>Packs/ANYRUN/Integrations/ANYRUN/ANYRUN.py:924:12:</a> SIM118 [*] Use `key in dict` instead of `key in dict.keys()`
++ <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/AWS-EC2/Integrations/AWS-EC2/AWS-EC2.py#L1498'>Packs/AWS-EC2/Integrations/AWS-EC2/AWS-EC2.py:1498:29:</a> SIM910 [*] Use `args.get('IpPermissionsFull')` instead of `args.get('IpPermissionsFull', None)`
++ <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/AWS-EC2/Integrations/AWS-EC2/AWS-EC2.py#L1524'>Packs/AWS-EC2/Integrations/AWS-EC2/AWS-EC2.py:1524:29:</a> SIM910 [*] Use `args.get('IpPermissionsFull')` instead of `args.get('IpPermissionsFull', None)`
++ <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/AWS-EC2/Integrations/AWS-EC2/AWS-EC2.py#L1607'>Packs/AWS-EC2/Integrations/AWS-EC2/AWS-EC2.py:1607:29:</a> SIM910 [*] Use `args.get('IpPermissionsFull')` instead of `args.get('IpPermissionsFull', None)`
++ <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/AWS-Enrichment-Remediation/Scripts/AWSRecreateSG/AWSRecreateSG.py#L339'>Packs/AWS-Enrichment-Remediation/Scripts/AWSRecreateSG/AWSRecreateSG.py:339:19:</a> SIM910 [*] Use `args.get('instance_id')` instead of `args.get('instance_id', None)`
+... 814 additional changes omitted for rule SIM910
++ <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/AWS-Organizations/Integrations/AWSOrganizations/AWSOrganizations_test.py#L91'>Packs/AWS-Organizations/Integrations/AWSOrganizations/AWSOrganizations_test.py:91:19:</a> SIM401 Use `kwargs.get('NextToken', 0)` instead of an `if` block
+- <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/Absolute/Integrations/Absolute/Absolute.py#L331'>Packs/Absolute/Integrations/Absolute/Absolute.py:331:8:</a> SIM118 Use `key not in dict` instead of `key not in dict.keys()`
++ <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/Absolute/Integrations/Absolute/Absolute.py#L331'>Packs/Absolute/Integrations/Absolute/Absolute.py:331:8:</a> SIM118 [*] Use `key not in dict` instead of `key not in dict.keys()`
++ <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/AbuseDB/Integrations/AbuseDB/AbuseDB.py#L310'>Packs/AbuseDB/Integrations/AbuseDB/AbuseDB.py:310:33:</a> SIM401 Use `CATEGORIES_ID.get(c, c)` instead of an `if` block
+- <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/AlienVault_OTX/Integrations/AlienVault_OTX_v2/AlienVault_OTX_v2.py#L282'>Packs/AlienVault_OTX/Integrations/AlienVault_OTX_v2/AlienVault_OTX_v2.py:282:46:</a> SIM118 Use `key not in dict` instead of `key not in dict.keys()`
++ <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/AlienVault_OTX/Integrations/AlienVault_OTX_v2/AlienVault_OTX_v2.py#L282'>Packs/AlienVault_OTX/Integrations/AlienVault_OTX_v2/AlienVault_OTX_v2.py:282:46:</a> SIM118 [*] Use `key not in dict` instead of `key not in dict.keys()`
+... 323 additional changes omitted for rule SIM118
++ <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/ArcherRSA/Scripts/ArcherCreateSecurityIncident/ArcherCreateSecurityIncident.py#L50'>Packs/ArcherRSA/Scripts/ArcherCreateSecurityIncident/ArcherCreateSecurityIncident.py:50:26:</a> SIM401 Use `keysToChange.get(k, k)` instead of an `if` block
++ <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/ArcherRSA/Scripts/ArcherUpdateSecurityIncident/ArcherUpdateSecurityIncident.py#L61'>Packs/ArcherRSA/Scripts/ArcherUpdateSecurityIncident/ArcherUpdateSecurityIncident.py:61:26:</a> SIM401 Use `keysToChange.get(k, k)` instead of an `if` block
++ <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/AttackIQFireDrill/Integrations/AttackIQFireDrill/AttackIQFireDrill.py#L284'>Packs/AttackIQFireDrill/Integrations/AttackIQFireDrill/AttackIQFireDrill.py:284:14:</a> SIM401 Use `raw_res.get('message', f'Assessment {ass_id} activation was sent successfully.')` instead of an `if` block
++ <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/AttackIQFireDrill/Integrations/AttackIQFireDrill/AttackIQFireDrill.py#L525'>Packs/AttackIQFireDrill/Integrations/AttackIQFireDrill/AttackIQFireDrill.py:525:14:</a> SIM401 Use `raw_res.get('message', f'Request to run all tests for assessment {ass_id} was sent successfully.')` instead of an `if` block
+... 145 additional changes omitted for rule SIM401
++ <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/Carbon_Black_Enterprise_Response/Scripts/CBLiveGetFile/CBLiveGetFile.py#L142'>Packs/Carbon_Black_Enterprise_Response/Scripts/CBLiveGetFile/CBLiveGetFile.py:142:1:</a> PLW0120 [*] `else` clause on loop without a `break` statement; remove the `else` and dedent its contents
+- <a href='https://github.com/demisto/content/blob/dd4a5271b677fda154cd4d903568c040fbec63b0/Packs/Carbon_Black_Enterprise_Response/Scripts/CBLiveGetFile/CBLiveGetFile.py#L142'>Packs/Carbon_Black_Enterprise_Response/Scripts/CBLiveGetFile/CBLiveGetFile.py:142:1:</a> PLW0120 `else` clause on loop without a `break` statement; remove the `else` and dedent its contents
+... 3773 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+15 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/freedomofpress/securedrop/blob/7eab3b8d3efa03c893e4dcf548584d5e3b5d2f0a/securedrop/manage.py#L22'>securedrop/manage.py:22:16:</a> RUF100 [*] Unused `noqa` directive (unused: `E402`)
++ <a href='https://github.com/freedomofpress/securedrop/blob/7eab3b8d3efa03c893e4dcf548584d5e3b5d2f0a/securedrop/manage.py#L23'>securedrop/manage.py:23:47:</a> RUF100 [*] Unused `noqa` directive (unused: `E402`)
++ <a href='https://github.com/freedomofpress/securedrop/blob/7eab3b8d3efa03c893e4dcf548584d5e3b5d2f0a/securedrop/manage.py#L29'>securedrop/manage.py:29:20:</a> RUF100 [*] Unused `noqa` directive (unused: `E402`)
++ <a href='https://github.com/freedomofpress/securedrop/blob/7eab3b8d3efa03c893e4dcf548584d5e3b5d2f0a/securedrop/manage.py#L30'>securedrop/manage.py:30:55:</a> RUF100 [*] Unused `noqa` directive (unused: `E402`)
++ <a href='https://github.com/freedomofpress/securedrop/blob/7eab3b8d3efa03c893e4dcf548584d5e3b5d2f0a/securedrop/manage.py#L31'>securedrop/manage.py:31:33:</a> RUF100 [*] Unused `noqa` directive (unused: `E402`)
++ <a href='https://github.com/freedomofpress/securedrop/blob/7eab3b8d3efa03c893e4dcf548584d5e3b5d2f0a/securedrop/manage.py#L32'>securedrop/manage.py:32:56:</a> RUF100 [*] Unused `noqa` directive (unused: `E402`)
++ <a href='https://github.com/freedomofpress/securedrop/blob/7eab3b8d3efa03c893e4dcf548584d5e3b5d2f0a/securedrop/manage.py#L33'>securedrop/manage.py:33:39:</a> RUF100 [*] Unused `noqa` directive (unused: `E402`)
++ <a href='https://github.com/freedomofpress/securedrop/blob/7eab3b8d3efa03c893e4dcf548584d5e3b5d2f0a/securedrop/manage.py#L42'>securedrop/manage.py:42:80:</a> RUF100 [*] Unused `noqa` directive (unused: `E402`)
++ <a href='https://github.com/freedomofpress/securedrop/blob/7eab3b8d3efa03c893e4dcf548584d5e3b5d2f0a/securedrop/scripts/rqrequeue#L11'>securedrop/scripts/rqrequeue:11:40:</a> RUF100 [*] Unused `noqa` directive (unused: `E402`)
++ <a href='https://github.com/freedomofpress/securedrop/blob/7eab3b8d3efa03c893e4dcf548584d5e3b5d2f0a/securedrop/scripts/rqrequeue#L12'>securedrop/scripts/rqrequeue:12:46:</a> RUF100 [*] Unused `noqa` directive (unused: `E402`)
+... 5 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+7 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/91f60cda15d50e22a533b10851d6d5b942bc8860/ibis/backends/pandas/execution/temporal.py#L133'>ibis/backends/pandas/execution/temporal.py:133:11:</a> SIM910 [*] Use `OFFSET_CLASS.get(unit)` instead of `OFFSET_CLASS.get(unit, None)`
++ <a href='https://github.com/ibis-project/ibis/blob/91f60cda15d50e22a533b10851d6d5b942bc8860/ibis/backends/pandas/execution/temporal.py#L145'>ibis/backends/pandas/execution/temporal.py:145:11:</a> SIM910 [*] Use `OFFSET_CLASS.get(unit)` instead of `OFFSET_CLASS.get(unit, None)`
++ <a href='https://github.com/ibis-project/ibis/blob/91f60cda15d50e22a533b10851d6d5b942bc8860/ibis/backends/pandas/execution/temporal.py#L157'>ibis/backends/pandas/execution/temporal.py:157:11:</a> SIM910 [*] Use `OFFSET_CLASS.get(unit)` instead of `OFFSET_CLASS.get(unit, None)`
++ <a href='https://github.com/ibis-project/ibis/blob/91f60cda15d50e22a533b10851d6d5b942bc8860/ibis/backends/pandas/execution/temporal.py#L169'>ibis/backends/pandas/execution/temporal.py:169:11:</a> SIM910 [*] Use `OFFSET_CLASS.get(unit)` instead of `OFFSET_CLASS.get(unit, None)`
++ <a href='https://github.com/ibis-project/ibis/blob/91f60cda15d50e22a533b10851d6d5b942bc8860/ibis/backends/postgres/datatypes.py#L76'>ibis/backends/postgres/datatypes.py:76:25:</a> SIM910 [*] Use `_postgres_interval_fields.get(field)` instead of `_postgres_interval_fields.get(field, None)`
++ <a href='https://github.com/ibis-project/ibis/blob/91f60cda15d50e22a533b10851d6d5b942bc8860/ibis/backends/risingwave/datatypes.py#L71'>ibis/backends/risingwave/datatypes.py:71:25:</a> SIM910 [*] Use `_postgres_interval_fields.get(field)` instead of `_postgres_interval_fields.get(field, None)`
++ <a href='https://github.com/ibis-project/ibis/blob/91f60cda15d50e22a533b10851d6d5b942bc8860/ibis/backends/tests/test_map.py#L227'>ibis/backends/tests/test_map.py:227:46:</a> SIM910 [*] Use `value.get(x)` instead of `value.get(x, None)`
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (18 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| D300 | 2946 | 0 | 0 | 2946 | 0 |
+| UP007 | 2498 | 0 | 0 | 2498 | 0 |
+| SIM910 | 848 | 848 | 0 | 0 | 0 |
+| SIM118 | 358 | 0 | 0 | 358 | 0 |
+| SIM401 | 154 | 154 | 0 | 0 | 0 |
+| PLR5501 | 148 | 0 | 0 | 148 | 0 |
+| SIM114 | 60 | 0 | 0 | 60 | 0 |
+| PLW0120 | 26 | 0 | 0 | 26 | 0 |
+| RUF100 | 23 | 23 | 0 | 0 | 0 |
+| PYI030 | 8 | 0 | 0 | 8 | 0 |
+| PIE800 | 8 | 0 | 0 | 8 | 0 |
+| TRY400 | 4 | 0 | 0 | 4 | 0 |
+| F811 | 4 | 0 | 0 | 4 | 0 |
+| ANN001 | 2 | 1 | 1 | 0 | 0 |
+| E402 | 2 | 0 | 2 | 0 | 0 |
+| B033 | 2 | 0 | 0 | 2 | 0 |
+| E401 | 2 | 0 | 0 | 2 | 0 |
+| UP006 | 2 | 0 | 0 | 2 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+180 -0 violations, +0 -0 fixes in 5 projects; 38 projects unchanged)
+
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/RasaHQ/rasa/blob/cca30d4e06af5aba177e916d64c60313fc537005/tests/utils/tensorflow/test_rasa_layers.py#L832'>tests/utils/tensorflow/test_rasa_layers.py:832:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/alteryx/featuretools">alteryx/featuretools</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/alteryx/featuretools/blob/3681bbb6ceceed9f820473e5055c5bed7a3771bb/featuretools/entityset/entityset.py#L402'>featuretools/entityset/entityset.py:402:17:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/app/crossfilter/main.py#L32'>examples/server/app/crossfilter/main.py:32:35:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/91f60cda15d50e22a533b10851d6d5b942bc8860/ibis/backends/bigquery/tests/system/test_client.py#L222'>ibis/backends/bigquery/tests/system/test_client.py:222:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/ibis-project/ibis/blob/91f60cda15d50e22a533b10851d6d5b942bc8860/ibis/backends/bigquery/tests/system/test_client.py#L223'>ibis/backends/bigquery/tests/system/test_client.py:223:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+175 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/_numba/extensions.py#L52'>pandas/core/_numba/extensions.py:52:8:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/algorithms.py#L533'>pandas/core/algorithms.py:533:13:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/algorithms.py#L790'>pandas/core/algorithms.py:790:36:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/algorithms.py#L940'>pandas/core/algorithms.py:940:16:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/algorithms.py#L940'>pandas/core/algorithms.py:940:38:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/array_algos/putmask.py#L138'>pandas/core/array_algos/putmask.py:138:8:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/array_algos/putmask.py#L44'>pandas/core/array_algos/putmask.py:44:13:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/arrays/datetimelike.py#L661'>pandas/core/arrays/datetimelike.py:661:40:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/arrays/datetimelike.py#L774'>pandas/core/arrays/datetimelike.py:774:16:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/arrays/datetimelike.py#L780'>pandas/core/arrays/datetimelike.py:780:20:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/arrays/datetimes.py#L2426'>pandas/core/arrays/datetimes.py:2426:10:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/arrays/interval.py#L257'>pandas/core/arrays/interval.py:257:16:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/arrays/masked.py#L968'>pandas/core/arrays/masked.py:968:30:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/arrays/numeric.py#L164'>pandas/core/arrays/numeric.py:164:8:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/arrays/string_arrow.py#L656'>pandas/core/arrays/string_arrow.py:656:32:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/arrays/timedeltas.py#L1040'>pandas/core/arrays/timedeltas.py:1040:8:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/arrays/timedeltas.py#L647'>pandas/core/arrays/timedeltas.py:647:20:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/computation/expressions.py#L200'>pandas/core/computation/expressions.py:200:16:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/construction.py#L551'>pandas/core/construction.py:551:39:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/construction.py#L605'>pandas/core/construction.py:605:16:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/construction.py#L652'>pandas/core/construction.py:652:16:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/dtypes/astype.py#L103'>pandas/core/dtypes/astype.py:103:10:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/dtypes/astype.py#L131'>pandas/core/dtypes/astype.py:131:16:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/dtypes/cast.py#L1036'>pandas/core/dtypes/cast.py:1036:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/dtypes/cast.py#L1065'>pandas/core/dtypes/cast.py:1065:21:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/dtypes/cast.py#L1091'>pandas/core/dtypes/cast.py:1091:21:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/dtypes/cast.py#L1179'>pandas/core/dtypes/cast.py:1179:45:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/dtypes/cast.py#L1700'>pandas/core/dtypes/cast.py:1700:8:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/dtypes/dtypes.py#L450'>pandas/core/dtypes/dtypes.py:450:16:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/dtypes/missing.py#L643'>pandas/core/dtypes/missing.py:643:10:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/frame.py#L11535'>pandas/core/frame.py:11535:33:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/frame.py#L2482'>pandas/core/frame.py:2482:24:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/frame.py#L8129'>pandas/core/frame.py:8129:20:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/groupby/generic.py#L1670'>pandas/core/groupby/generic.py:1670:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/groupby/groupby.py#L1977'>pandas/core/groupby/groupby.py:1977:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/indexers/utils.py#L321'>pandas/core/indexers/utils.py:321:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/indexes/base.py#L5558'>pandas/core/indexes/base.py:5558:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/indexes/base.py#L7013'>pandas/core/indexes/base.py:7013:56:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/indexes/base.py#L7031'>pandas/core/indexes/base.py:7031:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/indexes/base.py#L7051'>pandas/core/indexes/base.py:7051:17:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/indexes/base.py#L7054'>pandas/core/indexes/base.py:7054:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/indexes/base.py#L7054'>pandas/core/indexes/base.py:7054:37:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/indexes/base.py#L7124'>pandas/core/indexes/base.py:7124:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/indexes/base.py#L873'>pandas/core/indexes/base.py:873:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/indexes/datetimelike.py#L156'>pandas/core/indexes/datetimelike.py:156:16:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/internals/concat.py#L371'>pandas/core/internals/concat.py:371:12:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/internals/managers.py#L509'>pandas/core/internals/managers.py:509:16:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
++ <a href='https://github.com/pandas-dev/pandas/blob/42e4e4c9a85e682e3027caa3a1797385f7f7760c/pandas/core/nanops.py#L1682'>pandas/core/nanops.py:1682:14:</a> E721 Use `is` and `is not` for type comparisons, or `isinstance()` for isinstance checks
+... 127 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| E721 | 180 | 180 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Merged by @charliermarsh on 2024-01-29 19:46_
+
+---
+
+_Closed by @charliermarsh on 2024-01-29 19:46_
+
+---
+
+_Branch deleted on 2024-01-29 19:46_
+
+---
