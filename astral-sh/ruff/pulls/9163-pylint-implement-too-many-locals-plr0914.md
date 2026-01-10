@@ -1,0 +1,313 @@
+```yaml
+number: 9163
+title: "[`pylint`] Implement `too-many-locals` (`PLR0914`)"
+type: pull_request
+state: merged
+author: diceroll123
+labels:
+  - rule
+  - preview
+assignees: []
+merged: true
+base: main
+head: add-PLR0914
+created_at: 2023-12-16T15:19:26Z
+updated_at: 2023-12-18T20:05:28Z
+url: https://github.com/astral-sh/ruff/pull/9163
+synced_at: 2026-01-10T23:31:11Z
+```
+
+# [`pylint`] Implement `too-many-locals` (`PLR0914`)
+
+---
+
+_Pull request opened by @diceroll123 on 2023-12-16 15:19_
+
+## Summary
+
+Implements [`PLR0914` - `too-many-locals`](https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/too-many-locals.html)
+
+See #970 
+
+## Test Plan
+
+`cargo test`
+
+---
+
+_Comment by @github-actions[bot] on 2023-12-16 15:41_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+366 -1 violations, +0 -0 fixes in 12 projects; 29 projects unchanged)
+
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+37 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/a7ab64e29b60502ee8b9d5088470113d836283d1/airflow/cli/commands/kubernetes_command.py#L77'>airflow/cli/commands/kubernetes_command.py:77:5:</a> PLR0914 Too many local variables: (17/15)
++ <a href='https://github.com/apache/airflow/blob/a7ab64e29b60502ee8b9d5088470113d836283d1/airflow/dag_processing/processor.py#L420'>airflow/dag_processing/processor.py:420:9:</a> PLR0914 Too many local variables: (21/15)
++ <a href='https://github.com/apache/airflow/blob/a7ab64e29b60502ee8b9d5088470113d836283d1/airflow/io/path.py#L93'>airflow/io/path.py:93:9:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/apache/airflow/blob/a7ab64e29b60502ee8b9d5088470113d836283d1/airflow/jobs/backfill_job_runner.py#L854'>airflow/jobs/backfill_job_runner.py:854:9:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/apache/airflow/blob/a7ab64e29b60502ee8b9d5088470113d836283d1/airflow/jobs/scheduler_job_runner.py#L294'>airflow/jobs/scheduler_job_runner.py:294:9:</a> PLR0914 Too many local variables: (35/15)
++ <a href='https://github.com/apache/airflow/blob/a7ab64e29b60502ee8b9d5088470113d836283d1/airflow/jobs/scheduler_job_runner.py#L683'>airflow/jobs/scheduler_job_runner.py:683:9:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/apache/airflow/blob/a7ab64e29b60502ee8b9d5088470113d836283d1/airflow/models/dag.py#L1780'>airflow/models/dag.py:1780:9:</a> PLR0914 Too many local variables: (21/15)
++ <a href='https://github.com/apache/airflow/blob/a7ab64e29b60502ee8b9d5088470113d836283d1/airflow/models/dag.py#L3017'>airflow/models/dag.py:3017:9:</a> PLR0914 Too many local variables: (36/15)
++ <a href='https://github.com/apache/airflow/blob/a7ab64e29b60502ee8b9d5088470113d836283d1/airflow/providers/dbt/cloud/utils/openlineage.py#L31'>airflow/providers/dbt/cloud/utils/openlineage.py:31:5:</a> PLR0914 Too many local variables: (19/15)
++ <a href='https://github.com/apache/airflow/blob/a7ab64e29b60502ee8b9d5088470113d836283d1/airflow/providers/google/cloud/hooks/bigquery.py#L2024'>airflow/providers/google/cloud/hooks/bigquery.py:2024:9:</a> PLR0914 Too many local variables: (16/15)
+... 27 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+20 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/aws/aws-sam-cli/blob/4890f4f56fb70ec4e2e66fcc8e1f3fb5154a8ec7/samcli/commands/deploy/guided_context.py#L108'>samcli/commands/deploy/guided_context.py:108:9:</a> PLR0914 Too many local variables: (20/15)
++ <a href='https://github.com/aws/aws-sam-cli/blob/4890f4f56fb70ec4e2e66fcc8e1f3fb5154a8ec7/samcli/commands/init/interactive_init_flow.py#L213'>samcli/commands/init/interactive_init_flow.py:213:5:</a> PLR0914 Too many local variables: (29/15)
++ <a href='https://github.com/aws/aws-sam-cli/blob/4890f4f56fb70ec4e2e66fcc8e1f3fb5154a8ec7/samcli/commands/pipeline/bootstrap/cli.py#L240'>samcli/commands/pipeline/bootstrap/cli.py:240:5:</a> PLR0914 Too many local variables: (23/15)
++ <a href='https://github.com/aws/aws-sam-cli/blob/4890f4f56fb70ec4e2e66fcc8e1f3fb5154a8ec7/samcli/hook_packages/terraform/hooks/prepare/translate.py#L153'>samcli/hook_packages/terraform/hooks/prepare/translate.py:153:5:</a> PLR0914 Too many local variables: (31/15)
++ <a href='https://github.com/aws/aws-sam-cli/blob/4890f4f56fb70ec4e2e66fcc8e1f3fb5154a8ec7/samcli/lib/iac/cfn/cfn_iac.py#L83'>samcli/lib/iac/cfn/cfn_iac.py:83:9:</a> PLR0914 Too many local variables: (21/15)
++ <a href='https://github.com/aws/aws-sam-cli/blob/4890f4f56fb70ec4e2e66fcc8e1f3fb5154a8ec7/samcli/lib/sync/infra_sync_executor.py#L220'>samcli/lib/sync/infra_sync_executor.py:220:9:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/aws/aws-sam-cli/blob/4890f4f56fb70ec4e2e66fcc8e1f3fb5154a8ec7/samcli/local/apigw/local_apigw_service.py#L623'>samcli/local/apigw/local_apigw_service.py:623:9:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/aws/aws-sam-cli/blob/4890f4f56fb70ec4e2e66fcc8e1f3fb5154a8ec7/tests/unit/commands/buildcmd/test_build_context.py#L407'>tests/unit/commands/buildcmd/test_build_context.py:407:9:</a> PLR0914 Too many local variables: (24/15)
++ <a href='https://github.com/aws/aws-sam-cli/blob/4890f4f56fb70ec4e2e66fcc8e1f3fb5154a8ec7/tests/unit/commands/buildcmd/test_build_context.py#L664'>tests/unit/commands/buildcmd/test_build_context.py:664:9:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/aws/aws-sam-cli/blob/4890f4f56fb70ec4e2e66fcc8e1f3fb5154a8ec7/tests/unit/commands/buildcmd/test_build_context.py#L922'>tests/unit/commands/buildcmd/test_build_context.py:922:9:</a> PLR0914 Too many local variables: (18/15)
+... 10 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+12 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/examples/advanced/extensions/parallel_plot/parallel_plot.py#L14'>examples/advanced/extensions/parallel_plot/parallel_plot.py:14:5:</a> PLR0914 Too many local variables: (24/15)
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/examples/models/calendars.py#L26'>examples/models/calendars.py:26:5:</a> PLR0914 Too many local variables: (21/15)
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/src/bokeh/embed/bundle.py#L259'>src/bokeh/embed/bundle.py:259:5:</a> PLR0914 Too many local variables: (25/15)
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/src/bokeh/layouts.py#L193'>src/bokeh/layouts.py:193:5:</a> PLR0914 Too many local variables: (22/15)
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/src/bokeh/models/util/structure.py#L226'>src/bokeh/models/util/structure.py:226:9:</a> PLR0914 Too many local variables: (18/15)
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/src/bokeh/plotting/_graph.py#L54'>src/bokeh/plotting/_graph.py:54:5:</a> PLR0914 Too many local variables: (30/15)
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/src/bokeh/plotting/_renderer.py#L76'>src/bokeh/plotting/_renderer.py:76:5:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/unit/bokeh/core/test_serialization.py#L348'>tests/unit/bokeh/core/test_serialization.py:348:9:</a> PLR0914 Too many local variables: (23/15)
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/unit/bokeh/model/test_util_model.py#L77'>tests/unit/bokeh/model/test_util_model.py:77:5:</a> PLR0914 Too many local variables: (21/15)
++ <a href='https://github.com/bokeh/bokeh/blob/929ee8ab38207eca08d1601a0164952fb21c9c6a/tests/unit/bokeh/protocol/messages/test_patch_doc.py#L107'>tests/unit/bokeh/protocol/messages/test_patch_doc.py:107:9:</a> PLR0914 Too many local variables: (19/15)
+... 2 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+7 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/freedomofpress/securedrop/blob/531d08696a145b26dd918abbbc68b19d4ce505c0/securedrop/sdconfig.py#L101'>securedrop/sdconfig.py:101:5:</a> PLR0914 Too many local variables: (20/15)
++ <a href='https://github.com/freedomofpress/securedrop/blob/531d08696a145b26dd918abbbc68b19d4ce505c0/securedrop/tests/functional/conftest.py#L95'>securedrop/tests/functional/conftest.py:95:5:</a> PLR0914 Too many local variables: (18/15)
++ <a href='https://github.com/freedomofpress/securedrop/blob/531d08696a145b26dd918abbbc68b19d4ce505c0/securedrop/tests/test_integration.py#L120'>securedrop/tests/test_integration.py:120:5:</a> PLR0914 Too many local variables: (18/15)
++ <a href='https://github.com/freedomofpress/securedrop/blob/531d08696a145b26dd918abbbc68b19d4ce505c0/securedrop/tests/test_integration.py#L220'>securedrop/tests/test_integration.py:220:5:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/freedomofpress/securedrop/blob/531d08696a145b26dd918abbbc68b19d4ce505c0/securedrop/tests/test_journalist.py#L3347'>securedrop/tests/test_journalist.py:3347:5:</a> PLR0914 Too many local variables: (17/15)
++ <a href='https://github.com/freedomofpress/securedrop/blob/531d08696a145b26dd918abbbc68b19d4ce505c0/securedrop/tests/test_journalist.py#L3422'>securedrop/tests/test_journalist.py:3422:5:</a> PLR0914 Too many local variables: (17/15)
++ <a href='https://github.com/freedomofpress/securedrop/blob/531d08696a145b26dd918abbbc68b19d4ce505c0/securedrop/tests/utils/db_helper.py#L164'>securedrop/tests/utils/db_helper.py:164:5:</a> PLR0914 Too many local variables: (16/15)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/fronzbot/blinkpy">fronzbot/blinkpy</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/fronzbot/blinkpy/blob/5e58c1a14f7a8b2919c173358496d25242ad86de/blinkpy/sync_module.py#L282'>blinkpy/sync_module.py:282:15:</a> PLR0914 Too many local variables: (18/15)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+5 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/ec533c1c003f05ab15a447d1b5ee1c430081c2fe/ibis/backends/bigquery/udf/core.py#L524'>ibis/backends/bigquery/udf/core.py:524:9:</a> PLR0914 Too many local variables: (17/15)
++ <a href='https://github.com/ibis-project/ibis/blob/ec533c1c003f05ab15a447d1b5ee1c430081c2fe/ibis/backends/dask/aggcontext.py#L90'>ibis/backends/dask/aggcontext.py:90:9:</a> PLR0914 Too many local variables: (19/15)
++ <a href='https://github.com/ibis-project/ibis/blob/ec533c1c003f05ab15a447d1b5ee1c430081c2fe/ibis/backends/pandas/aggcontext.py#L582'>ibis/backends/pandas/aggcontext.py:582:9:</a> PLR0914 Too many local variables: (18/15)
++ <a href='https://github.com/ibis-project/ibis/blob/ec533c1c003f05ab15a447d1b5ee1c430081c2fe/ibis/backends/pandas/execution/window.py#L258'>ibis/backends/pandas/execution/window.py:258:5:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/ibis-project/ibis/blob/ec533c1c003f05ab15a447d1b5ee1c430081c2fe/ibis/expr/datatypes/parse.py#L54'>ibis/expr/datatypes/parse.py:54:5:</a> PLR0914 Too many local variables: (20/15)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+90 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pandas-dev/pandas/blob/6ee9ad0281ad40dff3c7400f225310c0b9279336/pandas/_version.py#L250'>pandas/_version.py:250:5:</a> PLR0914 Too many local variables: (17/15)
++ <a href='https://github.com/pandas-dev/pandas/blob/6ee9ad0281ad40dff3c7400f225310c0b9279336/pandas/core/_numba/kernels/sum_.py#L65'>pandas/core/_numba/kernels/sum_.py:65:5:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/pandas-dev/pandas/blob/6ee9ad0281ad40dff3c7400f225310c0b9279336/pandas/core/_numba/kernels/var_.py#L171'>pandas/core/_numba/kernels/var_.py:171:5:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/pandas-dev/pandas/blob/6ee9ad0281ad40dff3c7400f225310c0b9279336/pandas/core/_numba/kernels/var_.py#L74'>pandas/core/_numba/kernels/var_.py:74:5:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/pandas-dev/pandas/blob/6ee9ad0281ad40dff3c7400f225310c0b9279336/pandas/core/arraylike.py#L253'>pandas/core/arraylike.py:253:5:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/pandas-dev/pandas/blob/6ee9ad0281ad40dff3c7400f225310c0b9279336/pandas/core/arrays/datetimes.py#L403'>pandas/core/arrays/datetimes.py:403:9:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/pandas-dev/pandas/blob/6ee9ad0281ad40dff3c7400f225310c0b9279336/pandas/core/computation/align.py#L87'>pandas/core/computation/align.py:87:5:</a> PLR0914 Too many local variables: (20/15)
++ <a href='https://github.com/pandas-dev/pandas/blob/6ee9ad0281ad40dff3c7400f225310c0b9279336/pandas/core/frame.py#L11370'>pandas/core/frame.py:11370:9:</a> PLR0914 Too many local variables: (17/15)
++ <a href='https://github.com/pandas-dev/pandas/blob/6ee9ad0281ad40dff3c7400f225310c0b9279336/pandas/core/frame.py#L11983'>pandas/core/frame.py:11983:9:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/pandas-dev/pandas/blob/6ee9ad0281ad40dff3c7400f225310c0b9279336/pandas/core/frame.py#L2264'>pandas/core/frame.py:2264:9:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/pandas-dev/pandas/blob/6ee9ad0281ad40dff3c7400f225310c0b9279336/pandas/core/frame.py#L6178'>pandas/core/frame.py:6178:9:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/pandas-dev/pandas/blob/6ee9ad0281ad40dff3c7400f225310c0b9279336/pandas/core/frame.py#L8547'>pandas/core/frame.py:8547:9:</a> PLR0914 Too many local variables: (16/15)
+... 78 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pypa/pip">pypa/pip</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pypa/pip/blob/92dd5532533fe1c42e62b58b1ff66b85ba4de6b4/src/pip/_internal/cli/autocompletion.py#L15'>src/pip/_internal/cli/autocompletion.py:15:5:</a> PLR0914 Too many local variables: (19/15)
++ <a href='https://github.com/pypa/pip/blob/92dd5532533fe1c42e62b58b1ff66b85ba4de6b4/src/pip/_internal/commands/install.py#L266'>src/pip/_internal/commands/install.py:266:9:</a> PLR0914 Too many local variables: (35/15)
++ <a href='https://github.com/pypa/pip/blob/92dd5532533fe1c42e62b58b1ff66b85ba4de6b4/src/pip/_internal/operations/install/wheel.py#L426'>src/pip/_internal/operations/install/wheel.py:426:5:</a> PLR0914 Too many local variables: (38/15)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+65 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/ac890a17853419b9f89e22e873068a11e2f921c2/package.py#L583'>package.py:583:9:</a> PLR0914 Too many local variables: (21/15)
++ <a href='https://github.com/rotki/rotki/blob/ac890a17853419b9f89e22e873068a11e2f921c2/rotkehlchen/api/rest.py#L3454'>rotkehlchen/api/rest.py:3454:9:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/rotki/rotki/blob/ac890a17853419b9f89e22e873068a11e2f921c2/rotkehlchen/api/rest.py#L4044'>rotkehlchen/api/rest.py:4044:9:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/rotki/rotki/blob/ac890a17853419b9f89e22e873068a11e2f921c2/rotkehlchen/chain/ethereum/modules/balancer/balancer.py#L570'>rotkehlchen/chain/ethereum/modules/balancer/balancer.py:570:9:</a> PLR0914 Too many local variables: (18/15)
++ <a href='https://github.com/rotki/rotki/blob/ac890a17853419b9f89e22e873068a11e2f921c2/rotkehlchen/chain/ethereum/modules/balancer/utils.py#L166'>rotkehlchen/chain/ethereum/modules/balancer/utils.py:166:5:</a> PLR0914 Too many local variables: (25/15)
++ <a href='https://github.com/rotki/rotki/blob/ac890a17853419b9f89e22e873068a11e2f921c2/rotkehlchen/chain/ethereum/modules/balancer/utils.py#L44'>rotkehlchen/chain/ethereum/modules/balancer/utils.py:44:5:</a> PLR0914 Too many local variables: (20/15)
++ <a href='https://github.com/rotki/rotki/blob/ac890a17853419b9f89e22e873068a11e2f921c2/rotkehlchen/chain/ethereum/modules/curve/curve_cache.py#L345'>rotkehlchen/chain/ethereum/modules/curve/curve_cache.py:345:5:</a> PLR0914 Too many local variables: (17/15)
++ <a href='https://github.com/rotki/rotki/blob/ac890a17853419b9f89e22e873068a11e2f921c2/rotkehlchen/chain/ethereum/modules/curve/decoder.py#L380'>rotkehlchen/chain/ethereum/modules/curve/decoder.py:380:9:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/rotki/rotki/blob/ac890a17853419b9f89e22e873068a11e2f921c2/rotkehlchen/chain/ethereum/modules/liquity/trove.py#L84'>rotkehlchen/chain/ethereum/modules/liquity/trove.py:84:9:</a> PLR0914 Too many local variables: (19/15)
++ <a href='https://github.com/rotki/rotki/blob/ac890a17853419b9f89e22e873068a11e2f921c2/rotkehlchen/chain/ethereum/modules/makerdao/dsr.py#L217'>rotkehlchen/chain/ethereum/modules/makerdao/dsr.py:217:9:</a> PLR0914 Too many local variables: (24/15)
+... 55 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/scikit-build/scikit-build-core">scikit-build/scikit-build-core</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/1d86e477bbf5090ea02d305393427846fa49cfb4/src/scikit_build_core/build/sdist.py#L91'>src/scikit_build_core/build/sdist.py:91:5:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/1d86e477bbf5090ea02d305393427846fa49cfb4/src/scikit_build_core/build/wheel.py#L113'>src/scikit_build_core/build/wheel.py:113:5:</a> PLR0914 Too many local variables: (37/15)
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/1d86e477bbf5090ea02d305393427846fa49cfb4/src/scikit_build_core/setuptools/build_cmake.py#L87'>src/scikit_build_core/setuptools/build_cmake.py:87:9:</a> PLR0914 Too many local variables: (17/15)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/sphinx-doc/sphinx">sphinx-doc/sphinx</a> (+12 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/builders/changes.py#L47'>sphinx/builders/changes.py:47:9:</a> PLR0914 Too many local variables: (18/15)
++ <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/directives/other.py#L86'>sphinx/directives/other.py:86:9:</a> PLR0914 Too many local variables: (17/15)
++ <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/domains/cpp.py#L7696'>sphinx/domains/cpp.py:7696:9:</a> PLR0914 Too many local variables: (17/15)
++ <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/domains/cpp.py#L8014'>sphinx/domains/cpp.py:8014:9:</a> PLR0914 Too many local variables: (28/15)
++ <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/domains/python.py#L714'>sphinx/domains/python.py:714:9:</a> PLR0914 Too many local variables: (22/15)
++ <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/environment/adapters/indexentries.py#L27'>sphinx/environment/adapters/indexentries.py:27:9:</a> PLR0914 Too many local variables: (18/15)
++ <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/environment/collectors/toctree.py#L64'>sphinx/environment/collectors/toctree.py:64:13:</a> PLR0914 Too many local variables: (17/15)
++ <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/ext/autosummary/generate.py#L461'>sphinx/ext/autosummary/generate.py:461:5:</a> PLR0914 Too many local variables: (18/15)
++ <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/ext/autosummary/generate.py#L590'>sphinx/ext/autosummary/generate.py:590:5:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/sphinx-doc/sphinx/blob/35965903177c6ed9a6afb62ccd33243a746a3fc0/sphinx/ext/graphviz.py#L221'>sphinx/ext/graphviz.py:221:5:</a> PLR0914 Too many local variables: (16/15)
+... 2 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+111 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/02257b8cbf637bbb32e76d2d23c16734d55cb96c/analytics/management/commands/populate_analytics_db.py#L73'>analytics/management/commands/populate_analytics_db.py:73:9:</a> PLR0914 Too many local variables: (26/15)
++ <a href='https://github.com/zulip/zulip/blob/02257b8cbf637bbb32e76d2d23c16734d55cb96c/analytics/views/installation_activity.py#L94'>analytics/views/installation_activity.py:94:5:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/zulip/zulip/blob/02257b8cbf637bbb32e76d2d23c16734d55cb96c/analytics/views/stats.py#L250'>analytics/views/stats.py:250:5:</a> PLR0914 Too many local variables: (17/15)
++ <a href='https://github.com/zulip/zulip/blob/02257b8cbf637bbb32e76d2d23c16734d55cb96c/analytics/views/support.py#L152'>analytics/views/support.py:152:5:</a> PLR0914 Too many local variables: (27/15)
++ <a href='https://github.com/zulip/zulip/blob/02257b8cbf637bbb32e76d2d23c16734d55cb96c/analytics/views/support.py#L395'>analytics/views/support.py:395:5:</a> PLR0914 Too many local variables: (18/15)
++ <a href='https://github.com/zulip/zulip/blob/02257b8cbf637bbb32e76d2d23c16734d55cb96c/corporate/lib/stripe.py#L1151'>corporate/lib/stripe.py:1151:9:</a> PLR0914 Too many local variables: (18/15)
++ <a href='https://github.com/zulip/zulip/blob/02257b8cbf637bbb32e76d2d23c16734d55cb96c/corporate/lib/stripe.py#L1325'>corporate/lib/stripe.py:1325:9:</a> PLR0914 Too many local variables: (16/15)
++ <a href='https://github.com/zulip/zulip/blob/02257b8cbf637bbb32e76d2d23c16734d55cb96c/corporate/lib/stripe.py#L1680'>corporate/lib/stripe.py:1680:9:</a> PLR0914 Too many local variables: (23/15)
+... 103 additional changes omitted for rule PLR0914
++ <a href='https://github.com/zulip/zulip/blob/02257b8cbf637bbb32e76d2d23c16734d55cb96c/zerver/lib/test_helpers.py#L753'>zerver/lib/test_helpers.py:753:5:</a> D400 First line should end with a period
+- <a href='https://github.com/zulip/zulip/blob/02257b8cbf637bbb32e76d2d23c16734d55cb96c/zerver/lib/test_helpers.py#L753'>zerver/lib/test_helpers.py:753:5:</a> D400 First line should end with a period
+... 102 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLR0914 | 365 | 365 | 0 | 0 | 0 |
+| D400 | 2 | 1 | 1 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-12-18 19:54_
+
+---
+
+_Label `preview` added by @charliermarsh on 2023-12-18 19:54_
+
+---
+
+_Renamed from "[pylint] implement rule `PLR0914`" to "[`pylint`] Implement `too-many-locals` (`PLR0914`)" by @charliermarsh on 2023-12-18 19:54_
+
+---
+
+_Merged by @charliermarsh on 2023-12-18 20:00_
+
+---
+
+_Closed by @charliermarsh on 2023-12-18 20:00_
+
+---

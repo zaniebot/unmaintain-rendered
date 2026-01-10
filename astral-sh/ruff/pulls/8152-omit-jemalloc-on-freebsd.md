@@ -1,0 +1,515 @@
+```yaml
+number: 8152
+title: Omit jemalloc on FreeBSD
+type: pull_request
+state: closed
+author: charliermarsh
+labels: []
+assignees: []
+base: main
+head: charlie/freebsd
+created_at: 2023-10-24T04:48:28Z
+updated_at: 2023-12-12T21:41:46Z
+url: https://github.com/astral-sh/ruff/pull/8152
+synced_at: 2026-01-10T23:31:11Z
+```
+
+# Omit jemalloc on FreeBSD
+
+---
+
+_Pull request opened by @charliermarsh on 2023-10-24 04:48_
+
+## Summary
+
+I haven't actually tested this, but it was reported here: https://github.com/abravalheri/validate-pyproject/pull/97#issuecomment-1776178101.
+
+---
+
+_Comment by @github-actions[bot] on 2023-10-24 05:05_
+
+## PR Check Results
+### Ecosystem
+✅ ecosystem check detected no changes.
+
+
+
+---
+
+_Comment by @MichaReiser on 2023-10-24 06:28_
+
+What's the reason for excluding freebsd. I didn't read about any incompatibilities. For example it is used here 
+
+https://docs.rs/crate/tikv-jemallocator-global/0.4.0/source/src/lib.rs
+
+Is there a specific error message?
+
+E.g. what tikv-jemalloc recommends is excluding windows only
+
+```rust
+// main.rs
+#[cfg(not(target_env = "msvc"))]
+use tikv_jemallocator::Jemalloc;
+
+#[cfg(not(target_env = "msvc"))]
+#[global_allocator]
+static GLOBAL: Jemalloc = Jemalloc;
+```
+
+https://github.com/tikv/jemallocator#documentation
+
+---
+
+_Comment by @henryiii on 2023-10-24 12:10_
+
+I think you want to opt-in to the platforms you know are supported (macOS and linux?), rather than opting out. Otherwise, you'd probably want to list all the BSD's, like netbsd.
+
+https://doc.rust-lang.org/reference/conditional-compilation.html#target_os
+
+---
+
+_Comment by @henryiii on 2023-10-24 13:02_
+
+Grabbing a FreeBSD VirtualBox image, resizing it with `VBoxManage modifyhd FreeBSD-13.2-RELEASE-amd64.vhd --resize 12000`, then installing some deps, but it breaks compiling `tiki-jemalloc-sys v0.5.4+5.3.0-patched` while compiling Ruff.
+
+```bash
+pkg install lang/python # gets 3.9
+pkg install lang/ruff # gets 1.72
+pik install py39-pip
+pip install --user -v ruff
+```
+
+(I also set up a user and ssh so I could copy the traceback, not shown above)
+
+```
+  error: failed to run custom build command for `tikv-jemalloc-sys v0.5.4+5.3.0-patched`
+
+  Caused by:
+    process didn't exit successfully: `/tmp/pip-install-wun6jb5i/ruff_88374fcbff2a46e3964c49c25b048eb2/target/release/build/tikv-jemalloc-sys-fcc95a3119f7eeb0/build-script-build` (exit status: 101)
+    --- stdout
+    TARGET=x86_64-unknown-freebsd
+    HOST=x86_64-unknown-freebsd
+    NUM_JOBS=1
+    OUT_DIR="/tmp/pip-install-wun6jb5i/ruff_88374fcbff2a46e3964c49c25b048eb2/target/release/build/tikv-jemalloc-sys-5594596a655ec688/out"
+    BUILD_DIR="/tmp/pip-install-wun6jb5i/ruff_88374fcbff2a46e3964c49c25b048eb2/target/release/build/tikv-jemalloc-sys-5594596a655ec688/out/build"
+    SRC_DIR="/usr/home/henryschreiner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tikv-jemalloc-sys-0.5.4+5.3.0-patched"
+    cargo:rustc-cfg=prefixed
+    cargo:rerun-if-env-changed=JEMALLOC_OVERRIDE
+    OPT_LEVEL = Some("3")
+    TARGET = Some("x86_64-unknown-freebsd")
+    HOST = Some("x86_64-unknown-freebsd")
+    cargo:rerun-if-env-changed=CC_x86_64-unknown-freebsd
+    CC_x86_64-unknown-freebsd = None
+    cargo:rerun-if-env-changed=CC_x86_64_unknown_freebsd
+    CC_x86_64_unknown_freebsd = None
+    cargo:rerun-if-env-changed=HOST_CC
+    HOST_CC = None
+    cargo:rerun-if-env-changed=CC
+    CC = None
+    cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
+    CRATE_CC_NO_DEFAULTS = None
+    DEBUG = Some("false")
+    CARGO_CFG_TARGET_FEATURE = Some("fxsr,sse,sse2")
+    cargo:rerun-if-env-changed=CFLAGS_x86_64-unknown-freebsd
+    CFLAGS_x86_64-unknown-freebsd = None
+    cargo:rerun-if-env-changed=CFLAGS_x86_64_unknown_freebsd
+    CFLAGS_x86_64_unknown_freebsd = None
+    cargo:rerun-if-env-changed=HOST_CFLAGS
+    HOST_CFLAGS = None
+    cargo:rerun-if-env-changed=CFLAGS
+    CFLAGS = None
+    CC="cc"
+    CFLAGS="-O3 -ffunction-sections -fdata-sections -fPIC -m64 -Wall"
+    JEMALLOC_REPO_DIR="jemalloc"
+    cargo:rerun-if-env-changed=JEMALLOC_SYS_WITH_MALLOC_CONF
+    cargo:rerun-if-env-changed=JEMALLOC_SYS_WITH_LG_PAGE
+    cargo:rerun-if-env-changed=JEMALLOC_SYS_WITH_LG_HUGEPAGE
+    cargo:rerun-if-env-changed=JEMALLOC_SYS_WITH_LG_QUANTUM
+    cargo:rerun-if-env-changed=JEMALLOC_SYS_WITH_LG_VADDR
+    --with-jemalloc-prefix=_rjem_
+    running: cd "/tmp/pip-install-wun6jb5i/ruff_88374fcbff2a46e3964c49c25b048eb2/target/release/build/tikv-jemalloc-sys-5594596a655ec688/out/build" && CC="cc" CFLAGS="-O3 -ffunction-sections -fdata-sections -fPIC -m64 -Wall" CPPFLAGS="-O3 -ffunction-sections -fdata-sections -fPIC -m64 -Wall" LDFLAGS="-O3 -ffunction-sections -fdata-sections -fPIC -m64 -Wall" "sh" "/tmp/pip-install-wun6jb5i/ruff_88374fcbff2a46e3964c49c25b048eb2/target/release/build/tikv-jemalloc-sys-5594596a655ec688/out/build/configure" "--disable-cxx" "--enable-doc=no" "--enable-shared=no" "--with-jemalloc-prefix=_rjem_" "--with-private-namespace=_rjem_" "--host=x86_64-unknown-freebsd" "--build=x86_64-unknown-freebsd" "--prefix=/tmp/pip-install-wun6jb5i/ruff_88374fcbff2a46e3964c49c25b048eb2/target/release/build/tikv-jemalloc-sys-5594596a655ec688/out"
+    checking for xsltproc... false
+    checking for x86_64-unknown-freebsd-gcc... cc
+    checking whether the C compiler works... yes
+    checking for C compiler default output file name... a.out
+    checking for suffix of executables...
+    checking whether we are cross compiling... no
+    checking for suffix of object files... o
+    checking whether we are using the GNU C compiler... yes
+    checking whether cc accepts -g... yes
+    checking for cc option to accept ISO C89... none needed
+    checking whether compiler is cray... no
+    checking whether compiler supports -std=gnu11... yes
+    checking whether compiler supports -Werror=unknown-warning-option... yes
+    checking whether compiler supports -Wall... yes
+    checking whether compiler supports -Wextra... yes
+    checking whether compiler supports -Wshorten-64-to-32... yes
+    checking whether compiler supports -Wsign-compare... yes
+    checking whether compiler supports -Wundef... yes
+    checking whether compiler supports -Wno-format-zero-length... yes
+    checking whether compiler supports -Wpointer-arith... yes
+    checking whether compiler supports -Wno-missing-braces... yes
+    checking whether compiler supports -Wno-missing-field-initializers... yes
+    checking whether compiler supports -Wno-missing-attributes... no
+    checking whether compiler supports -pipe... yes
+    checking whether compiler supports -g3... yes
+    checking how to run the C preprocessor... cc -E
+    checking for grep that handles long lines and -e... /usr/bin/grep
+    checking for egrep... /usr/bin/grep -E
+    checking for ANSI C header files... yes
+    checking for sys/types.h... yes
+    checking for sys/stat.h... yes
+    checking for stdlib.h... yes
+    checking for string.h... yes
+    checking for memory.h... yes
+    checking for strings.h... yes
+    checking for inttypes.h... yes
+    checking for stdint.h... yes
+    checking for unistd.h... yes
+    checking whether byte ordering is bigendian... no
+    checking size of void *... 8
+    checking size of int... 4
+    checking size of long... 8
+    checking size of long long... 8
+    checking size of intmax_t... 8
+    checking build system type... x86_64-unknown-freebsd
+    checking host system type... x86_64-unknown-freebsd
+    checking whether pause instruction is compilable... yes
+    checking number of significant virtual address bits... 48
+    checking for x86_64-unknown-freebsd-ar... no
+    checking for ar... ar
+    checking for x86_64-unknown-freebsd-nm... no
+    checking for nm... nm
+    checking for gawk... no
+    checking for mawk... no
+    checking for nawk... nawk
+    checking malloc.h usability... yes
+    checking malloc.h presence... yes
+    checking for malloc.h... yes
+    checking whether malloc_usable_size definition can use const argument... yes
+    checking for library containing log... -lm
+    checking whether __attribute__ syntax is compilable... yes
+    checking whether compiler supports -fvisibility=hidden... yes
+    checking whether compiler supports -fvisibility=hidden... no
+    checking whether compiler supports -Werror... yes
+    checking whether compiler supports -herror_on_warning... no
+    checking whether tls_model attribute is compilable... yes
+    checking whether compiler supports -Werror... yes
+    checking whether compiler supports -herror_on_warning... no
+    checking whether alloc_size attribute is compilable... yes
+    checking whether compiler supports -Werror... yes
+    checking whether compiler supports -herror_on_warning... no
+    checking whether format(gnu_printf, ...) attribute is compilable... no
+    checking whether compiler supports -Werror... yes
+    checking whether compiler supports -herror_on_warning... no
+    checking whether format(printf, ...) attribute is compilable... yes
+    checking whether compiler supports -Werror... yes
+    checking whether compiler supports -herror_on_warning... no
+    checking whether format(printf, ...) attribute is compilable... yes
+    checking whether compiler supports -Wimplicit-fallthrough... yes
+    checking whether fallthrough attribute is compilable... yes
+    checking whether compiler supports -Wimplicit-fallthrough... yes
+    checking whether compiler supports -Wimplicit-fallthrough... no
+    checking whether compiler supports -Werror... yes
+    checking whether compiler supports -herror_on_warning... no
+    checking whether cold attribute is compilable... yes
+    checking whether vm_make_tag is compilable... no
+    checking for a BSD-compatible install... /usr/bin/install -c
+    checking for x86_64-unknown-freebsd-ranlib... no
+    checking for ranlib... ranlib
+    checking for ld... /usr/bin/ld
+    checking for autoconf... false
+    checking for memalign... yes
+    checking for valloc... yes
+    checking for malloc_size... no
+    checking whether compiler supports -O3... yes
+    checking whether compiler supports -O3... no
+    checking whether compiler supports -funroll-loops... yes
+    checking configured backtracing method... N/A
+    checking for sbrk... yes
+    checking whether utrace(2) is compilable... yes
+    checking whether a program using __builtin_unreachable is compilable... yes
+    checking whether a program using __builtin_ffsl is compilable... yes
+    checking whether a program using __builtin_popcountl is compilable... yes
+    checking LG_PAGE... 12
+    checking pthread.h usability... yes
+    checking pthread.h presence... yes
+    checking for pthread.h... yes
+    checking for pthread_create in -lpthread... yes
+    checking dlfcn.h usability... yes
+    checking dlfcn.h presence... yes
+    checking for dlfcn.h... yes
+    checking for dlsym... yes
+    checking whether pthread_atfork(3) is compilable... yes
+    checking whether pthread_setname_np(3) is compilable... yes
+    checking whether pthread_getname_np(3) is compilable... yes
+    checking whether pthread_get_name_np(3) is compilable... yes
+    checking for library containing clock_gettime... none required
+    checking whether clock_gettime(CLOCK_MONOTONIC_COARSE, ...) is compilable... yes
+    checking whether clock_gettime(CLOCK_MONOTONIC, ...) is compilable... yes
+    checking whether mach_absolute_time() is compilable... no
+    checking whether clock_gettime(CLOCK_REALTIME, ...) is compilable... yes
+    checking whether compiler supports -Werror... yes
+    checking whether syscall(2) is compilable... yes
+    checking for secure_getenv... no
+    checking for sched_getcpu... yes
+    checking for sched_setaffinity... yes
+    checking for issetugid... yes
+    checking for _malloc_thread_cleanup... yes
+    checking for _pthread_mutex_init_calloc_cb... yes
+    checking for memcntl... no
+    Forcing lazy-lock to avoid allocator/threading bootstrap issues
+    checking for TLS... yes
+    checking whether C11 atomics is compilable... yes
+    checking whether GCC __atomic atomics is compilable... yes
+    checking whether GCC 8-bit __atomic atomics is compilable... yes
+    checking whether GCC __sync atomics is compilable... yes
+    checking whether GCC 8-bit __sync atomics is compilable... yes
+    checking whether Darwin OSAtomic*() is compilable... no
+    checking whether madvise(2) is compilable... yes
+    checking whether madvise(..., MADV_FREE) is compilable... yes
+    checking whether madvise(..., MADV_DONTNEED) is compilable... yes
+    checking whether madvise(..., MADV_DO[NT]DUMP) is compilable... no
+    checking whether madvise(..., MADV_[NO]HUGEPAGE) is compilable... no
+    checking whether madvise(..., MADV_[NO]CORE) is compilable... yes
+    checking whether mprotect(2) is compilable... yes
+    checking for __builtin_clz... yes
+    checking whether Darwin os_unfair_lock_*() is compilable... no
+    checking whether pthreads adaptive mutexes is compilable... yes
+    checking whether compiler supports -D_GNU_SOURCE... yes
+    checking whether compiler supports -Werror... yes
+    checking whether compiler supports -herror_on_warning... no
+    checking whether strerror_r returns char with gnu source is compilable... no
+    checking for stdbool.h that conforms to C99... yes
+    checking for _Bool... yes
+    configure: creating ./config.status
+    config.status: creating Makefile
+    config.status: creating jemalloc.pc
+    config.status: creating doc/html.xsl
+    config.status: creating doc/manpages.xsl
+    config.status: creating doc/jemalloc.xml
+    config.status: creating include/jemalloc/jemalloc_macros.h
+    config.status: creating include/jemalloc/jemalloc_protos.h
+    config.status: creating include/jemalloc/jemalloc_typedefs.h
+    config.status: creating include/jemalloc/internal/jemalloc_preamble.h
+    config.status: creating test/test.sh
+    config.status: creating test/include/test/jemalloc_test.h
+    config.status: creating config.stamp
+    config.status: creating bin/jemalloc-config
+    config.status: creating bin/jemalloc.sh
+    config.status: creating bin/jeprof
+    config.status: creating include/jemalloc/jemalloc_defs.h
+    config.status: creating include/jemalloc/internal/jemalloc_internal_defs.h
+    config.status: creating test/include/test/jemalloc_test_defs.h
+    config.status: executing include/jemalloc/internal/public_symbols.txt commands
+    config.status: executing include/jemalloc/internal/private_symbols.awk commands
+    config.status: executing include/jemalloc/internal/private_symbols_jet.awk commands
+    config.status: executing include/jemalloc/internal/public_namespace.h commands
+    config.status: executing include/jemalloc/internal/public_unnamespace.h commands
+    config.status: executing include/jemalloc/jemalloc_protos_jet.h commands
+    config.status: executing include/jemalloc/jemalloc_rename.h commands
+    config.status: executing include/jemalloc/jemalloc_mangle.h commands
+    config.status: executing include/jemalloc/jemalloc_mangle_jet.h commands
+    config.status: executing include/jemalloc/jemalloc.h commands
+    ===============================================================================
+    jemalloc version   : 5.3.0-0-g54eaed1d8b56b1aa528be3bdd1877e59c56fa90c
+    library revision   : 2
+
+    CONFIG             : --disable-cxx --enable-doc=no --enable-shared=no --with-jemalloc-prefix=_rjem_ --with-private-namespace=_rjem_ --host=x86_64-unknown-freebsd --build=x86_64-unknown-freebsd --prefix=/tmp/pip-install-wun6jb5i/ruff_88374fcbff2a46e3964c49c25b048eb2/target/release/build/tikv-jemalloc-sys-5594596a655ec688/out build_alias=x86_64-unknown-freebsd host_alias=x86_64-unknown-freebsd CC=cc 'CFLAGS=-O3 -ffunction-sections -fdata-sections -fPIC -m64 -Wall' 'LDFLAGS=-O3 -ffunction-sections -fdata-sections -fPIC -m64 -Wall' 'CPPFLAGS=-O3 -ffunction-sections -fdata-sections -fPIC -m64 -Wall'
+    CC                 : cc
+    CONFIGURE_CFLAGS   : -std=gnu11 -Werror=unknown-warning-option -Wall -Wextra -Wshorten-64-to-32 -Wsign-compare -Wundef -Wno-format-zero-length -Wpointer-arith -Wno-missing-braces -Wno-missing-field-initializers -pipe -g3 -fvisibility=hidden -Wimplicit-fallthrough -O3 -funroll-loops
+    SPECIFIED_CFLAGS   : -O3 -ffunction-sections -fdata-sections -fPIC -m64 -Wall
+    EXTRA_CFLAGS       :
+    CPPFLAGS           : -O3 -ffunction-sections -fdata-sections -fPIC -m64 -Wall -D_BSD_SOURCE -D_REENTRANT
+    CXX                :
+    CONFIGURE_CXXFLAGS :
+    SPECIFIED_CXXFLAGS :
+    EXTRA_CXXFLAGS     :
+    LDFLAGS            : -O3 -ffunction-sections -fdata-sections -fPIC -m64 -Wall
+    EXTRA_LDFLAGS      :
+    DSO_LDFLAGS        : -shared -Wl,-soname,$(@F)
+    LIBS               : -lm  -pthread
+    RPATH_EXTRA        :
+
+    XSLTPROC           : false
+    XSLROOT            :
+
+    PREFIX             : /tmp/pip-install-wun6jb5i/ruff_88374fcbff2a46e3964c49c25b048eb2/target/release/build/tikv-jemalloc-sys-5594596a655ec688/out
+    BINDIR             : /tmp/pip-install-wun6jb5i/ruff_88374fcbff2a46e3964c49c25b048eb2/target/release/build/tikv-jemalloc-sys-5594596a655ec688/out/bin
+    DATADIR            : /tmp/pip-install-wun6jb5i/ruff_88374fcbff2a46e3964c49c25b048eb2/target/release/build/tikv-jemalloc-sys-5594596a655ec688/out/share
+    INCLUDEDIR         : /tmp/pip-install-wun6jb5i/ruff_88374fcbff2a46e3964c49c25b048eb2/target/release/build/tikv-jemalloc-sys-5594596a655ec688/out/include
+    LIBDIR             : /tmp/pip-install-wun6jb5i/ruff_88374fcbff2a46e3964c49c25b048eb2/target/release/build/tikv-jemalloc-sys-5594596a655ec688/out/lib
+    MANDIR             : /tmp/pip-install-wun6jb5i/ruff_88374fcbff2a46e3964c49c25b048eb2/target/release/build/tikv-jemalloc-sys-5594596a655ec688/out/share/man
+
+    srcroot            :
+    abs_srcroot        : /tmp/pip-install-wun6jb5i/ruff_88374fcbff2a46e3964c49c25b048eb2/target/release/build/tikv-jemalloc-sys-5594596a655ec688/out/build/
+    objroot            :
+    abs_objroot        : /tmp/pip-install-wun6jb5i/ruff_88374fcbff2a46e3964c49c25b048eb2/target/release/build/tikv-jemalloc-sys-5594596a655ec688/out/build/
+
+    JEMALLOC_PREFIX    : _rjem_
+    JEMALLOC_PRIVATE_NAMESPACE
+                       : _rjem_je_
+    install_suffix     :
+    malloc_conf        :
+    documentation      : 0
+    shared libs        : 0
+    static libs        : 1
+    autogen            : 0
+    debug              : 0
+    stats              : 1
+    experimental_smallocx : 0
+    prof               : 0
+    prof-libunwind     : 0
+    prof-libgcc        : 0
+    prof-gcc           : 0
+    fill               : 1
+    utrace             : 0
+    xmalloc            : 0
+    log                : 0
+    lazy_lock          : 1
+    cache-oblivious    : 1
+    cxx                : 0
+    ===============================================================================
+    running: cd "/tmp/pip-install-wun6jb5i/ruff_88374fcbff2a46e3964c49c25b048eb2/target/release/build/tikv-jemalloc-sys-5594596a655ec688/out/build" && "gmake" "-j" "1"
+
+    --- stderr
+    thread 'main' panicked at 'failed to execute command: No such file or directory (os error 2)', /home/henryschreiner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/tikv-jemalloc-sys-0.5.4+5.3.0-patched/build.rs:347:19
+    note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+  💥 maturin failed
+    Caused by: Failed to build a native library through cargo
+    Caused by: Cargo build finished with "exit status: 101": `"cargo" "rustc" "--message-format" "json-render-diagnostics" "--manifest-path" "/tmp/pip-install-wun6jb5i/ruff_88374fcbff2a46e3964c49c25b048eb2/crates/ruff_cli/Cargo.toml" "--release" "--bin" "ruff" "--" "-C" "link-arg=-s"`
+  Error: command ['maturin', 'pep517', 'build-wheel', '-i', '/usr/local/bin/python3.9', '--compatibility', 'off'] returned non-zero exit status 1
+  error: subprocess-exited-with-error
+
+  × Building wheel for ruff (pyproject.toml) did not run successfully.
+  │ exit code: 1
+  ╰─> See above for output.
+
+  note: This error originates from a subprocess, and is likely not a problem with pip.
+  full command: /usr/local/bin/python3.9 /usr/local/lib/python3.9/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py build_wheel /tmp/tmp59mr0y0s
+  cwd: /tmp/pip-install-wun6jb5i/ruff_88374fcbff2a46e3964c49c25b048eb2
+  Building wheel for ruff (pyproject.toml) ... error
+  ERROR: Failed building wheel for ruff
+Failed to build ruff
+```
+
+
+
+---
+
+_Comment by @MichaReiser on 2023-10-24 13:09_
+
+Seems like jemalloc doesn't find the build directory. That's weird.
+
+---
+
+_Comment by @henryiii on 2023-10-24 13:47_
+
+From looking at the issues in the repo (https://github.com/tikv/jemallocator/issues/32), I think the problem is that gmake is not installed (though that's not at all clear from the error message). Installing that causes it to get past this AFAICT:
+
+```
+Compiling clap_complete_command v0.5.1
+     Compiling tikv-jemallocator v0.5.4
+     Compiling rayon v1.8.0
+     Compiling ruff_workspace v0.0.0 (/tmp/pip-install-dhh9emaf/ruff_8fe1980984d0465685562acf0a4ea0e4/crates/ruff_workspace)
+     Compiling cachedir v0.3.0
+     Compiling bincode v1.3.3
+     Compiling wild v2.2.0
+     Compiling ruff_cli v0.1.1 (/tmp/pip-install-dhh9emaf/ruff_8fe1980984d0465685562acf0a4ea0e4/crates/ruff_cli)
+Killed
+```
+
+Not sure how to get it past "Killed", though. Though maybe I just didn't give the VM enough memory. Edit, yes, it defaulted to 1GB.
+
+---
+
+_Comment by @henryiii on 2023-10-24 14:35_
+
+With more memory, it does build.
+
+I'd rather expect FreeBSD and OpenBSD to be the same - it's probably gmake that's required for both? Not sure if it's better to skip it or to ask people to install gmake if it's missing.
+
+---
+
+_Comment by @charliermarsh on 2023-10-24 14:47_
+
+I think I'd err on the side of not requiring it for those platforms, it's just an optimization anyway.
+
+---
+
+_Comment by @MichaReiser on 2023-10-24 21:15_
+
+> I think I'd err on the side of not requiring it for those platforms, it's just an optimization anyway.
+
+What's the reasoning? Because it simplifies the installation? 
+
+The advantage of keeping it is that we have a consistent infrastructure across unix platforms. Supporting multiple allocator means a larger testing surface.
+
+I prefer that we document the requirements for building on BSD platforms (assuming we officially support them, considering that Rust only has Tier 3 support for BSD).
+
+---
+
+_Comment by @charliermarsh on 2023-10-24 21:21_
+
+We _already_ only use jemalloc on select platforms, so don't we technically have that larger testing surface now?
+
+---
+
+_Comment by @MichaReiser on 2023-10-24 21:24_
+
+> We _already_ only use jemalloc on select platforms, so don't we technically have that larger testing surface now?
+
+Kind of, but only because we excluded openbsd (for reasons?). Ideally it should be mimalloc on windows, and jemalloc on everything else (that we officially support)
+
+---
+
+_Comment by @charliermarsh on 2023-10-24 21:24_
+
+Okay, I defer to you!
+
+---
+
+_Comment by @henryiii on 2023-10-24 21:35_
+
+What is the difference between BSD and UNIX? As far as I can tell, this is exactly the same problem on both, it requires an extra installed dependency outside of Cargo. The only difference is that BSD always has to build from source, but most people on UNIX are getting wheels, so less likely to run into it.
+
+It seems like making this an opt-in dependency, and then including it in pre-built wheels, would be more consistent.
+
+Or if there was a way to improve the error to make it clear what a use is missing, that’s not perfect but at least much better.
+
+It’s sad there has to be a non Rust package build in a Rust one.
+
+---
+
+_Comment by @MichaReiser on 2023-11-02 02:16_
+
+This is still on my list. I just haven't gotten around to look into it in detail (not having openbsd/freebsd is also a factor)
+
+---
+
+_Comment by @MichaReiser on 2023-12-06 02:47_
+
+> What is the difference between BSD and UNIX? As far as I can tell, this is exactly the same problem on both, it requires an extra installed dependency outside of Cargo. The only difference is that BSD always has to build from source, but most people on UNIX are getting wheels, so less likely to run into it.
+
+That's correct and part of the reason why I prefer not to exclude BSD. Using ruff with exotic CPU architecture requires building from source for all platforms. Meaning, BSD isn't really different except that we don't provide any pre-builts for BSD.
+
+> It seems like making this an opt-in dependency, and then including it in pre-built wheels, would be more consistent.
+
+That's an interesting idea, but would mean that wheels built from the source are different from pre-built wheels. Something users might not be aware of (and we may have to account for when providing support). Although I don't expect many issues related to this because a) most users use pre-built wheels, b) system allocators tend to be well tested, and c) it only makes ruff slightly slower. Ideally there would still be a way for users to opt in to use the custom allocator, even when building from source. 
+
+The alternative is to improve the detection / warning messages emited by the jemalloc build. But I suspect that this to be non trivial because linux distributions love to use different names for different dependencies.
+
+
+
+
+---
+
+_Comment by @charliermarsh on 2023-12-12 21:41_
+
+I'm gonna close this for now. @MichaReiser, you're welcome to re-open if you choose to pick it back up.
+
+---
+
+_Closed by @charliermarsh on 2023-12-12 21:41_
+
+---
