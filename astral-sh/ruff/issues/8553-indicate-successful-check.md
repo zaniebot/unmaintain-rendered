@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-08T10:13:51Z
 updated_at: 2024-04-12T20:24:41Z
 url: https://github.com/astral-sh/ruff/issues/8553
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Indicate successful check
@@ -66,14 +66,6 @@ _Label `good first issue` added by @zanieb on 2023-11-09 14:57_
 
 ---
 
-_Referenced in [astral-sh/ruff#8631](../../astral-sh/ruff/pulls/8631.md) on 2023-11-12 18:00_
-
----
-
-_Referenced in [astral-sh/ruff#9503](../../astral-sh/ruff/pulls/9503.md) on 2024-01-13 07:14_
-
----
-
 _Comment by @vladNed on 2024-02-25 17:21_
 
 is this issue still available ? I would like to give it a go and implement a nice message output for successful checks. 
@@ -104,14 +96,6 @@ Will make a PR and maybe you guys take a look.
 _Comment by @konstin on 2024-02-26 09:27_
 
 @zanieb Could you review #8631? I can solve the merge conflicts and merge after.
-
----
-
-_Referenced in [astral-sh/ruff#10363](../../astral-sh/ruff/issues/10363.md) on 2024-03-12 16:57_
-
----
-
-_Referenced in [astral-sh/ruff#10424](../../astral-sh/ruff/issues/10424.md) on 2024-03-15 16:29_
 
 ---
 
@@ -168,9 +152,5 @@ Note we write this to stdout and not stderr (which is where we emit things like 
 ---
 
 _Closed by @zanieb on 2024-04-12 20:24_
-
----
-
-_Referenced in [aspect-build/rules_lint#228](../../aspect-build/rules_lint/issues/228.md) on 2024-05-09 07:42_
 
 ---

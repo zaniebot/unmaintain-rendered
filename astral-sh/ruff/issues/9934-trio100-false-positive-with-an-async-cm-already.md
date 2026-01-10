@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-11T19:37:13Z
 updated_at: 2024-02-12T00:36:02Z
 url: https://github.com/astral-sh/ruff/issues/9934
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # TRIO100 false positive with an async CM (already fixed in `flake8-trio` - ruff is out of date)
@@ -58,14 +58,6 @@ _Label `bug` added by @charliermarsh on 2024-02-11 19:39_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-11 19:39_
-
----
-
-_Referenced in [astral-sh/ruff#9935](../../astral-sh/ruff/issues/9935.md) on 2024-02-11 19:50_
-
----
-
-_Referenced in [python-trio/trio#2947](../../python-trio/trio/pulls/2947.md) on 2024-02-11 20:21_
 
 ---
 

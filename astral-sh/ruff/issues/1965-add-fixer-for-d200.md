@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-01-18T16:16:35Z
 updated_at: 2023-01-20T00:24:51Z
 url: https://github.com/astral-sh/ruff/issues/1965
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Add fixer for D200
@@ -44,10 +44,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-01-20 00:09_
 ---
 
 _Label `autofix` added by @charliermarsh on 2023-01-20 00:09_
-
----
-
-_Referenced in [astral-sh/ruff#2006](../../astral-sh/ruff/pulls/2006.md) on 2023-01-20 00:24_
 
 ---
 

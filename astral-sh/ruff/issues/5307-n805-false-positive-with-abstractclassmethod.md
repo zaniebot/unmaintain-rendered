@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-22T16:41:14Z
 updated_at: 2024-08-02T17:18:11Z
 url: https://github.com/astral-sh/ruff/issues/5307
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # N805: False positive with @abstractclassmethod
@@ -57,10 +57,6 @@ _Label `bug` added by @charliermarsh on 2023-06-22 19:16_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-06-22 19:16_
-
----
-
-_Referenced in [astral-sh/ruff#5315](../../astral-sh/ruff/pulls/5315.md) on 2023-06-22 19:42_
 
 ---
 

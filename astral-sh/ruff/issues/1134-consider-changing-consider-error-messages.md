@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-12-08T00:19:13Z
 updated_at: 2022-12-08T01:10:38Z
 url: https://github.com/astral-sh/ruff/issues/1134
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:17Z
 ```
 
 # Consider changing "consider" error messages
@@ -35,10 +35,6 @@ Why am I only supposed to "consider" fixing these but not all the other issues R
 _Comment by @charliermarsh on 2022-12-08 00:22_
 
 Hah, I think we took this from [Pylint](https://pylint.pycqa.org/en/latest/user_guide/messages/refactor/consider-using-sys-exit.html), but yeah, agree.
-
----
-
-_Referenced in [astral-sh/ruff#1135](../../astral-sh/ruff/pulls/1135.md) on 2022-12-08 01:10_
 
 ---
 

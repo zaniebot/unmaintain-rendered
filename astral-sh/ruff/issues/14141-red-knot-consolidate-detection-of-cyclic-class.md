@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-06T21:33:02Z
 updated_at: 2024-11-08T22:17:57Z
 url: https://github.com/astral-sh/ruff/issues/14141
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] consolidate detection of cyclic class definitions
@@ -28,10 +28,6 @@ One thing we may have to guard against here is if the MRO or metaclass is access
 ---
 
 _Label `red-knot` added by @carljm on 2024-11-06 21:33_
-
----
-
-_Referenced in [astral-sh/ruff#14120](../../astral-sh/ruff/pulls/14120.md) on 2024-11-06 21:33_
 
 ---
 
@@ -62,10 +58,6 @@ _Comment by @carljm on 2024-11-06 22:32_
 > Is that because `Unknown` silences all resulting false positives anyway?
 
 Exactly. It may mean a few more false negatives, but if you have a cyclic class definition it'd be perfectly reasonable to call the entire class `Unknown`; it's really not worth going out of our way for incrementally more precise types on a nonsense/impossible class definition.
-
----
-
-_Referenced in [astral-sh/ruff#14207](../../astral-sh/ruff/pulls/14207.md) on 2024-11-08 17:49_
 
 ---
 

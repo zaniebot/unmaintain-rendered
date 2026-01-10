@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-18T16:41:08Z
 updated_at: 2024-07-18T17:02:09Z
 url: https://github.com/astral-sh/uv/issues/5192
-synced_at: 2026-01-10T01:57:11Z
+synced_at: 2026-01-10T11:10:14Z
 ```
 
 # Bogus resolution when index is prefilled from lockfile
@@ -57,10 +57,6 @@ _Label `preview` added by @konstin on 2024-07-18 16:41_
 ---
 
 _Assigned to @ibraheemdev by @ibraheemdev on 2024-07-18 16:43_
-
----
-
-_Referenced in [astral-sh/uv#5193](../../astral-sh/uv/pulls/5193.md) on 2024-07-18 16:48_
 
 ---
 

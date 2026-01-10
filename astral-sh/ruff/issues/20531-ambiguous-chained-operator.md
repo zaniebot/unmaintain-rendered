@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-23T12:14:43Z
 updated_at: 2025-09-29T20:43:47Z
 url: https://github.com/astral-sh/ruff/issues/20531
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # ambiguous-chained-operator
@@ -88,10 +88,6 @@ Although [PLR1716](https://docs.astral.sh/ruff/rules/boolean-chained-comparison/
 
 From the tracker in https://github.com/astral-sh/ruff/issues/970, there is no Ruff equivalent.
 It would be great to see it implemented!
-
----
-
-_Referenced in [astral-sh/ruff#20597](../../astral-sh/ruff/pulls/20597.md) on 2025-09-26 21:25_
 
 ---
 

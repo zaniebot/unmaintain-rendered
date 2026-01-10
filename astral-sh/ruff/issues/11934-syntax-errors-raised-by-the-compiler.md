@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-19T03:26:50Z
 updated_at: 2025-04-23T19:46:06Z
 url: https://github.com/astral-sh/ruff/issues/11934
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # ☂️ Syntax errors raised by the compiler
@@ -61,59 +61,7 @@ _Label `tracking` added by @dhruvmanila on 2024-06-19 03:26_
 
 ---
 
-_Referenced in [astral-sh/ruff#11901](../../astral-sh/ruff/pulls/11901.md) on 2024-06-24 09:21_
-
----
-
-_Referenced in [astral-sh/ruff#13759](../../astral-sh/ruff/issues/13759.md) on 2024-10-15 10:44_
-
----
-
-_Referenced in [astral-sh/ruff#14168](../../astral-sh/ruff/issues/14168.md) on 2024-11-08 08:12_
-
----
-
-_Referenced in [astral-sh/ruff#14395](../../astral-sh/ruff/issues/14395.md) on 2024-11-17 02:42_
-
----
-
-_Referenced in [astral-sh/ruff#14950](../../astral-sh/ruff/pulls/14950.md) on 2024-12-13 12:56_
-
----
-
-_Referenced in [astral-sh/ruff#15783](../../astral-sh/ruff/issues/15783.md) on 2025-01-28 16:52_
-
----
-
-_Referenced in [astral-sh/ruff#16520](../../astral-sh/ruff/issues/16520.md) on 2025-03-05 19:22_
-
----
-
 _Assigned to @ntBre by @ntBre on 2025-03-05 21:26_
-
----
-
-_Referenced in [astral-sh/ruff#16106](../../astral-sh/ruff/pulls/16106.md) on 2025-03-19 17:57_
-
----
-
-_Referenced in [astral-sh/ruff#16858](../../astral-sh/ruff/pulls/16858.md) on 2025-03-21 14:53_
-
----
-
-_Referenced in [astral-sh/ruff#17206](../../astral-sh/ruff/pulls/17206.md) on 2025-04-04 15:38_
-
----
-
-_Referenced in [astral-sh/ruff#17285](../../astral-sh/ruff/pulls/17285.md) on 2025-04-08 22:11_
-
----
-
-_Referenced in [astral-sh/ruff#17412](../../astral-sh/ruff/issues/17412.md) on 2025-04-15 18:34_
-
----
-
-_Referenced in [astral-sh/ruff#17131](../../astral-sh/ruff/pulls/17131.md) on 2025-04-23 14:05_
 
 ---
 

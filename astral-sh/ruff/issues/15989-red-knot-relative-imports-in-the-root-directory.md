@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-06T08:50:17Z
 updated_at: 2025-02-06T14:08:22Z
 url: https://github.com/astral-sh/ruff/issues/15989
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [red-knot] Relative imports in the root directory
@@ -86,10 +86,6 @@ _Label `bug` added by @MichaReiser on 2025-02-06 08:50_
 ---
 
 _Label `red-knot` added by @MichaReiser on 2025-02-06 08:50_
-
----
-
-_Referenced in [astral-sh/ruff#15990](../../astral-sh/ruff/pulls/15990.md) on 2025-02-06 09:08_
 
 ---
 

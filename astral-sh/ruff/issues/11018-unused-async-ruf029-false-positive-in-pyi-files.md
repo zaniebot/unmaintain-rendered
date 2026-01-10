@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-19T00:18:56Z
 updated_at: 2024-04-19T04:03:53Z
 url: https://github.com/astral-sh/ruff/issues/11018
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # `unused-async` (`RUF029`) - false positive in `.pyi` files
@@ -38,10 +38,6 @@ I think we should omit stubs entirely.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-04-19 03:42_
-
----
-
-_Referenced in [astral-sh/ruff#11026](../../astral-sh/ruff/pulls/11026.md) on 2024-04-19 03:49_
 
 ---
 

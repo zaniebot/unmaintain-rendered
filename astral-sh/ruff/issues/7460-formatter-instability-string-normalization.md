@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-09-17T15:00:13Z
 updated_at: 2023-09-18T10:28:17Z
 url: https://github.com/astral-sh/ruff/issues/7460
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter instability: String normalization inserts whitespace
@@ -61,10 +61,6 @@ _Label `help wanted` added by @MichaReiser on 2023-09-17 15:00_
 ---
 
 _Added to milestone `Formatter: Beta` by @MichaReiser on 2023-09-17 15:00_
-
----
-
-_Referenced in [astral-sh/ruff#7485](../../astral-sh/ruff/pulls/7485.md) on 2023-09-18 09:14_
 
 ---
 

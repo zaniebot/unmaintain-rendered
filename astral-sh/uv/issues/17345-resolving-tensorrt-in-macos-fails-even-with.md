@@ -2,15 +2,15 @@
 number: 17345
 title: "Resolving `tensorrt` in macOS fails -- even with `dependency-metadata` declaration."
 type: issue
-state: open
+state: closed
 author: ggoggam
 labels:
   - question
 assignees: []
 created_at: 2026-01-07T14:06:25Z
-updated_at: 2026-01-09T18:59:58Z
+updated_at: 2026-01-10T07:45:08Z
 url: https://github.com/astral-sh/uv/issues/17345
-synced_at: 2026-01-10T03:11:36Z
+synced_at: 2026-01-10T11:43:31Z
 ```
 
 # Resolving `tensorrt` in macOS fails -- even with `dependency-metadata` declaration.
@@ -133,5 +133,19 @@ _Label `bug` removed by @charliermarsh on 2026-01-09 18:59_
 ---
 
 _Label `question` added by @charliermarsh on 2026-01-09 18:59_
+
+---
+
+_Comment by @ggoggam on 2026-01-10 07:37_
+
+> We only respect dependency metadata in the _workspace root_. Is this defined in some other workspace member?
+
+That was something that I wasn't aware of. It was defined in a workspace member, moving this to the workspace root resolved the problem. Thank you!
+
+On a side note, it would be helpful for users to let them know about this behavior.
+
+---
+
+_Closed by @ggoggam on 2026-01-10 07:37_
 
 ---

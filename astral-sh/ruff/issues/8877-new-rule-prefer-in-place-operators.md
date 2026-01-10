@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-28T19:29:48Z
 updated_at: 2024-04-12T03:08:51Z
 url: https://github.com/astral-sh/ruff/issues/8877
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # New rule: Prefer in-place operators
@@ -163,10 +163,6 @@ Different rule imo, and may require type information. But worth investigating. E
 
 ---
 
-_Referenced in [astral-sh/ruff#9932](../../astral-sh/ruff/pulls/9932.md) on 2024-02-11 16:27_
-
----
-
 _Comment by @lshi18 on 2024-02-11 19:34_
 
 Hi, I've made an attempt implementing this rule. Please help to have a review and let me know your thoughts. Thanks.
@@ -180,13 +176,5 @@ Closed by https://github.com/astral-sh/ruff/pull/9932.
 ---
 
 _Closed by @charliermarsh on 2024-04-12 03:08_
-
----
-
-_Referenced in [astral-sh/ruff#13533](../../astral-sh/ruff/issues/13533.md) on 2024-10-07 09:59_
-
----
-
-_Referenced in [astral-sh/ruff#14636](../../astral-sh/ruff/issues/14636.md) on 2024-11-27 16:01_
 
 ---

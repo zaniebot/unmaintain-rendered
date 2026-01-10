@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-14T18:13:35Z
 updated_at: 2023-12-15T01:03:11Z
 url: https://github.com/astral-sh/ruff/issues/9136
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Auto-quoting fails when type annotation spans multiple lines
@@ -59,19 +59,7 @@ _Label `bug` added by @charliermarsh on 2023-12-14 18:15_
 
 ---
 
-_Referenced in [astral-sh/ruff#9131](../../astral-sh/ruff/issues/9131.md) on 2023-12-14 18:15_
-
----
-
-_Referenced in [astral-sh/ruff#9139](../../astral-sh/ruff/issues/9139.md) on 2023-12-14 19:00_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-14 19:41_
-
----
-
-_Referenced in [astral-sh/ruff#9142](../../astral-sh/ruff/pulls/9142.md) on 2023-12-15 00:57_
 
 ---
 

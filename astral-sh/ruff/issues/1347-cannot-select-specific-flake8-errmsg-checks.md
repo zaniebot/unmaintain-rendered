@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-12-23T11:34:39Z
 updated_at: 2022-12-23T13:25:21Z
 url: https://github.com/astral-sh/ruff/issues/1347
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:26Z
 ```
 
 # Cannot select specific flake8-errmsg checks
@@ -44,10 +44,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-12-23 13:16_
 _Comment by @charliermarsh on 2022-12-23 13:17_
 
 Ah yeah that's a legitimate oversight. Will fix this today (but not right now, gotta run).
-
----
-
-_Referenced in [astral-sh/ruff#1349](../../astral-sh/ruff/pulls/1349.md) on 2022-12-23 13:24_
 
 ---
 

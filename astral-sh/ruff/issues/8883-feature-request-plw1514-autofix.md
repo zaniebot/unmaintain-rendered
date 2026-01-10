@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-28T21:37:12Z
 updated_at: 2023-12-01T19:48:56Z
 url: https://github.com/astral-sh/ruff/issues/8883
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Feature request: PLW1514 autofix
@@ -44,10 +44,6 @@ _Label `autofix` added by @charliermarsh on 2023-11-28 21:58_
 
 ---
 
-_Referenced in [astral-sh/ruff#8928](../../astral-sh/ruff/pulls/8928.md) on 2023-11-30 18:39_
-
----
-
 _Comment by @qdegraaf on 2023-11-30 20:06_
 
 While I'm working on the general utility mentioned in https://github.com/astral-sh/ruff/pull/8928#discussion_r1411171679, if anyone wants to do the autofix separately in the meantime, feel free to jump in. 
@@ -61,9 +57,5 @@ _Closed by @charliermarsh on 2023-12-01 18:23_
 _Comment by @Avasam on 2023-12-01 19:48_
 
 Thank you! Will give it a go next release.
-
----
-
-_Referenced in [astral-sh/ruff#12069](../../astral-sh/ruff/issues/12069.md) on 2024-06-27 12:11_
 
 ---

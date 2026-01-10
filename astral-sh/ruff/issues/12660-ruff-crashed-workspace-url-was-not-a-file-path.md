@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-04T09:54:46Z
 updated_at: 2024-08-07T09:39:40Z
 url: https://github.com/astral-sh/ruff/issues/12660
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Ruff crashed workspace URL was not a file path!
@@ -273,10 +273,6 @@ Yeah, I agree.
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2024-08-05 13:44_
-
----
-
-_Referenced in [astral-sh/ruff#12725](../../astral-sh/ruff/pulls/12725.md) on 2024-08-07 05:04_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-09-29T12:34:48Z
 updated_at: 2023-09-29T18:10:34Z
 url: https://github.com/astral-sh/ruff/issues/7711
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Rule ANN204 cause panic (looks like fstring regression)
@@ -186,10 +186,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-09-29 17:39_
 _Comment by @charliermarsh on 2023-09-29 17:40_
 
 Thank you!
-
----
-
-_Referenced in [astral-sh/ruff#7717](../../astral-sh/ruff/pulls/7717.md) on 2023-09-29 17:48_
 
 ---
 

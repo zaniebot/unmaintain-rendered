@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-17T07:59:56Z
 updated_at: 2023-10-17T14:59:17Z
 url: https://github.com/astral-sh/ruff/issues/8003
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # E265 Block comment should start with `# `
@@ -50,10 +50,6 @@ Makes sense. Pycodestyle flags this too, but we can avoid it.
 _Comment by @charliermarsh on 2023-10-17 13:44_
 
 Is this documented anywhere? I only see `#:` here: https://www.sphinx-doc.org/en/master/usage/extensions/autodoc.html#directive-autoproperty.
-
----
-
-_Referenced in [astral-sh/ruff#8012](../../astral-sh/ruff/pulls/8012.md) on 2023-10-17 13:49_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-31T23:21:27Z
 updated_at: 2023-02-01T00:03:47Z
 url: https://github.com/astral-sh/ruff/issues/2427
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # SIM autofix should check if bool is builtin
@@ -50,14 +50,6 @@ _Label `autofix` added by @charliermarsh on 2023-01-31 23:25_
 
 ---
 
-_Referenced in [astral-sh/ruff#2429](../../astral-sh/ruff/pulls/2429.md) on 2023-01-31 23:57_
-
----
-
 _Closed by @charliermarsh on 2023-02-01 00:03_
-
----
-
-_Referenced in [astral-sh/ruff#2430](../../astral-sh/ruff/pulls/2430.md) on 2023-02-01 00:27_
 
 ---

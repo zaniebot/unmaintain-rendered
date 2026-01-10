@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-02-17T16:29:08Z
 updated_at: 2023-02-17T18:05:50Z
 url: https://github.com/astral-sh/ruff/issues/2989
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # D403 not triggering when it should
@@ -109,10 +109,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-02-17 17:57_
 
 ---
 
-_Referenced in [astral-sh/ruff#2992](../../astral-sh/ruff/pulls/2992.md) on 2023-02-17 17:57_
-
----
-
 _Comment by @charliermarsh on 2023-02-17 17:57_
 
 Thanks, just an oversight!
@@ -120,9 +116,5 @@ Thanks, just an oversight!
 ---
 
 _Closed by @charliermarsh on 2023-02-17 18:05_
-
----
-
-_Referenced in [astral-sh/ruff#10775](../../astral-sh/ruff/issues/10775.md) on 2024-04-04 14:41_
 
 ---

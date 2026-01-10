@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-23T17:07:09Z
 updated_at: 2024-04-19T20:49:55Z
 url: https://github.com/astral-sh/uv/issues/1921
-synced_at: 2026-01-10T01:57:04Z
+synced_at: 2026-01-10T11:10:06Z
 ```
 
 # Increase or adjust scope of default HTTP timeout
@@ -39,17 +39,9 @@ _Label `needs-decision` added by @zanieb on 2024-02-23 17:07_
 
 ---
 
-_Referenced in [astral-sh/uv#1912](../../astral-sh/uv/issues/1912.md) on 2024-02-23 17:08_
-
----
-
 _Comment by @MichaReiser on 2024-02-23 17:09_
 
 I would expect that a server only sends an HTTP Timeout response if the connection is idle for too long, which makes me wonder if increasing the timeout solves the problem or only hides the root cause. 
-
----
-
-_Referenced in [astral-sh/uv#1922](../../astral-sh/uv/issues/1922.md) on 2024-02-23 17:09_
 
 ---
 
@@ -64,10 +56,6 @@ _Label `enhancement` removed by @zanieb on 2024-02-23 17:10_
 ---
 
 _Renamed from "Increase default HTTP timeout" to "Increase or adjust scope of default HTTP timeout" by @zanieb on 2024-02-23 17:15_
-
----
-
-_Referenced in [astral-sh/uv#1920](../../astral-sh/uv/issues/1920.md) on 2024-02-23 17:29_
 
 ---
 
@@ -90,18 +78,6 @@ It seems like the next steps are to:
 1. Determine what exactly the timeout we are configuring applies to
 2. Create a simple MRE
 3. Determine what is happening with the request when the error is raised
-
----
-
-_Referenced in [materialsproject/pymatgen#3688](../../materialsproject/pymatgen/pulls/3688.md) on 2024-03-14 06:57_
-
----
-
-_Referenced in [emdgroup/baybe#182](../../emdgroup/baybe/pulls/182.md) on 2024-03-26 12:44_
-
----
-
-_Referenced in [astral-sh/uv#2514](../../astral-sh/uv/issues/2514.md) on 2024-03-28 02:50_
 
 ---
 
@@ -154,10 +130,6 @@ PS: Not sure if this info is valuable, but both Windows and Ubuntu GH runners ar
 
 ---
 
-_Referenced in [huggingface/datasets#6812](../../huggingface/datasets/pulls/6812.md) on 2024-04-16 01:13_
-
----
-
 _Comment by @charliermarsh on 2024-04-16 01:16_
 
 OK thanks. I'm gonna do some testing using that CI workflow.
@@ -185,14 +157,6 @@ We can make that _not_ silent by changing the shell configuration (so that it ex
 
 ---
 
-_Referenced in [astral-sh/uv#3144](../../astral-sh/uv/pulls/3144.md) on 2024-04-19 20:06_
-
----
-
 _Closed by @charliermarsh on 2024-04-19 20:49_
-
----
-
-_Referenced in [materialsproject/pymatgen#3826](../../materialsproject/pymatgen/pulls/3826.md) on 2024-05-13 08:17_
 
 ---

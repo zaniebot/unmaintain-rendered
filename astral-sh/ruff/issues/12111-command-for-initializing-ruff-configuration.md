@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-30T13:14:50Z
 updated_at: 2024-07-01T09:01:55Z
 url: https://github.com/astral-sh/ruff/issues/12111
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Command for Initializing Ruff Configuration
@@ -92,13 +92,5 @@ _Label `needs-decision` added by @dhruvmanila on 2024-07-01 04:24_
 _Comment by @MichaReiser on 2024-07-01 09:01_
 
 I can see how this would be very useful to set up a new project. 
-
----
-
-_Referenced in [astral-sh/ruff#14676](../../astral-sh/ruff/issues/14676.md) on 2024-12-02 15:21_
-
----
-
-_Referenced in [astral-sh/ruff#21137](../../astral-sh/ruff/issues/21137.md) on 2025-10-30 12:50_
 
 ---

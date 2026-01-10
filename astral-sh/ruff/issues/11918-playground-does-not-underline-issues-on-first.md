@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-18T06:05:36Z
 updated_at: 2024-09-09T10:47:40Z
 url: https://github.com/astral-sh/ruff/issues/11918
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Playground does not underline issues on first open until first code change
@@ -37,10 +37,6 @@ Oh, interesting! Thanks for opening this issue.
 ---
 
 _Label `playground` added by @dhruvmanila on 2024-06-18 06:07_
-
----
-
-_Referenced in [astral-sh/ruff#13262](../../astral-sh/ruff/pulls/13262.md) on 2024-09-06 08:05_
 
 ---
 

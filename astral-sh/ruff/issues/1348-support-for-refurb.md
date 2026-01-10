@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-23T12:19:46Z
 updated_at: 2025-12-31T23:15:33Z
 url: https://github.com/astral-sh/ruff/issues/1348
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Support for refurb
@@ -32,10 +32,6 @@ _Label `rule` removed by @charliermarsh on 2022-12-31 18:13_
 ---
 
 _Label `plugin` added by @charliermarsh on 2022-12-31 18:13_
-
----
-
-_Referenced in [astral-sh/ruff#1774](../../astral-sh/ruff/issues/1774.md) on 2023-01-23 21:58_
 
 ---
 
@@ -167,27 +163,7 @@ Are there any examples of rules where `ruff` keeps track of the type of a variab
 
 ---
 
-_Referenced in [astral-sh/ruff#2348](../../astral-sh/ruff/pulls/2348.md) on 2023-01-30 11:51_
-
----
-
-_Referenced in [astral-sh/ruff#2608](../../astral-sh/ruff/issues/2608.md) on 2023-02-06 20:11_
-
----
-
 _Label `needs-decision` added by @charliermarsh on 2023-07-10 02:53_
-
----
-
-_Referenced in [astral-sh/ruff#5833](../../astral-sh/ruff/pulls/5833.md) on 2023-07-17 14:12_
-
----
-
-_Referenced in [astral-sh/ruff#5905](../../astral-sh/ruff/issues/5905.md) on 2023-07-20 18:10_
-
----
-
-_Referenced in [dosisod/refurb#190](../../dosisod/refurb/issues/190.md) on 2023-07-22 05:32_
 
 ---
 
@@ -290,45 +266,9 @@ Currently working on `FURB101` and `FURB103`
 
 ---
 
-_Referenced in [astral-sh/ruff#5977](../../astral-sh/ruff/issues/5977.md) on 2023-07-22 13:24_
-
----
-
-_Referenced in [astral-sh/ruff#5987](../../astral-sh/ruff/issues/5987.md) on 2023-07-22 20:48_
-
----
-
-_Referenced in [astral-sh/ruff#5988](../../astral-sh/ruff/issues/5988.md) on 2023-07-22 21:08_
-
----
-
-_Referenced in [astral-sh/ruff#5995](../../astral-sh/ruff/pulls/5995.md) on 2023-07-23 01:04_
-
----
-
 _Comment by @SavchenkoValeriy on 2023-08-13 08:49_
 
 Hey there folks, I'm working on [FURB113](https://github.com/dosisod/refurb/blob/master/refurb/checks/builtin/list_extend.py).
-
----
-
-_Referenced in [astral-sh/ruff#5377](../../astral-sh/ruff/issues/5377.md) on 2023-08-17 02:54_
-
----
-
-_Referenced in [astral-sh/ruff#6587](../../astral-sh/ruff/issues/6587.md) on 2023-08-17 03:13_
-
----
-
-_Referenced in [astral-sh/ruff#6702](../../astral-sh/ruff/pulls/6702.md) on 2023-08-20 12:35_
-
----
-
-_Referenced in [astral-sh/ruff#6897](../../astral-sh/ruff/pulls/6897.md) on 2023-08-26 13:42_
-
----
-
-_Referenced in [astral-sh/ruff#6904](../../astral-sh/ruff/pulls/6904.md) on 2023-08-26 20:32_
 
 ---
 
@@ -346,17 +286,9 @@ Working on [FURB140](https://github.com/dosisod/refurb/blob/master/refurb/checks
 
 ---
 
-_Referenced in [astral-sh/ruff#6995](../../astral-sh/ruff/issues/6995.md) on 2023-08-29 20:05_
-
----
-
 _Comment by @tjkuson on 2023-08-30 11:38_
 
 Working on [FURB145](https://github.com/dosisod/refurb/blob/master/refurb/checks/builtin/no_slice_copy.py).
-
----
-
-_Referenced in [astral-sh/ruff#7007](../../astral-sh/ruff/pulls/7007.md) on 2023-08-30 11:57_
 
 ---
 
@@ -376,10 +308,6 @@ Good call, thanks.
 
 ---
 
-_Referenced in [astral-sh/ruff#7253](../../astral-sh/ruff/pulls/7253.md) on 2023-09-09 14:45_
-
----
-
 _Comment by @SavchenkoValeriy on 2023-09-09 15:23_
 
 Working on [FURB101](https://github.com/dosisod/refurb/blob/master/refurb/checks/pathlib/read_text.py)
@@ -392,37 +320,9 @@ Working on [FURB148](https://github.com/dosisod/refurb/blob/master/refurb/checks
 
 ---
 
-_Referenced in [astral-sh/ruff#7454](../../astral-sh/ruff/pulls/7454.md) on 2023-09-17 11:24_
-
----
-
-_Referenced in [astral-sh/ruff#7617](../../astral-sh/ruff/pulls/7617.md) on 2023-09-23 13:27_
-
----
-
-_Referenced in [astral-sh/ruff#6258](../../astral-sh/ruff/issues/6258.md) on 2023-09-26 02:02_
-
----
-
-_Referenced in [astral-sh/ruff#7682](../../astral-sh/ruff/pulls/7682.md) on 2023-09-27 21:43_
-
----
-
-_Referenced in [astral-sh/ruff#7704](../../astral-sh/ruff/pulls/7704.md) on 2023-09-28 21:16_
-
----
-
-_Referenced in [astral-sh/ruff#7727](../../astral-sh/ruff/pulls/7727.md) on 2023-09-30 23:16_
-
----
-
 _Comment by @tjkuson on 2023-10-04 14:28_
 
 Working on `FURB171`.
-
----
-
-_Referenced in [astral-sh/ruff#7815](../../astral-sh/ruff/pulls/7815.md) on 2023-10-04 15:52_
 
 ---
 
@@ -432,17 +332,9 @@ Working on `FURB168`.
 
 ---
 
-_Referenced in [astral-sh/ruff#8308](../../astral-sh/ruff/pulls/8308.md) on 2023-10-28 16:03_
-
----
-
 _Comment by @tjkuson on 2023-11-04 12:28_
 
 Working on `FURB169`.
-
----
-
-_Referenced in [astral-sh/ruff#8487](../../astral-sh/ruff/pulls/8487.md) on 2023-11-04 14:50_
 
 ---
 
@@ -452,33 +344,9 @@ _Comment by @diceroll123 on 2023-11-04 20:45_
 
 ---
 
-_Referenced in [astral-sh/ruff#8664](../../astral-sh/ruff/pulls/8664.md) on 2023-11-13 20:48_
-
----
-
-_Referenced in [astral-sh/ruff#8727](../../astral-sh/ruff/pulls/8727.md) on 2023-11-16 21:33_
-
----
-
-_Referenced in [scikit-learn/scikit-learn#27825](../../scikit-learn/scikit-learn/pulls/27825.md) on 2023-11-23 17:54_
-
----
-
 _Comment by @tjkuson on 2023-11-26 17:44_
 
 Working on `FURB163`!
-
----
-
-_Referenced in [astral-sh/ruff#8842](../../astral-sh/ruff/pulls/8842.md) on 2023-11-26 19:19_
-
----
-
-_Referenced in [pyca/cryptography#9944](../../pyca/cryptography/pulls/9944.md) on 2023-11-30 15:08_
-
----
-
-_Referenced in [astral-sh/ruff#9077](../../astral-sh/ruff/pulls/9077.md) on 2023-12-09 20:59_
 
 ---
 
@@ -497,10 +365,6 @@ While [FURB179](https://github.com/dosisod/refurb/blob/master/refurb/checks/iter
 _Comment by @Skylion007 on 2023-12-11 16:09_
 
 [FURB119](https://github.com/dosisod/refurb/blob/master/refurb/checks/string/use_fstring_fmt.py) is implemented by RUF010 so that can probably checked off too.
-
----
-
-_Referenced in [astral-sh/ruff#9171](../../astral-sh/ruff/pulls/9171.md) on 2023-12-17 20:25_
 
 ---
 
@@ -547,14 +411,6 @@ _Comment by @charliermarsh on 2023-12-22 15:20_
 
 ---
 
-_Referenced in [astral-sh/ruff#9045](../../astral-sh/ruff/issues/9045.md) on 2023-12-22 15:34_
-
----
-
-_Referenced in [astral-sh/ruff#9265](../../astral-sh/ruff/pulls/9265.md) on 2023-12-23 21:52_
-
----
-
 _Comment by @dosisod on 2024-01-08 22:44_
 
 Hi all! Here's an updated list of some of the new and/or improved checks added to Refurb recently:
@@ -580,14 +436,6 @@ Even though FURB173 isn't implemented yet, this improved detection might be wort
 
 ---
 
-_Referenced in [astral-sh/ruff#9516](../../astral-sh/ruff/pulls/9516.md) on 2024-01-14 20:52_
-
----
-
-_Referenced in [astral-sh/ruff#9539](../../astral-sh/ruff/pulls/9539.md) on 2024-01-15 23:06_
-
----
-
 _Comment by @dosisod on 2024-01-25 06:14_
 
 Released a (small) update with a few notable changes:
@@ -608,71 +456,15 @@ Also, there are a lot of scattered check-lists throughout this issue, perhaps we
 
 ---
 
-_Referenced in [astral-sh/ruff#10002](../../astral-sh/ruff/pulls/10002.md) on 2024-02-16 12:14_
-
----
-
 _Comment by @Skylion007 on 2024-02-27 23:55_
 
 Isn't FURB142 already implemented as PLC0208?
 
 ---
 
-_Referenced in [astral-sh/ruff#10526](../../astral-sh/ruff/pulls/10526.md) on 2024-03-22 16:12_
-
----
-
-_Referenced in [astral-sh/ruff#10533](../../astral-sh/ruff/pulls/10533.md) on 2024-03-23 06:30_
-
----
-
-_Referenced in [astral-sh/ruff#10583](../../astral-sh/ruff/pulls/10583.md) on 2024-03-25 18:17_
-
----
-
 _Comment by @hikaru-kajita on 2024-03-27 06:59_
 
 Working on `FURB164`.
-
----
-
-_Referenced in [astral-sh/ruff#10630](../../astral-sh/ruff/pulls/10630.md) on 2024-03-27 17:02_
-
----
-
-_Referenced in [astral-sh/ruff#10647](../../astral-sh/ruff/pulls/10647.md) on 2024-03-28 14:07_
-
----
-
-_Referenced in [astral-sh/ruff#10650](../../astral-sh/ruff/pulls/10650.md) on 2024-03-28 20:58_
-
----
-
-_Referenced in [astral-sh/ruff#10687](../../astral-sh/ruff/pulls/10687.md) on 2024-04-01 03:02_
-
----
-
-_Referenced in [astral-sh/ruff#10802](../../astral-sh/ruff/pulls/10802.md) on 2024-04-06 16:10_
-
----
-
-_Referenced in [astral-sh/ruff#10921](../../astral-sh/ruff/pulls/10921.md) on 2024-04-14 01:58_
-
----
-
-_Referenced in [astral-sh/ruff#11187](../../astral-sh/ruff/pulls/11187.md) on 2024-04-28 22:24_
-
----
-
-_Referenced in [astral-sh/ruff#13256](../../astral-sh/ruff/pulls/13256.md) on 2024-09-05 17:51_
-
----
-
-_Referenced in [astral-sh/ruff#13530](../../astral-sh/ruff/pulls/13530.md) on 2024-09-26 18:14_
-
----
-
-_Referenced in [astral-sh/ruff#14105](../../astral-sh/ruff/pulls/14105.md) on 2024-11-05 12:21_
 
 ---
 
@@ -687,20 +479,8 @@ Thanks in advance
 
 ---
 
-_Referenced in [astral-sh/ruff#16113](../../astral-sh/ruff/pulls/16113.md) on 2025-02-12 05:36_
-
----
-
-_Referenced in [astral-sh/ruff#16131](../../astral-sh/ruff/pulls/16131.md) on 2025-02-13 06:44_
-
----
-
 _Comment by @jamesbraza on 2025-03-11 01:28_
 
 Let's add [`FURB184`](https://github.com/dosisod/refurb/blob/master/docs/checks.md#furb184-use-fluid-interface) to the OP, as I like that rule :D
-
----
-
-_Referenced in [astral-sh/ruff#21855](../../astral-sh/ruff/issues/21855.md) on 2025-12-09 00:35_
 
 ---

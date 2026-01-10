@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-02-18T05:32:04Z
 updated_at: 2023-02-19T12:20:46Z
 url: https://github.com/astral-sh/ruff/issues/3003
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Running scripts/generate_mkdocs.py fails on main branch.
@@ -31,10 +31,6 @@ Traceback (most recent call last):
     raise ValueError(msg)
 ValueError: README.md is not in the expected format.
 ```
-
----
-
-_Referenced in [astral-sh/ruff#3030](../../astral-sh/ruff/pulls/3030.md) on 2023-02-19 12:18_
 
 ---
 

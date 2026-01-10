@@ -1,0 +1,55 @@
+```yaml
+number: 14315
+title: "Parser drops second `**kwargs`"
+type: issue
+state: open
+author: MichaReiser
+labels:
+  - bug
+  - parser
+assignees: []
+created_at: 2024-11-13T12:21:18Z
+updated_at: 2025-10-21T06:59:55Z
+url: https://github.com/astral-sh/ruff/issues/14315
+synced_at: 2026-01-10T11:09:56Z
+```
+
+# Parser drops second `**kwargs`
+
+---
+
+_Issue opened by @MichaReiser on 2024-11-13 12:21_
+
+https://play.ruff.rs/8503f0e1-7965-4515-8043-b711159a466b
+
+The second `kwargs` must be preserved in the AST
+
+
+---
+
+_Label `bug` added by @MichaReiser on 2024-11-13 12:21_
+
+---
+
+_Label `parser` added by @MichaReiser on 2024-11-13 12:21_
+
+---
+
+_Comment by @dhruvmanila on 2024-11-14 04:44_
+
+Related: https://github.com/astral-sh/ruff/issues/10653
+
+---
+
+_Comment by @MichaReiser on 2025-10-21 06:59_
+
+Another argument for potentially changing our parameters to be a single `Vec` is that it's rather involved to reconstruct the source order traversing order, especially if invalid syntax is involved. 
+
+```py
+def foo(self, **key, value):
+    return
+```
+
+
+
+---

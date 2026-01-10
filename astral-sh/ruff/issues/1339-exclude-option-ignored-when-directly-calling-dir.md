@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-22T16:55:33Z
 updated_at: 2022-12-22T21:40:16Z
 url: https://github.com/astral-sh/ruff/issues/1339
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:26Z
 ```
 
 # Exclude option ignored when directly calling dir/file
@@ -168,10 +168,6 @@ I accidentally pushed it directly but the fix is (hopefully) in https://github.c
 _Comment by @jhossbach on 2022-12-22 21:32_
 
 Seems to work :+1: I'll open up a new issue for the extension to when passing the file through stdin.
-
----
-
-_Referenced in [astral-sh/ruff#1342](../../astral-sh/ruff/pulls/1342.md) on 2022-12-22 21:34_
 
 ---
 

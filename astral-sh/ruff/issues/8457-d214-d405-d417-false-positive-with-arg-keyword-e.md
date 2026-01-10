@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-03T02:57:54Z
 updated_at: 2024-01-08T14:59:29Z
 url: https://github.com/astral-sh/ruff/issues/8457
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # [D214, D405, D417] False positive with arg keyword (e.g., `raises`)
@@ -135,10 +135,6 @@ Thanks for the clear issue. Probably hard to get right... though I agree it's a 
 
 ---
 
-_Referenced in [astral-sh/ruff#9426](../../astral-sh/ruff/issues/9426.md) on 2024-01-08 01:07_
-
----
-
 _Comment by @charliermarsh on 2024-01-08 14:59_
 
 Fixed in https://github.com/astral-sh/ruff/pull/9427!
@@ -150,9 +146,5 @@ _Closed by @charliermarsh on 2024-01-08 14:59_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-08 14:59_
-
----
-
-_Referenced in [astral-sh/ruff#16007](../../astral-sh/ruff/issues/16007.md) on 2025-02-07 00:16_
 
 ---

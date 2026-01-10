@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-07T13:40:48Z
 updated_at: 2025-01-07T17:11:06Z
 url: https://github.com/astral-sh/ruff/issues/15316
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # RUF055 should categorize `)` as a regex metacharacter
@@ -45,10 +45,6 @@ The current behavior was inspired by [this review comment](https://github.com/as
 ---
 
 _Label `bug` added by @MichaReiser on 2025-01-07 13:54_
-
----
-
-_Referenced in [astral-sh/ruff#15318](../../astral-sh/ruff/pulls/15318.md) on 2025-01-07 15:06_
 
 ---
 

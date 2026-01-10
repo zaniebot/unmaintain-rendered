@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-04-05T22:40:34Z
 updated_at: 2024-04-06T14:51:19Z
 url: https://github.com/astral-sh/ruff/issues/10795
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Ruff 0.3.5 not respecting directive for all lines of a multiline expression
@@ -121,10 +121,6 @@ It wasn't the intention, but we can support it I think.
 
 ---
 
-_Referenced in [astral-sh/ruff#10798](../../astral-sh/ruff/pulls/10798.md) on 2024-04-05 23:41_
-
----
-
 _Comment by @charliermarsh on 2024-04-05 23:41_
 
 Will be fixed in the next release: https://github.com/astral-sh/ruff/pull/10798. Thanks, and sorry for the disruption.
@@ -132,9 +128,5 @@ Will be fixed in the next release: https://github.com/astral-sh/ruff/pull/10798.
 ---
 
 _Closed by @charliermarsh on 2024-04-06 14:51_
-
----
-
-_Referenced in [pyro-ppl/pyro#3357](../../pyro-ppl/pyro/pulls/3357.md) on 2024-04-12 13:28_
 
 ---

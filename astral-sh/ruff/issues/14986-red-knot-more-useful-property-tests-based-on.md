@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-15T16:11:50Z
 updated_at: 2025-01-12T13:21:31Z
 url: https://github.com/astral-sh/ruff/issues/14986
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] More useful property-tests based on trivia of set theory
@@ -71,10 +71,6 @@ _Label `red-knot` added by @MichaReiser on 2024-12-15 16:18_
 ---
 
 _Label `testing` added by @AlexWaygood on 2024-12-15 16:49_
-
----
-
-_Referenced in [astral-sh/ruff#15415](../../astral-sh/ruff/pulls/15415.md) on 2025-01-11 07:48_
 
 ---
 

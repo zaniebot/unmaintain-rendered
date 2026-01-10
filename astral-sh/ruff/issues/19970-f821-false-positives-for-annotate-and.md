@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-18T14:50:36Z
 updated_at: 2025-09-23T12:16:02Z
 url: https://github.com/astral-sh/ruff/issues/19970
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # F821 false positives for `__annotate__` and `__warningregistry__`
@@ -50,10 +50,6 @@ _Label `rule` added by @ntBre on 2025-08-18 17:59_
 ---
 
 _Label `bug` added by @ntBre on 2025-08-18 17:59_
-
----
-
-_Referenced in [astral-sh/ruff#20154](../../astral-sh/ruff/pulls/20154.md) on 2025-08-29 16:40_
 
 ---
 

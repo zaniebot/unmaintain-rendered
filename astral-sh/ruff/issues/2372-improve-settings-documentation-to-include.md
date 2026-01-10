@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-31T01:55:57Z
 updated_at: 2023-01-31T04:05:30Z
 url: https://github.com/astral-sh/ruff/issues/2372
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Improve settings documentation to include possible values for enum types
@@ -57,10 +57,6 @@ I can do it, don't mind.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-01-31 03:02_
-
----
-
-_Referenced in [astral-sh/ruff#2375](../../astral-sh/ruff/pulls/2375.md) on 2023-01-31 03:53_
 
 ---
 

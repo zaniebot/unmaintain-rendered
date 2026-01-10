@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-25T22:44:45Z
 updated_at: 2025-08-24T01:35:36Z
 url: https://github.com/astral-sh/ruff/issues/2179
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Keeping up with new rules
@@ -181,10 +181,6 @@ _Comment by @charliermarsh on 2023-05-10 21:06_
 ---
 
 _Closed by @charliermarsh on 2023-05-10 21:06_
-
----
-
-_Referenced in [Qiskit/qiskit#10116](../../Qiskit/qiskit/pulls/10116.md) on 2023-05-30 16:28_
 
 ---
 

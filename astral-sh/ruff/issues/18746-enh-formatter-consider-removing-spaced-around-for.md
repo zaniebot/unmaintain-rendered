@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-18T10:29:53Z
 updated_at: 2025-06-19T20:28:29Z
 url: https://github.com/astral-sh/ruff/issues/18746
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [ENH] Formatter: consider removing spaced around `=` for `TypeVar` defaults (PEP 696)
@@ -85,13 +85,5 @@ _Label `style` added by @MichaReiser on 2025-06-18 11:47_
 ---
 
 _Renamed from "[format] consider removing spaced around `=` for `TypeVar` defaults (PEP 696)" to "[ENH] Formatter: consider removing spaced around `=` for `TypeVar` defaults (PEP 696)" by @randolf-scholz on 2025-06-19 20:28_
-
----
-
-_Referenced in [astral-sh/ruff#20471](../../astral-sh/ruff/issues/20471.md) on 2025-09-18 17:03_
-
----
-
-_Referenced in [astral-sh/ruff#21066](../../astral-sh/ruff/issues/21066.md) on 2025-10-24 19:19_
 
 ---

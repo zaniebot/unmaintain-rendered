@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-05-26T09:20:14Z
 updated_at: 2023-05-26T10:09:34Z
 url: https://github.com/astral-sh/ruff/issues/4666
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # E124 / E125 / E128 / E129 / E303: Mentioned by pycodestyle but not ruff
@@ -79,9 +79,5 @@ _Comment by @tjkuson on 2023-05-26 10:09_
 No worries! Happy to help.
 
 Also, I am only a minor contributor. I would hate to steal valour from those who do most of the work on this tool!
-
----
-
-_Referenced in [sphinx-doc/sphinx#11902](../../sphinx-doc/sphinx/pulls/11902.md) on 2024-01-21 20:28_
 
 ---

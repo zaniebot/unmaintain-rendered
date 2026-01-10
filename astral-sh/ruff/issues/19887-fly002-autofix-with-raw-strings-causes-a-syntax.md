@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-13T00:55:56Z
 updated_at: 2025-09-18T17:18:30Z
 url: https://github.com/astral-sh/ruff/issues/19887
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # FLY002 autofix with raw strings causes a syntax error
@@ -86,14 +86,6 @@ _Label `bug` added by @ntBre on 2025-08-13 13:14_
 ---
 
 _Label `fixes` added by @ntBre on 2025-08-13 13:14_
-
----
-
-_Referenced in [astral-sh/ruff#19883](../../astral-sh/ruff/pulls/19883.md) on 2025-08-20 12:56_
-
----
-
-_Referenced in [astral-sh/ruff#20197](../../astral-sh/ruff/pulls/20197.md) on 2025-09-01 18:47_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-10T17:26:33Z
 updated_at: 2024-09-10T17:47:13Z
 url: https://github.com/astral-sh/ruff/issues/13312
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Syntax error in formatter known deviation docs
@@ -24,10 +24,6 @@ https://github.com/astral-sh/ruff/blob/210a9e606807c56e0c38b14e21cf500432e79709/
 
 `for a, f(b,) in c:` is invalid syntax (`SyntaxError: cannot assign to function call`).
 
-
----
-
-_Referenced in [astral-sh/ruff#13313](../../astral-sh/ruff/pulls/13313.md) on 2024-09-10 17:44_
 
 ---
 

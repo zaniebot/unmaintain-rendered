@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-13T08:56:59Z
 updated_at: 2025-10-14T06:33:19Z
 url: https://github.com/astral-sh/ruff/issues/20838
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Missing "What it does" details on D300
@@ -28,10 +28,6 @@ https://docs.astral.sh/ruff/rules/triple-single-quotes/ says
 and shares an example for the described case. The explanation and the example is correct for the given case, but it's not the only case D300 handles. It also converts `'''docstring'''` to `"""docstring"""` and `'docstring'` to `"""docstring"""`.
 
 To sum up, D300 doesn't convert a specific case to triple double quotes but it guarantees that the docstrings are wrapped by triple double quotes. I think the page should be updated to reflect that.
-
----
-
-_Referenced in [django/djangoproject.com#2254](../../django/djangoproject.com/pulls/2254.md) on 2025-10-13 08:57_
 
 ---
 

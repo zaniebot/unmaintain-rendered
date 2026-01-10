@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-10T06:12:11Z
 updated_at: 2025-07-10T06:12:11Z
 url: https://github.com/astral-sh/ruff/issues/19250
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Implement a robust docstring parser
@@ -37,13 +37,5 @@ _Label `docstring` added by @dhruvmanila on 2025-07-10 06:12_
 ---
 
 _Label `needs-design` added by @dhruvmanila on 2025-07-10 06:12_
-
----
-
-_Referenced in [astral-sh/ruff#19194](../../astral-sh/ruff/pulls/19194.md) on 2025-07-10 06:12_
-
----
-
-_Referenced in [astral-sh/ty#1608](../../astral-sh/ty/issues/1608.md) on 2025-11-21 16:36_
 
 ---

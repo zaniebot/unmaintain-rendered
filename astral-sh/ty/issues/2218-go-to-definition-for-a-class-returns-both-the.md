@@ -5,13 +5,12 @@ type: issue
 state: open
 author: lkhphuc
 labels:
-  - needs-decision
   - server
 assignees: []
 created_at: 2025-12-25T06:59:57Z
-updated_at: 2025-12-31T15:45:21Z
+updated_at: 2026-01-10T08:51:56Z
 url: https://github.com/astral-sh/ty/issues/2218
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-10T11:36:39Z
 ```
 
 # Go-to-definition for a class returns both the `__init__` definition and the class itself
@@ -120,5 +119,23 @@ I can reproduce this on VSC and in the playground using @MichaReiser's example b
 ---
 
 _Added to milestone `Stable` by @MichaReiser on 2025-12-31 15:45_
+
+---
+
+_Label `needs-decision` removed by @MichaReiser on 2026-01-10 08:51_
+
+---
+
+_Comment by @MichaReiser on 2026-01-10 08:51_
+
+We're receiving more feedback that the current behavior is unintuitive. We should change the behavior so that clicking on `(` returns the constructor and clicking on `Test` returns the class
+
+---
+
+_Removed from milestone `Stable` by @MichaReiser on 2026-01-10 08:51_
+
+---
+
+_Added to milestone `Pre-stable 1` by @MichaReiser on 2026-01-10 08:51_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-23T08:44:51Z
 updated_at: 2024-09-13T12:39:00Z
 url: https://github.com/astral-sh/ruff/issues/890
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # F841 is triggered by unused variables in tuple unpacking from with statements
@@ -99,10 +99,6 @@ _Comment by @charliermarsh on 2022-11-23 16:40_
 
 ---
 
-_Referenced in [astral-sh/ruff#897](../../astral-sh/ruff/pulls/897.md) on 2022-11-24 01:14_
-
----
-
 _Closed by @charliermarsh on 2022-11-24 01:28_
 
 ---
@@ -116,10 +112,6 @@ Works perfect in ruff==0.0.137, thank you :)
 _Comment by @charliermarsh on 2022-11-25 14:49_
 
 Awesome :)
-
----
-
-_Referenced in [astral-sh/ruff#11797](../../astral-sh/ruff/issues/11797.md) on 2024-06-07 15:30_
 
 ---
 

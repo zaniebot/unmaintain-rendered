@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-12T00:55:25Z
 updated_at: 2023-06-13T15:37:15Z
 url: https://github.com/astral-sh/ruff/issues/2787
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Support glob patterns in `pep8-naming`’s `ignore-names` option.
@@ -35,22 +35,10 @@ Without this feature, the only alternatives are either disabling N802 entirely o
 
 ---
 
-_Referenced in [astral-sh/ruff#4708](../../astral-sh/ruff/issues/4708.md) on 2023-05-29 22:52_
-
----
-
 _Assigned to @Thomasdezeeuw by @Thomasdezeeuw on 2023-06-12 11:56_
 
 ---
 
-_Referenced in [astral-sh/ruff#5024](../../astral-sh/ruff/pulls/5024.md) on 2023-06-12 14:32_
-
----
-
 _Closed by @Thomasdezeeuw on 2023-06-13 15:37_
-
----
-
-_Referenced in [astral-sh/ruff#7660](../../astral-sh/ruff/issues/7660.md) on 2023-10-02 20:43_
 
 ---

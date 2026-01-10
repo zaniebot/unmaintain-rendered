@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-30T08:48:23Z
 updated_at: 2023-09-12T06:39:58Z
 url: https://github.com/astral-sh/ruff/issues/7004
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter: Trailing end of line comments in binary like expressions
@@ -134,14 +134,6 @@ Gets formatted as
 )
 ```
 
-
----
-
-_Referenced in [astral-sh/ruff#6062](../../astral-sh/ruff/issues/6062.md) on 2023-09-08 17:30_
-
----
-
-_Referenced in [astral-sh/ruff#7269](../../astral-sh/ruff/pulls/7269.md) on 2023-09-11 13:33_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-20T16:02:47Z
 updated_at: 2024-11-07T14:23:55Z
 url: https://github.com/astral-sh/ruff/issues/8789
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # S105: Exclude variable names containing `token` but also `suffix` or `prefix`
@@ -58,10 +58,6 @@ _Comment by @ashrub-holvi on 2023-11-23 13:31_
 
 Perhaps it's possible to make it more configurable, for example, we would be adding variable names like `public_token`, `token_service_path` to the list of non-secret variables in config file if such would be exists.
 That much easier and clear than tons of noqa.
-
----
-
-_Referenced in [astral-sh/ruff#7816](../../astral-sh/ruff/issues/7816.md) on 2023-11-23 13:32_
 
 ---
 
@@ -131,9 +127,5 @@ _Comment by @MichaReiser on 2024-11-07 10:19_
 _Comment by @IdoPort on 2024-11-07 14:23_
 
 @MichaReiser I didn't know I can disable lints per file, that awesome! Thank!
-
----
-
-_Referenced in [astral-sh/ruff#14365](../../astral-sh/ruff/issues/14365.md) on 2024-11-15 17:36_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-06T20:32:04Z
 updated_at: 2024-06-06T22:13:42Z
 url: https://github.com/astral-sh/ruff/issues/11781
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # [red-knot] flatten union types
@@ -36,10 +36,6 @@ we should display the type as `(Literal[C1] | Literal[C2] | Literal[C3])`, witho
 ---
 
 _Label `red-knot` added by @carljm on 2024-06-06 20:32_
-
----
-
-_Referenced in [astral-sh/ruff#11783](../../astral-sh/ruff/pulls/11783.md) on 2024-06-06 21:00_
 
 ---
 

@@ -1,0 +1,55 @@
+```yaml
+number: 2295
+title: flake8-sql
+type: issue
+state: closed
+author: Mister7F
+labels: []
+assignees: []
+created_at: 2023-01-28T08:41:39Z
+updated_at: 2024-04-25T20:13:06Z
+url: https://github.com/astral-sh/ruff/issues/2295
+synced_at: 2026-01-10T11:09:45Z
+```
+
+# flake8-sql
+
+---
+
+_Issue opened by @Mister7F on 2023-01-28 08:41_
+
+Would it be possible at some point to implement the plugin "flake8-sql" ?
+
+See https://github.com/pgjones/flake8-sql
+
+(even if it's optionnal, it would be great)
+
+---
+
+_Comment by @rassie on 2023-01-28 10:05_
+
+I'm not particularly opposed (but neither am I anyone to listen to in this project), but this feels like more of a formatter than a linter problem. Apart from Q441 and Q442 the rules are somewhat easily replaced by something like [format-sql](https://pypi.org/project/format-sql/) or formatting capabilities of [sqlparse](https://sqlparse.readthedocs.io/). The proper question is of course, how to make a generic SQL formatter format code inside a Python string, so maybe this is an example of a more generic problem -- how do we format structured formats inside Python strings? I think we are probably looking at a plugin for SQL, JSON, HTML etc. within the upcoming plugin system. But those are just my two cents.
+
+---
+
+_Comment by @charliermarsh on 2023-01-28 12:31_
+
+I _am_ interested in multi-language support eventually but I think extending to SQL right now would be challenging and I'd rather focus elsewhere. Will revisit in time!
+
+---
+
+_Closed by @charliermarsh on 2023-01-28 12:31_
+
+---
+
+_Comment by @edgarrmondragon on 2023-01-28 18:40_
+
+For linting SQL, it's hard to beat https://github.com/sqlfluff/sqlfluff/ at the moment. It's really comprehensive with support for multiple dialects and formatters, like jinja and dbt.
+
+---
+
+_Comment by @travis-cook-sfdc on 2024-04-25 20:13_
+
+But it sure would be cool if ruff could hook into `sqlfluff` and use sqlfluff to format python strings it recognizes as sql
+
+---

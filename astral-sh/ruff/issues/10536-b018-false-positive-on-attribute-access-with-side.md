@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-23T14:09:12Z
 updated_at: 2024-03-25T02:46:35Z
 url: https://github.com/astral-sh/ruff/issues/10536
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # B018 false positive on attribute access with side effect
@@ -115,10 +115,6 @@ _Label `documentation` added by @charliermarsh on 2024-03-23 21:33_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-24 20:16_
-
----
-
-_Referenced in [astral-sh/ruff#10551](../../astral-sh/ruff/pulls/10551.md) on 2024-03-25 02:39_
 
 ---
 

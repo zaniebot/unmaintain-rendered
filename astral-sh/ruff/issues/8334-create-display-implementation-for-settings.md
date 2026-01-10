@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-30T02:49:23Z
 updated_at: 2024-01-12T19:30:30Z
 url: https://github.com/astral-sh/ruff/issues/8334
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Create `Display` implementation for `Settings`
@@ -1956,14 +1956,6 @@ _Assigned to @snowsignal by @zanieb on 2024-01-11 03:58_
 
 ---
 
-_Referenced in [astral-sh/ruff#9464](../../astral-sh/ruff/pulls/9464.md) on 2024-01-11 09:20_
-
----
-
 _Closed by @charliermarsh on 2024-01-12 19:30_
-
----
-
-_Referenced in [astral-sh/ruff#20560](../../astral-sh/ruff/issues/20560.md) on 2025-09-24 20:26_
 
 ---

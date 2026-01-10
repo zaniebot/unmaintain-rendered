@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-10T02:31:05Z
 updated_at: 2023-10-12T10:15:01Z
 url: https://github.com/astral-sh/ruff/issues/7882
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # E251 from spaces around equals in f-string in function argument
@@ -43,10 +43,6 @@ _Label `bug` added by @charliermarsh on 2023-10-10 02:32_
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2023-10-10 13:18_
-
----
-
-_Referenced in [astral-sh/ruff#7894](../../astral-sh/ruff/pulls/7894.md) on 2023-10-10 13:27_
 
 ---
 

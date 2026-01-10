@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-25T16:09:17Z
 updated_at: 2022-11-28T02:30:57Z
 url: https://github.com/astral-sh/ruff/issues/905
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # Implementing % formatting checks
@@ -40,10 +40,6 @@ I think I've tracked down the place to start tugging at the RustPython codebase:
 ---
 
 _Label `rule` added by @charliermarsh on 2022-11-25 22:12_
-
----
-
-_Referenced in [astral-sh/ruff#919](../../astral-sh/ruff/pulls/919.md) on 2022-11-27 02:57_
 
 ---
 

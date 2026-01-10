@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-11-14T15:39:21Z
 updated_at: 2025-11-19T08:38:34Z
 url: https://github.com/astral-sh/ruff/issues/21458
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # RUF065: Complex conversion specifiers can make `oct` and `hex` not unnecessary
@@ -81,10 +81,6 @@ _Label `rule` added by @ntBre on 2025-11-14 16:26_
 ---
 
 _Label `preview` added by @ntBre on 2025-11-14 16:26_
-
----
-
-_Referenced in [astral-sh/ruff#21464](../../astral-sh/ruff/pulls/21464.md) on 2025-11-14 22:47_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-08-04T18:11:18Z
 updated_at: 2025-08-19T22:12:16Z
 url: https://github.com/astral-sh/ruff/issues/19746
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # UP045 fixes Optional[Optional[x]] to x | None | None
@@ -68,10 +68,6 @@ int | None
 ```
 
 But I think we handle nesting in these rules in other cases, so it may still be worth handling here.
-
----
-
-_Referenced in [astral-sh/ruff#19770](../../astral-sh/ruff/pulls/19770.md) on 2025-08-05 19:07_
 
 ---
 

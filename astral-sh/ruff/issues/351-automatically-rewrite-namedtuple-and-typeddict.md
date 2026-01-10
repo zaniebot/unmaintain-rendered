@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-10-07T20:07:48Z
 updated_at: 2022-11-20T15:26:33Z
 url: https://github.com/astral-sh/ruff/issues/351
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # Automatically rewrite `NamedTuple` and `TypedDict` with newer syntaxes
@@ -49,10 +49,6 @@ A few questions on top of my mind @charliermarsh
 
 ---
 
-_Referenced in [astral-sh/ruff#716](../../astral-sh/ruff/pulls/716.md) on 2022-11-13 09:14_
-
----
-
 _Comment by @charliermarsh on 2022-11-13 15:51_
 
 Good questions!
@@ -85,10 +81,6 @@ Regarding [NamedTuples](https://docs.python.org/3/library/collections.html#colle
 
 ---
 
-_Referenced in [astral-sh/ruff#819](../../astral-sh/ruff/pulls/819.md) on 2022-11-19 17:12_
-
----
-
 _Closed by @charliermarsh on 2022-11-20 15:26_
 
 ---
@@ -96,9 +88,5 @@ _Closed by @charliermarsh on 2022-11-20 15:26_
 _Comment by @charliermarsh on 2022-11-20 15:26_
 
 Completed by @martinlehoux! Thank you!
-
----
-
-_Referenced in [codegrande/ruff#4](../../codegrande/ruff/pulls/4.md) on 2024-05-17 07:07_
 
 ---

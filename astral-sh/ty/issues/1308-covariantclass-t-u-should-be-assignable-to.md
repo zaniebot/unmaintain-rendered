@@ -9,9 +9,9 @@ labels:
   - type properties
 assignees: []
 created_at: 2025-10-04T17:54:41Z
-updated_at: 2026-01-09T19:34:24Z
+updated_at: 2026-01-10T11:42:23Z
 url: https://github.com/astral-sh/ty/issues/1308
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-10T12:00:01Z
 ```
 
 # `CovariantClass[T | U]` should be assignable to `CovariantClass[T] | CovariantClass[U]`
@@ -140,5 +140,13 @@ It's also worth noting that #493 cannot apply to variadic tuples: `tuple[int | s
 _Comment by @AlexWaygood on 2026-01-09 19:34_
 
 thank you! That makes sense to me.
+
+---
+
+_Comment by @AlexWaygood on 2026-01-10 11:42_
+
+> I think in this case our knowledge of the runtime details of tuples allows us to make stronger guarantees. In particular, we know (outside of the type system) that for a given type parameter of a (non-variadic) tuple type, it corresponds to exactly one (immutable) value stored in the tuple: there is no way for a `tuple[int | str]` to contain both an int and a str, both typed as `int | str`.
+
+I'm not sure this necessarily holds true when you bring tuple subclasses into the mix. But maybe there's only so much thought you should give to the soundness of tuple subclasses if you want to stay sane :-)
 
 ---

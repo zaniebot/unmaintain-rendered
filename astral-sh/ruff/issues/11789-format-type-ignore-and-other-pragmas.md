@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-07T00:24:54Z
 updated_at: 2024-11-18T00:13:32Z
 url: https://github.com/astral-sh/ruff/issues/11789
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # (🎁) format `type: ignore` and other pragmas
@@ -52,9 +52,5 @@ This should be partly handled by [`RUF104`](https://github.com/astral-sh/ruff/pu
 _Comment by @Avasam on 2024-11-18 00:13_
 
 I guess this is not quite a duplicate of https://github.com/astral-sh/ruff/issues/10160 since you're also asking to format the code list, and I only mentioned the colon
-
----
-
-_Referenced in [astral-sh/ruff#16401](../../astral-sh/ruff/issues/16401.md) on 2025-08-16 17:11_
 
 ---

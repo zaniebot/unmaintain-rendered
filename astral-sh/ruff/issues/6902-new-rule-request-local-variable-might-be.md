@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-26T19:11:40Z
 updated_at: 2025-09-08T23:28:58Z
 url: https://github.com/astral-sh/ruff/issues/6902
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # New rule request: Local variable might be referenced before assignment
@@ -64,14 +64,6 @@ SAME ISSUE FOR "Local variable might be referenced before assignment"
 _Comment by @clemente0731 on 2024-10-10 05:58_
 
 https://github.com/google/pytype  can work well for this @charliermarsh 
-
----
-
-_Referenced in [astral-sh/ruff#2493](../../astral-sh/ruff/issues/2493.md) on 2024-10-30 05:17_
-
----
-
-_Referenced in [astral-sh/ruff#14821](../../astral-sh/ruff/issues/14821.md) on 2024-12-06 16:26_
 
 ---
 

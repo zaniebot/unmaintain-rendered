@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-05-26T19:50:26Z
 updated_at: 2023-11-01T14:17:13Z
 url: https://github.com/astral-sh/ruff/issues/4673
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # `ARG001`/`ARG002` being thrown for `pytest` fixtures
@@ -140,9 +140,5 @@ And that would cause unused checking to be disabled for functions or methods tha
 If the ruff project thinks that that is an okay idea, I could look at sending in a PR for it. Assuming it's doable with a reasonable amount of effort. 
 
 (Apologies for any potential formatting or grammar problems here I'm tapping this out on my phone)
-
----
-
-_Referenced in [pytest-dev/pytest#12923](../../pytest-dev/pytest/issues/12923.md) on 2024-10-28 11:48_
 
 ---

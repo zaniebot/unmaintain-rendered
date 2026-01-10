@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-22T15:58:46Z
 updated_at: 2023-09-29T01:39:13Z
 url: https://github.com/astral-sh/ruff/issues/7600
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # `unnecessary-pass` (`PIE790`) only checks for docstrings immediately followed by a `pass` statement
@@ -95,10 +95,6 @@ _Label `good first issue` added by @zanieb on 2023-09-26 17:01_
 _Comment by @charliermarsh on 2023-09-26 23:51_
 
 Yeah, I don't mind changing it.
-
----
-
-_Referenced in [astral-sh/ruff#7697](../../astral-sh/ruff/pulls/7697.md) on 2023-09-28 14:35_
 
 ---
 

@@ -1,0 +1,83 @@
+```yaml
+number: 21272
+title: "noqa: RET503 not working"
+type: issue
+state: closed
+author: Siecje
+labels:
+  - question
+assignees: []
+created_at: 2025-11-04T13:12:46Z
+updated_at: 2025-11-04T15:01:34Z
+url: https://github.com/astral-sh/ruff/issues/21272
+synced_at: 2026-01-10T11:10:00Z
+```
+
+# noqa: RET503 not working
+
+---
+
+_Issue opened by @Siecje on 2025-11-04 13:12_
+
+### Summary
+
+I'm using `flask.abort()` and want to ignore RET503 for this line by using `noqa: RET503`.
+
+`ruff` is complaining about `RET503` and also the `noqa` with RUF100.
+
+This was working over a year ago when I last ran ruff on this project.
+
+```
+RET503 Missing explicit `return` at the end of function able to return non-`None` value
+   --> htmd/site.py:261:1
+    |
+261 | / @app.route('/draft/<post_uuid>/')
+262 | | def draft(post_uuid: str) -> ResponseReturnValue:
+263 | |     for post in posts:
+264 | |         if str(post.meta.get('draft', '')).replace('build|', '') == post_uuid:
+265 | |             return render_template('post.html', post=post)
+266 | |     abort(404)  # noqa: RET503
+    | |______________^
+    |
+help: Add explicit `return` statement
+
+RUF100 [*] Unused `noqa` directive (unused: `RET503`)
+   --> htmd/site.py:266:17
+    |
+264 |         if str(post.meta.get('draft', '')).replace('build|', '') == post_uuid:
+265 |             return render_template('post.html', post=post)
+266 |     abort(404)  # noqa: RET503
+    |                 ^^^^^^^^^^^^^^
+    |
+help: Remove unused `noqa` directive
+```
+
+Code in question:
+
+https://github.com/Siecje/htmd/blob/a8974196d4c4ffabdba204b55ad6e7d0cff8896b/htmd/site.py#L261-L266
+
+### Version
+
+ruff 0.14.3 (8737a2d5f 2025-10-30)
+
+---
+
+_Comment by @ntBre on 2025-11-04 14:45_
+
+I think this was an intentional change in version 0.12.0 (#18516). It looks like you now have to put the `noqa` on the line with the decorator: https://play.ruff.rs/1c8494eb-4dff-4a35-ab29-0dc55756a23b
+
+---
+
+_Label `question` added by @ntBre on 2025-11-04 14:45_
+
+---
+
+_Comment by @MichaReiser on 2025-11-04 14:47_
+
+Including the decorator in the range seems wrong to me. I think the range should skip the decorators.
+
+---
+
+_Closed by @Siecje on 2025-11-04 15:01_
+
+---

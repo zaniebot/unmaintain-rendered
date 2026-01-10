@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-16T20:20:14Z
 updated_at: 2023-11-29T00:34:03Z
 url: https://github.com/astral-sh/ruff/issues/7995
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Add newline after module docstrings (`module_docstring_newlines`)
@@ -66,10 +66,6 @@ _Label `preview` added by @MichaReiser on 2023-10-17 00:42_
 
 ---
 
-_Referenced in [astral-sh/ruff#6935](../../astral-sh/ruff/issues/6935.md) on 2023-10-17 00:43_
-
----
-
 _Comment by @DanielNoord on 2023-10-17 06:48_
 
 @charliermarsh Sorry should have been clearer. This is currently only available on `black` `main` as `preview`. (I run from `master` locally). You can see in the linked PR that it actually already applies to `blacks` own codebase. There hasn't been a release yet, I can ask them when they plan on doing so but I don't want to bother the maintainers too much.
@@ -94,30 +90,10 @@ _Assigned to @konstin by @konstin on 2023-10-20 10:45_
 
 ---
 
-_Referenced in [astral-sh/ruff#8283](../../astral-sh/ruff/pulls/8283.md) on 2023-10-27 12:58_
-
----
-
 _Closed by @charliermarsh on 2023-10-28 01:16_
 
 ---
 
-_Referenced in [psf/black#4042](../../psf/black/issues/4042.md) on 2023-11-23 09:46_
-
----
-
 _Renamed from "Add newline after module docstrings" to "Add newline after module docstrings (`module_docstring_newlines`)" by @MichaReiser on 2023-11-29 00:34_
-
----
-
-_Referenced in [astral-sh/ruff#8678](../../astral-sh/ruff/issues/8678.md) on 2023-11-29 00:34_
-
----
-
-_Referenced in [astral-sh/ruff#9639](../../astral-sh/ruff/pulls/9639.md) on 2024-02-12 17:28_
-
----
-
-_Referenced in [psf/black#4175](../../psf/black/issues/4175.md) on 2024-03-10 14:48_
 
 ---

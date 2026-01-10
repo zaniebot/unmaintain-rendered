@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-11-16T18:50:08Z
 updated_at: 2022-11-16T21:16:59Z
 url: https://github.com/astral-sh/ruff/issues/775
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # 0 exit code when used as a module
@@ -19,10 +19,6 @@ synced_at: 2026-01-10T01:56:44Z
 _Issue opened by @andriilahuta on 2022-11-16 18:50_
 
 Running `python -m ruff` results in 0 exit code even though errors are present.
-
----
-
-_Referenced in [astral-sh/ruff#776](../../astral-sh/ruff/pulls/776.md) on 2022-11-16 19:03_
 
 ---
 

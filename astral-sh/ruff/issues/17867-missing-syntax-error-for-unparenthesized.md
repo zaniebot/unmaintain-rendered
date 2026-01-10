@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-05T18:48:39Z
 updated_at: 2025-05-07T18:11:37Z
 url: https://github.com/astral-sh/ruff/issues/17867
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Missing syntax error for unparenthesized generator expression in single-argument call
@@ -61,10 +61,6 @@ I can take this up, if that's alright.
 ---
 
 _Assigned to @abhijeetbodas2001 by @ntBre on 2025-05-05 19:22_
-
----
-
-_Referenced in [astral-sh/ruff#17893](../../astral-sh/ruff/pulls/17893.md) on 2025-05-06 17:31_
 
 ---
 

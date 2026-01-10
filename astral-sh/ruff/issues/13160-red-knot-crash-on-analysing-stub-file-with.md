@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-30T12:51:38Z
 updated_at: 2024-09-03T18:20:44Z
 url: https://github.com/astral-sh/ruff/issues/13160
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red_knot] Crash on analysing stub file with explicitly derived class
@@ -111,10 +111,6 @@ This looks related to #13176, but I'd expect that issue to cause a resolution to
 _Comment by @carljm on 2024-08-31 01:18_
 
 Found the bug, fix PR in progress.
-
----
-
-_Referenced in [astral-sh/ruff#13204](../../astral-sh/ruff/pulls/13204.md) on 2024-09-02 02:14_
 
 ---
 

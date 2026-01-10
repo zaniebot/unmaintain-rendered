@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-23T10:12:32Z
 updated_at: 2025-06-23T12:30:31Z
 url: https://github.com/astral-sh/ruff/issues/18887
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # doc(analyze): unknown variant `dependents`, expected `Dependencies` or `Dependents`
@@ -50,10 +50,6 @@ _Label `analyze` added by @AlexWaygood on 2025-06-23 10:41_
 _Comment by @MichaReiser on 2025-06-23 10:58_
 
 Thank you. It's actually the documentation that's correct and the setting that uses the wrong cases. 
-
----
-
-_Referenced in [astral-sh/ruff#18892](../../astral-sh/ruff/pulls/18892.md) on 2025-06-23 11:02_
 
 ---
 

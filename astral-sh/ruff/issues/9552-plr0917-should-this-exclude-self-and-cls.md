@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-16T15:28:33Z
 updated_at: 2024-01-18T03:17:47Z
 url: https://github.com/astral-sh/ruff/issues/9552
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # PLR0917: should this exclude `self` and `cls`?
@@ -32,10 +32,6 @@ Yeah, I think it probably should exclude those.
 ---
 
 _Label `rule` added by @charliermarsh on 2024-01-16 19:13_
-
----
-
-_Referenced in [astral-sh/ruff#9563](../../astral-sh/ruff/pulls/9563.md) on 2024-01-17 14:01_
 
 ---
 

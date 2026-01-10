@@ -1,0 +1,77 @@
+```yaml
+number: 13921
+title: "B007 Loop control variable '_' not used within loop body"
+type: issue
+state: closed
+author: montanarograziano
+labels:
+  - question
+assignees: []
+created_at: 2024-10-25T08:28:12Z
+updated_at: 2024-10-26T16:05:43Z
+url: https://github.com/astral-sh/ruff/issues/13921
+synced_at: 2026-01-10T11:09:55Z
+```
+
+# B007 Loop control variable '_' not used within loop body
+
+---
+
+_Issue opened by @montanarograziano on 2024-10-25 08:28_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+Hi, I don't know if this is an intended behaviour or not, but I'm having troubles understanding why a snippet like the following is highlighted as [B007](https://docs.astral.sh/ruff/rules/unused-loop-control-variable/)
+```py
+for _ in range(10)
+    print("hello")
+```
+From the doc, any variable prefixed with `_` should be safe. Is there anything I'm doing wrong?
+I know the example is (way too) trivial, but a more realistic use-case would be cycling through rows in a Pandas DataFrame with `iterrows()` but without using the index.
+Thanks for the help!
+
+
+---
+
+_Comment by @autinerd on 2024-10-26 06:47_
+
+Do you have some context where it gets flagged?
+
+When testing here https://play.ruff.rs/56729c12-30db-43e0-955c-2e82ac2c4ece, it shows no violation.
+
+---
+
+_Comment by @montanarograziano on 2024-10-26 09:39_
+
+I get this problem only when using Ruff under pre-commit, which is configured to use my local ruff version (0.6.4)
+Here's a screenshot:
+<img width="816" alt="image" src="https://github.com/user-attachments/assets/7ee33840-d6b7-4300-84c1-c9ab9f72ebec">
+
+
+---
+
+_Comment by @montanarograziano on 2024-10-26 13:06_
+
+Mystery solved! Apparently, there was a typo in my team's config `dummy-variable-rgx` inside pyproject.toml 😅
+Sorry about the false positive and thank you for the help.
+
+
+---
+
+_Closed by @MichaReiser on 2024-10-26 16:05_
+
+---
+
+_Label `question` added by @MichaReiser on 2024-10-26 16:05_
+
+---

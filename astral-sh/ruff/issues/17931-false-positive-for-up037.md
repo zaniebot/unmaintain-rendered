@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-07T23:19:23Z
 updated_at: 2025-05-08T14:56:54Z
 url: https://github.com/astral-sh/ruff/issues/17931
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # False positive for UP037
@@ -91,9 +91,5 @@ _Label `bug` added by @ntBre on 2025-05-08 14:56_
 ---
 
 _Label `type-inference` added by @ntBre on 2025-05-08 14:56_
-
----
-
-_Referenced in [astral-sh/ruff#20716](../../astral-sh/ruff/issues/20716.md) on 2025-10-06 13:45_
 
 ---

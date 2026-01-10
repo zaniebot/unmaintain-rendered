@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-21T14:53:41Z
 updated_at: 2023-12-07T03:43:22Z
 url: https://github.com/astral-sh/ruff/issues/8107
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # `UP031` (printf-string-formatting) difference between Ruff and pyupgrade
@@ -74,10 +74,6 @@ Yeah, I'd suggest flagging the diagnostic, and using an unsafe fix personally.
 ---
 
 _Label `needs-decision` removed by @dhruvmanila on 2023-11-20 20:20_
-
----
-
-_Referenced in [astral-sh/ruff#9037](../../astral-sh/ruff/pulls/9037.md) on 2023-12-07 03:01_
 
 ---
 

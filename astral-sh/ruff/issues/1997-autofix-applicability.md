@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-19T15:07:07Z
 updated_at: 2023-06-14T22:28:44Z
 url: https://github.com/astral-sh/ruff/issues/1997
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Autofix applicability
@@ -27,47 +27,11 @@ I think for rule applicability is even more relevant for Python than for Rust si
 
 ---
 
-_Referenced in [astral-sh/ruff#1957](../../astral-sh/ruff/pulls/1957.md) on 2023-01-19 15:08_
-
----
-
-_Referenced in [astral-sh/ruff#1994](../../astral-sh/ruff/issues/1994.md) on 2023-01-19 15:10_
-
----
-
-_Referenced in [astral-sh/ruff#1996](../../astral-sh/ruff/pulls/1996.md) on 2023-01-19 16:01_
-
----
-
 _Label `core` added by @charliermarsh on 2023-01-25 04:47_
 
 ---
 
-_Referenced in [astral-sh/ruff#455](../../astral-sh/ruff/issues/455.md) on 2023-01-26 06:11_
-
----
-
 _Renamed from "Rule applicability" to "Autofix applicability" by @not-my-profile on 2023-02-10 15:22_
-
----
-
-_Referenced in [astral-sh/ruff#2713](../../astral-sh/ruff/issues/2713.md) on 2023-02-10 15:24_
-
----
-
-_Referenced in [astral-sh/ruff#1992](../../astral-sh/ruff/issues/1992.md) on 2023-02-16 08:18_
-
----
-
-_Referenced in [astral-sh/ruff#1640](../../astral-sh/ruff/issues/1640.md) on 2023-02-16 08:20_
-
----
-
-_Referenced in [astral-sh/ruff#2741](../../astral-sh/ruff/pulls/2741.md) on 2023-02-16 08:21_
-
----
-
-_Referenced in [astral-sh/ruff#2880](../../astral-sh/ruff/pulls/2880.md) on 2023-02-16 08:23_
 
 ---
 
@@ -109,10 +73,6 @@ Right -- those are the two factors that I was trying to tease apart, though I th
 _Comment by @not-my-profile on 2023-02-27 04:24_
 
 I think it makes sense to raise this question here. I think rules that will have many false positives should just be disabled by default and categorized (#1774) accordingly.
-
----
-
-_Referenced in [astral-sh/ruff#4181](../../astral-sh/ruff/issues/4181.md) on 2023-05-02 09:07_
 
 ---
 

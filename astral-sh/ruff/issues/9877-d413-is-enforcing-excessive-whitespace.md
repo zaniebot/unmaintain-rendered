@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-07T19:31:04Z
 updated_at: 2024-02-07T21:48:29Z
 url: https://github.com/astral-sh/ruff/issues/9877
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # `D413` is enforcing excessive whitespace
@@ -79,10 +79,6 @@ _Label `docstring` added by @charliermarsh on 2024-02-07 19:32_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-07 19:32_
-
----
-
-_Referenced in [astral-sh/ruff#9878](../../astral-sh/ruff/pulls/9878.md) on 2024-02-07 21:03_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-30T21:15:37Z
 updated_at: 2024-02-09T21:56:38Z
 url: https://github.com/astral-sh/ruff/issues/8368
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Allow override of configuration options via the CLI
@@ -63,10 +63,6 @@ _Label `configuration` added by @zanieb on 2023-10-30 21:15_
 ---
 
 _Label `cli` added by @zanieb on 2023-10-30 21:15_
-
----
-
-_Referenced in [astral-sh/ruff#8363](../../astral-sh/ruff/pulls/8363.md) on 2023-10-30 21:16_
 
 ---
 
@@ -123,19 +119,7 @@ I think 1, 2 and 3 can be supported at same time.
 
 ---
 
-_Referenced in [astral-sh/ruff#8855](../../astral-sh/ruff/issues/8855.md) on 2023-11-29 16:28_
-
----
-
-_Referenced in [astral-sh/ruff#9186](../../astral-sh/ruff/issues/9186.md) on 2023-12-19 10:00_
-
----
-
 _Assigned to @AlexWaygood by @AlexWaygood on 2024-01-19 19:51_
-
----
-
-_Referenced in [astral-sh/ruff#9599](../../astral-sh/ruff/pulls/9599.md) on 2024-01-21 18:04_
 
 ---
 

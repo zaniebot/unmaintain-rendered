@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-05T05:40:28Z
 updated_at: 2024-07-17T18:16:17Z
 url: https://github.com/astral-sh/ruff/issues/12195
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # NPY201 rules seem to miss imports for NAN
@@ -104,10 +104,6 @@ My assumption is that it's been forgotten to be mentioned in the release notes -
 ---
 
 _Label `good first issue` added by @MichaReiser on 2024-07-08 10:03_
-
----
-
-_Referenced in [astral-sh/ruff#12292](../../astral-sh/ruff/pulls/12292.md) on 2024-07-11 18:40_
 
 ---
 

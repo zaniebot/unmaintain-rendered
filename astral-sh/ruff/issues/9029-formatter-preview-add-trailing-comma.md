@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-12-06T20:53:05Z
 updated_at: 2024-02-14T16:30:07Z
 url: https://github.com/astral-sh/ruff/issues/9029
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Formatter --preview add trailing comma
@@ -131,10 +131,6 @@ _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-12-22 06:16_
 _Comment by @MichaReiser on 2024-02-12 11:22_
 
 Note: The pattern where the "huggable" fully fits on its own line seems somewhat common in Airflow's codebase https://github.com/apache/airflow/pull/37355
-
----
-
-_Referenced in [apache/airflow#37355](../../apache/airflow/pulls/37355.md) on 2024-02-12 12:13_
 
 ---
 

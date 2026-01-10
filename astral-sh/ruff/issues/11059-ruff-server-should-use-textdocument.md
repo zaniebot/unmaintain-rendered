@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-20T22:20:07Z
 updated_at: 2024-04-23T04:06:37Z
 url: https://github.com/astral-sh/ruff/issues/11059
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # `ruff server` should use `textDocument/publishDiagnostics` when pull diagnostics aren't supported
@@ -38,18 +38,6 @@ _Assigned to @snowsignal by @snowsignal on 2024-04-20 22:20_
 
 ---
 
-_Referenced in [astral-sh/ruff#11092](../../astral-sh/ruff/pulls/11092.md) on 2024-04-22 20:17_
-
----
-
 _Closed by @snowsignal on 2024-04-23 04:06_
-
----
-
-_Referenced in [LazyVim/LazyVim#3037](../../LazyVim/LazyVim/pulls/3037.md) on 2024-04-24 15:30_
-
----
-
-_Referenced in [neurocyte/flow#285](../../neurocyte/flow/issues/285.md) on 2025-08-22 20:11_
 
 ---

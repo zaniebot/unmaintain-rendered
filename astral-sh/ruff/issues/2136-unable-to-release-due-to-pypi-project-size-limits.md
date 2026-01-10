@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-24T16:40:38Z
 updated_at: 2023-03-28T23:06:55Z
 url: https://github.com/astral-sh/ruff/issues/2136
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Unable to release due to PyPI project size limits
@@ -57,14 +57,6 @@ _Label `release` added by @charliermarsh on 2023-01-25 04:47_
 
 ---
 
-_Referenced in [astral-sh/ruff#1785](../../astral-sh/ruff/issues/1785.md) on 2023-01-25 04:50_
-
----
-
-_Referenced in [treeverse/dvc#8869](../../treeverse/dvc/pulls/8869.md) on 2023-01-25 13:52_
-
----
-
 _Comment by @charliermarsh on 2023-01-25 23:30_
 
 Resolved for now.
@@ -82,10 +74,6 @@ For the future, we have two (three?) options:
 1. Build fewer wheels (e.g., we could make some decisions based on platform popularity).
 2. Release less often (once-a-week, probably).
 3. Ask for a bigger exemption.
-
----
-
-_Referenced in [astral-sh/ruff#2179](../../astral-sh/ruff/issues/2179.md) on 2023-01-25 23:56_
 
 ---
 
@@ -124,9 +112,5 @@ Thanks @pradyunsg, I really appreciate that clarification. By the same token, we
 
 On the bright side, we kind of naturally fell into a more deliberate ~once-a-week cadence over the past ~month. So while we'll likely hit the revised cap eventually, it should take longer than last time.
 
-
----
-
-_Referenced in [astral-sh/uv#4432](../../astral-sh/uv/issues/4432.md) on 2024-06-20 21:40_
 
 ---

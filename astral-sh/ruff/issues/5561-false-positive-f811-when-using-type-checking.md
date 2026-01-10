@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-06T13:46:54Z
 updated_at: 2024-01-10T20:09:25Z
 url: https://github.com/astral-sh/ruff/issues/5561
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # False positive F811 when using TYPE_CHECKING
@@ -70,10 +70,6 @@ _Comment by @phil65 on 2023-07-06 13:58_
 
 Yes, I would expect that to get reported.
 I am often using the `if __name__ == "__main__":` section for testing purposes, that´s why I am using this pattern.
-
----
-
-_Referenced in [astral-sh/ruff#9418](../../astral-sh/ruff/pulls/9418.md) on 2024-01-07 02:00_
 
 ---
 

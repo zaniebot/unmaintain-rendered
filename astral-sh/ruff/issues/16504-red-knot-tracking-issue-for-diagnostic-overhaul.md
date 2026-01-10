@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-03-04T18:06:17Z
 updated_at: 2025-05-02T14:14:22Z
 url: https://github.com/astral-sh/ruff/issues/16504
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [red-knot] tracking issue for diagnostic overhaul
@@ -125,14 +125,6 @@ _Label `tracking` added by @BurntSushi on 2025-03-04 18:06_
 ---
 
 _Assigned to @BurntSushi by @BurntSushi on 2025-03-04 18:06_
-
----
-
-_Referenced in [astral-sh/ruff#16505](../../astral-sh/ruff/issues/16505.md) on 2025-03-04 18:07_
-
----
-
-_Referenced in [astral-sh/ruff#16241](../../astral-sh/ruff/issues/16241.md) on 2025-03-04 18:10_
 
 ---
 

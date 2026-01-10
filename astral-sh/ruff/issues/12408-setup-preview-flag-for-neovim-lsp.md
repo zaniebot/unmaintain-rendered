@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-19T16:33:28Z
 updated_at: 2024-07-22T10:52:32Z
 url: https://github.com/astral-sh/ruff/issues/12408
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Setup `--preview` flag for neovim lsp
@@ -139,9 +139,5 @@ _Comment by @dhruvmanila on 2024-07-22 10:52_
 > Should this PR be mentioned in Editors > Setup > Neovim?
 
 Yeah, good idea.
-
----
-
-_Referenced in [astral-sh/ruff#12507](../../astral-sh/ruff/pulls/12507.md) on 2024-07-25 13:58_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-08-31T16:04:27Z
 updated_at: 2023-08-31T16:16:30Z
 url: https://github.com/astral-sh/ruff/issues/7027
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Panic running `ruff check` on the ruff repository
@@ -524,14 +524,6 @@ _Comment by @zanieb on 2023-08-31 16:07_
 Duplicate of https://github.com/astral-sh/ruff/issues/7015 (thanks @MichaReiser)
 
 Should this panic cause the linter to fail? It seems good that it continues but weird that it's not noted in the summary.
-
----
-
-_Referenced in [astral-sh/ruff#7015](../../astral-sh/ruff/issues/7015.md) on 2023-08-31 16:12_
-
----
-
-_Referenced in [astral-sh/ruff#7028](../../astral-sh/ruff/issues/7028.md) on 2023-08-31 16:16_
 
 ---
 

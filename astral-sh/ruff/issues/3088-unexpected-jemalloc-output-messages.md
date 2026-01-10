@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-21T17:55:11Z
 updated_at: 2023-02-21T17:57:01Z
 url: https://github.com/astral-sh/ruff/issues/3088
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Unexpected jemalloc output messages
@@ -60,9 +60,5 @@ _Label `bug` added by @charliermarsh on 2023-02-21 17:56_
 _Comment by @charliermarsh on 2023-02-21 17:57_
 
 Oh yeah, it would be nice not to show that :) I'll look into it!
-
----
-
-_Referenced in [oxsecurity/megalinter#2995](../../oxsecurity/megalinter/issues/2995.md) on 2023-10-09 14:19_
 
 ---

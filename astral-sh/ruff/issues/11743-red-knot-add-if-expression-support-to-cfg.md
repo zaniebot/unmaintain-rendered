@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-04T19:27:57Z
 updated_at: 2024-06-06T10:40:45Z
 url: https://github.com/astral-sh/ruff/issues/11743
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # [red-knot] add if-expression support to CFG
@@ -28,10 +28,6 @@ _Label `red-knot` added by @carljm on 2024-06-04 19:27_
 ---
 
 _Assigned to @carljm by @carljm on 2024-06-04 19:27_
-
----
-
-_Referenced in [astral-sh/ruff#11765](../../astral-sh/ruff/pulls/11765.md) on 2024-06-05 22:07_
 
 ---
 

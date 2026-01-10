@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-20T03:30:33Z
 updated_at: 2023-04-20T20:02:14Z
 url: https://github.com/astral-sh/ruff/issues/4038
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Mutable dataclass field checks don't respect immutable annotations
@@ -33,10 +33,6 @@ _Comment by @dhruvmanila on 2023-04-20 05:20_
 I can take this up :)
 
 Am I correct to assume that the said helper function in the original comment should be refactored to `ruff_python_semantic`? This is because it's dependent on `Context`. 
-
----
-
-_Referenced in [astral-sh/ruff#4039](../../astral-sh/ruff/pulls/4039.md) on 2023-04-20 05:32_
 
 ---
 

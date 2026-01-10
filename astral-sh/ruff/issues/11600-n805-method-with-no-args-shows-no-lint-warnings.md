@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-29T14:40:40Z
 updated_at: 2024-05-30T13:18:27Z
 url: https://github.com/astral-sh/ruff/issues/11600
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # N805 - method with no args shows no lint warnings
@@ -39,10 +39,6 @@ I'd expect `N805: First argument of a method should be named "self"`
 ---
 
 _Label `bug` added by @charliermarsh on 2024-05-30 02:24_
-
----
-
-_Referenced in [astral-sh/ruff#11605](../../astral-sh/ruff/pulls/11605.md) on 2024-05-30 02:35_
 
 ---
 
@@ -95,9 +91,5 @@ We may want another rule for it eventually but after reviewing the changes, I th
 ---
 
 _Closed by @charliermarsh on 2024-05-30 13:18_
-
----
-
-_Referenced in [astral-sh/ruff#970](../../astral-sh/ruff/issues/970.md) on 2024-05-30 13:32_
 
 ---

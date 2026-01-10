@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-22T05:03:46Z
 updated_at: 2023-02-28T20:39:12Z
 url: https://github.com/astral-sh/ruff/issues/3114
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Add a tutorial to the docs
@@ -28,10 +28,6 @@ _Label `documentation` added by @charliermarsh on 2023-02-22 05:03_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-22 05:03_
-
----
-
-_Referenced in [astral-sh/ruff#3281](../../astral-sh/ruff/pulls/3281.md) on 2023-02-28 20:28_
 
 ---
 

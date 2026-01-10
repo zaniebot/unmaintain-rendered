@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-03-13T21:45:27Z
 updated_at: 2023-03-17T02:52:07Z
 url: https://github.com/astral-sh/ruff/issues/3494
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # PLC1901 false-positives with pandas
@@ -30,14 +30,6 @@ An option to avoid this false-positive would be to ignore `!= ""` comparisons wh
 
 edit: or nudge people to `data.loc[data["a"].ne("")] `
 
-
----
-
-_Referenced in [astral-sh/ruff#3503](../../astral-sh/ruff/issues/3503.md) on 2023-03-14 05:14_
-
----
-
-_Referenced in [astral-sh/ruff#3517](../../astral-sh/ruff/pulls/3517.md) on 2023-03-14 18:01_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-18T13:55:15Z
 updated_at: 2025-08-08T06:53:16Z
 url: https://github.com/astral-sh/ruff/issues/5860
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Feature request: docstring-min-length (pylint)
@@ -57,22 +57,6 @@ It's also a way to disable the check of  docstrings all together ^^
 _Comment by @aryamccarthy on 2024-02-27 23:17_
 
 Bumping to encourage decision from the maintainers. The Google Python style guide, for instance, uses `docstring-min-length`; projects conforming to it can't transition to Ruff because this is breaking the drop-in behavior.
-
----
-
-_Referenced in [astral-sh/ruff#970](../../astral-sh/ruff/issues/970.md) on 2024-02-28 15:38_
-
----
-
-_Referenced in [deepset-ai/haystack#7096](../../deepset-ai/haystack/issues/7096.md) on 2024-04-02 11:41_
-
----
-
-_Referenced in [astral-sh/ruff#12434](../../astral-sh/ruff/issues/12434.md) on 2024-08-23 17:52_
-
----
-
-_Referenced in [astral-sh/ruff#13086](../../astral-sh/ruff/issues/13086.md) on 2024-08-24 13:47_
 
 ---
 

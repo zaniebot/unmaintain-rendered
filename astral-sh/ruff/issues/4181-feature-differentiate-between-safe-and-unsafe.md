@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-02T09:07:02Z
 updated_at: 2024-01-10T17:07:17Z
 url: https://github.com/astral-sh/ruff/issues/4181
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # [feature] Differentiate between safe and unsafe fixes
@@ -41,63 +41,11 @@ _Label `help wanted` added by @MichaReiser on 2023-05-02 09:07_
 
 ---
 
-_Referenced in [astral-sh/ruff#4182](../../astral-sh/ruff/issues/4182.md) on 2023-05-02 09:11_
-
----
-
-_Referenced in [astral-sh/ruff#4183](../../astral-sh/ruff/issues/4183.md) on 2023-05-02 09:16_
-
----
-
-_Referenced in [astral-sh/ruff#4184](../../astral-sh/ruff/issues/4184.md) on 2023-05-02 09:21_
-
----
-
-_Referenced in [astral-sh/ruff#4185](../../astral-sh/ruff/issues/4185.md) on 2023-05-02 09:33_
-
----
-
-_Referenced in [astral-sh/ruff#4186](../../astral-sh/ruff/issues/4186.md) on 2023-05-02 09:36_
-
----
-
-_Referenced in [astral-sh/ruff#4187](../../astral-sh/ruff/issues/4187.md) on 2023-05-02 09:38_
-
----
-
 _Renamed from "Differentiate between safe and unsafe fixes" to "[feature] Differentiate between safe and unsafe fixes" by @MichaReiser on 2023-05-02 12:22_
 
 ---
 
-_Referenced in [astral-sh/ruff#4190](../../astral-sh/ruff/issues/4190.md) on 2023-05-02 14:00_
-
----
-
-_Referenced in [astral-sh/ruff#4198](../../astral-sh/ruff/pulls/4198.md) on 2023-05-03 01:49_
-
----
-
-_Referenced in [astral-sh/ruff#4320](../../astral-sh/ruff/issues/4320.md) on 2023-05-09 18:55_
-
----
-
 _Label `core` added by @MichaReiser on 2023-05-10 06:43_
-
----
-
-_Referenced in [astral-sh/ruff#4341](../../astral-sh/ruff/pulls/4341.md) on 2023-05-10 09:25_
-
----
-
-_Referenced in [astral-sh/ruff#5081](../../astral-sh/ruff/issues/5081.md) on 2023-06-14 13:26_
-
----
-
-_Referenced in [astral-sh/ruff#1997](../../astral-sh/ruff/issues/1997.md) on 2023-06-14 22:19_
-
----
-
-_Referenced in [astral-sh/ruff#1992](../../astral-sh/ruff/issues/1992.md) on 2023-06-14 22:21_
 
 ---
 
@@ -127,27 +75,7 @@ _Assigned to @evanrittenhouse by @MichaReiser on 2023-06-21 14:27_
 
 ---
 
-_Referenced in [astral-sh/ruff#2741](../../astral-sh/ruff/pulls/2741.md) on 2023-07-12 00:58_
-
----
-
-_Referenced in [astral-sh/ruff#6962](../../astral-sh/ruff/issues/6962.md) on 2023-08-29 06:29_
-
----
-
 _Assigned to @zanieb by @zanieb on 2023-09-07 14:48_
-
----
-
-_Referenced in [astral-sh/ruff#7436](../../astral-sh/ruff/issues/7436.md) on 2023-09-19 03:40_
-
----
-
-_Referenced in [astral-sh/ruff#7819](../../astral-sh/ruff/pulls/7819.md) on 2023-10-04 19:08_
-
----
-
-_Referenced in [astral-sh/ruff#7821](../../astral-sh/ruff/pulls/7821.md) on 2023-10-05 18:03_
 
 ---
 

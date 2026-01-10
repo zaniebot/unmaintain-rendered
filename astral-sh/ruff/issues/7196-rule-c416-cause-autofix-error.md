@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-06T15:29:11Z
 updated_at: 2023-09-06T16:25:03Z
 url: https://github.com/astral-sh/ruff/issues/7196
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Rule C416 cause autofix error
@@ -62,10 +62,6 @@ _Label `bug` added by @charliermarsh on 2023-09-06 16:10_
 ---
 
 _Label `fuzzer` added by @charliermarsh on 2023-09-06 16:10_
-
----
-
-_Referenced in [astral-sh/ruff#7204](../../astral-sh/ruff/pulls/7204.md) on 2023-09-06 16:10_
 
 ---
 

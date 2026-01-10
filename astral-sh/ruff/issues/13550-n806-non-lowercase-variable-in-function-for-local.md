@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-29T18:16:27Z
 updated_at: 2024-10-01T11:19:22Z
 url: https://github.com/astral-sh/ruff/issues/13550
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # N806 (non-lowercase-variable-in-function) for local variable in function
@@ -117,9 +117,5 @@ Yes, on a second thought, if distinguishing vars from constants is necessary for
 ---
 
 _Closed by @opk12 on 2024-10-01 11:19_
-
----
-
-_Referenced in [astral-sh/ruff#15721](../../astral-sh/ruff/issues/15721.md) on 2025-01-24 18:43_
 
 ---

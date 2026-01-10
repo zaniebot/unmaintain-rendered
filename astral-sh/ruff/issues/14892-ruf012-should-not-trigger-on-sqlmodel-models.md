@@ -1,0 +1,134 @@
+```yaml
+number: 14892
+title: RUF012 should not trigger on SQLModel models
+type: issue
+state: closed
+author: scy
+labels:
+  - rule
+  - help wanted
+  - accepted
+assignees: []
+created_at: 2024-12-10T17:18:59Z
+updated_at: 2024-12-13T04:19:22Z
+url: https://github.com/astral-sh/ruff/issues/14892
+synced_at: 2026-01-10T11:09:56Z
+```
+
+# RUF012 should not trigger on SQLModel models
+
+---
+
+_Issue opened by @scy on 2024-12-10 17:18_
+
+[SQLModel](https://sqlmodel.tiangolo.com/) is a project by FastAPI creator Sebastián Ramírez that combines SQLAlchemy models with Pydantic models, allowing you to use Pydantic-validated models for database interactions without duplicating classes.
+
+The base class for these models is `SQLModel`. As usual for Pydantic models, they can have mutable default values which will be copied when creating an actual instance. However, Ruff's [`RUF012`](https://docs.astral.sh/ruff/rules/mutable-class-default/) triggers on these models.
+
+Afaict, Ruff already has [exceptions for Pydantic's `BaseModel` and similar classes](https://github.com/astral-sh/ruff/blob/5fc8e5d80e201654774ccc0d509d6e6d55b6db05/crates/ruff_linter/src/rules/ruff/rules/helpers.rs#L180-L192); I guess these should basically be extended to the `SQLModel` class…?
+
+[The `SQLModel` code says that it's a subclass of `BaseModel`](https://github.com/fastapi/sqlmodel/blob/8c275289f228a2834c7285972a5006229f41f3cf/sqlmodel/main.py#L772), not sure why Ruff doesn't recognize it; Python does.
+
+The following code demonstrates the behavior:
+
+```python
+from __future__ import annotations
+
+from pydantic import BaseModel
+from sqlmodel import SQLModel
+
+
+class Foo(SQLModel):
+    id: int
+    bars: list[Bar] = []
+
+
+class Bar(SQLModel):
+    id: int
+    name: str
+
+
+one = Foo(id=1)
+two = Foo(id=2)
+
+one.bars.append(Bar(id=1, name="one"))
+two.bars.append(Bar(id=2, name="two"))
+
+print(one.bars)  # [Bar(id=1, name='one')]
+print(two.bars)  # [Bar(id=2, name='two')]
+print(isinstance(one, BaseModel))  # True
+```
+
+Thanks in advance for looking into this!
+
+---
+
+_Label `rule` added by @dylwil3 on 2024-12-10 18:52_
+
+---
+
+_Label `needs-decision` added by @dylwil3 on 2024-12-10 18:52_
+
+---
+
+_Comment by @dylwil3 on 2024-12-10 18:58_
+
+Thanks for submitting this issue, it's cool to learn about `SQLModel`!
+
+> [The SQLModel code says that it's a subclass of BaseModel](https://github.com/fastapi/sqlmodel/blob/8c275289f228a2834c7285972a5006229f41f3cf/sqlmodel/main.py#L772), not sure why Ruff doesn't recognize it; Python does.
+
+In general it requires more advanced type inference than what is currently available for Ruff to just "know" that `SQLModel` is a subclass of `pydantic.BaseModel`. However, we could theoretically teach Ruff this special case (or just modify the code snippet you linked to also allow subclasses of `SQLModel`).
+
+This seems somewhat reasonable, but I do worry about where we draw the line (prior to having a type checker) for this type of manually included type information, especially for types outside the standard library.
+
+---
+
+_Comment by @scy on 2024-12-10 19:27_
+
+Thanks for getting back to me so quickly. I understand that adding more and more exceptions to the codebase for third-party libraries isn't a sustainable thing to do.
+
+How about exposing a setting, like [`lint.pep8-naming.classmethod-decorators`](https://docs.astral.sh/ruff/settings/#lint_pep8-naming_classmethod-decorators) or [`lint.flake8-bugbear.extend-immutable-calls`](https://docs.astral.sh/ruff/settings/#lint_flake8-bugbear_extend-immutable-calls)? This would allow users to specify their own exceptions instead of littering `noqa` comments all over the place or disabling the rule altogether.
+
+---
+
+_Comment by @sjdemartini on 2024-12-10 23:01_
+
+I too would appreciate a setting as @scy is suggesting, which allows users to specify their own classes/subclasses that should be excluded from RUF012. I imagine the Ruff type-inference effort is still a ways off, so this could be useful in the meantime. 
+
+For instance, Pydantic docs recommend creating your own subclass of `BaseModel` for any "global" behavior changes https://docs.pydantic.dev/latest/concepts/config/#change-behaviour-globally, so using that common pattern and importing the `BaseModel` subclass across other files will inevitably lead to a lot of false positives with RUF012 (as also noted in https://github.com/astral-sh/ruff/issues/13630). 
+
+
+
+---
+
+_Comment by @MichaReiser on 2024-12-11 07:49_
+
+I slightly prefer adding `SQLModel` for now as it solves the common case at a very low cost. 
+
+---
+
+_Comment by @dylwil3 on 2024-12-11 19:42_
+
+I think I agree. Let's add `SQLModel` manually for now and forego the new configuration option in favor of type inference.
+
+---
+
+_Label `needs-decision` removed by @dylwil3 on 2024-12-11 19:42_
+
+---
+
+_Label `help wanted` added by @dylwil3 on 2024-12-11 19:42_
+
+---
+
+_Label `accepted` added by @dylwil3 on 2024-12-11 19:42_
+
+---
+
+_Closed by @dylwil3 on 2024-12-13 04:19_
+
+---
+
+_Closed by @dylwil3 on 2024-12-13 04:19_
+
+---

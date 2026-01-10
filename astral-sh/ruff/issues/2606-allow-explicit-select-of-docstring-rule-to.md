@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-06T12:07:46Z
 updated_at: 2024-08-15T09:04:30Z
 url: https://github.com/astral-sh/ruff/issues/2606
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Allow explicit select of docstring rule to override configured convention
@@ -62,14 +62,6 @@ It probably makes sense to treat `convention` as equivalent to inlining an `exte
 _Comment by @ngnpope on 2023-02-06 18:37_
 
 Aye, that sounds like how I expected it to work
-
----
-
-_Referenced in [astral-sh/ruff#2672](../../astral-sh/ruff/issues/2672.md) on 2023-02-08 23:57_
-
----
-
-_Referenced in [manzt/anywidget#56](../../manzt/anywidget/pulls/56.md) on 2023-02-15 21:19_
 
 ---
 
@@ -270,10 +262,6 @@ For now, I expanded on the documentation in #5819.
 
 ---
 
-_Referenced in [pydev-guide/pyrepo-copier#18](../../pydev-guide/pyrepo-copier/issues/18.md) on 2023-10-27 14:22_
-
----
-
 _Comment by @alanhdu on 2023-11-09 03:21_
 
 I've been taking a look at this and quite surprised by the behavior. From a code POV, I think the fix should be simple: changing
@@ -300,14 +288,6 @@ _Comment by @charliermarsh on 2023-11-09 05:00_
 
 @alanhdu -- Thanks for taking a look! I think the fix isn't quite that simple. We probably need some logic like: if the rule wasn't _explicitly_ selected (like `--select D200`, as opposed to `--select D`), then we should force it off. For each `rules_to_be_ignored`, we could check if the rule was included verbatim in any of the `select` or `extend_select` selectors?
 
-
----
-
-_Referenced in [astral-sh/ruff#8020](../../astral-sh/ruff/issues/8020.md) on 2023-11-09 05:03_
-
----
-
-_Referenced in [astral-sh/ruff#8586](../../astral-sh/ruff/pulls/8586.md) on 2023-11-09 17:42_
 
 ---
 
@@ -346,13 +326,5 @@ convention = "numpy"
 ```
 
 
-
----
-
-_Referenced in [dyvasey/gdtchron#3](../../dyvasey/gdtchron/pulls/3.md) on 2025-05-30 19:05_
-
----
-
-_Referenced in [f-dangel/torch-jet#100](../../f-dangel/torch-jet/pulls/100.md) on 2025-10-23 06:43_
 
 ---

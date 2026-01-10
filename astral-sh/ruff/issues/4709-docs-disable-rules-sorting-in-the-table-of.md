@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-29T20:24:41Z
 updated_at: 2023-05-29T22:20:43Z
 url: https://github.com/astral-sh/ruff/issues/4709
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # docs: Disable rules sorting in the table of contents
@@ -53,10 +53,6 @@ But it turns out that these are links to pypi packages, not links within the pag
 _Comment by @charliermarsh on 2023-05-29 21:53_
 
 Oh, no problem. Yeah, I can see why that's confusing. It may not be correct to include those at all in this context, since the rules are enumerated on the left anyway.
-
----
-
-_Referenced in [astral-sh/ruff#4715](../../astral-sh/ruff/pulls/4715.md) on 2023-05-29 22:11_
 
 ---
 

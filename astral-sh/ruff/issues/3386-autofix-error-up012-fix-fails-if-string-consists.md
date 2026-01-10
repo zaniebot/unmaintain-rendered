@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-03-07T15:34:39Z
 updated_at: 2023-03-08T10:22:39Z
 url: https://github.com/astral-sh/ruff/issues/3386
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # [Autofix error] UP012 fix fails if string consists of multiple parts
@@ -95,10 +95,6 @@ _Label `autofix` added by @charliermarsh on 2023-03-07 15:36_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-03-07 19:45_
-
----
-
-_Referenced in [astral-sh/ruff#3391](../../astral-sh/ruff/pulls/3391.md) on 2023-03-07 23:22_
 
 ---
 

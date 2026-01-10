@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-11T17:54:49Z
 updated_at: 2023-09-12T15:34:06Z
 url: https://github.com/astral-sh/ruff/issues/7276
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Docs build succeeds but is not published
@@ -42,14 +42,6 @@ Suspicious of the deprecation warning for `wrangler pages publish` which is not 
 
 ---
 
-_Referenced in [astral-sh/ruff#7277](../../astral-sh/ruff/pulls/7277.md) on 2023-09-11 18:14_
-
----
-
-_Referenced in [astral-sh/ruff#7278](../../astral-sh/ruff/pulls/7278.md) on 2023-09-11 18:22_
-
----
-
 _Label `internal` added by @zanieb on 2023-09-11 18:44_
 
 ---
@@ -60,14 +52,6 @@ Attempting a manual run with the SHA instead of the tag at https://github.com/as
 
 ---
 
-_Referenced in [astral-sh/ruff#7304](../../astral-sh/ruff/pulls/7304.md) on 2023-09-12 14:58_
-
----
-
 _Closed by @zanieb on 2023-09-12 15:34_
-
----
-
-_Referenced in [astral-sh/ruff#7779](../../astral-sh/ruff/issues/7779.md) on 2023-10-03 13:42_
 
 ---

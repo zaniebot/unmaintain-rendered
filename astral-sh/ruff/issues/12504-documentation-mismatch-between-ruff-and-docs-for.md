@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-25T08:26:11Z
 updated_at: 2024-07-25T14:24:18Z
 url: https://github.com/astral-sh/ruff/issues/12504
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Documentation mismatch between `ruff` and `docs` for `f-string-in-exception`
@@ -55,10 +55,6 @@ _Comment by @UriyaHarpeness on 2024-07-25 13:58_
 
 Sigh... my bad, I'll open a PR soon.
 Thanks.
-
----
-
-_Referenced in [astral-sh/ruff#12508](../../astral-sh/ruff/pulls/12508.md) on 2024-07-25 14:05_
 
 ---
 

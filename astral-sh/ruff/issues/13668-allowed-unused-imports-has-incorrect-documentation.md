@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-07T18:39:04Z
 updated_at: 2025-01-03T15:27:11Z
 url: https://github.com/astral-sh/ruff/issues/13668
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # `allowed-unused-imports` has incorrect documentation
@@ -62,10 +62,6 @@ I'm not sure honestly. It does seem confusing if it's not necessary for some rea
 _Comment by @charliermarsh on 2024-10-08 08:30_
 
 It should only be under lint.pyflakes.
-
----
-
-_Referenced in [astral-sh/ruff#13677](../../astral-sh/ruff/pulls/13677.md) on 2024-10-08 09:46_
 
 ---
 

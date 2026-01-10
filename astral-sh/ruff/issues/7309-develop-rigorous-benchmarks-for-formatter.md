@@ -1,0 +1,46 @@
+```yaml
+number: 7309
+title: Develop rigorous benchmarks for formatter announcement
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - formatter
+assignees: []
+created_at: 2023-09-12T16:14:50Z
+updated_at: 2023-10-04T04:22:13Z
+url: https://github.com/astral-sh/ruff/issues/7309
+synced_at: 2026-01-10T11:09:49Z
+```
+
+# Develop rigorous benchmarks for formatter announcement
+
+---
+
+_Issue opened by @charliermarsh on 2023-09-12 16:14_
+
+We won't be focusing on benchmarks for the Alpha. But when we release the Beta, we'll want to include benchmarks against Black (with and without `--fast`, with and without caching), both on the CLI and for the VS Code extension if possible.
+
+---
+
+_Label `formatter` added by @charliermarsh on 2023-09-12 16:14_
+
+---
+
+_Added to milestone `Formatter: Beta` by @MichaReiser on 2023-09-12 16:23_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-09-12 20:40_
+
+---
+
+_Comment by @charliermarsh on 2023-10-04 04:22_
+
+Happy with the current benchmarks. We're probably not gonna do LSP benchmarks for the announcement, just a GIF or similar if it proves helpful.
+
+---
+
+_Closed by @charliermarsh on 2023-10-04 04:22_
+
+---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-02T12:23:37Z
 updated_at: 2023-08-24T12:09:27Z
 url: https://github.com/astral-sh/ruff/issues/6271
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Formatter: overlong values without breakpoint are never parenthesized
@@ -67,10 +67,6 @@ _Label `formatter` added by @konstin on 2023-08-02 12:23_
 
 ---
 
-_Referenced in [astral-sh/ruff#6151](../../astral-sh/ruff/pulls/6151.md) on 2023-08-02 12:26_
-
----
-
 _Renamed from "Formatter: overlong attribute chains should be wrapped in parentheses" to "Formatter: overlong value in assignment position without breakpoint are wrongly formatted" by @konstin on 2023-08-02 12:28_
 
 ---
@@ -99,14 +95,6 @@ This is the same as https://github.com/astral-sh/ruff/issues/6059.
 
 ---
 
-_Referenced in [astral-sh/ruff#6059](../../astral-sh/ruff/issues/6059.md) on 2023-08-03 06:05_
-
----
-
-_Referenced in [astral-sh/ruff#6203](../../astral-sh/ruff/issues/6203.md) on 2023-08-03 06:05_
-
----
-
 _Renamed from "Formatter: overlong values in assignment position without breakpoint are wrongly formatted" to "Formatter: overlong values without breakpoint are parenthesized" by @MichaReiser on 2023-08-03 06:06_
 
 ---
@@ -123,38 +111,6 @@ _Assigned to @MichaReiser by @MichaReiser on 2023-08-17 09:42_
 
 ---
 
-_Referenced in [astral-sh/ruff#6734](../../astral-sh/ruff/pulls/6734.md) on 2023-08-21 15:24_
-
----
-
-_Referenced in [astral-sh/ruff#5893](../../astral-sh/ruff/issues/5893.md) on 2023-08-22 15:03_
-
----
-
-_Referenced in [astral-sh/ruff#6069](../../astral-sh/ruff/issues/6069.md) on 2023-08-22 15:09_
-
----
-
-_Referenced in [astral-sh/ruff#6814](../../astral-sh/ruff/pulls/6814.md) on 2023-08-23 13:38_
-
----
-
-_Referenced in [astral-sh/ruff#6816](../../astral-sh/ruff/pulls/6816.md) on 2023-08-23 16:11_
-
----
-
-_Referenced in [astral-sh/ruff#6817](../../astral-sh/ruff/pulls/6817.md) on 2023-08-23 16:49_
-
----
-
 _Closed by @MichaReiser on 2023-08-24 12:09_
-
----
-
-_Referenced in [astral-sh/ruff#7067](../../astral-sh/ruff/issues/7067.md) on 2023-09-02 18:50_
-
----
-
-_Referenced in [astral-sh/ruff#14086](../../astral-sh/ruff/issues/14086.md) on 2024-11-04 06:25_
 
 ---

@@ -13,7 +13,7 @@ assignees: []
 created_at: 2025-07-09T07:07:35Z
 updated_at: 2025-11-18T15:48:16Z
 url: https://github.com/astral-sh/ruff/issues/19226
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Panic `assertion failed: start.raw <= end.raw` in `ruff_python_formatter/src/expression/binary_like.rs`
@@ -350,29 +350,13 @@ if '' and (not #
 
 ---
 
-_Referenced in [astral-sh/ruff#20482](../../astral-sh/ruff/issues/20482.md) on 2025-09-19 13:37_
-
----
-
 _Comment by @TaKO8Ki on 2025-09-21 15:44_
 
 I will take this one.
 
 ---
 
-_Referenced in [astral-sh/ruff#20494](../../astral-sh/ruff/pulls/20494.md) on 2025-09-21 17:08_
-
----
-
 _Assigned to @TaKO8Ki by @ntBre on 2025-09-22 13:39_
-
----
-
-_Referenced in [astral-sh/ruff#21410](../../astral-sh/ruff/pulls/21410.md) on 2025-11-12 20:37_
-
----
-
-_Referenced in [astral-sh/ruff#21501](../../astral-sh/ruff/pulls/21501.md) on 2025-11-17 16:15_
 
 ---
 

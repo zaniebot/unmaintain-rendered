@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-14T00:28:46Z
 updated_at: 2024-09-19T16:47:19Z
 url: https://github.com/astral-sh/ruff/issues/13349
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # FURB188 ignores the slice’s step
@@ -46,10 +46,6 @@ Thanks! I'm visiting family the next few days but I should be able to fix this e
 ---
 
 _Label `bug` added by @charliermarsh on 2024-09-17 14:08_
-
----
-
-_Referenced in [astral-sh/ruff#13405](../../astral-sh/ruff/pulls/13405.md) on 2024-09-19 04:15_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-29T21:01:57Z
 updated_at: 2024-04-30T16:01:09Z
 url: https://github.com/astral-sh/ruff/issues/11208
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # B024 false negative when there's a class var
@@ -81,14 +81,6 @@ _Label `rule` added by @charliermarsh on 2024-04-30 03:39_
 
 ---
 
-_Referenced in [astral-sh/ruff#11210](../../astral-sh/ruff/pulls/11210.md) on 2024-04-30 03:40_
-
----
-
 _Closed by @charliermarsh on 2024-04-30 16:01_
-
----
-
-_Referenced in [PyCQA/flake8-bugbear#471](../../PyCQA/flake8-bugbear/issues/471.md) on 2024-04-30 23:45_
 
 ---

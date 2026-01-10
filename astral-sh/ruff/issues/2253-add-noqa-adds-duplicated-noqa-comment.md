@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-27T14:23:59Z
 updated_at: 2023-02-02T02:58:03Z
 url: https://github.com/astral-sh/ruff/issues/2253
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # --add-noqa adds duplicated noqa comment
@@ -57,26 +57,10 @@ yes, `ruff --select RUF100,F401 --fix foo.py` restores the original version
 
 ---
 
-_Referenced in [astral-sh/ruff#2198](../../astral-sh/ruff/issues/2198.md) on 2023-01-27 14:46_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-02 02:45_
 
 ---
 
-_Referenced in [astral-sh/ruff#2464](../../astral-sh/ruff/pulls/2464.md) on 2023-02-02 02:47_
-
----
-
 _Closed by @charliermarsh on 2023-02-02 02:58_
-
----
-
-_Referenced in [astral-sh/ruff#17783](../../astral-sh/ruff/pulls/17783.md) on 2025-05-02 22:47_
-
----
-
-_Referenced in [mr-narender/ruff#54](../../mr-narender/ruff/pulls/54.md) on 2025-05-03 16:04_
 
 ---

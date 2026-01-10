@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-15T09:35:44Z
 updated_at: 2023-11-16T22:21:35Z
 url: https://github.com/astral-sh/ruff/issues/8690
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # `INP001`: Skip scripts, for example Python files with shebang
@@ -41,10 +41,6 @@ There are multiple criteria that each imply a file is a script, in particular in
 - It's outside the `src` directory (only necessary and sufficient if you stick to the [src-layout](https://setuptools.pypa.io/en/latest/userguide/package_discovery.html#src-layout), perhaps).
 
 ruff 0.1.5.
-
----
-
-_Referenced in [astral-sh/ruff#6474](../../astral-sh/ruff/issues/6474.md) on 2023-11-15 09:38_
 
 ---
 
@@ -100,14 +96,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-11-16 01:12_
 
 ---
 
-_Referenced in [astral-sh/ruff#8710](../../astral-sh/ruff/pulls/8710.md) on 2023-11-16 02:23_
-
----
-
 _Closed by @charliermarsh on 2023-11-16 22:21_
-
----
-
-_Referenced in [astral-sh/ruff#13912](../../astral-sh/ruff/issues/13912.md) on 2024-10-24 14:21_
 
 ---

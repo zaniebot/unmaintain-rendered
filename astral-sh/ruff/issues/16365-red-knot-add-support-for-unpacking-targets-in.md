@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-25T10:33:50Z
 updated_at: 2025-03-08T02:36:37Z
 url: https://github.com/astral-sh/ruff/issues/16365
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [red-knot] Add support for unpacking targets in `with` statement
@@ -89,10 +89,6 @@ I'd like to give this a try
 ---
 
 _Assigned to @ericmarkmartin by @AlexWaygood on 2025-03-01 18:15_
-
----
-
-_Referenced in [astral-sh/ruff#16469](../../astral-sh/ruff/pulls/16469.md) on 2025-03-03 06:28_
 
 ---
 

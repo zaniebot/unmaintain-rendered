@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-05T16:31:15Z
 updated_at: 2025-04-02T12:38:27Z
 url: https://github.com/astral-sh/ruff/issues/16520
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Flag starred expressions in `return` and `yield`
@@ -98,10 +98,6 @@ Good call. Some of the existing errors listed in https://github.com/astral-sh/ru
 
 ---
 
-_Referenced in [astral-sh/ruff#16485](../../astral-sh/ruff/pulls/16485.md) on 2025-03-06 09:40_
-
----
-
 _Comment by @dhruvmanila on 2025-03-06 09:40_
 
 (I think from Python 3.9, you can test the CPython parser directly using `python -m ast path/to/file.py`.)
@@ -125,18 +121,6 @@ Type "help", "copyright", "credits" or "license" for more information.
 SyntaxError: can't use starred expression here
 >>>
 ```
-
----
-
-_Referenced in [astral-sh/ruff#16558](../../astral-sh/ruff/pulls/16558.md) on 2025-03-07 19:42_
-
----
-
-_Referenced in [astral-sh/ruff#11934](../../astral-sh/ruff/issues/11934.md) on 2025-04-01 19:10_
-
----
-
-_Referenced in [astral-sh/ruff#17134](../../astral-sh/ruff/pulls/17134.md) on 2025-04-01 20:21_
 
 ---
 

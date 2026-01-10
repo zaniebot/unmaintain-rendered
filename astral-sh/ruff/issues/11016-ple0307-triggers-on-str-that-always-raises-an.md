@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-18T20:52:43Z
 updated_at: 2024-04-18T22:55:17Z
 url: https://github.com/astral-sh/ruff/issues/11016
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # PLE0307 triggers on `__str__` that always raises an exception
@@ -40,10 +40,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-04-18 20:53_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-04-18 20:53_
-
----
-
-_Referenced in [astral-sh/ruff#11017](../../astral-sh/ruff/pulls/11017.md) on 2024-04-18 21:21_
 
 ---
 

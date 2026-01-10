@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-20T21:21:37Z
 updated_at: 2025-02-21T03:20:24Z
 url: https://github.com/astral-sh/ruff/issues/5930
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Can respect-gitignore respect gitignore when not in a git repo
@@ -58,10 +58,6 @@ _Comment by @erykoff on 2023-07-20 21:27_
 
 ---
 
-_Referenced in [lsst/sconsUtils#117](../../lsst/sconsUtils/pulls/117.md) on 2023-07-20 21:37_
-
----
-
 _Comment by @charliermarsh on 2023-07-21 01:16_
 
 It seems reasonable to enable, PR welcome if anyone's interested :)
@@ -76,19 +72,7 @@ _Assigned to @dhruvmanila by @dhruvmanila on 2023-07-21 02:15_
 
 ---
 
-_Referenced in [astral-sh/ruff#5937](../../astral-sh/ruff/pulls/5937.md) on 2023-07-21 02:17_
-
----
-
 _Closed by @charliermarsh on 2023-07-21 02:35_
-
----
-
-_Referenced in [astral-sh/ruff#6335](../../astral-sh/ruff/issues/6335.md) on 2023-08-05 19:12_
-
----
-
-_Referenced in [astral-sh/ruff#6368](../../astral-sh/ruff/pulls/6368.md) on 2023-08-05 19:35_
 
 ---
 
@@ -97,10 +81,6 @@ _Comment by @charliermarsh on 2023-08-05 19:38_
 Unfortunately I ended up having to revert this as it led to some undesirable behavior (namely, that `.gitignore` files in parent directories now affect all child directories, even if the child directory is itself a git repo with its own `.gitignore` -- see https://github.com/astral-sh/ruff/issues/6335).
 
 We could consider adding a `--no-require-git` flag similar to ripgrep, though it'd be nice if we could find a solution that didn't require adding new configuration options and new command-line flags, since every additional flag comes with some maintenance and cognitive cost. For now I would suggest trying to use `.ignore` in some capacity.
-
----
-
-_Referenced in [astral-sh/ruff#12644](../../astral-sh/ruff/issues/12644.md) on 2024-08-02 19:49_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-01T16:07:37Z
 updated_at: 2024-11-14T15:13:50Z
 url: https://github.com/astral-sh/ruff/issues/9757
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # [FEATURE] Support attrs in RUF008 and RUF009
@@ -66,10 +66,6 @@ I was recently bit by the lack of these rules working with attrs. So I also wish
 _Comment by @alanhdu on 2024-10-03 03:18_
 
 Ah yes, sorry -- I have gotten distracted by other things at work. I hopefully will still get to this "at some point", but if anyone else has time they should feel free to implement it themselves.
-
----
-
-_Referenced in [astral-sh/ruff#14327](../../astral-sh/ruff/pulls/14327.md) on 2024-11-14 00:06_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-02T00:39:26Z
 updated_at: 2023-01-02T19:05:59Z
 url: https://github.com/astral-sh/ruff/issues/1542
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T12:05:30Z
 ```
 
 # ERA001 skipping some lines
@@ -98,10 +98,6 @@ _Comment by @charliermarsh on 2023-01-02 18:55_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-01-02 18:56_
-
----
-
-_Referenced in [astral-sh/ruff#1559](../../astral-sh/ruff/pulls/1559.md) on 2023-01-02 19:05_
 
 ---
 

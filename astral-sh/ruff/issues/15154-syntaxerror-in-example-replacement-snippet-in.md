@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-26T22:06:21Z
 updated_at: 2024-12-27T12:15:14Z
 url: https://github.com/astral-sh/ruff/issues/15154
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # `SyntaxError` in example replacement snippet in `nonlocal-without-binding` (`PLE0117`)
@@ -74,10 +74,6 @@ _Comment by @enochkan on 2024-12-26 23:46_
 
 Assuming this is the only fix: https://github.com/astral-sh/ruff/commit/54170c33fdc79de18b9fa1e7c516d3b530a763b2 ?
 
-
----
-
-_Referenced in [astral-sh/ruff#15157](../../astral-sh/ruff/pulls/15157.md) on 2024-12-26 23:53_
 
 ---
 

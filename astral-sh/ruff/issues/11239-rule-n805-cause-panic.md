@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-02T07:08:40Z
 updated_at: 2024-05-02T17:59:41Z
 url: https://github.com/astral-sh/ruff/issues/11239
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Rule N805 cause panic
@@ -205,10 +205,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-05-02 17:00_
 _Comment by @charliermarsh on 2024-05-02 17:11_
 
 This is just a debug assertion.
-
----
-
-_Referenced in [astral-sh/ruff#11249](../../astral-sh/ruff/pulls/11249.md) on 2024-05-02 17:28_
 
 ---
 

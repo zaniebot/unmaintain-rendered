@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-05T16:44:24Z
 updated_at: 2025-01-02T09:00:58Z
 url: https://github.com/astral-sh/ruff/issues/14793
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # `RUF046` is doing two things instead of one
@@ -77,14 +77,6 @@ I intend to extend `unnecessary-cast-to-int` so that it can detect complex expre
 
 ---
 
-_Referenced in [astral-sh/ruff#14828](../../astral-sh/ruff/pulls/14828.md) on 2024-12-07 00:34_
-
----
-
 _Closed by @MichaReiser on 2025-01-02 09:00_
-
----
-
-_Referenced in [astral-sh/ruff#15481](../../astral-sh/ruff/issues/15481.md) on 2025-01-14 21:58_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-09T04:59:33Z
 updated_at: 2023-01-09T05:36:17Z
 url: https://github.com/astral-sh/ruff/issues/1741
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # ARG002 and Protocols
@@ -55,10 +55,6 @@ class Example(Protocol):
         ...
 ```
 
-
----
-
-_Referenced in [astral-sh/ruff#1742](../../astral-sh/ruff/pulls/1742.md) on 2023-01-09 05:24_
 
 ---
 

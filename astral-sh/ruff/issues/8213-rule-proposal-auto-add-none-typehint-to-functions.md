@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-25T12:45:51Z
 updated_at: 2023-11-14T04:34:17Z
 url: https://github.com/astral-sh/ruff/issues/8213
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Rule proposal: Auto-add `-> None` typehint to functions
@@ -39,10 +39,6 @@ Also, maybe it makes sense to allocate a specific range of RUF codes for typehin
 
 ---
 
-_Referenced in [astral-sh/ruff#8212](../../astral-sh/ruff/pulls/8212.md) on 2023-10-25 13:48_
-
----
-
 _Comment by @henryiii on 2023-10-26 13:52_
 
 Also, remember that `-> None` isn't required on `__init__` functions unless there are no typed arguments.
@@ -50,10 +46,6 @@ Also, remember that `-> None` isn't required on `__init__` functions unless ther
 ---
 
 _Label `autofix` added by @charliermarsh on 2023-10-26 15:11_
-
----
-
-_Referenced in [astral-sh/ruff#8643](../../astral-sh/ruff/pulls/8643.md) on 2023-11-13 04:44_
 
 ---
 

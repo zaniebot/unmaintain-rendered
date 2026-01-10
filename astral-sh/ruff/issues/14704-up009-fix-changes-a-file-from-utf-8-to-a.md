@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-12-01T22:53:00Z
 updated_at: 2024-12-11T10:30:42Z
 url: https://github.com/astral-sh/ruff/issues/14704
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # UP009 fix changes a file from UTF-8 to a different declared encoding
@@ -78,10 +78,6 @@ _Label `help wanted` added by @AlexWaygood on 2024-12-01 23:11_
 _Comment by @MichaReiser on 2024-12-02 07:55_
 
 Somewhat related to https://github.com/astral-sh/ruff/issues/6791
-
----
-
-_Referenced in [astral-sh/ruff#14728](../../astral-sh/ruff/pulls/14728.md) on 2024-12-02 13:06_
 
 ---
 

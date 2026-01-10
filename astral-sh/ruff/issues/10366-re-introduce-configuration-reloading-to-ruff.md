@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-12T17:34:08Z
 updated_at: 2024-03-21T20:17:08Z
 url: https://github.com/astral-sh/ruff/issues/10366
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Re-introduce configuration reloading to `ruff server`
@@ -35,14 +35,6 @@ _Assigned to @snowsignal by @snowsignal on 2024-03-12 17:34_
 ---
 
 _Label `configuration` added by @snowsignal on 2024-03-12 17:37_
-
----
-
-_Referenced in [astral-sh/ruff#10399](../../astral-sh/ruff/pulls/10399.md) on 2024-03-14 00:57_
-
----
-
-_Referenced in [astral-sh/ruff#10404](../../astral-sh/ruff/pulls/10404.md) on 2024-03-14 02:47_
 
 ---
 

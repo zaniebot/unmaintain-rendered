@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-03T16:27:35Z
 updated_at: 2023-01-25T23:21:26Z
 url: https://github.com/astral-sh/ruff/issues/1603
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Warning `D203` and `D211` are incompatible always raised
@@ -95,10 +95,6 @@ _Comment by @charliermarsh on 2023-01-03 18:24_
 
 ---
 
-_Referenced in [astral-sh/ruff#1611](../../astral-sh/ruff/pulls/1611.md) on 2023-01-04 01:34_
-
----
-
 _Comment by @ManonMarchand on 2023-01-04 08:40_
 
 Perfect like this thanks a lot! Maybe you could also consider changing the warning message to `Consider adding 'D103' to extend-ignore.` ?
@@ -131,9 +127,5 @@ Taking a look.
 _Comment by @charliermarsh on 2023-01-25 23:21_
 
 The warning is spurious -- it's happening in the wrong place. I'll fix it now.
-
----
-
-_Referenced in [astral-sh/ruff#2182](../../astral-sh/ruff/pulls/2182.md) on 2023-01-25 23:26_
 
 ---

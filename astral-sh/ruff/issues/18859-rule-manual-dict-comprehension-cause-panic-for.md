@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-22T13:29:04Z
 updated_at: 2025-06-25T08:44:34Z
 url: https://github.com/astral-sh/ruff/issues/18859
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Rule `manual_dict_comprehension` cause panic `for-loop target binding must exist` (probably PERF403 - debug assert)
@@ -187,10 +187,6 @@ _Label `bug` added by @ntBre on 2025-06-22 14:42_
 ---
 
 _Label `fuzzer` added by @ntBre on 2025-06-22 14:42_
-
----
-
-_Referenced in [astral-sh/ruff#18866](../../astral-sh/ruff/pulls/18866.md) on 2025-06-22 20:57_
 
 ---
 

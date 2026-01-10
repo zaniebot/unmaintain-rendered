@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-25T09:10:15Z
 updated_at: 2023-10-23T10:04:22Z
 url: https://github.com/astral-sh/ruff/issues/7646
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Warn about options conflicting with the formatter
@@ -28,10 +28,6 @@ Internal: https://www.notion.so/astral-sh/Configuration-c291a149e50f438083221a65
 
 ---
 
-_Referenced in [astral-sh/ruff#7642](../../astral-sh/ruff/issues/7642.md) on 2023-09-25 09:10_
-
----
-
 _Label `configuration` added by @MichaReiser on 2023-09-25 09:38_
 
 ---
@@ -44,15 +40,7 @@ _Added to milestone `Formatter: Beta` by @MichaReiser on 2023-09-25 09:39_
 
 ---
 
-_Referenced in [astral-sh/ruff#2319](../../astral-sh/ruff/issues/2319.md) on 2023-10-07 13:28_
-
----
-
 _Assigned to @MichaReiser by @MichaReiser on 2023-10-20 01:10_
-
----
-
-_Referenced in [astral-sh/ruff#8088](../../astral-sh/ruff/pulls/8088.md) on 2023-10-20 04:54_
 
 ---
 

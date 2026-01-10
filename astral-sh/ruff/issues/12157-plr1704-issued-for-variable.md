@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-02T21:10:36Z
 updated_at: 2024-07-04T20:09:32Z
 url: https://github.com/astral-sh/ruff/issues/12157
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # PLR1704 issued for `_` variable
@@ -66,14 +66,6 @@ _Label `rule` added by @zanieb on 2024-07-02 21:23_
 _Comment by @charliermarsh on 2024-07-02 21:43_
 
 Thanks, we probably need to check this against [`dummy-variable-rgx`](https://docs.astral.sh/ruff/settings/#lint_dummy-variable-rgx). Good first issue!
-
----
-
-_Referenced in [cocotb/cocotb#4000](../../cocotb/cocotb/pulls/4000.md) on 2024-07-03 04:03_
-
----
-
-_Referenced in [astral-sh/ruff#12190](../../astral-sh/ruff/pulls/12190.md) on 2024-07-04 18:32_
 
 ---
 

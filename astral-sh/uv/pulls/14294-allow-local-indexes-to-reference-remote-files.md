@@ -13,7 +13,7 @@ head: charlie/p
 created_at: 2025-06-26T19:56:24Z
 updated_at: 2025-06-26T20:17:43Z
 url: https://github.com/astral-sh/uv/pull/14294
-synced_at: 2026-01-10T07:01:23Z
+synced_at: 2026-01-10T11:10:43Z
 ```
 
 # Allow local indexes to reference remote files
@@ -76,5 +76,21 @@ wheels = [
     { url = "https://cdn.jsdelivr.net/pyodide/v0.27.7/full/sniffio-1.3.1-py3-none-any.whl", hash = "sha256:9215f9917b34fc73152b134a3fc0a2eb0e4a49b0b956100cad75e84943412bb9" },
 ]
 ```
+
+---
+
+_Label `bug` added by @charliermarsh on 2025-06-26 19:56_
+
+---
+
+_Merged by @charliermarsh on 2025-06-26 20:17_
+
+---
+
+_Closed by @charliermarsh on 2025-06-26 20:17_
+
+---
+
+_Branch deleted on 2025-06-26 20:17_
 
 ---

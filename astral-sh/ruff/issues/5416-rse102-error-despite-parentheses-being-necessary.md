@@ -1,0 +1,233 @@
+```yaml
+number: 5416
+title: RSE102 error despite parentheses being necessary
+type: issue
+state: closed
+author: sultur
+labels:
+  - bug
+assignees: []
+created_at: 2023-06-28T10:57:42Z
+updated_at: 2024-03-03T00:22:44Z
+url: https://github.com/astral-sh/ruff/issues/5416
+synced_at: 2026-01-10T11:09:47Z
+```
+
+# RSE102 error despite parentheses being necessary
+
+---
+
+_Issue opened by @sultur on 2023-06-28 10:57_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+Hello, thank you for ruff, it's fantastic!
+I encountered this small bug regarding rule RSE102.
+
+Ruff version: `ruff 0.0.274`
+Ruff settings: All rules turned on (ignoring a few specific ones, not relevant here).
+
+Minimal code snippet:
+```python3
+def return_error():
+    return ValueError("Something")
+
+raise return_error()
+```
+Commands to reproduce:
+```sh
+$ ruff bug.py
+test.py:4:19: RSE102 [*] Unnecessary parentheses on raised exception
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+$ ruff bug.py --fix
+Found 1 error (1 fixed, 0 remaining).
+```
+Resulting file after autofix:
+```python3
+def return_error():
+    return ValueError("Something")
+
+raise return_error
+```
+
+Issue:
+The line `raise return_error()` is diagnosed as violating RSE102 (Unecessary parentheses on raised exception), despite the parentheses being necessary.
+This gets autofixed as `raise return_error`, which raises a `TypeError` (as the function isn't an exception) instead of a `ValueError`.
+
+---
+
+Solution idea _(I took a quick glance at the changes in https://github.com/astral-sh/ruff/pull/2596, but I'm not well versed enough in Rust to fully understand them.)_:
+When autofixing, instead of removing any empty parentheses at the end of `raise ...` lines, only attempt to remove them when they come directly after the name of a built-in exception (e.g. `ValueError`, `TypeError`, `(asyncio.)?CancelledError`, etc.).
+
+So lines like
+```python3
+raise NotImplementedError()
+raise ValueError()
+```
+can be autofixed into
+```python3
+raise NotImplementedError
+raise ValueError
+```
+but lines like
+```python3
+raise SomeCustomError()
+# or
+raise my_error_function()
+```
+would require manual fixing.
+
+Maybe you have some more clever solution to this than matching a long list of built-in exceptions, but I hope this helps though!
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-06-28 20:02_
+
+---
+
+_Comment by @charliermarsh on 2023-06-28 20:03_
+
+Thank you for the kind words :)
+
+So, I think the issue here is that a function call (rather than a class instantiation) is being passed to the `raise` statement, which is not invalid per se, but does strike me as non-idiomatic (FWIW). It's totally fine to call `raise MyCustomError` on custom errors, they just have to be classes, per the [Python docs](https://docs.python.org/3/tutorial/errors.html#raising-exceptions):
+
+> If an exception class is passed, it will be implicitly instantiated by calling its constructor with no arguments.
+
+In other words, what we'd like to do here is guard against triggering `RSE102` on `raise foo()` where `foo` is a function, not a class.
+
+
+---
+
+_Comment by @sultur on 2023-06-29 09:30_
+
+I agree, the raising from a function example is a bit odd :).
+
+I encountered this in a situation closer to the following example (perhaps a bit less odd? Still raising from a function call though):
+```python3
+class CustomError(Exception):
+    def __init__(self, msg: str):
+        self.msg = msg
+
+    @staticmethod
+    def timeout():
+        return CustomError("Operation timed out!")
+
+raise CustomError.timeout()
+```
+These kinds of instantiations of exceptions of course don't trigger RSE102 when they are called with arguments.
+
+But if you have a way of distinguishing function calls from class instantiations with no arguments, then that would of course be the perfect solution!
+
+---
+
+_Comment by @charliermarsh on 2023-07-05 02:12_
+
+This is being worked on in #5536.
+
+---
+
+_Closed by @charliermarsh on 2023-07-05 19:19_
+
+---
+
+_Comment by @sultur on 2023-07-06 09:26_
+
+Great work! Thank you for the quick response and fix. Looking forward to this in upcoming releases :)
+
+---
+
+_Comment by @lostcontrol on 2023-08-18 12:04_
+
+Still occurs to me in 0.0.285. Is that expected?
+
+---
+
+_Comment by @charliermarsh on 2023-08-18 13:30_
+
+I think the current version only works for definitions and `raises` that occur in the same file. Fixing this for multi-file references will be part of a larger project. Can you post a repro for your use-case?
+
+---
+
+_Comment by @lostcontrol on 2023-08-21 07:29_
+
+> I think the current version only works for definitions and `raises` that occur in the same file. Fixing this for multi-file references will be part of a larger project. Can you post a repro for your use-case?
+
+Indeed, that's the problem.
+
+`custom.py`
+```python
+class CustomError(Exception):
+    def __init__(self, msg: str):
+        self.msg = msg
+
+    @staticmethod
+    def timeout():
+        return CustomError("Operation timed out!")
+```
+
+`bug.py`
+```python
+from backend.ruff_bug.custom import CustomError
+
+raise CustomError().timeout()
+```
+
+Auto-fix will remove the method call:
+
+`bug.py`
+```python
+from ruff_bug.custom import CustomError
+
+raise CustomError().timeout
+```
+
+---
+
+_Comment by @tdulcet on 2023-08-21 14:37_
+
+Raising [`ctypes.WinError()`](https://docs.python.org/3/library/ctypes.html#ctypes.WinError) also triggers this. There is a [code snippet here](https://code.activestate.com/recipes/577972-disk-usage/) for example.
+
+---
+
+_Comment by @charliermarsh on 2023-08-21 14:39_
+
+Wow, that's a function? That's a rough API. Anyway, we can special-case it.
+
+---
+
+_Comment by @joostmeulenbeld on 2024-02-20 12:50_
+
+An example from the python standard library: `concurrent.futures.Future.exception()` returns an exception raised by the called function, or `None` if no exception was raised.
+
+```python
+from concurrent.futures import ThreadPoolExecutor
+
+with ThreadPoolExecutor() as executor:
+    future = executor.submit(float, "a")
+    if future.exception():
+        raise future.exception()  # RSE102 Unnecessary parentheses on raised exception
+```
+
+---
+
+_Comment by @Rizhiy on 2024-03-02 22:59_
+
+@charliermarsh `future.exception()` example given above is part of the standard library and should not be linted.
+Can we get a fix, please?
+
+---
+
+_Comment by @charliermarsh on 2024-03-03 00:22_
+
+Fixed here: https://github.com/astral-sh/ruff/pull/10206
+
+---

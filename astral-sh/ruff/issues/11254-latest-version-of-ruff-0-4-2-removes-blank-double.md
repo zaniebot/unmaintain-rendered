@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-02T23:21:12Z
 updated_at: 2024-08-08T06:01:43Z
 url: https://github.com/astral-sh/ruff/issues/11254
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Latest version of ruff (0.4.2) removes blank double blank line that was allowed previously
@@ -137,13 +137,5 @@ _Comment by @taranlu-houzz on 2024-08-06 23:48_
 _Comment by @MichaReiser on 2024-08-08 06:01_
 
 Hi @taranlu-houzz Sorry, I haven't had time to look into this more. 
-
----
-
-_Referenced in [astral-sh/ruff#13371](../../astral-sh/ruff/issues/13371.md) on 2024-09-16 16:19_
-
----
-
-_Referenced in [astral-sh/ruff#20482](../../astral-sh/ruff/issues/20482.md) on 2025-09-19 13:37_
 
 ---

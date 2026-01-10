@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-09T14:53:32Z
 updated_at: 2023-05-17T01:36:12Z
 url: https://github.com/astral-sh/ruff/issues/4308
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Implement useless try-except detection (`TRY302`)
@@ -71,10 +71,6 @@ _Label `rule` added by @charliermarsh on 2023-05-10 14:14_
 
 ---
 
-_Referenced in [guilatrova/tryceratops#58](../../guilatrova/tryceratops/issues/58.md) on 2023-05-10 14:17_
-
----
-
 _Comment by @JonathanPlasse on 2023-05-13 19:28_
 
 It has been implemented by `tryceratops`.
@@ -87,10 +83,6 @@ _Label `good first issue` added by @charliermarsh on 2023-05-13 19:43_
 ---
 
 _Renamed from "Suggestion: Useless try/except" to "Implement useless try-except detection (`TRY302`)" by @charliermarsh on 2023-05-13 19:43_
-
----
-
-_Referenced in [astral-sh/ruff#4461](../../astral-sh/ruff/pulls/4461.md) on 2023-05-16 22:40_
 
 ---
 

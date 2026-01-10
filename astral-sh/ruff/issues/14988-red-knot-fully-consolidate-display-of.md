@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-15T18:02:36Z
 updated_at: 2025-01-08T00:58:40Z
 url: https://github.com/astral-sh/ruff/issues/14988
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] fully consolidate display of heterogenous unions of literals
@@ -32,15 +32,7 @@ _Label `red-knot` added by @carljm on 2024-12-15 18:02_
 
 ---
 
-_Referenced in [astral-sh/ruff#14981](../../astral-sh/ruff/issues/14981.md) on 2024-12-15 18:02_
-
----
-
 _Label `help wanted` added by @carljm on 2024-12-15 18:02_
-
----
-
-_Referenced in [astral-sh/ruff#14993](../../astral-sh/ruff/pulls/14993.md) on 2024-12-15 20:32_
 
 ---
 

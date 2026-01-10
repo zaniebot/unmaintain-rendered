@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-07-25T08:42:58Z
 updated_at: 2023-07-25T15:54:36Z
 url: https://github.com/astral-sh/ruff/issues/6057
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # False positive `A003` when overriding `logging.Filter.filter`
@@ -46,10 +46,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-07-25 14:02_
 _Comment by @charliermarsh on 2023-07-25 15:29_
 
 I will special-case some stuff in the standard library for now.
-
----
-
-_Referenced in [astral-sh/ruff#6074](../../astral-sh/ruff/pulls/6074.md) on 2023-07-25 15:42_
 
 ---
 

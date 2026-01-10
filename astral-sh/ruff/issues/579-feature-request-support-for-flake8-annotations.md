@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-04T09:14:59Z
 updated_at: 2023-01-26T04:49:25Z
 url: https://github.com/astral-sh/ruff/issues/579
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # Feature request: support for flake8-annotations
@@ -34,10 +34,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-11-06 04:40_
 _Comment by @charliermarsh on 2022-11-06 04:40_
 
 Working on this now as it's relatively straightforward.
-
----
-
-_Referenced in [astral-sh/ruff#625](../../astral-sh/ruff/pulls/625.md) on 2022-11-06 22:03_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-08T11:03:22Z
 updated_at: 2023-06-22T09:09:45Z
 url: https://github.com/astral-sh/ruff/issues/4955
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Formatter: `ClassDef`
@@ -20,10 +20,6 @@ synced_at: 2026-01-10T01:56:47Z
 _Issue opened by @MichaReiser on 2023-06-08 11:03_
 
 _No description provided._
-
----
-
-_Referenced in [astral-sh/ruff#4798](../../astral-sh/ruff/issues/4798.md) on 2023-06-08 11:03_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-19T01:16:30Z
 updated_at: 2025-10-21T20:58:50Z
 url: https://github.com/astral-sh/ruff/issues/18778
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [flake8-simplify] SIM911 false positive when methods have args
@@ -50,10 +50,6 @@ ruff 0.12.0 (87f0feb 2025-06-17) + playground
 ---
 
 _Label `bug` added by @ntBre on 2025-06-19 12:50_
-
----
-
-_Referenced in [astral-sh/ruff#20697](../../astral-sh/ruff/pulls/20697.md) on 2025-10-04 07:41_
 
 ---
 

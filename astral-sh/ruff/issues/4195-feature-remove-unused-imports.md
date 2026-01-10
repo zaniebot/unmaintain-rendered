@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-02T17:47:38Z
 updated_at: 2023-05-04T15:35:41Z
 url: https://github.com/astral-sh/ruff/issues/4195
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # [feature] remove unused imports
@@ -45,9 +45,5 @@ Closing but let me know if I've misunderstood.
 ---
 
 _Closed by @charliermarsh on 2023-05-04 15:35_
-
----
-
-_Referenced in [DataDog/dd-trace-py#7637](../../DataDog/dd-trace-py/pulls/7637.md) on 2023-11-16 18:31_
 
 ---

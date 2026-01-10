@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-03T13:58:18Z
 updated_at: 2024-05-09T12:36:22Z
 url: https://github.com/astral-sh/ruff/issues/11263
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # `PLW1514` does not check for uses of `pathlib.Path.open()` without an explicit encoding argument.
@@ -91,10 +91,6 @@ _Label `good first issue` added by @zanieb on 2024-05-03 14:06_
 _Comment by @augustelalande on 2024-05-04 22:39_
 
 I'll implement this
-
----
-
-_Referenced in [astral-sh/ruff#11288](../../astral-sh/ruff/pulls/11288.md) on 2024-05-05 01:27_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-10-31T13:09:01Z
 updated_at: 2022-11-18T19:37:27Z
 url: https://github.com/astral-sh/ruff/issues/525
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # Implement a `--show-source` setting
@@ -47,14 +47,6 @@ Clippy is open-source so maybe parts of it can leveraged directly for this kind 
 _Comment by @squiddy on 2022-11-06 13:31_
 
 I don't think I'll get anything in a mergeable state, but I'll look into this anyway.
-
----
-
-_Referenced in [astral-sh/ruff#681](../../astral-sh/ruff/pulls/681.md) on 2022-11-11 11:56_
-
----
-
-_Referenced in [astral-sh/ruff#698](../../astral-sh/ruff/pulls/698.md) on 2022-11-12 11:42_
 
 ---
 

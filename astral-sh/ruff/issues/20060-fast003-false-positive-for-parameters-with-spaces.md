@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-25T01:02:40Z
 updated_at: 2025-08-29T13:40:27Z
 url: https://github.com/astral-sh/ruff/issues/20060
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # FAST003 false positive for parameters with spaces like `/{ x }`
@@ -61,10 +61,6 @@ $ curl 'http://127.0.0.1:8000/%7B%20x%20%7D?x=1'
 ### Version
 
 ruff 0.12.10 (c68ff8d90 2025-08-21)
-
----
-
-_Referenced in [astral-sh/ruff#20077](../../astral-sh/ruff/pulls/20077.md) on 2025-08-25 04:55_
 
 ---
 

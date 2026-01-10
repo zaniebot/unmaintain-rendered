@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-31T16:34:55Z
 updated_at: 2024-03-27T14:37:47Z
 url: https://github.com/astral-sh/ruff/issues/3831
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # False positive: B018
@@ -110,14 +110,6 @@ To me, that signals the intent that the variable is intentionally unused (and II
 
 ---
 
-_Referenced in [astropy/astropy#14692](../../astropy/astropy/pulls/14692.md) on 2023-04-26 17:09_
-
----
-
-_Referenced in [astral-sh/ruff#5006](../../astral-sh/ruff/issues/5006.md) on 2023-06-10 14:57_
-
----
-
 _Comment by @spaceone on 2023-06-10 15:05_
 
 `_` is often used as gettext translation variable.
@@ -127,14 +119,6 @@ _Comment by @spaceone on 2023-06-10 15:05_
 _Comment by @leiserfg on 2023-06-10 22:27_
 
 It can be any var matching "dummy-variable-rgx" like `_noqa = obj.nonexistent`.
-
----
-
-_Referenced in [astral-sh/ruff#9082](../../astral-sh/ruff/issues/9082.md) on 2023-12-10 23:34_
-
----
-
-_Referenced in [pytest-dev/pytest#11914](../../pytest-dev/pytest/pulls/11914.md) on 2024-02-02 21:13_
 
 ---
 

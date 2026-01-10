@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-29T03:12:32Z
 updated_at: 2023-10-07T13:28:18Z
 url: https://github.com/astral-sh/ruff/issues/2319
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Tabs auto-conversion
@@ -38,14 +38,6 @@ I do plan on supporting configurable spacing in the auto-formatter -- so you'll 
 ---
 
 _Label `plugin` added by @charliermarsh on 2023-01-29 03:17_
-
----
-
-_Referenced in [astral-sh/ruff#2257](../../astral-sh/ruff/issues/2257.md) on 2023-01-30 01:21_
-
----
-
-_Referenced in [nvaccess/nvda#14817](../../nvaccess/nvda/issues/14817.md) on 2023-04-11 01:43_
 
 ---
 

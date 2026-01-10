@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-06-23T11:26:20Z
 updated_at: 2025-06-23T11:58:21Z
 url: https://github.com/astral-sh/ruff/issues/18893
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # F401 (unused imports) False Negatives
@@ -62,9 +62,5 @@ Thanks for the report! I think this is a duplicate of a very old issue: #60.
 ---
 
 _Closed by @ntBre on 2025-06-23 11:58_
-
----
-
-_Referenced in [astral-sh/ruff#18985](../../astral-sh/ruff/issues/18985.md) on 2025-06-27 16:00_
 
 ---

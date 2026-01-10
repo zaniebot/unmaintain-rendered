@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-01T12:17:45Z
 updated_at: 2025-05-05T21:27:14Z
 url: https://github.com/astral-sh/ruff/issues/17763
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Add an auto fix for adding FA100-related `from __future__ import annotations` imports
@@ -63,10 +63,6 @@ _Comment by @pradyunsg on 2025-05-01 19:45_
 
 As a concrete example, I'm trying to modernise pip's annotations and this is non-trivial with FA100 because I have 1752 FA100 errors which are reported -- fixing which would involve me either (a) adding `from __future__ import annotations` to ~250 files by hand-curating that list, or (b) exclude ~100 files from the isort required-imports check.
 
-
----
-
-_Referenced in [pypa/pip#13371](../../pypa/pip/pulls/13371.md) on 2025-05-01 20:25_
 
 ---
 

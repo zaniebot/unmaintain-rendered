@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-28T16:54:07Z
 updated_at: 2023-10-30T15:44:39Z
 url: https://github.com/astral-sh/ruff/issues/8310
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # `S604` shows warning for any type, not just `True`
@@ -50,10 +50,6 @@ _Label `documentation` added by @charliermarsh on 2023-10-28 22:36_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-30 13:48_
-
----
-
-_Referenced in [astral-sh/ruff#8359](../../astral-sh/ruff/pulls/8359.md) on 2023-10-30 15:35_
 
 ---
 

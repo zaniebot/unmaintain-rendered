@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-08T12:04:14Z
 updated_at: 2025-03-31T11:01:26Z
 url: https://github.com/astral-sh/ruff/issues/14200
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Audit handling of metaclasses in various contexts, add more tests
@@ -102,10 +102,6 @@ _Unassigned @charliermarsh by @charliermarsh on 2024-11-09 19:27_
 
 ---
 
-_Referenced in [astral-sh/ruff#14548](../../astral-sh/ruff/issues/14548.md) on 2024-11-23 11:20_
-
----
-
 _Assigned to @carljm by @carljm on 2024-12-02 18:33_
 
 ---
@@ -115,10 +111,6 @@ _Label `help wanted` removed by @carljm on 2024-12-02 18:38_
 ---
 
 _Unassigned @carljm by @carljm on 2025-01-09 17:49_
-
----
-
-_Referenced in [astral-sh/ruff#17081](../../astral-sh/ruff/pulls/17081.md) on 2025-03-31 08:04_
 
 ---
 

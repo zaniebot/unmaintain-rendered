@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-23T10:10:01Z
 updated_at: 2025-11-05T10:28:10Z
 url: https://github.com/astral-sh/ruff/issues/18886
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # ANN201, ANN202, ANN205 automatically sets the return type to NoReturn to raise NotImplementedError
@@ -100,14 +100,6 @@ _Label `help wanted` added by @MichaReiser on 2025-06-23 11:40_
 _Comment by @MichaReiser on 2025-06-23 11:40_
 
 Oh I see. Thank you. Yes, I think it makes sense to not suggest a fix in this case but still flag the missing type annotation. 
-
----
-
-_Referenced in [astral-sh/ruff#18927](../../astral-sh/ruff/pulls/18927.md) on 2025-06-24 23:36_
-
----
-
-_Referenced in [astral-sh/ruff#18935](../../astral-sh/ruff/issues/18935.md) on 2025-06-25 10:35_
 
 ---
 
@@ -247,9 +239,5 @@ class ImplementedSerializer(BaseSerializer):
 _Comment by @spaceby on 2025-11-05 10:28_
 
 Any news?
-
----
-
-_Referenced in [astral-sh/ruff#21311](../../astral-sh/ruff/pulls/21311.md) on 2025-11-07 05:08_
 
 ---

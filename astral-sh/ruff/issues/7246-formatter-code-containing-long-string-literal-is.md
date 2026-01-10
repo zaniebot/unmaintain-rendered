@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-08T16:45:42Z
 updated_at: 2023-09-25T10:02:29Z
 url: https://github.com/astral-sh/ruff/issues/7246
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter: code containing long string literal is parenthesized and generates worse output
@@ -118,14 +118,6 @@ _Added to milestone `Formatter: Beta` by @MichaReiser on 2023-09-08 17:19_
 
 ---
 
-_Referenced in [astral-sh/ruff#7355](../../astral-sh/ruff/issues/7355.md) on 2023-09-13 17:11_
-
----
-
-_Referenced in [astral-sh/ruff#7490](../../astral-sh/ruff/pulls/7490.md) on 2023-09-18 13:29_
-
----
-
 _Comment by @MichaReiser on 2023-09-25 10:01_
 
 This is fixed on main https://play.ruff.rs/3ce97226-6ede-4e28-8851-8cd026bfaff6
@@ -137,9 +129,5 @@ _Closed by @MichaReiser on 2023-09-25 10:01_
 ---
 
 _Label `needs-decision` removed by @MichaReiser on 2023-09-25 10:02_
-
----
-
-_Referenced in [astral-sh/ruff#8546](../../astral-sh/ruff/issues/8546.md) on 2023-11-07 18:37_
 
 ---

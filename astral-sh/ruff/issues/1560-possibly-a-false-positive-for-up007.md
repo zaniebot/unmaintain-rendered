@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-02T20:02:00Z
 updated_at: 2023-01-02T21:33:53Z
 url: https://github.com/astral-sh/ruff/issues/1560
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T12:05:30Z
 ```
 
 # Possibly a false positive for UP007
@@ -58,14 +58,6 @@ It looks like pyupgrade avoids these, presumedly for this reason.
 
 ---
 
-_Referenced in [astral-sh/ruff#1563](../../astral-sh/ruff/pulls/1563.md) on 2023-01-02 21:33_
-
----
-
 _Closed by @charliermarsh on 2023-01-02 21:33_
-
----
-
-_Referenced in [astral-sh/ruff#2449](../../astral-sh/ruff/pulls/2449.md) on 2023-02-01 17:31_
 
 ---

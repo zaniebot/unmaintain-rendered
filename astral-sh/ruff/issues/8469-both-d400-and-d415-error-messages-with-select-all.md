@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-03T12:56:55Z
 updated_at: 2023-11-03T16:56:43Z
 url: https://github.com/astral-sh/ruff/issues/8469
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Both D400 and D415 error messages with `--select ALL`
@@ -58,9 +58,5 @@ Let's group this into https://github.com/astral-sh/ruff/issues/1774
 ---
 
 _Closed by @zanieb on 2023-11-03 16:56_
-
----
-
-_Referenced in [rucio/rucio#7296](../../rucio/rucio/pulls/7296.md) on 2025-01-08 12:06_
 
 ---

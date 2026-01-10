@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-06T04:25:37Z
 updated_at: 2024-02-06T17:04:25Z
 url: https://github.com/astral-sh/ruff/issues/9855
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # `TRIO100` does not detect async context managers
@@ -62,22 +62,10 @@ Thanks!
 
 ---
 
-_Referenced in [python-trio/trio#2947](../../python-trio/trio/pulls/2947.md) on 2024-02-06 04:48_
-
----
-
-_Referenced in [astral-sh/ruff#9859](../../astral-sh/ruff/pulls/9859.md) on 2024-02-06 16:46_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-06 16:46_
 
 ---
 
 _Closed by @charliermarsh on 2024-02-06 17:04_
-
----
-
-_Referenced in [astral-sh/ruff#9934](../../astral-sh/ruff/issues/9934.md) on 2024-02-11 23:28_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-24T18:28:19Z
 updated_at: 2025-02-28T16:27:30Z
 url: https://github.com/astral-sh/ruff/issues/16352
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [red-knot] Make it easier to avoid typos in `<!-- snapshot-diagnostics -->` mdtest HTML comments
@@ -61,14 +61,6 @@ Hmm, not sure. I feel like one reason why this is already kinda typo-prone is th
 > It might also be better to make recognition whitespace insensitive. e.g., `<!--snapshot-diagnostics-->` would be accepted.
 
 Great idea! See https://github.com/astral-sh/ruff/pull/16380
-
----
-
-_Referenced in [astral-sh/ruff#16426](../../astral-sh/ruff/pulls/16426.md) on 2025-02-27 22:53_
-
----
-
-_Referenced in [astral-sh/ruff#16441](../../astral-sh/ruff/pulls/16441.md) on 2025-02-28 15:29_
 
 ---
 

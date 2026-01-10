@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-12T01:03:17Z
 updated_at: 2025-11-12T17:54:40Z
 url: https://github.com/astral-sh/ruff/issues/21393
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # SIM113 only applies when the index variable is initialized to `0`
@@ -50,10 +50,6 @@ for i, fruit in enumerate(fruits, 1):
 ### Version
 
 ruff 0.14.4 (c7ff9826d 2025-11-06)
-
----
-
-_Referenced in [astral-sh/ruff#21395](../../astral-sh/ruff/pulls/21395.md) on 2025-11-12 03:57_
 
 ---
 

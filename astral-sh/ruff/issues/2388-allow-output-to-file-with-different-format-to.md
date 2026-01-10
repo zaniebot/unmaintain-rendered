@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-01-31T11:42:16Z
 updated_at: 2025-11-12T22:07:07Z
 url: https://github.com/astral-sh/ruff/issues/2388
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Allow output to file with different format to output to console
@@ -119,10 +119,6 @@ _Label `wishlist` added by @charliermarsh on 2023-03-22 03:35_
 
 ---
 
-_Referenced in [astral-sh/ruff#4754](../../astral-sh/ruff/issues/4754.md) on 2023-05-31 19:01_
-
----
-
 _Comment by @charliermarsh on 2023-06-20 16:53_
 
 We now support writing to a file (#4950), but not to both standard output _and_ a file. I'm going to close this, and we can open a fresh issue if that additional behavior is desired.
@@ -171,17 +167,9 @@ _Unassigned @zanieb by @zanieb on 2023-10-26 13:45_
 
 ---
 
-_Referenced in [astral-sh/ruff#8251](../../astral-sh/ruff/issues/8251.md) on 2023-10-26 13:46_
-
----
-
 _Comment by @ekbfh on 2024-02-12 11:04_
 
 @charliermarsh Good day! Is any new thoughts about CI usage of ruff? We stiil have to run it twice in a row
-
----
-
-_Referenced in [astral-sh/ruff#12237](../../astral-sh/ruff/issues/12237.md) on 2024-07-08 07:50_
 
 ---
 
@@ -193,14 +181,6 @@ Pylint now supports multiple output formats as follows:
 
 That's not to say their syntax is the best but the ability target multiple outputs would be great for CI systems.
 
-
----
-
-_Referenced in [astral-sh/ruff#13997](../../astral-sh/ruff/issues/13997.md) on 2024-10-30 13:51_
-
----
-
-_Referenced in [astral-sh/ruff#14878](../../astral-sh/ruff/issues/14878.md) on 2024-12-09 15:46_
 
 ---
 
@@ -227,13 +207,5 @@ ruff_gitlab.json = {output-format = "gitlab"}
 ruff_junit.xml = {output-format = "junit"}
 ruff_pylint.txt = {output-format = "pylint"}
 ```
-
----
-
-_Referenced in [astral-sh/ruff#21633](../../astral-sh/ruff/pulls/21633.md) on 2025-11-25 23:23_
-
----
-
-_Referenced in [astral-sh/ty#1691](../../astral-sh/ty/issues/1691.md) on 2025-12-01 07:10_
 
 ---

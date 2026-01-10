@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-28T21:26:01Z
 updated_at: 2025-02-09T15:58:54Z
 url: https://github.com/astral-sh/ruff/issues/15795
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # `redundant-none-literal (PYI061)`: Unsafe or different autofix for Python 3.9
@@ -72,10 +72,6 @@ def get_rotation(rotation: float | Union[Literal["horizontal", "vertical"], None
 
 ---
 
-_Referenced in [astral-sh/ruff#14537](../../astral-sh/ruff/issues/14537.md) on 2025-01-28 21:26_
-
----
-
 _Label `bug` added by @AlexWaygood on 2025-01-28 23:06_
 
 ---
@@ -84,15 +80,7 @@ _Label `fixes` added by @AlexWaygood on 2025-01-28 23:06_
 
 ---
 
-_Referenced in [microsoft/python-type-stubs#340](../../microsoft/python-type-stubs/pulls/340.md) on 2025-01-29 00:15_
-
----
-
 _Assigned to @dylwil3 by @dylwil3 on 2025-02-03 16:50_
-
----
-
-_Referenced in [astral-sh/ruff#16044](../../astral-sh/ruff/pulls/16044.md) on 2025-02-08 21:20_
 
 ---
 

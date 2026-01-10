@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-01-24T19:46:45Z
 updated_at: 2025-01-25T13:14:20Z
 url: https://github.com/astral-sh/ruff/issues/15729
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # PLR6201 on an empty list
@@ -30,10 +30,6 @@ The preview rule `PLR6201` turns `1 in []` into `1 in {}`. Now, that code is pre
 - It's slower (because it has to hash the object).
 
 I'd recommend to not trigger PLR6201 on an empty collection, and possibly to add a separate lint rule that warns against `in` where the right-hand side is an empty collection.
-
----
-
-_Referenced in [astral-sh/ruff#15732](../../astral-sh/ruff/pulls/15732.md) on 2025-01-24 20:41_
 
 ---
 
@@ -72,13 +68,5 @@ _Label `rule` added by @AlexWaygood on 2025-01-25 13:14_
 ---
 
 _Label `preview` added by @AlexWaygood on 2025-01-25 13:14_
-
----
-
-_Referenced in [astral-sh/ruff#16480](../../astral-sh/ruff/pulls/16480.md) on 2025-03-03 19:12_
-
----
-
-_Referenced in [astral-sh/ruff#16569](../../astral-sh/ruff/issues/16569.md) on 2025-03-08 19:53_
 
 ---

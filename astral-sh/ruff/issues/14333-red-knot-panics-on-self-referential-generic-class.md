@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-14T09:01:12Z
 updated_at: 2025-03-13T15:16:05Z
 url: https://github.com/astral-sh/ruff/issues/14333
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Panics on self-referential generic class definition
@@ -253,27 +253,11 @@ _Label `bug` added by @sharkdp on 2024-11-14 09:49_
 
 ---
 
-_Referenced in [astral-sh/ruff#13710](../../astral-sh/ruff/issues/13710.md) on 2024-11-14 10:08_
-
----
-
-_Referenced in [astral-sh/ruff#14566](../../astral-sh/ruff/pulls/14566.md) on 2024-11-24 21:50_
-
----
-
-_Referenced in [astral-sh/ty#228](../../astral-sh/ty/issues/228.md) on 2024-12-02 19:26_
-
----
-
 _Added to milestone `Red Knot Q1 2025` by @carljm on 2025-01-09 17:52_
 
 ---
 
 _Assigned to @carljm by @carljm on 2025-03-01 17:26_
-
----
-
-_Referenced in [astral-sh/ruff#16693](../../astral-sh/ruff/pulls/16693.md) on 2025-03-13 01:03_
 
 ---
 

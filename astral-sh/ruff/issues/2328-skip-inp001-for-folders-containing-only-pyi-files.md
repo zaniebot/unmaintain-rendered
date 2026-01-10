@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-29T22:33:22Z
 updated_at: 2023-01-31T22:35:32Z
 url: https://github.com/astral-sh/ruff/issues/2328
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Skip INP001 for folders containing only *.pyi files
@@ -48,10 +48,6 @@ _Label `bug` added by @charliermarsh on 2023-01-31 21:34_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-01-31 21:34_
-
----
-
-_Referenced in [astral-sh/ruff#2420](../../astral-sh/ruff/pulls/2420.md) on 2023-01-31 21:46_
 
 ---
 

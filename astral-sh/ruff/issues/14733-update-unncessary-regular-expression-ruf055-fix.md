@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-12-02T15:16:43Z
 updated_at: 2025-01-21T13:47:08Z
 url: https://github.com/astral-sh/ruff/issues/14733
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Update `unncessary-regular-expression` (`RUF055`) fix to use `var == value`
@@ -59,10 +59,6 @@ _Assigned to @kiran-4444 by @MichaReiser on 2024-12-13 07:04_
 _Comment by @MichaReiser on 2024-12-13 07:04_
 
 Go for it. Let me know if you need any help.
-
----
-
-_Referenced in [astral-sh/ruff#15605](../../astral-sh/ruff/pulls/15605.md) on 2025-01-20 06:02_
 
 ---
 

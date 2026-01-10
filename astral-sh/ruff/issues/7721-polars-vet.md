@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-30T12:21:35Z
 updated_at: 2025-10-07T11:04:26Z
 url: https://github.com/astral-sh/ruff/issues/7721
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # polars vet?
@@ -159,10 +159,6 @@ Using positional args instead of lists where possible:
 
 ...I'm sure I can come up with more :smile: 
 @MarcoGorelli Is this enough input?
-
----
-
-_Referenced in [astral-sh/ruff#8686](../../astral-sh/ruff/pulls/8686.md) on 2023-11-14 22:02_
 
 ---
 

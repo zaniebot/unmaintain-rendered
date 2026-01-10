@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-01T18:17:44Z
 updated_at: 2023-11-02T03:22:35Z
 url: https://github.com/astral-sh/ruff/issues/8417
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # [doc] isort deviation: action comments in docstrings not respected
@@ -36,10 +36,6 @@ _Label `documentation` added by @charliermarsh on 2023-11-02 02:11_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-11-02 02:12_
-
----
-
-_Referenced in [astral-sh/ruff#8432](../../astral-sh/ruff/pulls/8432.md) on 2023-11-02 03:15_
 
 ---
 

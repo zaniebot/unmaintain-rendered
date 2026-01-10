@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-09T18:16:08Z
 updated_at: 2025-07-09T18:29:58Z
 url: https://github.com/astral-sh/ruff/issues/19242
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # `S412` false negatives
@@ -76,10 +76,6 @@ _Label `rule` added by @ntBre on 2025-07-09 18:16_
 
 ---
 
-_Referenced in [astral-sh/ruff#19241](../../astral-sh/ruff/pulls/19241.md) on 2025-07-09 18:23_
-
----
-
 _Comment by @MeGaGiGaGon on 2025-07-09 18:23_
 
 I think `wsgiref` is referring to the [builtin python module](https://docs.python.org/3/library/wsgiref.html#wsgiref.handlers.CGIHandler), or maybe it got added to the standard library at some point? Since it works fine for me if I don't have `wsgiref` from `PyPI` installed:
@@ -98,9 +94,5 @@ PS ~>
 _Comment by @ntBre on 2025-07-09 18:25_
 
 That explains a lot, thanks.
-
----
-
-_Referenced in [astral-sh/ruff#19247](../../astral-sh/ruff/pulls/19247.md) on 2025-07-09 22:25_
 
 ---

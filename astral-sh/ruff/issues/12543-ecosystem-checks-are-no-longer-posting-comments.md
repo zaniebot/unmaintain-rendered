@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-27T12:45:25Z
 updated_at: 2024-07-27T17:57:20Z
 url: https://github.com/astral-sh/ruff/issues/12543
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Ecosystem checks are no longer posting comments
@@ -29,10 +29,6 @@ _Label `bug` added by @charliermarsh on 2024-07-27 12:45_
 ---
 
 _Label `internal` added by @charliermarsh on 2024-07-27 12:45_
-
----
-
-_Referenced in [astral-sh/ruff#12544](../../astral-sh/ruff/pulls/12544.md) on 2024-07-27 16:27_
 
 ---
 

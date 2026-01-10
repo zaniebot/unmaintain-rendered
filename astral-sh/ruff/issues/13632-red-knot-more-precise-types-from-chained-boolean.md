@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-04T17:20:20Z
 updated_at: 2024-12-22T18:02:29Z
 url: https://github.com/astral-sh/ruff/issues/13632
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] more precise types from chained boolean expressions
@@ -49,10 +49,6 @@ Both of these can be fixed by adding negative intersections with `Type::AlwaysTr
 ---
 
 _Label `red-knot` added by @carljm on 2024-10-04 17:20_
-
----
-
-_Referenced in [astral-sh/ruff#13571](../../astral-sh/ruff/pulls/13571.md) on 2024-10-04 17:20_
 
 ---
 
@@ -110,19 +106,11 @@ I think we could probably get away with only the `Truthy` variant, but I suspect
 
 ---
 
-_Referenced in [astral-sh/ruff#13665](../../astral-sh/ruff/pulls/13665.md) on 2024-10-07 15:56_
-
----
-
 _Comment by @carljm on 2024-10-25 17:59_
 
 I wrote up some thoughts relevant to this issue over at https://github.com/astral-sh/ruff/issues/13694#issuecomment-2438438759
 
 It's a bit of an essay, but the summary is that after looking at the PR on this issue, and considering the issue more, I no longer think that it's a good idea to have a type like `Truthy` as a `Type` variant, I think we'll want to do something more localized to `IntersectionBuilder` to represent these cases.
-
----
-
-_Referenced in [astral-sh/ruff#13694](../../astral-sh/ruff/issues/13694.md) on 2024-10-25 20:57_
 
 ---
 
@@ -133,10 +121,6 @@ _Label `help wanted` added by @carljm on 2024-12-17 16:37_
 _Comment by @carljm on 2024-12-17 16:40_
 
 With the merge of #14687, this task should now be pretty trivial. We now have `AlwaysFalsy` and `AlwaysTruthy` types, we just need to add negative intersections with them in the chained boolean expressions code.
-
----
-
-_Referenced in [astral-sh/ruff#15089](../../astral-sh/ruff/pulls/15089.md) on 2024-12-21 00:07_
 
 ---
 

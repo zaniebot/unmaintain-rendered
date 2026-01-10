@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-15T10:13:25Z
 updated_at: 2024-06-26T09:02:47Z
 url: https://github.com/astral-sh/ruff/issues/9994
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # bandit check seems to link arguments not function call
@@ -69,14 +69,6 @@ using pre-commit with
 
 ---
 
-_Referenced in [python-cachier/cachier#186](../../python-cachier/cachier/pulls/186.md) on 2024-02-15 10:14_
-
----
-
-_Referenced in [python-cachier/cachier#192](../../python-cachier/cachier/pulls/192.md) on 2024-02-15 21:54_
-
----
-
 _Label `bug` added by @charliermarsh on 2024-02-16 03:32_
 
 ---
@@ -128,15 +120,7 @@ _Comment by @charliermarsh on 2024-02-16 06:59_
 
 ---
 
-_Referenced in [astral-sh/ruff#10667](../../astral-sh/ruff/pulls/10667.md) on 2024-03-30 00:37_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-30 00:37_
-
----
-
-_Referenced in [astral-sh/ruff#12005](../../astral-sh/ruff/pulls/12005.md) on 2024-06-26 08:52_
 
 ---
 

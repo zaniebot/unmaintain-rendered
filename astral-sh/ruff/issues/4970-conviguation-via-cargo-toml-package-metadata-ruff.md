@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-08T18:12:33Z
 updated_at: 2023-06-12T15:18:05Z
 url: https://github.com/astral-sh/ruff/issues/4970
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Conviguation via Cargo.toml (`[package.metadata.ruff]`)
@@ -67,13 +67,5 @@ _Closed by @charliermarsh on 2023-06-12 15:18_
 ---
 
 _Label `configuration` added by @charliermarsh on 2023-06-12 15:18_
-
----
-
-_Referenced in [astral-sh/ruff#5102](../../astral-sh/ruff/issues/5102.md) on 2023-06-14 21:58_
-
----
-
-_Referenced in [astral-sh/ruff#10493](../../astral-sh/ruff/issues/10493.md) on 2024-04-02 08:40_
 
 ---

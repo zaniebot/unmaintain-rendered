@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-01-12T09:26:15Z
 updated_at: 2024-01-12T09:34:05Z
 url: https://github.com/astral-sh/ruff/issues/9489
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Failed to create cache file
@@ -54,17 +54,5 @@ Sorry for the trouble. This has been fixed very recently and we plan to make a b
 ---
 
 _Closed by @MichaReiser on 2024-01-12 09:34_
-
----
-
-_Referenced in [astral-sh/ruff#9490](../../astral-sh/ruff/issues/9490.md) on 2024-01-12 12:06_
-
----
-
-_Referenced in [chatmail/relay#164](../../chatmail/relay/pulls/164.md) on 2024-01-12 13:34_
-
----
-
-_Referenced in [astral-sh/ruff-pre-commit#62](../../astral-sh/ruff-pre-commit/issues/62.md) on 2024-01-12 15:46_
 
 ---

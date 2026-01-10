@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-05T16:57:37Z
 updated_at: 2024-11-07T17:46:10Z
 url: https://github.com/astral-sh/ruff/issues/14112
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # auto-fixing `UP006` yield in errors for python 3.9 and 3.10
@@ -33,10 +33,6 @@ E       ValueError: Unknown type annotation: 'list[torch.Tensor]' at
 ```
 see the full CI log in https://github.com/Lightning-AI/torchmetrics/actions/runs/11685262564/job/32538417524?pr=2827
 I understand that "unsafe fixes" could be unstable but on either hand I guess that some trivial fixes shall be made with the default config like converting `List[Dict]` to `list[dict]`
-
----
-
-_Referenced in [Lightning-AI/torchmetrics#2827](../../Lightning-AI/torchmetrics/pulls/2827.md) on 2024-11-05 16:58_
 
 ---
 

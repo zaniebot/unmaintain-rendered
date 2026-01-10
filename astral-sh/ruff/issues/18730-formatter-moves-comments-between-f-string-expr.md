@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-17T17:41:49Z
 updated_at: 2025-06-18T12:56:16Z
 url: https://github.com/astral-sh/ruff/issues/18730
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Formatter moves comments between f-string expr and format spec to invalid location
@@ -52,10 +52,6 @@ _Label `bug` added by @MichaReiser on 2025-06-18 08:14_
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2025-06-18 08:14_
-
----
-
-_Referenced in [astral-sh/ruff#18708](../../astral-sh/ruff/pulls/18708.md) on 2025-06-18 12:20_
 
 ---
 

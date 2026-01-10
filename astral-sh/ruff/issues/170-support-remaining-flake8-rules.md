@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-09-12T19:17:25Z
 updated_at: 2023-02-03T18:28:28Z
 url: https://github.com/astral-sh/ruff/issues/170
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # Support remaining Flake8 rules
@@ -60,10 +60,6 @@ N.B. These are the least important to me, in part because I think they're low-va
 
 ---
 
-_Referenced in [cnpryer/huak#99](../../cnpryer/huak/issues/99.md) on 2022-09-13 01:59_
-
----
-
 _Comment by @charliermarsh on 2022-09-14 13:15_
 
 Ignoring the string-formatting issues, there's a set of issues here that require us to track the parents for every binding, not just for current node. That is: we need to be able to get `getParent` on any binding, so we can do things like "determine whether two nodes are in different branches of an if/else".
@@ -82,10 +78,6 @@ _Label `enhancement` added by @charliermarsh on 2022-09-15 13:49_
 _Comment by @harupy on 2022-09-18 03:16_
 
 @charliermarsh I would like to work on F402.
-
----
-
-_Referenced in [astral-sh/ruff#221](../../astral-sh/ruff/pulls/221.md) on 2022-09-18 08:40_
 
 ---
 
@@ -153,10 +145,6 @@ No problem at all! Right now, it's more of a prioritization decision than a stri
 
 Would of course welcome a PR on either of those if you ever feel up for it, but no pressure :)
 
-
----
-
-_Referenced in [astral-sh/ruff#339](../../astral-sh/ruff/pulls/339.md) on 2022-10-07 05:40_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-26T21:32:13Z
 updated_at: 2024-12-28T04:58:21Z
 url: https://github.com/astral-sh/ruff/issues/15153
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # `complex-if-statement-in-stub (PYI002)` conflicts with `if-with-same-arms (SIM114)`
@@ -55,10 +55,6 @@ But the underlying issue still exists.
 ---
 
 Ruff 0.8.4
-
----
-
-_Referenced in [python/typeshed#13309](../../python/typeshed/pulls/13309.md) on 2024-12-26 21:34_
 
 ---
 

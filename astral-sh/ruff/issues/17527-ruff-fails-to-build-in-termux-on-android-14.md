@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-21T17:31:56Z
 updated_at: 2025-04-26T21:25:40Z
 url: https://github.com/astral-sh/ruff/issues/17527
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Ruff fails to build in Termux on Android 14, unable to find -lgcc
@@ -113,13 +113,5 @@ _Comment by @laguill on 2025-04-26 21:25_
 Hi @bdegreve,
 
 Can you elaborate a bit more how you did to solve this issue ?
-
----
-
-_Referenced in [astral-sh/ruff#18016](../../astral-sh/ruff/issues/18016.md) on 2025-05-11 17:18_
-
----
-
-_Referenced in [astral-sh/ruff#18033](../../astral-sh/ruff/pulls/18033.md) on 2025-05-12 07:19_
 
 ---

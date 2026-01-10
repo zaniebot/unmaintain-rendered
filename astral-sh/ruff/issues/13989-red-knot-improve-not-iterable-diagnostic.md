@@ -1,0 +1,93 @@
+```yaml
+number: 13989
+title: "[red-knot] Improve `not-iterable` diagnostic"
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - ty
+assignees: []
+created_at: 2024-10-30T09:50:36Z
+updated_at: 2025-04-29T14:27:29Z
+url: https://github.com/astral-sh/ruff/issues/13989
+synced_at: 2026-01-10T11:09:55Z
+```
+
+# [red-knot] Improve `not-iterable` diagnostic
+
+---
+
+_Issue opened by @MichaReiser on 2024-10-30 09:50_
+
+It's hard to debug why a type isn't considered iterable by red knot:
+
+For example:
+
+```py
+from typing import reveal_type
+
+
+class TestIter:
+    def __next__(self) -> str: ...
+
+
+class Test:
+    def __iter__(self) -> TestIter: ...
+
+
+def bool_instance() -> bool:
+    return True
+
+
+flag = bool_instance()
+
+if flag:
+    a = "123"
+else:
+    a = Test()
+
+for x in a:
+    ...
+reveal_type(x)
+```
+
+Reports
+
+```
+ERROR /home/micha/astral/test/src/test.py:23:10: Object of type `Literal["123"] | Test` is not iterable
+ERROR /home/micha/astral/test/src/test.py:25:13: Name `x` used when possibly not defined
+ERROR /home/micha/astral/test/src/test.py:25:1: Revealed type is `Unbound | Unknown`
+```
+
+And it's not clear to me why `Test` the type isn't iterable (pyright is fine with it). 
+
+Changing `__next__` on `TestIter` to a non-callable gives the exact same error message (expect) but the error message isn't helpful because it isn't telling you what's off. 
+
+```py
+class TestIter:
+    __next__ = 10
+```
+
+I'm not sure if it's worth investing time into improving the diagnostics know or if we should wait for proper `Protocols` support but I thought it worth noting it down because I just had a very bad time debugging the error message myself
+
+---
+
+_Label `red-knot` added by @MichaReiser on 2024-10-30 09:50_
+
+---
+
+_Comment by @AlexWaygood on 2024-10-30 12:01_
+
+I agree that this is bad and that we need to improve it before a release, but I'm not sure I want to invest time in improving it until we have more structured diagnostics. Having all the context and rationale on the same line as the diagnostic message itself would create unreadably long diagnostic messages right now, I think
+
+---
+
+_Comment by @AlexWaygood on 2025-04-29 14:27_
+
+Fixed in https://github.com/astral-sh/ruff/pull/16321 and https://github.com/astral-sh/ruff/pull/16321 (thanks @BurntSushi!)
+
+---
+
+_Closed by @AlexWaygood on 2025-04-29 14:27_
+
+---

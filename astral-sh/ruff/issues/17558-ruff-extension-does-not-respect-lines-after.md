@@ -14,7 +14,7 @@ assignees: []
 created_at: 2025-04-15T19:55:14Z
 updated_at: 2025-04-22T17:36:19Z
 url: https://github.com/astral-sh/ruff/issues/17558
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Ruff extension does not respect lines-after-imports from ruff.toml
@@ -39,10 +39,6 @@ I am fairly sure the file is being loaded because I am able to change the line-l
 
 
 
-
----
-
-_Referenced in [Metta-AI/metta#144](../../Metta-AI/metta/pulls/144.md) on 2025-04-15 20:01_
 
 ---
 

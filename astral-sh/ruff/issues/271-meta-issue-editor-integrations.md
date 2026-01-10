@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-09-28T18:04:34Z
 updated_at: 2023-02-12T16:25:31Z
 url: https://github.com/astral-sh/ruff/issues/271
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # Meta issue: editor integrations
@@ -66,10 +66,6 @@ The critical blocker is being able to take a source input, rather than just the 
 _Comment by @charliermarsh on 2022-09-29 12:39_
 
 Ok cool, very doable. Will put something together.
-
----
-
-_Referenced in [astral-sh/ruff#289](../../astral-sh/ruff/pulls/289.md) on 2022-09-29 22:30_
 
 ---
 
@@ -187,17 +183,9 @@ _Comment by @Seamooo on 2022-10-24 03:39_
 
 ---
 
-_Referenced in [Seamooo/ruffd#1](../../Seamooo/ruffd/issues/1.md) on 2022-10-24 05:52_
-
----
-
 _Comment by @charliermarsh on 2022-10-24 20:00_
 
 I'm going to try building a VS Code extension atop `ruffd`.
-
----
-
-_Referenced in [astral-sh/ruff#463](../../astral-sh/ruff/issues/463.md) on 2022-10-24 21:39_
 
 ---
 
@@ -222,10 +210,6 @@ _Renamed from "Editor integrations" to "Meta issue: editor integrations" by @cha
 _Comment by @charliermarsh on 2022-10-26 15:10_
 
 @fannheyward - That's awesome! Thank you for doing that. I'll plug it in the Ruff docs.
-
----
-
-_Referenced in [gradientinstitute/causal-inspection#43](../../gradientinstitute/causal-inspection/issues/43.md) on 2022-11-01 06:49_
 
 ---
 
@@ -407,10 +391,6 @@ I can try to figure out how to integrate with those editors and add instructions
 
 ---
 
-_Referenced in [astral-sh/ruff#1345](../../astral-sh/ruff/pulls/1345.md) on 2022-12-23 02:50_
-
----
-
 _Comment by @charliermarsh on 2022-12-23 02:50_
 
 Done, thanks @koxudaxi!
@@ -424,14 +404,6 @@ I'm going to close this for now since we have a good thing going with the LSP, V
 ---
 
 _Closed by @charliermarsh on 2022-12-23 02:50_
-
----
-
-_Referenced in [astral-sh/ruff-lsp#18](../../astral-sh/ruff-lsp/issues/18.md) on 2022-12-23 02:51_
-
----
-
-_Referenced in [astral-sh/ruff-lsp#19](../../astral-sh/ruff-lsp/issues/19.md) on 2022-12-23 02:51_
 
 ---
 

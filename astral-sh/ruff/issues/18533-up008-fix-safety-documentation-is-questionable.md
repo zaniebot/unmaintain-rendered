@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-07T13:19:28Z
 updated_at: 2025-06-30T13:42:06Z
 url: https://github.com/astral-sh/ruff/issues/18533
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # UP008 fix safety documentation is questionable
@@ -38,10 +38,6 @@ _Label `documentation` added by @ntBre on 2025-06-07 15:03_
 ---
 
 _Label `help wanted` added by @ntBre on 2025-06-10 16:57_
-
----
-
-_Referenced in [astral-sh/ruff#18683](../../astral-sh/ruff/pulls/18683.md) on 2025-06-15 11:45_
 
 ---
 

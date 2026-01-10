@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-14T20:34:01Z
 updated_at: 2024-07-30T09:04:00Z
 url: https://github.com/astral-sh/ruff/issues/12323
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # [red-knot] Set right durability for inputs
@@ -30,10 +30,6 @@ _Label `red-knot` added by @MichaReiser on 2024-07-14 20:34_
 ---
 
 _Renamed from "Set right durability for inputs" to "[red-knot] Set right durability for inputs" by @AlexWaygood on 2024-07-14 21:35_
-
----
-
-_Referenced in [astral-sh/ruff#12566](../../astral-sh/ruff/pulls/12566.md) on 2024-07-30 09:00_
 
 ---
 

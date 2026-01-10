@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-06-18T01:54:36Z
 updated_at: 2025-06-19T10:46:55Z
 url: https://github.com/astral-sh/ruff/issues/18741
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # B004 fix deletes comments
@@ -55,10 +55,6 @@ _Label `fixes` added by @ntBre on 2025-06-18 03:05_
 ---
 
 _Label `help wanted` added by @ntBre on 2025-06-18 03:05_
-
----
-
-_Referenced in [astral-sh/ruff#18755](../../astral-sh/ruff/pulls/18755.md) on 2025-06-18 14:27_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-14T21:54:21Z
 updated_at: 2025-01-16T14:18:13Z
 url: https://github.com/astral-sh/ruff/issues/15481
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # `itertools.starmap(func, zip(...))`
@@ -34,10 +34,6 @@ _Issue opened by @InSyncWithFoo on 2025-01-14 21:54_
 _Comment by @InSyncWithFoo on 2025-01-14 21:58_
 
 Alternatively, the fix of `FURB140` could be modified to create a special case when `zip()` is used as the `iter` of a comprehension. I think this is much less preferable as it has [the same pitfalls](https://github.com/astral-sh/ruff/issues/14793) as the original `RUF046`.
-
----
-
-_Referenced in [astral-sh/ruff#15483](../../astral-sh/ruff/pulls/15483.md) on 2025-01-15 00:22_
 
 ---
 

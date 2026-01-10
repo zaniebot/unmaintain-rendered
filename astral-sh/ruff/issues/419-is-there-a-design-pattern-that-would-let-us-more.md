@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-10-13T13:31:02Z
 updated_at: 2023-01-07T20:53:29Z
 url: https://github.com/astral-sh/ruff/issues/419
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # Is there a design pattern that would let us more closely couple `CheckKind` and `CheckCode`?
@@ -242,10 +242,6 @@ if self.settings.enabled.contains(RAISE_NOT_IMPLEMENTED) {
 ```
 
 This doesn't give the same type safety guarantees as the current code though, e.g. multiple checks could map to the same error code, could reuse the same name etc. Haven't yet figured out that part.
-
----
-
-_Referenced in [astral-sh/ruff#1685](../../astral-sh/ruff/pulls/1685.md) on 2023-01-06 11:20_
 
 ---
 

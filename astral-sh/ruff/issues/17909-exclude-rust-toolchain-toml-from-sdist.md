@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-07T10:00:12Z
 updated_at: 2025-06-17T13:58:17Z
 url: https://github.com/astral-sh/ruff/issues/17909
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Exclude `rust-toolchain.toml` from `sdist`
@@ -39,15 +39,7 @@ _Label `needs-decision` added by @MichaReiser on 2025-05-07 10:37_
 
 ---
 
-_Referenced in [astral-sh/ruff#17171](../../astral-sh/ruff/pulls/17171.md) on 2025-05-07 10:37_
-
----
-
 _Label `needs-decision` removed by @MichaReiser on 2025-05-07 16:57_
-
----
-
-_Referenced in [astral-sh/ruff#17925](../../astral-sh/ruff/pulls/17925.md) on 2025-05-07 16:58_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-11T17:54:00Z
 updated_at: 2023-09-02T08:21:07Z
 url: https://github.com/astral-sh/ruff/issues/6509
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Playground option for "print comments"
@@ -147,10 +147,6 @@ _Comment by @cnpryer on 2023-08-27 02:11_
 
 <img width="1512" alt="image" src="https://github.com/astral-sh/ruff/assets/14341145/5bdc65a9-2b1f-4523-846a-7b0c0bbe7343">
 
-
----
-
-_Referenced in [astral-sh/ruff#6911](../../astral-sh/ruff/pulls/6911.md) on 2023-08-27 02:18_
 
 ---
 

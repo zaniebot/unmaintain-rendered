@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-16T20:49:49Z
 updated_at: 2023-02-22T03:23:48Z
 url: https://github.com/astral-sh/ruff/issues/2972
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Proposed check: reuse of loop variable in nested loop
@@ -120,10 +120,6 @@ Let's see if we can find corresponding rules to the remaining ones in the  overv
 
 ---
 
-_Referenced in [astral-sh/ruff#970](../../astral-sh/ruff/issues/970.md) on 2023-02-18 12:46_
-
----
-
 _Comment by @matthewlloyd on 2023-02-18 19:05_
 
 Sounds reasonable to me! I wasn't aware of #970, and agree there is a lot of overlap. I went through all the PyCharm inspections in my list above and categorized them by whether they have PyLint counterparts, mostly by running PyLint directly on the examples provided in the PyCharm Settings panel.
@@ -211,14 +207,6 @@ Given that, it might make sense to add this as PLW2901, and either roll in _with
 
 The rule "Old-style class contains new-style class features (__slots__, __getattribute__, super)" is no longer relevant since Python 3.
 
-
----
-
-_Referenced in [astral-sh/ruff#3022](../../astral-sh/ruff/pulls/3022.md) on 2023-02-19 01:06_
-
----
-
-_Referenced in [astral-sh/ruff#3040](../../astral-sh/ruff/issues/3040.md) on 2023-02-19 19:06_
 
 ---
 

@@ -1,0 +1,99 @@
+```yaml
+number: 10015
+title: "Request: Implement deptry / pip-check-reqs"
+type: issue
+state: open
+author: adamtheturtle
+labels:
+  - plugin
+  - packaging
+assignees: []
+created_at: 2024-02-17T03:04:50Z
+updated_at: 2025-08-02T21:19:57Z
+url: https://github.com/astral-sh/ruff/issues/10015
+synced_at: 2026-01-10T11:09:52Z
+```
+
+# Request: Implement deptry / pip-check-reqs
+
+---
+
+_Issue opened by @adamtheturtle on 2024-02-17 03:04_
+
+[deptry](https://fpgmaas.github.io/deptry/) and [pip-check-reqs](https://github.com/r1chardj0n3s/pip-check-reqs) are similar tools.
+
+They check whether there are unused or missing dependencies.
+
+Use cases include:
+
+* My code works but I rely on a transitive dependency, and that could bite me in the future
+* My tests pass, but one of my dependencies is specified as a test dependency
+* I am wasting time/space installing a dependency which I do not need
+
+My uninformed guess/hope is that with `uv`, `astral-sh` now has the tooling to understand the project's requirements, and with existing `ruff` rules, there is an understanding of the project's imports.
+
+Context: I took over responsibility for `pip-check-reqs` a few years ago as a user of the project as it was breaking.
+
+---
+
+_Comment by @zanieb on 2024-02-17 05:18_
+
+Hi! Thanks for the issue :)
+
+We are indeed very interested in the idea of leveraging `uv` for linting. I'm not sure if it'll happen soon though.
+
+---
+
+_Label `plugin` added by @zanieb on 2024-02-17 05:18_
+
+---
+
+_Label `packaging` added by @zanieb on 2024-02-17 05:19_
+
+---
+
+_Comment by @baggiponte on 2024-03-13 13:55_
+
++1 on the request. Deptry latest alpha is already using a bit of rust to parse the AST. ruff alone could perform these kind of checks, I guess. The biggest roadblock is that some packages are installed as `something` and imported as `something_else`.
+
+---
+
+_Comment by @charliermarsh on 2024-03-13 14:31_
+
+I think the main challenges here aren't technical, but more-so that it requires deeper coupling to Python, since we need to know the `sys.path` in order to look for installed packages (at least for some of these rules, and to resolve the issue around `something` being imported as `something_else`). That also means we need to be running within a virtual environment, or have a path to a `.venv` provided by the user (like in Pyright).
+
+---
+
+_Comment by @akshaybabloo on 2024-11-27 08:58_
+
+I think for the third point you could use `ast` to get all the imports and compare them to dependencies from `pyproject.toml`. I am not sure if ruff can do something like this natively?
+
+---
+
+_Comment by @idan-rahamim-lendbuzz on 2025-07-09 11:32_
+
+> I think the main challenges here aren't technical, but more-so that it requires deeper coupling to Python, since we need to know the `sys.path` in order to look for installed packages (at least for some of these rules, and to resolve the issue around `something` being imported as `something_else`). That also means we need to be running within a virtual environment, or have a path to a `.venv` provided by the user (like in Pyright).
+
+Maybe it can be added to`Ty`, as it can run within in a venv?
+
+---
+
+_Comment by @CarliJoy on 2025-08-02 21:19_
+
+> I think the main challenges here aren't technical, but more-so that it requires deeper coupling to Python, since we need to know the sys.path in order to look for installed packages (at least for some of these rules, and to resolve the issue around something being imported as something_else). That also means we need to be running within a virtual environment, or have a path to a .venv provided by the user (like in Pyright).
+
+I don't think this is true.
+
+You don't need an venv to get this information.
+You need a mapping dependency → import module.
+
+For this you only need the `RECORD` files in the `.dist` folder  of the given dependencies.
+This is something `uv` easily could provide, most likely already from the cache.
+
+I even would argue, that taking this from the activated venv could lead to error, because we don't know the state of it.
+
+Using `uv` we could ensure, that either the newested version of a packages is checked against or the version defined within the projects lock file.
+
+
+
+---

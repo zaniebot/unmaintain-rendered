@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-10T21:48:32Z
 updated_at: 2023-02-10T22:06:03Z
 url: https://github.com/astral-sh/ruff/issues/2744
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Add color flags to documentation
@@ -34,10 +34,6 @@ If you're filing a bug report, please consider including the following informati
 ---
 
 _Label `documentation` added by @charliermarsh on 2023-02-10 21:48_
-
----
-
-_Referenced in [astral-sh/ruff#2746](../../astral-sh/ruff/pulls/2746.md) on 2023-02-10 22:05_
 
 ---
 

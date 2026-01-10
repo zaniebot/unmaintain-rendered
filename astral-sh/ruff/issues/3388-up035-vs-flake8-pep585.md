@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-07T16:52:52Z
 updated_at: 2023-03-15T00:05:43Z
 url: https://github.com/astral-sh/ruff/issues/3388
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # UP035 vs. flake8-pep585
@@ -169,10 +169,6 @@ These are covered by a different rule (`UP006`), which handles rewrites at the _
 
 ---
 
-_Referenced in [astral-sh/ruff#3392](../../astral-sh/ruff/pulls/3392.md) on 2023-03-07 23:48_
-
----
-
 _Comment by @ericbn on 2023-03-08 01:35_
 
 Thanks for the quick heads up!
@@ -241,10 +237,6 @@ I'm a few days delayed on this (clearly) but still plan on adding these.
 
 ---
 
-_Referenced in [astral-sh/ruff#3448](../../astral-sh/ruff/pulls/3448.md) on 2023-03-11 05:43_
-
----
-
 _Closed by @charliermarsh on 2023-03-11 06:06_
 
 ---
@@ -270,10 +262,6 @@ As far as I checked, these are present on Python 3.9.0.
 _Comment by @charliermarsh on 2023-03-14 23:54_
 
 Oof, let me take one more look, thank you.
-
----
-
-_Referenced in [astral-sh/ruff#3529](../../astral-sh/ruff/pulls/3529.md) on 2023-03-15 00:02_
 
 ---
 

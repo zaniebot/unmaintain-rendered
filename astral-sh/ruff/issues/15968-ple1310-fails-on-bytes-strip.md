@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-05T13:35:47Z
 updated_at: 2025-02-07T20:31:08Z
 url: https://github.com/astral-sh/ruff/issues/15968
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # PLE1310 fails on `bytes.strip`
@@ -58,10 +58,6 @@ There seems to be another, escaping-related bug:
 ```python
 ''.strip('\\b\\x08')  # No error, even though `\` is repeated twice
 ```
-
----
-
-_Referenced in [astral-sh/ruff#15984](../../astral-sh/ruff/pulls/15984.md) on 2025-02-06 01:38_
 
 ---
 

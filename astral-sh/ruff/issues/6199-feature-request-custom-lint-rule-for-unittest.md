@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-31T15:16:33Z
 updated_at: 2023-08-07T15:09:42Z
 url: https://github.com/astral-sh/ruff/issues/6199
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # [feature request]: custom lint rule for unittest mock.side_effect
@@ -40,10 +40,6 @@ foo.side_effect = [bar, baz]
 ---
 
 _Renamed from "custom lint rule for unittest mock.side_effect" to "[feature request]: custom lint rule for unittest mock.side_effect" by @upstartjohnvandivier on 2023-07-31 15:19_
-
----
-
-_Referenced in [pytest-dev/pytest#11267](../../pytest-dev/pytest/issues/11267.md) on 2023-07-31 23:24_
 
 ---
 
@@ -98,10 +94,6 @@ for an ordinary value like the int 3, this is simply illegal. you will get `Type
 then, the special value behavior depends on its type. Above we discuss problems with a mock value.
 
 the normal case of a non-functional assignment would be a list, and the side_effect would return the ith value at the ith call. So it kind of extends `.return_value` by maintaining its internal call_count and returning at that index
-
----
-
-_Referenced in [pytest-dev/pytest-mock#376](../../pytest-dev/pytest-mock/issues/376.md) on 2023-08-04 14:55_
 
 ---
 

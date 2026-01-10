@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-07T16:33:27Z
 updated_at: 2024-11-13T14:46:04Z
 url: https://github.com/astral-sh/ruff/issues/14171
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] support sys.version_info checks
@@ -37,10 +37,6 @@ _Assigned to @AlexWaygood by @carljm on 2024-11-07 16:33_
 ---
 
 _Unassigned @AlexWaygood by @carljm on 2024-11-07 17:07_
-
----
-
-_Referenced in [astral-sh/ruff#14244](../../astral-sh/ruff/pulls/14244.md) on 2024-11-11 12:40_
 
 ---
 

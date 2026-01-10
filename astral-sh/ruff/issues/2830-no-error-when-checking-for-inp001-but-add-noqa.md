@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-12T22:28:11Z
 updated_at: 2023-02-12T22:45:41Z
 url: https://github.com/astral-sh/ruff/issues/2830
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # No error when checking for INP001, but `--add-noqa` adds directive
@@ -64,10 +64,6 @@ _Label `bug` added by @charliermarsh on 2023-02-12 22:31_
 _Comment by @charliermarsh on 2023-02-12 22:39_
 
 Ahhh right, there was a TODO to thread through the package here. Will fix...
-
----
-
-_Referenced in [astral-sh/ruff#2832](../../astral-sh/ruff/pulls/2832.md) on 2023-02-12 22:43_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-04T18:07:52Z
 updated_at: 2025-03-05T13:23:03Z
 url: https://github.com/astral-sh/ruff/issues/16505
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [red-knot] define new `Diagnostic` type for representing our diagnostic data model in code
@@ -32,14 +32,6 @@ _Label `diagnostics` added by @BurntSushi on 2025-03-04 18:07_
 ---
 
 _Label `red-knot` added by @BurntSushi on 2025-03-04 18:07_
-
----
-
-_Referenced in [astral-sh/ruff#16504](../../astral-sh/ruff/issues/16504.md) on 2025-03-04 18:08_
-
----
-
-_Referenced in [astral-sh/ruff#16503](../../astral-sh/ruff/pulls/16503.md) on 2025-03-04 18:08_
 
 ---
 

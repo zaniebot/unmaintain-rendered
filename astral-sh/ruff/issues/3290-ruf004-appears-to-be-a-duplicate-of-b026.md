@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-01T10:51:43Z
 updated_at: 2023-03-01T18:00:04Z
 url: https://github.com/astral-sh/ruff/issues/3290
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # RUF004 appears to be a duplicate of B026
@@ -58,18 +58,10 @@ I _think_ you're right. `RUF004` flags the keyword arguments, while `B026` flags
 
 ---
 
-_Referenced in [astral-sh/ruff#3293](../../astral-sh/ruff/pulls/3293.md) on 2023-03-01 17:05_
-
----
-
 _Label `bug` added by @charliermarsh on 2023-03-01 17:06_
 
 ---
 
 _Closed by @charliermarsh on 2023-03-01 18:00_
-
----
-
-_Referenced in [astral-sh/ruff#15255](../../astral-sh/ruff/issues/15255.md) on 2025-01-04 14:12_
 
 ---

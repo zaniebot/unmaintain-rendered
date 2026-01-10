@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-12T17:14:07Z
 updated_at: 2022-12-26T01:16:00Z
 url: https://github.com/astral-sh/ruff/issues/1217
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:23Z
 ```
 
 # Add a JSON schema for `ruff.toml`
@@ -52,10 +52,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-12-12 21:26_
 _Comment by @edgarrmondragon on 2022-12-22 05:56_
 
 I've got a draft for this using https://github.com/GREsau/schemars :)
-
----
-
-_Referenced in [astral-sh/ruff#1329](../../astral-sh/ruff/pulls/1329.md) on 2022-12-22 06:29_
 
 ---
 

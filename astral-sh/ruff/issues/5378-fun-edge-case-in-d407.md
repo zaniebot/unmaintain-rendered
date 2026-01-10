@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-06-26T20:42:30Z
 updated_at: 2023-06-27T16:50:23Z
 url: https://github.com/astral-sh/ruff/issues/5378
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Fun edge case in D407
@@ -78,10 +78,6 @@ So, just FYI.
 
 ---
 
-_Referenced in [terrapower/armi#1328](../../terrapower/armi/pulls/1328.md) on 2023-06-26 20:42_
-
----
-
 _Comment by @charliermarsh on 2023-06-26 20:49_
 
 Haha. When an issue has "Fun" in the title...
@@ -106,10 +102,6 @@ If they're of a matching length it seems like a good user experience to remove t
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2023-06-27 05:17_
-
----
-
-_Referenced in [astral-sh/ruff#5383](../../astral-sh/ruff/pulls/5383.md) on 2023-06-27 05:33_
 
 ---
 

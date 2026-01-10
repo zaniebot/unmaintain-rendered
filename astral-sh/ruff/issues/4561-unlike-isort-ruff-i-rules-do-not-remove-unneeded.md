@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-21T18:07:36Z
 updated_at: 2023-05-21T18:33:29Z
 url: https://github.com/astral-sh/ruff/issues/4561
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Unlike isort, ruff `I` rules do not remove unneeded line break commas
@@ -99,9 +99,5 @@ _Label `isort` added by @charliermarsh on 2023-05-21 18:18_
 _Comment by @johnthagen on 2023-05-21 18:33_
 
 Thanks @charliermarsh! That is very interesting about the isort history. I always assumed it was intentional to collapse extra lines for the imports (and deviate from black in this one specific way), but as you mention in the other thread, perhaps it was not?
-
----
-
-_Referenced in [johnthagen/python-blueprint#172](../../johnthagen/python-blueprint/pulls/172.md) on 2023-05-21 18:50_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-03T09:27:55Z
 updated_at: 2023-09-03T13:28:28Z
 url: https://github.com/astral-sh/ruff/issues/7074
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Rule UP032 cause autofix error
@@ -65,9 +65,5 @@ _Label `fuzzer` added by @charliermarsh on 2023-09-03 12:01_
 _Comment by @charliermarsh on 2023-09-03 13:28_
 
 `'{}={.3f} '.format(metric_name, metric[0])` isn't valid but fails at runtime, not at parse time, whereas `f'{metric_name}={metric[0].3f} '` fails at parse time apparently.
-
----
-
-_Referenced in [astral-sh/ruff#15874](../../astral-sh/ruff/issues/15874.md) on 2025-02-01 19:14_
 
 ---

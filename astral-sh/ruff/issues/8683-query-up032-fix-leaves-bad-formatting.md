@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-14T20:21:42Z
 updated_at: 2023-11-16T07:47:21Z
 url: https://github.com/astral-sh/ruff/issues/8683
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # query: UP032 fix leaves bad formatting?
@@ -78,10 +78,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-11-16 02:59_
 
 ---
 
-_Referenced in [astral-sh/ruff#8712](../../astral-sh/ruff/pulls/8712.md) on 2023-11-16 03:59_
-
----
-
 _Closed by @charliermarsh on 2023-11-16 04:14_
 
 ---
@@ -95,13 +91,5 @@ Hopefully better in the next release! At least, the two examples above are fixed
 _Comment by @ilayn on 2023-11-16 07:47_
 
 @charliermarsh thank you for the rapid action. Much appreciated. 
-
----
-
-_Referenced in [scipy/scipy#19516](../../scipy/scipy/pulls/19516.md) on 2023-11-16 08:40_
-
----
-
-_Referenced in [scikit-image/scikit-image#7197](../../scikit-image/scikit-image/pulls/7197.md) on 2023-11-16 18:08_
 
 ---

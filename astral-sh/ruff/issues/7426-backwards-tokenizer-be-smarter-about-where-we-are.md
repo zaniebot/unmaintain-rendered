@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-09-15T22:03:00Z
 updated_at: 2023-09-16T18:04:52Z
 url: https://github.com/astral-sh/ruff/issues/7426
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Backwards tokenizer: Be smarter about where we are in the comment ranges
@@ -54,10 +54,6 @@ _Assigned to @konstin by @konstin on 2023-09-15 22:03_
 ---
 
 _Renamed from "Backwards tokenizer: Be smater about where we are in the comment ranges" to "Backwards tokenizer: Be smarter about where we are in the comment ranges" by @charliermarsh on 2023-09-16 02:17_
-
----
-
-_Referenced in [astral-sh/ruff#7432](../../astral-sh/ruff/pulls/7432.md) on 2023-09-16 03:38_
 
 ---
 

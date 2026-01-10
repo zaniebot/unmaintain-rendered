@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-05-02T16:39:12Z
 updated_at: 2024-08-29T07:25:46Z
 url: https://github.com/astral-sh/ruff/issues/11247
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # [PT013] Rationale is unconvincing.
@@ -25,10 +25,6 @@ _Issue opened by @randolf-scholz on 2024-05-02 16:39_
 But the same reasoning *"make it easier for linting tools to analyze the code"* could be applied to any library.
 
 What are some concrete linting tools this applies to? If it makes no difference to `ruff`, should this be enabled by default in `ruff`?
-
----
-
-_Referenced in [astral-sh/ruff#11255](../../astral-sh/ruff/pulls/11255.md) on 2024-05-03 00:44_
 
 ---
 

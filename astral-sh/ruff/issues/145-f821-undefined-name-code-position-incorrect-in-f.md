@@ -1,0 +1,82 @@
+```yaml
+number: 145
+title: "`F821 Undefined name` code position incorrect in f-strings"
+type: issue
+state: closed
+author: nikolaik
+labels:
+  - bug
+assignees: []
+created_at: 2022-09-10T20:08:52Z
+updated_at: 2023-02-03T18:28:28Z
+url: https://github.com/astral-sh/ruff/issues/145
+synced_at: 2026-01-10T11:09:42Z
+```
+
+# `F821 Undefined name` code position incorrect in f-strings
+
+---
+
+_Issue opened by @nikolaik on 2022-09-10 20:08_
+
+When trying to ignore F821 in some cases, like importing variables using star imports, I can't when the variable is used in an f-string. The line and column position seems to be off. Is that used to match the noqa comments?
+
+```python
+# a.py:
+some_string = 'to increase the line count'
+
+A = f'{B}'  # noqa: F821
+A = B  # noqa: F821
+```
+
+```console
+$ ruff a.py
+a.py:1:2: F821 Undefined name `B`
+
+Found 1 error(s).
+```
+
+---
+
+_Label `bug` added by @charliermarsh on 2022-09-11 13:42_
+
+---
+
+_Comment by @charliermarsh on 2022-09-11 13:42_
+
+Yeah this looks like an issue in the parser -- the positions on the sub-expressions seem to be relative to the parent f-string. Thanks.
+
+---
+
+_Added to milestone `Release 0.1.0` by @charliermarsh on 2022-09-15 13:26_
+
+---
+
+_Comment by @charliermarsh on 2022-09-21 16:26_
+
+(This is a blocker for 0.1.0.)
+
+---
+
+_Comment by @charliermarsh on 2022-09-21 16:58_
+
+#244 modifies the reporter to use the location of the _start_ of the f-string. It's probably the best we can do without fixing this in the parse itself (which is a bit more involved). With this change, it'll at least be clear where you should put the noqa, and the location is a lot more reasonable (at the line on which the f-string starts, instead of at the top of the file).
+
+---
+
+_Closed by @charliermarsh on 2022-09-21 17:42_
+
+---
+
+_Comment by @nikolaik on 2022-09-21 19:00_
+
+Thank you @charliermarsh ! This works and is the last piece missing to allow us to use ruff one of our projects ❤️
+
+
+---
+
+_Comment by @charliermarsh on 2022-09-21 19:01_
+
+Np! If you hit any issues, don't hesitate to reach out!
+
+---

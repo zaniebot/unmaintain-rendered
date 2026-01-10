@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-28T01:25:32Z
 updated_at: 2025-10-25T13:05:54Z
 url: https://github.com/astral-sh/ruff/issues/6140
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Add support for Quarto notebooks 
@@ -57,10 +57,6 @@ Just wanted to add my +1 to this request :)
 
 ---
 
-_Referenced in [astral-sh/ruff#7039](../../astral-sh/ruff/pulls/7039.md) on 2023-09-01 13:11_
-
----
-
 _Comment by @JanPalasek on 2023-12-13 07:46_
 
 @mjkanji You cannot process the notebook code only by concatenating code cells and running the analysis on the whole code. This is due to jupyter specific features like cell-level magics. 
@@ -82,14 +78,6 @@ Awesome! Hopefully, this can be implemented soon!
 _Comment by @tvatter on 2024-01-25 09:41_
 
 +1 that would be really awesome, and probably something like that would also close #8800.
-
----
-
-_Referenced in [astral-sh/ruff#3792](../../astral-sh/ruff/issues/3792.md) on 2024-01-26 09:07_
-
----
-
-_Referenced in [astral-sh/ruff#8800](../../astral-sh/ruff/issues/8800.md) on 2024-01-26 09:10_
 
 ---
 
@@ -177,10 +165,6 @@ Massive +1 for this!
 _Comment by @mohelm on 2025-03-04 15:47_
 
 Hey is there an update on the support for `qmd` files?
-
----
-
-_Referenced in [nbQA-dev/nbQA#881](../../nbQA-dev/nbQA/pulls/881.md) on 2025-03-18 21:59_
 
 ---
 

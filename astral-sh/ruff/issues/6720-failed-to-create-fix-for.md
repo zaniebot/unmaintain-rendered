@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-21T09:15:08Z
 updated_at: 2023-08-22T17:45:07Z
 url: https://github.com/astral-sh/ruff/issues/6720
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Failed to create fix for StringDotFormatExtraNamedArguments: Failed to extract expression from source
@@ -63,10 +63,6 @@ Probably requires "fake" parentheses around the expression to support multi-line
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-08-21 13:16_
-
----
-
-_Referenced in [astral-sh/ruff#6742](../../astral-sh/ruff/pulls/6742.md) on 2023-08-21 22:28_
 
 ---
 

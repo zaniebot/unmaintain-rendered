@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-18T23:04:04Z
 updated_at: 2024-08-05T20:33:37Z
 url: https://github.com/astral-sh/ruff/issues/12398
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # [red-knot] special-case import of built-in modules
@@ -28,10 +28,6 @@ So our module resolver should special-case these modules to always resolve to ty
 ---
 
 _Label `red-knot` added by @carljm on 2024-07-18 23:04_
-
----
-
-_Referenced in [astral-sh/ruff#12390](../../astral-sh/ruff/pulls/12390.md) on 2024-07-18 23:04_
 
 ---
 
@@ -70,10 +66,6 @@ Yeah, `sys.builtin_module_names` is the right complete list. It's the same speci
 _Comment by @AlexWaygood on 2024-07-19 16:51_
 
 Status update: https://github.com/astral-sh/ruff/commit/d8cf8ac2ef26bb630b43b095f61662173b2bac2f just added a hardcoded list directly into `resolver.rs`, based on the builtin modules that I have locally on Python 3.12. We should still change this to be a generated Rust function similar to the one in https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_stdlib/src/sys.rs.
-
----
-
-_Referenced in [astral-sh/ruff#12696](../../astral-sh/ruff/pulls/12696.md) on 2024-08-05 20:20_
 
 ---
 

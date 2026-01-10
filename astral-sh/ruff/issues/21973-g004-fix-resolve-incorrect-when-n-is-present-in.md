@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-12-14T04:15:33Z
 updated_at: 2025-12-15T14:13:47Z
 url: https://github.com/astral-sh/ruff/issues/21973
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # [G004] Fix resolve incorrect when `\n` is present in the literal.
@@ -36,10 +36,6 @@ logger.info("Using vectorized approach for
 ### Version
 
 ruff 0.14.9
-
----
-
-_Referenced in [astral-sh/ruff#21974](../../astral-sh/ruff/pulls/21974.md) on 2025-12-14 04:46_
 
 ---
 

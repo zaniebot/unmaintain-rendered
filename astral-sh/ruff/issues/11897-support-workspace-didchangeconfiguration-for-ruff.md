@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-17T06:17:16Z
 updated_at: 2025-04-03T13:48:10Z
 url: https://github.com/astral-sh/ruff/issues/11897
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Support `workspace/didChangeConfiguration` for `ruff server`
@@ -42,10 +42,6 @@ I think this is a duplicate of https://github.com/astral-sh/ruff/issues/10797, b
 
 ---
 
-_Referenced in [astral-sh/ruff#10797](../../astral-sh/ruff/issues/10797.md) on 2024-06-17 16:31_
-
----
-
 _Added to milestone `Ruff Server: Post-Stable` by @snowsignal on 2024-06-17 16:34_
 
 ---
@@ -54,15 +50,7 @@ _Assigned to @snowsignal by @snowsignal on 2024-06-18 03:43_
 
 ---
 
-_Referenced in [astral-sh/ruff#11217](../../astral-sh/ruff/issues/11217.md) on 2024-06-18 06:03_
-
----
-
 _Unassigned @snowsignal by @dhruvmanila on 2024-07-10 02:48_
-
----
-
-_Referenced in [astral-sh/ruff#12344](../../astral-sh/ruff/pulls/12344.md) on 2024-07-18 07:42_
 
 ---
 

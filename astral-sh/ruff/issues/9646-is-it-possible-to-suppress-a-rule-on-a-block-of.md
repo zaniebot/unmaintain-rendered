@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-26T09:52:18Z
 updated_at: 2024-01-26T16:39:59Z
 url: https://github.com/astral-sh/ruff/issues/9646
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Is it possible to suppress a rule on a block of code?
@@ -38,9 +38,5 @@ _Closed by @charliermarsh on 2024-01-26 16:39_
 ---
 
 _Label `noqa` added by @charliermarsh on 2024-01-26 16:39_
-
----
-
-_Referenced in [ANNUBS/annubes#34](../../ANNUBS/annubes/pulls/34.md) on 2024-03-01 13:30_
 
 ---

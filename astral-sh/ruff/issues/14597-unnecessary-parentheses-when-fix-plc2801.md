@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-26T03:49:18Z
 updated_at: 2024-11-26T12:47:04Z
 url: https://github.com/astral-sh/ruff/issues/14597
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Unnecessary parentheses when fix PLC2801
@@ -35,10 +35,6 @@ My ruff version is 0.8.0
 
 ---
 
-_Referenced in [Azure/azure-cli#30365](../../Azure/azure-cli/pulls/30365.md) on 2024-11-26 03:49_
-
----
-
 _Label `bug` added by @charliermarsh on 2024-11-26 03:52_
 
 ---
@@ -48,10 +44,6 @@ _Label `fixes` added by @charliermarsh on 2024-11-26 03:52_
 ---
 
 _Assigned to @dylwil3 by @dylwil3 on 2024-11-26 04:40_
-
----
-
-_Referenced in [astral-sh/ruff#14601](../../astral-sh/ruff/pulls/14601.md) on 2024-11-26 05:42_
 
 ---
 

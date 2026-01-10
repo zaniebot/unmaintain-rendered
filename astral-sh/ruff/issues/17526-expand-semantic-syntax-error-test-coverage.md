@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-04-21T17:07:05Z
 updated_at: 2025-05-09T18:56:48Z
 url: https://github.com/astral-sh/ruff/issues/17526
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Expand semantic syntax error test coverage
@@ -81,14 +81,6 @@ PS: the link `semantic_syntax_error.md` seems to be broken (at least for me). Th
 
 ---
 
-_Referenced in [astral-sh/ruff#17592](../../astral-sh/ruff/pulls/17592.md) on 2025-04-23 19:12_
-
----
-
-_Referenced in [astral-sh/ruff#17612](../../astral-sh/ruff/pulls/17612.md) on 2025-04-24 16:49_
-
----
-
 _Comment by @maxmynter on 2025-04-24 16:51_
 
 I'm unsure if I totally get  believe the `LateFutureImport` is tested as part of pyflakes `F404` in https://github.com/astral-sh/ruff/blob/8d2c79276d167fcfcf9143a2bc1b328bb9d0f876/crates/ruff_linter/resources/test/fixtures/pyflakes/F404_0.py#L1-L8 and https://github.com/astral-sh/ruff/blob/8d2c79276d167fcfcf9143a2bc1b328bb9d0f876/crates/ruff_linter/resources/test/fixtures/pyflakes/F404_1.py#L1-L5
@@ -97,10 +89,6 @@ If not, I have added a test along the lines of what @VascoSch92 proposed for `Lo
 
 Happy to help with more tests. Let me know if that is on the right track.
 
-
----
-
-_Referenced in [astral-sh/ruff#17725](../../astral-sh/ruff/pulls/17725.md) on 2025-04-29 22:50_
 
 ---
 
@@ -122,10 +110,6 @@ One PR per error is fine too, that's what I pictured initially. But feel free to
 
 ---
 
-_Referenced in [astral-sh/ruff#17748](../../astral-sh/ruff/pulls/17748.md) on 2025-04-30 21:04_
-
----
-
 _Comment by @maxmynter on 2025-04-30 21:07_
 
 Added propositions for `IrrefutableCasePattern`, `SingleStarredAssignment`, `WriteToDebug`, and `InvalidExpression` in #17748 .
@@ -133,10 +117,6 @@ Added propositions for `IrrefutableCasePattern`, `SingleStarredAssignment`, `Wri
 Added propositions for `InvalidStarExpression`, `DuplicateMatchKey`, and `DuplicateMatchClassAttribue` in #17754 .
 
 Going forward, I will add a comment here when writing tests for rules so we can avoid duplicate work.
-
----
-
-_Referenced in [astral-sh/ruff#17754](../../astral-sh/ruff/pulls/17754.md) on 2025-05-01 03:32_
 
 ---
 
@@ -158,17 +138,9 @@ I'll go ahead and mark that one covered for the sake of this issue. I'm working 
 
 ---
 
-_Referenced in [astral-sh/ruff#17785](../../astral-sh/ruff/pulls/17785.md) on 2025-05-02 02:08_
-
----
-
 _Comment by @maxmynter on 2025-05-02 02:20_
 
 Added tests for `AsyncComprehensionOutsideAsyncFunction` and `AwaitOutsideAsync` in #17785. Then all cases from the Issue are covered once the associated PR's are merged. 
-
----
-
-_Referenced in [astral-sh/ruff#17804](../../astral-sh/ruff/pulls/17804.md) on 2025-05-04 13:31_
 
 ---
 

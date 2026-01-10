@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-20T21:35:05Z
 updated_at: 2025-09-09T12:57:28Z
 url: https://github.com/astral-sh/ruff/issues/20011
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # `unnecessary-default-type-args (UP043)` isn't triggering on stubs on Python <3.13
@@ -40,10 +40,6 @@ ruff 0.12.9
 
 ---
 
-_Referenced in [PyCQA/flake8-pyi#524](../../PyCQA/flake8-pyi/issues/524.md) on 2025-08-20 21:35_
-
----
-
 _Renamed from "`unnecessary-default-type-args (UP043)` isn't triggering on stubs" to "`unnecessary-default-type-args (UP043)` isn't triggering on stubs on Python <3.13" by @Avasam on 2025-08-20 21:40_
 
 ---
@@ -59,10 +55,6 @@ I think the fix would be as easy as adding `|| checker.semantic().in_stub_file()
 ---
 
 _Label `rule` added by @ntBre on 2025-08-21 13:04_
-
----
-
-_Referenced in [astral-sh/ruff#20027](../../astral-sh/ruff/pulls/20027.md) on 2025-08-21 17:39_
 
 ---
 

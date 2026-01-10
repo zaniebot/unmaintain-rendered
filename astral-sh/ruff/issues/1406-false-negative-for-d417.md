@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-27T15:26:39Z
 updated_at: 2022-12-27T16:50:29Z
 url: https://github.com/astral-sh/ruff/issues/1406
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T12:05:28Z
 ```
 
 # False negative for D417
@@ -133,10 +133,6 @@ Yeah the current logic used by pydocstyle is sort of brittle. It first checks to
 _Comment by @charliermarsh on 2022-12-27 16:34_
 
 This'll go out today, working on it now, just a sec.
-
----
-
-_Referenced in [astral-sh/ruff#1408](../../astral-sh/ruff/pulls/1408.md) on 2022-12-27 16:45_
 
 ---
 

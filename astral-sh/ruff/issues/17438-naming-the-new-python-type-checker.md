@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-17T01:02:15Z
 updated_at: 2025-04-22T07:47:53Z
 url: https://github.com/astral-sh/ruff/issues/17438
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Naming the new Python Type Checker
@@ -74,6 +74,6 @@ I like to have it as subcommand of ruff too, but as of current state we have exe
 
 ---
 
-_Locked by @MichaReiser on 2025-04-22 07:47_
+_Locked by @astral-sh on 2025-04-22 07:47_
 
 ---

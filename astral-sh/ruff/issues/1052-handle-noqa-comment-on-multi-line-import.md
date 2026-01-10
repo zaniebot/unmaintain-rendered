@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-12-05T10:35:42Z
 updated_at: 2022-12-30T22:50:53Z
 url: https://github.com/astral-sh/ruff/issues/1052
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:22Z
 ```
 
 # handle noqa comment on multi line import
@@ -43,10 +43,6 @@ I'd like to make some improvements to the `noqa` system, and those improvements 
 
 ---
 
-_Referenced in [astral-sh/ruff#1435](../../astral-sh/ruff/issues/1435.md) on 2022-12-29 12:23_
-
----
-
 _Comment by @pradyunsg on 2022-12-30 03:03_
 
 FWIW, I hit this while looking at replacing pip's use of `flake8` with `ruff`. 😅
@@ -66,10 +62,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-12-30 04:05_
 _Comment by @charliermarsh on 2022-12-30 04:05_
 
 I will try to fix this tomorrow.
-
----
-
-_Referenced in [astral-sh/ruff#1479](../../astral-sh/ruff/pulls/1479.md) on 2022-12-30 15:51_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-12-09T20:38:00Z
 updated_at: 2025-12-18T20:58:59Z
 url: https://github.com/astral-sh/ruff/issues/21878
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # Report unmatched range suppression comments
@@ -35,10 +35,6 @@ _Label `rule` added by @amyreese on 2025-12-09 20:38_
 ---
 
 _Label `suppression` added by @amyreese on 2025-12-09 20:38_
-
----
-
-_Referenced in [astral-sh/ruff#21908](../../astral-sh/ruff/pulls/21908.md) on 2025-12-10 23:21_
 
 ---
 

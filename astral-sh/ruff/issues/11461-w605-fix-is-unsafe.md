@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-17T21:02:28Z
 updated_at: 2024-05-19T03:32:33Z
 url: https://github.com/astral-sh/ruff/issues/11461
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # W605 fix is unsafe
@@ -115,10 +115,6 @@ Let's fix the bug rather than changing the safety.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-19 03:22_
-
----
-
-_Referenced in [astral-sh/ruff#11465](../../astral-sh/ruff/pulls/11465.md) on 2024-05-19 03:27_
 
 ---
 

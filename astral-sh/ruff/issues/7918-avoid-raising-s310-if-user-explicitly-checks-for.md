@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-11T13:59:20Z
 updated_at: 2025-08-24T05:37:38Z
 url: https://github.com/astral-sh/ruff/issues/7918
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Avoid raising S310 if user explicitly checks for URL scheme
@@ -111,10 +111,6 @@ with urlopen(url, context=context) as response:
 
 ---
 
-_Referenced in [zulip/python-zulip-api#824](../../zulip/python-zulip-api/pulls/824.md) on 2024-04-02 12:50_
-
----
-
 _Comment by @Hawk777 on 2024-04-15 19:34_
 
 A string literal passed through `Request` is also flagged when it ideally shouldn’t be:
@@ -135,10 +131,6 @@ I can fix a few of these.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-04-16 01:23_
-
----
-
-_Referenced in [astral-sh/ruff#10964](../../astral-sh/ruff/pulls/10964.md) on 2024-04-16 02:06_
 
 ---
 
@@ -175,10 +167,6 @@ def fetch(url: str, data=None, headers=None, method=None) -> HTTPResponse | HTTP
 Otherwise the linter kept failing asking this same check to be added.
 
 I understand it could not understand some url concatenations, or if this check was done in a separate function. But at least he same use case described in the documentation should ideally be covered. 
-
----
-
-_Referenced in [digitalfabrik/integreat-cms#3333](../../digitalfabrik/integreat-cms/pulls/3333.md) on 2025-01-22 12:27_
 
 ---
 

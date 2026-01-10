@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-15T05:55:10Z
 updated_at: 2024-12-05T04:17:11Z
 url: https://github.com/astral-sh/ruff/issues/10945
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # New check: f-string containing only a single placeholder?
@@ -52,10 +52,6 @@ _Label `rule` added by @MichaReiser on 2024-04-15 06:51_
 ---
 
 _Label `needs-decision` added by @dhruvmanila on 2024-12-05 03:59_
-
----
-
-_Referenced in [astral-sh/ruff#14780](../../astral-sh/ruff/issues/14780.md) on 2024-12-05 03:59_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-30T23:48:27Z
 updated_at: 2024-05-09T17:47:38Z
 url: https://github.com/astral-sh/ruff/issues/11223
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # F401 (unused imports) - Help text underlining is confusing
@@ -27,10 +27,6 @@ In https://github.com/astral-sh/ruff/pull/11168 we [noticed](https://github.com/
    = help: Remove unused import: `.renamed`
 ```
 This might be confusing for users and should be fixed.
-
----
-
-_Referenced in [astral-sh/ruff#11168](../../astral-sh/ruff/pulls/11168.md) on 2024-04-30 23:48_
 
 ---
 

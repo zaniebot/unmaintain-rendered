@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-14T01:23:01Z
 updated_at: 2024-10-14T12:34:07Z
 url: https://github.com/astral-sh/ruff/issues/13741
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Restrict use of walrus operator
@@ -92,9 +92,5 @@ I'll merge this into https://github.com/astral-sh/ruff/issues/3464 and mention t
 ---
 
 _Closed by @MichaReiser on 2024-10-14 12:34_
-
----
-
-_Referenced in [astral-sh/ruff#3464](../../astral-sh/ruff/issues/3464.md) on 2024-10-14 12:34_
 
 ---

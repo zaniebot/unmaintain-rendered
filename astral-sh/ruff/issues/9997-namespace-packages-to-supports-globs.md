@@ -1,0 +1,103 @@
+```yaml
+number: 9997
+title: namespace-packages to supports globs
+type: issue
+state: closed
+author: zawsq
+labels:
+  - configuration
+assignees: []
+created_at: 2024-02-15T12:08:52Z
+updated_at: 2024-02-16T07:05:21Z
+url: https://github.com/astral-sh/ruff/issues/9997
+synced_at: 2026-01-10T11:09:52Z
+```
+
+# namespace-packages to supports globs
+
+---
+
+_Issue opened by @zawsq on 2024-02-15 12:08_
+
+Version: `ruff 0.2.1`
+
+Consider supporting [namespace-packages](https://docs.astral.sh/ruff/settings/#line-length) glob 
+
+**Problem:**
+Currently we need to specify each nested package separately, which increases maintenance overhead.
+
+**Current configuration:**
+```toml
+namespace-packages = [
+    "plugins",
+    "plugins/ex1",
+    "plugins/ex1/test",
+    "plugins/example",
+    "plugins/utils/example/test",
+    ]
+```
+
+**Proposed configuration:**
+```toml
+namespace-packages = ["plugins/**"]
+```
+
+Utilizing a `glob` pattern like `plugins/**` makes managing a large set of plugins easier by automatically including all sub-packages without the need for explicit listing, thus reducing the effort required for maintenance.
+
+
+---
+
+_Label `configuration` added by @charliermarsh on 2024-02-16 01:12_
+
+---
+
+_Comment by @charliermarsh on 2024-02-16 01:12_
+
+I think this is reasonable.
+
+---
+
+_Comment by @dhruvmanila on 2024-02-16 07:03_
+
+Unless I'm reading the wrong part of the code, we're doing glob expansion?
+
+https://github.com/astral-sh/ruff/blob/fe79798c12b4771cee0b0c59964ad7bd751c3779/crates/ruff_workspace/src/configuration.rs#L518-L518
+
+https://github.com/astral-sh/ruff/blob/fe79798c12b4771cee0b0c59964ad7bd751c3779/crates/ruff_workspace/src/configuration.rs#L1246-L1261
+
+I tested it out locally as well using `--show-settings` and we do support it:
+
+```console
+$ tree plugins
+plugins
+├── ex1
+│   └── test
+├── example
+│   └── foo.py
+└── utils
+    └── example
+        └── test
+```
+
+And,
+
+```console
+$ ruff check --show-settings .
+[...]
+linter.namespace_packages = ["/Users/dhruv/playground/ruff/plugins/ex1", "/Users/dhruv
+/playground/ruff/plugins/ex1/test", "/Users/dhruv/playground/ruff/plugins/example", "/
+Users/dhruv/playground/ruff/plugins/utils", "/Users/dhruv/playground/ruff/plugins/util
+s/example", "/Users/dhruv/playground/ruff/plugins/utils/example/test"]
+[...]
+
+---
+
+_Comment by @dhruvmanila on 2024-02-16 07:05_
+
+I'll close this issue but feel free to ask any other questions if you think there's still an issue :)
+
+---
+
+_Closed by @dhruvmanila on 2024-02-16 07:05_
+
+---

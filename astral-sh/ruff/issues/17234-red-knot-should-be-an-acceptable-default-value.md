@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-04-06T15:37:37Z
 updated_at: 2025-04-07T17:35:01Z
 url: https://github.com/astral-sh/ruff/issues/17234
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] `...` should be an acceptable default value for any parameter in protocol methods, abstract methods and overloaded methods
@@ -93,10 +93,6 @@ so I don't think that part of this issue needs to wait for full `@overload` supp
 ---
 
 _Assigned to @MatthewMckee4 by @AlexWaygood on 2025-04-06 20:01_
-
----
-
-_Referenced in [astral-sh/ruff#17243](../../astral-sh/ruff/pulls/17243.md) on 2025-04-06 21:19_
 
 ---
 

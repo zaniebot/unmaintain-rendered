@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-12T12:21:32Z
 updated_at: 2023-02-15T20:19:05Z
 url: https://github.com/astral-sh/ruff/issues/2809
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # New rule: warning accidental garbage collection of `asyncio.create_task`
@@ -61,10 +61,6 @@ Lol, I can do this today, I didn't realize there were so many upvotes on it.
 _Comment by @zunda-arrow on 2023-02-15 18:01_
 
 I didn't know I needed this lol
-
----
-
-_Referenced in [astral-sh/ruff#2935](../../astral-sh/ruff/pulls/2935.md) on 2023-02-15 18:54_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-22T23:04:39Z
 updated_at: 2024-12-03T03:05:00Z
 url: https://github.com/astral-sh/ruff/issues/14547
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] support narrowing on bool(E)
@@ -40,14 +40,6 @@ _Label `red-knot` added by @carljm on 2024-11-22 23:04_
 ---
 
 _Assigned to @carljm by @carljm on 2024-11-22 23:04_
-
----
-
-_Referenced in [astral-sh/ruff#13694](../../astral-sh/ruff/issues/13694.md) on 2024-11-22 23:06_
-
----
-
-_Referenced in [astral-sh/ruff#14668](../../astral-sh/ruff/pulls/14668.md) on 2024-11-29 06:01_
 
 ---
 

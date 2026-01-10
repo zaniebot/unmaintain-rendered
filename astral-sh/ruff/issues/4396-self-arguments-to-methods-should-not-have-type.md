@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-12T18:41:42Z
 updated_at: 2024-11-12T10:47:06Z
 url: https://github.com/astral-sh/ruff/issues/4396
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # `self` arguments to methods should not have type annotations
@@ -156,13 +156,5 @@ ANN001 Missing type annotation for function argument `self`
 
 Created new bug for that https://github.com/astral-sh/ruff/issues/14295
 
-
----
-
-_Referenced in [astral-sh/ruff#14295](../../astral-sh/ruff/issues/14295.md) on 2024-11-12 10:46_
-
----
-
-_Referenced in [ansible/ansible-creator#326](../../ansible/ansible-creator/pulls/326.md) on 2024-11-12 11:41_
 
 ---

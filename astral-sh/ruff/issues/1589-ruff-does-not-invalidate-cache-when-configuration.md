@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-03T08:27:59Z
 updated_at: 2023-01-03T12:13:24Z
 url: https://github.com/astral-sh/ruff/issues/1589
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T12:05:31Z
 ```
 
 # Ruff does not invalidate cache when configuration changes (PL001)
@@ -43,10 +43,6 @@ Here's a failed CI run: https://gitlab.com/ThirVondukr/ruff-issues/-/jobs/354543
 ---
 
 _Renamed from "Ruff does not invalidate cache wheen configuration changes (PL001)" to "Ruff does not invalidate cache when configuration changes (PL001)" by @notypecheck on 2023-01-03 08:44_
-
----
-
-_Referenced in [astral-sh/ruff#1595](../../astral-sh/ruff/pulls/1595.md) on 2023-01-03 12:12_
 
 ---
 

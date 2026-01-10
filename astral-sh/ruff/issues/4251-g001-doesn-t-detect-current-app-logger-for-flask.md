@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-05-06T06:12:09Z
 updated_at: 2023-05-06T15:31:11Z
 url: https://github.com/astral-sh/ruff/issues/4251
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # G001 doesn't detect current_app.logger for Flask
@@ -43,10 +43,6 @@ This can be supported easily. I think even `app.logger.info` works, right? The l
 
 Let me create a quick PR for the main issue :)
 
-
----
-
-_Referenced in [astral-sh/ruff#4253](../../astral-sh/ruff/pulls/4253.md) on 2023-05-06 07:22_
 
 ---
 

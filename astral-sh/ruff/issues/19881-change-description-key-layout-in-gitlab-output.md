@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-12T16:34:24Z
 updated_at: 2025-08-13T15:19:27Z
 url: https://github.com/astral-sh/ruff/issues/19881
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Change "description" key layout in gitlab output format
@@ -106,14 +106,6 @@ Interesting (and somewhat surprising) design decision from GitLab. I agree, this
 
 ---
 
-_Referenced in [astral-sh/ruff#19896](../../astral-sh/ruff/pulls/19896.md) on 2025-08-13 14:28_
-
----
-
 _Closed by @ntBre on 2025-08-13 15:19_
-
----
-
-_Referenced in [astral-sh/ruff#20155](../../astral-sh/ruff/pulls/20155.md) on 2025-08-29 17:03_
 
 ---

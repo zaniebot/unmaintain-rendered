@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-07T06:49:57Z
 updated_at: 2023-07-09T19:53:29Z
 url: https://github.com/astral-sh/ruff/issues/5581
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # False positive for PERF401 when conditional depends on list being appended
@@ -78,14 +78,6 @@ _Assigned to @dhruvmanila by @dhruvmanila on 2023-07-08 05:58_
 
 ---
 
-_Referenced in [astral-sh/ruff#5603](../../astral-sh/ruff/pulls/5603.md) on 2023-07-08 06:47_
-
----
-
 _Closed by @charliermarsh on 2023-07-09 19:53_
-
----
-
-_Referenced in [astral-sh/ruff#6210](../../astral-sh/ruff/issues/6210.md) on 2023-07-31 20:26_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-08T18:29:08Z
 updated_at: 2025-01-09T00:34:05Z
 url: https://github.com/astral-sh/ruff/issues/14208
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Either support metaclasses that are not subclasses of `type`, or emit a diagnostic when encountering them
@@ -60,10 +60,6 @@ _Comment by @AlexWaygood on 2024-11-13 11:16_
 > Pyright's behavior seems to be a deliberate design choice:
 
 Thanks, that's interesting! I still dislike pyright's behaviour here, though, even if it's deliberate. There's lots of potentially invalid metaclasses that pyright simply doesn't detect, and that I think it would be quite easily to statically detect.
-
----
-
-_Referenced in [astral-sh/ruff#15138](../../astral-sh/ruff/pulls/15138.md) on 2024-12-25 00:30_
 
 ---
 

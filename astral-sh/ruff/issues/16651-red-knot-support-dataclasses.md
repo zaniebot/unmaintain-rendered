@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-11T23:50:07Z
 updated_at: 2025-05-07T15:18:16Z
 url: https://github.com/astral-sh/ruff/issues/16651
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [red-knot] support dataclasses
@@ -78,18 +78,6 @@ Agreed that synthesising the `__init__` method should definitely be the highest-
 > C(2) > C(1)  # False positive: Operator `>` is not supported for types `C` and `C`
 
 I think the second-highest priority item might be synthesising the `__lt__`, `__le__`, `__gt__` and `__ge__` methods for `order=True`, to address this false positive here.
-
----
-
-_Referenced in [astral-sh/ruff#17406](../../astral-sh/ruff/pulls/17406.md) on 2025-04-15 10:53_
-
----
-
-_Referenced in [astral-sh/ruff#17353](../../astral-sh/ruff/pulls/17353.md) on 2025-04-15 10:53_
-
----
-
-_Referenced in [astral-sh/ruff#17428](../../astral-sh/ruff/pulls/17428.md) on 2025-04-16 20:45_
 
 ---
 

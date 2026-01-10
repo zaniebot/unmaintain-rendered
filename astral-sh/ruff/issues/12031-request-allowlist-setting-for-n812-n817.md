@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-25T17:10:31Z
 updated_at: 2024-06-25T22:59:15Z
 url: https://github.com/astral-sh/ruff/issues/12031
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Request: allowlist setting for `N812`/`N817`
@@ -51,10 +51,6 @@ It does look like those rules respect the setting, but confusingly... N812 match
 ---
 
 _Label `bug` added by @charliermarsh on 2024-06-25 21:16_
-
----
-
-_Referenced in [astral-sh/ruff#12033](../../astral-sh/ruff/pulls/12033.md) on 2024-06-25 21:18_
 
 ---
 

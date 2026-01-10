@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-06-11T08:13:55Z
 updated_at: 2023-06-12T00:21:25Z
 url: https://github.com/astral-sh/ruff/issues/5012
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Strange behavior --add-noqa
@@ -55,10 +55,6 @@ _Label `bug` added by @dhruvmanila on 2023-06-11 12:25_
 ---
 
 _Label `noqa` added by @dhruvmanila on 2023-06-11 12:25_
-
----
-
-_Referenced in [astral-sh/ruff#5013](../../astral-sh/ruff/pulls/5013.md) on 2023-06-11 13:02_
 
 ---
 

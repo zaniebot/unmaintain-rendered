@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-12T01:18:04Z
 updated_at: 2024-03-12T04:35:42Z
 url: https://github.com/astral-sh/ruff/issues/10351
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # `Indexer` fails to identify continuation preceded by newline
@@ -42,10 +42,6 @@ _Label `accepted` added by @charliermarsh on 2024-03-12 01:18_
 ---
 
 _Label `accepted` removed by @charliermarsh on 2024-03-12 01:18_
-
----
-
-_Referenced in [astral-sh/ruff#10354](../../astral-sh/ruff/pulls/10354.md) on 2024-03-12 02:59_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-13T17:27:17Z
 updated_at: 2025-07-24T15:47:47Z
 url: https://github.com/astral-sh/ruff/issues/16713
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Better diagnostics for `RUF039`
@@ -104,10 +104,6 @@ _Comment by @InSyncWithFoo on 2025-06-21 11:29_
 _Comment by @robsdedude on 2025-06-30 13:01_
 
 I'm currently trying to cook up a PR for this.
-
----
-
-_Referenced in [astral-sh/ruff#19065](../../astral-sh/ruff/pulls/19065.md) on 2025-07-01 07:58_
 
 ---
 

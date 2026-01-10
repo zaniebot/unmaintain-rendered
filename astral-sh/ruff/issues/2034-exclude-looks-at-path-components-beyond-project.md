@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-20T16:13:57Z
 updated_at: 2023-02-03T13:24:26Z
 url: https://github.com/astral-sh/ruff/issues/2034
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # `exclude` looks at path components beyond "project root" (née does `--force-exclude` work like it should?)
@@ -199,10 +199,6 @@ _Renamed from "Does `--force-exclude` work like it should?" to "`exclude` looks 
 
 ---
 
-_Referenced in [astral-sh/ruff#2471](../../astral-sh/ruff/pulls/2471.md) on 2023-02-02 12:25_
-
----
-
 _Comment by @akx on 2023-02-02 12:25_
 
 @charliermarsh How about https://github.com/charliermarsh/ruff/pull/2471? Seems almost deceptively simple though...
@@ -216,9 +212,5 @@ Closed by #2471.
 ---
 
 _Closed by @charliermarsh on 2023-02-03 13:24_
-
----
-
-_Referenced in [omnilib/ufmt#138](../../omnilib/ufmt/issues/138.md) on 2023-03-23 13:08_
 
 ---

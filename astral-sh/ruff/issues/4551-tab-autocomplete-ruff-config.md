@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-20T19:55:31Z
 updated_at: 2025-01-27T15:09:31Z
 url: https://github.com/astral-sh/ruff/issues/4551
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Tab-autocomplete `ruff config`
@@ -76,10 +76,6 @@ I looked at this issue a little bit during the weekend. I initially tried to cre
 
 My only other idea is to create a huge `enum` by hand, but that would be a rather big code change.
 
-
----
-
-_Referenced in [astral-sh/ruff#15603](../../astral-sh/ruff/pulls/15603.md) on 2025-01-20 03:46_
 
 ---
 

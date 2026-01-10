@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-22T03:06:05Z
 updated_at: 2023-09-28T06:40:21Z
 url: https://github.com/astral-sh/ruff/issues/6750
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Formatter: inconsistency for parenthesized `with` with trailing comment
@@ -91,10 +91,6 @@ I _believe_ we want to collapse all of these (i.e., the `while` formatting is co
 
 ---
 
-_Referenced in [astral-sh/ruff#6741](../../astral-sh/ruff/pulls/6741.md) on 2023-08-22 03:12_
-
----
-
 _Comment by @charliermarsh on 2023-08-22 03:23_
 
 On `main`, we get the `with` right, in my testing...
@@ -136,10 +132,6 @@ _Renamed from "Formatter: inconsistency for parenthesized `case` pattern with tr
 ---
 
 _Label `accepted` added by @charliermarsh on 2023-09-27 14:40_
-
----
-
-_Referenced in [astral-sh/ruff#7685](../../astral-sh/ruff/pulls/7685.md) on 2023-09-28 00:07_
 
 ---
 

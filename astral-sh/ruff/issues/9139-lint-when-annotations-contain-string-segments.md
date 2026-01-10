@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-14T18:58:48Z
 updated_at: 2023-12-16T21:22:08Z
 url: https://github.com/astral-sh/ruff/issues/9139
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Lint when `|` annotations contain string segments
@@ -87,10 +87,6 @@ _Label `rule` added by @charliermarsh on 2023-12-15 00:12_
 _Comment by @charliermarsh on 2023-12-15 00:12_
 
 Repurposing the issue to lint against `"int" | str` which is invalid.
-
----
-
-_Referenced in [astral-sh/ruff#9143](../../astral-sh/ruff/pulls/9143.md) on 2023-12-15 01:37_
 
 ---
 

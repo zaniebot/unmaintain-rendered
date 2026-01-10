@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-06T22:17:57Z
 updated_at: 2023-02-07T02:14:56Z
 url: https://github.com/astral-sh/ruff/issues/2612
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # `ignore-names` doesn't seem to work for me
@@ -50,10 +50,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-02-07 00:44_
 ---
 
 _Label `bug` added by @charliermarsh on 2023-02-07 00:44_
-
----
-
-_Referenced in [astral-sh/ruff#2617](../../astral-sh/ruff/pulls/2617.md) on 2023-02-07 02:11_
 
 ---
 

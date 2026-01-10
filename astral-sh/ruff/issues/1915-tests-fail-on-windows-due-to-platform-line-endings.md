@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-16T13:04:06Z
 updated_at: 2023-01-26T00:53:23Z
 url: https://github.com/astral-sh/ruff/issues/1915
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # tests fail on windows due to platform line endings
@@ -153,10 +153,6 @@ Hah, yeah, that's interesting and not something I'd thought of. Insta actually _
 ---
 
 _Label `internal` added by @charliermarsh on 2023-01-16 17:22_
-
----
-
-_Referenced in [astral-sh/ruff#2033](../../astral-sh/ruff/pulls/2033.md) on 2023-01-20 16:08_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-10T05:58:43Z
 updated_at: 2023-09-14T20:08:59Z
 url: https://github.com/astral-sh/ruff/issues/7254
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # False positive for UP012?
@@ -56,10 +56,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-09-14 19:54_
 _Comment by @charliermarsh on 2023-09-14 19:56_
 
 Ah okay cool -- so I confirmed we do the right thing here, but the message needs to be updated to reflect the two cases.
-
----
-
-_Referenced in [astral-sh/ruff#7393](../../astral-sh/ruff/pulls/7393.md) on 2023-09-14 19:59_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-09-03T15:59:42Z
 updated_at: 2023-09-06T12:05:41Z
 url: https://github.com/astral-sh/ruff/issues/7087
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Rules C404 cause autofix error
@@ -83,10 +83,6 @@ _Label `help wanted` added by @MichaReiser on 2023-09-04 06:32_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-09-05 17:26_
-
----
-
-_Referenced in [astral-sh/ruff#7185](../../astral-sh/ruff/pulls/7185.md) on 2023-09-06 11:49_
 
 ---
 

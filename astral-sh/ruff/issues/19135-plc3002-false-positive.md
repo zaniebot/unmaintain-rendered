@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-04T00:14:08Z
 updated_at: 2025-08-06T15:13:42Z
 url: https://github.com/astral-sh/ruff/issues/19135
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # PLC3002: false positive
@@ -130,9 +130,5 @@ I will take a look at this.
 ---
 
 _Assigned to @mikeleppane by @ntBre on 2025-08-06 15:13_
-
----
-
-_Referenced in [astral-sh/ruff#19801](../../astral-sh/ruff/pulls/19801.md) on 2025-08-07 11:00_
 
 ---

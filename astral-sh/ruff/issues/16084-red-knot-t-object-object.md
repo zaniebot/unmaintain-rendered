@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-10T19:30:52Z
 updated_at: 2025-02-10T22:07:07Z
 url: https://github.com/astral-sh/ruff/issues/16084
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [red-knot] `T | object = object`
@@ -30,10 +30,6 @@ _Label `red-knot` added by @sharkdp on 2025-02-10 19:30_
 ---
 
 _Assigned to @sharkdp by @sharkdp on 2025-02-10 19:31_
-
----
-
-_Referenced in [astral-sh/ruff#16088](../../astral-sh/ruff/pulls/16088.md) on 2025-02-10 22:01_
 
 ---
 

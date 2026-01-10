@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-31T11:44:44Z
 updated_at: 2025-08-06T18:19:50Z
 url: https://github.com/astral-sh/ruff/issues/19660
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # `*` unpacking should make PLC0207 fix unsafe
@@ -49,10 +49,6 @@ _Label `bug` added by @ntBre on 2025-07-31 12:46_
 ---
 
 _Label `fixes` added by @ntBre on 2025-07-31 12:46_
-
----
-
-_Referenced in [astral-sh/ruff#19679](../../astral-sh/ruff/pulls/19679.md) on 2025-08-01 04:18_
 
 ---
 

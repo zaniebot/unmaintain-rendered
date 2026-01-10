@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-11T19:25:59Z
 updated_at: 2023-07-24T04:38:21Z
 url: https://github.com/astral-sh/ruff/issues/5694
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Logging rules not flagged if logger imported from another module
@@ -94,10 +94,6 @@ Thanks @charliermarsh, that makes sense.
 _Comment by @charliermarsh on 2023-07-13 22:53_
 
 I think I misdiagnosed this, `logging_setup.logger.info` also isn't working in my initial testing, but regardless it'll be fixed in the next release.
-
----
-
-_Referenced in [astral-sh/ruff#5750](../../astral-sh/ruff/pulls/5750.md) on 2023-07-13 23:03_
 
 ---
 

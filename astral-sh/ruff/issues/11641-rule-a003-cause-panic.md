@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-31T14:37:10Z
 updated_at: 2024-05-31T19:04:37Z
 url: https://github.com/astral-sh/ruff/issues/11641
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Rule A003 cause panic
@@ -101,10 +101,6 @@ I can take it.
 ---
 
 _Label `fuzzer` added by @charliermarsh on 2024-05-31 14:59_
-
----
-
-_Referenced in [astral-sh/ruff#11645](../../astral-sh/ruff/pulls/11645.md) on 2024-05-31 19:01_
 
 ---
 

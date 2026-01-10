@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-28T14:51:37Z
 updated_at: 2024-03-29T23:08:29Z
 url: https://github.com/astral-sh/ruff/issues/942
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # F821 triggers when using non-ASCII characters
@@ -202,10 +202,6 @@ _Comment by @ekzhang on 2022-11-30 06:08_
 
 <img width="719" alt="image" src="https://user-images.githubusercontent.com/7550632/204720397-9f56cb20-8dc9-4e05-996d-d198ee22ea36.png">
 
-
----
-
-_Referenced in [astral-sh/ruff#5003](../../astral-sh/ruff/issues/5003.md) on 2023-06-10 12:02_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-24T00:10:38Z
 updated_at: 2023-03-24T03:12:00Z
 url: https://github.com/astral-sh/ruff/issues/3704
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # PLR1711, RET501 should exempt annotated function where return type isn’t `-> None`
@@ -67,22 +67,6 @@ I would like to work on it.
 
 ---
 
-_Referenced in [astral-sh/ruff#3705](../../astral-sh/ruff/pulls/3705.md) on 2023-03-24 01:34_
-
----
-
 _Closed by @charliermarsh on 2023-03-24 03:12_
-
----
-
-_Referenced in [astral-sh/ruff#8212](../../astral-sh/ruff/pulls/8212.md) on 2023-10-25 12:33_
-
----
-
-_Referenced in [astral-sh/ruff#12198](../../astral-sh/ruff/issues/12198.md) on 2024-07-05 07:39_
-
----
-
-_Referenced in [astral-sh/ruff#14377](../../astral-sh/ruff/issues/14377.md) on 2024-11-16 16:21_
 
 ---

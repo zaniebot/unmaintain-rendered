@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-06-03T23:41:00Z
 updated_at: 2025-04-19T19:55:57Z
 url: https://github.com/astral-sh/ruff/issues/4845
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # ERA001: autofix removes valid comments that do not contain code or removes not everything
@@ -164,10 +164,6 @@ I like
 > Alternatively, we could only autofix if all lines in a comment block are identified as code.
 
 Perhaps we could use `Suggested` in that case and `Manual` otherwise?
-
----
-
-_Referenced in [astral-sh/ruff#3525](../../astral-sh/ruff/issues/3525.md) on 2023-06-13 16:56_
 
 ---
 
@@ -339,43 +335,7 @@ _Comment by @charliermarsh on 2023-08-31 13:31_
 
 ---
 
-_Referenced in [astral-sh/ruff#7523](../../astral-sh/ruff/pulls/7523.md) on 2023-09-19 15:46_
-
----
-
-_Referenced in [astral-sh/ruff#7769](../../astral-sh/ruff/pulls/7769.md) on 2023-10-03 17:27_
-
----
-
 _Closed by @zanieb on 2023-10-06 03:41_
-
----
-
-_Referenced in [snapcrafters/ruff#35](../../snapcrafters/ruff/issues/35.md) on 2024-02-24 04:41_
-
----
-
-_Referenced in [snapcrafters/ruff#38](../../snapcrafters/ruff/issues/38.md) on 2024-04-19 16:50_
-
----
-
-_Referenced in [snapcrafters/ruff#39](../../snapcrafters/ruff/issues/39.md) on 2024-04-22 09:10_
-
----
-
-_Referenced in [snapcrafters/ruff#40](../../snapcrafters/ruff/issues/40.md) on 2024-04-26 01:17_
-
----
-
-_Referenced in [snapcrafters/ruff#41](../../snapcrafters/ruff/issues/41.md) on 2024-05-21 19:53_
-
----
-
-_Referenced in [snapcrafters/ruff#42](../../snapcrafters/ruff/issues/42.md) on 2024-06-11 23:02_
-
----
-
-_Referenced in [snapcrafters/ruff#43](../../snapcrafters/ruff/issues/43.md) on 2024-06-14 19:43_
 
 ---
 
@@ -420,94 +380,6 @@ Examples of false positives:
 # O(1)
 # this is O(1)
 ```
-
----
-
-_Referenced in [astral-sh/ruff#12108](../../astral-sh/ruff/issues/12108.md) on 2024-06-30 04:36_
-
----
-
-_Referenced in [snapcrafters/ruff#46](../../snapcrafters/ruff/issues/46.md) on 2024-07-16 23:11_
-
----
-
-_Referenced in [snapcrafters/ruff#47](../../snapcrafters/ruff/issues/47.md) on 2024-07-24 20:17_
-
----
-
-_Referenced in [snapcrafters/ruff#48](../../snapcrafters/ruff/issues/48.md) on 2024-07-25 19:30_
-
----
-
-_Referenced in [snapcrafters/ruff#49](../../snapcrafters/ruff/issues/49.md) on 2024-08-08 22:40_
-
----
-
-_Referenced in [snapcrafters/ruff#51](../../snapcrafters/ruff/issues/51.md) on 2024-08-14 19:22_
-
----
-
-_Referenced in [snapcrafters/ruff#52](../../snapcrafters/ruff/issues/52.md) on 2024-08-16 00:14_
-
----
-
-_Referenced in [snapcrafters/ruff#53](../../snapcrafters/ruff/issues/53.md) on 2024-08-16 19:08_
-
----
-
-_Referenced in [snapcrafters/ruff#54](../../snapcrafters/ruff/issues/54.md) on 2024-08-22 14:43_
-
----
-
-_Referenced in [snapcrafters/ruff#55](../../snapcrafters/ruff/issues/55.md) on 2024-09-06 01:17_
-
----
-
-_Referenced in [snapcrafters/ruff#56](../../snapcrafters/ruff/issues/56.md) on 2024-09-09 15:40_
-
----
-
-_Referenced in [snapcrafters/ruff#57](../../snapcrafters/ruff/issues/57.md) on 2024-09-13 00:45_
-
----
-
-_Referenced in [snapcrafters/ruff#59](../../snapcrafters/ruff/issues/59.md) on 2024-09-18 08:46_
-
----
-
-_Referenced in [snapcrafters/ruff#60](../../snapcrafters/ruff/issues/60.md) on 2024-09-20 11:18_
-
----
-
-_Referenced in [snapcrafters/ruff#61](../../snapcrafters/ruff/issues/61.md) on 2024-09-26 13:28_
-
----
-
-_Referenced in [snapcrafters/ruff#62](../../snapcrafters/ruff/issues/62.md) on 2024-10-04 16:07_
-
----
-
-_Referenced in [snapcrafters/ruff#63](../../snapcrafters/ruff/issues/63.md) on 2024-10-20 23:59_
-
----
-
-_Referenced in [snapcrafters/ruff#64](../../snapcrafters/ruff/issues/64.md) on 2024-10-24 23:50_
-
----
-
-_Referenced in [snapcrafters/ruff#65](../../snapcrafters/ruff/issues/65.md) on 2024-11-05 13:15_
-
----
-
-_Referenced in [snapcrafters/ruff#66](../../snapcrafters/ruff/issues/66.md) on 2024-11-12 19:23_
-
----
-
-_Referenced in [snapcrafters/ruff#67](../../snapcrafters/ruff/issues/67.md) on 2024-11-15 18:43_
-
----
-
-_Referenced in [snapcrafters/ruff#68](../../snapcrafters/ruff/issues/68.md) on 2024-11-18 17:39_
 
 ---
 

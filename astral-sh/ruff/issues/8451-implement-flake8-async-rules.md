@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-03T00:55:27Z
 updated_at: 2025-09-05T11:10:56Z
 url: https://github.com/astral-sh/ruff/issues/8451
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Implement flake8-async rules
@@ -73,19 +73,7 @@ _Issue opened by @charliermarsh on 2023-11-03 00:55_
 
 ---
 
-_Referenced in [astral-sh/ruff#8439](../../astral-sh/ruff/pulls/8439.md) on 2023-11-03 00:57_
-
----
-
 _Label `plugin` added by @charliermarsh on 2023-11-03 01:19_
-
----
-
-_Referenced in [astral-sh/ruff#8468](../../astral-sh/ruff/pulls/8468.md) on 2023-11-03 12:49_
-
----
-
-_Referenced in [astral-sh/ruff#8486](../../astral-sh/ruff/pulls/8486.md) on 2023-11-04 12:32_
 
 ---
 
@@ -97,22 +85,6 @@ The `TRIO2XX` rules are partially covered by the port of [flake8_async](https://
 
 The recommended fixes in `flake8-trio` are TRIO specific though. How do we want to combine those two? 
 
-
----
-
-_Referenced in [astral-sh/ruff#8490](../../astral-sh/ruff/pulls/8490.md) on 2023-11-04 16:33_
-
----
-
-_Referenced in [astral-sh/ruff#8534](../../astral-sh/ruff/pulls/8534.md) on 2023-11-07 06:59_
-
----
-
-_Referenced in [astral-sh/ruff#8537](../../astral-sh/ruff/pulls/8537.md) on 2023-11-07 12:23_
-
----
-
-_Referenced in [astral-sh/ruff#8578](../../astral-sh/ruff/pulls/8578.md) on 2023-11-09 09:23_
 
 ---
 
@@ -186,14 +158,6 @@ Also TRIO117 is removed (because `trio.MultiError` is removed), and there's two 
 
 ---
 
-_Referenced in [astral-sh/ruff#11498](../../astral-sh/ruff/pulls/11498.md) on 2024-05-22 20:49_
-
----
-
-_Referenced in [astral-sh/ruff#10416](../../astral-sh/ruff/pulls/10416.md) on 2024-06-25 21:22_
-
----
-
 _Renamed from "Implement flake8-trio rules" to "Implement flake8-async rules" by @MichaReiser on 2024-06-26 07:51_
 
 ---
@@ -204,10 +168,6 @@ I updated the issue to reflect the `flake8-trio` to `flake8-async` rename, cross
 
 ---
 
-_Referenced in [astral-sh/ruff#12873](../../astral-sh/ruff/issues/12873.md) on 2024-08-14 01:25_
-
----
-
 _Comment by @Zac-HD on 2024-08-15 03:02_
 
 Hey all - I just tried moving some code from `flake8-async` to `ruff check` for that delicious massive speedup, and ended up back on this issue 🙂 
@@ -215,10 +175,6 @@ Hey all - I just tried moving some code from `flake8-async` to `ruff check` for 
 The good news: https://github.com/astral-sh/ruff/pull/10416 also implemented `ASYNC251`!
 
 The sad-for-me news: lots of other rules still to implement.  If you feel inspired but not _so_ inspired as to finish closing out this issue, `ASYNC900` and `ASYNC200` seem pretty simple to implement, and would be _really_ nice to have...
-
----
-
-_Referenced in [astral-sh/ruff#13341](../../astral-sh/ruff/issues/13341.md) on 2024-09-12 23:38_
 
 ---
 
@@ -241,22 +197,6 @@ New rules in upstream https://flake8-async.readthedocs.io/en/latest/rules.html#a
 * `ASYNC122` delayed-entry-of-relative-cancelscope
 * `ASYNC123` bad-exception-group-flattening
   * this one isn't specific to async, and affects anybody trying to extract and reraise an exception contained inside an exception group. Upstream implementation is fairly crude
-
----
-
-_Referenced in [astral-sh/ruff#19619](../../astral-sh/ruff/pulls/19619.md) on 2025-08-04 20:19_
-
----
-
-_Referenced in [astral-sh/ruff#20091](../../astral-sh/ruff/pulls/20091.md) on 2025-08-26 00:18_
-
----
-
-_Referenced in [astral-sh/ruff#20122](../../astral-sh/ruff/pulls/20122.md) on 2025-08-28 00:20_
-
----
-
-_Referenced in [astral-sh/ruff#20264](../../astral-sh/ruff/pulls/20264.md) on 2025-09-05 10:08_
 
 ---
 

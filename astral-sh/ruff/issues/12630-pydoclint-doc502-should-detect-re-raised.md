@@ -1,0 +1,112 @@
+```yaml
+number: 12630
+title: "[pydoclint] DOC502 should detect re-raised exceptions"
+type: issue
+state: closed
+author: edgarrmondragon
+labels:
+  - bug
+  - docstring
+assignees: []
+created_at: 2024-08-02T14:00:20Z
+updated_at: 2024-08-02T21:47:23Z
+url: https://github.com/astral-sh/ruff/issues/12630
+synced_at: 2026-01-10T11:09:54Z
+```
+
+# [pydoclint] DOC502 should detect re-raised exceptions
+
+---
+
+_Issue opened by @edgarrmondragon on 2024-08-02 14:00_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+Consider
+
+```python
+# repro_DOC.py
+
+def my_func(arg: int) -> int:
+    """Doer of things.
+
+    Args:
+        arg (int): The number to be doubled.
+
+    Returns:
+        int: The doubled number.
+
+    Raises:
+        TypeError: If arg cannot be multiplied by 2.
+    """
+    try:
+        return arg * 2
+    except TypeError:
+        print("arg should be an integer")
+        raise
+```
+
+`pydoclint` correctly detects the exception is re-reraised:
+
+```console
+$ pydoclint --style=google repro_DOC.py
+Loading config from user-specified .toml file: pyproject.toml
+No config found in pyproject.toml.
+Skipping files that match this pattern: \.git|\.tox
+repro_DOC.py
+🎉 No violations 🎉
+```
+
+Ruff does not
+
+```console
+$ ruff check --select DOC repro_DOC.py
+repro_DOC.py:12:1: DOC502 Raised exception is not explicitly raised: `TypeError`
+   |
+ 7 |           arg (int): The number to be doubled.
+ 8 |   
+ 9 | /     Raises:
+10 | |         TypeError: If arg cannot be multiplied by 2.
+11 | |     """
+   | |____^ DOC502
+12 |       try:
+13 |           return arg * 2
+   |
+```
+
+---
+
+_Renamed from "[pydoclint" to "[pydoclint] DOC502 should detect re-raised exceptions" by @edgarrmondragon on 2024-08-02 14:00_
+
+---
+
+_Label `bug` added by @AlexWaygood on 2024-08-02 14:07_
+
+---
+
+_Label `docstring` added by @AlexWaygood on 2024-08-02 14:07_
+
+---
+
+_Assigned to @AlexWaygood by @AlexWaygood on 2024-08-02 14:14_
+
+---
+
+_Closed by @AlexWaygood on 2024-08-02 21:47_
+
+---
+
+_Closed by @AlexWaygood on 2024-08-02 21:47_
+
+---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-26T14:14:50Z
 updated_at: 2024-01-29T13:44:34Z
 url: https://github.com/astral-sh/ruff/issues/9648
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # F821 false positive in notebook when using magic command as variables
@@ -79,10 +79,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-01-26 14:54_
 
 ---
 
-_Referenced in [astral-sh/ruff#9653](../../astral-sh/ruff/pulls/9653.md) on 2024-01-26 16:27_
-
----
-
 _Comment by @charliermarsh on 2024-01-26 16:39_
 
 Fixed in https://github.com/astral-sh/ruff/pull/9653.
@@ -102,9 +98,5 @@ Thanks!
 _Comment by @charliermarsh on 2024-01-29 13:44_
 
 Of course! If you see more of these, let us know, since we have to rely on some heuristics for this given the flexibility of notebooks.
-
----
-
-_Referenced in [astral-sh/ruff#9644](../../astral-sh/ruff/issues/9644.md) on 2024-01-30 07:45_
 
 ---

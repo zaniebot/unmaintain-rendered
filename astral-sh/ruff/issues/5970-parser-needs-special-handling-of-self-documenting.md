@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-22T07:39:46Z
 updated_at: 2023-08-01T05:55:05Z
 url: https://github.com/astral-sh/ruff/issues/5970
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # parser needs special handling of self-documenting f-strings
@@ -25,10 +25,6 @@ added [self documenting expressions for f-strings](https://docs.python.org/3/wha
 `f"{a=}"` is now short-hand for `f"a={a}"`
 
 in the [parser](https://github.com/astral-sh/RustPython-Parser/blob/main/parser/src/string.rs#L330-L369) the self-documented syntax above generates the same expression nodes as the expanded version, which (i think?) means we can't distinguish them. i suppose we need to actually preserve this info in the ast, e.g. by adding `self_documenting` (currently a free var in the parser) to the node or similar
-
----
-
-_Referenced in [astral-sh/RustPython-Parser#33](../../astral-sh/RustPython-Parser/pulls/33.md) on 2023-07-22 07:40_
 
 ---
 
@@ -500,10 +496,6 @@ We just did the monthly planning internally, and f-string formatting is one of o
 
 ---
 
-_Referenced in [astral-sh/ruff#6167](../../astral-sh/ruff/pulls/6167.md) on 2023-07-29 08:08_
-
----
-
 _Comment by @davidszotten on 2023-07-29 08:12_
 
 Hi. I finally had a bit more time to work on this and thus got to the part where `JoinedStringPart` was causing more issues. Need to think more about the return values / refactor much more of the parser in `strings.rs`. So I decided to try the simple approach of `DebugText` only. I think I got that working in #6167
@@ -541,9 +533,5 @@ I plan to create an umbrella issue for the formatter on Monday
 ---
 
 _Closed by @MichaReiser on 2023-08-01 05:55_
-
----
-
-_Referenced in [astral-sh/ruff#6365](../../astral-sh/ruff/pulls/6365.md) on 2023-08-05 13:34_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-15T02:19:22Z
 updated_at: 2025-04-15T04:37:19Z
 url: https://github.com/astral-sh/ruff/issues/10417
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Publishing Internal Crates to crates.io
@@ -87,14 +87,6 @@ _Comment by @flying-sheep on 2024-04-06 14:23_
 After replacing the parser, maybe this could be revisited? It would be great to have a robust Python parser on crates.io
 
 Another advantage would be having documentation on docs.rs
-
----
-
-_Referenced in [conda-forge/deptry-feedstock#5](../../conda-forge/deptry-feedstock/issues/5.md) on 2024-06-14 09:31_
-
----
-
-_Referenced in [astral-sh/ruff#14051](../../astral-sh/ruff/issues/14051.md) on 2024-11-01 18:31_
 
 ---
 

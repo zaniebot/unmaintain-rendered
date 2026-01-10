@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-06T15:59:02Z
 updated_at: 2024-11-08T03:40:37Z
 url: https://github.com/astral-sh/ruff/issues/14136
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Sort By Length Doesn't really sort by length
@@ -163,13 +163,5 @@ This seems to match isort's behavior, so I'd prefer not to change it.
 ---
 
 _Closed by @charliermarsh on 2024-11-08 03:40_
-
----
-
-_Referenced in [PyCQA/isort#2304](../../PyCQA/isort/issues/2304.md) on 2024-11-20 15:14_
-
----
-
-_Referenced in [astral-sh/ruff#9870](../../astral-sh/ruff/issues/9870.md) on 2025-12-05 19:23_
 
 ---

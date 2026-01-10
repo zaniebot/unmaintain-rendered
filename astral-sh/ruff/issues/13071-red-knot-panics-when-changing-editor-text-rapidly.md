@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-23T06:58:42Z
 updated_at: 2024-09-23T12:04:05Z
 url: https://github.com/astral-sh/ruff/issues/13071
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Red Knot panics when changing editor text rapidly
@@ -298,10 +298,6 @@ Even if this is a Salsa bug, we should probably prioritize tracking it down soon
 _Comment by @dhruvmanila on 2024-09-13 15:37_
 
 We've reproduced this in Salsa at https://github.com/salsa-rs/salsa/pull/573
-
----
-
-_Referenced in [astral-sh/ruff#13480](../../astral-sh/ruff/pulls/13480.md) on 2024-09-23 11:57_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-05T12:21:19Z
 updated_at: 2024-06-08T05:48:54Z
 url: https://github.com/astral-sh/ruff/issues/11751
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # `lint.per-file-ignores` option is ignored by the new language server
@@ -133,18 +133,10 @@ c:\\Users\\crmar\\workspace\\fastapi\\tests\\**\\*.py
 
 ---
 
-_Referenced in [astral-sh/ruff#11800](../../astral-sh/ruff/pulls/11800.md) on 2024-06-08 01:49_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-06-08 01:51_
 
 ---
 
 _Closed by @snowsignal on 2024-06-08 05:48_
-
----
-
-_Referenced in [astral-sh/ruff#14282](../../astral-sh/ruff/issues/14282.md) on 2024-11-11 14:45_
 
 ---

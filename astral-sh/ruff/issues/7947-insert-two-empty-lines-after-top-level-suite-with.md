@@ -1,0 +1,74 @@
+```yaml
+number: 7947
+title: Insert two empty lines after top level suite with trailing def/class
+type: issue
+state: closed
+author: konstin
+labels:
+  - bug
+  - formatter
+assignees: []
+created_at: 2023-10-13T15:13:41Z
+updated_at: 2023-11-14T11:55:29Z
+url: https://github.com/astral-sh/ruff/issues/7947
+synced_at: 2026-01-10T11:09:50Z
+```
+
+# Insert two empty lines after top level suite with trailing def/class
+
+---
+
+_Issue opened by @konstin on 2023-10-13 15:13_
+
+Black formats
+```python
+if True:
+
+    def double(s):
+        return s + s
+print("out")
+```
+as
+```python
+if True:
+
+    def double(s):
+        return s + s
+
+
+print("out")
+```
+while we format it as
+```python
+if True:
+
+    def double(s):
+        return s + s
+
+print("out")
+```
+Black does so because on the top level, there are two newlines after a function or class definition. We currently don't see that the if statement is on the top level when formatting its suite, so we can't that we need one more newline here. This is a follow-up to #7946.
+
+---
+
+_Label `bug` added by @konstin on 2023-10-13 15:13_
+
+---
+
+_Label `formatter` added by @konstin on 2023-10-13 15:13_
+
+---
+
+_Added to milestone `Formatter: Stable` by @MichaReiser on 2023-10-16 07:44_
+
+---
+
+_Comment by @konstin on 2023-11-14 11:55_
+
+Works on main
+
+---
+
+_Closed by @konstin on 2023-11-14 11:55_
+
+---

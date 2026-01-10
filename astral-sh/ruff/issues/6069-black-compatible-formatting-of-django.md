@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-25T11:22:45Z
 updated_at: 2023-09-13T09:09:59Z
 url: https://github.com/astral-sh/ruff/issues/6069
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # 📋 Black-compatible formatting of django
@@ -57,10 +57,6 @@ _Label `formatter` added by @konstin on 2023-07-25 11:22_
 
 ---
 
-_Referenced in [astral-sh/ruff#5828](../../astral-sh/ruff/issues/5828.md) on 2023-07-25 11:25_
-
----
-
 _Label `help wanted` added by @MichaReiser on 2023-07-31 12:50_
 
 ---
@@ -77,17 +73,9 @@ _Unassigned @konstin by @konstin on 2023-07-31 16:31_
 
 ---
 
-_Referenced in [astral-sh/ruff#6203](../../astral-sh/ruff/issues/6203.md) on 2023-07-31 16:57_
-
----
-
 _Comment by @konstin on 2023-08-11 11:59_
 
 i went through the diff again an added some that i previously missed
-
----
-
-_Referenced in [astral-sh/ruff#5630](../../astral-sh/ruff/issues/5630.md) on 2023-08-17 16:27_
 
 ---
 
@@ -96,10 +84,6 @@ _Removed from milestone `Formatter: Alpha` by @MichaReiser on 2023-08-22 15:09_
 ---
 
 _Added to milestone `Formatter: Beta` by @MichaReiser on 2023-08-22 15:09_
-
----
-
-_Referenced in [astral-sh/ruff#6974](../../astral-sh/ruff/issues/6974.md) on 2023-08-29 12:23_
 
 ---
 

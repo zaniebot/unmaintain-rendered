@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-11-27T16:01:03Z
 updated_at: 2023-12-12T15:01:24Z
 url: https://github.com/astral-sh/ruff/issues/8855
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # docstring code formatter: figure out how to handle line width
@@ -50,17 +50,9 @@ _Label `needs-decision` added by @BurntSushi on 2023-11-27 16:01_
 
 ---
 
-_Referenced in [astral-sh/ruff#8811](../../astral-sh/ruff/pulls/8811.md) on 2023-11-27 16:01_
-
----
-
 _Comment by @ofek on 2023-11-27 17:04_
 
 I would also very much prefer option 3
-
----
-
-_Referenced in [astral-sh/ruff#7146](../../astral-sh/ruff/issues/7146.md) on 2023-11-27 17:05_
 
 ---
 
@@ -247,10 +239,6 @@ _Comment by @zanieb on 2023-11-29 16:28_
 > To be clear, you're saying that when we build docs the recommendation is to have a separate config file just for that option and format the code in the CI using that config file, and then run the documentation generator?
 
 Well ideally we'd make it easier than creating a whole separate config file to override a single option (as described in https://github.com/astral-sh/ruff/issues/8368) but yes. This is more of a solution for people who have a documentation line width that _would_ cause conflict with their global line width e.g. they're the same number instead of 80 / 120.
-
----
-
-_Referenced in [astral-sh/ruff#9030](../../astral-sh/ruff/pulls/9030.md) on 2023-12-07 19:09_
 
 ---
 
@@ -676,14 +664,6 @@ Note that it may be the case that we just never need to provide a `same-as-globa
 
 ---
 
-_Referenced in [astral-sh/ruff#9055](../../astral-sh/ruff/pulls/9055.md) on 2023-12-08 19:00_
-
----
-
-_Referenced in [astral-sh/ruff#9098](../../astral-sh/ruff/pulls/9098.md) on 2023-12-12 14:58_
-
----
-
 _Comment by @BurntSushi on 2023-12-12 15:01_
 
 With https://github.com/astral-sh/ruff/pull/9098 merged, I think we've settled on our initial strategy here. We'll provide two ways to configure the line width for docstring code snippets:
@@ -694,9 +674,5 @@ With https://github.com/astral-sh/ruff/pull/9098 merged, I think we've settled o
 ---
 
 _Closed by @BurntSushi on 2023-12-12 15:01_
-
----
-
-_Referenced in [GHOST-Science-Club/tree-classification-irim#231](../../GHOST-Science-Club/tree-classification-irim/pulls/231.md) on 2025-05-30 10:09_
 
 ---

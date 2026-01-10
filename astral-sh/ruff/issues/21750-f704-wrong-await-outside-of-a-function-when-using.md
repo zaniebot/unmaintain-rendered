@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-02T10:55:27Z
 updated_at: 2025-12-02T21:02:03Z
 url: https://github.com/astral-sh/ruff/issues/21750
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # `F704` wrong "await outside of a function" when using generators
@@ -101,10 +101,6 @@ Might be worth a bug fix PR if that's indeed all that's necessary
 ---
 
 _Assigned to @ntBre by @ntBre on 2025-12-02 18:34_
-
----
-
-_Referenced in [astral-sh/ruff#21763](../../astral-sh/ruff/pulls/21763.md) on 2025-12-02 19:57_
 
 ---
 

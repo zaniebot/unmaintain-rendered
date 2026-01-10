@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-12-09T18:49:09Z
 updated_at: 2023-12-09T23:03:32Z
 url: https://github.com/astral-sh/ruff/issues/9074
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Ruff format always splits single positional-only argument list across two lines
@@ -64,10 +64,6 @@ Should be straightforward to fix. I appreciate you finding + linking back to the
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-09 19:25_
-
----
-
-_Referenced in [astral-sh/ruff#9076](../../astral-sh/ruff/pulls/9076.md) on 2023-12-09 19:57_
 
 ---
 

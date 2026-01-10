@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-03T14:58:00Z
 updated_at: 2025-03-03T14:30:00Z
 url: https://github.com/astral-sh/ruff/issues/9381
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # `ruff format` or `ruff check` returns "nested alternate groups are not allowed" error
@@ -137,10 +137,6 @@ Unfortunately I need to target specific subdirs of that unusual dir, so that's n
 
 ---
 
-_Referenced in [20tab/django-continuous-delivery#290](../../20tab/django-continuous-delivery/pulls/290.md) on 2024-01-04 18:43_
-
----
-
 _Comment by @niccolomineo on 2024-01-05 12:41_
 
 Hi @charliermarsh, you might be already aware of this, but this is occurring with the base `ruff` command as well, not just with `ruff format`.
@@ -160,14 +156,6 @@ _Label `cli` removed by @MichaReiser on 2024-01-08 08:11_
 ---
 
 _Renamed from "`ruff format` returns "nested alternate groups are not allowed" error" to "`ruff format` or `ruff check` returns "nested alternate groups are not allowed" error" by @MichaReiser on 2024-01-08 08:11_
-
----
-
-_Referenced in [astral-sh/ruff#9585](../../astral-sh/ruff/issues/9585.md) on 2024-05-08 11:52_
-
----
-
-_Referenced in [fpgmaas/cookiecutter-poetry#112](../../fpgmaas/cookiecutter-poetry/pulls/112.md) on 2024-07-02 19:12_
 
 ---
 
@@ -254,10 +242,6 @@ _Comment by @lucasfijen on 2025-02-24 08:16_
 _Comment by @ntBre on 2025-02-24 14:50_
 
 @lucasfijen Thank you so much! I cloned the repo and can now reproduce!
-
----
-
-_Referenced in [astral-sh/ruff#16407](../../astral-sh/ruff/pulls/16407.md) on 2025-02-26 22:17_
 
 ---
 

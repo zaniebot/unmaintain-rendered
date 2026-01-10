@@ -1,0 +1,142 @@
+```yaml
+number: 13386
+title: Option to disable awkward line breaks for assert statements
+type: issue
+state: open
+author: 0xjmux
+labels:
+  - formatter
+  - style
+assignees: []
+created_at: 2024-09-17T21:21:17Z
+updated_at: 2024-09-18T06:21:32Z
+url: https://github.com/astral-sh/ruff/issues/13386
+synced_at: 2026-01-10T11:09:55Z
+```
+
+# Option to disable awkward line breaks for assert statements
+
+---
+
+_Issue opened by @0xjmux on 2024-09-17 21:21_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+Hi,
+I'm using Ruff on a codebase with a good amount of `assert` statements - it's non-production code, and they're a good way to find bugs as you're testing things. 
+
+However, the way that Black and Ruff format assert statements once they pass a certain length doesn't make sense, as the active issues on Black show:
+* [Open issues on Black repo containing 'assert'](https://github.com/psf/black/issues?q=is%3Aopen+label%3A%22T%3A+style%22+assert)
+* [example 1](https://github.com/psf/black/issues/3663) [example 2](https://github.com/psf/black/issues/3210) [example 3](https://github.com/psf/black/issues/1483) 
+
+
+This seems to be a common issue with black that hasn't been addressed for some time, and the reason I started using Ruff is because I was hoping this behavior was something I could disable.
+
+#### Example
+
+Input:
+```python
+    assert Path(filepath).exists(), f'longish assert string with filepath {filepath} not found!'
+```
+
+Formatted output:
+```python
+    assert Path(
+        filepath
+    ).exists(), f'longish assert string with filepath {filepath} not found!'
+```
+Which is objectively less readable.
+
+Desired behavior:
+An option to either:
+* Disable formatting of assert statements entirely
+* Disable splitting parenthesis for specified keywords (`assert`, in this case)
+* Option to format assert statements like this, and split the error string instead of the conditional. 
+
+```python
+assert Path(filepath).exists(), \
+    f'longish assert string with filepath {filepath} not found!'
+```
+
+#### Ruff Playground output and IR
+Pasting the input into the [Ruff Playground](https://play.ruff.rs/?secondary=FIR) and checking out the IR gives this output:
+<details>
+<summary>Ruff playground output</summary>
+```
+empty_line,
+    source_position(356),
+    "filename = ",
+    best_fit_parenthesize("#5", ["\"hello.txt\""]),
+    source_position(378),
+    empty_line,
+    source_position(384),
+    "assert ",
+    best_fit_parenthesize("#6", [
+      "Path(",
+      fits_expanded(propagate_expand: false, condition: if_group_fits_on_line("#6"), [
+        group([indent([soft_line_break, group(["filename"])]), soft_line_break])
+      ]),
+      ").exists",
+      group(["()"])
+    ]),
+    ", ",
+    best_fit_parenthesize("#7", [
+      "f\"longish assert string with filepath {filename} not found!\""
+    ]),
+    source_position(477)
+  ]),
+  hard_line_break,
+```
+</details>
+
+
+#### Other
+* Ruff version: 0.6.5. Behavior is same using `--preview` and `--isolated` flags.
+
+
+---
+
+_Label `formatter` added by @MichaReiser on 2024-09-18 06:13_
+
+---
+
+_Label `style` added by @MichaReiser on 2024-09-18 06:13_
+
+---
+
+_Comment by @MichaReiser on 2024-09-18 06:21_
+
+Hi @0xjmux 
+
+I agree that the formatting of asserts isn't ideal. IMO, it tries to hard to avoid parentheses which then leads to very awkward looking code. 
+
+I do understand where you're coming from but the solution here isn't to introduce new options. Instead, we should improve how assert is formatted. This will benefit everyone (https://github.com/astral-sh/ruff/issues/8331, https://github.com/astral-sh/ruff/issues/8388).
+
+For now, you can use `fmt:skip` to disable formatting on a case-per-case basis. I know, it's not ideal.
+
+```python
+assert Path(filepath).exists(), f'longish assert string with filepath {filepath} not found!' # fmt: skip
+```
+
+For why I don't want to introduce the above mentioned options:
+
+I don't want to introduce a setting to disable formatting of assert statements entirely. The goal of the formatter is to get consistent code formatting and disabling formatting for a specific syntax misses that goal entirely. It also opens a flood of requests where we get request to add settings to disable formatting for every python-syntax there is. That's a precedence I rather not set. The same applies to having a setting that avoids splitting parentheses for specific keywords. Although that would also be very hard to implement because it is a non-local change (what about nested expressions?)
+
+> Option to format assert statements like this, and split the error string instead of the conditional.
+
+Our style guide avoids the use of line continuations `\` where this is possible. 
+
+
+
+---

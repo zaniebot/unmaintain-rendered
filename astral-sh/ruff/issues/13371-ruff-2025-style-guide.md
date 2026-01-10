@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-16T16:19:01Z
 updated_at: 2025-01-13T15:25:04Z
 url: https://github.com/astral-sh/ruff/issues/13371
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Ruff 2025 style guide
@@ -178,26 +178,6 @@ Black's plan is to stabilize all preview styles, but none of the unstable featur
 
 ---
 
-_Referenced in [astral-sh/ruff#13906](../../astral-sh/ruff/pulls/13906.md) on 2024-10-24 13:37_
-
----
-
-_Referenced in [astral-sh/ruff#14001](../../astral-sh/ruff/issues/14001.md) on 2024-11-04 19:57_
-
----
-
-_Referenced in [astral-sh/ruff#14103](../../astral-sh/ruff/issues/14103.md) on 2024-11-05 11:02_
-
----
-
-_Referenced in [astral-sh/ruff#14329](../../astral-sh/ruff/pulls/14329.md) on 2024-11-17 19:18_
-
----
-
-_Referenced in [astral-sh/ruff#14513](../../astral-sh/ruff/issues/14513.md) on 2024-11-21 12:47_
-
----
-
 _Comment by @alechouse97 on 2024-11-25 16:47_
 
 Are there any plans to incorporate allowing empty new lines after certain code blocks from #9745 ?
@@ -212,35 +192,7 @@ No, allowing empty lines after clause header is not planned for the upcoming sty
 
 ---
 
-_Referenced in [astral-sh/ruff#14638](../../astral-sh/ruff/issues/14638.md) on 2024-11-27 17:32_
-
----
-
-_Referenced in [psf/black#4522](../../psf/black/issues/4522.md) on 2024-12-04 07:22_
-
----
-
-_Referenced in [astral-sh/ruff#14984](../../astral-sh/ruff/issues/14984.md) on 2024-12-15 16:11_
-
----
-
-_Referenced in [astral-sh/ruff#15131](../../astral-sh/ruff/issues/15131.md) on 2024-12-24 13:56_
-
----
-
-_Referenced in [astral-sh/ruff#15238](../../astral-sh/ruff/pulls/15238.md) on 2025-01-03 14:13_
-
----
-
 _Closed by @MichaReiser on 2025-01-09 09:20_
-
----
-
-_Referenced in [Homebrew/homebrew-core#203745](../../Homebrew/homebrew-core/pulls/203745.md) on 2025-01-09 17:12_
-
----
-
-_Referenced in [ConsenSysDiligence/mythril#1892](../../ConsenSysDiligence/mythril/pulls/1892.md) on 2025-01-13 11:01_
 
 ---
 
@@ -259,13 +211,5 @@ _Comment by @MichaReiser on 2025-01-13 15:25_
 > If it's too late for stable 2025 style, is it possible to be a preview style?
 
 I'm not sure I understand what you mean. The feature itself is stable since last year. Please open a new issue if it isn't working for you together with an example.
-
----
-
-_Referenced in [astral-sh/ruff#9745](../../astral-sh/ruff/issues/9745.md) on 2025-02-17 11:17_
-
----
-
-_Referenced in [astral-sh/ruff#20482](../../astral-sh/ruff/issues/20482.md) on 2025-09-20 11:12_
 
 ---

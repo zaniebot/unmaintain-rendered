@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-04T09:42:23Z
 updated_at: 2023-05-04T16:25:51Z
 url: https://github.com/astral-sh/ruff/issues/4218
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Invalid JSON schema on ruff isort settings
@@ -59,10 +59,6 @@ Error:
 Ruff settings: default
 Ruff version: 0.0.264
 
-
----
-
-_Referenced in [astral-sh/ruff#2419](../../astral-sh/ruff/issues/2419.md) on 2023-05-04 10:23_
 
 ---
 

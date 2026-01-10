@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-03-18T09:15:55Z
 updated_at: 2025-12-01T17:55:50Z
 url: https://github.com/astral-sh/ruff/issues/10451
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # F821 false-positive for SQLAlchemy mappings with not yet declared classes
@@ -174,10 +174,6 @@ Okay, so `lint.flake8-type-checking.runtime-evaluated-base-classes` needs to be 
 
 ---
 
-_Referenced in [aristanetworks/anta#589](../../aristanetworks/anta/pulls/589.md) on 2024-03-19 09:40_
-
----
-
 _Comment by @carl-baillargeon on 2024-03-19 11:02_
 
 > This reproduces:
@@ -228,19 +224,7 @@ Confirmed.
 
 ---
 
-_Referenced in [astral-sh/ruff#10511](../../astral-sh/ruff/pulls/10511.md) on 2024-03-21 16:04_
-
----
-
-_Referenced in [astral-sh/ruff#10513](../../astral-sh/ruff/pulls/10513.md) on 2024-03-21 16:32_
-
----
-
 _Closed by @AlexWaygood on 2024-03-21 16:41_
-
----
-
-_Referenced in [astral-sh/ruff#10524](../../astral-sh/ruff/pulls/10524.md) on 2024-03-22 11:28_
 
 ---
 

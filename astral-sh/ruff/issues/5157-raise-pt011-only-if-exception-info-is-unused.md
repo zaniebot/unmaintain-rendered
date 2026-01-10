@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-06-17T07:28:57Z
 updated_at: 2024-08-20T19:10:29Z
 url: https://github.com/astral-sh/ruff/issues/5157
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Raise PT011 only if exception info is unused
@@ -103,13 +103,5 @@ with pytest.raises(ValueError, match="The complete error") as excinfo: # oops, t
 with pytest.raises(ValueError, match="...") as excinfo: # oops, this matches any 3+ character strings !
     function_that_raises()
 ```
-
----
-
-_Referenced in [astral-sh/ruff#6840](../../astral-sh/ruff/issues/6840.md) on 2024-08-12 15:17_
-
----
-
-_Referenced in [pypa/setuptools#4557](../../pypa/setuptools/pulls/4557.md) on 2024-08-12 15:18_
 
 ---

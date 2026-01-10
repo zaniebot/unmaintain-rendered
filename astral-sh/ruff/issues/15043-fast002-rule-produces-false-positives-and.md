@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-18T08:04:38Z
 updated_at: 2025-01-15T18:05:55Z
 url: https://github.com/astral-sh/ruff/issues/15043
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # `FAST002` rule produces false positives and incorrect suggestions
@@ -80,10 +80,6 @@ _Label `fixes` added by @MichaReiser on 2024-12-18 08:43_
 ---
 
 _Assigned to @AlexWaygood by @AlexWaygood on 2025-01-10 13:20_
-
----
-
-_Referenced in [astral-sh/ruff#15462](../../astral-sh/ruff/pulls/15462.md) on 2025-01-13 22:26_
 
 ---
 

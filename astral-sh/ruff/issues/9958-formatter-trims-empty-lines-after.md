@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-12T18:06:50Z
 updated_at: 2024-03-27T22:36:45Z
 url: https://github.com/astral-sh/ruff/issues/9958
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Formatter trims empty lines after `;` 
@@ -56,20 +56,8 @@ Maybe we should use `lines_after_ignoring_end_of_line_trivia` but that doesn't i
 
 ---
 
-_Referenced in [astral-sh/ruff#10639](../../astral-sh/ruff/pulls/10639.md) on 2024-03-27 22:15_
-
----
-
 _Comment by @robincaloudis on 2024-03-27 22:32_
 
 @MichaReiser, followed what @dhruvmanila suggested. Worked out nicely. Adapted some tests as well. If you find the time, please review the [fix](https://github.com/astral-sh/ruff/pull/10639). Thanks!
-
----
-
-_Referenced in [astral-sh/ruff#13371](../../astral-sh/ruff/issues/13371.md) on 2024-09-16 16:19_
-
----
-
-_Referenced in [astral-sh/ruff#20482](../../astral-sh/ruff/issues/20482.md) on 2025-09-19 13:37_
 
 ---

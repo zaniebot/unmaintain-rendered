@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-06-22T06:52:56Z
 updated_at: 2023-07-17T08:39:20Z
 url: https://github.com/astral-sh/ruff/issues/5288
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Formatter: `For` / `AsyncFor`
@@ -22,10 +22,6 @@ _Issue opened by @MichaReiser on 2023-06-22 06:52_
 
 * [x] `StmtFor`
 * [x] `AsyncStmtFor`
-
----
-
-_Referenced in [astral-sh/ruff#4798](../../astral-sh/ruff/issues/4798.md) on 2023-06-22 06:52_
 
 ---
 

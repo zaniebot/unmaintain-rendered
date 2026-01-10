@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-03T17:01:07Z
 updated_at: 2025-03-04T17:00:33Z
 url: https://github.com/astral-sh/ruff/issues/16476
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [Formatter panic]
@@ -312,10 +312,6 @@ _Label `formatter` removed by @MichaReiser on 2025-03-04 14:42_
 ---
 
 _Label `bug` added by @MichaReiser on 2025-03-04 14:42_
-
----
-
-_Referenced in [astral-sh/ruff#16499](../../astral-sh/ruff/pulls/16499.md) on 2025-03-04 15:05_
 
 ---
 

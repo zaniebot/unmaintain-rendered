@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-09T00:03:06Z
 updated_at: 2024-06-26T09:03:01Z
 url: https://github.com/astral-sh/ruff/issues/10303
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Re-code `flake8-trio` and `flake8-async` rules to match upstream
@@ -47,23 +47,7 @@ Gonna do this
 
 ---
 
-_Referenced in [astral-sh/ruff#10416](../../astral-sh/ruff/pulls/10416.md) on 2024-03-15 01:29_
-
----
-
 _Assigned to @augustelalande by @zanieb on 2024-03-15 02:01_
-
----
-
-_Referenced in [python-trio/flake8-async#230](../../python-trio/flake8-async/issues/230.md) on 2024-04-09 10:00_
-
----
-
-_Referenced in [astral-sh/ruff#8451](../../astral-sh/ruff/issues/8451.md) on 2024-04-12 13:50_
-
----
-
-_Referenced in [astral-sh/ruff#12005](../../astral-sh/ruff/pulls/12005.md) on 2024-06-26 08:52_
 
 ---
 

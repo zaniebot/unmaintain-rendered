@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-03T21:46:19Z
 updated_at: 2024-10-04T15:30:42Z
 url: https://github.com/astral-sh/ruff/issues/13619
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # RUF006 does not catch violations in lambda expressions
@@ -115,9 +115,5 @@ Thanks for following up!
 ---
 
 _Closed by @zanieb on 2024-10-04 15:30_
-
----
-
-_Referenced in [astral-sh/ruff#13628](../../astral-sh/ruff/pulls/13628.md) on 2024-10-04 15:31_
 
 ---

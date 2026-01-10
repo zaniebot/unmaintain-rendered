@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-27T16:07:55Z
 updated_at: 2023-06-10T04:32:05Z
 url: https://github.com/astral-sh/ruff/issues/2263
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Implement autofix for RET504 Unnecessary variable assignment before `return` statement
@@ -49,18 +49,6 @@ I can work on this today.
 _Comment by @charliermarsh on 2023-02-05 20:02_
 
 Go for it!
-
----
-
-_Referenced in [astral-sh/ruff#2599](../../astral-sh/ruff/pulls/2599.md) on 2023-02-06 01:37_
-
----
-
-_Referenced in [astral-sh/ruff#4586](../../astral-sh/ruff/issues/4586.md) on 2023-05-22 17:37_
-
----
-
-_Referenced in [astral-sh/ruff#4999](../../astral-sh/ruff/pulls/4999.md) on 2023-06-10 03:24_
 
 ---
 

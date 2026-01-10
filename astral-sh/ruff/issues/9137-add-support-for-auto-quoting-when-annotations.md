@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-14T18:15:24Z
 updated_at: 2024-10-23T11:04:04Z
 url: https://github.com/astral-sh/ruff/issues/9137
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Add support for auto-quoting when annotations contain quotes
@@ -35,14 +35,6 @@ We avoid providing a fix for `AbstractBaseUser` since it contains a quote in the
 ---
 
 _Label `autofix` added by @charliermarsh on 2023-12-14 18:15_
-
----
-
-_Referenced in [astral-sh/ruff#9131](../../astral-sh/ruff/issues/9131.md) on 2023-12-14 18:15_
-
----
-
-_Referenced in [astral-sh/ruff#11811](../../astral-sh/ruff/pulls/11811.md) on 2024-06-09 22:17_
 
 ---
 

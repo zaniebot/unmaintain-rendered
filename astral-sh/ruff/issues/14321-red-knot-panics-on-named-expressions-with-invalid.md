@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-13T15:18:00Z
 updated_at: 2024-11-13T19:50:41Z
 url: https://github.com/astral-sh/ruff/issues/14321
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Panics on named expressions with invalid targets
@@ -40,10 +40,6 @@ _Label `red-knot` added by @sharkdp on 2024-11-13 15:18_
 ---
 
 _Assigned to @sharkdp by @sharkdp on 2024-11-13 15:18_
-
----
-
-_Referenced in [astral-sh/ruff#14325](../../astral-sh/ruff/pulls/14325.md) on 2024-11-13 18:50_
 
 ---
 

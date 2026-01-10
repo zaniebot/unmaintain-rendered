@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-01T07:42:34Z
 updated_at: 2025-09-04T10:51:41Z
 url: https://github.com/astral-sh/ruff/issues/20191
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Regarding externally maintained GPL library from which parts of the Software is derived
@@ -36,10 +36,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-09-03 23:35_
 ---
 
 _Label `documentation` added by @charliermarsh on 2025-09-03 23:41_
-
----
-
-_Referenced in [astral-sh/ruff#20222](../../astral-sh/ruff/pulls/20222.md) on 2025-09-04 00:40_
 
 ---
 

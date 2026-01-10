@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-08T14:45:09Z
 updated_at: 2023-03-13T04:02:59Z
 url: https://github.com/astral-sh/ruff/issues/3404
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # [Panic] index out of bounds on micropython/micropython
@@ -81,10 +81,6 @@ It's panicking on this test file which contains CR line endings: `micropython/te
 _Comment by @charliermarsh on 2023-03-08 19:05_
 
 As good a time as any to implement graceful fallback for CR line endings.
-
----
-
-_Referenced in [astral-sh/ruff#3454](../../astral-sh/ruff/pulls/3454.md) on 2023-03-12 04:29_
 
 ---
 

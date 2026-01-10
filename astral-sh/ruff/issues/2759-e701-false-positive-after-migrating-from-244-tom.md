@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-11T08:19:16Z
 updated_at: 2023-02-11T17:22:55Z
 url: https://github.com/astral-sh/ruff/issues/2759
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # E701 false positive after migrating from 244 tom 245
@@ -37,10 +37,6 @@ Thanks! Will fix.
 ---
 
 _Label `bug` added by @charliermarsh on 2023-02-11 10:07_
-
----
-
-_Referenced in [astral-sh/ruff#2771](../../astral-sh/ruff/pulls/2771.md) on 2023-02-11 17:21_
 
 ---
 

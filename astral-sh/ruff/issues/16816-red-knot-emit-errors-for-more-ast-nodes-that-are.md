@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-17T16:31:46Z
 updated_at: 2025-03-18T17:16:52Z
 url: https://github.com/astral-sh/ruff/issues/16816
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] Emit errors for more AST nodes that are invalid (or only valid in specific contexts) in type expressions
@@ -57,10 +57,6 @@ Edit: sorry I didn't see that you referenced my PR
 _Comment by @MatthewMckee4 on 2025-03-17 19:53_
 
 I think I can see why we still infer the type, so nevermind. I'm happy to take this on
-
----
-
-_Referenced in [astral-sh/ruff#16822](../../astral-sh/ruff/pulls/16822.md) on 2025-03-17 21:33_
 
 ---
 

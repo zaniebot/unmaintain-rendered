@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-12-14T06:36:32Z
 updated_at: 2025-01-10T09:09:27Z
 url: https://github.com/astral-sh/ruff/issues/14968
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # RUF052: Don't flag assignments to private function arguments
@@ -77,14 +77,6 @@ Yeah on 0.8.2 the rule flagged both the function definition and the reassignment
 > Unrelated - would it be more helpful if the diagnostic pointed to the problematic _use_ rather than the _binding_?
 
 That might just flip it to error on `_seen.add(self)` and, if there's a lot of usages in the same function, could output a lot of messages
-
----
-
-_Referenced in [inducer/pytential#252](../../inducer/pytential/pulls/252.md) on 2024-12-15 07:51_
-
----
-
-_Referenced in [astral-sh/ruff#15376](../../astral-sh/ruff/pulls/15376.md) on 2025-01-09 17:12_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-09T21:15:55Z
 updated_at: 2023-08-12T19:01:05Z
 url: https://github.com/astral-sh/ruff/issues/6461
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Docs request: linking `target-version` setting in FA docs
@@ -60,10 +60,6 @@ Should I put this text somewhere in `crates/ruff/rules/flake8_future_annotations
 _Comment by @charliermarsh on 2023-08-11 06:16_
 
 I would prefer that we put those notes on the specific rules -- it's more consistent with the rest of the documentation, and the text you're referencing there is auto-generated, it would require special-casing in the documentation.
-
----
-
-_Referenced in [astral-sh/ruff#6520](../../astral-sh/ruff/pulls/6520.md) on 2023-08-12 05:10_
 
 ---
 

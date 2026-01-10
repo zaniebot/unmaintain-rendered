@@ -1,0 +1,45 @@
+```yaml
+number: 5374
+title: Add Panels to Playground and show the AST
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - playground
+assignees: []
+created_at: 2023-06-26T15:42:49Z
+updated_at: 2023-07-25T11:32:33Z
+url: https://github.com/astral-sh/ruff/issues/5374
+synced_at: 2026-01-10T11:09:47Z
+```
+
+# Add Panels to Playground and show the AST
+
+---
+
+_Issue opened by @MichaReiser on 2023-06-26 15:42_
+
+Add a right column to the playground that shows a text representation of the AST. Having a quick way to inspect the AST is useful during development. 
+
+Note: Consider using [Brian's resizable panel library](https://github.com/bvaughn/react-resizable-panels) (assuming the playground is written in React).
+
+**Extensions**
+
+* Show the output of Ruff's formatter (Pre-Alpha)
+* Show the Formatter IR
+* Show the human readable text of Diagnostics in a bottom-panel
+
+**Inspirations**
+
+* [Rome](https://docs.rome.tools/playground/?indentStyle=space&trailingComma=none)
+* [Oxc](https://boshen.github.io/oxc/playground/?code=aQBtAHAAbwByAHQAIABSAGUAYQBjAHQALAAgAHsAIAB1AHMAZQBFAGYAZgBlAGMAdAAsACAAdQBzAGUAUgBlAGYAIAB9ACAAZgByAG8AbQAgACcAcgBlAGEAYwB0ACcACgAKAGMAbwBuAHMAdAAgAEQAdQBtAG0AeQBDAG8AbQBwAG8AbgBlAG4AdAA6AFIAZQBhAGMAdAAuAEYAQwAgAD0AIAAoACkAIAA9AD4AIAB7AAoAIAAgAGMAbwBuAHMAdAAgAHIAZQBmACAAPQAgAHUAcwBlAFIAZQBmADwASABUAE0ATABJAG4AcAB1AHQARQBsAGUAbQBlAG4AdAA%2BACgAbgB1AGwAbAApAAoACgAgACAAdQBzAGUARQBmAGYAZQBjAHQAKAAoACkAIAA9AD4AIAB7AAoAIAAgACAAIABpAGYAIAAoAHIAZQBmAC4AYwB1AHIAcgBlAG4AdAApACAAcgBlAGYALgBjAHUAcgByAGUAbgB0AC4AZgBvAGMAdQBzACgAKQAKACAAIAB9ACwAIABbAF0AKQAKAAoAIAAgAHIAZQB0AHUAcgBuACAAKAAKACAAIAAgACAAIAAgADwAZABpAHYAPgB7AEIAbwBvAGwAZQBhAG4AKAByAGUAZgAuAGMAdQByAHIAZQBuAHQAKQAgAD8APwAgACgACgAgACAAIAAgACAAIAAgACAAPABpAG4AcAB1AHQAIAB0AHkAcABlAD0AIgB0AGUAeAB0ACIAIAByAGUAZgA9AHsAcgBlAGYAfQAgAC8APgAKACAAIAAgACAAIAAgACkAfQAKACAAIAAgACAAIAAgADwALwBkAGkAdgA%2BAAoAIAAgACkACgB9AAoACgBlAHgAcABvAHIAdAAgAGQAZQBmAGEAdQBsAHQAIABEAHUAbQBtAHkAQwBvAG0AcABvAG4AZQBuAHQA)
+
+---
+
+_Label `playground` added by @MichaReiser on 2023-06-26 15:42_
+
+---
+
+_Closed by @MichaReiser on 2023-07-25 11:32_
+
+---

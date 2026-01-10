@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-09-05T14:44:58Z
 updated_at: 2025-01-16T17:01:36Z
 url: https://github.com/astral-sh/ruff/issues/106
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # (feature) awesome flake8 extensions support
@@ -287,10 +287,6 @@ Hello,
 Is there a plan to support this flake8 extension?
 https://pypi.org/project/flake8-class-attributes-order/
 
-
----
-
-_Referenced in [astral-sh/ruff#2425](../../astral-sh/ruff/issues/2425.md) on 2023-01-31 23:02_
 
 ---
 

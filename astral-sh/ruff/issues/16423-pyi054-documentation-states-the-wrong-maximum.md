@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-27T21:03:23Z
 updated_at: 2025-02-28T14:53:16Z
 url: https://github.com/astral-sh/ruff/issues/16423
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # PYI054 documentation states the wrong maximum length
@@ -47,10 +47,6 @@ _Label `docstring` removed by @MichaReiser on 2025-02-28 07:20_
 ---
 
 _Label `documentation` added by @MichaReiser on 2025-02-28 07:20_
-
----
-
-_Referenced in [astral-sh/ruff#16432](../../astral-sh/ruff/pulls/16432.md) on 2025-02-28 07:22_
 
 ---
 

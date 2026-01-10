@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-09T04:47:26Z
 updated_at: 2024-01-09T17:52:03Z
 url: https://github.com/astral-sh/ruff/issues/9443
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # `UP035` doesn't detect `typing_extensions.override` when targeting python 3.12
@@ -37,10 +37,6 @@ _Renamed from "`UP035` doesn't detact `typing_extensions.override` when targetin
 ---
 
 _Label `rule` added by @charliermarsh on 2024-01-09 05:45_
-
----
-
-_Referenced in [astral-sh/ruff#9445](../../astral-sh/ruff/pulls/9445.md) on 2024-01-09 05:47_
 
 ---
 

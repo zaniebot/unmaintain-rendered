@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-22T19:21:44Z
 updated_at: 2023-02-22T22:37:23Z
 url: https://github.com/astral-sh/ruff/issues/3140
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # feat request to resolve rule descrepancy
@@ -41,10 +41,6 @@ We should allow `0.1 != None` (although it seems strange to have code that compa
 ---
 
 _Label `bug` added by @charliermarsh on 2023-02-22 22:24_
-
----
-
-_Referenced in [astral-sh/ruff#3146](../../astral-sh/ruff/pulls/3146.md) on 2023-02-22 22:34_
 
 ---
 

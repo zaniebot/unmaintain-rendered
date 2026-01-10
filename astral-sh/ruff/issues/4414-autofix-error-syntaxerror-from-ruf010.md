@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-13T15:32:55Z
 updated_at: 2023-05-15T02:08:31Z
 url: https://github.com/astral-sh/ruff/issues/4414
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # [Autofix error] SyntaxError from RUF010
@@ -48,10 +48,6 @@ I can work on this.
 ---
 
 _Label `bug` added by @charliermarsh on 2023-05-13 17:39_
-
----
-
-_Referenced in [astral-sh/ruff#4423](../../astral-sh/ruff/pulls/4423.md) on 2023-05-13 23:09_
 
 ---
 

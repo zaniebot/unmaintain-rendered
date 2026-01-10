@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-07-08T12:26:35Z
 updated_at: 2025-07-23T16:08:16Z
 url: https://github.com/astral-sh/ruff/issues/19204
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # PERF401 fix should parenthesize generator expressions
@@ -73,14 +73,6 @@ i am taking this will fix it
 ---
 
 _Assigned to @CodeMan62 by @ntBre on 2025-07-08 16:41_
-
----
-
-_Referenced in [astral-sh/ruff#19324](../../astral-sh/ruff/pulls/19324.md) on 2025-07-14 09:32_
-
----
-
-_Referenced in [astral-sh/ruff#19325](../../astral-sh/ruff/pulls/19325.md) on 2025-07-14 09:57_
 
 ---
 

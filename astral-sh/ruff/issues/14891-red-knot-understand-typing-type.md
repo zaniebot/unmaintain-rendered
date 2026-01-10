@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-10T15:56:38Z
 updated_at: 2024-12-11T11:01:40Z
 url: https://github.com/astral-sh/ruff/issues/14891
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Understand `typing.Type`
@@ -28,14 +28,6 @@ _Label `red-knot` added by @AlexWaygood on 2024-12-10 16:38_
 ---
 
 _Assigned to @InSyncWithFoo by @AlexWaygood on 2024-12-10 16:38_
-
----
-
-_Referenced in [astral-sh/ruff#14904](../../astral-sh/ruff/pulls/14904.md) on 2024-12-11 02:18_
-
----
-
-_Referenced in [astral-sh/ruff#14172](../../astral-sh/ruff/issues/14172.md) on 2024-12-11 11:01_
 
 ---
 

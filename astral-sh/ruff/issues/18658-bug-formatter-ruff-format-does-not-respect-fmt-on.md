@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-06-13T09:06:17Z
 updated_at: 2025-06-13T13:35:47Z
 url: https://github.com/astral-sh/ruff/issues/18658
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [BUG][Formatter] `ruff format` does not respect `# fmt: {on,off,skip}` in `.pyi` stub files
@@ -203,10 +203,6 @@ _Label `suppression` added by @AlexWaygood on 2025-06-13 12:40_
 ---
 
 _Label `formatter` added by @AlexWaygood on 2025-06-13 12:40_
-
----
-
-_Referenced in [pytorch/pytorch#155909](../../pytorch/pytorch/pulls/155909.md) on 2025-06-13 13:25_
 
 ---
 

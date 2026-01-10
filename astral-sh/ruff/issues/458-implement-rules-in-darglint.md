@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-10-21T01:21:21Z
 updated_at: 2025-04-02T22:11:51Z
 url: https://github.com/astral-sh/ruff/issues/458
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # Implement rules in `darglint`
@@ -101,14 +101,6 @@ For me personally, they're probably DAR101, DAR102, DAR201, DAR202 and to a less
 
 ---
 
-_Referenced in [astral-sh/ruff#909](../../astral-sh/ruff/pulls/909.md) on 2022-11-26 22:06_
-
----
-
-_Referenced in [superlinear-ai/substrate#144](../../superlinear-ai/substrate/pulls/144.md) on 2022-12-19 12:08_
-
----
-
 _Label `docstring` added by @charliermarsh on 2022-12-31 18:10_
 
 ---
@@ -124,10 +116,6 @@ _Label `plugin` added by @charliermarsh on 2022-12-31 18:10_
 _Comment by @strickvl on 2023-01-04 09:52_
 
 For me, I use `darglint` together with `pydocstyle` since they don't do quite the same thing. Having `darglint` absorbed into the ruff world would be really great.
-
----
-
-_Referenced in [superlinear-ai/substrate#151](../../superlinear-ai/substrate/issues/151.md) on 2023-01-07 08:44_
 
 ---
 
@@ -175,29 +163,9 @@ Super exciting to hear that this is in the works. We just switched to ruff inste
 
 ---
 
-_Referenced in [pyjanitor-devs/pyjanitor#1236](../../pyjanitor-devs/pyjanitor/issues/1236.md) on 2023-01-30 15:03_
-
----
-
-_Referenced in [astral-sh/ruff#2310](../../astral-sh/ruff/issues/2310.md) on 2023-01-30 17:33_
-
----
-
-_Referenced in [astral-sh/ruff#2459](../../astral-sh/ruff/issues/2459.md) on 2023-02-02 00:14_
-
----
-
 _Comment by @rbebb on 2023-02-02 00:30_
 
 It would be great if it could add darglint’s feature that checks if docstrings match a particular style (whether it be Sphinx, Google, or something else)
-
----
-
-_Referenced in [mindee/tawazi#85](../../mindee/tawazi/issues/85.md) on 2023-02-27 14:31_
-
----
-
-_Referenced in [meltano/sdk#1462](../../meltano/sdk/pulls/1462.md) on 2023-02-27 20:23_
 
 ---
 
@@ -243,18 +211,6 @@ Great to hear work is close to being started. We also rely a lot on `darglint` a
 - DAR302: The docstring has a yield not in definition.
 - DAR401: The docstring is missing an exception raised.
 - DAR402: The docstring describes an exception not explicitly raised.
-
----
-
-_Referenced in [frequenz-floss/frequenz-repo-config-python#18](../../frequenz-floss/frequenz-repo-config-python/issues/18.md) on 2023-04-12 18:31_
-
----
-
-_Referenced in [ansible-community/antsichaut#22](../../ansible-community/antsichaut/pulls/22.md) on 2023-04-24 15:59_
-
----
-
-_Referenced in [astral-sh/ruff#4362](../../astral-sh/ruff/issues/4362.md) on 2023-05-11 02:20_
 
 ---
 
@@ -331,17 +287,9 @@ Hi @erwann-met , please feel free to submit new issues over at pydoclint, and I'
 
 ---
 
-_Referenced in [jsh9/pydoclint#38](../../jsh9/pydoclint/issues/38.md) on 2023-06-30 06:06_
-
----
-
 _Comment by @rbebb on 2023-07-25 20:09_
 
 Hi @charliermarsh! Just figured I check to see if there's an update on the darglint effort. Thank you again for all of your work!
-
----
-
-_Referenced in [astral-sh/ruff#6887](../../astral-sh/ruff/issues/6887.md) on 2023-08-26 18:42_
 
 ---
 
@@ -350,10 +298,6 @@ _Comment by @joelberkeley on 2023-08-26 18:51_
 > ... We already check that the docstring contains all function parameters ...
 
 This appears to be true only for Google style docstrings (see [D417](https://beta.ruff.rs/docs/rules/undocumented-param/)). I'd love for that to be available for sphinx rest style
-
----
-
-_Referenced in [jrjsmrtn/cookiecutter-hypermodern-python#2](../../jrjsmrtn/cookiecutter-hypermodern-python/issues/2.md) on 2023-09-01 16:17_
 
 ---
 
@@ -368,10 +312,6 @@ _Comment by @zanieb on 2023-09-08 15:06_
 We will report back here if there is progress on this; we have not begun work on this — we have a lot of priorities as we grow!
 
 I'm happy to review contributions of individual rules here.
-
----
-
-_Referenced in [pyjanitor-devs/pyjanitor#1294](../../pyjanitor-devs/pyjanitor/pulls/1294.md) on 2023-10-08 01:55_
 
 ---
 
@@ -491,31 +431,15 @@ repos:
 
 ---
 
-_Referenced in [opentargets/gentropy#212](../../opentargets/gentropy/pulls/212.md) on 2023-10-31 14:17_
-
----
-
-_Referenced in [astral-sh/ruff#9070](../../astral-sh/ruff/issues/9070.md) on 2023-12-10 20:55_
-
----
-
 _Comment by @BigForLy on 2023-12-20 07:08_
 
 Hello @charliermarsh! I manage to convert almost all checks to ruff, except for Darling, do you have any idea whether this will be done?
 
 ---
 
-_Referenced in [zenml-io/zenml#2305](../../zenml-io/zenml/pulls/2305.md) on 2024-01-17 09:10_
-
----
-
 _Comment by @strickvl on 2024-02-27 12:55_
 
 As mentioned in Discord, registering my interest in taking a stab at this.
-
----
-
-_Referenced in [pandas-dev/pandas#57578](../../pandas-dev/pandas/issues/57578.md) on 2024-02-29 18:48_
 
 ---
 
@@ -559,14 +483,6 @@ Just wanted to add my voice to those saying that this would be a really useful f
 
 ---
 
-_Referenced in [astral-sh/ruff#11435](../../astral-sh/ruff/issues/11435.md) on 2024-05-18 00:16_
-
----
-
-_Referenced in [astral-sh/ruff#11471](../../astral-sh/ruff/pulls/11471.md) on 2024-05-19 20:43_
-
----
-
 _Comment by @tmke8 on 2024-05-21 14:30_
 
 I wonder if at this point, it would be better to implement [pydoclint](https://github.com/jsh9/pydoclint) in ruff instead of darglint? (This is prompted by the recent PR #11471.)
@@ -576,22 +492,6 @@ Pydoclint has
 * [more error codes](https://jsh9.github.io/pydoclint/violation_codes.html) (e.g., `DOC104` in pydoclint checks for the order of the parameters; darglint doesn't have that AFAICT),
 * [more config options](https://jsh9.github.io/pydoclint/config_options.html) (like `arg-type-hints-in-signature` which lets you decide whether you want to include types in the docstring),
 * and the config options of pydoclint also seem more well-thought-out to me than darglint's. (E.g., pydoclint has `skip-checking-short-docstrings` which makes sense to me, but darglint's `strictness=short` vs `strictness=long` is a bit confusing)
-
----
-
-_Referenced in [ansible/ansible-dev-environment#161](../../ansible/ansible-dev-environment/pulls/161.md) on 2024-05-23 04:48_
-
----
-
-_Referenced in [ansible/ansible-dev-environment#165](../../ansible/ansible-dev-environment/pulls/165.md) on 2024-05-23 15:27_
-
----
-
-_Referenced in [cjolowicz/cookiecutter-hypermodern-python#1282](../../cjolowicz/cookiecutter-hypermodern-python/issues/1282.md) on 2024-05-28 18:37_
-
----
-
-_Referenced in [ansible/molecule#4236](../../ansible/molecule/pulls/4236.md) on 2024-06-26 12:12_
 
 ---
 
@@ -702,27 +602,11 @@ nt2/yamlpath_tools.py
 
 ---
 
-_Referenced in [jsh9/pydoclint#158](../../jsh9/pydoclint/issues/158.md) on 2024-07-18 20:47_
-
----
-
 _Comment by @jsh9 on 2024-07-18 20:48_
 
 Thanks @AndydeCleyre !
 
 I've opened a new issue (https://github.com/jsh9/pydoclint/issues/158) on pydoclint to add this feature.
-
----
-
-_Referenced in [astral-sh/ruff#12434](../../astral-sh/ruff/issues/12434.md) on 2024-07-21 16:30_
-
----
-
-_Referenced in [zenml-io/zenml#3012](../../zenml-io/zenml/pulls/3012.md) on 2024-09-13 15:31_
-
----
-
-_Referenced in [AndydeCleyre/nestedtextto#9](../../AndydeCleyre/nestedtextto/issues/9.md) on 2024-10-25 15:49_
 
 ---
 
@@ -741,17 +625,5 @@ _Comment by @ntBre on 2025-03-31 21:13_
 _Comment by @matmair on 2025-04-02 22:11_
 
 Great!
-
----
-
-_Referenced in [bis-med-it/pysdmx#254](../../bis-med-it/pysdmx/pulls/254.md) on 2025-04-03 13:00_
-
----
-
-_Referenced in [narwhals-dev/narwhals#2424](../../narwhals-dev/narwhals/issues/2424.md) on 2025-04-23 14:19_
-
----
-
-_Referenced in [cherrypy/cheroot#779](../../cherrypy/cheroot/pulls/779.md) on 2025-10-21 01:04_
 
 ---

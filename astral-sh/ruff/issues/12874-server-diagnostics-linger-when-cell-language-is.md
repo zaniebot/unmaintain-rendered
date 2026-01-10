@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-14T03:11:54Z
 updated_at: 2025-07-08T05:53:05Z
 url: https://github.com/astral-sh/ruff/issues/12874
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Server diagnostics linger when cell language is changed
@@ -61,10 +61,6 @@ _Label `bug` added by @dhruvmanila on 2024-08-14 03:11_
 ---
 
 _Label `server` added by @dhruvmanila on 2024-08-14 03:11_
-
----
-
-_Referenced in [astral-sh/ruff#19081](../../astral-sh/ruff/issues/19081.md) on 2025-07-08 05:52_
 
 ---
 

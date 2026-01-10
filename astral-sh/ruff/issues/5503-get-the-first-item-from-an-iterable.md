@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-04T15:19:55Z
 updated_at: 2023-07-10T16:32:49Z
 url: https://github.com/astral-sh/ruff/issues/5503
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Get the first item from an iterable
@@ -101,10 +101,6 @@ This looks reasonable, but let's be really careful in reviewing any violations t
 _Comment by @evanrittenhouse on 2023-07-05 02:34_
 
 @charliermarsh Yup!
-
----
-
-_Referenced in [astral-sh/ruff#5549](../../astral-sh/ruff/pulls/5549.md) on 2023-07-06 01:03_
 
 ---
 

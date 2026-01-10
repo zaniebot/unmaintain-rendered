@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-04-20T08:44:15Z
 updated_at: 2023-04-21T01:25:18Z
 url: https://github.com/astral-sh/ruff/issues/4041
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # ruff --fix doesn't fix anything
@@ -86,9 +86,5 @@ That's right. For now, we don't autofix line wrapping, and we do recommend using
 ---
 
 _Closed by @charliermarsh on 2023-04-21 01:25_
-
----
-
-_Referenced in [deephaven/web-client-ui#1255](../../deephaven/web-client-ui/issues/1255.md) on 2023-05-04 14:13_
 
 ---

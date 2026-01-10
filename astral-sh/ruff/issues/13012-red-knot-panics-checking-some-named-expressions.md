@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-20T15:17:13Z
 updated_at: 2024-08-22T14:59:14Z
 url: https://github.com/astral-sh/ruff/issues/13012
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Red knot panics checking some named expressions
@@ -365,10 +365,6 @@ We don't have a solution for those examples yet, but it shouldn't matter to this
 _Comment by @carljm on 2024-08-22 04:40_
 
 On my phone, but pretty sure the bug is in `SemanticIndexBuilder::visit_expr` in the case for `NamedExpr`; we are visiting the target (and thus creating the Definition) first, and then visiting the RHS. This is backwards and wrongly causes the definition to be visible to the RHS. We should instead visit the RHS first, just like at runtime the RHS is evaluated before the assignment occurs.
-
----
-
-_Referenced in [astral-sh/ruff#13053](../../astral-sh/ruff/pulls/13053.md) on 2024-08-22 11:45_
 
 ---
 

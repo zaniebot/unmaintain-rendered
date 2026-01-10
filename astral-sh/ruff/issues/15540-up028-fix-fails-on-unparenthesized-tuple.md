@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-16T22:23:10Z
 updated_at: 2025-01-17T01:13:52Z
 url: https://github.com/astral-sh/ruff/issues/15540
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # UP028 fix fails on unparenthesized tuple
@@ -57,10 +57,6 @@ _Label `bug` added by @dylwil3 on 2025-01-16 23:25_
 ---
 
 _Label `fixes` added by @dylwil3 on 2025-01-16 23:25_
-
----
-
-_Referenced in [astral-sh/ruff#15543](../../astral-sh/ruff/pulls/15543.md) on 2025-01-17 00:27_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-27T10:37:30Z
 updated_at: 2023-12-19T00:17:31Z
 url: https://github.com/astral-sh/ruff/issues/8279
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Formatter: `hug_parens_with_braces_and_square_brackets` preview style
@@ -74,23 +74,7 @@ _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-10-27 10:40_
 
 ---
 
-_Referenced in [astral-sh/ruff#6935](../../astral-sh/ruff/issues/6935.md) on 2023-10-27 10:40_
-
----
-
-_Referenced in [Toufool/AutoSplit#259](../../Toufool/AutoSplit/pulls/259.md) on 2023-10-27 14:01_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-27 19:33_
-
----
-
-_Referenced in [astral-sh/ruff#8293](../../astral-sh/ruff/pulls/8293.md) on 2023-10-28 03:19_
-
----
-
-_Referenced in [astral-sh/ruff#3713](../../astral-sh/ruff/issues/3713.md) on 2023-10-28 22:12_
 
 ---
 
@@ -136,10 +120,6 @@ _Renamed from "Formatter: Improved multiline dictionary and list indentation for
 
 ---
 
-_Referenced in [astral-sh/ruff#8678](../../astral-sh/ruff/issues/8678.md) on 2023-11-29 00:30_
-
----
-
 _Comment by @charliermarsh on 2023-12-01 02:11_
 
 This is now supported via https://github.com/astral-sh/ruff/pull/8293, though we don't yet apply these rules recursively (intentionally).
@@ -161,33 +141,5 @@ We're gonna continue without applying these rules recursively.
 ---
 
 _Closed by @charliermarsh on 2023-12-19 00:17_
-
----
-
-_Referenced in [astral-sh/ruff#9639](../../astral-sh/ruff/pulls/9639.md) on 2024-02-12 17:28_
-
----
-
-_Referenced in [astral-sh/ruff#9642](../../astral-sh/ruff/pulls/9642.md) on 2024-02-15 06:11_
-
----
-
-_Referenced in [astral-sh/ruff#11336](../../astral-sh/ruff/issues/11336.md) on 2024-05-08 12:12_
-
----
-
-_Referenced in [astral-sh/ruff#19536](../../astral-sh/ruff/issues/19536.md) on 2025-07-24 18:45_
-
----
-
-_Referenced in [astral-sh/ruff#19537](../../astral-sh/ruff/issues/19537.md) on 2025-07-24 19:01_
-
----
-
-_Referenced in [astral-sh/ruff#20226](../../astral-sh/ruff/issues/20226.md) on 2025-09-15 09:07_
-
----
-
-_Referenced in [astral-sh/ruff#20482](../../astral-sh/ruff/issues/20482.md) on 2025-09-19 13:37_
 
 ---

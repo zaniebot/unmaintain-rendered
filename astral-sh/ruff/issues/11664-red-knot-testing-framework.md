@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-31T22:16:16Z
 updated_at: 2024-10-08T19:33:20Z
 url: https://github.com/astral-sh/ruff/issues/11664
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # [red-knot] testing framework
@@ -260,22 +260,6 @@ true, i updated my example to use `pyright:ignore` instead which does look at th
 
 ---
 
-_Referenced in [astral-sh/ruff#13571](../../astral-sh/ruff/pulls/13571.md) on 2024-09-30 17:49_
-
----
-
-_Referenced in [astral-sh/ruff#13636](../../astral-sh/ruff/pulls/13636.md) on 2024-10-05 02:50_
-
----
-
 _Closed by @carljm on 2024-10-08 19:33_
-
----
-
-_Referenced in [scipy/scipy-stubs#198](../../scipy/scipy-stubs/issues/198.md) on 2024-12-29 09:38_
-
----
-
-_Referenced in [astral-sh/ruff-lsp#237](../../astral-sh/ruff-lsp/issues/237.md) on 2025-01-31 18:25_
 
 ---

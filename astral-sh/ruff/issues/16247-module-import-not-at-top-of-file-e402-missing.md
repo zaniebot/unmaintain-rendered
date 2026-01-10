@@ -1,0 +1,115 @@
+```yaml
+number: 16247
+title: module-import-not-at-top-of-file (E402) - missing support for site.addsitedir()
+type: issue
+state: closed
+author: Sarcasm
+labels:
+  - rule
+  - help wanted
+assignees: []
+created_at: 2025-02-19T09:13:49Z
+updated_at: 2025-02-21T13:24:52Z
+url: https://github.com/astral-sh/ruff/issues/16247
+synced_at: 2026-01-10T11:09:57Z
+```
+
+# module-import-not-at-top-of-file (E402) - missing support for site.addsitedir()
+
+---
+
+_Issue opened by @Sarcasm on 2025-02-19 09:13_
+
+### Description
+
+Failing file `ruff-E402-addsitedir.py`:
+
+```python
+#!/usr/bin/env python
+
+import os
+import site
+import sys
+import sysconfig
+
+site.addsitedir(
+    os.path.join(
+        os.path.dirname(os.path.dirname(__file__)),
+        sysconfig.get_path("purelib", vars={"base": "."}),
+    )
+)
+
+from mypkg.__main__ import main
+
+if __name__ == "__main__":
+    sys.argv[0] = sys.argv[0].removesuffix(".py")
+    sys.exit(main())
+```
+
+Ruff check complains:
+
+```console
+$ ruff check --select E402 ruff-E402-addsitedir.py
+ruff-E402-addsitedir.py:15:1: E402 Module level import not at top of file
+   |
+13 | )
+14 | 
+15 | from mypkg.__main__ import main
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E402
+16 | 
+17 | if __name__ == "__main__":
+   |
+
+Found 1 error.
+```
+
+Looking at the code, `sys.path` and some others cases are handled
+
+https://github.com/astral-sh/ruff/blob/0.9.6/crates/ruff_linter/src/checkers/ast/mod.rs#L552-L562
+https://github.com/astral-sh/ruff/blob/524cf6e5155066132da772b9f84e2e6695f241b8/crates/ruff_linter/src/checkers/ast/mod.rs#L552-L562
+
+but `site.addsitedir` seems missing, although it appends to `sys.path` internally:
+
+
+https://github.com/python/cpython/blob/3.13/Lib/site.py#L238
+
+
+BTW, thanks for Ruff, it's a great piece of software!
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-02-19 09:44_
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2025-02-19 09:44_
+
+---
+
+_Comment by @VascoSch92 on 2025-02-19 10:00_
+
+I can do the fix to handle this case if needed ;-) 
+
+---
+
+_Assigned to @VascoSch92 by @MichaReiser on 2025-02-19 10:03_
+
+---
+
+_Comment by @VascoSch92 on 2025-02-21 13:17_
+
+I think this can be closed ;-) 
+
+---
+
+_Comment by @Sarcasm on 2025-02-21 13:24_
+
+Indeed, Github did not notified me automatically of the Pull Request.
+
+Thank you for fixing this so quickly!
+
+---
+
+_Closed by @Sarcasm on 2025-02-21 13:24_
+
+---

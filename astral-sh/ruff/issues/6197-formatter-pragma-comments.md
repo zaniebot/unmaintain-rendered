@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-31T13:20:49Z
 updated_at: 2023-09-01T11:27:38Z
 url: https://github.com/astral-sh/ruff/issues/6197
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Formatter: Pragma comments
@@ -29,10 +29,6 @@ See https://github.com/astral-sh/ruff/discussions/6670 for the proposal for the 
 
 ---
 
-_Referenced in [astral-sh/ruff#4798](../../astral-sh/ruff/issues/4798.md) on 2023-07-31 13:20_
-
----
-
 _Label `formatter` added by @MichaReiser on 2023-07-31 13:24_
 
 ---
@@ -42,10 +38,6 @@ _Added to milestone `Formatter: Alpha` by @MichaReiser on 2023-07-31 15:48_
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2023-07-31 16:18_
-
----
-
-_Referenced in [astral-sh/ruff#6203](../../astral-sh/ruff/issues/6203.md) on 2023-07-31 16:57_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-11T14:38:00Z
 updated_at: 2025-06-13T23:07:03Z
 url: https://github.com/astral-sh/ruff/issues/18628
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # RUF056 ascribes meaning to `default` and ignores extra arguments
@@ -98,14 +98,6 @@ _Comment by @ntBre on 2025-06-11 16:37_
 Interestingly, we have existing tests for both "known" and unknown keyword arguments, but we still offer a fix in those cases. It looks like the Python docs were updated in 3.12 to show the `/` in the argument list because [3.11](https://docs.python.org/3.11/library/stdtypes.html#dict.get) doesn't have it. But I tested Python versions back to 3.8 and none of them accept keyword arguments.
 
 I'll just update the rule to check both the number and kind of arguments before offering a fix.
-
----
-
-_Referenced in [astral-sh/ruff#18631](../../astral-sh/ruff/pulls/18631.md) on 2025-06-11 17:52_
-
----
-
-_Referenced in [astral-sh/ruff#18427](../../astral-sh/ruff/pulls/18427.md) on 2025-06-12 16:00_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-08T17:15:40Z
 updated_at: 2023-07-09T10:56:33Z
 url: https://github.com/astral-sh/ruff/issues/5620
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Add `import tkinter as tk` to list of default import conventions
@@ -29,10 +29,6 @@ _Label `good first issue` added by @charliermarsh on 2023-07-08 18:55_
 ---
 
 _Label `help wanted` added by @charliermarsh on 2023-07-08 18:55_
-
----
-
-_Referenced in [astral-sh/ruff#5626](../../astral-sh/ruff/pulls/5626.md) on 2023-07-09 10:14_
 
 ---
 

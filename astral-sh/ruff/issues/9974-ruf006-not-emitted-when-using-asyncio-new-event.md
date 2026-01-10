@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-13T15:44:33Z
 updated_at: 2024-02-13T18:28:07Z
 url: https://github.com/astral-sh/ruff/issues/9974
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # RUF006 not emitted when using asyncio.new_event_loop
@@ -60,10 +60,6 @@ Thanks for the report!
 ---
 
 _Label `good first issue` added by @zanieb on 2024-02-13 16:08_
-
----
-
-_Referenced in [astral-sh/ruff#9976](../../astral-sh/ruff/pulls/9976.md) on 2024-02-13 17:59_
 
 ---
 

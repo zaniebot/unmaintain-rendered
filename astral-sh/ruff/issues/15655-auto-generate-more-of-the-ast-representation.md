@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-21T21:41:51Z
 updated_at: 2025-02-20T19:20:03Z
 url: https://github.com/astral-sh/ruff/issues/15655
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Auto-generate more of the AST representation
@@ -34,10 +34,6 @@ _Label `help wanted` added by @dcreager on 2025-01-21 21:41_
 
 ---
 
-_Referenced in [astral-sh/ruff#15657](../../astral-sh/ruff/issues/15657.md) on 2025-01-21 22:30_
-
----
-
 _Comment by @Glyphack on 2025-02-13 20:49_
 
 Hey, I'd like to help with this and the linked issue.
@@ -51,25 +47,5 @@ I want to continue with the implementation, I appreciate your help with a few qu
 2. Is the plan to use ungrammar only for generating [visit_source_order](https://github.com/astral-sh/ruff/blob/ef85c682bdd76ed63457bdfbec72e09424ac20ab/crates/ruff_python_ast/src/node.rs#L18-L24) for nodes? Or the mention of ungrammar is for something else?
 
 Update: I decided to extend the toml file you created. I just borrowed some names from ASDL to make it possible to generate AST nodes.
-
----
-
-_Referenced in [astral-sh/ruff#16285](../../astral-sh/ruff/pulls/16285.md) on 2025-02-20 19:13_
-
----
-
-_Referenced in [astral-sh/ruff#16645](../../astral-sh/ruff/pulls/16645.md) on 2025-03-11 19:41_
-
----
-
-_Referenced in [astral-sh/ruff#17180](../../astral-sh/ruff/pulls/17180.md) on 2025-04-12 09:42_
-
----
-
-_Referenced in [astral-sh/ruff#21024](../../astral-sh/ruff/pulls/21024.md) on 2025-10-21 20:09_
-
----
-
-_Referenced in [astral-sh/ruff#21028](../../astral-sh/ruff/pulls/21028.md) on 2025-10-22 11:33_
 
 ---

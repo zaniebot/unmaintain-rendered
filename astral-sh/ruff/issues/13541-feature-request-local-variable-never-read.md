@@ -1,0 +1,73 @@
+```yaml
+number: 13541
+title: "Feature request: Local variable never read"
+type: issue
+state: open
+author: alippai
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2024-09-27T18:18:49Z
+updated_at: 2025-05-17T23:15:36Z
+url: https://github.com/astral-sh/ruff/issues/13541
+synced_at: 2026-01-10T11:09:55Z
+```
+
+# Feature request: Local variable never read
+
+---
+
+_Issue opened by @alippai on 2024-09-27 18:18_
+
+It'd be useful to track if a local variable was read before assigned again:
+```python
+def main():
+  x = 5
+  x = 6
+  print(x)
+```
+A common use-case is simply typos or using `if` instead of `elif`:
+```python
+if case1:
+  x = 1
+if case2:
+  x = 2
+else:
+  x = 3
+```
+Where `x = 1` is never used.
+The correct snippet after fixing the mistake would be:
+```python
+if case1:
+  x = 1
+elif case2:
+  x = 2
+else:
+  x = 3
+```
+
+
+
+
+---
+
+_Label `rule` added by @AlexWaygood on 2024-09-29 15:10_
+
+---
+
+_Label `needs-decision` added by @AlexWaygood on 2024-09-29 15:10_
+
+---
+
+_Comment by @MichaReiser on 2024-10-07 07:29_
+
+This likely depends on https://github.com/astral-sh/ruff/pull/10891
+
+---
+
+_Comment by @alippai on 2025-05-17 23:15_
+
+Does `ty` help with this?
+
+---

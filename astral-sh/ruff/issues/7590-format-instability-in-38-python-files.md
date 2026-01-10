@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-22T07:10:01Z
 updated_at: 2023-09-22T16:37:39Z
 url: https://github.com/astral-sh/ruff/issues/7590
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Format instability in 38 python files 
@@ -117,22 +117,6 @@ _Label `bug` added by @charliermarsh on 2023-09-22 13:32_
 ---
 
 _Label `formatter` added by @charliermarsh on 2023-09-22 13:32_
-
----
-
-_Referenced in [astral-sh/ruff#7602](../../astral-sh/ruff/issues/7602.md) on 2023-09-22 16:11_
-
----
-
-_Referenced in [astral-sh/ruff#7603](../../astral-sh/ruff/issues/7603.md) on 2023-09-22 16:16_
-
----
-
-_Referenced in [astral-sh/ruff#7604](../../astral-sh/ruff/issues/7604.md) on 2023-09-22 16:20_
-
----
-
-_Referenced in [astral-sh/ruff#7605](../../astral-sh/ruff/issues/7605.md) on 2023-09-22 16:37_
 
 ---
 

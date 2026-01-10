@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-19T17:15:34Z
 updated_at: 2023-10-22T00:41:07Z
 url: https://github.com/astral-sh/ruff/issues/8068
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Autofix for E261 (preview)
@@ -39,10 +39,6 @@ _Label `autofix` added by @charliermarsh on 2023-10-19 17:16_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-21 23:07_
-
----
-
-_Referenced in [astral-sh/ruff#8114](../../astral-sh/ruff/pulls/8114.md) on 2023-10-22 00:32_
 
 ---
 

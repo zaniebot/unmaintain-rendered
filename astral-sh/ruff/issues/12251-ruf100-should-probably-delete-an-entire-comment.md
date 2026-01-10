@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-07-09T05:37:13Z
 updated_at: 2024-08-29T05:20:17Z
 url: https://github.com/astral-sh/ruff/issues/12251
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # `RUF100` should probably delete an entire comment `noqa` is part of
@@ -153,14 +153,6 @@ will try asap, yes - have "fixed" my way into various fun new failure modes, and
 
 ---
 
-_Referenced in [astral-sh/ruff#13105](../../astral-sh/ruff/pulls/13105.md) on 2024-08-26 06:40_
-
----
-
 _Closed by @dhruvmanila on 2024-08-29 05:20_
-
----
-
-_Referenced in [astral-sh/ruff#20762](../../astral-sh/ruff/issues/20762.md) on 2025-10-08 13:25_
 
 ---

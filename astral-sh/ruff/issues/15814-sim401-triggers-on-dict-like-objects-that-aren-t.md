@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-01-29T18:45:50Z
 updated_at: 2025-02-07T08:25:22Z
 url: https://github.com/astral-sh/ruff/issues/15814
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # SIM401 triggers on dict like objects that aren't proper dictionaries
@@ -127,10 +127,6 @@ _Label `help wanted` added by @MichaReiser on 2025-02-03 08:42_
 ---
 
 _Label `rule` added by @MichaReiser on 2025-02-03 08:42_
-
----
-
-_Referenced in [astral-sh/ruff#15995](../../astral-sh/ruff/pulls/15995.md) on 2025-02-06 14:38_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-05T13:01:36Z
 updated_at: 2025-03-07T21:03:30Z
 url: https://github.com/astral-sh/ruff/issues/15966
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [red-knot] Descriptor protocol
@@ -57,23 +57,11 @@ part of: astral-sh/ruff#14164
 
 ---
 
-_Referenced in [astral-sh/ruff#14164](../../astral-sh/ruff/issues/14164.md) on 2025-02-05 13:01_
-
----
-
 _Renamed from "Implement the descriptor protocol" to "[red-knot] Descriptor protocol" by @sharkdp on 2025-02-05 13:01_
 
 ---
 
 _Label `red-knot` added by @sharkdp on 2025-02-05 13:02_
-
----
-
-_Referenced in [astral-sh/ruff#15843](../../astral-sh/ruff/pulls/15843.md) on 2025-02-05 13:42_
-
----
-
-_Referenced in [astral-sh/ruff#15972](../../astral-sh/ruff/pulls/15972.md) on 2025-02-05 14:52_
 
 ---
 
@@ -279,10 +267,6 @@ def __get__(self, instance: object, owner: type | None = None, /) -> CalledOnIns
 _Comment by @sharkdp on 2025-02-21 14:25_
 
 A major part of this is now implemented in astral-sh/ruff#16121, but proper support for *data* descriptors is still missing.
-
----
-
-_Referenced in [astral-sh/ruff#16416](../../astral-sh/ruff/pulls/16416.md) on 2025-02-27 15:31_
 
 ---
 

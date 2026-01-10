@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-09-16T04:07:09Z
 updated_at: 2024-09-20T11:05:28Z
 url: https://github.com/astral-sh/ruff/issues/13365
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # D400: bad autofix if the first line ends in a question mark
@@ -74,10 +74,6 @@ _Assigned to @yahayaohinoyi by @MichaReiser on 2024-09-17 07:45_
 _Comment by @yahayaohinoyi on 2024-09-18 01:38_
 
 would send PR by EOD
-
----
-
-_Referenced in [astral-sh/ruff#13399](../../astral-sh/ruff/pulls/13399.md) on 2024-09-18 22:28_
 
 ---
 

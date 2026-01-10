@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-02T12:19:24Z
 updated_at: 2025-06-20T14:32:53Z
 url: https://github.com/astral-sh/ruff/issues/4188
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # [FEATURE] Only allow relative imports
@@ -51,9 +51,5 @@ I would love to see this in ruff!
 _Comment by @RobertCraigie on 2025-06-20 14:32_
 
 we'd also love to have this supported in Ruff! are there any updates here?
-
----
-
-_Referenced in [astral-sh/ruff#19973](../../astral-sh/ruff/pulls/19973.md) on 2025-08-18 16:59_
 
 ---

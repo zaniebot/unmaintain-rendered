@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-12-22T15:49:40Z
 updated_at: 2022-12-22T15:56:05Z
 url: https://github.com/astral-sh/ruff/issues/1336
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:26Z
 ```
 
 # Two more flake8-boolean-trap FBT003 false positives
@@ -41,14 +41,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-12-22 15:55_
 
 ---
 
-_Referenced in [astral-sh/ruff#1338](../../astral-sh/ruff/pulls/1338.md) on 2022-12-22 15:56_
-
----
-
 _Closed by @charliermarsh on 2022-12-22 15:56_
-
----
-
-_Referenced in [astral-sh/ruff#4382](../../astral-sh/ruff/issues/4382.md) on 2023-05-11 21:23_
 
 ---

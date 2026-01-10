@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-27T10:09:03Z
 updated_at: 2023-03-07T17:29:13Z
 url: https://github.com/astral-sh/ruff/issues/2246
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Question about TRY003 and built-in exceptions
@@ -149,13 +149,5 @@ _Comment by @martinhoyer on 2023-03-07 17:29_
 
 Thanks a lot for checking @charliermarsh !  
 I'm still puzzled why there is no error when I run flake8 or tryceratops directly, but I guess it's not worth spending time on this particular mystery :) 
-
----
-
-_Referenced in [shap/shap#3356](../../shap/shap/pulls/3356.md) on 2023-10-23 20:45_
-
----
-
-_Referenced in [astral-sh/ruff#14398](../../astral-sh/ruff/issues/14398.md) on 2024-11-17 13:19_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-27T09:00:08Z
 updated_at: 2025-08-21T03:27:26Z
 url: https://github.com/astral-sh/ruff/issues/3247
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # FBT003: False positive with positional-only parameters
@@ -182,14 +182,6 @@ TypeError: QHeaderView.setVisible() takes no keyword arguments
 
 ---
 
-_Referenced in [astral-sh/ruff#9287](../../astral-sh/ruff/issues/9287.md) on 2023-12-26 21:57_
-
----
-
-_Referenced in [astral-sh/ruff#8923](../../astral-sh/ruff/issues/8923.md) on 2024-01-08 03:46_
-
----
-
 _Comment by @AbdealiLoKo on 2024-02-05 18:44_
 
 Just wanted to mention, there are cases in pytest fixtures where this comes up too. For example:
@@ -208,10 +200,6 @@ _Comment by @Avasam on 2024-03-09 18:01_
 Qt is also the biggest reason I can't use this rule. Signals and value setters.
 ![image](https://github.com/astral-sh/ruff/assets/1350584/81a5ca5e-4937-4dff-a840-78e5a234fdff)
 (mostly commenting so I can track this issue)
-
----
-
-_Referenced in [PlasmaPy/PlasmaPy#2648](../../PlasmaPy/PlasmaPy/pulls/2648.md) on 2024-04-25 22:02_
 
 ---
 
@@ -270,10 +258,6 @@ false = typing.cast(sessions.Result, False)  # noqa: FBT003
 I don't think it's at all unclear what True/False are in this situation.
 
 Related, I wonder if a config option would make sense, a setting for the number of arguments where true/false become confusing. If it's the only argument, or maybe one of two (especially in cases like above), it's not confusing.
-
----
-
-_Referenced in [astral-sh/ruff#11264](../../astral-sh/ruff/issues/11264.md) on 2025-03-19 05:28_
 
 ---
 

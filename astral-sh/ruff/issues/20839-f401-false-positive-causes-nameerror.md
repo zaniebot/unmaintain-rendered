@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-13T09:06:23Z
 updated_at: 2025-10-27T15:23:38Z
 url: https://github.com/astral-sh/ruff/issues/20839
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # F401: false positive causes NameError
@@ -97,10 +97,6 @@ I'd have to think about how to detect situations like this... I guess more gener
 ---
 
 _Assigned to @dylwil3 by @MichaReiser on 2025-10-14 06:34_
-
----
-
-_Referenced in [astral-sh/ruff#20878](../../astral-sh/ruff/pulls/20878.md) on 2025-10-15 01:25_
 
 ---
 

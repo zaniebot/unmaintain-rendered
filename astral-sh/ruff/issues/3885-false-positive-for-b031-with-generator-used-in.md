@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-05T07:47:17Z
 updated_at: 2023-04-05T22:03:13Z
 url: https://github.com/astral-sh/ruff/issues/3885
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # False positive for B031 with generator used in method
@@ -67,10 +67,6 @@ _Assigned to @dhruvmanila by @charliermarsh on 2023-04-05 12:55_
 ---
 
 _Label `bug` added by @charliermarsh on 2023-04-05 12:55_
-
----
-
-_Referenced in [astral-sh/ruff#3887](../../astral-sh/ruff/pulls/3887.md) on 2023-04-05 16:35_
 
 ---
 

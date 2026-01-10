@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-30T14:37:10Z
 updated_at: 2023-12-22T03:44:16Z
 url: https://github.com/astral-sh/ruff/issues/8357
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Formatter: `dummy_implementations` preview style
@@ -39,10 +39,6 @@ _Label `preview` added by @charliermarsh on 2023-10-30 14:38_
 
 ---
 
-_Referenced in [astral-sh/ruff#6935](../../astral-sh/ruff/issues/6935.md) on 2023-10-30 14:58_
-
----
-
 _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-10-31 00:56_
 
 ---
@@ -50,10 +46,6 @@ _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-10-31 00:56_
 _Comment by @zanieb on 2023-11-02 05:20_
 
 @jab would you mind updating the issue with some consolidated documentation about what this change entails and what motivates it? e.g. as in #8436
-
----
-
-_Referenced in [astral-sh/ruff#8678](../../astral-sh/ruff/issues/8678.md) on 2023-11-29 00:25_
 
 ---
 
@@ -72,21 +64,5 @@ _Assigned to @MichaReiser by @MichaReiser on 2023-12-22 02:46_
 ---
 
 _Closed by @MichaReiser on 2023-12-22 03:44_
-
----
-
-_Referenced in [astral-sh/ruff#10186](../../astral-sh/ruff/issues/10186.md) on 2024-03-01 16:58_
-
----
-
-_Referenced in [astral-sh/ruff#10211](../../astral-sh/ruff/issues/10211.md) on 2024-03-04 17:17_
-
----
-
-_Referenced in [sphinx-doc/sphinx#10606](../../sphinx-doc/sphinx/issues/10606.md) on 2024-03-17 07:11_
-
----
-
-_Referenced in [astral-sh/ruff#11569](../../astral-sh/ruff/issues/11569.md) on 2024-05-31 08:48_
 
 ---

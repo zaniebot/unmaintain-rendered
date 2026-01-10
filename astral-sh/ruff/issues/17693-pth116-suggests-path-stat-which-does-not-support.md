@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-04-28T21:35:14Z
 updated_at: 2025-05-01T06:16:29Z
 url: https://github.com/astral-sh/ruff/issues/17693
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # `PTH116` suggests `Path.stat()` which does not support file descriptors
@@ -50,18 +50,6 @@ Related: #12871, #7620
 
 ---
 
-_Referenced in [astral-sh/ruff#17694](../../astral-sh/ruff/issues/17694.md) on 2025-04-28 21:41_
-
----
-
-_Referenced in [astral-sh/ruff#17695](../../astral-sh/ruff/issues/17695.md) on 2025-04-28 21:48_
-
----
-
-_Referenced in [astral-sh/ruff#17699](../../astral-sh/ruff/issues/17699.md) on 2025-04-29 06:10_
-
----
-
 _Label `bug` added by @MichaReiser on 2025-04-29 06:12_
 
 ---
@@ -74,14 +62,6 @@ _Label `help wanted` added by @MichaReiser on 2025-04-29 06:12_
 
 ---
 
-_Referenced in [astral-sh/ruff#17709](../../astral-sh/ruff/pulls/17709.md) on 2025-04-29 14:17_
-
----
-
 _Closed by @MichaReiser on 2025-05-01 06:16_
-
----
-
-_Referenced in [astral-sh/ruff#17776](../../astral-sh/ruff/issues/17776.md) on 2025-05-01 19:04_
 
 ---

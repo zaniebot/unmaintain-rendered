@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-08T13:29:54Z
 updated_at: 2025-10-08T17:47:28Z
 url: https://github.com/astral-sh/ruff/issues/20766
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Rules for Undocumented Public Variable / Constant and Class Member (attribute docstrings)
@@ -125,10 +125,6 @@ https://github.com/astral-sh/ruff/blob/3771f1567c778776777679674b8cffdc90aa51aa/
 ---
 
 _Renamed from "Rules for Undocumented Public Variable / Constant and Class Member (attribute" to "Rules for Undocumented Public Variable / Constant and Class Member (attribute docstrings)" by @phiresky on 2025-10-08 17:43_
-
----
-
-_Referenced in [astral-sh/ruff#20772](../../astral-sh/ruff/pulls/20772.md) on 2025-10-08 17:47_
 
 ---
 

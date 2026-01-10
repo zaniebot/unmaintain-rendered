@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-29T12:50:58Z
 updated_at: 2023-12-13T03:43:25Z
 url: https://github.com/astral-sh/ruff/issues/6975
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter: `prefer_splitting_right_hand_side_of_assignments` preview style
@@ -103,10 +103,6 @@ def f():
 
 ---
 
-_Referenced in [astral-sh/ruff#6935](../../astral-sh/ruff/issues/6935.md) on 2023-08-29 12:50_
-
----
-
 _Label `formatter` added by @MichaReiser on 2023-08-29 12:53_
 
 ---
@@ -116,18 +112,6 @@ _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-08-29 12:53_
 ---
 
 _Label `preview` added by @MichaReiser on 2023-09-15 09:50_
-
----
-
-_Referenced in [astral-sh/ruff#8043](../../astral-sh/ruff/issues/8043.md) on 2023-10-19 09:23_
-
----
-
-_Referenced in [astral-sh/ruff#8188](../../astral-sh/ruff/issues/8188.md) on 2023-10-24 23:47_
-
----
-
-_Referenced in [Toufool/AutoSplit#259](../../Toufool/AutoSplit/pulls/259.md) on 2023-10-27 14:01_
 
 ---
 
@@ -151,14 +135,6 @@ _Renamed from "Improved line breaks" to "Formattter: `prefer_splitting_right_han
 
 ---
 
-_Referenced in [astral-sh/ruff#8678](../../astral-sh/ruff/issues/8678.md) on 2023-11-29 00:25_
-
----
-
-_Referenced in [astral-sh/ruff#8894](../../astral-sh/ruff/issues/8894.md) on 2023-11-29 02:36_
-
----
-
 _Renamed from "Formattter: `prefer_splitting_right_hand_side_of_assignments` preview style" to "Formatter: `prefer_splitting_right_hand_side_of_assignments` preview style" by @MichaReiser on 2023-11-29 03:08_
 
 ---
@@ -172,14 +148,6 @@ _Unassigned @MichaReiser by @MichaReiser on 2023-11-29 07:53_
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2023-11-29 07:54_
-
----
-
-_Referenced in [astral-sh/ruff#8920](../../astral-sh/ruff/pulls/8920.md) on 2023-11-30 02:57_
-
----
-
-_Referenced in [astral-sh/ruff#8943](../../astral-sh/ruff/pulls/8943.md) on 2023-12-01 07:19_
 
 ---
 

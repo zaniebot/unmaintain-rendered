@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-11T20:10:15Z
 updated_at: 2024-07-26T01:57:47Z
 url: https://github.com/astral-sh/ruff/issues/7283
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Apparent duplicate rule (`S307` and `PGH001`)
@@ -44,23 +44,11 @@ _Label `rule` added by @charliermarsh on 2023-09-19 02:39_
 
 ---
 
-_Referenced in [astral-sh/ruff#7506](../../astral-sh/ruff/pulls/7506.md) on 2023-09-19 03:32_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2023-09-19 03:33_
 
 ---
 
 _Label `needs-decision` removed by @charliermarsh on 2023-09-19 03:33_
-
----
-
-_Referenced in [superlinear-ai/substrate#218](../../superlinear-ai/substrate/pulls/218.md) on 2024-02-28 12:22_
-
----
-
-_Referenced in [astral-sh/ruff#2714](../../astral-sh/ruff/issues/2714.md) on 2024-05-13 11:21_
 
 ---
 

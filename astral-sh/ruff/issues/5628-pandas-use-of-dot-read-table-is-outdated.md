@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-09T13:51:05Z
 updated_at: 2023-07-17T01:25:15Z
 url: https://github.com/astral-sh/ruff/issues/5628
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # `pandas-use-of-dot-read-table` is outdated
@@ -46,10 +46,6 @@ _Renamed from "Ignore `pandas-use-of-dot-read-table` unless the separator is set
 
 ---
 
-_Referenced in [astral-sh/ruff#5629](../../astral-sh/ruff/pulls/5629.md) on 2023-07-09 15:53_
-
----
-
 _Label `rule` added by @charliermarsh on 2023-07-09 20:02_
 
 ---
@@ -69,10 +65,6 @@ _Label `needs-decision` removed by @charliermarsh on 2023-07-10 13:53_
 ---
 
 _Label `accepted` added by @charliermarsh on 2023-07-10 13:53_
-
----
-
-_Referenced in [astral-sh/ruff#5807](../../astral-sh/ruff/pulls/5807.md) on 2023-07-16 14:17_
 
 ---
 

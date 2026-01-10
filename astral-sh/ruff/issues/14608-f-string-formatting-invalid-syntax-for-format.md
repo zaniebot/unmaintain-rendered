@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-11-26T13:12:55Z
 updated_at: 2024-11-27T07:49:35Z
 url: https://github.com/astral-sh/ruff/issues/14608
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # F-string formatting: Invalid syntax for format-spec with double quotes when targeting pre Python 3.12
@@ -49,15 +49,7 @@ _Label `preview` added by @MichaReiser on 2024-11-26 13:12_
 
 ---
 
-_Referenced in [astral-sh/ruff#13371](../../astral-sh/ruff/issues/13371.md) on 2024-11-26 13:15_
-
----
-
 _Assigned to @dhruvmanila by @dhruvmanila on 2024-11-27 05:46_
-
----
-
-_Referenced in [astral-sh/ruff#14625](../../astral-sh/ruff/pulls/14625.md) on 2024-11-27 05:50_
 
 ---
 

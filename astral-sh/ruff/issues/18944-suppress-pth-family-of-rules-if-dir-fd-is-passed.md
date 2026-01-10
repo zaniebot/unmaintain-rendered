@@ -1,0 +1,83 @@
+```yaml
+number: 18944
+title: "Suppress PTH* family of rules if `dir_fd=` is passed"
+type: issue
+state: closed
+author: septatrix
+labels:
+  - question
+assignees: []
+created_at: 2025-06-25T19:41:25Z
+updated_at: 2025-06-25T20:05:16Z
+url: https://github.com/astral-sh/ruff/issues/18944
+synced_at: 2026-01-10T11:09:59Z
+```
+
+# Suppress PTH* family of rules if `dir_fd=` is passed
+
+---
+
+_Issue opened by @septatrix on 2025-06-25 19:41_
+
+### Summary
+
+`dir_fd` can be used to [operate on a file relative to a pinned directory descriptor](https://docs.python.org/3/library/os.html#dir-fd). This is useful to prevent bugs, most importantly race conditions. The respective functionality is not available in `pathlib` and the suggestion to use the respective `Path` methods therefore does not make sense
+
+```sh
+$ ruff check --select=PTH test.py
+test.py:1:1: PTH123 `open()` should be replaced by `Path.open()`
+  |
+1 | open("test.txt", dir_fd=1)
+  | ^^^^ PTH123
+  |
+
+Found 1 error.
+```
+
+### Version
+
+ruff 0.11.5
+
+---
+
+_Comment by @septatrix on 2025-06-25 19:45_
+
+Ideally the same would apply when the [*path* argument is a fd](https://docs.python.org/3/library/os.html#path-fd) but that would require type information to correctly check which is not available to ruff, a compromise could be to allow number literals (and maybe some variable names like `fd`) but that seems quite hacky
+
+---
+
+_Comment by @ntBre on 2025-06-25 19:46_
+
+I thought we took care of these in https://github.com/astral-sh/ruff/pull/17968, which should have been released with 0.11.10. Could you try with a more recent Ruff version?
+
+---
+
+_Label `question` added by @ntBre on 2025-06-25 19:46_
+
+---
+
+_Comment by @ntBre on 2025-06-25 19:54_
+
+We do avoid a diagnostic for PTH123 when `path` is a file descriptor ([playground](https://play.ruff.rs/708ebb23-f9ac-4d09-b441-922dacf987f8)), but in this specific example you're still getting a diagnostic because `dir_fd` isn't a known argument to `open`.
+
+I think we properly handle `path` in other cases too, at least the few I tried.
+
+---
+
+_Comment by @septatrix on 2025-06-25 20:02_
+
+> I thought we took care of these in [#17968](https://github.com/astral-sh/ruff/pull/17968), which should have been released with 0.11.10. Could you try with a more recent Ruff version?
+
+Ah yes with a newer version it works as expected (I also had to change `open` to `os.open` in the reproduction because only the latter supports `dir_fd=`)
+
+---
+
+_Closed by @septatrix on 2025-06-25 20:02_
+
+---
+
+_Comment by @ntBre on 2025-06-25 20:05_
+
+Good to hear! If you find any cases where it's not updated, please open another issue!
+
+---

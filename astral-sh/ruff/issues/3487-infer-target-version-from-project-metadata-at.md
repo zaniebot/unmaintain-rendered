@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-13T19:42:44Z
 updated_at: 2023-03-13T21:15:31Z
 url: https://github.com/astral-sh/ruff/issues/3487
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Infer `target-version` from project metadata at runtime
@@ -22,10 +22,6 @@ _Issue opened by @charliermarsh on 2023-03-13 19:42_
 In #3470, we added the ability to grab the `target-version` from `pyproject.toml` in `flake-to-ruff`. However, Black picks this info up at runtime, and I think we should do the same -- that is, allow users to omit `target-version` entirely if they have a `requires-python` defined.
 
 Related to #2039.
-
----
-
-_Referenced in [astral-sh/ruff#2039](../../astral-sh/ruff/issues/2039.md) on 2023-03-13 19:42_
 
 ---
 
@@ -65,9 +61,5 @@ Sweet!
 ---
 
 _Closed by @charliermarsh on 2023-03-13 21:15_
-
----
-
-_Referenced in [gip-inclusion/les-emplois#2480](../../gip-inclusion/les-emplois/pulls/2480.md) on 2023-05-09 10:34_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-27T10:36:32Z
 updated_at: 2023-05-20T02:54:20Z
 url: https://github.com/astral-sh/ruff/issues/2248
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # F401+F811 false positive
@@ -113,10 +113,6 @@ Obligatory link to Tweet: https://twitter.com/charliermarsh/status/1659233087786
 _Comment by @charliermarsh on 2023-05-18 16:29_
 
 I believe we need to change the logic in this case to eagerly resolve if the binding is already defined, and otherwise, go through standard deferred resolution.
-
----
-
-_Referenced in [astral-sh/ruff#4509](../../astral-sh/ruff/pulls/4509.md) on 2023-05-18 20:41_
 
 ---
 

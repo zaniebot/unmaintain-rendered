@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-18T20:10:32Z
 updated_at: 2024-11-19T23:57:41Z
 url: https://github.com/astral-sh/ruff/issues/14443
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Feature request: Make *any* unknown rule code in "ignore" setting a warning, not an error
@@ -92,10 +92,6 @@ warning: Failed to lint Pythonwin\pywin\test\_dbgscript.py: stream did not conta
 
 ---
 
-_Referenced in [astral-sh/ruff#14435](../../astral-sh/ruff/pulls/14435.md) on 2024-11-18 20:10_
-
----
-
 _Label `configuration` added by @dhruvmanila on 2024-11-19 03:15_
 
 ---
@@ -121,9 +117,5 @@ _Comment by @Avasam on 2024-11-19 15:57_
 _Comment by @MichaReiser on 2024-11-19 16:09_
 
 I'd like to keep it open because it demonstrates a useful use case. I'm just not sure if the proposed solution is the right one or if there's another way of solving the problem of using the same configuration across multiple ruff versions.
-
----
-
-_Referenced in [astral-sh/ruff#15640](../../astral-sh/ruff/pulls/15640.md) on 2025-01-21 13:47_
 
 ---

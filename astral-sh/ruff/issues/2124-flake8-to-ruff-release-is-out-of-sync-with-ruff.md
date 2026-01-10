@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-24T12:34:26Z
 updated_at: 2023-01-24T13:39:59Z
 url: https://github.com/astral-sh/ruff/issues/2124
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # `flake8-to-ruff` release is out of sync with `ruff`
@@ -52,10 +52,6 @@ _Comment by @ngnpope on 2023-01-24 13:16_
 > ...and needs to be updated to include those plugins...
 
 I did suspect that there might be something more to it. Thanks! 🚀 
-
----
-
-_Referenced in [astral-sh/ruff#2127](../../astral-sh/ruff/pulls/2127.md) on 2023-01-24 13:32_
 
 ---
 

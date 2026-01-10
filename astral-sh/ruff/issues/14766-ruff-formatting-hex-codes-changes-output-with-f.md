@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-04T07:43:41Z
 updated_at: 2025-01-07T13:32:30Z
 url: https://github.com/astral-sh/ruff/issues/14766
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [`ruff`] Formatting hex codes changes output with f-string debug
@@ -47,14 +47,6 @@ _Label `bug` added by @MichaReiser on 2024-12-04 07:50_
 ---
 
 _Label `formatter` added by @MichaReiser on 2024-12-04 07:50_
-
----
-
-_Referenced in [astral-sh/ruff#13371](../../astral-sh/ruff/issues/13371.md) on 2024-12-04 07:51_
-
----
-
-_Referenced in [astral-sh/ruff#14926](../../astral-sh/ruff/issues/14926.md) on 2024-12-11 21:22_
 
 ---
 
@@ -133,10 +125,6 @@ Let me add a test for this :)
 
 ---
 
-_Referenced in [astral-sh/ruff#14929](../../astral-sh/ruff/pulls/14929.md) on 2024-12-12 09:28_
-
----
-
 _Comment by @dscorbett on 2024-12-12 13:02_
 
 > Is this a bug in the CPython parser?
@@ -152,9 +140,5 @@ I'll close this because we're about to release the new style guide and I'm sure 
 ---
 
 _Closed by @MichaReiser on 2025-01-07 13:32_
-
----
-
-_Referenced in [Homebrew/homebrew-core#203745](../../Homebrew/homebrew-core/pulls/203745.md) on 2025-01-09 17:12_
 
 ---

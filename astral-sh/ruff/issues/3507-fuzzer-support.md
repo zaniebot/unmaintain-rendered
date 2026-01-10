@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-14T10:48:49Z
 updated_at: 2023-06-08T16:03:05Z
 url: https://github.com/astral-sh/ruff/issues/3507
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Fuzzer support
@@ -53,15 +53,7 @@ cargo +nightly fuzz run fuzz_target_1
 
 ---
 
-_Referenced in [astral-sh/ruff#3524](../../astral-sh/ruff/issues/3524.md) on 2023-03-14 21:18_
-
----
-
 _Label `internal` added by @charliermarsh on 2023-03-15 02:24_
-
----
-
-_Referenced in [astral-sh/ruff#3721](../../astral-sh/ruff/issues/3721.md) on 2023-03-26 14:33_
 
 ---
 

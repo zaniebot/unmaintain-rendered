@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-08T00:31:29Z
 updated_at: 2023-03-08T00:38:03Z
 url: https://github.com/astral-sh/ruff/issues/3394
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # RET504 false positive via decorator
@@ -42,10 +42,6 @@ _Originally posted by @gdub in https://github.com/charliermarsh/ruff/issues/2950
 ---
 
 _Label `bug` added by @charliermarsh on 2023-03-08 00:31_
-
----
-
-_Referenced in [astral-sh/ruff#3395](../../astral-sh/ruff/pulls/3395.md) on 2023-03-08 00:31_
 
 ---
 

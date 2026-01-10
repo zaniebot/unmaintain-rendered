@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-23T19:40:47Z
 updated_at: 2024-04-25T02:38:55Z
 url: https://github.com/astral-sh/ruff/issues/11114
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # `ruff server`: `publishDiagnostics` should be sent on `onClose` to clear diagnostics
@@ -30,14 +30,6 @@ _Label `server` added by @snowsignal on 2024-04-23 19:40_
 ---
 
 _Assigned to @snowsignal by @snowsignal on 2024-04-23 19:40_
-
----
-
-_Referenced in [astral-sh/ruff#11092](../../astral-sh/ruff/pulls/11092.md) on 2024-04-23 19:41_
-
----
-
-_Referenced in [astral-sh/ruff#11137](../../astral-sh/ruff/pulls/11137.md) on 2024-04-25 01:51_
 
 ---
 

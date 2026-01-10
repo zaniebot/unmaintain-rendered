@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-17T12:21:48Z
 updated_at: 2024-12-21T10:33:12Z
 url: https://github.com/astral-sh/ruff/issues/15034
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] `sys.platform` support
@@ -32,10 +32,6 @@ _Label `red-knot` added by @sharkdp on 2024-12-17 12:21_
 ---
 
 _Assigned to @sharkdp by @sharkdp on 2024-12-17 12:21_
-
----
-
-_Referenced in [astral-sh/ruff#15019](../../astral-sh/ruff/pulls/15019.md) on 2024-12-17 12:22_
 
 ---
 

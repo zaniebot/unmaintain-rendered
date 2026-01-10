@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-15T21:39:21Z
 updated_at: 2023-02-18T12:29:14Z
 url: https://github.com/astral-sh/ruff/issues/2942
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Make `reimplemented-builtin` also check for other builtins
@@ -34,10 +34,6 @@ Looking at the [list of builtins](https://docs.python.org/3/library/functions.ht
 * [ ] round
 * [ ] sum
 * [ ] zip
-
----
-
-_Referenced in [astral-sh/ruff#2903](../../astral-sh/ruff/pulls/2903.md) on 2023-02-15 21:40_
 
 ---
 

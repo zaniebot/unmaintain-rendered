@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-09T02:52:27Z
 updated_at: 2024-02-09T14:02:43Z
 url: https://github.com/astral-sh/ruff/issues/9904
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Rule UP040 incorrect fix when `TypeVar` is used multiple times
@@ -105,10 +105,6 @@ Interesting, thank you for the clear issue! We can fix this.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-09 03:10_
-
----
-
-_Referenced in [astral-sh/ruff#9905](../../astral-sh/ruff/pulls/9905.md) on 2024-02-09 03:11_
 
 ---
 

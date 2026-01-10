@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-14T06:33:10Z
 updated_at: 2024-08-16T14:20:13Z
 url: https://github.com/astral-sh/ruff/issues/12880
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # "Fix all" code action on notebook causes panic with multi-byte character
@@ -169,10 +169,6 @@ It doesn't occur when performing the action via the command-line (`ruff check --
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2024-08-16 13:44_
-
----
-
-_Referenced in [astral-sh/ruff#12929](../../astral-sh/ruff/pulls/12929.md) on 2024-08-16 13:44_
 
 ---
 

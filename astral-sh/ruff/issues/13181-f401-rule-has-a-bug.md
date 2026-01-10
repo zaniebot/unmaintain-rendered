@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-31T08:08:59Z
 updated_at: 2024-09-01T18:24:38Z
 url: https://github.com/astral-sh/ruff/issues/13181
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # F401 rule has a bug
@@ -89,9 +89,5 @@ _Label `bug` added by @charliermarsh on 2024-09-01 18:24_
 ---
 
 _Label `type-inference` added by @charliermarsh on 2024-09-01 18:24_
-
----
-
-_Referenced in [astral-sh/ruff#15860](../../astral-sh/ruff/issues/15860.md) on 2025-02-01 17:05_
 
 ---

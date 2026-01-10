@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-15T16:31:22Z
 updated_at: 2025-07-15T17:26:00Z
 url: https://github.com/astral-sh/ruff/issues/19362
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # [website] When hitting enter key in search field, browser navigates to first result - rather than opening a full page of search results which is what I would expect
@@ -72,13 +72,5 @@ I'm not sure that we should make an upstream issue. This could be out of date, b
 _Comment by @corneliusroemer on 2025-07-15 17:25_
 
 Having just made an issue about something else I noticed that feels more clearly buggy (https://github.com/squidfunk/mkdocs-material/issues/8334) I'm taking back my offer to make an upstream issue - the official requirements the maintainer lists for "acceptable" issues are a bit over the top in my view, I didn't expect that.
-
----
-
-_Referenced in [astral-sh/ruff#19369](../../astral-sh/ruff/issues/19369.md) on 2025-07-15 18:15_
-
----
-
-_Referenced in [astral-sh/ruff#19373](../../astral-sh/ruff/pulls/19373.md) on 2025-07-15 19:12_
 
 ---

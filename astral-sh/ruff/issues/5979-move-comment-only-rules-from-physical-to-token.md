@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-22T13:50:23Z
 updated_at: 2023-07-26T22:42:38Z
 url: https://github.com/astral-sh/ruff/issues/5979
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Move comment-only rules from physical to token checker
@@ -35,10 +35,6 @@ block of `crates/ruff/src/checkers/physical_lines.rs` can probably be moved to a
 ---
 
 _Label `internal` added by @charliermarsh on 2023-07-22 13:50_
-
----
-
-_Referenced in [astral-sh/ruff#6110](../../astral-sh/ruff/pulls/6110.md) on 2023-07-26 22:36_
 
 ---
 

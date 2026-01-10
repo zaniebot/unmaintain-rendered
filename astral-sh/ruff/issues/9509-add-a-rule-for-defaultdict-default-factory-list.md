@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-14T04:11:05Z
 updated_at: 2024-01-29T03:58:37Z
 url: https://github.com/astral-sh/ruff/issues/9509
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Add a rule for `defaultdict(default_factory=list)`
@@ -67,10 +67,6 @@ _Comment by @mikeleppane on 2024-01-25 21:01_
 _Comment by @hauntsaninja on 2024-01-25 21:05_
 
 As an example! :-) Like I said, type checkers can't catch the call itself since it's valid. They may be able to surface an issue later because they'll infer a different type for the defaultdict.
-
----
-
-_Referenced in [astral-sh/ruff#9651](../../astral-sh/ruff/pulls/9651.md) on 2024-01-26 15:03_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-26T15:32:40Z
 updated_at: 2023-11-10T16:23:37Z
 url: https://github.com/astral-sh/ruff/issues/8254
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # formatter(Jupyter): ending semicolons valid in Jupyter
@@ -73,14 +73,6 @@ _Renamed from "formatter(Jupyter): semicolons and percents" to "formatter(Jupyte
 
 ---
 
-_Referenced in [scikit-hep/boost-histogram#895](../../scikit-hep/boost-histogram/pulls/895.md) on 2023-10-26 16:12_
-
----
-
-_Referenced in [scikit-hep/hist#544](../../scikit-hep/hist/pulls/544.md) on 2023-10-26 16:13_
-
----
-
 _Comment by @dhruvmanila on 2023-10-26 16:18_
 
 Related: https://github.com/astral-sh/ruff/issues/7300
@@ -108,10 +100,6 @@ IPython has several modes. If you set:
 Then either `val = expr` or just `expr` will print if it's the final statement in the cell, unless there's a semicolon (see, for example, https://hist.readthedocs.io/en/latest/examples/HistDemo.html). By default, only `expr` will display, and `val = expr` won't. I'd say simply allowing a final semicolon in cells on expressions or assignment expressions would be fine.
 
 IIRC `a.b =` and `a[b] =` statements don't display even in the enhanced mode, but could be wrong.
-
----
-
-_Referenced in [pybamm-team/PyBaMM#3476](../../pybamm-team/PyBaMM/issues/3476.md) on 2023-10-28 03:07_
 
 ---
 
@@ -147,18 +135,6 @@ _Assigned to @dhruvmanila by @dhruvmanila on 2023-11-09 03:09_
 
 ---
 
-_Referenced in [astral-sh/ruff#8590](../../astral-sh/ruff/pulls/8590.md) on 2023-11-09 21:05_
-
----
-
 _Closed by @dhruvmanila on 2023-11-10 16:23_
-
----
-
-_Referenced in [astral-sh/ruff#7300](../../astral-sh/ruff/issues/7300.md) on 2025-07-01 01:55_
-
----
-
-_Referenced in [astral-sh/ruff#19980](../../astral-sh/ruff/issues/19980.md) on 2025-08-18 23:07_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-23T22:00:43Z
 updated_at: 2024-09-04T05:53:34Z
 url: https://github.com/astral-sh/ruff/issues/13085
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] assert that we don't create multiple definitions for one node
@@ -25,10 +25,6 @@ I don't think this should happen, and if it does that suggests a bug. But a quic
 ---
 
 _Label `red-knot` added by @carljm on 2024-08-23 22:00_
-
----
-
-_Referenced in [astral-sh/ruff#13075](../../astral-sh/ruff/pulls/13075.md) on 2024-08-23 22:01_
 
 ---
 
@@ -95,14 +91,6 @@ That's good data; looks like the problem is we don't handle unpacking in compreh
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2024-09-02 11:37_
-
----
-
-_Referenced in [astral-sh/ruff#13213](../../astral-sh/ruff/pulls/13213.md) on 2024-09-02 12:41_
-
----
-
-_Referenced in [astral-sh/ruff#13214](../../astral-sh/ruff/pulls/13214.md) on 2024-09-02 12:46_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-06T09:15:42Z
 updated_at: 2024-08-13T17:32:08Z
 url: https://github.com/astral-sh/ruff/issues/11305
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Odd ecosystem results on typeshed
@@ -33,10 +33,6 @@ _Label `ci` added by @AlexWaygood on 2024-05-06 09:15_
 
 ---
 
-_Referenced in [astral-sh/ruff#11269](../../astral-sh/ruff/pulls/11269.md) on 2024-05-06 09:16_
-
----
-
 _Comment by @MichaReiser on 2024-05-06 09:24_
 
 Would you mind listing some of the "odd" examples and explaining why they're odd?
@@ -51,14 +47,6 @@ In all three comments I linked to above, the ecosystem check either surfaced new
 
 ---
 
-_Referenced in [astral-sh/ruff#12860](../../astral-sh/ruff/pulls/12860.md) on 2024-08-13 14:15_
-
----
-
 _Label `help wanted` added by @AlexWaygood on 2024-08-13 17:32_
-
----
-
-_Referenced in [astral-sh/ruff#14273](../../astral-sh/ruff/pulls/14273.md) on 2024-11-13 11:28_
 
 ---

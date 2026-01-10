@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-30T15:36:05Z
 updated_at: 2025-07-13T19:36:47Z
 url: https://github.com/astral-sh/ruff/issues/8926
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # `ruff format` doesn't sort imports, leaves file unchanged
@@ -105,14 +105,6 @@ Got it, thanks!
 
 ---
 
-_Referenced in [nvimtools/none-ls.nvim#41](../../nvimtools/none-ls.nvim/pulls/41.md) on 2023-12-07 14:43_
-
----
-
-_Referenced in [microsoft/LightGBM#6317](../../microsoft/LightGBM/pulls/6317.md) on 2024-02-16 06:33_
-
----
-
 _Comment by @Hubro on 2024-02-27 14:13_
 
 While the rationale makes complete sense, this does make it pretty awkward and unintuitive to sort import statements as part of auto-formatting in editor configs and such. Would it be a possibility to add a shortcut for this as a flag to `ruff format`, just as a UX improvement?
@@ -132,30 +124,6 @@ I agree it sounds technically correct, but a little awkward from a practical sta
 ruff check . --select I --fix
 ruff format .
 ```
-
----
-
-_Referenced in [adafruit/cookiecutter-adafruit-circuitpython#236](../../adafruit/cookiecutter-adafruit-circuitpython/pulls/236.md) on 2024-03-05 15:03_
-
----
-
-_Referenced in [NixOS/nixpkgs#296222](../../NixOS/nixpkgs/issues/296222.md) on 2024-03-15 18:36_
-
----
-
-_Referenced in [vllm-project/vllm#3495](../../vllm-project/vllm/pulls/3495.md) on 2024-03-19 17:38_
-
----
-
-_Referenced in [databio/bbconf#45](../../databio/bbconf/pulls/45.md) on 2024-03-28 23:18_
-
----
-
-_Referenced in [i-dot-ai/consult#61](../../i-dot-ai/consult/pulls/61.md) on 2024-04-02 19:32_
-
----
-
-_Referenced in [Backblaze/boardwalk#68](../../Backblaze/boardwalk/pulls/68.md) on 2024-04-03 19:43_
 
 ---
 
@@ -264,14 +232,6 @@ _Comment by @charliermarsh on 2024-04-11 14:46_
 
 ---
 
-_Referenced in [astral-sh/ruff-pre-commit#64](../../astral-sh/ruff-pre-commit/issues/64.md) on 2024-04-12 08:35_
-
----
-
-_Referenced in [posit-dev/great-tables#315](../../posit-dev/great-tables/pulls/315.md) on 2024-04-29 21:21_
-
----
-
 _Comment by @zhou13 on 2024-06-19 19:06_
 
 This issue causes some inconvenience using the sorting functionality:
@@ -282,22 +242,6 @@ This issue causes some inconvenience using the sorting functionality:
   * To sort the import, one needs to run a code action. This takes more keystrokes, and it is much harder to configure to run it with `format_on_save` in general.
 
 I do understand that currently import sorting and re-categorization is implemented as the linter, not the formatter, which might make sense in terms of the function group. But as a user, I think the software UI ergonomics is more important here.
-
----
-
-_Referenced in [boriel-basic/zxbasic#736](../../boriel-basic/zxbasic/pulls/736.md) on 2024-06-24 17:42_
-
----
-
-_Referenced in [Infleqtion/client-superstaq#1016](../../Infleqtion/client-superstaq/pulls/1016.md) on 2024-08-08 02:16_
-
----
-
-_Referenced in [ccao-data/data-architecture#581](../../ccao-data/data-architecture/issues/581.md) on 2024-09-05 18:42_
-
----
-
-_Referenced in [jazzband/djangorestframework-simplejwt#856](../../jazzband/djangorestframework-simplejwt/pulls/856.md) on 2025-01-13 18:10_
 
 ---
 
@@ -333,13 +277,5 @@ function(client, bufnr)
     end
 end
 ```
-
----
-
-_Referenced in [stavely-io/stavely-hq#143](../../stavely-io/stavely-hq/pulls/143.md) on 2025-07-15 20:05_
-
----
-
-_Referenced in [NVIDIA-NeMo/Skills#740](../../NVIDIA-NeMo/Skills/pulls/740.md) on 2025-08-28 19:34_
 
 ---

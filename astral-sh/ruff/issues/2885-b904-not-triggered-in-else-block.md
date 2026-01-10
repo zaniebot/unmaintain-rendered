@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-02-14T03:45:57Z
 updated_at: 2023-02-14T03:58:17Z
 url: https://github.com/astral-sh/ruff/issues/2885
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # B904 not triggered in else block 
@@ -38,10 +38,6 @@ ruff 0.0.246
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-14 03:52_
-
----
-
-_Referenced in [astral-sh/ruff#2886](../../astral-sh/ruff/pulls/2886.md) on 2023-02-14 03:55_
 
 ---
 

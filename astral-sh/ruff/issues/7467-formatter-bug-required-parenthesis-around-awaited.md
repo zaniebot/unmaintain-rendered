@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-17T17:34:24Z
 updated_at: 2023-09-18T13:56:43Z
 url: https://github.com/astral-sh/ruff/issues/7467
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter bug: Required parenthesis around awaited expression are removed
@@ -85,10 +85,6 @@ Thanks!
 ---
 
 _Added to milestone `Formatter: Beta` by @MichaReiser on 2023-09-17 18:01_
-
----
-
-_Referenced in [astral-sh/ruff#7468](../../astral-sh/ruff/pulls/7468.md) on 2023-09-17 18:41_
 
 ---
 

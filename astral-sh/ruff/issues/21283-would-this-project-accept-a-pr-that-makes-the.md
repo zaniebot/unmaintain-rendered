@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-11-05T14:52:14Z
 updated_at: 2025-11-05T14:59:22Z
 url: https://github.com/astral-sh/ruff/issues/21283
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # Would this project accept a PR that makes the number of top-level blank lines configurable?
@@ -57,10 +57,6 @@ All that is to say is that (I hope) that we should take PEP 8 recommendations wi
 Even if only used by a handful of people, I think this proposed rule (maybe called `top-level-blank-lines`) would truly be beneficial and a positive impact for the people that use it.
 
 We already have rules that allow people to deviate from PEP 8 guidelines (like `indent-style` and `line-length`), so I'm hoping that making this configurable would be okay. Please let me know if this project would accept a PR on this. Thank you.
-
----
-
-_Referenced in [astral-sh/ruff#17476](../../astral-sh/ruff/issues/17476.md) on 2025-11-05 14:55_
 
 ---
 

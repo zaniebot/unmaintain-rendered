@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-16T19:27:16Z
 updated_at: 2023-04-16T23:19:06Z
 url: https://github.com/astral-sh/ruff/issues/3987
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # SIM112 should not be autofixed by default
@@ -20,10 +20,6 @@ synced_at: 2026-01-10T01:56:47Z
 _Issue opened by @justinchuby on 2023-04-16 19:27_
 
 The autofix for rule SIM112 (uncapitalized-environment-variables) automatically changes the string in os.getenv() to caps. When adopting ruff in an existing project, old code may assume the envvars to be certain strings and this fix will cause breaking change in the behavior. I suggest that the fix is optionally turned on, if that is possible?
-
----
-
-_Referenced in [astral-sh/ruff#3988](../../astral-sh/ruff/pulls/3988.md) on 2023-04-16 23:01_
 
 ---
 

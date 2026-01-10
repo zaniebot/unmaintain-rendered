@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-22T07:45:28Z
 updated_at: 2024-12-12T12:40:18Z
 url: https://github.com/astral-sh/ruff/issues/13875
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] mdtest output improvements
@@ -222,10 +222,6 @@ It depends. If we would want to indent after every newline, then this `Formatter
 [Than](https://github.com/astral-sh/ruff/blob/e7b49694a795e3347ffc6f499245dfcbbb4b28ed/crates/ruff_linter/src/message/grouped.rs#L173-L202)
 
 But that's not what we need here because there's no newline. The line wraps because your terminal doesn't have enough space to render the entire line. A trivial solution could be chunk messages into 60 char long parts and render them by part. I think the long-term solution is that we build a proper diagnostic system that supports showing rich content. It helps reducing the need for long messages.
-
----
-
-_Referenced in [astral-sh/ruff#14213](../../astral-sh/ruff/pulls/14213.md) on 2024-11-08 22:32_
 
 ---
 

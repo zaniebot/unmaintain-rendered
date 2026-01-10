@@ -1,0 +1,71 @@
+```yaml
+number: 7120
+title: Rules B013 cause autofix error
+type: issue
+state: closed
+author: qarmin
+labels:
+  - bug
+  - fuzzer
+assignees: []
+created_at: 2023-09-04T05:57:25Z
+updated_at: 2023-09-05T11:49:13Z
+url: https://github.com/astral-sh/ruff/issues/7120
+synced_at: 2026-01-10T11:09:49Z
+```
+
+# Rules B013 cause autofix error
+
+---
+
+_Issue opened by @qarmin on 2023-09-04 05:57_
+
+Ruff 0.0.287 (latest changes from main branch)
+```
+ruff  *.py --select B013 --no-cache --fix
+```
+
+file content(at least simple cpython script shows that this is valid python file):
+```
+class OceanMonkey:
+                try:
+                    idle_time = 0
+                except(Exception, ):
+                    i
+```
+
+error
+```
+/home/rafal/test/tmp_folder/98889809016.py:4:23: B013 A length-one tuple literal is redundant in exception handlers
+Found 1 error.
+
+error: Autofix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in `ruff`. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BAutofix%20error%5D
+
+...quoting the contents of `/home/rafal/test/tmp_folder/98889809016.py`, the rule codes B013, along with the `pyproject.toml` settings and executed command, we'd be very appreciative!
+
+```
+
+[python_compressed.zip](https://github.com/astral-sh/ruff/files/12509745/python_compressed.zip)
+
+
+---
+
+_Label `bug` added by @MichaReiser on 2023-09-04 06:28_
+
+---
+
+_Label `fuzzer` added by @MichaReiser on 2023-09-04 06:28_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-09-05 11:20_
+
+---
+
+_Closed by @charliermarsh on 2023-09-05 11:49_
+
+---

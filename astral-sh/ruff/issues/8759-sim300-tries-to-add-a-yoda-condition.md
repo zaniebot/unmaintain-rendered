@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-18T22:39:57Z
 updated_at: 2023-11-18T23:05:21Z
 url: https://github.com/astral-sh/ruff/issues/8759
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # SIM300 tries to add a Yoda condition...
@@ -76,9 +76,5 @@ I think this is the same as https://github.com/astral-sh/ruff/issues/6956.
 ---
 
 _Closed by @charliermarsh on 2023-11-18 23:05_
-
----
-
-_Referenced in [astral-sh/ruff#6956](../../astral-sh/ruff/issues/6956.md) on 2023-11-18 23:05_
 
 ---

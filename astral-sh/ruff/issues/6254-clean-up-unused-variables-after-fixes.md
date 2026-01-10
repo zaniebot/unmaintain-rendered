@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-01T17:44:18Z
 updated_at: 2023-08-01T21:34:59Z
 url: https://github.com/astral-sh/ruff/issues/6254
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Clean up unused variables after fixes
@@ -148,9 +148,5 @@ Ah, no luck - that same flag is used for the recursive fixes, so `⌘ + S` still
 _Comment by @charliermarsh on 2023-08-01 21:34_
 
 I think the suggestion was to leave you with a setup such that unused variables would be removed when running via the CLI, but not when running in the editor (which could happen "by accident").
-
----
-
-_Referenced in [astral-sh/ruff#10954](../../astral-sh/ruff/issues/10954.md) on 2024-04-15 12:46_
 
 ---

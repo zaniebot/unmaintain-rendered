@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-09T15:38:17Z
 updated_at: 2023-12-09T18:15:30Z
 url: https://github.com/astral-sh/ruff/issues/9066
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Add an autofix for `E251` 
@@ -46,10 +46,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-12-09 17:52_
 _Comment by @charliermarsh on 2023-12-09 17:52_
 
 Oh sorry, missed that one. I will add now.
-
----
-
-_Referenced in [astral-sh/ruff#9072](../../astral-sh/ruff/pulls/9072.md) on 2023-12-09 18:04_
 
 ---
 

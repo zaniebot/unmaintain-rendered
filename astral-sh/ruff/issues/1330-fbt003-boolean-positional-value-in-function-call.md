@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-22T08:08:55Z
 updated_at: 2022-12-22T13:40:23Z
 url: https://github.com/astral-sh/ruff/issues/1330
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:26Z
 ```
 
 # `FBT003 Boolean positional value in function call` triggered in unittest assert methods
@@ -53,14 +53,6 @@ Will add this to the allowlist.
 
 ---
 
-_Referenced in [astral-sh/ruff#1333](../../astral-sh/ruff/pulls/1333.md) on 2022-12-22 13:40_
-
----
-
 _Closed by @charliermarsh on 2022-12-22 13:40_
-
----
-
-_Referenced in [rust-lang/rust-analyzer#20846](../../rust-lang/rust-analyzer/issues/20846.md) on 2025-10-15 15:01_
 
 ---

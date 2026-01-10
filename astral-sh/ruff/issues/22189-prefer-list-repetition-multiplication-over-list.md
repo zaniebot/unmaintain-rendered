@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-12-25T06:32:29Z
 updated_at: 2025-12-25T14:43:00Z
 url: https://github.com/astral-sh/ruff/issues/22189
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # Prefer list repetition/multiplication over list comprehension
@@ -33,10 +33,6 @@ _Renamed from "Prefer list repetition/multiplication (`[foo] * n`) over `[foo fo
 ---
 
 _Renamed from "Prefer list repetition/multiplication (`[foo] * n`) over list comprehension (`[foo for _ in range(n)]`)" to "Prefer list repetition/multiplication over list comprehension" by @injust on 2025-12-25 06:33_
-
----
-
-_Referenced in [astral-sh/ruff#22190](../../astral-sh/ruff/issues/22190.md) on 2025-12-25 06:38_
 
 ---
 

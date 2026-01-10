@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-16T16:03:52Z
 updated_at: 2024-12-09T16:10:56Z
 url: https://github.com/astral-sh/ruff/issues/13778
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] support invalid syntax without panics
@@ -28,14 +28,6 @@ The trick is to do this while, as much as feasible, still maintaining some usefu
 ---
 
 _Label `red-knot` added by @carljm on 2024-10-16 16:03_
-
----
-
-_Referenced in [astral-sh/ruff#13710](../../astral-sh/ruff/issues/13710.md) on 2024-10-16 16:04_
-
----
-
-_Referenced in [astral-sh/ruff#13701](../../astral-sh/ruff/pulls/13701.md) on 2024-10-16 16:10_
 
 ---
 
@@ -58,10 +50,6 @@ _Comment by @carljm on 2024-11-07 16:23_
 In addition to "not panic", we also want to avoid useless or confusing diagnostics.
 
 Inferring useful types in the face of syntax errors is less of a priority.
-
----
-
-_Referenced in [astral-sh/ruff#13478](../../astral-sh/ruff/issues/13478.md) on 2024-11-13 02:40_
 
 ---
 
@@ -91,10 +79,6 @@ One specific case that we should handle is that we don't put names synthesized b
 
 ---
 
-_Referenced in [astral-sh/ruff#14342](../../astral-sh/ruff/issues/14342.md) on 2024-11-22 09:48_
-
----
-
 _Comment by @AlexWaygood on 2024-11-25 12:00_
 
 > We can now run red knot on all invalid-syntax examples in ruffs repository without panicking. We can also run it on a fuzzing corpus with ~4000 invalid-syntax files (#13448). The next step could be to look into direct fuzzing (#14157), or to look for other corpuses (corpi? corpora?) with invalid syntax examples.
@@ -119,10 +103,6 @@ There are certain changes that can be done but I've been unable to create a sour
 * Avoid adding the symbol for an `ExprName` which has an invalid expression context as that indicates a syntax error from which the parser recovered
 
 That said, I think we should periodically run the fuzzer and iteratively fix any errors that the model encounters. The model is still a work in progress so there are missing pieces which might prove necessary to create these panics if any.
-
----
-
-_Referenced in [astral-sh/ruff#14736](../../astral-sh/ruff/pulls/14736.md) on 2024-12-02 15:55_
 
 ---
 
@@ -161,18 +141,6 @@ We could also assert that red knot doesn't generate useless diagnostics for miss
 
 ---
 
-_Referenced in [astral-sh/ruff#14753](../../astral-sh/ruff/pulls/14753.md) on 2024-12-03 11:12_
-
----
-
-_Referenced in [astral-sh/ruff#14754](../../astral-sh/ruff/pulls/14754.md) on 2024-12-03 11:25_
-
----
-
 _Closed by @carljm on 2024-12-09 16:10_
-
----
-
-_Referenced in [astral-sh/ty#572](../../astral-sh/ty/issues/572.md) on 2025-06-03 08:32_
 
 ---

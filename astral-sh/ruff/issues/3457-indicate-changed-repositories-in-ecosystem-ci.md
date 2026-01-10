@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-03-12T05:18:05Z
 updated_at: 2023-03-12T18:30:40Z
 url: https://github.com/astral-sh/ruff/issues/3457
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Indicate changed repositories in ecosystem CI check
@@ -24,10 +24,6 @@ It'd be really useful if there was visual feedback in the collapsed state about 
 
 E.g., above `bokeh` and `scikit-build` didn't change at all, but you have to expand each repo to know that.
 
-
----
-
-_Referenced in [astral-sh/ruff#3461](../../astral-sh/ruff/pulls/3461.md) on 2023-03-12 14:00_
 
 ---
 

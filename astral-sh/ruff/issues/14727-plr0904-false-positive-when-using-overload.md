@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-02T12:27:42Z
 updated_at: 2024-12-02T14:36:52Z
 url: https://github.com/astral-sh/ruff/issues/14727
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # PLR0904: false positive when using overload
@@ -106,10 +106,6 @@ I'll have a go at fixing it
 ---
 
 _Assigned to @Matt-Ord by @MichaReiser on 2024-12-02 13:17_
-
----
-
-_Referenced in [astral-sh/ruff#14730](../../astral-sh/ruff/pulls/14730.md) on 2024-12-02 14:10_
 
 ---
 

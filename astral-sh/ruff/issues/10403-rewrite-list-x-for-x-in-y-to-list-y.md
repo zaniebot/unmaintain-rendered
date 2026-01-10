@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-14T02:38:53Z
 updated_at: 2024-03-15T14:33:27Z
 url: https://github.com/astral-sh/ruff/issues/10403
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Rewrite `list(x for x in y)` to `list(y)`
@@ -41,10 +41,6 @@ I would like to contribute on this. Should I implement it on inside C400 or add 
 _Comment by @charliermarsh on 2024-03-15 03:43_
 
 I think we should augment C400 to support it.
-
----
-
-_Referenced in [astral-sh/ruff#10419](../../astral-sh/ruff/pulls/10419.md) on 2024-03-15 08:11_
 
 ---
 

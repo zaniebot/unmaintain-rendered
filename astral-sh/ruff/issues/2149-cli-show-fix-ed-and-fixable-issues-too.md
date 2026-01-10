@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-25T07:57:52Z
 updated_at: 2023-02-24T20:29:54Z
 url: https://github.com/astral-sh/ruff/issues/2149
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # CLI: Show `--fix`ed and fixable issues too?
@@ -80,14 +80,6 @@ I just opened #2188 for the larger issue of `-v` being user-unfriendly.
 ---
 
 _Label `cli` added by @charliermarsh on 2023-01-26 14:54_
-
----
-
-_Referenced in [astral-sh/ruff#2188](../../astral-sh/ruff/issues/2188.md) on 2023-01-26 14:56_
-
----
-
-_Referenced in [astral-sh/ruff#2452](../../astral-sh/ruff/issues/2452.md) on 2023-02-02 12:26_
 
 ---
 

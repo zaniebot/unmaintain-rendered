@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-24T19:36:44Z
 updated_at: 2023-08-28T20:36:31Z
 url: https://github.com/astral-sh/ruff/issues/3721
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Big pack of files that cause problems
@@ -59,10 +59,6 @@ Thank you! This is great, no need to file separate issues.
 
 ---
 
-_Referenced in [rome/tools#4323](../../rome/tools/issues/4323.md) on 2023-03-26 07:13_
-
----
-
 _Comment by @jfmengels on 2023-03-26 09:29_
 
 @qarmin can I ask how you generated these fuzzed files? I'd be interested for doing the same for my own linter (elm-review, for Elm).
@@ -88,10 +84,6 @@ I used before cargo fuzz, but I was only able to find only one bug with it - htt
 _Comment by @charliermarsh on 2023-03-26 14:44_
 
 We love broken files
-
----
-
-_Referenced in [rome/tools#4559](../../rome/tools/pulls/4559.md) on 2023-06-12 07:44_
 
 ---
 

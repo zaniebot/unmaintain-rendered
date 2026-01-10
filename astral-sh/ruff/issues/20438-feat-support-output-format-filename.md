@@ -1,0 +1,84 @@
+```yaml
+number: 20438
+title: "feat: support --output-format \"filename\""
+type: issue
+state: closed
+author: spaceone
+labels:
+  - cli
+  - needs-decision
+assignees: []
+created_at: 2025-09-16T16:49:56Z
+updated_at: 2025-09-17T07:22:50Z
+url: https://github.com/astral-sh/ruff/issues/20438
+synced_at: 2026-01-10T11:09:59Z
+```
+
+# feat: support --output-format "filename"
+
+---
+
+_Issue opened by @spaceone on 2025-09-16 16:49_
+
+I would like to only get the filenames with violations printed, so I can easily open all of them in a editor like:
+
+`vim -p $(ruff check --select G --output-format=concise -- .  $(python_files) | sed 's/:.*//' | grep -v Found | sort -u)`
+
+which could be just:
+`vim -p $(ruff check --select G --output-format=filename -- .  $(python_files))`
+
+---
+
+_Label `cli` added by @ntBre on 2025-09-16 16:59_
+
+---
+
+_Label `needs-decision` added by @ntBre on 2025-09-16 16:59_
+
+---
+
+_Comment by @ntBre on 2025-09-16 17:02_
+
+Hmm that's an interesting use case. If you have `jq` it might be slightly shorter to do something like this:
+
+```shell
+ruff check --output-format json | jq '.[].filename'
+```
+
+but that's probably the best existing option that I see.
+
+---
+
+_Comment by @spaceone on 2025-09-16 17:14_
+
+I think past ruff versions (from the beginning) had the possibility to specify the output string like: `--format "{filename}:{lineno} {rule} {violation}"`.
+That would also be nice. For example, sometimes I want to see only the affected code, which nowadays gets underlined in the "full" output with a large context.
+
+For example so that I can display:
+```
+G002 Logging statement uses `%`                                                                                        
+  --> listener.py:54:30                                               
+   |                                                                                                                   
+52 |             with open(filename, 'w') as fd:                                                                       
+53 |                 json.dump(attrs, fd, sort_keys=True, indent=4)                                                    
+54 |             self.logger.info('%s of %s (id: %s, file: %s)' % (log_as or command, dn, entry_uuid, filename))                                                                                                                               
+   |                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                                                                                                                
+55 |                                                                                                                   
+56 |     def create(self, dn, new):                                                                                    
+   |     
+```
+as:
+
+`listener.py:54: G002 '%s of %s (id: %s, file: %s)' % (log_as or command, dn, entry_uuid, filename)`
+
+---
+
+_Comment by @MichaReiser on 2025-09-17 07:22_
+
+I think @ntBre's proposed solution is sufficient here. It also won't scale well if we need a different output format for every possible field combination and there's https://github.com/astral-sh/ruff/issues/2350 that asks for a custom format
+
+---
+
+_Closed by @MichaReiser on 2025-09-17 07:22_
+
+---

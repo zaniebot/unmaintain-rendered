@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-24T09:32:26Z
 updated_at: 2024-06-24T10:29:11Z
 url: https://github.com/astral-sh/ruff/issues/12012
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Related settings reference is not generating on main
@@ -36,10 +36,6 @@ _Renamed from "Docs: related settings reference has stopped working" to "Related
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2024-06-24 10:14_
-
----
-
-_Referenced in [astral-sh/ruff#12013](../../astral-sh/ruff/pulls/12013.md) on 2024-06-24 10:21_
 
 ---
 

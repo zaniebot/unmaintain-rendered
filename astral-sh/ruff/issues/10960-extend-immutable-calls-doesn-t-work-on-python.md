@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-15T19:24:32Z
 updated_at: 2024-04-18T01:42:52Z
 url: https://github.com/astral-sh/ruff/issues/10960
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # extend-immutable-calls doesn't work on Python scripts (as opposed to modules)
@@ -88,10 +88,6 @@ That seems reasonable to me.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-04-16 02:49_
-
----
-
-_Referenced in [astral-sh/ruff#10965](../../astral-sh/ruff/pulls/10965.md) on 2024-04-16 02:58_
 
 ---
 

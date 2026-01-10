@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-02T11:45:23Z
 updated_at: 2024-08-15T11:27:18Z
 url: https://github.com/astral-sh/ruff/issues/11246
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Can't run ruff when installed with pip target dir option
@@ -68,10 +68,6 @@ _Closed by @MichaReiser on 2024-05-02 15:37_
 
 ---
 
-_Referenced in [businho/pytest-ruff#21](../../businho/pytest-ruff/issues/21.md) on 2024-05-16 13:50_
-
----
-
 _Comment by @jaraco on 2024-05-16 13:57_
 
 I have this issue also, and it affects Python environments created by [pip-run](https://github.com/jaraco/pip-run). `pip-run` uses `pip install --target` for its simplicity and ability to compose with other environments.
@@ -116,10 +112,6 @@ Edit: I was holding it wrong. In my shell, the `!` needs to be escaped, whereaft
  ~ @ pip-run ruff -- '!ruff' --version
 ruff 0.4.4
 ```
-
----
-
-_Referenced in [astral-sh/ruff#11450](../../astral-sh/ruff/pulls/11450.md) on 2024-05-16 15:32_
 
 ---
 

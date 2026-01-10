@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-04T04:07:32Z
 updated_at: 2024-04-08T21:29:30Z
 url: https://github.com/astral-sh/ruff/issues/5499
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Support `FORCE_COLOR` env var
@@ -44,10 +44,6 @@ Related:
 
 ---
 
-_Referenced in [python-poetry/cleo#341](../../python-poetry/cleo/issues/341.md) on 2023-07-04 04:07_
-
----
-
 _Comment by @MichaReiser on 2023-07-04 06:24_
 
 We use `colored` that only supports [`CLICOLOR_FORCE`](https://github.com/colored-rs/colored#features) out of the box.
@@ -62,10 +58,6 @@ Happy to move to a different crate, no objection from me.
 
 ---
 
-_Referenced in [pre-commit/pre-commit#2918](../../pre-commit/pre-commit/issues/2918.md) on 2023-07-04 20:08_
-
----
-
 _Label `cli` added by @charliermarsh on 2023-07-04 21:55_
 
 ---
@@ -76,30 +68,10 @@ This would be a nice feature to have. I have had good experiences with using `ow
 
 ---
 
-_Referenced in [denoland/deno#17229](../../denoland/deno/issues/17229.md) on 2023-10-24 20:53_
-
----
-
-_Referenced in [astral-sh/ruff#10784](../../astral-sh/ruff/pulls/10784.md) on 2024-04-05 00:10_
-
----
-
-_Referenced in [astral-sh/ruff#10839](../../astral-sh/ruff/pulls/10839.md) on 2024-04-08 21:03_
-
----
-
 _Closed by @carljm on 2024-04-08 21:29_
 
 ---
 
 _Closed by @carljm on 2024-04-08 21:29_
-
----
-
-_Referenced in [MicaelJarniac/crustypy#173](../../MicaelJarniac/crustypy/issues/173.md) on 2024-04-08 23:01_
-
----
-
-_Referenced in [astral-sh/uv#3955](../../astral-sh/uv/issues/3955.md) on 2024-06-03 18:49_
 
 ---

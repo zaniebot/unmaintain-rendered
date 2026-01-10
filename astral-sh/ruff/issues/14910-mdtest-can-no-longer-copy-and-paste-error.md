@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-12-11T12:59:50Z
 updated_at: 2024-12-11T13:44:28Z
 url: https://github.com/astral-sh/ruff/issues/14910
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # mdtest: can no longer copy and paste error messages directly into mdtests
@@ -56,10 +56,6 @@ _Label `red-knot` added by @AlexWaygood on 2024-12-11 12:59_
 ---
 
 _Label `testing` added by @AlexWaygood on 2024-12-11 12:59_
-
----
-
-_Referenced in [astral-sh/ruff#14914](../../astral-sh/ruff/pulls/14914.md) on 2024-12-11 13:17_
 
 ---
 

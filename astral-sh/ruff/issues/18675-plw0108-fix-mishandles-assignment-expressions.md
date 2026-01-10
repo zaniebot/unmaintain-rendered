@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-06-14T17:20:06Z
 updated_at: 2025-06-26T20:56:18Z
 url: https://github.com/astral-sh/ruff/issues/18675
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # PLW0108 fix mishandles assignment expressions
@@ -81,14 +81,6 @@ _Label `fixes` added by @ntBre on 2025-06-14 18:51_
 ---
 
 _Label `help wanted` added by @ntBre on 2025-06-14 18:51_
-
----
-
-_Referenced in [astral-sh/ruff#18678](../../astral-sh/ruff/pulls/18678.md) on 2025-06-14 21:09_
-
----
-
-_Referenced in [astral-sh/ruff#18427](../../astral-sh/ruff/pulls/18427.md) on 2025-06-16 16:18_
 
 ---
 

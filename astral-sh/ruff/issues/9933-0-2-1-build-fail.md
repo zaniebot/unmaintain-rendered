@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-11T18:53:32Z
 updated_at: 2024-02-11T20:48:52Z
 url: https://github.com/astral-sh/ruff/issues/9933
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # 0.2.1: build fail
@@ -899,9 +899,5 @@ It trashes LTO.🤔
 _Comment by @charliermarsh on 2024-02-11 20:48_
 
 Huh, I'm not sure, I don't think we control much of these aspects of the build.
-
----
-
-_Referenced in [NixOS/nixpkgs#341674](../../NixOS/nixpkgs/pulls/341674.md) on 2024-09-14 21:56_
 
 ---

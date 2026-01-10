@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-08-20T01:59:32Z
 updated_at: 2024-09-01T01:03:40Z
 url: https://github.com/astral-sh/ruff/issues/13001
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # DOC403 behaviour with yielding none
@@ -150,10 +150,6 @@ _Label `needs-decision` added by @dhruvmanila on 2024-08-20 04:21_
 
 ---
 
-_Referenced in [numpy/numpydoc#580](../../numpy/numpydoc/issues/580.md) on 2024-08-21 00:49_
-
----
-
 _Comment by @jonyscathe on 2024-08-21 00:53_
 
 The numpydoc people do believe that the yield should be documented even if it is none, as it is not really the same thing as returning none (the yield is still doing something).
@@ -230,10 +226,6 @@ If it is unclear whether implicit yield `None` requires a yields section in the 
 If we want both DOC403 and DOC402 make exceptions for implicit yields (that is to say, count them in one and ignore in them in the other), then it is more than a one-line code change.
 
 Possibly related to #13062
-
----
-
-_Referenced in [astral-sh/ruff#13148](../../astral-sh/ruff/pulls/13148.md) on 2024-08-29 07:58_
 
 ---
 

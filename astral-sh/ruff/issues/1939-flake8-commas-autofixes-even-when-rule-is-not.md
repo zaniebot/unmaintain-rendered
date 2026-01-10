@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-18T00:37:59Z
 updated_at: 2023-01-18T01:09:03Z
 url: https://github.com/astral-sh/ruff/issues/1939
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # flake8-commas autofixes even when rule is not included in list of fixables
@@ -55,10 +55,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-01-18 00:52_
 _Comment by @charliermarsh on 2023-01-18 00:53_
 
 Sorry, that's just an oversight. Will fix now.
-
----
-
-_Referenced in [astral-sh/ruff#1940](../../astral-sh/ruff/pulls/1940.md) on 2023-01-18 01:08_
 
 ---
 

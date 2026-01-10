@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-08-22T18:32:03Z
 updated_at: 2023-08-23T16:22:06Z
 url: https://github.com/astral-sh/ruff/issues/6788
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Rules PT009, SIM300, UP018 causes autofix error
@@ -107,14 +107,6 @@ _Label `accepted` added by @zanieb on 2023-08-22 19:05_
 
 ---
 
-_Referenced in [astral-sh/ruff#6792](../../astral-sh/ruff/pulls/6792.md) on 2023-08-22 19:05_
-
----
-
 _Closed by @zanieb on 2023-08-23 16:22_
-
----
-
-_Referenced in [astral-sh/ruff#6989](../../astral-sh/ruff/issues/6989.md) on 2023-08-29 18:45_
 
 ---

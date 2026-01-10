@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-10-31T13:18:19Z
 updated_at: 2025-11-21T20:41:23Z
 url: https://github.com/astral-sh/ruff/issues/21162
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # PLR1708 false positives on nested functions
@@ -57,10 +57,6 @@ _Label `rule` added by @ntBre on 2025-10-31 13:26_
 ---
 
 _Label `preview` added by @ntBre on 2025-10-31 13:26_
-
----
-
-_Referenced in [astral-sh/ruff#21177](../../astral-sh/ruff/pulls/21177.md) on 2025-10-31 21:59_
 
 ---
 

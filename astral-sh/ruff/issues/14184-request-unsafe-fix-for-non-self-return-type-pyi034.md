@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-08T00:59:26Z
 updated_at: 2024-11-09T02:11:39Z
 url: https://github.com/astral-sh/ruff/issues/14184
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Request: Unsafe fix for `non-self-return-type`/`PYI034`
@@ -74,15 +74,7 @@ class CaptureOutput:
 
 ---
 
-_Referenced in [microsoft/python-type-stubs#340](../../microsoft/python-type-stubs/pulls/340.md) on 2024-11-08 03:11_
-
----
-
 _Label `fixes` added by @dhruvmanila on 2024-11-08 08:16_
-
----
-
-_Referenced in [astral-sh/ruff#14217](../../astral-sh/ruff/pulls/14217.md) on 2024-11-09 00:03_
 
 ---
 

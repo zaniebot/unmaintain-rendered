@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-04-14T19:40:45Z
 updated_at: 2025-04-15T01:37:17Z
 url: https://github.com/astral-sh/ruff/issues/17397
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # `ruff check --select I --fix` messes up redundant import aliases
@@ -289,9 +289,5 @@ The formatter is pretty opinionated, but the `isort` rules are somewhat counter-
 I think you may be right about the default value, especially if `isort` is changing theirs. I'll summarize this discussion in the other issue (unless you'd like to), and then maybe we can discuss the default there too.
 
 Thanks again for the report and the `isort` links!
-
----
-
-_Referenced in [astral-sh/ruff#16399](../../astral-sh/ruff/issues/16399.md) on 2025-04-15 13:23_
 
 ---

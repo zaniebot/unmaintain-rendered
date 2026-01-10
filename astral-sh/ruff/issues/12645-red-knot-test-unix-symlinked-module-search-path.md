@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-02T21:27:45Z
 updated_at: 2024-08-03T07:24:09Z
 url: https://github.com/astral-sh/ruff/issues/12645
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Red knot test unix::symlinked_module_search_path fails locally
@@ -269,10 +269,6 @@ _Comment by @MichaReiser on 2024-08-03 07:15_
 Yes sorry for the inconvenience and thanks for raising it. 
 
 Those tests are driving me crazy. I very much hope that my last PR finally gets them into a non-flaky state where they pass on (all?) platforms.
-
----
-
-_Referenced in [astral-sh/ruff#12634](../../astral-sh/ruff/pulls/12634.md) on 2024-08-03 07:16_
 
 ---
 

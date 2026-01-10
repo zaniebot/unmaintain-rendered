@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-08T15:56:35Z
 updated_at: 2024-11-09T02:49:26Z
 url: https://github.com/astral-sh/ruff/issues/14206
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Explicitly exported methods from private modules are not private
@@ -49,10 +49,6 @@ _Label `docstring` added by @charliermarsh on 2024-11-09 02:11_
 _Comment by @charliermarsh on 2024-11-09 02:12_
 
 If I recall correctly, this was to match the `pydocstyle` behavior, though I'm not strongly opposed to changing it.
-
----
-
-_Referenced in [astral-sh/ruff#14219](../../astral-sh/ruff/issues/14219.md) on 2024-11-09 02:38_
 
 ---
 

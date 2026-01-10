@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-27T16:23:52Z
 updated_at: 2025-02-10T08:46:24Z
 url: https://github.com/astral-sh/ruff/issues/15772
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # `B008` doesn't report when the annotation refers to an immutable type, but `RUF009` does
@@ -59,14 +59,6 @@ _Label `good first issue` added by @dhruvmanila on 2025-01-29 10:07_
 
 ---
 
-_Referenced in [astral-sh/ruff#15845](../../astral-sh/ruff/pulls/15845.md) on 2025-01-31 06:00_
-
----
-
-_Referenced in [astral-sh/ruff#16048](../../astral-sh/ruff/pulls/16048.md) on 2025-02-08 23:38_
-
----
-
 _Comment by @smokyabdulrahman on 2025-02-08 23:39_
 
 I hope [this PR](https://github.com/astral-sh/ruff/pull/16048) resolved the issue.
@@ -78,13 +70,5 @@ _Closed by @MichaReiser on 2025-02-10 08:46_
 ---
 
 _Closed by @MichaReiser on 2025-02-10 08:46_
-
----
-
-_Referenced in [astral-sh/ruff#16142](../../astral-sh/ruff/issues/16142.md) on 2025-02-13 18:55_
-
----
-
-_Referenced in [astral-sh/ruff#16859](../../astral-sh/ruff/issues/16859.md) on 2025-03-19 21:42_
 
 ---

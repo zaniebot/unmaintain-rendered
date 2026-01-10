@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-09T17:52:29Z
 updated_at: 2023-12-07T15:10:45Z
 url: https://github.com/astral-sh/ruff/issues/1749
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # `flake8-to-ruff` should pick up `isort` settings
@@ -30,25 +30,9 @@ _Label `good first issue` added by @charliermarsh on 2023-01-12 03:32_
 
 ---
 
-_Referenced in [astral-sh/ruff#2082](../../astral-sh/ruff/pulls/2082.md) on 2023-01-22 05:19_
-
----
-
-_Referenced in [astral-sh/ruff#2249](../../astral-sh/ruff/issues/2249.md) on 2023-01-27 12:31_
-
----
-
-_Referenced in [astral-sh/ruff#3266](../../astral-sh/ruff/pulls/3266.md) on 2023-02-28 03:47_
-
----
-
 _Comment by @JonathanPlasse on 2023-05-27 13:46_
 
 I am working on this.
-
----
-
-_Referenced in [astral-sh/ruff#4680](../../astral-sh/ruff/pulls/4680.md) on 2023-05-27 15:12_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-21T14:25:51Z
 updated_at: 2024-10-21T15:05:32Z
 url: https://github.com/astral-sh/ruff/issues/13859
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Ruff formatter - unicode string inside of Enum object always lowercasing characters
@@ -101,17 +101,5 @@ Thanks for the quick reply @MichaReiser and pointing that out. That makes sense.
 ---
 
 _Closed by @DashKenny on 2024-10-21 15:05_
-
----
-
-_Referenced in [psf/black#4501](../../psf/black/issues/4501.md) on 2024-10-23 13:50_
-
----
-
-_Referenced in [psf/black#4522](../../psf/black/issues/4522.md) on 2024-12-04 07:22_
-
----
-
-_Referenced in [fonttools/fonttools#3881](../../fonttools/fonttools/pulls/3881.md) on 2025-07-04 11:06_
 
 ---

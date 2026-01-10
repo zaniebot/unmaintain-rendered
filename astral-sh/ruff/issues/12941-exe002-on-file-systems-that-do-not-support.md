@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-16T19:04:13Z
 updated_at: 2024-08-16T20:25:52Z
 url: https://github.com/astral-sh/ruff/issues/12941
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # EXE002 on file systems that do not support executable bit
@@ -47,9 +47,5 @@ Thanks for the detailed write up. Yes, this is a known limitation and we discuss
 ---
 
 _Closed by @MichaReiser on 2024-08-16 20:25_
-
----
-
-_Referenced in [astral-sh/ruff#17584](../../astral-sh/ruff/pulls/17584.md) on 2025-04-23 15:29_
 
 ---

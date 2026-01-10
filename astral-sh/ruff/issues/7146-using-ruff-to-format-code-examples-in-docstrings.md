@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-05T09:59:06Z
 updated_at: 2023-12-13T16:02:14Z
 url: https://github.com/astral-sh/ruff/issues/7146
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Using ruff to format code examples in docstrings
@@ -93,34 +93,6 @@ I would imagine this would have to be part of the autoformatter.
 > That's my intuition but the question is would the rest of the file still be formatted?
 
 Yes, definitely. Other code examples in the same docstring could probably still be formatted, even. Each example is a self-contained Python interpreter command.
-
----
-
-_Referenced in [GenericMappingTools/pygmt#2747](../../GenericMappingTools/pygmt/pulls/2747.md) on 2023-10-15 11:21_
-
----
-
-_Referenced in [pola-rs/polars#11993](../../pola-rs/polars/issues/11993.md) on 2023-10-24 18:43_
-
----
-
-_Referenced in [astral-sh/ruff#8236](../../astral-sh/ruff/issues/8236.md) on 2023-10-26 04:26_
-
----
-
-_Referenced in [astral-sh/ruff#8237](../../astral-sh/ruff/issues/8237.md) on 2023-10-26 06:06_
-
----
-
-_Referenced in [rerun-io/rerun#3839](../../rerun-io/rerun/pulls/3839.md) on 2023-10-26 08:33_
-
----
-
-_Referenced in [scverse/cookiecutter-scverse#237](../../scverse/cookiecutter-scverse/issues/237.md) on 2023-10-31 11:47_
-
----
-
-_Referenced in [ibis-project/ibis#7447](../../ibis-project/ibis/pulls/7447.md) on 2023-10-31 14:04_
 
 ---
 
@@ -423,14 +395,6 @@ _Comment by @BurntSushi on 2023-11-15 12:56_
 
 ---
 
-_Referenced in [astral-sh/ruff#8811](../../astral-sh/ruff/pulls/8811.md) on 2023-11-21 20:14_
-
----
-
-_Referenced in [cocotb/cocotb#3513](../../cocotb/cocotb/pulls/3513.md) on 2023-11-22 22:05_
-
----
-
 _Comment by @BurntSushi on 2023-11-27 14:40_
 
 @stinodego So I ran the docstring code formatter (from #8811) on polars, and here's the diff I got: https://github.com/BurntSushi/polars/commit/559b9d683bce3d4fd48d7946359fbdaeea1afccc
@@ -450,10 +414,6 @@ Re-opening because I think #8811 doesn't actually close this. Probably once #885
 ---
 
 _Reopened by @BurntSushi on 2023-11-27 17:01_
-
----
-
-_Referenced in [astral-sh/ruff#8854](../../astral-sh/ruff/pulls/8854.md) on 2023-11-27 17:01_
 
 ---
 
@@ -524,10 +484,6 @@ edit: you might want to take a look at this as well https://github.com/astral-sh
 
 ---
 
-_Referenced in [astral-sh/ruff#8908](../../astral-sh/ruff/issues/8908.md) on 2023-11-29 13:18_
-
----
-
 _Comment by @BurntSushi on 2023-11-29 13:18_
 
 To make sure we don't lose track of the decision about the trailing empty line or not, I created an issue about it: https://github.com/astral-sh/ruff/issues/8908
@@ -540,10 +496,6 @@ _Added to milestone `Formatter: Stable` by @BurntSushi on 2023-11-29 13:20_
 
 ---
 
-_Referenced in [yt-project/yt#4748](../../yt-project/yt/issues/4748.md) on 2023-12-05 11:09_
-
----
-
 _Label `wish` removed by @dhruvmanila on 2023-12-07 04:12_
 
 ---
@@ -553,25 +505,5 @@ _Assigned to @BurntSushi by @charliermarsh on 2023-12-07 14:47_
 ---
 
 _Closed by @BurntSushi on 2023-12-13 16:02_
-
----
-
-_Referenced in [astral-sh/ruff#9620](../../astral-sh/ruff/issues/9620.md) on 2024-01-23 04:34_
-
----
-
-_Referenced in [pydata/xarray#8761](../../pydata/xarray/pulls/8761.md) on 2024-02-18 13:16_
-
----
-
-_Referenced in [marshmallow-code/apispec-webframeworks#151](../../marshmallow-code/apispec-webframeworks/pulls/151.md) on 2024-07-02 15:21_
-
----
-
-_Referenced in [NCAR/geocat-comp#652](../../NCAR/geocat-comp/issues/652.md) on 2025-03-18 21:34_
-
----
-
-_Referenced in [lab-cosmo/atomistic-cookbook#189](../../lab-cosmo/atomistic-cookbook/issues/189.md) on 2025-11-04 21:39_
 
 ---

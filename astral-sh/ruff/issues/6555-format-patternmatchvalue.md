@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-14T12:30:25Z
 updated_at: 2023-08-23T14:01:17Z
 url: https://github.com/astral-sh/ruff/issues/6555
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Format `PatternMatchValue`
@@ -32,10 +32,6 @@ match x:
 
 ---
 
-_Referenced in [astral-sh/ruff#5834](../../astral-sh/ruff/issues/5834.md) on 2023-08-14 12:30_
-
----
-
 _Label `good first issue` added by @konstin on 2023-08-14 12:30_
 
 ---
@@ -50,14 +46,6 @@ This could be delegated directly to the expression formatting. We probably just 
 
 ---
 
-_Referenced in [astral-sh/ruff#6557](../../astral-sh/ruff/issues/6557.md) on 2023-08-14 12:41_
-
----
-
-_Referenced in [astral-sh/ruff#6558](../../astral-sh/ruff/issues/6558.md) on 2023-08-14 12:46_
-
----
-
 _Added to milestone `Formatter: Alpha` by @dhruvmanila on 2023-08-14 13:41_
 
 ---
@@ -69,10 +57,6 @@ _Comment by @evanrittenhouse on 2023-08-14 18:59_
 ---
 
 _Assigned to @evanrittenhouse by @dhruvmanila on 2023-08-15 01:51_
-
----
-
-_Referenced in [astral-sh/ruff#6799](../../astral-sh/ruff/pulls/6799.md) on 2023-08-23 08:23_
 
 ---
 

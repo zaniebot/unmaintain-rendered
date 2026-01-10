@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-25T08:38:33Z
 updated_at: 2023-04-28T01:23:07Z
 url: https://github.com/astral-sh/ruff/issues/4091
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # RUF009: False positives in case of immutable objects
@@ -76,10 +76,6 @@ We should just add the same immutable-type checks as we do for the bugbear rules
 
 ---
 
-_Referenced in [astral-sh/ruff#4122](../../astral-sh/ruff/pulls/4122.md) on 2023-04-26 17:48_
-
----
-
 _Comment by @mosauter on 2023-04-26 17:54_
 
 I created a PR for this. But have to say the type-alias `MyId` is AFAIK not something that ruff can detect (yet?). This would mean resolving the actual type behind a generic call. 
@@ -91,9 +87,5 @@ Please correct me if I'm wrong on that.
 ---
 
 _Closed by @charliermarsh on 2023-04-28 01:23_
-
----
-
-_Referenced in [astral-sh/ruff#4451](../../astral-sh/ruff/issues/4451.md) on 2023-05-16 14:41_
 
 ---

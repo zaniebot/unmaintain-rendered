@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-02T05:07:28Z
 updated_at: 2023-01-12T04:41:57Z
 url: https://github.com/astral-sh/ruff/issues/1545
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Document glob syntax
@@ -50,14 +50,6 @@ That seems like a good location to reference the upstream docs.
 
 ---
 
-_Referenced in [astral-sh/ruff#1808](../../astral-sh/ruff/pulls/1808.md) on 2023-01-12 04:41_
-
----
-
 _Closed by @charliermarsh on 2023-01-12 04:41_
-
----
-
-_Referenced in [astral-sh/ruff#1956](../../astral-sh/ruff/issues/1956.md) on 2023-01-18 18:27_
 
 ---

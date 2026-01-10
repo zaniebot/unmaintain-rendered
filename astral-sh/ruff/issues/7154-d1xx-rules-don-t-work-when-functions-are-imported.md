@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-05T13:15:55Z
 updated_at: 2024-10-24T14:32:59Z
 url: https://github.com/astral-sh/ruff/issues/7154
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # D1XX rules don't work when functions are imported into a public file
@@ -81,10 +81,6 @@ On Tue, 5 Sept 2023, 22:45 Micha Reiser, ***@***.***> wrote:
 > ***@***.***>
 >
 
-
----
-
-_Referenced in [astral-sh/ruff#9561](../../astral-sh/ruff/issues/9561.md) on 2024-03-21 13:29_
 
 ---
 

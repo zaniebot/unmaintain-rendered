@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-11T17:23:28Z
 updated_at: 2025-01-24T10:07:23Z
 url: https://github.com/astral-sh/ruff/issues/12803
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # `import-outside-top-level (PLC0415)` is incompatible with `flake8-tidy-imports.banned-module-level-imports`
@@ -137,10 +137,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-30 16:03_
 ---
 
 _Unassigned @charliermarsh by @charliermarsh on 2024-08-30 16:20_
-
----
-
-_Referenced in [astral-sh/ruff#15628](../../astral-sh/ruff/pulls/15628.md) on 2025-01-21 04:05_
 
 ---
 

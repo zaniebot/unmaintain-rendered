@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-25T16:32:19Z
 updated_at: 2023-06-02T04:04:27Z
 url: https://github.com/astral-sh/ruff/issues/4659
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Unexpected number of statements(PLR0915 Too many statements)
@@ -60,10 +60,6 @@ I am inclined to change it though.
 ---
 
 _Label `bug` added by @charliermarsh on 2023-05-25 19:56_
-
----
-
-_Referenced in [astral-sh/ruff#4794](../../astral-sh/ruff/pulls/4794.md) on 2023-06-02 03:58_
 
 ---
 

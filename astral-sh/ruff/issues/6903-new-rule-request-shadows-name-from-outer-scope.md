@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-26T19:46:56Z
 updated_at: 2024-11-19T06:26:38Z
 url: https://github.com/astral-sh/ruff/issues/6903
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # New rule request: Shadows name from outer scope 
@@ -55,10 +55,6 @@ Which rule exactly is that in pylint?  I can't seem to find one.
 _Comment by @DetachHead on 2023-08-27 01:26_
 
 oh sorry, it's [`redefined-outer-name`](https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/redefined-outer-name.html)
-
----
-
-_Referenced in [element-hq/synapse#17187](../../element-hq/synapse/pulls/17187.md) on 2024-05-23 19:50_
 
 ---
 

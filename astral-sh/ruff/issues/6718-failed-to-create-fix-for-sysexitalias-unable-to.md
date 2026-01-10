@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-21T08:59:33Z
 updated_at: 2023-08-21T23:31:31Z
 url: https://github.com/astral-sh/ruff/issues/6718
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Failed to create fix for SysExitAlias: Unable to modify existing import statement
@@ -54,10 +54,6 @@ _Label `fuzzer` added by @charliermarsh on 2023-08-21 12:57_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-08-21 21:00_
-
----
-
-_Referenced in [astral-sh/ruff#6743](../../astral-sh/ruff/pulls/6743.md) on 2023-08-21 23:19_
 
 ---
 

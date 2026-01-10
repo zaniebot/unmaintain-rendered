@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-14T18:48:33Z
 updated_at: 2023-11-16T14:57:34Z
 url: https://github.com/astral-sh/ruff/issues/8682
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Add suggestion or fix for FA102 (future-required-type-annotation)
@@ -57,10 +57,6 @@ I will fix this :)
 
 ---
 
-_Referenced in [astral-sh/ruff#8711](../../astral-sh/ruff/pulls/8711.md) on 2023-11-16 03:01_
-
----
-
 _Closed by @charliermarsh on 2023-11-16 03:08_
 
 ---
@@ -68,9 +64,5 @@ _Closed by @charliermarsh on 2023-11-16 03:08_
 _Comment by @RunDevelopment on 2023-11-16 14:57_
 
 Thank you @charliermarsh!
-
----
-
-_Referenced in [chaiNNer-org/spandrel#9](../../chaiNNer-org/spandrel/pulls/9.md) on 2023-11-18 09:47_
 
 ---

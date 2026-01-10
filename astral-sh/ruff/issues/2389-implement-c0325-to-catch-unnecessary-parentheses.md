@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-31T11:46:45Z
 updated_at: 2025-10-23T10:54:35Z
 url: https://github.com/astral-sh/ruff/issues/2389
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Implement C0325 to catch unnecessary parentheses
@@ -34,10 +34,6 @@ _Label `bug` added by @charliermarsh on 2023-01-31 12:33_
 _Comment by @charliermarsh on 2023-01-31 12:33_
 
 (`pyupgrade` doesn't catch it either.)
-
----
-
-_Referenced in [astral-sh/ruff#2397](../../astral-sh/ruff/issues/2397.md) on 2023-01-31 14:22_
 
 ---
 
@@ -84,10 +80,6 @@ ruff catches nothing.
 
 ---
 
-_Referenced in [astral-sh/ruff#970](../../astral-sh/ruff/issues/970.md) on 2023-10-13 18:34_
-
----
-
 _Comment by @charliermarsh on 2023-10-13 19:21_
 
 Yeah I think they're just very different rules. I would describe UP034 as catching "redundant" parentheses, so, e.g., it will catch `((1)) + 2` but not `(1) + 2`. C0325 seems to catch "unnecessary" parentheses, i.e., all cases in which parentheses are not syntactically necessary, even if they may be used intentionally for readability or otherwise.
@@ -120,25 +112,9 @@ _Label `rule` added by @charliermarsh on 2023-10-13 19:52_
 
 ---
 
-_Referenced in [astral-sh/ruff#8807](../../astral-sh/ruff/issues/8807.md) on 2023-11-21 21:51_
-
----
-
-_Referenced in [buttondown/roadmap#3098](../../buttondown/roadmap/issues/3098.md) on 2024-07-24 19:41_
-
----
-
 _Comment by @ilyakamens on 2024-09-25 02:44_
 
 Any idea when this will be added?
-
----
-
-_Referenced in [astral-sh/ruff#19027](../../astral-sh/ruff/issues/19027.md) on 2025-06-29 15:43_
-
----
-
-_Referenced in [inducer/loopy#938](../../inducer/loopy/pulls/938.md) on 2025-07-10 23:31_
 
 ---
 

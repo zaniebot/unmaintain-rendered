@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-12-27T09:26:01Z
 updated_at: 2022-12-28T02:17:24Z
 url: https://github.com/astral-sh/ruff/issues/1400
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:28Z
 ```
 
 # Rule proposal: keyword argument before star arguments
@@ -39,10 +39,6 @@ Sounds reasonable!
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2022-12-28 00:45_
-
----
-
-_Referenced in [astral-sh/ruff#1416](../../astral-sh/ruff/pulls/1416.md) on 2022-12-28 01:06_
 
 ---
 

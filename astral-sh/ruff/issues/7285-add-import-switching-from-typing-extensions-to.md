@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-12T02:37:54Z
 updated_at: 2023-09-12T12:41:07Z
 url: https://github.com/astral-sh/ruff/issues/7285
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Add import switching from `typing_extensions` to `typing` when reaches requisite version.
@@ -35,10 +35,6 @@ This feels like a pyupgrade code?
 
 ---
 
-_Referenced in [astropy/astropy#15307](../../astropy/astropy/pulls/15307.md) on 2023-09-12 02:40_
-
----
-
 _Comment by @charliermarsh on 2023-09-12 11:47_
 
 I think this does exist as `UP035`: https://beta.ruff.rs/docs/rules/deprecated-import/
@@ -58,13 +54,5 @@ Yes, thanks! I was using an old test repo with target version set to py3.8. Upda
 ---
 
 _Closed by @MichaReiser on 2023-09-12 12:41_
-
----
-
-_Referenced in [astral-sh/ruff#13889](../../astral-sh/ruff/issues/13889.md) on 2024-10-23 12:36_
-
----
-
-_Referenced in [tqec/tqec#599](../../tqec/tqec/pulls/599.md) on 2025-06-06 19:38_
 
 ---

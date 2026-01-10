@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-10T01:05:54Z
 updated_at: 2023-03-10T11:54:26Z
 url: https://github.com/astral-sh/ruff/issues/3427
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Bug in `flake8-docstrings` auto-fixer when function contains parameter named `args`
@@ -78,10 +78,6 @@ _Label `docstring` added by @charliermarsh on 2023-03-10 02:52_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-03-10 02:52_
-
----
-
-_Referenced in [astral-sh/ruff#3430](../../astral-sh/ruff/pulls/3430.md) on 2023-03-10 02:53_
 
 ---
 

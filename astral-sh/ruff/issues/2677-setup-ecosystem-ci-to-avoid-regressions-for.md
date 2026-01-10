@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-09T02:27:43Z
 updated_at: 2023-03-10T22:39:09Z
 url: https://github.com/astral-sh/ruff/issues/2677
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Setup "ecosystem CI" to avoid regressions for existing users
@@ -75,14 +75,6 @@ _Comment by @sbrugman on 2023-02-17 10:53_
 
 ---
 
-_Referenced in [astral-sh/ruff#3390](../../astral-sh/ruff/pulls/3390.md) on 2023-03-07 21:18_
-
----
-
 _Closed by @charliermarsh on 2023-03-10 22:39_
-
----
-
-_Referenced in [astral-sh/ruff#3480](../../astral-sh/ruff/pulls/3480.md) on 2023-03-15 01:58_
 
 ---

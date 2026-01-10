@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-05T07:49:23Z
 updated_at: 2023-06-06T00:55:56Z
 url: https://github.com/astral-sh/ruff/issues/4859
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # RUF001-RUF003 reports words composed entirely of non-ascii characters
@@ -114,9 +114,5 @@ Yeah, I think I need to close this as "working as intended" for now.
 ---
 
 _Closed by @charliermarsh on 2023-06-06 00:55_
-
----
-
-_Referenced in [astral-sh/ruff#7255](../../astral-sh/ruff/issues/7255.md) on 2023-09-10 06:35_
 
 ---

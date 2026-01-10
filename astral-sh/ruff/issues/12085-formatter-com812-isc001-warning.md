@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-28T05:59:45Z
 updated_at: 2024-06-28T07:13:12Z
 url: https://github.com/astral-sh/ruff/issues/12085
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # formatter: `COM812`, `ISC001` warning
@@ -104,9 +104,5 @@ And thanks for the awesome job!
 ---
 
 _Closed by @Mogost on 2024-06-28 07:13_
-
----
-
-_Referenced in [flake8-implicit-str-concat/flake8-implicit-str-concat#56](../../flake8-implicit-str-concat/flake8-implicit-str-concat/issues/56.md) on 2025-10-06 09:51_
 
 ---

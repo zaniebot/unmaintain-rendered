@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-03-17T11:49:33Z
 updated_at: 2024-03-19T18:46:36Z
 url: https://github.com/astral-sh/ruff/issues/10434
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Rule W605 cause panic
@@ -254,10 +254,6 @@ I can look at it tonight.
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2024-03-19 09:22_
-
----
-
-_Referenced in [astral-sh/ruff#10480](../../astral-sh/ruff/pulls/10480.md) on 2024-03-19 18:23_
 
 ---
 

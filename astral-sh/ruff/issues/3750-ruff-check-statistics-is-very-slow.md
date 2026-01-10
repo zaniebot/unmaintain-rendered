@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-26T20:36:59Z
 updated_at: 2023-03-26T22:46:45Z
 url: https://github.com/astral-sh/ruff/issues/3750
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # ruff check --statistics is very slow
@@ -93,10 +93,6 @@ Of course, go for it!
 ---
 
 _Assigned to @JonathanPlasse by @charliermarsh on 2023-03-26 20:54_
-
----
-
-_Referenced in [astral-sh/ruff#3751](../../astral-sh/ruff/pulls/3751.md) on 2023-03-26 21:08_
 
 ---
 

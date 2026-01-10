@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-04-21T20:15:19Z
 updated_at: 2023-04-24T04:39:53Z
 url: https://github.com/astral-sh/ruff/issues/4062
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Infinite loop in import sorting for long variable names with force-single-line (ruff >= 0.0.256)
@@ -125,10 +125,6 @@ I've identified the issue (introduced in https://github.com/charliermarsh/ruff/p
 _Comment by @pstjohn on 2023-04-23 20:01_
 
 You're welcome, thanks for the quick reply (and great package)!
-
----
-
-_Referenced in [astral-sh/ruff#4074](../../astral-sh/ruff/pulls/4074.md) on 2023-04-24 04:20_
 
 ---
 

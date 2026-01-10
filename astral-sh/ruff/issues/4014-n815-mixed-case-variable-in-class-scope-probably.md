@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-19T02:47:34Z
 updated_at: 2023-04-22T22:17:16Z
 url: https://github.com/astral-sh/ruff/issues/4014
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # N815 (mixed-case-variable-in-class-scope) probably should not check TypedDict
@@ -65,10 +65,6 @@ Torn on this one although I tend to agree.
 
 ---
 
-_Referenced in [astral-sh/ruff#4066](../../astral-sh/ruff/pulls/4066.md) on 2023-04-22 15:59_
-
----
-
 _Comment by @JonathanPlasse on 2023-04-22 16:32_
 
 Here is a non-exhaustive list of projects that would benefit from this rule.
@@ -77,9 +73,5 @@ https://grep.app/search?q=TypedDict.%2A%5C%29%3A%5Cn%20%20%20%20%5Ba-zA-Z%5D%2B%
 ---
 
 _Closed by @charliermarsh on 2023-04-22 22:17_
-
----
-
-_Referenced in [py-mine/mcstatus#578](../../py-mine/mcstatus/pulls/578.md) on 2023-10-01 09:42_
 
 ---

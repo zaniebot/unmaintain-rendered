@@ -1,0 +1,117 @@
+```yaml
+number: 8415
+title: Disable formatter for specific lines
+type: issue
+state: closed
+author: sparisi
+labels:
+  - question
+assignees: []
+created_at: 2023-11-01T17:39:28Z
+updated_at: 2025-04-09T15:29:28Z
+url: https://github.com/astral-sh/ruff/issues/8415
+synced_at: 2026-01-10T11:09:50Z
+```
+
+# Disable formatter for specific lines
+
+---
+
+_Issue opened by @sparisi on 2023-11-01 17:39_
+
+Say I have a function like `f(a, b, c, d, e, f)` (with longer var names) that gets split into 
+```
+f(
+ a,
+ b, 
+ c, 
+ d, 
+ e, 
+ f,
+)
+```
+
+I'd prefer to have
+```
+f(
+ a, b, c,
+ d, e, f,
+)
+```
+
+so I would like ruff formatter to ignore it.  
+I know there are `noqa` comments that work for the linter, but I can't make them work for the formatter as well. Is it possible to do something like that?
+
+---
+
+_Comment by @charliermarsh on 2023-11-01 17:41_
+
+You should be able to use `# fmt: off` and `# fmt: on`, like:
+
+```python
+# fmt: off
+f(
+ a, b, c,
+ d, e, f,
+)
+# fmt: on
+```
+
+There's a bit more in the docs here: https://docs.astral.sh/ruff/formatter/#format-suppression
+
+---
+
+_Label `question` added by @charliermarsh on 2023-11-01 17:41_
+
+---
+
+_Comment by @sparisi on 2023-11-01 17:47_
+
+I'm using `# fmt: skip`, works perfectly! Thanks again!
+
+---
+
+_Closed by @sparisi on 2023-11-01 17:47_
+
+---
+
+_Comment by @charliermarsh on 2023-11-01 17:48_
+
+Awesome! No prob.
+
+---
+
+_Comment by @madduck on 2025-04-09 15:18_
+
+I am trying this but to no avail:
+
+```
+albatross:~/code/pngx|main|pngx% ruff format --diff pngx.py
+--- pngx.py
++++ pngx.py
+@@ -67,7 +67,9 @@
+         self._api_doctypes: PaperlessObjectWrapper | None = None
+ 
+     def __enter__(self) -> PaperlessNGX:
+-        import ipdb; ipdb.set_trace()  # fmt: skip  # noqa: E402 E702 I001
++        import ipdb
++
++        ipdb.set_trace()  # fmt: skip  # noqa: E402 E702 I001
+         return self
+ 
+     def __exit__(
+
+1 file would be reformatted
+```
+
+I also tried putting `# fmt: skip` at the end of the line. Same problem.
+
+Any clues?
+
+---
+
+_Comment by @MichaReiser on 2025-04-09 15:29_
+
+@madduck please open a new issue and share some more details (e.g. ruff version)
+
+---

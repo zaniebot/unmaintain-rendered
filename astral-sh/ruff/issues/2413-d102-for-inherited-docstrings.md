@@ -1,0 +1,166 @@
+```yaml
+number: 2413
+title: "`D102` for \"inherited\" docstrings."
+type: issue
+state: open
+author: WilliamJamieson
+labels:
+  - docstring
+  - type-inference
+assignees: []
+created_at: 2023-01-31T20:30:57Z
+updated_at: 2025-05-14T14:21:49Z
+url: https://github.com/astral-sh/ruff/issues/2413
+synced_at: 2026-01-10T11:09:45Z
+```
+
+# `D102` for "inherited" docstrings.
+
+---
+
+_Issue opened by @WilliamJamieson on 2023-01-31 20:30_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+- A minimal code snippet that reproduces the bug.
+- The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+- The current Ruff settings (any relevant sections from your `pyproject.toml`).
+- The current Ruff version (`ruff --version`).
+-->
+
+`pydocstyle` code `D102` is raised on any public methods that do not have a docstring. I agree with this in principle, except that I have many cases where I have a common base class which defines some method's interface (and documentation), but that method's specific implementation will be defined by child classes or needs to be modified by a child class. E.G.
+
+```python
+class Parent:
+    def foo(self, arg1, arg2, arg3):
+        """Some documentation about foo."""
+
+
+# possibly in a different module or package
+class Child(Parent):
+    def foo(self, arg1, arg2, arg3):
+		return arg1 + arg2 + arg3
+```
+
+`ruff` flags `foo` in `Child` with `D102`, when in fact this is documented by `Parent.foo`. 
+
+In most cases, documenting the method in the child class would be equivalent to copy/paste of the docstring from the parent class, which I dislike. I would like the optional ability for `ruff` to ignore `D102` on methods defined in their parent classes.
+
+---
+
+_Label `docstring` added by @charliermarsh on 2023-01-31 23:06_
+
+---
+
+_Comment by @charliermarsh on 2023-01-31 23:06_
+
+I agree that this would be an improvement. We probably can't really support it until we start doing cross-file analysis (otherwise, it would only work if `Parent` and `Child` were defined in the same module, which seems like a minority of cases).
+
+---
+
+_Comment by @WilliamJamieson on 2023-02-01 17:50_
+
+> I agree that this would be an improvement. We probably can't really support it until we start doing cross-file analysis
+
+This would be a really nice thing to have for cross-file analysis. Hopefully, you can get it to work even in cases where `Parent` is defined outside the package being linted (i.e. if I am building of an interface defined by an external library). Though even getting it to work within just the package being linted would be a massive improvement
+
+> (otherwise, it would only work if `Parent` and `Child` were defined in the same module, which seems like a minority of cases).
+
+Even this would be nice, as I do have code that falls into this category (although I would still have to turn it off in general).
+
+
+---
+
+_Comment by @norabelrose on 2023-04-15 16:53_
+
+Would just like to mention that I would also really like to see this feature, since this is the main reason I'm not using the `D` rules yet. Unfortunately I'm not proficient enough in Rust to contribute to implementing it 😅
+
+---
+
+_Comment by @fjwillemsen on 2023-05-04 09:12_
+
+It would be a nice start to ignore it in the same file, can that be implemented on short notice?
+
+---
+
+_Comment by @philipp-horstenkamp on 2023-10-30 11:38_
+
+This issue is the only drawback I am having with ruff.
+Everything else is better. But this is a huge problem for me.
+
+---
+
+_Comment by @davfsa on 2025-03-20 10:23_
+
+This is a bit of a bump, but I wanted to ask if cross-file analysis is now a more supported thing in ruff (as you pointed out @charliermarsh), in which case I would be willing to give implementing this a shot :)
+
+Its a bit of a blocker for one of our projects, and I have resorted to just disabling `D102` entirely for the time being (but would love to active it at some point!)
+
+---
+
+_Comment by @MichaReiser on 2025-03-20 10:35_
+
+@davfsa no, multifile analysis is still in progress.
+
+---
+
+_Label `type-inference` added by @MichaReiser on 2025-03-20 10:35_
+
+---
+
+_Comment by @tahaum on 2025-05-13 08:05_
+
+Would be nice! 👍 
+
+---
+
+_Comment by @Avasam on 2025-05-13 13:36_
+
+This can be supported without multi-file analysis with the [`@override`](https://typing.python.org/en/latest/spec/class-compat.html#override) decorator.
+
+Edit: see 2 comments below.
+
+---
+
+_Comment by @analog-cbarber on 2025-05-14 10:55_
+
+The `@override` decorator does not tell you whether the parent method has a doc string, so even with that you cannot tell.
+
+---
+
+_Comment by @Avasam on 2025-05-14 13:47_
+
+> The `@override` decorator does not tell you whether the parent method has a doc string, so even with that you cannot tell.
+
+Oh I guess you'd still want to trigger when no base method has a docstring.
+
+Depends if you'd prefer false-positives or false-negatives here. But not as straightforward as I thought.
+
+
+---
+
+_Comment by @philipp-horstenkamp on 2025-05-14 14:21_
+
+This would need to be configurable.
+
+Am 14. Mai 2025 15:47:50 MESZ schrieb Avasam ***@***.***>:
+>Avasam left a comment (astral-sh/ruff#2413)
+>
+>> The ***@***.***` decorator does not tell you whether the parent method has a doc string, so even with that you cannot tell.
+>
+>Oh I guess you'd still want to trigger when no base method has a docstring.
+>
+>Depends if you'd prefer false-positives or false-negatives here. But not as straightforward as I thought.
+>
+>
+>-- 
+>Reply to this email directly or view it on GitHub:
+>https://github.com/astral-sh/ruff/issues/2413#issuecomment-2880317862
+>You are receiving this because you commented.
+>
+>Message ID: ***@***.***>
+
+---

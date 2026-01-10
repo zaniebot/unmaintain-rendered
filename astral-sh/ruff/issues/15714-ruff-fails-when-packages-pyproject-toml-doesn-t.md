@@ -1,0 +1,55 @@
+```yaml
+number: 15714
+title: "Ruff fails when `packages/pyproject.toml` doesn't exist"
+type: issue
+state: closed
+author: foges
+labels: []
+assignees: []
+created_at: 2025-01-24T12:08:33Z
+updated_at: 2025-01-27T09:23:18Z
+url: https://github.com/astral-sh/ruff/issues/15714
+synced_at: 2026-01-10T11:09:57Z
+```
+
+# Ruff fails when `packages/pyproject.toml` doesn't exist
+
+---
+
+_Issue opened by @foges on 2025-01-24 12:08_
+
+### Description
+
+I have the following directory structure
+```
+myprojeect/
+  pyproject.toml   # Contains my ruff configs 
+  packages/
+    packageA/
+    packageB/
+  src/
+    ruff.toml      # extend = "../pyproject.toml"
+```
+
+When I run `ruff check` it gives me an error saying that it can't find `packages/pyproject.toml`:
+
+```bash
+$ ruff check                         
+ruff failed
+  Cause: Failed to read /Users/chris/code/myproject/packages/pyproject.toml
+  Cause: No such file or directory (os error 2)
+```
+
+I don't know why a ruff requires there to be a pyproject.toml in `packages/`? Even if I remove all configs from `myprojeect/pyproject.toml` it still fails. I can do `ruff check --config pyproject.toml` but then it doesn't pick up `src/ruff.toml`.
+
+---
+
+_Comment by @foges on 2025-01-24 12:17_
+
+OK, I think I know what happened. `packageA` has `pyproject.toml` with `extend = "../pyproject.toml"`. It wasn't obvious from the error message. Closing.
+
+---
+
+_Closed by @foges on 2025-01-24 12:17_
+
+---

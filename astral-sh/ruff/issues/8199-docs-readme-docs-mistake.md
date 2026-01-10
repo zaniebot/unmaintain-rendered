@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-25T05:51:00Z
 updated_at: 2023-10-25T18:01:11Z
 url: https://github.com/astral-sh/ruff/issues/8199
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Docs: Readme docs mistake
@@ -45,10 +45,6 @@ unknown field `magic-trailing-comma`, expected one of `exclude`, `preview`, `ind
 ```
 
 possible fix: remove magic-trailing-comma from the configuration example.
-
----
-
-_Referenced in [astral-sh/ruff#8200](../../astral-sh/ruff/pulls/8200.md) on 2023-10-25 05:52_
 
 ---
 

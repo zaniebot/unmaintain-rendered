@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-20T10:49:01Z
 updated_at: 2024-11-06T19:13:01Z
 url: https://github.com/astral-sh/ruff/issues/10059
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # `module-import-not-at-top-of-file` ignore after `os.environ`
@@ -48,10 +48,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-20 16:43_
 
 ---
 
-_Referenced in [astral-sh/ruff#10066](../../astral-sh/ruff/pulls/10066.md) on 2024-02-20 18:02_
-
----
-
 _Comment by @charliermarsh on 2024-02-20 18:03_
 
 Added in https://github.com/astral-sh/ruff/pull/10066, though it'll be `--preview`-only until we release v0.3.0, per our versioning policy.
@@ -68,19 +64,11 @@ _Comment by @ion-elgreco on 2024-04-22 09:18_
 
 ---
 
-_Referenced in [astral-sh/ruff#13537](../../astral-sh/ruff/issues/13537.md) on 2024-09-27 13:51_
-
----
-
 _Comment by @Cjkjvfnby on 2024-11-06 19:13_
 
 I just use `extend-per-file-ignores` in my Ruff config, to suppress this rule for that specific file.  
 
 
 In my case it's custom logger configuration.  I need to setup logger, before calling any getLogger. Since I use logger in other files, I have to do it before imports.
-
----
-
-_Referenced in [astral-sh/ruff#19904](../../astral-sh/ruff/issues/19904.md) on 2025-08-13 22:01_
 
 ---

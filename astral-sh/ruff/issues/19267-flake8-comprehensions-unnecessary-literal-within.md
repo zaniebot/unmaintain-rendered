@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-10T17:21:33Z
 updated_at: 2025-07-11T20:14:08Z
 url: https://github.com/astral-sh/ruff/issues/19267
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # [flake8-comprehensions] Unnecessary literal within `set` call
@@ -32,10 +32,6 @@ set({x for x in range(10)})
 The `set()` wrapper can just be removed because the argument is already a set.
 
 I suggest adding a rule `unnecessary-literal-within-set-call`, following the example of [unnecessary-literal-within-dict-call](https://docs.astral.sh/ruff/rules/unnecessary-literal-within-dict-call/). 
-
----
-
-_Referenced in [astral-sh/ruff#19268](../../astral-sh/ruff/pulls/19268.md) on 2025-07-10 17:22_
 
 ---
 

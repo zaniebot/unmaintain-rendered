@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-26T02:50:42Z
 updated_at: 2023-10-26T06:06:41Z
 url: https://github.com/astral-sh/ruff/issues/8236
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Format python code in docstrings
@@ -29,10 +29,6 @@ _Label `formatter` added by @MichaReiser on 2023-10-26 02:50_
 ---
 
 _Label `wish` added by @MichaReiser on 2023-10-26 02:50_
-
----
-
-_Referenced in [astral-sh/ruff#8237](../../astral-sh/ruff/issues/8237.md) on 2023-10-26 02:56_
 
 ---
 

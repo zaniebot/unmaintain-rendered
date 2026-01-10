@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-31T21:46:43Z
 updated_at: 2023-05-04T13:03:10Z
 url: https://github.com/astral-sh/ruff/issues/2419
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Implement `isort` custom sections and ordering
@@ -105,10 +105,6 @@ Kind of yes, but we use this to separate our "known first party" modules from so
 yes, I think the implementation of it is just a regular "section", so no special behavior.
 
 → So for me it's not important if I just add another section which I name by myself or use the standard isort section "known-local-folder".
-
----
-
-_Referenced in [astral-sh/ruff#2657](../../astral-sh/ruff/pulls/2657.md) on 2023-02-08 13:31_
 
 ---
 
@@ -285,10 +281,6 @@ Seems like there's enough demand + concrete use-cases for this to at least be wo
 
 ---
 
-_Referenced in [quantumjot/btrack#249](../../quantumjot/btrack/issues/249.md) on 2023-03-01 16:59_
-
----
-
 _Comment by @g-as on 2023-03-02 19:23_
 
 My 2c:
@@ -322,10 +314,6 @@ Then we can order section with a list of string.
 Or we can add a `level` (int) in this section that allow us to get rid of this section order string.
 
 PS : this is not a real proposition, I just want to put here as most ideas to be able to take the better decision
-
----
-
-_Referenced in [theislab/scvelo#1013](../../theislab/scvelo/pulls/1013.md) on 2023-03-15 11:37_
 
 ---
 
@@ -372,14 +360,6 @@ Just wanted to add a +1 for this - at the moment this would be something that bl
 
 ---
 
-_Referenced in [astral-sh/ruff#3900](../../astral-sh/ruff/pulls/3900.md) on 2023-04-06 13:06_
-
----
-
-_Referenced in [Toufool/AutoSplit#207](../../Toufool/AutoSplit/pulls/207.md) on 2023-04-08 00:24_
-
----
-
 _Comment by @charliermarsh on 2023-04-13 21:52_
 
 Implemented in #3900.
@@ -397,18 +377,6 @@ django = ["django"]
 ---
 
 _Closed by @charliermarsh on 2023-04-13 21:52_
-
----
-
-_Referenced in [epitools/epitools#56](../../epitools/epitools/pulls/56.md) on 2023-04-14 09:11_
-
----
-
-_Referenced in [quantumjot/btrack#299](../../quantumjot/btrack/pulls/299.md) on 2023-04-14 09:47_
-
----
-
-_Referenced in [paddyroddy/python-template#22](../../paddyroddy/python-template/pulls/22.md) on 2023-04-14 09:53_
 
 ---
 
@@ -453,9 +421,5 @@ Is there any plan to update the related JSON schema? I wrote an issue about it: 
 _Comment by @JonathanPlasse on 2023-05-04 13:03_
 
 - There is a PR opened SchemaStore/schemastore#2923
-
----
-
-_Referenced in [odoo/odoo#205038](../../odoo/odoo/pulls/205038.md) on 2025-04-08 06:53_
 
 ---

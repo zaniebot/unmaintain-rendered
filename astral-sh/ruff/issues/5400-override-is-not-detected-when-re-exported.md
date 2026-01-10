@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-27T18:47:49Z
 updated_at: 2023-06-27T18:57:35Z
 url: https://github.com/astral-sh/ruff/issues/5400
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # `@override` is not detected when re-exported
@@ -67,9 +67,5 @@ Thanks for your help, sorry for the noise.
 ---
 
 _Closed by @bersbersbers on 2023-06-27 18:57_
-
----
-
-_Referenced in [astral-sh/ruff#11142](../../astral-sh/ruff/issues/11142.md) on 2024-04-25 08:29_
 
 ---

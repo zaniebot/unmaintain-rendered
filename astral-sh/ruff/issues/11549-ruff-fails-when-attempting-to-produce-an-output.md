@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-26T21:35:37Z
 updated_at: 2024-05-26T23:23:13Z
 url: https://github.com/astral-sh/ruff/issues/11549
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Ruff fails when attempting to produce an output file within a non-existent directory
@@ -45,10 +45,6 @@ _Label `bug` added by @charliermarsh on 2024-05-26 23:18_
 _Comment by @charliermarsh on 2024-05-26 23:18_
 
 Thanks, will fix this real quick.
-
----
-
-_Referenced in [astral-sh/ruff#11550](../../astral-sh/ruff/pulls/11550.md) on 2024-05-26 23:19_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-17T17:25:57Z
 updated_at: 2022-12-12T20:12:29Z
 url: https://github.com/astral-sh/ruff/issues/792
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:14Z
 ```
 
 # False positive for D417
@@ -81,10 +81,6 @@ _Comment by @charliermarsh on 2022-11-17 17:41_
 
 ---
 
-_Referenced in [astral-sh/ruff#793](../../astral-sh/ruff/pulls/793.md) on 2022-11-17 17:55_
-
----
-
 _Closed by @charliermarsh on 2022-11-17 17:55_
 
 ---
@@ -119,9 +115,5 @@ test.py:1:1: D417 Missing argument descriptions in the docstring: `y`, `z`
 
 The error again goes away if the `Returns` block gets a newline. Insisting on a newline there is actually fine for me, but the confusing error message is still unfortunate.
 
-
----
-
-_Referenced in [astral-sh/ruff#1291](../../astral-sh/ruff/issues/1291.md) on 2022-12-19 18:48_
 
 ---

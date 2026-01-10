@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-10-03T15:27:43Z
 updated_at: 2022-12-04T01:12:12Z
 url: https://github.com/astral-sh/ruff/issues/304
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # Implement flake8-return
@@ -36,10 +36,6 @@ _Label `rule` added by @charliermarsh on 2022-10-03 15:27_
 
 ---
 
-_Referenced in [astral-sh/ruff#106](../../astral-sh/ruff/issues/106.md) on 2022-12-02 16:49_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2022-12-03 22:07_
 
 ---
@@ -47,10 +43,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-12-03 22:07_
 _Comment by @charliermarsh on 2022-12-03 22:07_
 
 Gonna bang this out real quick.
-
----
-
-_Referenced in [astral-sh/ruff#1016](../../astral-sh/ruff/pulls/1016.md) on 2022-12-04 00:55_
 
 ---
 

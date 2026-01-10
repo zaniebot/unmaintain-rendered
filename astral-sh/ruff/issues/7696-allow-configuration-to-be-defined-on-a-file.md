@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-28T11:45:56Z
 updated_at: 2025-02-27T17:07:29Z
 url: https://github.com/astral-sh/ruff/issues/7696
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Allow configuration to be defined on a file-scoped basis
@@ -139,10 +139,6 @@ What does now bind stronger, the parent configuration because it's in the `overr
 
 ---
 
-_Referenced in [astral-sh/ruff#7890](../../astral-sh/ruff/issues/7890.md) on 2023-10-10 16:02_
-
----
-
 _Renamed from "Allow define banned-api per file" to "Allow configuration to be defined on a file-scoped basis" by @charliermarsh on 2023-10-11 13:40_
 
 ---
@@ -150,10 +146,6 @@ _Renamed from "Allow define banned-api per file" to "Allow configuration to be d
 _Comment by @charliermarsh on 2023-10-11 13:40_
 
 (Making this issue more general -- it would be nice to support something like ESLint's flat configuration, in which you can define configuration that only applies to a subset of files.)
-
----
-
-_Referenced in [astral-sh/ruff#7974](../../astral-sh/ruff/issues/7974.md) on 2023-10-16 13:34_
 
 ---
 
@@ -183,30 +175,6 @@ import foo # no error, because the `banned-api` the `tests` directory doesn't in
 _Comment by @BT-rmartin on 2024-01-11 17:05_
 
 In my case #7890 we want to configure isort on file-scope basis, and in our particular need the hierarchical solution is not feasible, as we want it for every __init__.py file. Is there any progress on this topic @charliermarsh ?
-
----
-
-_Referenced in [astral-sh/ruff#8716](../../astral-sh/ruff/issues/8716.md) on 2024-01-28 19:00_
-
----
-
-_Referenced in [pandas-dev/pandas#57283](../../pandas-dev/pandas/pulls/57283.md) on 2024-02-06 22:27_
-
----
-
-_Referenced in [astral-sh/ruff#10320](../../astral-sh/ruff/issues/10320.md) on 2024-03-10 23:37_
-
----
-
-_Referenced in [astral-sh/ruff#9872](../../astral-sh/ruff/issues/9872.md) on 2024-07-11 04:50_
-
----
-
-_Referenced in [astral-sh/ruff#12459](../../astral-sh/ruff/issues/12459.md) on 2024-07-22 18:20_
-
----
-
-_Referenced in [astral-sh/ruff#13443](../../astral-sh/ruff/issues/13443.md) on 2024-09-22 07:38_
 
 ---
 
@@ -252,25 +220,5 @@ You need this feature if the files are side by side to non-legacy files.
 _Comment by @arogozhnikov on 2025-02-27 17:07_
 
 I have two use-cases for this feature, line-length in notebooks vs plain python files (they are side by side), and an additional 'type' of python file, which also should have a different line-length (also side by side with rest of codebase)
-
----
-
-_Referenced in [astral-sh/ruff#17391](../../astral-sh/ruff/issues/17391.md) on 2025-04-14 22:51_
-
----
-
-_Referenced in [numpy/numpy#28775](../../numpy/numpy/pulls/28775.md) on 2025-04-24 14:32_
-
----
-
-_Referenced in [numpy/numpy#28947](../../numpy/numpy/issues/28947.md) on 2025-05-12 16:23_
-
----
-
-_Referenced in [numpy/numpy#29068](../../numpy/numpy/pulls/29068.md) on 2025-05-27 15:12_
-
----
-
-_Referenced in [astral-sh/ruff#18723](../../astral-sh/ruff/issues/18723.md) on 2025-06-17 13:56_
 
 ---

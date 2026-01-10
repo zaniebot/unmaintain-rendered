@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-25T13:16:28Z
 updated_at: 2025-09-15T09:15:54Z
 url: https://github.com/astral-sh/ruff/issues/20080
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Diff rendering assumptions
@@ -33,10 +33,6 @@ These issues shouldn't affect any existing diagnostics yet, but they're somethin
 ---
 
 _Label `diagnostics` added by @ntBre on 2025-08-25 13:19_
-
----
-
-_Referenced in [astral-sh/ruff#20036](../../astral-sh/ruff/pulls/20036.md) on 2025-08-25 13:20_
 
 ---
 

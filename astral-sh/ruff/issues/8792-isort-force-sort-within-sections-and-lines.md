@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-20T19:11:30Z
 updated_at: 2023-12-07T04:56:15Z
 url: https://github.com/astral-sh/ruff/issues/8792
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # [isort] force-sort-within-sections and lines-between-types should probably be incompatible
@@ -73,10 +73,6 @@ _Label `isort` added by @charliermarsh on 2023-11-21 00:24_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-07 03:56_
-
----
-
-_Referenced in [astral-sh/ruff#9041](../../astral-sh/ruff/pulls/9041.md) on 2023-12-07 03:57_
 
 ---
 

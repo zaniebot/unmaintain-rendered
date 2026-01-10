@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-04T00:59:12Z
 updated_at: 2023-03-25T15:55:55Z
 url: https://github.com/astral-sh/ruff/issues/2562
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # flake8-logging-format should check `.log(level, msg)` calls too
@@ -56,10 +56,6 @@ This is more towards the implementation side: I see that the implementation has 
 _Comment by @andersk on 2023-03-24 19:07_
 
 We have no need to validate or even inspect the `level` argument. (It’s probably going to be a variable anyway.) We just need to apply the same string formatting rules to `logger.log(level, msg)` that we would apply to `logger.debug(msg)`.
-
----
-
-_Referenced in [astral-sh/ruff#3726](../../astral-sh/ruff/pulls/3726.md) on 2023-03-25 06:01_
 
 ---
 

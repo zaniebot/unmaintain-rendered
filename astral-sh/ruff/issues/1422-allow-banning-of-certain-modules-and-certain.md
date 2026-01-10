@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-28T10:22:38Z
 updated_at: 2023-01-04T01:59:02Z
 url: https://github.com/astral-sh/ruff/issues/1422
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Allow banning of certain modules and certain module members
@@ -82,10 +82,6 @@ Lastly in cases where the fix is just replacing one import for another (e.g. cha
 ```
 
 I have not contributed to ruff yet, but if the people here like the suggested lint, I could look into implementing it :)
-
----
-
-_Referenced in [microsoft/pyright#4380](../../microsoft/pyright/issues/4380.md) on 2022-12-28 10:27_
 
 ---
 
@@ -193,10 +189,6 @@ I think naming it `banned-api` makes more sense since it can also be used to ban
 
 ---
 
-_Referenced in [astral-sh/ruff#1436](../../astral-sh/ruff/pulls/1436.md) on 2022-12-29 08:41_
-
----
-
 _Closed by @charliermarsh on 2022-12-30 03:11_
 
 ---
@@ -274,9 +266,5 @@ ban-relative-imports = "all"
 _Comment by @charliermarsh on 2023-01-04 01:59_
 
 Go for it, I haven’t used that plug-in a ton yet myself but happy to take a look.
-
----
-
-_Referenced in [astral-sh/ruff#1614](../../astral-sh/ruff/issues/1614.md) on 2023-01-04 02:01_
 
 ---

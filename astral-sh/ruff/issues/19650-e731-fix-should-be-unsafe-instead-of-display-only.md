@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-30T20:58:05Z
 updated_at: 2025-08-15T19:09:56Z
 url: https://github.com/astral-sh/ruff/issues/19650
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # E731 fix should be unsafe instead of display-only more often
@@ -96,10 +96,6 @@ ruff 0.12.7 (c5ac99889 2025-07-29)
 ---
 
 _Label `fixes` added by @ntBre on 2025-07-30 21:42_
-
----
-
-_Referenced in [astral-sh/ruff#19700](../../astral-sh/ruff/pulls/19700.md) on 2025-08-01 22:17_
 
 ---
 

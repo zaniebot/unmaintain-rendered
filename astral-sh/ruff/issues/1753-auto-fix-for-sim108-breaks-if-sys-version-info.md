@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-01-09T21:04:53Z
 updated_at: 2023-01-10T00:22:35Z
 url: https://github.com/astral-sh/ruff/issues/1753
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Auto-fix for `SIM108` breaks `if sys.version_info ...` mypy convention
@@ -90,10 +90,6 @@ Maybe the autofix should check if `sys.version_info` or `sys.platform` are refer
 
 ---
 
-_Referenced in [edgarrmondragon/citric#667](../../edgarrmondragon/citric/pulls/667.md) on 2023-01-09 21:07_
-
----
-
 _Comment by @charliermarsh on 2023-01-09 22:01_
 
 Sounds good, we can definitely special-case it.
@@ -121,10 +117,6 @@ I can probably get to this tonight unless you want to @edgarrmondragon.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-01-09 23:17_
-
----
-
-_Referenced in [astral-sh/ruff#1756](../../astral-sh/ruff/pulls/1756.md) on 2023-01-10 00:11_
 
 ---
 

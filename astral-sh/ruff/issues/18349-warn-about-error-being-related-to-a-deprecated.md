@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-28T09:48:35Z
 updated_at: 2025-09-08T16:10:40Z
 url: https://github.com/astral-sh/ruff/issues/18349
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Warn about error being related to a deprecated rule
@@ -227,10 +227,6 @@ With the first of these, we'll probably also want a CLI test in this file: [`lin
 
 https://github.com/astral-sh/ruff/blob/67200c966852fdc038be9c17a7578f80f5ddcd9d/crates/ruff/tests/integration_test.rs#L1472-L1481
 
-
----
-
-_Referenced in [astral-sh/ruff#20167](../../astral-sh/ruff/pulls/20167.md) on 2025-08-30 14:45_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-20T22:06:36Z
 updated_at: 2023-06-23T08:49:15Z
 url: https://github.com/astral-sh/ruff/issues/5226
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Cross compile from linux to mac
@@ -98,10 +98,6 @@ https://github.com/astral-sh/ruff/blob/2c63f8cdeabf196d72225d3eb727abb121dcee6c/
 https://github.com/astral-sh/ruff/blob/2c63f8cdeabf196d72225d3eb727abb121dcee6c/crates/ruff_cli/Cargo.toml#L75-L77
 
 Though note that the performance might be worse than expected.
-
----
-
-_Referenced in [tikv/jemallocator#57](../../tikv/jemallocator/issues/57.md) on 2023-06-22 09:52_
 
 ---
 

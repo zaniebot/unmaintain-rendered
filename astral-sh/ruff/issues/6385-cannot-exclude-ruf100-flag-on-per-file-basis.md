@@ -1,0 +1,58 @@
+```yaml
+number: 6385
+title: Cannot exclude RUF100 flag on per file basis 
+type: issue
+state: closed
+author: mmarras
+labels:
+  - bug
+  - suppression
+assignees: []
+created_at: 2023-08-07T10:59:07Z
+updated_at: 2023-08-08T07:38:26Z
+url: https://github.com/astral-sh/ruff/issues/6385
+synced_at: 2026-01-10T11:09:48Z
+```
+
+# Cannot exclude RUF100 flag on per file basis 
+
+---
+
+_Issue opened by @mmarras on 2023-08-07 10:59_
+
+I just happen to comment out a file completly, I get many `RUF100 [*] Unused "noqa" directive (unused: "YXXX")` flags. In this project, due to ruff pre-commit I am only supposed to do a git commit if there are no ruff errors: so I added `ruff: noqa: RUF100` at the top, but it is not honored. 
+
+MWE (test.py):
+```python
+# ruff: noqa: RUF100
+
+# class Meta:
+#     def mymeta() -> None:  # noqa: D102
+#         pass 
+```
+>> test.py:4:30: RUF100 [*] Unused `noqa` directive (unused: `D102`)
+
+* run: `ruff *`
+* version: `ruff 0.0.282`
+
+Maybe related question is should ruff flag these if they are part of a commented line in the first place (two #, whereas one being the first char in a line)? `# def mymeta() -> None:  # noqa: D102`. Yes D102 is unused, but the whole line is unused atm, so duh. 
+
+
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-08-07 19:47_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-08-07 19:56_
+
+---
+
+_Label `noqa` added by @charliermarsh on 2023-08-07 19:56_
+
+---
+
+_Closed by @charliermarsh on 2023-08-07 20:33_
+
+---

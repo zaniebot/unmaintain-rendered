@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-15T18:34:46Z
 updated_at: 2025-12-04T14:39:08Z
 url: https://github.com/astral-sh/ruff/issues/17412
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [syntax-errors] Remaining syntax errors raised by the compiler
@@ -374,42 +374,6 @@ _Renamed from "[syntax-errors] Remaining errors raised by the compiler" to "[syn
 
 ---
 
-_Referenced in [astral-sh/ruff#15506](../../astral-sh/ruff/issues/15506.md) on 2025-04-17 20:46_
-
----
-
-_Referenced in [astral-sh/ruff#17492](../../astral-sh/ruff/pulls/17492.md) on 2025-04-20 08:42_
-
----
-
-_Referenced in [astral-sh/ty#120](../../astral-sh/ty/issues/120.md) on 2025-04-21 13:08_
-
----
-
-_Referenced in [astral-sh/ruff#17463](../../astral-sh/ruff/pulls/17463.md) on 2025-04-21 13:14_
-
----
-
-_Referenced in [astral-sh/ruff#7633](../../astral-sh/ruff/issues/7633.md) on 2025-04-22 13:43_
-
----
-
-_Referenced in [astral-sh/ruff#17559](../../astral-sh/ruff/pulls/17559.md) on 2025-04-22 17:54_
-
----
-
-_Referenced in [astral-sh/ruff#17131](../../astral-sh/ruff/pulls/17131.md) on 2025-04-23 15:56_
-
----
-
-_Referenced in [astral-sh/ruff#17624](../../astral-sh/ruff/pulls/17624.md) on 2025-04-25 06:07_
-
----
-
-_Referenced in [astral-sh/ruff#17804](../../astral-sh/ruff/pulls/17804.md) on 2025-05-03 01:28_
-
----
-
 _Comment by @abhijeetbodas2001 on 2025-05-05 18:26_
 
 > generator expression must be parenthesized 
@@ -440,48 +404,12 @@ Oh you're exactly right, thanks! The fact that `ast.parse` fails means this is n
 
 ---
 
-_Referenced in [astral-sh/ruff#17867](../../astral-sh/ruff/issues/17867.md) on 2025-05-05 18:48_
-
----
-
-_Referenced in [astral-sh/ruff#17637](../../astral-sh/ruff/pulls/17637.md) on 2025-05-08 13:32_
-
----
-
-_Referenced in [astral-sh/ruff#17988](../../astral-sh/ruff/pulls/17988.md) on 2025-05-09 17:07_
-
----
-
-_Referenced in [astral-sh/ruff#18671](../../astral-sh/ruff/issues/18671.md) on 2025-06-14 15:09_
-
----
-
-_Referenced in [astral-sh/ruff#19112](../../astral-sh/ruff/pulls/19112.md) on 2025-07-08 02:23_
-
----
-
-_Referenced in [astral-sh/ty#823](../../astral-sh/ty/issues/823.md) on 2025-07-14 19:33_
-
----
-
-_Referenced in [astral-sh/ty#1026](../../astral-sh/ty/issues/1026.md) on 2025-08-17 13:40_
-
----
-
-_Referenced in [astral-sh/ruff#20051](../../astral-sh/ruff/pulls/20051.md) on 2025-08-22 19:40_
-
----
-
 _Comment by @11happy on 2025-08-22 19:44_
 
 Hii , I am new to the astral community , I have tried to implement syntax error for `yield from` in async functions. 
 Looking forward to learn & contribute.
 
 Thank you
-
----
-
-_Referenced in [astral-sh/ruff#20166](../../astral-sh/ruff/pulls/20166.md) on 2025-08-30 12:23_
 
 ---
 
@@ -492,18 +420,10 @@ Thank you
 
 ---
 
-_Referenced in [astral-sh/ruff#20243](../../astral-sh/ruff/pulls/20243.md) on 2025-09-04 16:36_
-
----
-
 _Comment by @11happy on 2025-09-04 16:39_
 
 Hii @ntBre , I have tried to implement  `F622` multiple starred expression (linked above) , can you please take a look whenever you get a chance.
 Thank you
-
----
-
-_Referenced in [astral-sh/ruff#20426](../../astral-sh/ruff/pulls/20426.md) on 2025-09-15 22:47_
 
 ---
 
@@ -526,10 +446,6 @@ Sure thing : ) , I understand.
 
 ---
 
-_Referenced in [astral-sh/ruff#20554](../../astral-sh/ruff/pulls/20554.md) on 2025-09-24 16:47_
-
----
-
 _Comment by @11happy on 2025-09-24 16:48_
 
 I have tried to implement F407 , have linked the PR above.
@@ -546,19 +462,11 @@ Thank you :)
 
 ---
 
-_Referenced in [astral-sh/ruff#20682](../../astral-sh/ruff/pulls/20682.md) on 2025-10-02 16:06_
-
----
-
 _Comment by @11happy on 2025-10-02 16:07_
 
 Hii @ntBre , I have tried to implement the semantic syntax error where alternative patterns bind different names (linked above) . Whenever you get a chance, I’d appreciate your review. 
 
 Thank you : )
-
----
-
-_Referenced in [astral-sh/ruff#20868](../../astral-sh/ruff/pulls/20868.md) on 2025-10-14 16:57_
 
 ---
 
@@ -578,19 +486,11 @@ Thank you : )
 
 ---
 
-_Referenced in [astral-sh/ruff#21200](../../astral-sh/ruff/pulls/21200.md) on 2025-11-02 09:35_
-
----
-
 _Comment by @11happy on 2025-11-07 06:11_
 
 Linking the follow up PR for name is parameter and global for ty https://github.com/astral-sh/ruff/pull/21312
 
 Thank  you : )
-
----
-
-_Referenced in [astral-sh/ruff#21495](../../astral-sh/ruff/issues/21495.md) on 2025-11-17 07:13_
 
 ---
 
@@ -640,18 +540,6 @@ Traceback (most recent call last):
                       ^^
 SyntaxError: parameter without a default follows parameter with a default
 ```
-
----
-
-_Referenced in [astral-sh/ty#1651](../../astral-sh/ty/issues/1651.md) on 2025-11-27 03:45_
-
----
-
-_Referenced in [astral-sh/ruff#21635](../../astral-sh/ruff/pulls/21635.md) on 2025-11-27 03:46_
-
----
-
-_Referenced in [astral-sh/ruff#21657](../../astral-sh/ruff/pulls/21657.md) on 2025-11-27 09:40_
 
 ---
 

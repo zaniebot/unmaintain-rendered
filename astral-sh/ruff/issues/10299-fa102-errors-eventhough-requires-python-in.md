@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-08T15:26:33Z
 updated_at: 2025-06-09T05:22:16Z
 url: https://github.com/astral-sh/ruff/issues/10299
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # FA102 errors eventhough requires-python in pyproject.toml is ">=3.12"
@@ -152,18 +152,6 @@ https://github.com/astral-sh/ruff/blob/42d52ebbec275389ee0458a3bf373268278bd51a/
 
 ---
 
-_Referenced in [sphinx-doc/sphinx#12250](../../sphinx-doc/sphinx/pulls/12250.md) on 2024-04-09 19:31_
-
----
-
-_Referenced in [scientific-python/cookie#407](../../scientific-python/cookie/issues/407.md) on 2024-04-09 19:50_
-
----
-
-_Referenced in [jaraco/skeleton#119](../../jaraco/skeleton/issues/119.md) on 2024-04-15 07:50_
-
----
-
 _Comment by @DimitriPapadopoulos on 2024-04-15 08:08_
 
 Same issue in https://github.com/jaraco/skeleton/issues/119. The situation is even worse here, as `requires-python` is defined in `setup.cfg` instead of `pyproject.toml`.
@@ -202,14 +190,6 @@ My suggestion would be to:
 
 ---
 
-_Referenced in [jaraco/skeleton#120](../../jaraco/skeleton/pulls/120.md) on 2024-04-15 09:08_
-
----
-
-_Referenced in [mozilla/wagtail-localize-smartling#3](../../mozilla/wagtail-localize-smartling/pulls/3.md) on 2024-06-07 13:59_
-
----
-
 _Comment by @kubotty on 2024-10-28 03:06_
 
 Hi, I encountered the same issue and I found this solution. 
@@ -240,31 +220,11 @@ Such an approach would sidestep workarounds like `extend = "pyproject.toml"` or 
 
 ---
 
-_Referenced in [mauvehed/keyring#36](../../mauvehed/keyring/pulls/36.md) on 2024-10-30 03:16_
-
----
-
 _Comment by @Avasam on 2024-10-30 19:11_
 
 ~~As mentioned in https://github.com/pypa/setuptools/pull/4718#issuecomment-2448099867, it seems `include = ["pyproject.toml"]` doesn't really work as a true workaround, it just hides version-related errors, even if `requires-python` is set in the `pyproject.toml`, even if you explicitly pass the flag by CLI: `ruff check --select=UP035 --target-version=py39`~~
 
 Edit: because it should be `extend = "pyproject.toml"`, not `include`...
-
----
-
-_Referenced in [jaraco/skeleton#152](../../jaraco/skeleton/issues/152.md) on 2024-10-31 10:47_
-
----
-
-_Referenced in [jaraco/skeleton#154](../../jaraco/skeleton/pulls/154.md) on 2024-10-31 11:47_
-
----
-
-_Referenced in [mauvehed/keyring#37](../../mauvehed/keyring/pulls/37.md) on 2024-11-15 17:41_
-
----
-
-_Referenced in [jaraco/skeleton#155](../../jaraco/skeleton/issues/155.md) on 2024-12-24 00:55_
 
 ---
 
@@ -325,10 +285,6 @@ Editor settings > _pyproject.toml_ > _ruff.toml_ > etc.
 _Comment by @DimitriPapadopoulos on 2025-02-12 09:56_
 
 @Winand I may be wrong, but I think this issue is specifically about taking into account `requires-python` from `pyproject.toml` when using `ruff.toml`. If so, your issue seems slightly different.
-
----
-
-_Referenced in [pypa/hatch#1890](../../pypa/hatch/pulls/1890.md) on 2025-02-12 10:00_
 
 ---
 

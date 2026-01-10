@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-05T17:45:38Z
 updated_at: 2024-03-11T17:21:42Z
 url: https://github.com/astral-sh/ruff/issues/10239
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # File-scoped `flake8: noqa` directive with comment is not recognized
@@ -54,10 +54,6 @@ That being said, anything that Flake8 currently allows should at the very least 
 _Comment by @zanieb on 2024-03-11 17:17_
 
 Related discussion at https://github.com/astral-sh/ruff/pull/8876#issuecomment-1831171627
-
----
-
-_Referenced in [astral-sh/ruff#10343](../../astral-sh/ruff/issues/10343.md) on 2024-03-11 17:20_
 
 ---
 

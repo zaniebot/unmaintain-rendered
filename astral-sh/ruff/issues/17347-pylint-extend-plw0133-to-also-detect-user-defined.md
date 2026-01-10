@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-11T08:13:07Z
 updated_at: 2025-12-09T18:49:56Z
 url: https://github.com/astral-sh/ruff/issues/17347
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [`pylint`] Extend `PLW0133` to also detect user-defined exceptions
@@ -50,10 +50,6 @@ _Label `rule` added by @MichaReiser on 2025-04-11 08:20_
 ---
 
 _Label `type-inference` added by @MichaReiser on 2025-04-11 08:20_
-
----
-
-_Referenced in [astral-sh/ruff#21382](../../astral-sh/ruff/pulls/21382.md) on 2025-11-11 15:23_
 
 ---
 

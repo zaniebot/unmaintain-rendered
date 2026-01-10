@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-05T14:18:09Z
 updated_at: 2023-02-05T23:46:09Z
 url: https://github.com/astral-sh/ruff/issues/2582
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Make TCH005 (empty type checking block) autofixable
@@ -44,10 +44,6 @@ Ah yeah that's straightforward. Should make it into the next release.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-05 23:44_
-
----
-
-_Referenced in [astral-sh/ruff#2598](../../astral-sh/ruff/pulls/2598.md) on 2023-02-05 23:46_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-15T12:50:30Z
 updated_at: 2023-03-30T15:52:45Z
 url: https://github.com/astral-sh/ruff/issues/2919
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # SIM223 autofix makes no sense?
@@ -33,10 +33,6 @@ The whole if-block could be removed but I doubt this is good for some autofixer.
 ---
 
 _Label `autofix` added by @charliermarsh on 2023-02-15 20:46_
-
----
-
-_Referenced in [astral-sh/ruff#3732](../../astral-sh/ruff/pulls/3732.md) on 2023-03-25 15:19_
 
 ---
 

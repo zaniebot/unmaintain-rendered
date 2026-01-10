@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-04T05:08:30Z
 updated_at: 2023-10-04T12:59:20Z
 url: https://github.com/astral-sh/ruff/issues/7800
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # SIM110 with a yield in the condition
@@ -35,10 +35,6 @@ While looking at the code I noticed that Ruff already protects against this clas
 I will submit a PR soon with a proposed fix.
 
 Also worth noting that Ruff ate the comment here. That feels like a bug too, but it's probably more involved to fix so I'll skip it for now.
-
----
-
-_Referenced in [astral-sh/ruff#7801](../../astral-sh/ruff/pulls/7801.md) on 2023-10-04 05:13_
 
 ---
 

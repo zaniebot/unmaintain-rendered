@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-09T14:00:03Z
 updated_at: 2023-11-10T11:57:04Z
 url: https://github.com/astral-sh/ruff/issues/8584
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # `ruff check --diff` passes when `ruff check` finds an error
@@ -93,13 +93,5 @@ ruff format --diff .
 ---
 
 _Closed by @stinodego on 2023-11-09 15:01_
-
----
-
-_Referenced in [astral-sh/ruff#8677](../../astral-sh/ruff/issues/8677.md) on 2023-11-14 17:02_
-
----
-
-_Referenced in [astral-sh/ruff#7352](../../astral-sh/ruff/issues/7352.md) on 2024-03-30 10:18_
 
 ---

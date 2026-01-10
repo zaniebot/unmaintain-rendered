@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-03-13T19:01:40Z
 updated_at: 2023-03-13T19:52:07Z
 url: https://github.com/astral-sh/ruff/issues/3486
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # 0.0.255: `C4` selector prefix emits warning and maps to `C40` only (subset of `flake8-comprehensions`)
@@ -46,14 +46,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-03-13 19:35_
 
 ---
 
-_Referenced in [astral-sh/ruff#3488](../../astral-sh/ruff/pulls/3488.md) on 2023-03-13 19:46_
-
----
-
 _Closed by @charliermarsh on 2023-03-13 19:52_
-
----
-
-_Referenced in [astral-sh/ruff#3502](../../astral-sh/ruff/issues/3502.md) on 2023-03-14 07:20_
 
 ---

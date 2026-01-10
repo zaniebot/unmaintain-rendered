@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-05-23T14:08:45Z
 updated_at: 2023-10-23T08:15:44Z
 url: https://github.com/astral-sh/ruff/issues/4604
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # N805 ignores classmethod-decorators setting
@@ -110,9 +110,5 @@ class SQLAlchemyModel:
 Basically I need ruff to treat either `@*.expression` as a classmethod decorator, or alternatively have a way of telling it that `sqlalchemy.ext.hybrid.hybrid_property` returns a normal property, but the method decorated with that property has a `.expression` attribute that is a classmethod decorator...
 
 Considering that this is a very common SQLAlchemy feature, and larger projects may have plenty of those, it's still a blocker for using ruff :/
-
----
-
-_Referenced in [astral-sh/ruff#8397](../../astral-sh/ruff/issues/8397.md) on 2023-10-31 22:56_
 
 ---

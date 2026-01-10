@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-15T04:35:23Z
 updated_at: 2023-02-17T14:52:23Z
 url: https://github.com/astral-sh/ruff/issues/2911
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Broken link in mkdocs
@@ -64,10 +64,6 @@ _Comment by @not-my-profile on 2023-02-15 20:07_
 That sounds right to me.
 
 I can get this started by making a PR to remove the *Supported Rules* and *Reference* sections from the README. If you want to help with this you could then follow up with the further splitting up, creating `docs/faq.md` and `docs/editor-integrations.md` (and updating `generate_mkdocs.py` accordingly).
-
----
-
-_Referenced in [astral-sh/ruff#2937](../../astral-sh/ruff/pulls/2937.md) on 2023-02-15 20:50_
 
 ---
 

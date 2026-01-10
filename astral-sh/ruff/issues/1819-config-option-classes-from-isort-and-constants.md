@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-01-12T15:58:40Z
 updated_at: 2023-01-18T12:30:53Z
 url: https://github.com/astral-sh/ruff/issues/1819
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Config option `classes` from isort (and `constants` and `variables` probably)
@@ -49,10 +49,6 @@ Thanks. Not too hard to support, but I have to get to some other things first! W
 
 ---
 
-_Referenced in [astral-sh/ruff#1849](../../astral-sh/ruff/pulls/1849.md) on 2023-01-13 13:56_
-
----
-
 _Comment by @tmke8 on 2023-01-13 19:27_
 
 I think this should have been closed by #1849.
@@ -76,10 +72,6 @@ I think we should, for consistency.
 ---
 
 _Reopened by @tmke8 on 2023-01-16 19:25_
-
----
-
-_Referenced in [astral-sh/ruff#1951](../../astral-sh/ruff/pulls/1951.md) on 2023-01-18 12:26_
 
 ---
 

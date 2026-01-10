@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-17T09:55:59Z
 updated_at: 2025-01-05T18:35:30Z
 url: https://github.com/astral-sh/ruff/issues/15033
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Incorrect control flow modelling in if-elif chains
@@ -89,10 +89,6 @@ Aha! Yes, makes perfect sense now. Great catch!
 ---
 
 _Label `bug` added by @AlexWaygood on 2024-12-17 14:57_
-
----
-
-_Referenced in [astral-sh/ruff#15274](../../astral-sh/ruff/pulls/15274.md) on 2025-01-05 17:57_
 
 ---
 

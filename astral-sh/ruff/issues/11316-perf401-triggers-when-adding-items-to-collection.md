@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-05-07T03:34:48Z
 updated_at: 2025-10-06T16:50:36Z
 url: https://github.com/astral-sh/ruff/issues/11316
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # PERF401 triggers when adding items to collection from function arguments
@@ -43,10 +43,6 @@ Suggested fixes:
 - ?Suggest extending collection with async comprehension if argument is a list
 
 Worries I have about 2nd solution is that this way of ordering your code makes it seem like you care quite a lot about having the function caller having complete control over memory allocation, and then there is the matter of what about collections that are not lists like sets and how are we even finding out if argument is a list or not if it doesn't have type annotations.
-
----
-
-_Referenced in [python-trio/trio#2969](../../python-trio/trio/pulls/2969.md) on 2024-05-07 03:37_
 
 ---
 
@@ -140,10 +136,6 @@ TypeError: 'async_generator' object is not iterable
 ```
 
 (I comment this because I thought that would work too, but then tried it just to be sure...)
-
----
-
-_Referenced in [astral-sh/ruff#16315](../../astral-sh/ruff/issues/16315.md) on 2025-02-22 12:57_
 
 ---
 

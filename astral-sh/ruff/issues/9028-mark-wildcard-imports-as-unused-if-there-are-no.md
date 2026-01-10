@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-06T17:05:07Z
 updated_at: 2023-12-08T16:00:27Z
 url: https://github.com/astral-sh/ruff/issues/9028
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Mark wildcard imports as unused if there are no possible references
@@ -96,10 +96,6 @@ Thanks for filing. Makes sense!
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-07 01:35_
-
----
-
-_Referenced in [astral-sh/ruff#9032](../../astral-sh/ruff/pulls/9032.md) on 2023-12-07 01:58_
 
 ---
 

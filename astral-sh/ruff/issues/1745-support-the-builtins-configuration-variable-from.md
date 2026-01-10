@@ -1,0 +1,56 @@
+```yaml
+number: 1745
+title: Support the builtins configuration variable from flake8
+type: issue
+state: closed
+author: kovidgoyal
+labels:
+  - configuration
+assignees: []
+created_at: 2023-01-09T13:03:27Z
+updated_at: 2023-01-09T17:24:29Z
+url: https://github.com/astral-sh/ruff/issues/1745
+synced_at: 2026-01-10T11:09:43Z
+```
+
+# Support the builtins configuration variable from flake8
+
+---
+
+_Issue opened by @kovidgoyal on 2023-01-09 13:03_
+
+It would be useful to me to support the builtins flake8 configuration variable. It allows telling flake8 that some names have been added to the python global namespace and so should not be reported as Undefined name errors.
+
+A common use case for this is python translations. The stdlib module recommends adding the underscore as the gettext() function globally via builtins.__dict__. ruff currently complains that _ is an undefined name with no way to globally override that.
+
+---
+
+_Label `configuration` added by @charliermarsh on 2023-01-09 15:29_
+
+---
+
+_Comment by @charliermarsh on 2023-01-09 15:29_
+
+Sounds reasonable!
+
+---
+
+_Comment by @charliermarsh on 2023-01-09 15:57_
+
+(This can ship today, very easy.)
+
+---
+
+_Comment by @kovidgoyal on 2023-01-09 16:04_
+
+Cool, thanks.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-01-09 17:01_
+
+---
+
+_Closed by @charliermarsh on 2023-01-09 17:24_
+
+---

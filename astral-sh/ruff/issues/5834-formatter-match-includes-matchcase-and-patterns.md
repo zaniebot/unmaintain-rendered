@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-07-17T14:14:18Z
 updated_at: 2024-09-26T06:35:23Z
 url: https://github.com/astral-sh/ruff/issues/5834
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Formatter: `Match` (includes `MatchCase` and `Patterns`)
@@ -40,10 +40,6 @@ The match arms have the same considerations for comments as if branches or try-e
 
 ---
 
-_Referenced in [astral-sh/ruff#4798](../../astral-sh/ruff/issues/4798.md) on 2023-07-17 14:14_
-
----
-
 _Label `formatter` added by @charliermarsh on 2023-07-19 01:18_
 
 ---
@@ -62,10 +58,6 @@ As a note. The idea isn't that this is all implemented in a single PR. I recomme
 
 ---
 
-_Referenced in [astral-sh/ruff#6203](../../astral-sh/ruff/issues/6203.md) on 2023-07-31 16:57_
-
----
-
 _Comment by @dhruvmanila on 2023-08-14 12:26_
 
 Regarding the match patterns, I would say that `PatternMatchValue`, `PatternMatchSingleton`, `PatternMatchStar`, `PatternMatchSequence` (sequence of other patterns), and `PatternMatchOr` (similar to `PatternMatchSequence`) are good first issues and could be taken on in the order mentioned.
@@ -73,10 +65,6 @@ Regarding the match patterns, I would say that `PatternMatchValue`, `PatternMatc
 ---
 
 _Label `good first issue` added by @konstin on 2023-08-14 12:30_
-
----
-
-_Referenced in [astral-sh/ruff#6555](../../astral-sh/ruff/issues/6555.md) on 2023-08-14 12:31_
 
 ---
 
@@ -97,14 +85,6 @@ Awesome. Let's start with one to leave an opportunity for other contributors too
 _Comment by @MichaReiser on 2023-08-15 12:27_
 
 I don't think this is ready yet. We first need to land https://github.com/astral-sh/ruff/pull/6594 (@evanrittenhouse  you can work on top of that PR, as long as you don't mind that there's one failing test).
-
----
-
-_Referenced in [astral-sh/ruff#6594](../../astral-sh/ruff/pulls/6594.md) on 2023-08-15 17:45_
-
----
-
-_Referenced in [astral-sh/ruff#6860](../../astral-sh/ruff/pulls/6860.md) on 2023-08-24 20:28_
 
 ---
 

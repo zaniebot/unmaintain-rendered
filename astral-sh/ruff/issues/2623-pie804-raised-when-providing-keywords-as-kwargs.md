@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-07T11:53:45Z
 updated_at: 2023-02-07T16:25:12Z
 url: https://github.com/astral-sh/ruff/issues/2623
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # PIE804 raised when providing keywords as kwargs
@@ -59,10 +59,6 @@ Yeah I think we should verify that all keys are valid identifiers.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-07 16:10_
-
----
-
-_Referenced in [astral-sh/ruff#2628](../../astral-sh/ruff/pulls/2628.md) on 2023-02-07 16:25_
 
 ---
 

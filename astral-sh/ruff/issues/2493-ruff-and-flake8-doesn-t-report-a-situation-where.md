@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-02-02T19:51:28Z
 updated_at: 2024-10-30T05:18:28Z
 url: https://github.com/astral-sh/ruff/issues/2493
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Ruff (and flake8) doesn't report a situation where a variable _may_ be  unbound
@@ -114,10 +114,6 @@ ruff 0.0.240
 
 ---
 
-_Referenced in [matrix-org/synapse#14971](../../matrix-org/synapse/pulls/14971.md) on 2023-02-02 19:53_
-
----
-
 _Comment by @charliermarsh on 2023-02-02 21:53_
 
 Appreciate the clear issue! Right now, (1) is outside of our capabilities -- although I'm surprised that Mypy doesn't flag this... Pyright _does_:
@@ -166,10 +162,6 @@ it's really easy in long Python functions and code blocks when refactoring and m
 
 ---
 
-_Referenced in [opsmill/infrahub#1389](../../opsmill/infrahub/issues/1389.md) on 2023-11-10 12:25_
-
----
-
 _Comment by @sascharo on 2024-09-16 04:43_
 
 Is this still unsupported?
@@ -190,9 +182,5 @@ Note: this is the subject of this issue: https://github.com/astral-sh/ruff/issue
 > STILL ~
 
 It sounds like a pretty tough one, but I'm sure Ruff maintainers would welcome a PR for it.
-
----
-
-_Referenced in [astral-sh/ruff#14821](../../astral-sh/ruff/issues/14821.md) on 2024-12-06 16:26_
 
 ---

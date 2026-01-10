@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-24T15:04:52Z
 updated_at: 2024-05-05T14:00:43Z
 url: https://github.com/astral-sh/ruff/issues/3206
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # `isort` need its own line-length configuration
@@ -105,10 +105,6 @@ I know W505 have it's own configuration for docstring `max-doc-length` but it do
 
 ---
 
-_Referenced in [pyvista/pyvista#4170](../../pyvista/pyvista/pulls/4170.md) on 2023-03-22 04:31_
-
----
-
 _Comment by @lachtanek on 2023-05-02 06:41_
 
 I can provide context where this would help: we have a legacy codebase where we've used Flake8 + Isort + Black for a long time now. Due to legacy reasons, we've configured Flake8 to use 120 line length instead of 80 or 88, so over the years the codebase sometimes has lines that long. Now we'd like to replace Flake8 + Isort with Ruff, but in that case we either have to set the line length to 88 (meaning we now have a lot of code to fix or add noqa to all of them - not really great), or set it to 120 (but in that case import autofix will reformat some imports to a single line and Black will reformat them back to multiple).
@@ -134,10 +130,6 @@ which would cause things like isort's autoformatting to respect the (ideal) chos
 By default, `max-line-length` would have the same value as `line-length` (ie: setting `line-length` would set both) but setting `max-line-length` on its own would leave `line-length` with its default value (88).
 
 *edit: for now, in our project, we're just going to ignore `E501` out of hope that the problem doesn't get worse over time, and intent to fix it "some day".  That's better than having excessively-wide import lines.*
-
----
-
-_Referenced in [astral-sh/ruff#5009](../../astral-sh/ruff/pulls/5009.md) on 2023-06-10 17:08_
 
 ---
 
@@ -174,10 +166,6 @@ How to keep those lines like that with black + ruff and line-length = 79 ?
 
 ---
 
-_Referenced in [astral-sh/ruff#5196](../../astral-sh/ruff/issues/5196.md) on 2023-06-20 20:50_
-
----
-
 _Comment by @Avasam on 2023-06-20 23:17_
 
 I would use this feature to ignore line length on imports by setting the value to 999.
@@ -195,10 +183,6 @@ https://github.com/astral-sh/ruff/issues/5196#issue-1764346812
 >    ![image](https://user-images.githubusercontent.com/1350584/246950750-224582c0-0b8a-42f3-96c1-2e7b7522a9f0.png)
 
 
-
----
-
-_Referenced in [astral-sh/ruff#6190](../../astral-sh/ruff/issues/6190.md) on 2023-07-31 09:46_
 
 ---
 
@@ -238,22 +222,6 @@ Which I use for the same reasons and has a corresponding issue: #2600
 
 ---
 
-_Referenced in [cockpit-project/cockpit#20168](../../cockpit-project/cockpit/issues/20168.md) on 2024-03-13 14:54_
-
----
-
-_Referenced in [huggingface/diffusers#7713](../../huggingface/diffusers/pulls/7713.md) on 2024-04-18 17:44_
-
----
-
-_Referenced in [cockpit-project/cockpit#20415](../../cockpit-project/cockpit/issues/20415.md) on 2024-05-02 04:07_
-
----
-
-_Referenced in [astral-sh/ruff#11290](../../astral-sh/ruff/issues/11290.md) on 2024-05-05 13:37_
-
----
-
 _Comment by @charliermarsh on 2024-05-05 13:39_
 
 To recap, it's easy to implement this, but we can't really support the following use-case:
@@ -275,17 +243,5 @@ Some notes;
 * auto-formatting is different from linting, and rigidly coupling their settings (through the single global `line-length` setting) can cause problems
 * I wrote up additional use-case rationale in #11290 (which is a duplicate of this one... oops) that I won't repeat here
 
-
----
-
-_Referenced in [cockpit-project/cockpit#20621](../../cockpit-project/cockpit/issues/20621.md) on 2024-06-27 04:08_
-
----
-
-_Referenced in [OpenCTI-Platform/connectors#3668](../../OpenCTI-Platform/connectors/issues/3668.md) on 2025-03-24 09:56_
-
----
-
-_Referenced in [astral-sh/ruff#21268](../../astral-sh/ruff/issues/21268.md) on 2025-11-05 05:00_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-04T14:24:02Z
 updated_at: 2024-08-05T06:50:33Z
 url: https://github.com/astral-sh/ruff/issues/12661
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # 0.5.6 fails to build on 32bit architectures
@@ -94,14 +94,6 @@ _Assigned to @MichaReiser by @MichaReiser on 2024-08-04 19:29_
 
 ---
 
-_Referenced in [astral-sh/ruff#12679](../../astral-sh/ruff/pulls/12679.md) on 2024-08-05 06:42_
-
----
-
 _Closed by @MichaReiser on 2024-08-05 06:50_
-
----
-
-_Referenced in [astral-sh/ruff#13009](../../astral-sh/ruff/issues/13009.md) on 2024-08-20 17:37_
 
 ---

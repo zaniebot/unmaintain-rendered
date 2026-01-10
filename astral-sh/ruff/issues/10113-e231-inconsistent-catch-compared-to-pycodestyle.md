@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-24T19:11:01Z
 updated_at: 2024-03-21T08:13:39Z
 url: https://github.com/astral-sh/ruff/issues/10113
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # [E231] Inconsistent catch compared to pycodestyle, such as when dict nested in list
@@ -170,10 +170,6 @@ _Label `bug` added by @charliermarsh on 2024-02-24 19:12_
 _Comment by @charliermarsh on 2024-02-24 19:12_
 
 Great write-up.
-
----
-
-_Referenced in [astral-sh/ruff#10469](../../astral-sh/ruff/pulls/10469.md) on 2024-03-19 04:49_
 
 ---
 

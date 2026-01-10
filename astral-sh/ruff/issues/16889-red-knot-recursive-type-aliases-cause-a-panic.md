@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-21T09:19:20Z
 updated_at: 2025-05-07T15:22:52Z
 url: https://github.com/astral-sh/ruff/issues/16889
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] Recursive type aliases cause a panic
@@ -53,10 +53,6 @@ _Label `red-knot` added by @MichaReiser on 2025-03-21 09:23_
 _Comment by @MichaReiser on 2025-03-21 09:24_
 
 Thanks. This is another case where we need to add Salsa cycle handling. You can open the console in the [playground](https://playknot.ruff.rs/fbd7a26c-25b4-4e72-b53c-fb0aabc81f57) to see the backtrace).
-
----
-
-_Referenced in [astral-sh/ruff#16890](../../astral-sh/ruff/issues/16890.md) on 2025-03-21 09:26_
 
 ---
 

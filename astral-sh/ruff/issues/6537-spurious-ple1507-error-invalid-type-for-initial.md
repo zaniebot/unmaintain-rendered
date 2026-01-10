@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-08-13T17:10:16Z
 updated_at: 2023-08-13T19:52:11Z
 url: https://github.com/astral-sh/ruff/issues/6537
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Spurious PLE1507 error: Invalid type for initial `os.getenv` argument
@@ -56,14 +56,6 @@ Thanks, fixing...
 
 ---
 
-_Referenced in [astral-sh/ruff#6538](../../astral-sh/ruff/pulls/6538.md) on 2023-08-13 18:32_
-
----
-
 _Closed by @charliermarsh on 2023-08-13 19:52_
-
----
-
-_Referenced in [astral-sh/ruff#9734](../../astral-sh/ruff/pulls/9734.md) on 2024-01-31 12:43_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-18T09:33:35Z
 updated_at: 2024-09-19T14:11:38Z
 url: https://github.com/astral-sh/ruff/issues/13390
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # PLE1205 false-positive with Loguru
@@ -54,13 +54,5 @@ _Label `rule` added by @MichaReiser on 2024-09-19 07:11_
 _Comment by @MackHalliday on 2024-09-19 14:11_
 
 Thank you for the response :D 
-
----
-
-_Referenced in [astral-sh/ruff#16715](../../astral-sh/ruff/issues/16715.md) on 2025-03-13 19:13_
-
----
-
-_Referenced in [astral-sh/ruff#19075](../../astral-sh/ruff/issues/19075.md) on 2025-07-01 20:54_
 
 ---

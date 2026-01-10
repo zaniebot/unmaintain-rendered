@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-10T04:19:05Z
 updated_at: 2025-01-13T01:47:00Z
 url: https://github.com/astral-sh/ruff/issues/14239
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Extend `pytest-raises-with-multiple-statements (PT012)` to cover `pytest.warns`
@@ -140,10 +140,6 @@ The upstream issue has been closed as completed in case someone's interested to 
 _Comment by @tjkuson on 2025-01-10 16:37_
 
 I volunteer unless @snowdrop4 fancies it
-
----
-
-_Referenced in [astral-sh/ruff#15444](../../astral-sh/ruff/pulls/15444.md) on 2025-01-12 20:33_
 
 ---
 

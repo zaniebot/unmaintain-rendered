@@ -1,0 +1,73 @@
+```yaml
+number: 7868
+title: "Do not require built-in sections to be present in `section-order`"
+type: issue
+state: closed
+author: levrik
+labels:
+  - isort
+  - needs-decision
+assignees: []
+created_at: 2023-10-09T12:44:28Z
+updated_at: 2024-03-01T03:32:05Z
+url: https://github.com/astral-sh/ruff/issues/7868
+synced_at: 2026-01-10T11:09:50Z
+```
+
+# Do not require built-in sections to be present in `section-order`
+
+---
+
+_Issue opened by @levrik on 2023-10-09 12:44_
+
+I'm currently in the process of migrating from flake8 and isort to Ruff.
+
+Something I've noticed is that when leaving out a built-in section from `section-order`, a warning appears and these sections are appended to the end of `section-order`. With isort imports that correspond to a built-in section that is missing from `section-order`, are assigned to the `third-party` section instead. I used this before to combine `standard-library` and `third-party` sections into a single one as I don't see much value in separating these.
+
+As a workaround I've added all packages from https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_stdlib/src/sys.rs to `known-third-party` but it's rather ugly.
+
+It would be great if the behavior could match `isort` or could be configured to match it somehow.
+
+---
+
+_Label `isort` added by @charliermarsh on 2023-10-09 19:09_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-10-09 19:10_
+
+---
+
+_Comment by @mmerickel on 2023-10-30 17:59_
+
+Ran into this as well, isort supports a `default_section` for this purpose if you want to be explicit:
+
+```toml
+sections = "FUTURE,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
+default_section = "THIRDPARTY"
+```
+
+The end goal is that stdlib and third party are combined, as it's common in the libraries that I work on that we are using bw-compat shims etc and it's irritating to do treat things like `importlib_metadata` differently from `importlib.metadata`. Yes you could define them explicitly but ... the extended philosophy is that the stdlib and third party should be the same from the perspective of a user - that's why we put all this effort into moving stuff into pypi instead of in the stdlib, they aren't that different!
+
+---
+
+_Comment by @mmerickel on 2023-11-18 17:29_
+
+Looks like something along similar lines was just merged https://github.com/astral-sh/ruff/pull/8657. It would've been possible to implement `no_sections` from that PR with the equivalent proposal above:
+
+```
+sections = "THIRDPARTY"
+default_section = "THIRDPARTY"
+```
+
+---
+
+_Comment by @mmerickel on 2024-02-28 03:57_
+
+I've implemented `default-section` in https://github.com/astral-sh/ruff/pull/10149.
+
+---
+
+_Closed by @charliermarsh on 2024-03-01 03:32_
+
+---

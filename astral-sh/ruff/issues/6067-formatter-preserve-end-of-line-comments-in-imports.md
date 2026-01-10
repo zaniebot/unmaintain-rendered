@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-25T11:11:01Z
 updated_at: 2023-08-16T07:08:37Z
 url: https://github.com/astral-sh/ruff/issues/6067
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Formatter: Preserve end-of-line comments in imports
@@ -39,10 +39,6 @@ from .fields import (
 ---
 
 _Label `formatter` added by @konstin on 2023-07-25 11:11_
-
----
-
-_Referenced in [astral-sh/ruff#6069](../../astral-sh/ruff/issues/6069.md) on 2023-07-25 11:22_
 
 ---
 
@@ -86,10 +82,6 @@ from foo import (
 _Comment by @charliermarsh on 2023-07-31 21:08_
 
 We already solved these problems for the `isort` module, but it's probably hard to reuse what we built there 🤔 
-
----
-
-_Referenced in [astral-sh/ruff#6216](../../astral-sh/ruff/pulls/6216.md) on 2023-08-01 01:08_
 
 ---
 

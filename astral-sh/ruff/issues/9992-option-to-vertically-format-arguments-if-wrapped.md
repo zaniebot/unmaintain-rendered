@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-15T01:13:21Z
 updated_at: 2025-09-15T09:12:33Z
 url: https://github.com/astral-sh/ruff/issues/9992
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Option to vertically format arguments if wrapped.
@@ -115,10 +115,6 @@ But clearly this is far from ideal; as it requires running `ruff format` twice, 
 
 ---
 
-_Referenced in [astral-sh/ruff#15846](../../astral-sh/ruff/issues/15846.md) on 2025-01-31 10:17_
-
----
-
 _Comment by @Tatsh on 2025-02-18 09:10_
 
 I would like to have the option to keep arguments aligned after the bracket:
@@ -194,10 +190,6 @@ Seconding this issue; I'd love to have the ability to enforce this!
 
 ---
 
-_Referenced in [PedroPerpetua/django-rest-framework-boilerplate#73](../../PedroPerpetua/django-rest-framework-boilerplate/issues/73.md) on 2025-04-15 17:34_
-
----
-
 _Comment by @ivangabriele on 2025-06-11 22:14_
 
 @funkybob Maybe we should retitle / update this proposal to "Always align arguments vertically for any wrapped statement"?
@@ -207,10 +199,6 @@ _Comment by @ivangabriele on 2025-06-11 22:14_
 _Comment by @jorenham on 2025-06-11 22:38_
 
 I would prefer this be an extra option, similar to the [`trailing_comma`](https://rust-lang.github.io/rustfmt/?version=v1.8.0&search=#trailing_comma) option of `rustfmt`, which can be either `Vertical` (the current behavior), `Always` (the new option), or `Never` (if disabled)
-
----
-
-_Referenced in [astral-sh/ruff#11753](../../astral-sh/ruff/issues/11753.md) on 2025-06-11 23:24_
 
 ---
 

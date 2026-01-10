@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-07T10:01:07Z
 updated_at: 2024-01-07T23:41:16Z
 url: https://github.com/astral-sh/ruff/issues/9420
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # PYI053 autofix removes `@deprecated` message
@@ -70,10 +70,6 @@ _Label `bug` added by @charliermarsh on 2024-01-07 15:05_
 ---
 
 _Label `good first issue` added by @charliermarsh on 2024-01-07 15:06_
-
----
-
-_Referenced in [astral-sh/ruff#9423](../../astral-sh/ruff/pulls/9423.md) on 2024-01-07 17:27_
 
 ---
 

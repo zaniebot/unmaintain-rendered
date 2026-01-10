@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-16T06:27:56Z
 updated_at: 2025-01-20T09:02:55Z
 url: https://github.com/astral-sh/ruff/issues/15522
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # `flake8-bandit` rules does not check `eval` in callback position
@@ -114,10 +114,6 @@ _Comment by @InSyncWithFoo on 2025-01-16 20:41_
 * [`S323`: `suspicious-unverified-context-usage`](https://docs.astral.sh/ruff/rules/suspicious-unverified-context-usage)
 
 ...and these are all stable rules. This change will have to be in preview for a while, I suppose?
-
----
-
-_Referenced in [astral-sh/ruff#15541](../../astral-sh/ruff/pulls/15541.md) on 2025-01-17 00:11_
 
 ---
 

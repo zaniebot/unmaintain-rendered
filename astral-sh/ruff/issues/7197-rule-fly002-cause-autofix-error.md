@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-06T15:30:06Z
 updated_at: 2023-09-07T14:32:45Z
 url: https://github.com/astral-sh/ruff/issues/7197
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Rule FLY002 cause autofix error
@@ -60,10 +60,6 @@ _Label `fuzzer` added by @charliermarsh on 2023-09-07 14:08_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-09-07 14:22_
-
----
-
-_Referenced in [astral-sh/ruff#7222](../../astral-sh/ruff/pulls/7222.md) on 2023-09-07 14:22_
 
 ---
 

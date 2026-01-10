@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-27T17:46:36Z
 updated_at: 2024-08-07T02:57:16Z
 url: https://github.com/astral-sh/ruff/issues/12545
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Ruff logging core dump messages in the system journal
@@ -352,10 +352,6 @@ lspconfig.ruff.setup {
   }
 }
 ```
-
----
-
-_Referenced in [astral-sh/ruff#12610](../../astral-sh/ruff/pulls/12610.md) on 2024-08-01 11:14_
 
 ---
 

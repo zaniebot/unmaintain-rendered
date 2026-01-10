@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-12T20:56:46Z
 updated_at: 2025-10-27T07:42:50Z
 url: https://github.com/astral-sh/ruff/issues/20823
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Unclear error if line-length goes beyond u16 boundaries
@@ -91,14 +91,6 @@ _Label `diagnostics` added by @MichaReiser on 2025-10-13 06:30_
 
 ---
 
-_Referenced in [astral-sh/ruff#21072](../../astral-sh/ruff/pulls/21072.md) on 2025-10-25 10:54_
-
----
-
 _Closed by @MichaReiser on 2025-10-27 07:42_
-
----
-
-_Referenced in [astral-sh/ruff#21328](../../astral-sh/ruff/issues/21328.md) on 2025-11-07 22:44_
 
 ---

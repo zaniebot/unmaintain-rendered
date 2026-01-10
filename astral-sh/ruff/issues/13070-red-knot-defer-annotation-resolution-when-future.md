@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-23T06:54:03Z
 updated_at: 2024-09-19T17:09:23Z
 url: https://github.com/astral-sh/ruff/issues/13070
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] defer annotation resolution when __future__.annotations is active
@@ -59,10 +59,6 @@ _Label `help wanted` added by @carljm on 2024-09-03 21:33_
 _Comment by @carljm on 2024-09-03 21:33_
 
 We have support now for deferring resolution of annotations, which is the first part of fixing this. The second part is to extend that support to any module where `from __future__ import annotations` is active; currently it only applies in a stub file.
-
----
-
-_Referenced in [astral-sh/ruff#13395](../../astral-sh/ruff/pulls/13395.md) on 2024-09-18 16:08_
 
 ---
 

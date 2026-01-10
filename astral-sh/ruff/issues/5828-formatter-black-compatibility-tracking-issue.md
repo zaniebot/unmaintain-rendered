@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-17T09:32:23Z
 updated_at: 2023-09-04T13:28:23Z
 url: https://github.com/astral-sh/ruff/issues/5828
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # 📋 Formatter black compatibility tracking issue
@@ -83,10 +83,6 @@ i'd expect fixing this would be a minor improvement in the compatibility score, 
 
 ---
 
-_Referenced in [astral-sh/ruff#5355](../../astral-sh/ruff/issues/5355.md) on 2023-07-18 17:32_
-
----
-
 _Renamed from "Formatter black compatibility tracking issue" to ":clipboard: Formatter black compatibility tracking issue" by @konstin on 2023-07-19 13:20_
 
 ---
@@ -135,14 +131,6 @@ I minimized all cases of unstable formatting from the ecosystem checks: https://
 
 ---
 
-_Referenced in [astral-sh/ruff#5915](../../astral-sh/ruff/pulls/5915.md) on 2023-07-20 10:52_
-
----
-
-_Referenced in [astral-sh/ruff#5943](../../astral-sh/ruff/pulls/5943.md) on 2023-07-21 08:24_
-
----
-
 _Comment by @konstin on 2023-07-24 17:44_
 
 #6035 documents how to run the formatter progress tracking script yourself, and it's also part of CI now
@@ -163,10 +151,6 @@ _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-07-31 16:16_
 _Comment by @konstin on 2023-08-21 13:49_
 
 Updated the original post
-
----
-
-_Referenced in [shap/shap#3111](../../shap/shap/pulls/3111.md) on 2023-08-22 01:19_
 
 ---
 

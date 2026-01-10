@@ -1,0 +1,50 @@
+```yaml
+number: 16420
+title: Allow CPY001 (missing-copyright-notice) to ignore empty files
+type: issue
+state: closed
+author: benblank
+labels:
+  - question
+assignees: []
+created_at: 2025-02-27T19:30:45Z
+updated_at: 2025-02-27T19:43:26Z
+url: https://github.com/astral-sh/ruff/issues/16420
+synced_at: 2026-01-10T11:09:57Z
+```
+
+# Allow CPY001 (missing-copyright-notice) to ignore empty files
+
+---
+
+_Issue opened by @benblank on 2025-02-27 19:30_
+
+### Summary
+
+In particular, empty `__init__.py` files are common enough and it's weird to copyright an otherwise-empty file or the copyright notice itself. 🙂
+
+I've no strong opinion on whether this should be configurable or just the default.
+
+---
+
+_Comment by @MichaReiser on 2025-02-27 19:36_
+
+Can you try if https://docs.astral.sh/ruff/settings/#lint_flake8-copyright_min-file-size works for you? Otherwise, you can use `per-file-ignores` and exclude all `__init__.py` files
+
+---
+
+_Label `question` added by @MichaReiser on 2025-02-27 19:36_
+
+---
+
+_Comment by @benblank on 2025-02-27 19:43_
+
+Yep, `min-file-size = 1` does the trick. I had assumed there was no setting for that because settings aren't mentioned on the CPY001 page itself. But they're linked from the CPY block of the rules page, which I also should have checked, so that's on me.
+
+Apologies and thanks!
+
+---
+
+_Closed by @benblank on 2025-02-27 19:43_
+
+---

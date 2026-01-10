@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-18T23:47:16Z
 updated_at: 2023-01-19T17:12:22Z
 url: https://github.com/astral-sh/ruff/issues/1982
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # PIE790 introduces E303
@@ -57,9 +57,5 @@ _Closed by @charliermarsh on 2023-01-19 15:31_
 _Comment by @spaceone on 2023-01-19 17:12_
 
 OK. I basically don't need an auto-formatter but the basic rules from https://github.com/charliermarsh/ruff/issues/1073. If they are available I can replace `flake8` (and if the fixers are available even `autopep8` can be replaced).
-
----
-
-_Referenced in [astral-sh/ruff#2397](../../astral-sh/ruff/issues/2397.md) on 2023-01-31 14:22_
 
 ---

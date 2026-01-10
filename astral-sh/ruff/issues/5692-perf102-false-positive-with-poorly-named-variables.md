@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-11T16:41:43Z
 updated_at: 2023-07-14T19:42:49Z
 url: https://github.com/astral-sh/ruff/issues/5692
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # PERF102 - False Positive with Poorly Named Variables
@@ -75,10 +75,6 @@ _Comment by @charliermarsh on 2023-07-13 00:19_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-07-14 13:46_
-
----
-
-_Referenced in [astral-sh/ruff#5763](../../astral-sh/ruff/pulls/5763.md) on 2023-07-14 18:09_
 
 ---
 

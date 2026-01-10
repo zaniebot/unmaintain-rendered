@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-12T03:40:57Z
 updated_at: 2023-04-20T00:01:11Z
 url: https://github.com/astral-sh/ruff/issues/3943
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # UP031 doesn't detect % on new line
@@ -56,10 +56,6 @@ I _think_ we don't flag this because we're not yet capable of fixing it. But, we
 ---
 
 _Label `bug` added by @charliermarsh on 2023-04-12 03:43_
-
----
-
-_Referenced in [astral-sh/ruff#3953](../../astral-sh/ruff/pulls/3953.md) on 2023-04-13 03:38_
 
 ---
 

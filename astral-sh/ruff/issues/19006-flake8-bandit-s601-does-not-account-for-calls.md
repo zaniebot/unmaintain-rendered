@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-28T00:13:41Z
 updated_at: 2025-07-04T04:49:00Z
 url: https://github.com/astral-sh/ruff/issues/19006
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # [`flake8-bandit`] `S601` does not account for calls through clients
@@ -44,10 +44,6 @@ playground
 
 ---
 
-_Referenced in [astral-sh/ruff#18972](../../astral-sh/ruff/issues/18972.md) on 2025-06-28 00:14_
-
----
-
 _Comment by @ntBre on 2025-06-30 13:24_
 
 I think this makes sense and is arguably a bug in the rule. We only check for the qualified path `paramiko.exec_command`, as you said:
@@ -69,9 +65,5 @@ _Label `rule` added by @ntBre on 2025-06-30 13:24_
 _Comment by @CodeMan62 on 2025-07-04 04:49_
 
 I am fixing it 
-
----
-
-_Referenced in [astral-sh/ruff#19149](../../astral-sh/ruff/pulls/19149.md) on 2025-07-04 17:50_
 
 ---

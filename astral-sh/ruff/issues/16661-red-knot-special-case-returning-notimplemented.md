@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-12T05:00:45Z
 updated_at: 2025-03-30T18:06:14Z
 url: https://github.com/astral-sh/ruff/issues/16661
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [red-knot] special-case returning NotImplemented
@@ -77,10 +77,6 @@ _Assigned to @cake-monotone by @carljm on 2025-03-24 18:22_
 ---
 
 _Added to milestone `Red Knot Alpha` by @carljm on 2025-03-27 18:33_
-
----
-
-_Referenced in [astral-sh/ruff#17034](../../astral-sh/ruff/pulls/17034.md) on 2025-03-28 11:48_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-13T16:11:34Z
 updated_at: 2024-02-01T19:35:06Z
 url: https://github.com/astral-sh/ruff/issues/7350
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # CLI: Deprecate `--show-sources` in favor of `--output_format <concise|full>`
@@ -32,18 +32,6 @@ In #7349 the default behavior is changed to `--show-sources` / `--format full`.
 
 ---
 
-_Referenced in [astral-sh/ruff#7352](../../astral-sh/ruff/issues/7352.md) on 2023-09-13 16:21_
-
----
-
-_Referenced in [astral-sh/ruff#7349](../../astral-sh/ruff/issues/7349.md) on 2023-09-13 16:23_
-
----
-
-_Referenced in [astral-sh/ruff#7353](../../astral-sh/ruff/issues/7353.md) on 2023-09-13 16:25_
-
----
-
 _Label `cli` added by @zanieb on 2023-09-13 16:26_
 
 ---
@@ -56,14 +44,6 @@ _Renamed from "CLI: Deprecate `--show-sources` in favor of `--format <concise|fu
 
 ---
 
-_Referenced in [astral-sh/ruff#9687](../../astral-sh/ruff/pulls/9687.md) on 2024-01-29 19:21_
-
----
-
 _Closed by @zanieb on 2024-02-01 19:35_
-
----
-
-_Referenced in [astral-sh/ruff#19552](../../astral-sh/ruff/issues/19552.md) on 2025-07-31 20:20_
 
 ---

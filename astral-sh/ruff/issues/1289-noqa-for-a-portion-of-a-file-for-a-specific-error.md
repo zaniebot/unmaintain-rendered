@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-19T10:09:48Z
 updated_at: 2023-05-13T13:05:45Z
 url: https://github.com/astral-sh/ruff/issues/1289
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # noqa for a portion of a file for a specific error
@@ -66,10 +66,6 @@ Yeah that makes sense to me. I don't know what the syntax will be, but I think i
 ---
 
 _Label `noqa` added by @charliermarsh on 2023-03-13 02:22_
-
----
-
-_Referenced in [astral-sh/ruff#3711](../../astral-sh/ruff/issues/3711.md) on 2023-05-13 11:48_
 
 ---
 

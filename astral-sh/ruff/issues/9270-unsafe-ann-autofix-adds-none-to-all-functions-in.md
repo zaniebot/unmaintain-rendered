@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-25T03:17:08Z
 updated_at: 2023-12-25T14:03:25Z
 url: https://github.com/astral-sh/ruff/issues/9270
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # unsafe ANN autofix adds -> None to all functions in pyi files
@@ -36,10 +36,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-12-25 13:43_
 ---
 
 _Label `bug` added by @charliermarsh on 2023-12-25 13:43_
-
----
-
-_Referenced in [astral-sh/ruff#9277](../../astral-sh/ruff/pulls/9277.md) on 2023-12-25 13:47_
 
 ---
 

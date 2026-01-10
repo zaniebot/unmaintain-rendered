@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-06T15:20:59Z
 updated_at: 2025-04-28T18:32:35Z
 url: https://github.com/astral-sh/ruff/issues/17233
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] Use relative paths in diagnostics rather than absolute paths
@@ -55,10 +55,6 @@ One question is whether the paths should be relative to the project root or the 
 ---
 
 _Assigned to @BurntSushi by @BurntSushi on 2025-04-07 12:14_
-
----
-
-_Referenced in [astral-sh/ruff#17686](../../astral-sh/ruff/pulls/17686.md) on 2025-04-28 17:05_
 
 ---
 

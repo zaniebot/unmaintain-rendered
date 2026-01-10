@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-14T10:03:20Z
 updated_at: 2023-10-14T19:00:24Z
 url: https://github.com/astral-sh/ruff/issues/7958
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # cache-dir in configfiile should be relative to that configfile
@@ -79,14 +79,6 @@ _Label `bug` added by @charliermarsh on 2023-10-14 18:48_
 
 ---
 
-_Referenced in [astral-sh/ruff#7962](../../astral-sh/ruff/pulls/7962.md) on 2023-10-14 18:51_
-
----
-
 _Closed by @charliermarsh on 2023-10-14 19:00_
-
----
-
-_Referenced in [python/mypy#7967](../../python/mypy/issues/7967.md) on 2025-10-07 12:44_
 
 ---

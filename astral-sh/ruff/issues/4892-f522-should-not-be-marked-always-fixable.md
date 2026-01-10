@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-06-06T06:05:29Z
 updated_at: 2023-06-06T13:14:24Z
 url: https://github.com/astral-sh/ruff/issues/4892
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # F522 should not be marked always-fixable
@@ -31,14 +31,6 @@ Discovered by #4822.
 
 ---
 
-_Referenced in [astral-sh/ruff#4893](../../astral-sh/ruff/pulls/4893.md) on 2023-06-06 06:18_
-
----
-
 _Closed by @charliermarsh on 2023-06-06 13:14_
-
----
-
-_Referenced in [astral-sh/ruff#4972](../../astral-sh/ruff/issues/4972.md) on 2023-06-09 22:04_
 
 ---

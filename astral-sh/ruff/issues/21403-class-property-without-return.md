@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-12T13:21:26Z
 updated_at: 2025-11-26T08:31:23Z
 url: https://github.com/astral-sh/ruff/issues/21403
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # Class property without return
@@ -92,10 +92,6 @@ Will it be ignored if `abc.abstractmethod` is one of the decorators?
 _Comment by @MichaReiser on 2025-11-19 11:14_
 
 Yes, it should ignore abstract methods. We could even consider checking if `class` inherits `Protocol` (only directly) and, if so, ignore the error
-
----
-
-_Referenced in [astral-sh/ruff#21535](../../astral-sh/ruff/pulls/21535.md) on 2025-11-20 08:49_
 
 ---
 

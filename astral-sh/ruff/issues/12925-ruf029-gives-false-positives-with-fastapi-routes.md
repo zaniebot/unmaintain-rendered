@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-16T10:18:48Z
 updated_at: 2024-08-17T14:25:16Z
 url: https://github.com/astral-sh/ruff/issues/12925
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # RUF029 gives false positives with FastApi routes
@@ -86,14 +86,6 @@ Ah, nice. That resolves my concern about the added complexity. Given that we alr
 
 ---
 
-_Referenced in [astral-sh/ruff#12938](../../astral-sh/ruff/pulls/12938.md) on 2024-08-16 16:28_
-
----
-
 _Closed by @AlexWaygood on 2024-08-17 14:25_
-
----
-
-_Referenced in [astral-sh/ruff#14903](../../astral-sh/ruff/issues/14903.md) on 2024-12-10 23:55_
 
 ---

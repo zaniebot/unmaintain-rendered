@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-04T12:56:51Z
 updated_at: 2025-12-31T15:54:20Z
 url: https://github.com/astral-sh/ruff/issues/17203
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Use new diagnostic functionality
@@ -86,19 +86,7 @@ _Label `diagnostics` added by @dhruvmanila on 2025-04-04 13:00_
 
 ---
 
-_Referenced in [astral-sh/ruff#18516](../../astral-sh/ruff/pulls/18516.md) on 2025-06-09 21:23_
-
----
-
-_Referenced in [astral-sh/ruff#18541](../../astral-sh/ruff/pulls/18541.md) on 2025-06-11 10:18_
-
----
-
 _Renamed from "Multi-span diagnostics" to "Use new diagnostic functionality" by @ntBre on 2025-08-01 15:13_
-
----
-
-_Referenced in [astral-sh/ruff#19690](../../astral-sh/ruff/issues/19690.md) on 2025-08-01 15:16_
 
 ---
 
@@ -106,17 +94,9 @@ _Assigned to @ntBre by @ntBre on 2025-08-12 21:14_
 
 ---
 
-_Referenced in [astral-sh/ruff#19886](../../astral-sh/ruff/pulls/19886.md) on 2025-08-12 21:40_
-
----
-
 _Comment by @Avasam on 2025-09-16 01:16_
 
 - https://github.com/astral-sh/ruff/pull/17003#discussion_r2030543917 also seems to be on hold waiting for multi-span diagnostics
-
----
-
-_Referenced in [astral-sh/ruff#17003](../../astral-sh/ruff/pulls/17003.md) on 2025-09-16 01:20_
 
 ---
 
@@ -137,9 +117,5 @@ A003 Python builtin is shadowed by method `str` from line 14
 ```
 
 underlining the _use_ of the shadowed name and pointing back to the location in the message. We could now add a secondary annotation where the shadowing takes place, on line 14 in this case.
-
----
-
-_Referenced in [astral-sh/ruff#20868](../../astral-sh/ruff/pulls/20868.md) on 2025-12-16 20:11_
 
 ---

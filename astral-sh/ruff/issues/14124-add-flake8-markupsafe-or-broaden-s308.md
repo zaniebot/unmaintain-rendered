@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-06T08:10:11Z
 updated_at: 2024-11-11T18:30:04Z
 url: https://github.com/astral-sh/ruff/issues/14124
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Add flake8-markupsafe or broaden S308
@@ -48,10 +48,6 @@ I could not find a single open-source repository using this plugin, so we can ex
 Note that [mako](https://github.com/astral-sh/ruff/issues/3653) and jinja files are currently not supported.
 
 
-
----
-
-_Referenced in [astral-sh/ruff#14224](../../astral-sh/ruff/pulls/14224.md) on 2024-11-09 12:35_
 
 ---
 

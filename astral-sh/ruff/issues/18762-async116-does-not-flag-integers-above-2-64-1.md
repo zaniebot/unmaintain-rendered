@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-18T17:28:04Z
 updated_at: 2025-06-19T09:37:21Z
 url: https://github.com/astral-sh/ruff/issues/18762
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # ASYNC116 does not flag integers above `2^64 - 1`
@@ -66,10 +66,6 @@ _Label `bug` added by @ntBre on 2025-06-18 17:37_
 ---
 
 _Label `rule` added by @ntBre on 2025-06-18 17:37_
-
----
-
-_Referenced in [astral-sh/ruff#18767](../../astral-sh/ruff/pulls/18767.md) on 2025-06-18 20:03_
 
 ---
 

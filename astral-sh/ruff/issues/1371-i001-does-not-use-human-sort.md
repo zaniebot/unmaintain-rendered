@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-12-25T10:20:27Z
 updated_at: 2022-12-25T23:11:42Z
 url: https://github.com/astral-sh/ruff/issues/1371
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:27Z
 ```
 
 # I001 does not use human sort.
@@ -107,10 +107,6 @@ The error ranges could be improved too but it will take a bit more care. Right n
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2022-12-25 22:26_
-
----
-
-_Referenced in [astral-sh/ruff#1374](../../astral-sh/ruff/pulls/1374.md) on 2022-12-25 23:11_
 
 ---
 

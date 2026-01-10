@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-26T06:57:12Z
 updated_at: 2024-04-02T03:47:21Z
 url: https://github.com/astral-sh/ruff/issues/10599
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # `unconventional-import-alias` (ICN001) always flags imports without an `as` clause
@@ -62,10 +62,6 @@ Semi-related is that, with the above configuration, `import django.conf.settings
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-04-02 03:02_
-
----
-
-_Referenced in [astral-sh/ruff#10729](../../astral-sh/ruff/pulls/10729.md) on 2024-04-02 03:34_
 
 ---
 

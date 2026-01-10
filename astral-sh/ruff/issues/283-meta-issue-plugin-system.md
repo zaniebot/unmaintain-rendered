@@ -8,9 +8,9 @@ labels:
   - core
 assignees: []
 created_at: 2022-09-29T09:42:17Z
-updated_at: 2025-11-17T08:18:18Z
+updated_at: 2026-01-09T08:39:03Z
 url: https://github.com/astral-sh/ruff/issues/283
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # Meta issue: plugin system
@@ -87,10 +87,6 @@ Interesting, Fixit / LibCST has something kind of like that too. It's not quite 
 
 ---
 
-_Referenced in [astral-sh/ruff#410](../../astral-sh/ruff/issues/410.md) on 2022-10-14 23:04_
-
----
-
 _Comment by @thejcannon on 2022-10-25 15:25_
 
 My 2c. `flake8`'s plugin support is pretty rudimentary ([operates on tokens/lines plus a handfull of metadata](https://flake8.pycqa.org/en/latest/plugin-development/plugin-parameters.html)). Therefore if you supported Python plugins, you likely could craft it in a way that supporting `flake8` plugins out-of-the-box(-ish) would be feasible. 
@@ -110,14 +106,6 @@ Another idea: we could build a plug-in system atop https://github.com/ast-grep/a
 _Comment by @charliermarsh on 2022-10-27 12:29_
 
 (That tool is itself built atop tree-sitter.)
-
----
-
-_Referenced in [ast-grep/ast-grep#80](../../ast-grep/ast-grep/issues/80.md) on 2022-10-27 14:57_
-
----
-
-_Referenced in [astral-sh/ruff#516](../../astral-sh/ruff/issues/516.md) on 2022-10-30 13:35_
 
 ---
 
@@ -234,10 +222,6 @@ Sweet! The banned relative import rule I can definitely do today.
 
 ---
 
-_Referenced in [astral-sh/ruff#789](../../astral-sh/ruff/pulls/789.md) on 2022-11-17 16:27_
-
----
-
 _Comment by @charliermarsh on 2022-11-17 17:39_
 
 @ofek -- `I252` (banned relative imports) just went out in `v0.0.125`.
@@ -342,14 +326,6 @@ You might be interested in some of the stuff in RustPython -- they generate the 
 _Comment by @ljodal on 2022-11-29 22:00_
 
 Nice, thanks for the links, I'll take a look :) I guess if I base it on that and just tweak it to be Python compatible it should be fairly easy to see the overhead as well
-
----
-
-_Referenced in [astral-sh/ruff#1046](../../astral-sh/ruff/issues/1046.md) on 2022-12-05 01:10_
-
----
-
-_Referenced in [astral-sh/ruff#1141](../../astral-sh/ruff/issues/1141.md) on 2022-12-08 18:46_
 
 ---
 
@@ -462,14 +438,6 @@ All this is to say that I would like to support plugins at some point, but it li
 
 ---
 
-_Referenced in [astral-sh/ruff#2257](../../astral-sh/ruff/issues/2257.md) on 2023-01-27 14:50_
-
----
-
-_Referenced in [sympy/sympy#24508](../../sympy/sympy/issues/24508.md) on 2023-02-23 10:33_
-
----
-
 _Comment by @muglug on 2023-03-06 05:52_
 
 Offering input from someone who doesn't use Ruff or Python, but who has rewritten a static analysis tool (with a large plugin ecosystem) in Rust that was originally in an interpreted language, I think you should stick with Rust as much as possible for plugins.
@@ -496,10 +464,6 @@ Just chiming in here to say that over at [Dagster](https://github.com/dagster-io
 
 ---
 
-_Referenced in [wagtail/wagtail#10324](../../wagtail/wagtail/pulls/10324.md) on 2023-04-12 21:34_
-
----
-
 _Comment by @AngellusMortis on 2023-05-02 06:47_
 
 I definitely think support for Python based plug-ins is critical. Probably more important then Rust plugin support (at least for prioritization and initial support, not saying never implemente Rust support). 
@@ -507,10 +471,6 @@ I definitely think support for Python based plug-ins is critical. Probably more 
 The repo / open source community has already showed that the tool itself is willing to accept a ton of popular plugin linting rules. So if the rules are open source, they can be written in Rust and added right into the repo without a plugin. 
 
 However, there are going to be a lot of rules that are not open source or popular. Especially ones written by orgs. The bar to entry here probably needs to be as low as possible. What if the org/devs do not know Rust? They know Python for sure since this is a Python linter.
-
----
-
-_Referenced in [WordPress/openverse#2158](../../WordPress/openverse/pulls/2158.md) on 2023-05-25 00:26_
 
 ---
 
@@ -523,14 +483,6 @@ _Comment by @flying-sheep on 2023-06-19 09:12_
 Yeah, my crate hasn’t received much love, which I think is due to rST in general not receiving much love, especially outside the python community.
 
 I’m not sure if it would be up to the task of validating rST grammar, since there is no formal rST grammar, so I had to do an ad-hoc one, which is not finished. My crate shares that issue with other (equally partial) rST implementations.
-
----
-
-_Referenced in [astral-sh/ruff#1079](../../astral-sh/ruff/issues/1079.md) on 2023-07-14 18:47_
-
----
-
-_Referenced in [py-mine/mcstatus#590](../../py-mine/mcstatus/pulls/590.md) on 2023-07-16 12:21_
 
 ---
 
@@ -624,14 +576,6 @@ Small update if you might be considering Trustfall: at RustConf last week, @este
 
 ---
 
-_Referenced in [OCA/pylint-odoo#479](../../OCA/pylint-odoo/issues/479.md) on 2023-11-21 19:26_
-
----
-
-_Referenced in [alice-biometrics/meiga#69](../../alice-biometrics/meiga/issues/69.md) on 2023-11-23 14:03_
-
----
-
 _Comment by @Gnosnay on 2023-12-14 10:00_
 
 learned a lot from this long thread. May i know for now, if we wanna define our own syntax linter check with ruff, how should we do? 
@@ -708,25 +652,9 @@ It will probably be a while before we evaluate solutions for a plugin system bec
 
 ---
 
-_Referenced in [astral-sh/ruff#11637](../../astral-sh/ruff/issues/11637.md) on 2024-06-04 06:42_
-
----
-
-_Referenced in [Mirascope/mirascope#305](../../Mirascope/mirascope/issues/305.md) on 2024-06-11 01:35_
-
----
-
-_Referenced in [thunderbird/appointment#485](../../thunderbird/appointment/issues/485.md) on 2024-06-13 16:57_
-
----
-
 _Comment by @ssbarnea on 2024-06-26 07:34_
 
 One flake8 plugin that could be very useful to be covered by ruff would be [pydoclint](https://github.com/jsh9/pydoclint/). Even having external plugins, like called as shell commands would prove very useful, speed should not be no1 priority. In time plugin authors might rewrite them in rust, but for start a way to hook external ones would prove very useful.
-
----
-
-_Referenced in [jsh9/pydoclint#27](../../jsh9/pydoclint/issues/27.md) on 2024-06-26 07:41_
 
 ---
 
@@ -741,14 +669,6 @@ It sort of sounds to me that what some people are looking for is a way to run a 
 _Comment by @flying-sheep on 2024-07-25 21:16_
 
 A new blog post investigating Rust plugin systems, probably helpful! https://benw.is/posts/plugins-with-rust-and-wasi
-
----
-
-_Referenced in [pantsbuild/pants#21237](../../pantsbuild/pants/pulls/21237.md) on 2024-07-31 03:30_
-
----
-
-_Referenced in [astral-sh/ruff#12693](../../astral-sh/ruff/issues/12693.md) on 2024-08-05 17:37_
 
 ---
 
@@ -786,10 +706,6 @@ I have the same problem as @Dreamsorcerer for my team. `flake8` + `black` works 
 
 ---
 
-_Referenced in [neuralmagic/nm-actions#32](../../neuralmagic/nm-actions/pulls/32.md) on 2024-10-01 15:13_
-
----
-
 _Comment by @jd-solanki on 2024-10-07 05:38_
 
 Along with plugin system I would like to share great idea for beginners to lint their code who don't know how to write linting rules using AST or something else.
@@ -809,14 +725,6 @@ I had a look at ast-grep and it's pretty fantastic.  It is fast, it is written i
 Would it be possible to publish ruff's python ast parser as a crate, which ast-grep could be modified to use, and then ruff could use ast-grep's high level APIs for its plugin system?
 
 
-
----
-
-_Referenced in [alice-biometrics/meiga#79](../../alice-biometrics/meiga/pulls/79.md) on 2024-10-18 13:34_
-
----
-
-_Referenced in [deephaven/deephaven-plugins#1013](../../deephaven/deephaven-plugins/issues/1013.md) on 2024-11-12 14:30_
 
 ---
 
@@ -874,22 +782,6 @@ Has there been any progress on this? We'd love to be able to write custom rules,
 
 ---
 
-_Referenced in [apache/airflow#41641](../../apache/airflow/issues/41641.md) on 2025-01-02 12:57_
-
----
-
-_Referenced in [pola-rs/polars#21071](../../pola-rs/polars/pulls/21071.md) on 2025-02-04 10:44_
-
----
-
-_Referenced in [mozilla/addons#15333](../../mozilla/addons/issues/15333.md) on 2025-02-18 18:43_
-
----
-
-_Referenced in [openedx/openedx-filters#275](../../openedx/openedx-filters/pulls/275.md) on 2025-03-25 23:21_
-
----
-
 _Comment by @HerringtonDarkholme on 2025-05-13 04:00_
 
 Hi ast-grep author here. Recently ast-grep supports non tree-sitter parser like OXC, example POC https://github.com/ast-grep/ast-grep/pull/1970. 
@@ -905,10 +797,6 @@ _Comment by @blankform-co on 2025-06-05 17:08_
 Bump, had to switch off ruff because our team wanted features not supported by ruff but were already plugins for flake8.
 
 Sad because I loved ruff's speed and user experience.
-
----
-
-_Referenced in [astral-sh/ruff#18514](../../astral-sh/ruff/issues/18514.md) on 2025-06-06 20:54_
 
 ---
 
@@ -945,10 +833,6 @@ _Comment by @adam-azarchs on 2025-06-24 04:59_
 That particular lint rule also falls neatly into ast-grep or similar.
 
 I continue to assert that if you want lint rules written in python, use a python-based linter.  If you want to use `ruff` with such a thing, frameworks like pre-commit are pretty good for running multiple linters on a file, one of which can be `ruff` - we have a very large monorepo and we use pre-commit to run ruff plus a couple of other things.  Rust doesn't really have any advantage over python for the I/O-bound task of finding relevant files, so a framework written in python that invokes `ruff` plus other linters is fine, and probably makes more sense than trying to shoehorn a python interpreter into `ruff`.
-
----
-
-_Referenced in [element-hq/synapse#18733](../../element-hq/synapse/pulls/18733.md) on 2025-07-30 21:26_
 
 ---
 
@@ -992,26 +876,6 @@ Similarly a pre-made way to make that ruff Rust patching for feature additions +
 
 ---
 
-_Referenced in [lucasvieirasilva/nx-plugins#328](../../lucasvieirasilva/nx-plugins/issues/328.md) on 2025-08-19 14:06_
-
----
-
-_Referenced in [astral-sh/ruff#20218](../../astral-sh/ruff/issues/20218.md) on 2025-09-04 14:27_
-
----
-
-_Referenced in [astral-sh/ruff#20471](../../astral-sh/ruff/issues/20471.md) on 2025-10-06 19:53_
-
----
-
-_Referenced in [pymc-devs/pymc#7096](../../pymc-devs/pymc/issues/7096.md) on 2025-10-11 23:14_
-
----
-
-_Referenced in [astral-sh/ruff#21412](../../astral-sh/ruff/pulls/21412.md) on 2025-11-12 20:38_
-
----
-
 _Comment by @ashrub-holvi on 2025-11-14 16:11_
 
 It's already mentioned by issue creator, but I will repeat it in a bit different words - perhaps this issue can be considered as two separate features:
@@ -1035,5 +899,13 @@ The idea to simplify creating checks for simple cases - I played a bit with CST 
 I would be happy even if it would be double parsing by, for example, tree-sitter, which has Rust bindings, so, should be easy to add initial version just by using tree-sitter as it's and think about getting rid of double parsing later, it's just should be disabled by default. People who want it, should set `make-ruff-slower-by-enabling-custom-checks` option.
 
 Fully-featured plugins is just some compiled code which can do everything what is not possible by simple matching, it's either Rust-only or any language compiled to WebAssembly (dprint has plugins in webasm if I understand it correctly).
+
+---
+
+_Comment by @jcampbell05 on 2026-01-09 08:35_
+
+Just a thought but would it be possible for Ruff to develop a API for Rust or even just WASM plugins, then this idea of lightweight syntax / DSL could be served by such a plugin ?
+
+https://tartanllama.xyz/posts/wasm-plugins/
 
 ---

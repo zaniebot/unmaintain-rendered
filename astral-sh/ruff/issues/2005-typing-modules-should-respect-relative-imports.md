@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-19T22:28:28Z
 updated_at: 2023-02-07T02:08:00Z
 url: https://github.com/astral-sh/ruff/issues/2005
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # `typing-modules` should respect relative imports
@@ -23,19 +23,7 @@ See: #1976.
 
 ---
 
-_Referenced in [astral-sh/ruff#1976](../../astral-sh/ruff/issues/1976.md) on 2023-01-19 22:28_
-
----
-
 _Label `core` added by @charliermarsh on 2023-01-20 00:09_
-
----
-
-_Referenced in [astral-sh/ruff#2105](../../astral-sh/ruff/issues/2105.md) on 2023-01-23 14:18_
-
----
-
-_Referenced in [pypa/cibuildwheel#1405](../../pypa/cibuildwheel/pulls/1405.md) on 2023-01-23 20:09_
 
 ---
 
@@ -50,17 +38,9 @@ Some relevant code sections in case anyone wants to take this (played around a b
 
 ---
 
-_Referenced in [astral-sh/ruff#2613](../../astral-sh/ruff/issues/2613.md) on 2023-02-06 23:18_
-
----
-
 _Comment by @henryiii on 2023-02-07 01:15_
 
 Closed by https://github.com/charliermarsh/ruff/pull/2615 ?
-
----
-
-_Referenced in [astral-sh/ruff#2615](../../astral-sh/ruff/pulls/2615.md) on 2023-02-07 02:07_
 
 ---
 

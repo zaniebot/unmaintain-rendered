@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-08-08T10:22:48Z
 updated_at: 2024-02-29T16:28:58Z
 url: https://github.com/astral-sh/ruff/issues/6421
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # BLE001 rule with blind exception `Exception` is passing the check
@@ -117,9 +117,5 @@ Phrased another way: _I want to be able to strictly enforce always falling over 
 (I'm sure I've read a statement by Guido many years ago, saying it never makes sense to catch `MemoryError`, with essentially the same justification as explained here. I've since tried to find and reference that quote many times, without success, so it might just be my memory playing tricks ...)
 
 With this use case in mind, do you think it's strong enough to justify introducing a configuration parameter to control the strictness of `BLE001`? (Or perhaps it should be a separate code, but that's details that can be discussed later).
-
----
-
-_Referenced in [Aiven-Open/rohmu#169](../../Aiven-Open/rohmu/pulls/169.md) on 2024-02-29 14:25_
 
 ---

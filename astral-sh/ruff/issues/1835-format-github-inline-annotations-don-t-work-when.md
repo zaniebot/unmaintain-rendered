@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-12T22:14:03Z
 updated_at: 2023-10-09T14:35:04Z
 url: https://github.com/astral-sh/ruff/issues/1835
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # `--format=github` inline annotations don't work when running in a subdirectory
@@ -120,10 +120,6 @@ Ok cool. Regardless, I'll fix this.
 _Comment by @charliermarsh on 2023-01-12 22:50_
 
 (Thanks for trying that.)
-
----
-
-_Referenced in [astral-sh/ruff#1837](../../astral-sh/ruff/pulls/1837.md) on 2023-01-12 22:52_
 
 ---
 

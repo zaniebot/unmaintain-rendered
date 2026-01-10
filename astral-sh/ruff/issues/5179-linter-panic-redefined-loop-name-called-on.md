@@ -1,0 +1,196 @@
+```yaml
+number: 5179
+title: "[Linter panic] redefined_loop_name called on Statement that is not a With, For, or AsyncFor"
+type: issue
+state: closed
+author: Thomasdezeeuw
+labels:
+  - bug
+assignees: []
+created_at: 2023-06-19T12:55:44Z
+updated_at: 2023-06-20T02:58:24Z
+url: https://github.com/astral-sh/ruff/issues/5179
+synced_at: 2026-01-10T11:09:47Z
+```
+
+# [Linter panic] redefined_loop_name called on Statement that is not a With, For, or AsyncFor
+
+---
+
+_Issue opened by @Thomasdezeeuw on 2023-06-19 12:55_
+
+I was working on the caching stuff and hit the panic below. I don't hit this every time, so it could be because of some of my work on caching, but since the work is not related to the actual linter I doubt it.
+
+Ruff checked out at commit 097823b56d56e6b54175364e71a6d6c974bd3d46 (plus some caching commits). Linting the Jupyer Server repo, specifically: https://github.com/jupyter-server/jupyter_server/blob/d48843eea78fe2ee37608a767ceea3d0d2f71763/jupyter_server/nbconvert/handlers.py.
+
+Running following two commands panic.
+
+```bash
+cargo run --bin ruff jupyter_server
+cargo run --bin ruff jupyter_server/jupyter_server/services/nbconvert/handlers.py 
+```
+
+Adding `--isolated` doesn't panic.
+
+```bash
+cargo run --bin ruff jupyter_server --isolated
+cargo run --bin ruff jupyter_server/jupyter_server/services/nbconvert/handlers.py --isolated
+```
+
+Backtrace:
+
+```log
+    Finished dev [unoptimized + debuginfo] target(s) in 0.06s
+     Running `jupyter_server/`
+warning: Detected debug build without --no-cache.
+warning: Linting panicked /jupyter_server/jupyter_server/services/nbconvert/handlers.py: This indicates a bug in `ruff`. If you could open an issue at:
+
+https://github.com/astral-sh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+
+panicked at 'redefined_loop_name called on Statement that is not a With, For, or AsyncFor', crates/ruff/src/rules/pylint/rules/redefined_loop_name.rs:377:18
+Backtrace:    0: ruff_cli::panic::catch_unwind::{{closure}}
+             at ./src/panic.rs:31:25
+   1: <alloc::boxed::Box<F,A> as core::ops::function::Fn<Args>>::call
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/alloc/src/boxed.rs:1987:9
+   2: std::panicking::rust_panic_with_hook
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/std/src/panicking.rs:695:13
+   3: std::panicking::begin_panic_handler::{{closure}}
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/std/src/panicking.rs:580:13
+   4: std::sys_common::backtrace::__rust_end_short_backtrace
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/std/src/sys_common/backtrace.rs:150:18
+   5: rust_begin_unwind
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/std/src/panicking.rs:578:5
+   6: core::panicking::panic_fmt
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/core/src/panicking.rs:67:14
+   7: ruff::rules::pylint::rules::redefined_loop_name::redefined_loop_name
+             at /home/thomas/src/ruff/crates/ruff/src/rules/pylint/rules/redefined_loop_name.rs:377:18
+   8: <ruff::checkers::ast::Checker as ruff_python_ast::visitor::Visitor>::visit_stmt
+             at /home/thomas/src/ruff/crates/ruff/src/checkers/ast/mod.rs:1485:21
+   9: <ruff::checkers::ast::Checker as ruff_python_ast::visitor::Visitor>::visit_body
+             at /home/thomas/src/ruff/crates/ruff/src/checkers/ast/mod.rs:4082:13
+  10: ruff::checkers::ast::Checker::check_deferred_functions
+             at /home/thomas/src/ruff/crates/ruff/src/checkers/ast/mod.rs:4656:25
+  11: ruff::checkers::ast::check_ast
+             at /home/thomas/src/ruff/crates/ruff/src/checkers/ast/mod.rs:5278:5
+  12: ruff::linter::check_path
+             at /home/thomas/src/ruff/crates/ruff/src/linter.rs:140:40
+  13: ruff::linter::lint_only
+             at /home/thomas/src/ruff/crates/ruff/src/linter.rs:345:18
+  14: ruff_cli::diagnostics::lint_path
+             at ./src/diagnostics.rs:203:22
+  15: ruff_cli::commands::run::lint_path::{{closure}}
+             at ./src/commands/run.rs:226:9
+  16: std::panicking::try::do_call
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/std/src/panicking.rs:485:40
+  17: __rust_try
+  18: std::panicking::try
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/std/src/panicking.rs:449:19
+  19: std::panic::catch_unwind
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/std/src/panic.rs:140:14
+  20: ruff_cli::panic::catch_unwind
+             at ./src/panic.rs:40:18
+  21: ruff_cli::commands::run::lint_path
+             at ./src/commands/run.rs:225:18
+  22: ruff_cli::commands::run::run::{{closure}}
+             at ./src/commands/run.rs:133:21
+  23: core::ops::function::impls::<impl core::ops::function::FnMut<A> for &F>::call_mut
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/core/src/ops/function.rs:274:13
+  24: core::iter::adapters::map::map_fold::{{closure}}
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/core/src/iter/adapters/map.rs:84:28
+  25: core::iter::traits::iterator::Iterator::fold
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/core/src/iter/traits/iterator.rs:2482:21
+  26: <core::iter::adapters::map::Map<I,F> as core::iter::traits::iterator::Iterator>::fold
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/core/src/iter/adapters/map.rs:124:9
+  27: <rayon::iter::reduce::ReduceFolder<R,T> as rayon::iter::plumbing::Folder<T>>::consume_iter
+             at /home/thomas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.7.0/src/iter/reduce.rs:105:19
+  28: <rayon::iter::map::MapFolder<C,F> as rayon::iter::plumbing::Folder<T>>::consume_iter
+             at /home/thomas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.7.0/src/iter/map.rs:248:21
+  29: rayon::iter::plumbing::Producer::fold_with
+             at /home/thomas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.7.0/src/iter/plumbing/mod.rs:110:9
+  30: rayon::iter::plumbing::bridge_producer_consumer::helper
+             at /home/thomas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.7.0/src/iter/plumbing/mod.rs:438:13
+  31: rayon::iter::plumbing::bridge_producer_consumer::helper::{{closure}}
+             at /home/thomas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.7.0/src/iter/plumbing/mod.rs:427:21
+  32: rayon_core::join::join_context::call_b::{{closure}}
+             at /home/thomas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.11.0/src/join/mod.rs:129:25
+  33: rayon_core::job::JobResult<T>::call::{{closure}}
+             at /home/thomas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.11.0/src/job.rs:218:41
+  34: <core::panic::unwind_safe::AssertUnwindSafe<F> as core::ops::function::FnOnce<()>>::call_once
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/core/src/panic/unwind_safe.rs:271:9
+  35: std::panicking::try::do_call
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/std/src/panicking.rs:485:40
+  36: __rust_try
+  37: std::panicking::try
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/std/src/panicking.rs:449:19
+  38: std::panic::catch_unwind
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/std/src/panic.rs:140:14
+  39: rayon_core::unwind::halt_unwinding
+             at /home/thomas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.11.0/src/unwind.rs:17:5
+  40: rayon_core::job::JobResult<T>::call
+             at /home/thomas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.11.0/src/job.rs:218:15
+  41: <rayon_core::job::StackJob<L,F,R> as rayon_core::job::Job>::execute
+             at /home/thomas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.11.0/src/job.rs:120:32
+  42: rayon_core::job::JobRef::execute
+             at /home/thomas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.11.0/src/job.rs:64:9
+  43: rayon_core::registry::WorkerThread::execute
+             at /home/thomas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.11.0/src/registry.rs:874:9
+  44: rayon_core::registry::WorkerThread::wait_until_cold
+             at /home/thomas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.11.0/src/registry.rs:820:17
+  45: rayon_core::registry::WorkerThread::wait_until
+             at /home/thomas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.11.0/src/registry.rs:803:13
+  46: rayon_core::registry::main_loop
+             at /home/thomas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.11.0/src/registry.rs:948:5
+  47: rayon_core::registry::ThreadBuilder::run
+             at /home/thomas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.11.0/src/registry.rs:54:18
+  48: <rayon_core::registry::DefaultSpawn as rayon_core::registry::ThreadSpawn>::spawn::{{closure}}
+             at /home/thomas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-core-1.11.0/src/registry.rs:99:20
+  49: std::sys_common::backtrace::__rust_begin_short_backtrace
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/std/src/sys_common/backtrace.rs:134:18
+  50: std::thread::Builder::spawn_unchecked_::{{closure}}::{{closure}}
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/std/src/thread/mod.rs:526:17
+  51: <core::panic::unwind_safe::AssertUnwindSafe<F> as core::ops::function::FnOnce<()>>::call_once
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/core/src/panic/unwind_safe.rs:271:9
+  52: std::panicking::try::do_call
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/std/src/panicking.rs:485:40
+  53: __rust_try
+  54: std::panicking::try
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/std/src/panicking.rs:449:19
+  55: std::panic::catch_unwind
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/std/src/panic.rs:140:14
+  56: std::thread::Builder::spawn_unchecked_::{{closure}}
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/std/src/thread/mod.rs:525:30
+  57: core::ops::function::FnOnce::call_once{{vtable.shim}}
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/core/src/ops/function.rs:250:5
+  58: <alloc::boxed::Box<F,A> as core::ops::function::FnOnce<Args>>::call_once
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/alloc/src/boxed.rs:1973:9
+  59: <alloc::boxed::Box<F,A> as core::ops::function::FnOnce<Args>>::call_once
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/alloc/src/boxed.rs:1973:9
+  60: std::sys::unix::thread::Thread::new::thread_start
+             at /rustc/90c541806f23a127002de5b4038be731ba1458ca/library/std/src/sys/unix/thread.rs:108:17
+  61: <unknown>
+  62: <unknown>
+```
+
+---
+
+_Label `bug` added by @Thomasdezeeuw on 2023-06-19 12:55_
+
+---
+
+_Comment by @charliermarsh on 2023-06-19 13:05_
+
+Is your branch up-to-date? I believe this was fixed in #5125 (that panic message doesn't exist in the codebase anymore).
+
+---
+
+_Comment by @charliermarsh on 2023-06-20 02:58_
+
+I believe this is fixed upstream, but let me know if not!
+
+---
+
+_Closed by @charliermarsh on 2023-06-20 02:58_
+
+---

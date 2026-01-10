@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-30T12:38:38Z
 updated_at: 2025-01-15T20:42:02Z
 url: https://github.com/astral-sh/ruff/issues/13996
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] Clarify the difference between `CallOutcome::return_ty` and `::return_ty_result`
@@ -31,14 +31,6 @@ We should improve the documentation or consider unifying the two if all that's d
 ---
 
 _Label `red-knot` added by @MichaReiser on 2024-10-30 12:38_
-
----
-
-_Referenced in [astral-sh/ruff#14012](../../astral-sh/ruff/issues/14012.md) on 2024-10-31 12:52_
-
----
-
-_Referenced in [astral-sh/ruff#14137](../../astral-sh/ruff/pulls/14137.md) on 2024-11-07 09:13_
 
 ---
 

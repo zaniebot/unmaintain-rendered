@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-25T09:21:57Z
 updated_at: 2023-10-18T01:26:40Z
 url: https://github.com/astral-sh/ruff/issues/7649
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter: Add `preview` option
@@ -32,10 +32,6 @@ _Label `formatter` added by @MichaReiser on 2023-09-25 09:22_
 
 ---
 
-_Referenced in [astral-sh/ruff#7642](../../astral-sh/ruff/issues/7642.md) on 2023-09-25 09:23_
-
----
-
 _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-09-25 09:40_
 
 ---
@@ -45,10 +41,6 @@ _Removed from milestone `Formatter: Stable` by @MichaReiser on 2023-09-25 09:40_
 ---
 
 _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-09-25 09:40_
-
----
-
-_Referenced in [astral-sh/ruff#8002](../../astral-sh/ruff/pulls/8002.md) on 2023-10-17 06:48_
 
 ---
 

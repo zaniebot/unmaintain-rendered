@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-25T09:13:13Z
 updated_at: 2023-10-20T23:08:28Z
 url: https://github.com/astral-sh/ruff/issues/7647
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Document rules potentially conflicting with the formatter
@@ -24,10 +24,6 @@ Update the documentation of lint-rules that potentially conflict with the format
 
 - [line-too-long](https://beta.ruff.rs/docs/rules/line-too-long/)
 - [single-line-implicit-string-concatenation](https://beta.ruff.rs/docs/rules/single-line-implicit-string-concatenation/) (could be annoying when the formatter collapses implicit strings)
-
----
-
-_Referenced in [astral-sh/ruff#7642](../../astral-sh/ruff/issues/7642.md) on 2023-09-25 09:23_
 
 ---
 
@@ -58,10 +54,6 @@ _Comment by @charliermarsh on 2023-09-26 17:48_
 _Comment by @ngnpope on 2023-09-26 17:49_
 
 Yes, my mistake!
-
----
-
-_Referenced in [astral-sh/ruff#7732](../../astral-sh/ruff/pulls/7732.md) on 2023-10-01 03:33_
 
 ---
 

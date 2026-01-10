@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-10T16:36:13Z
 updated_at: 2023-10-10T20:11:15Z
 url: https://github.com/astral-sh/ruff/issues/7899
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Unable to parse '.ruff.toml' when configured for Ruff linter
@@ -198,10 +198,6 @@ I saw the second, #7514, but thought that an existing cli option was renamed, bu
 
 So I'll go and mention that. I really didn't catch that it was a new feature from the release notes, I caught that `lint` was a new section though. 
 Some projects, like the Python documentation, or CMake documentation add at what version a feature was added. Is it something that would be worth it for your project? (I see it is very fast-moving, congratulations for your work!)
-
----
-
-_Referenced in [oxsecurity/megalinter#2995](../../oxsecurity/megalinter/issues/2995.md) on 2023-10-10 17:16_
 
 ---
 

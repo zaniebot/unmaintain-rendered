@@ -1,0 +1,577 @@
+```yaml
+number: 1149
+title: Support baselines, i.e., ignore existing errors for incremental adoption
+type: issue
+state: open
+author: edgarrmondragon
+labels:
+  - core
+  - suppression
+assignees: []
+created_at: 2022-12-08T23:59:35Z
+updated_at: 2025-12-16T12:39:52Z
+url: https://github.com/astral-sh/ruff/issues/1149
+synced_at: 2026-01-10T11:09:43Z
+```
+
+# Support baselines, i.e., ignore existing errors for incremental adoption
+
+---
+
+_Issue opened by @edgarrmondragon on 2022-12-08 23:59_
+
+Baselines would allow developers to introduce Ruff to their codebase incrementally by ignoring existing errors and address them as they reappear when making changes to the code.
+
+Supported by some tools in the flake8 ecosystem:
+
+- Bandit: https://bandit.readthedocs.io/en/latest/start.html#baseline
+- Flakeheaven: https://wemake-python-styleguide.readthedocs.io/en/latest/pages/usage/integrations/flakeheaven.html#legacy-first-1
+
+A very basic proposal for this in ruff:
+
+### In the CLI
+
+```shell
+ruff . --exit-zero --format baseline > .ruff_baseline
+ruff . --baseline .ruff_baseline  # doesn't report any errors
+```
+
+### In pyproject.toml
+
+```toml
+[tool.ruff]
+baseline = ".ruff_baseline"
+```
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2022-12-09 04:43_
+
+---
+
+_Label `configuration` added by @charliermarsh on 2022-12-09 04:43_
+
+---
+
+_Comment by @charliermarsh on 2022-12-09 04:47_
+
+That's interesting! I've never seen this before. I think we could support it? I'd been hoping that `--add-noqa` would serve this purpose. What do you see as the strengths of a baseline file vis-a-vis that workflow?
+
+One point of confusion for me w/r/t the baseline file is that if it's just storing errors + line numbers, then if you edit a file (e.g., add a function to the top of a file that has some ignored errors), doesn't the baseline get invalidated? Since all the errors are pushed to new lines?
+
+
+---
+
+_Comment by @jfmengels on 2022-12-30 22:45_
+
+I would recommend looking into what [`elm-review`](https://elm-review.com/) did, with its error suppression system. I described the system in this [blog post](https://jfmengels.net/stop-the-bleed/). The baseline doesn't include the line numbers — but instead counts the number of problems per file and per rule — meaning it doesn't suffer from the problem @charliermarsh was rightfully wary of.
+
+My experience with this system is very positive. I would definitely recommend it over adding a bunch of noqa comments everywhere, because now it becomes unclear what purposefully got a `noqa` and what got one because someone used `--add-noqa` because there were too many errors. It's also a better system than turning the rules on as "warnings" (which ruff doesn't support but IMO shouldn't) which some people tend to do when there are too many existing errors.
+
+FYI, `elm-review` is a very beloved linter for the Elm language, and it supports neither `noqa` comments nor severity levels (warning/error), only ignored files through the configuration and this suppression/baseline system. And it's working really well.
+Some more information around this in its [documentation](https://package.elm-lang.org/packages/jfmengels/elm-review/latest/#is-there-a-way-to-ignore-errors-)
+
+Happy to answer any questions on the topic (and linters in general 😁)
+
+---
+
+_Label `enhancement` removed by @charliermarsh on 2022-12-31 18:15_
+
+---
+
+_Label `configuration` removed by @charliermarsh on 2022-12-31 18:15_
+
+---
+
+_Label `core` added by @charliermarsh on 2022-12-31 18:15_
+
+---
+
+_Label `noqa` added by @charliermarsh on 2022-12-31 18:15_
+
+---
+
+_Comment by @xmo-odoo on 2023-01-17 14:32_
+
+> but instead counts the number of problems per file and per rule
+
+That means it can't flag an issue being moved around, or code being rewritten but reintroducing the exact same issue it removed, right?
+
+(though I guess as developers learn about the new pattern they would hopefully stop introducing them entirely, and thus the odds of this occuring would diminish over time, so from a cost/benefit point of view it seems like a rather nice heuristic).
+
+Although what happens if a new issue is detected, does elm-review just output all the issues of the file? It can differentiate if it's a completely novel issue but if it's an additional occurrence of an existing issue it can't distinguish them can it?
+
+---
+
+_Comment by @jfmengels on 2023-01-17 15:15_
+
+> That means it can't flag an issue being moved around, or code being rewritten but reintroducing the exact same issue it removed, right?
+
+Correct. Though it can flag an issue if it's moved around from one file to another, just not in the same file. Also, `elm-review` updates the suppression files silently when it's being run (to remove the pain point of having to re-run the linter to update those files, we're trying to encourage good behavior not punish it), so if you run remove a problem, run `elm-review` (which updates the suppression files), reintroduce an error and finally run `elm-review` again, then it will actually catch the problem. 
+
+As you say, you can basically swap one error in one file for another. While it's not necessarily always true (but generally is), this is fine as long as the severity of all the problems reported by a rule are the same, because you're not making the code necessarily worse, you're keeping it as it was before. And this is the worst scenario with this system, which IMO is a pretty good tradeoff considering the pros and cons of alternative solutions.
+
+As for the "moving" part, I think it's not a good thing to do things based on the line number. For instance, if I'm working on a file and adding a new function on line 100, then run the linter that tells me I now need to fix a suppressed/baseline error that was on line 500 (but is now on line 520), then that gives a very poor experience. The advice you'll likely get will be "oh you didn't touch it, so just suppress the error once again", which leads to a common habit of suppressing errors (and I mean that in a bad way).
+
+> Although what happens if a new issue is detected, does elm-review just output all the issues of the file?
+
+Exactly, it outputs all the issues of the file for that specific rule. This is what the output looks like (focus on the orange parts in this example):
+![](https://jfmengels.net/static/e14611ccb5e17b7843300f55b75bba3a/64d87/output-when-more-errors.png)
+
+---
+
+_Comment by @xmo-odoo on 2023-01-18 06:47_
+
+> As for the "moving" part, I think it's not a good thing to do things based on the line number. For instance, if I'm working on a file and adding a new function on line 100, then run the linter that tells me I now need to fix a suppressed/baseline error that was on line 500 (but is now on line 520), then that gives a very poor experience. The advice you'll likely get will be "oh you didn't touch it, so just suppress the error once again", which leads to a common habit of suppressing errors (and I mean that in a bad way).
+
+Oh I agree with that, you'd need to either store the *sequence* of issues which would still have false positives (when the relative ordering of different issue-types doesn't change), or you'd need the diff information in order to adjust the line numbers which would be a lot more work, hence my mention of cost/benefit in the original comment.
+
+> Exactly, it outputs all the issues of the file for that specific rule. This is what the output looks like (focus on the orange parts in this example):
+
+Makes sense, thanks for the explanations.
+
+---
+
+_Comment by @jfmengels on 2023-01-18 09:56_
+
+For more information on this, I opened a similar issue in ESLint very recently: https://github.com/eslint/eslint/issues/16755
+
+Another prior art is [`ember-template-lint's TODO system`](https://github.com/ember-template-lint/ember-template-lint/blob/master/docs/todos.md). A few tradeoffs that they chose went for:
+- There is a separate file for every suppressed error, with a hash of the contents in the file name. This is great for avoiding Git conflicts (which happen more in my system with a single file)
+- The file contains some information about the error, including the position of the error in the file
+- The date of creation is in the file's contents, which allows them to "snooze" errors after a set amount of time.
+
+Reasons why I didn't go for some of these (that system is older than what `elm-review` did):
+- Snoozing errors is IMO not a great system. Errors will show up after a set amount of time, and fail unrelated builds. If I come back to a project after6 months, I don't want to have fix all the errors that now get reported. Instead `elm-review` have a small reminder like "I found no errors, but there are still 12 suppressed errors to address".
+- Since the file contains the position, everytime the position gets changed because of unrelated changes above it, the file needs to be regenerated (and I imagine developers just do that constantly without thinking too much? I can't see that not happening)
+- Since the files get regenerated all the time because of the previous bullet point, the date of creation also gets changed every time. Meaning that in often changed files, you'll never get reminders for the errors in those files. Snoozing and re-creating these files with hashes are IMO features that don't work well together.
+- I like the conflict-less parts, but I went for a single file, because it makes it easy to have an overview of the suppressed errors (which rules are suppressed, how many errors are suppressed) without having to execute the file. Having plenty of files didn't give a good overview IMO.
+
+---
+
+_Comment by @xmo-odoo on 2023-01-18 10:15_
+
+> I like the conflict-less parts, but I went for a single file, because it makes it easy to have an overview of the suppressed errors (which rules are suppressed, how many errors are suppressed) without having to execute the file. Having plenty of files didn't give a good overview IMO.
+
+This should be quite easy to resolve using standard shell tools though e.g.
+
+    tail -n+1 review/suppressed/*
+
+will display the name of every file followed by its content, or maybe
+
+    tail -n+1 $(find suppressed -type f)
+
+if intermediate subdirectories get added (`less` wants every parameter to be a file)
+
+Of course it depends what you want specifically in terms of overview.
+
+But maybe ruff could support both styles by accepting both baseline file and baseline directory in which case it'd merge all the JSON files?
+
+---
+
+_Comment by @jfmengels on 2023-01-18 10:48_
+
+This is an example of a `.lint-todo` folder that I could find: https://github.com/dfreeman/ember-truncate/tree/786b812d4e7993c5ba253f5af8a984ed40976291/.lint-todo
+
+I find that neither the file structure neither the file's contents are easy to get an overview.
+In comparison, this is what you get for `elm-review`: https://github.com/jfmengels/elm-spa-example/tree/46591cb15b55136afed1a25fe1a5563545a1b3de/review/suppressed
+
+Here, I don't have to run any tool, know any bash-fu, or even leave GitHub to see what's happening. In this last example, I can clearly see which rules have been suppressed, and then I can look at those files to see how many suppressed errors there are.
+
+If I review a GitHub PR, it is easy to see whether new rules are being suppressed or more errors are being suppressed, which allows me to leave a comment asking my colleague whether this was necessary, and start a conversation. We ideally want those numbers to go down, not up, so talking it out is a healthy practice IMO.
+
+With `ember-template-lint`'s approach, I might see 10 removed files and +/- 10 added files, and I'm going to need to dig into all of those to see whether things got better, worse or (because they're location-based and often re-generate) things stayed the same.
+
+> support both styles
+
+I don't think that having more choices for these things is beneficial in general, as that will make it harder to maintain things, confuse the users and split the community in how you do things. And you might end up with the worst of both worlds instead of the best of both worlds.
+
+> by accepting both baseline file and baseline directory
+
+Can you clarify what you have in mind with baseline file and baseline directory?
+
+---
+
+_Comment by @xmo-odoo on 2023-01-18 11:10_
+
+> With `ember-template-lint`'s approach, I might see 10 removed files and +/- 10 added files, and I'm going to need to dig into all of those to see whether things got better, worse or (because they're location-based and often re-generate) things stayed the same.
+
+Right but that could just be that a location-based toplevel is the wrong approach.
+
+> > support both styles
+> 
+> I don't think that having more choices for these things is beneficial in general, as that will make it harder to maintain things, confuse the users and split the community in how you do things. And you might end up with the worst of both worlds instead of the best of both worlds.
+
+Both have advantages and drawbacks though, and justifiably so. It's also not exactly rare, both Elm and Rust will let you split a single module file into a module directory after all.
+
+> > by accepting both baseline file and baseline directory
+> 
+> Can you clarify what you have in mind with baseline file and baseline directory?
+
+Exactly that?
+
+For instance in your elm example each check has a JSON file with any number of entries, hence every two PRs which add or remove occurrences in the same category might conflict (even more so because of JSON's trailing-comma issues).
+
+However each check could be a directory then containing a file for each suppression `entry`. You'd still have a conflict if two PRs remove different occurrences in the same file, however that would significantly decrease the conflict likelihood, and the conflict in the suppression files would likely be paired with a conflict in the code file itself.
+
+> If I review a GitHub PR, it is easy to see whether new rules are being suppressed or more errors are being suppressed, which allows me to leave a comment asking my colleague whether this was necessary, and start a conversation. We ideally want those numbers to go down, not up, so talking it out is a healthy practice IMO.
+
+That can be done either way, a diff (whether `git show` or github files tab) will give you pretty much the same information. 
+
+The ember diffs will be noisier because it has additional and possibly (probably?) unnecessary metadata (especially as it seems to update them somewhat randomly) but a diff will still tell you clearly that (check, file) entries get added or removed: https://github.com/dfreeman/ember-truncate/commit/b466413e3b531cd6245faf71466bdaa261991311
+
+---
+
+_Comment by @judson-stevens-teampay on 2023-01-28 17:20_
+
+I'm new to `ruff` (loving it so far!) but have been using `flakeheaven` and it's predecessor `flakehell` for quite a while now. I really enjoy `flakeheaven`'s baseline feature - there's some more information [here](https://github.com/flakeheaven/flakeheaven/blob/main/docs/commands/baseline.md). We've used it successfully on a larger code base to incrementally fix legacy issues by incorporating the `diff` command in that linked doc. We have a fairly large Python monolith at my day job, and when developers make changes they are prompted to fix issues in code they touched; an easy example of this is docstrings - in functions that do not have docstrings, if a developer modifies that function, `flakeheaven` will then identify it as needing a docstring and flag it in `pre-commit` or our CI. 
+
+I'm definitely not an expert in the mechanism used to generate the baseline file, but just wanted to toss in some lived experience with this functionality. I believe it is similar to what others have called out above, in that it's [tied to the filename and the line numbers](https://github.com/flakeheaven/flakeheaven/blob/main/flakeheaven/_logic/_baseline.py), so we do occasionally see instances where very old legacy code is touched and multiple "unrelated" issues then pop up. However, in general, even on a code base with some fairly large legacy files (7k lines of Django serializers), it's usually not so bad to get things fixed up. This incrementally modernizes and even fixes our existing code, which is great.
+
+---
+
+_Comment by @lengau on 2023-01-30 03:22_
+
+One possible implementation of baselines that would handle many of the issues herein (though it would introduce at least one of its own) would be to incorporate the baseline into the file itself with the `noqa` directive. If `--add-noqa` could include extra information in the comment containing the directive, it could be used to set a baseline. Combined with rule `RUF100` and ruff's auto-fix feature, this could provide a very user-visible version of baselines directly in the code.
+
+For example, a file that contains an existing line of:
+
+    from math import *
+
+could get a directive such as:
+
+    from math import *  # noqa: F403 - Existing errors as of 2023-01-29 ignored by ruff.
+
+In my view it has the following advantages:
+
+1. No messing with line numbers, counting violations, etc.
+2. The directives are very visible to the user, encouraging their fixing when touching nearby code
+3. A baseline can follow a particular code snippet even if files are moved, etc. Splitting a thousand-line legacy file in two doesn't have to come with the work of fixing all the linting errors in half that file. (After all, a linting tool is supposed to help us, not burden us.)
+4. With `--fix` and rule `RUF100`, directives get automatically removed when appropriate.
+
+Of course, it also has one distinct disadvantage:
+
+1. Every rule-violating line of code now has an extra node in the blame layer just for adding `noqa` directives.
+
+This could be mitigated by providing an obvious separate author credit on this (commit the output of `--add-noqa` "as ruff", if you will). Developers would immediately recognise this and look at previous commits, and if a standard is generated tools might begin to provide similar options.
+
+---
+
+_Comment by @orsinium on 2023-02-10 06:50_
+
+I also have a baseline implementation for mypy as a separate tool: [mypy-baseline](https://github.com/orsinium-labs/mypy-baseline). As people already said in the thread, baseline doesn't store line numbers. In case of mypy-baseline, violations are matched to the baseline based on the file name and error message:
+https://github.com/orsinium-labs/mypy-baseline/blob/master/mypy_baseline/_error.py#L60-L68
+
+In the case of flakehell (now flakeheaven) things were a bit easier because I could use error codes (since error messages may change):
+https://github.com/life4/flakehell/blob/master/flakehell/_logic/_baseline.py#L6-L11
+
+In case of a new violation being similar to the old one (the same file and the same error code), simply the last one is reported based on assumption that the new code is more often added closer to the end of the file. It may produce false-positives in theory but my teams haven't faced it yet.
+
+I think it was a good decision to keep baselines in a separate file. I also considered automatically adding `# noqa` to the code but abandoned that idea:
+
+1. All `# noqa` (or `typing: ignore` in case of mypy) comments should be used in rare occasions of legit false-poisitives when a human looked at the code and said: "yep, that would be hard to work around". The baseline, on the other hand, is for the tech debt that humans haven't looked into yet but should gradually go through and get rid of. I don't think these two should be mixed.
+2. Having the baseline in one place gives a better perspective on the work left to do. In mypy-baseline, I provide `history`, `plot`, and `top-files` commands that I often run and show the team to remind them that we should do progress resolving it.
+3. Introducing a tool that just needs a single baseline file and a single config is much easier than a tool that changes something in every file.
+
+What I regret doing in flakehell is that the baseline is a collection of obscure md5 hashes. In mypy-baseline, the baseline is human-readable and we quite often use that fact to manually read and edit it.
+
+I hope this perspective can be of any help.
+
+---
+
+_Comment by @snmishra on 2023-04-14 11:41_
+
+> That's interesting! I've never seen this before. I think we could support it? I'd been hoping that `--add-noqa` would serve this purpose. What do you see as the strengths of a baseline file vis-a-vis that workflow?
+> 
+> One point of confusion for me w/r/t the baseline file is that if it's just storing errors + line numbers, then if you edit a file (e.g., add a function to the top of a file that has some ignored errors), doesn't the baseline get invalidated? Since all the errors are pushed to new lines?
+
+flakeheaven [stores md5 hash](https://github.com/flakeheaven/flakeheaven/blob/4591fd3dd04c8180d702e5eab3ec25947d7d3393/flakeheaven/_logic/_baseline.py) of the violation and it's context. If performance is a concern a cheaper hash should be fine too. 
+
+The `--add-noqa` wouldn't leave a way to find out if the `noqa` were never meant to be fixed, or were just added for initial adoption.
+
+---
+
+_Comment by @Pixel-Minions on 2023-06-27 15:29_
+
+Hi,
+
+I wholeheartedly support the implementation of a separate baseline file as it proves to be an immensely valuable feature. Given the context of my position as the head of the department in a company with a substantial monolithic codebase, I am actively striving to enforce robust code standards. To achieve this, I have introduced linters during the code push to the repository and have provided the team with suitable tools. However, due to the sheer size of the codebase, it is not feasible to lint the entirety of it. Therefore, my objective is to exclusively lint the new code changes—the actual differences in the codebase as it progresses forward.
+
+Flakeheaven or flakehell do a great job doing this baseline, I wish ruff could bring something similar.
+
+---
+
+_Comment by @locnide on 2023-07-25 17:12_
+
+Hello, 
+
+A structured output for ruff violations [with fingerprints](https://github.com/astral-sh/ruff/blob/cbf6085375984a1e32d5808e07496a5c54670e9f/crates/ruff/src/message/gitlab.rs#L103) has been added for gitlab output. 
+Could this file or structure be used as baseline for ruff ?
+
+---
+
+_Comment by @dorschw on 2023-08-12 13:58_
+
+As (temporary?) solution, I just released Riff [PyPi](https://pypi.org/project/riff) / [GitHub](https://github.com/dorschw/riff), 
+
+Riff wraps Ruff, runs git diff, checks for modified lines, only fails if errors were found in modified lines.
+Works as a CLI tool as well as a pre-commit hook, check it out :) 
+
+---
+
+_Comment by @KotlinIsland on 2023-08-22 11:43_
+
+[Darker](https://github.com/akaihola/darker) is a very relevant tool here ([which isn't just for black](https://github.com/akaihola/darker#using-linters)).
+
+And for prior art, [basedmypy](https://github.com/KotlinIsland/basedmypy) and [Qodana](https://www.jetbrains.com/qodana/) both support baseline functionality.
+
+---
+
+_Comment by @carlfischerjba on 2024-02-19 15:00_
+
+Here's a bit of `jq` that will extract the differences between two GitLab-style reports and print it out as a Markdown snippet. Disclaimer: I'm no jq expert so there are probably better ways to do this.
+
+```sh
+jq -nr --argfile ref gl-code-quality-report-baseline.json \
+    --argfile new gl-code-quality-report.json '
+# Get fingerprints in new report that are not in the old.
+[ $ref, $new ]
+| map([.[].fingerprint])
+| (.[1] - .[0]) as $new_fingerprints
+# Take the new report and select only the entries with a new fingerprint.
+| $new
+| .[] | select(.fingerprint | IN($new_fingerprints[]))
+| "- \(.description) - `\(.location.path):\(.location.lines.begin)`"
+'
+```
+
+I've added this in one of our GitLab projects while waiting for [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/34982) to be resolved. Here's the merge request workflow.
+1. Run ruff to create a report.
+2. Download the baseline via the GitLab API.
+3. Use jq to extract issues that were not present in the baseline.
+4. Fail the pipeline if new issues were found.
+
+---
+
+_Comment by @blablatdinov on 2024-06-13 17:06_
+
+You can use `ondivi` [Pypi](https://pypi.org/project/ondivi/) [Github](https://github.com/blablatdinov/ondivi). Is a Python script filtering coding violations, identified by static analysis, only for changed lines in a Git repo. You can use it with ruff, flake8, pylint, mypy and others.
+
+flakeheaven and flakehell are not supported because they rely on internal flake8 API, which can lead to compatibility issues as flake8 evolves. In contrast, ondivi uses only the text output of violations and the state of Git repository, making it more robust and easier to maintain.
+
+> Flakeheaven: https://wemake-python-styleguide.readthedocs.io/en/latest/pages/usage/integrations/flakeheaven.html#legacy-first-1
+
+WPS remove this page from the docs and replace it with https://wemake-python-styleguide.readthedocs.io/en/latest/pages/usage/integrations/ondivi.html
+
+---
+
+_Comment by @jedie on 2024-11-14 16:08_
+
+Think this issue is only about to run ruff **linting** only on change lines, but not to run the formatter only on change lines, isn't it?
+
+The mentioned solutions like `ondivi` or `Riff` doesn't help here. `ondivi` is only for linting, and `riff --fix` will apply formatting to all lines, see: https://github.com/dorschw/riff/issues/16
+
+So i end up to wait for https://github.com/akaihola/darker/issues/521 for support "Support ruff format as a formatter" in darker.
+
+---
+
+_Comment by @KotlinIsland on 2024-11-15 01:32_
+
+basedpyright also supports baseline functionality https://docs.basedpyright.com/latest/benefits-over-pyright/baseline/
+
+---
+
+_Comment by @estahn on 2024-11-27 01:10_
+
+This is received positive feedback in terms of functionality. Is the only open question the format of the baseline data?
+
+I was imagining this could be stored by hashing the filename with line of code and possibly error code, e.g. `MD5(CONCAT(<filename>, <line of code>, <ruff error code>))`.
+
+**Example:**
+
+Finding:
+`test_foobar.py`:
+```
+55 | def test_do_FooBar(api_client, authenticated_user, mock_pynamodb, mock_eventbridge_client):
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ N802
+```
+
+```bash
+ruff . --exit-zero --format baseline > .ruff_baseline
+ruff . --baseline .ruff_baseline  # doesn't report any errors
+```
+
+`.ruff_baseline`:
+```
+<filename>|<md5 of line 55>|<error code>
+2af918dbc4589ec4a153761e4c9af86f
+```
+
+---
+
+_Renamed from "Support baselines" to "Support baselines, i.e., ignore existing errors for incremental adoption" by @zanieb on 2024-11-27 01:17_
+
+---
+
+_Comment by @josiahcoad on 2025-01-02 15:44_
+
+Very excited for this. Is currently needed on my team.
+
+---
+
+_Comment by @josiahcoad on 2025-01-09 12:52_
+
+Hey, @estahn is this still being actively worked on?
+
+---
+
+_Comment by @austin-agronick on 2025-05-28 06:17_
+
+The latest riff release does not parse the relative file paths properly and fails to generate GitHub annotations for my project so I had to install from the latest commit. Here are working steps for a GitHub workflow to lint (`ruff check`) changed lines and generate GitHub annotations in the pull request changed files tab, in addition to warnings for ruff rules that are "ignored" in my config but I manually warn via GitHub workflow:
+
+```
+- uses: actions/checkout@v4
+- name: Get changed files
+  id: changed-files
+  uses: tj-actions/changed-files@v46.0.1
+  with:
+    files: |
+      **.py
+
+- name: Install riff
+  run: |
+    pip install \
+      git+https://github.com/dorschw/riff.git@9882898eb650c617d1d7a36a37badda4ab73b815#egg=riff
+
+- name: Warn for any non-required failed checks
+  env:
+    RUFF_OUTPUT_FORMAT: "json"
+  run: |
+    riff \
+      --print-github-annotation \
+      --base-branch=origin/${{ github.event.pull_request.base.ref }} \
+      check --config ./pyproject.toml --select D100,D106,ERA001,ANN,FIX,TD,D \
+      -- ${{ steps.changed-files.outputs.all_changed_files }} \
+      | sed 's/^::error/::warning/'
+
+- name: Validate there are no failed checks
+  env:
+    RUFF_OUTPUT_FORMAT: "json"
+  run: |
+    riff \
+      --print-github-annotation \
+      --base-branch=origin/${{ github.event.pull_request.base.ref }} \
+      check --config ./pyproject.toml \
+      -- ${{ steps.changed-files.outputs.all_changed_files }}
+```
+
+
+---
+
+_Comment by @InsidersByte on 2025-07-30 21:06_
+
+[ESLint added support for bulk suppression a few months ago](https://eslint.org/blog/2025/04/introducing-bulk-suppressions/). 
+
+Their RFC for it can be found [here](https://github.com/eslint/rfcs/tree/main/designs/2024-baseline-support).
+
+---
+
+_Comment by @phiresky on 2025-10-08 12:53_
+
+Until this is implemented here's a one-line command that generates the `[tool.ruff.lint.per-file-ignores]` section based on the currently violated rules:
+
+```bash
+uv run ruff check --output-format=json | jq -r 'group_by(.filename) | map({(.[0].filename): ([.[].code] | unique)}) | add | to_entries | map("\"" + .key + "\" = [" + (.value | map("\"" + . + "\"") | join(", ")) + "]") | join("\n")'
+```
+
+this generates an output like this:
+```
+"__init__.py" = ["E402"]
+"path/to/file.py" = ["E402", "TRY300"]
+```
+
+which can be directly added to the pyproject.toml file under the `[tool.ruff.lint.per-file-ignores]`
+
+At least one rule needs to be failing otherwise jq will throw a null error.
+
+---
+
+_Comment by @epic-64 on 2025-11-13 10:45_
+
+Baseline support is practically a requirement for introducing linters to an existing codebase, especially in teams that are not used to static analysis. The alternative would be to allow linting to fail in CI, or use extremely watered-down rules that do not protect the codebase from new ill-structured code.
+
+I use baselines very successfully in phpstan and mypy (granted, mypy-baseline is a third party package that allows you to pipe mypy output through it - I actually kinda like this separation of concerns).
+
+Looking very much forward to this for Ruff.
+
+---
+
+_Comment by @Artalus on 2025-12-11 10:59_
+
+PVS-Studio, a paywalled but quite capable C++ static analyzer, [supports](https://pvs-studio.com/en/docs/manual/0032/) generating baseline files. IIRC it can store them in custom paths that can be configured with `--some-cli-arg` when running the analyzer from terminal or in CI.
+
+Their baseline does something like stripping whitespace from the code line – plus previous line, plus next line – and hashing the result. This helps to ensure that re-indenting the problematic fragment and adding new code around does not immediately cause the baselined diagnostics to reappear.
+
+---
+
+_Comment by @siscia on 2025-12-12 00:07_
+
+As I mentioned in #21907 and @ntBre described better than me.
+
+A reasonable substitute for baseline would it be to allow something like RUF100 to unused `per-file-ignores` 
+
+When introducing a new lint, we would just add the files to the `per-file-ignores` and as soon as the lint is addressed the files can be removed by the `per-file-ingores` list.
+
+The file could accumulate more of those exceptions, but I don't see it as a practical issue.
+
+---
+
+_Comment by @edgarrmondragon on 2025-12-12 00:10_
+
+@siscia that'd be a nice improvement but a baseline is usually more granular than simply ignoring an entire file, like what @Artalus described
+
+---
+
+_Comment by @siscia on 2025-12-14 21:20_
+
+Hello,
+
+just for my understanding here. What's the status? 
+
+Is astral on board with baseline being implemented and added to ruff?
+Is astral on board with RUF100 to be available also for `per-file-ignores` being implemented and added to ruff?
+
+Are we still discussing on design? 
+
+Are we still deciding if the feature is worth having?
+
+I don't have capacity myself to provide code in the ruff codebase (sorry about that) but I am more than open to provide examples of how we will use either features in our codebase. Provide feedback on possible designs from a user perspective. And pretty much whatever would help without require me 2+ hours of deep work on this.
+
+If there is any way, I can help move this forward, please let me know.
+
+Thanks a lot
+
+---
+
+_Comment by @MichaReiser on 2025-12-14 22:01_
+
+It's on our mind, but not a top-priority feature. We plan to come back to it, but I can't say yet when.
+
+---
+
+_Comment by @ofekby on 2025-12-16 12:36_
+
+In the meantime, try using snaplint to snapshot your current linter output and only fail CI on new issues — it’s a simple way to track lint regressions until baseline support lands in Ruff: [https://github.com/GENWAY-AI/snaplint](https://github.com/GENWAY-AI/snaplint?utm_source=chatgpt.com)
+
+Usage example:
+1. Run once and push snapshot files 
+```
+ruff check --output-format concise | snaplint take-snapshot
+```
+
+2. Then on every CI execution
+```
+ruff check --output-format concise | snaplint diff
+```
+
+---

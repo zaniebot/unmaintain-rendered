@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-04T18:27:30Z
 updated_at: 2023-05-16T01:59:10Z
 url: https://github.com/astral-sh/ruff/issues/4227
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # PYI015 covers parts of PYI052
@@ -65,10 +65,6 @@ _Comment by @sladyn98 on 2023-05-06 20:36_
 _Comment by @mccullocht on 2023-05-06 20:52_
 
 @sladyn98 I briefly looked into this. The [pylint](https://github.com/PyCQA/flake8-pyi/blob/7425435c81d852a3c5a4be45a5b714785cec4ce1/pyi.py#L996) implementation of `Y052` and `Y015` appear together, it probably makes sense structure things similarly and place it near the [ruff](https://github.com/charliermarsh/ruff/blob/539af34f585eee4d762f6bd01ca508429c35d85e/crates/ruff/src/rules/flake8_pyi/rules/simple_defaults.rs#L396) implementation of `Y015`.
-
----
-
-_Referenced in [astral-sh/ruff#4271](../../astral-sh/ruff/pulls/4271.md) on 2023-05-08 00:10_
 
 ---
 

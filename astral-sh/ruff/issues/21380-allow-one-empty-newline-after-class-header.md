@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-11-11T14:44:33Z
 updated_at: 2025-12-18T20:51:38Z
 url: https://github.com/astral-sh/ruff/issues/21380
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # Allow one empty newline after class header
@@ -68,10 +68,6 @@ Thanks for all the great work!
 ---
 
 _Renamed from "Allow newline after class header" to "Allow one empty newline after class header" by @laymonage on 2025-11-11 14:44_
-
----
-
-_Referenced in [astral-sh/ruff#20482](../../astral-sh/ruff/issues/20482.md) on 2025-11-11 14:47_
 
 ---
 
@@ -166,9 +162,5 @@ class Foo:
 	def foo(self):
 		pass
 ```
-
----
-
-_Referenced in [astral-sh/ruff#22237](../../astral-sh/ruff/issues/22237.md) on 2025-12-29 02:08_
 
 ---

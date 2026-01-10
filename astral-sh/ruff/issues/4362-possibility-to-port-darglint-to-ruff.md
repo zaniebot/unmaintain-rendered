@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-05-10T23:16:44Z
 updated_at: 2023-05-11T03:03:13Z
 url: https://github.com/astral-sh/ruff/issues/4362
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Possibility to port darglint to ruff?
@@ -41,9 +41,5 @@ _Closed by @charliermarsh on 2023-05-11 02:20_
 _Comment by @jsh9 on 2023-05-11 03:03_
 
 Thanks!  Great to hear.
-
----
-
-_Referenced in [astral-sh/ruff#458](../../astral-sh/ruff/issues/458.md) on 2023-05-16 08:47_
 
 ---

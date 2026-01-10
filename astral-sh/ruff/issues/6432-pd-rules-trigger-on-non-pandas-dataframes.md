@@ -13,7 +13,7 @@ assignees: []
 created_at: 2023-08-09T00:06:09Z
 updated_at: 2025-09-05T00:21:36Z
 url: https://github.com/astral-sh/ruff/issues/6432
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # PD rules trigger on non-Pandas DataFrames
@@ -73,10 +73,6 @@ for a simpler heuristic, would it be possible to check the alias used to instant
 
 ---
 
-_Referenced in [astral-sh/ruff#8846](../../astral-sh/ruff/issues/8846.md) on 2023-11-27 15:38_
-
----
-
 _Comment by @kleinicke on 2024-04-17 12:19_
 
 Currently the pandas rules are applied on many non pandas objects. For example PD011 tries to stop you from using .values anywhere, even if you use a library where you should use it.
@@ -84,23 +80,7 @@ Therefore some kind of check, if the object is even belonging to pandas would be
 
 ---
 
-_Referenced in [astral-sh/ruff#11235](../../astral-sh/ruff/issues/11235.md) on 2024-05-02 14:30_
-
----
-
 _Renamed from "PD010 false positive on polars.DataFrame" to "PD rules trigger on non-Pandas DataFrames" by @charliermarsh on 2024-05-02 14:31_
-
----
-
-_Referenced in [astral-sh/ruff#11307](../../astral-sh/ruff/issues/11307.md) on 2024-05-06 13:35_
-
----
-
-_Referenced in [astral-sh/ruff#11858](../../astral-sh/ruff/issues/11858.md) on 2024-06-13 13:35_
-
----
-
-_Referenced in [astral-sh/ruff#11909](../../astral-sh/ruff/issues/11909.md) on 2024-06-18 05:31_
 
 ---
 
@@ -146,33 +126,9 @@ A good lint tool should be one that doesn't require littering your source files 
 
 ---
 
-_Referenced in [materialsproject/pymatgen#4015](../../materialsproject/pymatgen/pulls/4015.md) on 2024-08-26 02:50_
-
----
-
-_Referenced in [astral-sh/ruff#13495](../../astral-sh/ruff/issues/13495.md) on 2024-09-24 10:25_
-
----
-
-_Referenced in [astral-sh/ruff#3807](../../astral-sh/ruff/issues/3807.md) on 2024-10-07 07:39_
-
----
-
-_Referenced in [astral-sh/ruff#14301](../../astral-sh/ruff/issues/14301.md) on 2024-11-12 23:11_
-
----
-
 _Comment by @ncooder on 2024-11-18 20:39_
 
 This problem persists with pyspark. It tries to replace pivot with pivot_table.
-
----
-
-_Referenced in [astral-sh/ruff#14508](../../astral-sh/ruff/issues/14508.md) on 2024-11-21 10:21_
-
----
-
-_Referenced in [astral-sh/ruff#14671](../../astral-sh/ruff/pulls/14671.md) on 2024-11-29 07:33_
 
 ---
 
@@ -242,10 +198,6 @@ _Label `good first issue` added by @MichaReiser on 2025-06-19 09:15_
 
 ---
 
-_Referenced in [astral-sh/ruff#18963](../../astral-sh/ruff/pulls/18963.md) on 2025-06-26 15:13_
-
----
-
 _Comment by @jordyjwilliams on 2025-06-26 15:14_
 
 > Thanks for reporting!
@@ -275,9 +227,5 @@ This behaviour still occurs on non-Pandas objects, such as `xarray.DataArray`, i
 <img width="756" height="187" alt="Image" src="https://github.com/user-attachments/assets/60c65e1c-c2c2-4140-9dec-1ed5528248e7" />
 
 Seems like type aware linting is needed for these types of rules. I believe you're already working towards using `ty` to do the type inference for when to apply the lint?
-
----
-
-_Referenced in [astral-sh/ruff#20874](../../astral-sh/ruff/issues/20874.md) on 2025-10-16 08:07_
 
 ---

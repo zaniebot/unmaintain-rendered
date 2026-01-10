@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-13T14:29:05Z
 updated_at: 2023-10-13T19:44:18Z
 url: https://github.com/astral-sh/ruff/issues/7945
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # TCH false positive to generic runtime base classes
@@ -81,10 +81,6 @@ Ah yup, makes sense -- thank you!
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-13 19:32_
-
----
-
-_Referenced in [astral-sh/ruff#7954](../../astral-sh/ruff/pulls/7954.md) on 2023-10-13 19:35_
 
 ---
 

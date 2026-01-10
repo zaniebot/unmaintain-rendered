@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-03-14T10:20:19Z
 updated_at: 2025-05-07T15:08:34Z
 url: https://github.com/astral-sh/ruff/issues/16737
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [red-knot] LSP test framework
@@ -40,10 +40,6 @@ _Label `testing` added by @dhruvmanila on 2025-03-18 11:08_
 _Comment by @dhruvmanila on 2025-03-18 11:09_
 
 There's some more context in astral-sh/ty#88. I'll close that one in favor of this issue.
-
----
-
-_Referenced in [astral-sh/ty#88](../../astral-sh/ty/issues/88.md) on 2025-03-18 11:09_
 
 ---
 

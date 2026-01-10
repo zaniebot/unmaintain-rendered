@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-10T07:49:18Z
 updated_at: 2025-05-26T09:27:38Z
 url: https://github.com/astral-sh/ruff/issues/6474
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # INP001 false positive in tests folder
@@ -97,21 +97,9 @@ tests/test_foo.py:1:1: INP001 File `tests/test_foo.py` is part of an implicit na
 
 ---
 
-_Referenced in [UCL-ARC/python-tooling#219](../../UCL-ARC/python-tooling/pulls/219.md) on 2023-11-06 12:13_
-
----
-
 _Comment by @sanmai-NL on 2023-11-15 09:38_
 
 See also #8690 
-
----
-
-_Referenced in [astral-sh/ruff#8145](../../astral-sh/ruff/issues/8145.md) on 2023-11-18 23:10_
-
----
-
-_Referenced in [astral-sh/ruff#8794](../../astral-sh/ruff/issues/8794.md) on 2023-11-20 19:27_
 
 ---
 
@@ -217,9 +205,5 @@ _Label `help wanted` added by @MichaReiser on 2025-05-26 09:26_
 _Comment by @MichaReiser on 2025-05-26 09:27_
 
 Special casing `tests` in INP001` if it's at the root of the project seems like a reasonable default to me.
-
----
-
-_Referenced in [astral-sh/ruff#20269](../../astral-sh/ruff/pulls/20269.md) on 2025-09-05 19:22_
 
 ---

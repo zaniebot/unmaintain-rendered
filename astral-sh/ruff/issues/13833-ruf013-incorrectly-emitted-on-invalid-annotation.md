@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-20T16:33:33Z
 updated_at: 2024-11-09T13:48:58Z
 url: https://github.com/astral-sh/ruff/issues/13833
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # RUF013 incorrectly emitted on invalid annotation with bare `Optional`
@@ -64,10 +64,6 @@ _Renamed from "Autofix bug with RUF013" to "RUF013 incorrectly emitted on invali
 _Comment by @henryiii on 2024-10-21 14:31_
 
 A bare `Optional` would be `Optional[Any]`, which is `Any | None`. Which isn't helpful, since `Any` already includes `None`. The ones that are allowed to be bare, like `list` -> `list[Any]`, still make sense with `Any`.
-
----
-
-_Referenced in [astral-sh/ruff#14181](../../astral-sh/ruff/pulls/14181.md) on 2024-11-08 00:05_
 
 ---
 

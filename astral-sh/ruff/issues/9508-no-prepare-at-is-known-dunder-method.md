@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-14T03:33:27Z
 updated_at: 2024-01-15T14:37:21Z
 url: https://github.com/astral-sh/ruff/issues/9508
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # No __prepare__ at is_known_dunder_method
@@ -98,10 +98,6 @@ I'd like to work on this, please assign me :)
 ---
 
 _Assigned to @takaya0 by @charliermarsh on 2024-01-14 15:10_
-
----
-
-_Referenced in [astral-sh/ruff#9529](../../astral-sh/ruff/pulls/9529.md) on 2024-01-15 14:31_
 
 ---
 

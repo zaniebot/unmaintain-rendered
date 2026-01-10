@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-22T22:12:10Z
 updated_at: 2025-01-22T23:04:22Z
 url: https://github.com/astral-sh/ruff/issues/15677
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # F821 false positive for `TypeVar` `default` parameter unquoted forward reference in type stub (.pyi)
@@ -43,10 +43,6 @@ class X:
 
 ---
 
-_Referenced in [python/typeshed#13425](../../python/typeshed/pulls/13425.md) on 2025-01-22 22:12_
-
----
-
 _Comment by @x11x on 2025-01-22 22:27_
 
 Related: #3011
@@ -61,17 +57,9 @@ _Label `bug` added by @AlexWaygood on 2025-01-22 22:42_
 
 ---
 
-_Referenced in [astral-sh/ruff#15678](../../astral-sh/ruff/pulls/15678.md) on 2025-01-22 22:43_
-
----
-
 _Comment by @InSyncWithFoo on 2025-01-22 22:43_
 
 @AlexWaygood Oops, sorry, didn't see you there.
-
----
-
-_Referenced in [astral-sh/ruff#15679](../../astral-sh/ruff/pulls/15679.md) on 2025-01-22 22:50_
 
 ---
 

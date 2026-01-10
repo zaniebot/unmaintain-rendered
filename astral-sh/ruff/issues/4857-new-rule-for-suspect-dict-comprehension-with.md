@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-05T05:28:14Z
 updated_at: 2023-06-09T02:06:36Z
 url: https://github.com/astral-sh/ruff/issues/4857
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # (🎁) New rule for suspect dict comprehension with static key
@@ -79,14 +79,6 @@ To complete the picture... eventually, we will likely recategorize _all_ rules u
 
 ---
 
-_Referenced in [astral-sh/ruff#4929](../../astral-sh/ruff/pulls/4929.md) on 2023-06-07 14:23_
-
----
-
 _Closed by @charliermarsh on 2023-06-09 02:06_
-
----
-
-_Referenced in [PyCQA/flake8-bugbear#391](../../PyCQA/flake8-bugbear/issues/391.md) on 2023-06-09 19:43_
 
 ---

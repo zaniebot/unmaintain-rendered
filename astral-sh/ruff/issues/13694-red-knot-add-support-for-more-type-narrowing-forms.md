@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-09T19:30:27Z
 updated_at: 2025-04-02T00:15:45Z
 url: https://github.com/astral-sh/ruff/issues/13694
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] add support for more type narrowing forms
@@ -86,22 +86,6 @@ Adding support for `x != None` should be very good for a first issue, since it s
 
 ---
 
-_Referenced in [astral-sh/ruff#13749](../../astral-sh/ruff/pulls/13749.md) on 2024-10-14 12:01_
-
----
-
-_Referenced in [astral-sh/ruff#13803](../../astral-sh/ruff/pulls/13803.md) on 2024-10-17 22:30_
-
----
-
-_Referenced in [astral-sh/ruff#13893](../../astral-sh/ruff/issues/13893.md) on 2024-10-23 13:58_
-
----
-
-_Referenced in [astral-sh/ruff#13918](../../astral-sh/ruff/pulls/13918.md) on 2024-10-24 22:26_
-
----
-
 _Comment by @carljm on 2024-10-25 17:48_
 
 Some predicates narrow based on characteristics of an object that could be transient for mutable objects.
@@ -170,21 +154,9 @@ EDIT for posterity: in the end in #14687 we did decide to add `Type::AlwaysTruth
 
 ---
 
-_Referenced in [astral-sh/ruff#13632](../../astral-sh/ruff/issues/13632.md) on 2024-10-25 17:59_
-
----
-
-_Referenced in [astral-sh/ruff#13665](../../astral-sh/ruff/pulls/13665.md) on 2024-10-25 18:01_
-
----
-
 _Comment by @TomerBin on 2024-10-28 23:40_
 
 "Not isinstance" and "elif else" can be checked off ✅
-
----
-
-_Referenced in [astral-sh/ruff#14037](../../astral-sh/ruff/pulls/14037.md) on 2024-11-01 11:14_
 
 ---
 
@@ -204,22 +176,6 @@ I don't think it is blocked on generics. These are just special forms, which use
 
 ---
 
-_Referenced in [astral-sh/ruff#14117](../../astral-sh/ruff/issues/14117.md) on 2024-11-05 20:19_
-
----
-
-_Referenced in [astral-sh/ruff#14431](../../astral-sh/ruff/issues/14431.md) on 2024-11-18 12:26_
-
----
-
-_Referenced in [astral-sh/ruff#14432](../../astral-sh/ruff/pulls/14432.md) on 2024-11-18 12:27_
-
----
-
-_Referenced in [astral-sh/ruff#14550](../../astral-sh/ruff/issues/14550.md) on 2024-11-22 23:45_
-
----
-
 _Comment by @InSyncWithFoo on 2024-11-28 00:05_
 
 Another possible narrowing pattern:
@@ -231,34 +187,6 @@ if a == "foo":
 	reveal_type(a)  # revealed: Literal["foo"]
 ```
 
-
----
-
-_Referenced in [astral-sh/ruff#14648](../../astral-sh/ruff/issues/14648.md) on 2024-11-28 00:10_
-
----
-
-_Referenced in [astral-sh/ruff#14668](../../astral-sh/ruff/pulls/14668.md) on 2024-11-29 06:01_
-
----
-
-_Referenced in [astral-sh/ruff#14687](../../astral-sh/ruff/pulls/14687.md) on 2024-11-30 07:21_
-
----
-
-_Referenced in [astral-sh/ruff#16314](../../astral-sh/ruff/pulls/16314.md) on 2025-02-22 12:17_
-
----
-
-_Referenced in [astral-sh/ruff#16974](../../astral-sh/ruff/pulls/16974.md) on 2025-03-26 04:35_
-
----
-
-_Referenced in [astral-sh/ruff#17030](../../astral-sh/ruff/pulls/17030.md) on 2025-03-28 06:07_
-
----
-
-_Referenced in [astral-sh/ruff#17059](../../astral-sh/ruff/pulls/17059.md) on 2025-03-29 23:54_
 
 ---
 
@@ -293,9 +221,5 @@ I'm going to go ahead and close this issue, we've done most of the things listed
 ---
 
 _Closed by @carljm on 2025-04-02 00:15_
-
----
-
-_Referenced in [astral-sh/ty#117](../../astral-sh/ty/issues/117.md) on 2025-04-21 22:08_
 
 ---

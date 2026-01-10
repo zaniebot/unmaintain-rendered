@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-16T23:15:05Z
 updated_at: 2023-04-18T02:52:28Z
 url: https://github.com/astral-sh/ruff/issues/3989
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # `RET` selection is behaving incorrectly
@@ -65,10 +65,6 @@ This is consistent with `flake8-return`, but I think we should tweak the behavio
 _Comment by @charliermarsh on 2023-04-16 23:40_
 
 Effectively, if we detect a `RET505` error, we abort, and skip some of the later checks (like `RET502`).
-
----
-
-_Referenced in [astral-sh/ruff#4002](../../astral-sh/ruff/pulls/4002.md) on 2023-04-18 02:35_
 
 ---
 

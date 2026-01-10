@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-05T22:28:22Z
 updated_at: 2024-07-12T05:00:10Z
 url: https://github.com/astral-sh/ruff/issues/11766
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # `ruff server` does not load new configuration files when they are created
@@ -61,10 +61,6 @@ _Assigned to @dhruvmanila by @dhruvmanila on 2024-07-09 07:21_
 ---
 
 _Unassigned @snowsignal by @dhruvmanila on 2024-07-09 07:21_
-
----
-
-_Referenced in [astral-sh/ruff#12253](../../astral-sh/ruff/pulls/12253.md) on 2024-07-09 07:22_
 
 ---
 

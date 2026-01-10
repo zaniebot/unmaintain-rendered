@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-15T14:32:47Z
 updated_at: 2023-05-15T15:31:12Z
 url: https://github.com/astral-sh/ruff/issues/4440
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # min/max flattening broken for iterables
@@ -47,10 +47,6 @@ print(max([1, 2, 3], [3, 4, 5]))
 The original code yields `5`, while "fixed" yields `[3, 4, 5]`.
 
 Introduced by https://github.com/charliermarsh/ruff/pull/4200
-
----
-
-_Referenced in [astral-sh/ruff#4200](../../astral-sh/ruff/pulls/4200.md) on 2023-05-15 14:35_
 
 ---
 

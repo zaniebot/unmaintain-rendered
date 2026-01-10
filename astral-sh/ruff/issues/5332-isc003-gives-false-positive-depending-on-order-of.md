@@ -1,0 +1,147 @@
+```yaml
+number: 5332
+title: " `ISC003` gives false positive depending on order of concatenation"
+type: issue
+state: closed
+author: bendoerry
+labels:
+  - bug
+  - good first issue
+assignees: []
+created_at: 2023-06-23T13:26:29Z
+updated_at: 2023-07-30T22:12:51Z
+url: https://github.com/astral-sh/ruff/issues/5332
+synced_at: 2026-01-10T11:09:47Z
+```
+
+#  `ISC003` gives false positive depending on order of concatenation
+
+---
+
+_Issue opened by @bendoerry on 2023-06-23 13:26_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+ruff version: [`0.0.275`](https://github.com/astral-sh/ruff/releases/tag/v0.0.275)
+
+`ISC003` gives false positive depending on order of concatenation.
+### First Case (succeeds)
+```python
+# a.py
+a = "foo"
+
+b = a + "." + "bar"
+```
+```shell
+$ ruff check --isolated --select ISC a.py
+
+```
+
+### Second case (fails)
+```python
+# b.py
+a = "foo"
+
+b = "bar" + "." + a
+```
+```shell
+$ ruff check --isolated --select ISC b.py
+b.py:3:5: ISC003 Explicitly concatenated string should be implicitly concatenated
+Found 1 error.
+```
+
+I would expect both cases to succeed.
+
+### Extra third case
+```python
+# c.py
+a = "foo" + "bar"
+```
+```shell
+$ ruff check --isolated --select ISC c.py
+c.py:1:5: ISC003 Explicitly concatenated string should be implicitly concatenated
+Found 1 error.
+```
+I (personally) would also expect this to succeed. My reading of the [`ISC003` docs](https://beta.ruff.rs/docs/rules/explicit-string-concatenation/) is that this is aimed at string literals that wrap over multiple lines. Which all the above cases are not.
+
+The codebase I'm dealing with has a lot of instances of `"foo" + "bar"`, mainly for clarity reasons, and I don't want those instances flagged. However I do still want this to be raised for multiline strings.
+If flagging `"foo" + "bar"` is the intended behaviour, could this perhaps be made configurable? i.e. allowing single line instances like that to be ignored while still flagging the multiline cases.
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-06-23 13:52_
+
+---
+
+_Comment by @charliermarsh on 2023-06-23 18:43_
+
+We should fix the false positive. I suppose we should also change the rule to only flag multi-line concatenations, though the upstream plugin doesn't do that.
+
+---
+
+_Comment by @bendoerry on 2023-06-23 20:19_
+
+Would making it configurable work? i.e.
+```toml
+[flake8-implicit-str-concat]
+allow-single-line-explicit = true
+```
+
+where the default is to be consistent with the upstream plugin? (i.e. set to false)
+
+---
+
+_Comment by @charliermarsh on 2023-06-23 20:32_
+
+I'd prefer to just remove it (flagging violations on the same line), if we can't find any projects that depend on that behavior.
+
+---
+
+_Comment by @charliermarsh on 2023-06-25 22:11_
+
+(The only way a project would really depend on this is if they have ISC003 enabled but not ISC001 (since "fixing" an ISC003 violation on the same line would yield an ISC001 violation).)
+
+---
+
+_Label `good first issue` added by @charliermarsh on 2023-06-28 13:55_
+
+---
+
+_Closed by @charliermarsh on 2023-07-25 23:20_
+
+---
+
+_Comment by @mmarras on 2023-07-30 22:10_
+
+Another (edge) usecase where the "Extra third case" being flagged, is annoying, is in ploty.
+When defining `hovertemplates` they use a magic string (e.g. `%{x}` to denote the x-data)  that cannot be inside an fstring. If one wants to combine the former with an fstring on the same line it flags the thing and it is impossible to comply to ruff ISC without breaking the code. So even if one decides to keep the rule for same line, it should make exception for mixed string types.
+
+Correct : 
+```python
+import plotly.graph_objs as go
+string = "Data1"
+go.Figure(data=go.Scatter(
+    x=[1.123123,2.12321,3.12321],
+    y=[1.12321,2.12321,3.12321],
+    hovertemplate="%{x:.2f}<br>%{y:.3f}" + f"<extra>{string}</extra>")
+          )
+```
+The above codeblock but with ` hovertemplate=f"%{x:.2f}<br>%{y:.3f}<extra>{string}</extra>")` fails.
+> NameError: name 'x' is not defined
+
+Of course the correct version (codeblock) triggers 
+> Explicitly concatenated string should be implicitly concatenatedRuff[ISC003](https://beta.ruff.rs/docs/rules/explicit-string-concatenation)
+
+or when implicitly concatenated:
+> Implicitly concatenated string literals on one lineRuff[ISC001](https://beta.ruff.rs/docs/rules/single-line-implicit-string-concatenation)
+
+
+---

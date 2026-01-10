@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-22T22:31:44Z
 updated_at: 2024-12-10T21:12:39Z
 url: https://github.com/astral-sh/ruff/issues/14546
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] support type[Any]
@@ -33,10 +33,6 @@ _Label `red-knot` added by @carljm on 2024-11-22 22:31_
 ---
 
 _Assigned to @carljm by @carljm on 2024-11-22 22:31_
-
----
-
-_Referenced in [astral-sh/ruff#14172](../../astral-sh/ruff/issues/14172.md) on 2024-11-22 22:32_
 
 ---
 
@@ -77,10 +73,6 @@ _Assigned to @dcreager by @dcreager on 2024-12-09 15:13_
 ---
 
 _Unassigned @carljm by @dcreager on 2024-12-09 15:13_
-
----
-
-_Referenced in [astral-sh/ruff#14876](../../astral-sh/ruff/pulls/14876.md) on 2024-12-09 15:16_
 
 ---
 

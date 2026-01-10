@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-16T20:29:01Z
 updated_at: 2024-12-10T08:39:48Z
 url: https://github.com/astral-sh/ruff/issues/14387
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Rule proposal: require explicit `strict=` argument for `itertools.batched`
@@ -36,10 +36,6 @@ _Label `rule` added by @AlexWaygood on 2024-11-16 22:41_
 _Comment by @InSyncWithFoo on 2024-11-17 02:25_
 
 I'll take this on.
-
----
-
-_Referenced in [astral-sh/ruff#14408](../../astral-sh/ruff/pulls/14408.md) on 2024-11-18 00:33_
 
 ---
 

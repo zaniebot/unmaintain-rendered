@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-26T18:59:28Z
 updated_at: 2024-01-01T01:14:56Z
 url: https://github.com/astral-sh/ruff/issues/9285
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # ruff not respecting python version on typing stub files?
@@ -174,13 +174,5 @@ _Comment by @charliermarsh on 2023-12-31 12:38_
 ---
 
 _Closed by @charliermarsh on 2023-12-31 12:38_
-
----
-
-_Referenced in [astral-sh/ruff#12256](../../astral-sh/ruff/issues/12256.md) on 2024-07-09 10:27_
-
----
-
-_Referenced in [astral-sh/ruff#13111](../../astral-sh/ruff/pulls/13111.md) on 2024-08-26 15:32_
 
 ---

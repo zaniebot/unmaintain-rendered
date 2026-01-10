@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-08T19:08:10Z
 updated_at: 2023-05-19T02:20:20Z
 url: https://github.com/astral-sh/ruff/issues/4289
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Implement `--extend-fixable` and `--extend-unfixable` variants in CLI
@@ -81,10 +81,6 @@ _Renamed from "How to overwrite unfixable set in config file?" to "Implement `--
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-05-09 01:10_
-
----
-
-_Referenced in [astral-sh/ruff#4297](../../astral-sh/ruff/pulls/4297.md) on 2023-05-09 01:34_
 
 ---
 

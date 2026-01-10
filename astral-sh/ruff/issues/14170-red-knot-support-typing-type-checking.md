@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-07T16:32:39Z
 updated_at: 2024-12-13T14:03:42Z
 url: https://github.com/astral-sh/ruff/issues/14170
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] support typing.TYPE_CHECKING
@@ -33,14 +33,6 @@ _Added to milestone `Red Knot 2024` by @carljm on 2024-11-07 16:32_
 ---
 
 _Assigned to @sharkdp by @sharkdp on 2024-11-28 09:54_
-
----
-
-_Referenced in [astral-sh/ruff#14759](../../astral-sh/ruff/pulls/14759.md) on 2024-12-09 08:15_
-
----
-
-_Referenced in [astral-sh/ruff#14952](../../astral-sh/ruff/pulls/14952.md) on 2024-12-13 08:52_
 
 ---
 

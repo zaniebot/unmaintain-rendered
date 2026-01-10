@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-04T19:57:51Z
 updated_at: 2023-02-21T18:42:23Z
 url: https://github.com/astral-sh/ruff/issues/2571
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Probably false-positive for E999 in Python 3.11.1
@@ -60,10 +60,6 @@ Yeah good catch. We'll need to fix this upstream in RustPython.
 _Comment by @youknowone on 2023-02-10 20:24_
 
 https://github.com/RustPython/RustPython/issues/4479
-
----
-
-_Referenced in [astral-sh/ruff#3089](../../astral-sh/ruff/pulls/3089.md) on 2023-02-21 18:04_
 
 ---
 

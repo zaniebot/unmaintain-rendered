@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-20T05:35:58Z
 updated_at: 2025-06-23T00:32:59Z
 url: https://github.com/astral-sh/ruff/issues/18811
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [`Pylint`] `PLC1802` fix can cause syntax errors from lack of padding
@@ -78,10 +78,6 @@ I'm working on this
 ---
 
 _Assigned to @LaBatata101 by @ntBre on 2025-06-20 20:46_
-
----
-
-_Referenced in [astral-sh/ruff#18836](../../astral-sh/ruff/pulls/18836.md) on 2025-06-20 21:17_
 
 ---
 

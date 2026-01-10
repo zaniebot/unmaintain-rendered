@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-19T18:20:17Z
 updated_at: 2023-05-22T14:42:27Z
 url: https://github.com/astral-sh/ruff/issues/4534
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Avoid ambiguous-unicode errors for all-unicode strings
@@ -38,10 +38,6 @@ _Label `help wanted` added by @charliermarsh on 2023-05-19 18:27_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-05-20 18:58_
-
----
-
-_Referenced in [astral-sh/ruff#4552](../../astral-sh/ruff/pulls/4552.md) on 2023-05-20 20:51_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-06T22:46:55Z
 updated_at: 2025-10-07T00:20:50Z
 url: https://github.com/astral-sh/ruff/issues/20729
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Fix for redundant-none-literal (PYI061) is marked as safe but should not be
@@ -45,14 +45,6 @@ def thing(arg: options):
 ### Version
 
 v0.13.3 (from pre-commit mirror)
-
----
-
-_Referenced in [astral-sh/ruff#20236](../../astral-sh/ruff/pulls/20236.md) on 2025-10-06 23:13_
-
----
-
-_Referenced in [pyvista/pyvista#7994](../../pyvista/pyvista/pulls/7994.md) on 2025-10-06 23:27_
 
 ---
 

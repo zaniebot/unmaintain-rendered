@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-19T18:58:52Z
 updated_at: 2024-01-30T14:08:41Z
 url: https://github.com/astral-sh/ruff/issues/8074
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Allow safe fixes to be added in patch releases
@@ -97,9 +97,5 @@ A few reactions (and not a decision):
 - The current setup is strange in that we can add unsafe fixes in a patch release, but not safe fixes. So we're actually not allowed (per the versioning policy) to give users access to the safest, most trivial fixes, while they _can_ get access to the much-less-safe fixes.
 - There's a difference between what's allowed by the versioning policy, and what's a best practice. The versioning policy could allow us to ship safe fixes in a patch release, but we might still choose to gate fixes behind `--preview` if we feel they need more time (e.g., I would've gated the `RET` fixes either way).
 - One option is to always ship "safe" fixes as "unsafe" in patch releases, and then upgrade them to "safe" in minor releases. (We could use "safe" in preview from the start -- i.e., "safe" in preview, "unsafe" in stable.) This would adhere to the versioning policy and would give users access to the fixes. It's a bit odd though, since "unsafe" isn't intended for "unstable", it's intended to indicate that the meaning of the code might change.
-
----
-
-_Referenced in [astral-sh/ruff#19851](../../astral-sh/ruff/pulls/19851.md) on 2025-08-13 07:04_
 
 ---

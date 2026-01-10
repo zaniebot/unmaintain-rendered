@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-07T15:33:00Z
 updated_at: 2025-07-07T13:04:30Z
 url: https://github.com/astral-sh/ruff/issues/14164
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] instance attributes
@@ -51,10 +51,6 @@ _Added to milestone `Red Knot 2024` by @carljm on 2024-11-07 15:33_
 
 ---
 
-_Referenced in [astral-sh/ty#230](../../astral-sh/ty/issues/230.md) on 2024-11-07 15:33_
-
----
-
 _Assigned to @sharkdp by @carljm on 2024-11-15 15:49_
 
 ---
@@ -70,42 +66,6 @@ _Added to milestone `Red Knot Q1 2025` by @carljm on 2025-01-09 17:43_
 _Comment by @sharkdp on 2025-01-27 14:45_
 
 Modified the description to reflect the current progress
-
----
-
-_Referenced in [astral-sh/ruff#15811](../../astral-sh/ruff/pulls/15811.md) on 2025-02-03 18:42_
-
----
-
-_Referenced in [astral-sh/ruff#15959](../../astral-sh/ruff/pulls/15959.md) on 2025-02-05 10:32_
-
----
-
-_Referenced in [astral-sh/ruff#15960](../../astral-sh/ruff/issues/15960.md) on 2025-02-05 10:59_
-
----
-
-_Referenced in [astral-sh/ty#207](../../astral-sh/ty/issues/207.md) on 2025-02-05 11:45_
-
----
-
-_Referenced in [astral-sh/ruff#15962](../../astral-sh/ruff/issues/15962.md) on 2025-02-05 11:54_
-
----
-
-_Referenced in [astral-sh/ruff#15963](../../astral-sh/ruff/issues/15963.md) on 2025-02-05 11:57_
-
----
-
-_Referenced in [astral-sh/ty#206](../../astral-sh/ty/issues/206.md) on 2025-02-05 12:01_
-
----
-
-_Referenced in [astral-sh/ruff#15843](../../astral-sh/ruff/pulls/15843.md) on 2025-02-05 13:55_
-
----
-
-_Referenced in [astral-sh/ruff#15966](../../astral-sh/ruff/issues/15966.md) on 2025-02-05 15:08_
 
 ---
 

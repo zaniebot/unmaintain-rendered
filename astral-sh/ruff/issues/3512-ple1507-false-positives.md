@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-14T14:27:54Z
 updated_at: 2023-03-14T17:46:36Z
 url: https://github.com/astral-sh/ruff/issues/3512
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # PLE1507 false positives
@@ -49,10 +49,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-03-14 14:30_
 _Comment by @charliermarsh on 2023-03-14 14:30_
 
 I thought we were pretty conservative with those but I must've overlooked, will fix.
-
----
-
-_Referenced in [astral-sh/ruff#3516](../../astral-sh/ruff/pulls/3516.md) on 2023-03-14 17:41_
 
 ---
 

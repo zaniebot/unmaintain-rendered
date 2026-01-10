@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-01T11:31:53Z
 updated_at: 2023-05-02T01:03:11Z
 url: https://github.com/astral-sh/ruff/issues/4168
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Testing docs examples
@@ -53,13 +53,5 @@ I'm happy to give the formatting bit a go but the testing part might be a bit be
 ---
 
 _Label `internal` added by @charliermarsh on 2023-05-02 01:03_
-
----
-
-_Referenced in [astral-sh/ruff#4240](../../astral-sh/ruff/issues/4240.md) on 2023-05-05 10:15_
-
----
-
-_Referenced in [astral-sh/ruff#4270](../../astral-sh/ruff/pulls/4270.md) on 2023-05-07 16:07_
 
 ---

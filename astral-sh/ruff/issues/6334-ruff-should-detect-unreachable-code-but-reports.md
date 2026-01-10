@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-04T09:14:16Z
 updated_at: 2023-08-04T13:51:40Z
 url: https://github.com/astral-sh/ruff/issues/6334
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Ruff should detect unreachable code but reports 'Missing explicit return', fixing it with `return None`
@@ -86,9 +86,5 @@ It seems like we may be able to address this false positive separately.
 ---
 
 _Label `bug` added by @zanieb on 2023-08-04 13:51_
-
----
-
-_Referenced in [ASFHyP3/actions#261](../../ASFHyP3/actions/issues/261.md) on 2025-02-11 17:48_
 
 ---

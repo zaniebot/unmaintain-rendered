@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-22T17:13:41Z
 updated_at: 2025-06-16T14:47:18Z
 url: https://github.com/astral-sh/ruff/issues/18257
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # custom-type-var-for-self (PYI019): misses types in quotes `cls: "type[_S]"`
@@ -42,10 +42,6 @@ ruff 0.11.10
 _Comment by @close2code-palm on 2025-05-25 16:46_
 
 Hello! Found the way to resolve hidden fix, working on this 😌
-
----
-
-_Referenced in [astral-sh/ruff#18311](../../astral-sh/ruff/pulls/18311.md) on 2025-05-26 06:41_
 
 ---
 

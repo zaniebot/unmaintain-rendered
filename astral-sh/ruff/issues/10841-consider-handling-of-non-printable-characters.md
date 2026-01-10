@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-08T23:45:05Z
 updated_at: 2024-06-08T06:22:04Z
 url: https://github.com/astral-sh/ruff/issues/10841
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Consider handling of non-printable characters when showing code/diffs
@@ -54,15 +54,7 @@ Interestingly, this is also the same as the default behavior of both `diff` and 
 
 ---
 
-_Referenced in [astral-sh/ruff#10784](../../astral-sh/ruff/pulls/10784.md) on 2024-04-08 23:46_
-
----
-
 _Label `bug` added by @charliermarsh on 2024-04-09 00:10_
-
----
-
-_Referenced in [astral-sh/ruff#11687](../../astral-sh/ruff/pulls/11687.md) on 2024-06-02 02:58_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-30T18:40:49Z
 updated_at: 2024-07-18T06:10:45Z
 url: https://github.com/astral-sh/ruff/issues/3825
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Line length incorrect for non-ascii text
@@ -152,10 +152,6 @@ Ruff did use `chars().count()` but we changed it in #3714 to align with black. P
 
 ---
 
-_Referenced in [mozilla/addons-server#20652](../../mozilla/addons-server/pulls/20652.md) on 2023-05-05 10:24_
-
----
-
 _Comment by @eviljeff on 2023-05-05 10:46_
 
 We have a case where ruff is reporting an over count line (112 vs our standard 88) but if we attempt to split it into two lines black auto-formats it back to one line because it'll fit on one line. 
@@ -208,14 +204,6 @@ Note that, for the Black's preview style, "there are no guarantees around the st
 
 ---
 
-_Referenced in [astral-sh/ruff#5133](../../astral-sh/ruff/issues/5133.md) on 2023-06-16 02:24_
-
----
-
-_Referenced in [astral-sh/ruff#3902](../../astral-sh/ruff/issues/3902.md) on 2023-06-16 02:25_
-
----
-
 _Label `question` added by @charliermarsh on 2023-06-16 02:25_
 
 ---
@@ -252,9 +240,5 @@ For example [Sarasa-Gothic](https://github.com/be5invis/Sarasa-Gothic)
 
 ![image](https://github.com/user-attachments/assets/477bd54a-81e1-4a7b-a012-928bb6d1bcf0)
 
-
----
-
-_Referenced in [sbgisen/.github#250](../../sbgisen/.github/issues/250.md) on 2025-04-18 10:59_
 
 ---

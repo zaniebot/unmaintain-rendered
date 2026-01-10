@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-24T13:47:33Z
 updated_at: 2023-04-30T20:57:43Z
 url: https://github.com/astral-sh/ruff/issues/4078
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Broken refactor from UP032
@@ -59,10 +59,6 @@ Woah, fascinating! Thanks for sharing that, I was wondering the same thing.
 ---
 
 _Assigned to @JonathanPlasse by @charliermarsh on 2023-04-25 00:02_
-
----
-
-_Referenced in [astral-sh/ruff#4165](../../astral-sh/ruff/pulls/4165.md) on 2023-04-30 19:40_
 
 ---
 

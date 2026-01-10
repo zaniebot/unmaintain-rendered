@@ -1,0 +1,46 @@
+```yaml
+number: 18732
+title: "Ruff detects and suggests fixes for invalid comparisons of `sys.version_info`"
+type: issue
+state: open
+author: IDrokin117
+labels:
+  - rule
+assignees: []
+created_at: 2025-06-17T18:48:40Z
+updated_at: 2025-06-17T21:19:07Z
+url: https://github.com/astral-sh/ruff/issues/18732
+synced_at: 2026-01-10T11:09:58Z
+```
+
+# Ruff detects and suggests fixes for invalid comparisons of `sys.version_info`
+
+---
+
+_Issue opened by @IDrokin117 on 2025-06-17 18:48_
+
+### Summary
+
+This issue was inspired by https://github.com/astral-sh/ruff/pull/18633#discussion_r2141151577 and https://github.com/astral-sh/ruff/pull/18633#pullrequestreview-2933252484 comments.  
+The rule [UP036](https://docs.astral.sh/ruff/rules/outdated-version-block/) applies to comparisons like these that would fail at runtime
+```
+import sys
+
+if sys.version_info < 3: ...
+if sys.version_info[0] < (3, 0): ...
+```
+There's currently a related rule ([unrecognized-version-info-check (PYI003)](https://docs.astral.sh/ruff/rules/unrecognized-version-info-check/#unrecognized-version-info-check-pyi003), and really PYI003-PYI006) that I think only applies in .pyi files. 
+
+Does it make sense to ignore invalid semantic statements in these cases? There are already at least two options for detecting these issues: adding them to UP036 or PYI003. Let me know what you think and I'll create a PR with a fix.
+
+---
+
+_Label `rule` added by @ntBre on 2025-06-17 21:15_
+
+---
+
+_Comment by @ntBre on 2025-06-17 21:19_
+
+cc @AlexWaygood Could we apply these PYI rules (003-006) to `.py` files too, or do they need to stay restricted to `.pyi` files? Or should we just leave these comparisons alone in general?
+
+---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-13T16:53:13Z
 updated_at: 2024-03-19T08:51:33Z
 url: https://github.com/astral-sh/ruff/issues/10389
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # `extend-select` docs are slighty misleading
@@ -87,10 +87,6 @@ _Comment by @johnthagen on 2024-03-18 11:06_
 > To sum up what I understand. What's unclear is that the documentation mentions that E is enabled by default, which isn't the case. The default only enables a subset of the E rules.
 
 @MichaReiser Exactly.
-
----
-
-_Referenced in [astral-sh/ruff#10467](../../astral-sh/ruff/pulls/10467.md) on 2024-03-19 02:54_
 
 ---
 

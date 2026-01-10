@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-07T15:07:10Z
 updated_at: 2025-08-31T07:19:27Z
 url: https://github.com/astral-sh/ruff/issues/7847
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # B023 is emitted when closure is defined inside a loop and uses a variable from the same loop
@@ -188,10 +188,6 @@ See https://github.com/PyCQA/flake8-bugbear/issues/402.
 
 ---
 
-_Referenced in [canonical/operator#1114](../../canonical/operator/pulls/1114.md) on 2024-02-15 00:26_
-
----
-
 _Comment by @beauxq on 2024-08-29 13:01_
 
 I think this false positive could be eliminated without risking any false negatives.
@@ -258,18 +254,6 @@ _Comment by @pankajp on 2024-09-10 15:47_
 
 I think @beauxq is right and ruff should be able to detect the first case where the only thing being done with the function is calling it within the same loop.
 I just had to disable B023 checks in my config as we have numerous such uses
-
----
-
-_Referenced in [astral-sh/ruff#15716](../../astral-sh/ruff/issues/15716.md) on 2025-01-24 13:55_
-
----
-
-_Referenced in [astral-sh/ruff#16046](../../astral-sh/ruff/issues/16046.md) on 2025-02-08 22:54_
-
----
-
-_Referenced in [llamastack/llama-stack#1184](../../llamastack/llama-stack/pulls/1184.md) on 2025-02-27 16:55_
 
 ---
 

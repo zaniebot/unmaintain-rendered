@@ -1,0 +1,139 @@
+```yaml
+number: 11000
+title: "`ruff --extend-select I` categorized local module as Known(ThirdParty) when it was set in src option."
+type: issue
+state: closed
+author: waketzheng
+labels:
+  - question
+  - isort
+assignees: []
+created_at: 2024-04-17T13:40:08Z
+updated_at: 2024-04-17T14:41:29Z
+url: https://github.com/astral-sh/ruff/issues/11000
+synced_at: 2026-01-10T11:09:53Z
+```
+
+# `ruff --extend-select I` categorized local module as Known(ThirdParty) when it was set in src option.
+
+---
+
+_Issue opened by @waketzheng on 2024-04-17 13:40_
+
+- ruff --version
+ruff 0.3.7
+- python -V
+Python 3.11.8
+- project structure
+```
+.
+├── my_package
+│   └── __init__.py
+├── pyproject.toml
+└── tests
+    ├── test_a.py
+    └── utils.py
+```
+- config
+```toml
+[tool.ruff]
+src = ["my_package","tests"]
+
+[tool.isort]
+src_paths = ["my_package","tests"]
+```
+- After run `ruff check --extend-select=I --fix tests/test_a.py` I got:
+```py
+import pytest
+from my_package import A
+from tests.utils import echo
+```
+- While run `isort tests/test_a.py` got:
+```py
+import pytest
+
+from my_package import A
+from tests.utils import echo
+```
+- How to reproduce
+```bash
+mkdir my-package
+cd my-package
+python3 -m venv venv
+source venv/bin/activate
+pip install ruff pytest isort
+echo '[tool.ruff]
+src = ["my_package","tests"]
+
+[tool.isort]
+src_paths = ["my_package","tests"]
+' > pyproject.toml
+mkdir my_package
+echo 'class A: ...' > my_package/__init__.py
+mkdir tests
+echo 'def echo(a):
+    print(a)
+' > tests/utils.py
+echo 'import pytest
+from tests.utils import echo
+from my_package import A
+
+def test_a():
+    a = A()
+    echo(a)
+    with pytest.raises(AttributeError):
+        a.a
+' > tests/test_a.py
+ruff check --extend-select=I --fix .
+echo 'Lint result by ruff:'
+head -3 tests/test_a.py|cat -n
+isort .
+echo 'By isort:'
+head -5 tests/test_a.py|cat -n
+```
+- Similar issue
+#10989
+
+---
+
+_Renamed from "`ruff --select I` categorized local module as Known(ThirdParty) when it was set in src option." to "`ruff --extend-select I` categorized local module as Known(ThirdParty) when it was set in src option." by @waketzheng on 2024-04-17 13:42_
+
+---
+
+_Comment by @charliermarsh on 2024-04-17 13:47_
+
+I believe `src` should be the directory _containing_ your package, not the directory of the package itself. So I believe you just want this?
+
+```toml
+[tool.ruff]
+src = ["."]
+```
+
+---
+
+_Label `question` added by @charliermarsh on 2024-04-17 13:47_
+
+---
+
+_Label `isort` added by @charliermarsh on 2024-04-17 13:47_
+
+---
+
+_Comment by @waketzheng on 2024-04-17 14:41_
+
+> I believe `src` should be the directory _containing_ your package, not the directory of the package itself. So I believe you just want this?
+> 
+> ```toml
+> [tool.ruff]
+> src = ["."]
+> ```
+
+Worked. Thanks~
+
+It seems that `src` option of ruff is different from `src_paths` of isort.
+
+---
+
+_Closed by @waketzheng on 2024-04-17 14:41_
+
+---

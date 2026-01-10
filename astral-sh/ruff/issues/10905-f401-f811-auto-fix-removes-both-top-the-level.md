@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-12T12:27:16Z
 updated_at: 2024-04-27T15:44:54Z
 url: https://github.com/astral-sh/ruff/issues/10905
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # F401 + F811 - auto-fix removes both top the level import and any inside-function import
@@ -150,10 +150,6 @@ when ideally it would remove the local import rather than the top-level import
 _Comment by @charliermarsh on 2024-04-14 11:53_
 
 Maybe we should change F811 to only remove the "shadowed" import if they're in the same scope? I need to look back at why we changed that in the first place.
-
----
-
-_Referenced in [astral-sh/ruff#11173](../../astral-sh/ruff/pulls/11173.md) on 2024-04-27 12:50_
 
 ---
 

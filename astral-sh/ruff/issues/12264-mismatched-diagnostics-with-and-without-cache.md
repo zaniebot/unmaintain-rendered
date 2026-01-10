@@ -1,0 +1,96 @@
+```yaml
+number: 12264
+title: Mismatched diagnostics with and without cache with hierarchical configs
+type: issue
+state: closed
+author: dhruvmanila
+labels:
+  - bug
+  - cache
+assignees: []
+created_at: 2024-07-10T04:07:45Z
+updated_at: 2024-08-07T19:53:47Z
+url: https://github.com/astral-sh/ruff/issues/12264
+synced_at: 2026-01-10T11:09:54Z
+```
+
+# Mismatched diagnostics with and without cache with hierarchical configs
+
+---
+
+_Issue opened by @dhruvmanila on 2024-07-10 04:07_
+
+Consider the following project structure:
+
+```
+.
+├── baz
+│   ├── egg
+│   │   └── t3.py
+│   ├── pyproject.toml
+│   └── t2.py
+├── pyproject.toml
+└── t1.py
+```
+
+> Zipped folder: [foo.zip](https://github.com/user-attachments/files/16155043/foo.zip)
+
+All Python files contain the same code which raises `undefined-name`:
+```py
+print(name)
+```
+
+And both `pyproject.toml` file contain:
+```toml
+[tool.ruff.lint]
+ignore = ["F821"]
+```
+
+### Steps:
+1. Make sure there's no cache: `ruff clean`
+2. Run a fresh `ruff check .` which should give no diagnostics because they're currently ignored
+3. Comment the `ignore` line in nested config: `baz/pyproject.toml`
+4. Run `ruff check .` and you'll see a single diagnostic for `baz/egg/t3.py`
+5. Run `ruff check --no-cache .` and you'll see two diagnostics for `baz/t2.py` and `baz/egg/t3.py`
+
+
+
+---
+
+_Label `bug` added by @dhruvmanila on 2024-07-10 04:07_
+
+---
+
+_Comment by @MichaReiser on 2024-07-10 07:06_
+
+Huh, that's confusing
+
+---
+
+_Comment by @dhruvmanila on 2024-07-10 10:25_
+
+> Huh, that's confusing
+
+What's confusing? Is it the issue description or the issue itself? I can make it clear if it's the former :)
+
+---
+
+_Comment by @MichaReiser on 2024-07-10 11:04_
+
+Haha no, the description is clear. It's unclear to me how / why the cache gets into an invalid state.
+
+---
+
+_Label `cache` added by @dhruvmanila on 2024-07-11 04:12_
+
+---
+
+_Comment by @MichaReiser on 2024-08-07 06:05_
+
+Hmm, I'm unable to reproduce this. Changes to the `pyproject.toml` are correctly reflected when running `ruff check` in the `foo` directory
+
+---
+
+_Closed by @MichaReiser on 2024-08-07 19:53_
+
+---

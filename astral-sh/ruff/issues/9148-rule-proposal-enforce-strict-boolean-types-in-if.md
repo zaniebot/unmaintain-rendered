@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-12-15T11:05:30Z
 updated_at: 2023-12-18T08:05:15Z
 url: https://github.com/astral-sh/ruff/issues/9148
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Rule proposal: enforce strict boolean types in if statements
@@ -145,9 +145,5 @@ Similar scenarios may arise with:
 - numbers (`int`, `float`) as `0` or `0.0` are `False`
 - strings as empty strings are `False`
 - values marked as `Optional`
-
----
-
-_Referenced in [python/mypy#16734](../../python/mypy/issues/16734.md) on 2024-01-03 15:04_
 
 ---

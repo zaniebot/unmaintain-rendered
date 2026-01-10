@@ -1,0 +1,162 @@
+```yaml
+number: 4727
+title: "Add `--diff` support for Jupyter notebooks"
+type: issue
+state: closed
+author: dhruvmanila
+labels:
+  - core
+assignees: []
+created_at: 2023-05-30T15:36:07Z
+updated_at: 2023-07-29T04:22:58Z
+url: https://github.com/astral-sh/ruff/issues/4727
+synced_at: 2026-01-10T11:09:47Z
+```
+
+# Add `--diff` support for Jupyter notebooks
+
+---
+
+_Issue opened by @dhruvmanila on 2023-05-30 15:36_
+
+Depends on #1218 
+
+Similar to the diff produced for Python files, except here it'll be at cell level. If a cell contains an auto-fix add it to the output, otherwise ignore it.
+
+<details><summary><b><i><code>black --diff .</code> output:</b></i></summary>
+<p>
+
+```diff
+--- site/en/guide/advanced_autodiff.ipynb	2023-05-30 07:24:16.776513 +0000:cell_1
++++ site/en/guide/advanced_autodiff.ipynb	2023-05-30 15:23:51.498900 +0000:cell_1
+@@ -1,6 +1,6 @@
+-#@title Licensed under the Apache License, Version 2.0 (the "License");
++# @title Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+ # You may obtain a copy of the License at
+ #
+ # https://www.apache.org/licenses/LICENSE-2.0
+ #
+--- site/en/guide/advanced_autodiff.ipynb	2023-05-30 07:24:16.776513 +0000:cell_6
++++ site/en/guide/advanced_autodiff.ipynb	2023-05-30 15:23:51.498900 +0000:cell_6
+@@ -1,6 +1,6 @@
+ import tensorflow as tf
+ 
+ import matplotlib as mpl
+ import matplotlib.pyplot as plt
+ 
+-mpl.rcParams['figure.figsize'] = (8, 6)
++mpl.rcParams["figure.figsize"] = (8, 6)
+--- site/en/guide/advanced_autodiff.ipynb	2023-05-30 07:24:16.776513 +0000:cell_9
++++ site/en/guide/advanced_autodiff.ipynb	2023-05-30 15:23:51.498900 +0000:cell_9
+@@ -1,13 +1,13 @@
+ x = tf.Variable(2.0)
+ y = tf.Variable(3.0)
+ 
+ with tf.GradientTape() as t:
+-  x_sq = x * x
+-  with t.stop_recording():
+-    y_sq = y * y
+-  z = x_sq + y_sq
++    x_sq = x * x
++    with t.stop_recording():
++        y_sq = y * y
++    z = x_sq + y_sq
+ 
+-grad = t.gradient(z, {'x': x, 'y': y})
++grad = t.gradient(z, {"x": x, "y": y})
+ 
+-print('dz/dx:', grad['x'])  # 2*x => 4
+-print('dz/dy:', grad['y'])
++print("dz/dx:", grad["x"])  # 2*x => 4
++print("dz/dy:", grad["y"])
+would reformat site/en/guide/advanced_autodiff.ipynb
+
+All done! ✨ 🍰 ✨
+1 file would be reformatted.
+```
+
+</p>
+</details> 
+
+
+<details><summary><b><i><code>ruff check --fix --diff .</code> output:</b></i></summary>
+<p>
+
+```diff
+--- src/EM101.py
++++ src/EM101.py
+@@ -1,5 +1,4 @@
++msg = "This is an example exception. This message is very long and spans multiple lines."
+ raise Exception(
+-    "This is an example exception. "
+-    "This message is very long "
+-    "and spans multiple lines."
++    msg,
+ )
+
+--- src/RET504.py
++++ src/RET504.py
+@@ -4,4 +4,5 @@
+             x = 5
+             return x
+         case _:
+-            raise ValueError("Error")
++            msg = "Error"
++            raise ValueError(msg)
+
+--- src/RUF100.py
++++ src/RUF100.py
+@@ -1,2 +1,2 @@
+-import api.checks  # noqa: F401
++import api.checks
+ import api.signals  # noqa: F401
+
+--- src/PYI015.pyi
++++ src/PYI015.pyi
+@@ -1,2 +1,2 @@
+ unicode = str
+-some = str()
++some = ""
+
+--- src/D.py
++++ src/D.py
+@@ -2,12 +2,12 @@
+ 
+ 
+ class MyPublicClass:
+-    def __init__(self):
++    def __init__(self) -> None:
+         # This one should have a D107
+         pass
+ 
+ 
+ class MyPrivateClass:
+-    def __init__(self):
++    def __init__(self) -> None:
+         # This one should NOT have a D107
+         pass
+
+Would fix 77 errors.
+```
+
+</p>
+</details> 
+
+---
+
+_Label `wishlist` added by @charliermarsh on 2023-05-30 17:31_
+
+---
+
+_Label `wishlist` removed by @charliermarsh on 2023-05-30 17:31_
+
+---
+
+_Label `core` added by @charliermarsh on 2023-05-30 17:31_
+
+---
+
+_Closed by @dhruvmanila on 2023-07-29 04:22_
+
+---

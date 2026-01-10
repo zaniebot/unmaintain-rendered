@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-11T22:31:22Z
 updated_at: 2023-01-14T01:39:55Z
 url: https://github.com/astral-sh/ruff/issues/1790
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # UP024 fixer replaces wrong members with "as" alias import
@@ -88,18 +88,6 @@ Though it's not obvious, this is the same underlying issue as #1690. Which is th
 
 ---
 
-_Referenced in [astral-sh/ruff#1800](../../astral-sh/ruff/pulls/1800.md) on 2023-01-11 23:47_
-
----
-
-_Referenced in [astral-sh/ruff#1856](../../astral-sh/ruff/pulls/1856.md) on 2023-01-14 01:17_
-
----
-
 _Closed by @charliermarsh on 2023-01-14 01:39_
-
----
-
-_Referenced in [astral-sh/ruff#2397](../../astral-sh/ruff/issues/2397.md) on 2023-01-31 14:22_
 
 ---

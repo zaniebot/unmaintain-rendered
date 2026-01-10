@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-04T02:56:34Z
 updated_at: 2023-01-04T03:52:52Z
 url: https://github.com/astral-sh/ruff/issues/1620
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # PT006 missing a few fixes
@@ -40,10 +40,6 @@ Related #1592
 ---
 
 _Label `autofix` added by @charliermarsh on 2023-01-04 03:08_
-
----
-
-_Referenced in [astral-sh/ruff#1622](../../astral-sh/ruff/pulls/1622.md) on 2023-01-04 03:12_
 
 ---
 

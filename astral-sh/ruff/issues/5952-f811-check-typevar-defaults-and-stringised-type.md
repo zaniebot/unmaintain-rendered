@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-21T16:40:52Z
 updated_at: 2025-04-23T15:47:38Z
 url: https://github.com/astral-sh/ruff/issues/5952
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # F811: Check TypeVar defaults and stringised type parameters in bases
@@ -109,10 +109,6 @@ _Renamed from "[Feature] F811: Check if import is inside of TYPE_CHECKING block"
 ---
 
 _Renamed from "[Feature] F811: Check TypeVar defaults and stringised type parameters in bases" to "F811: Check TypeVar defaults and stringised type parameters in bases" by @Gobot1234 on 2023-07-21 17:25_
-
----
-
-_Referenced in [astral-sh/ruff#17555](../../astral-sh/ruff/issues/17555.md) on 2025-04-23 15:15_
 
 ---
 

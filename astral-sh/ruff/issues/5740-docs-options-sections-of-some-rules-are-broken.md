@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-13T16:27:02Z
 updated_at: 2023-07-13T17:25:56Z
 url: https://github.com/astral-sh/ruff/issues/5740
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Docs: Options sections of some rules are broken
@@ -35,10 +35,6 @@ Broken docs:
 _Comment by @charliermarsh on 2023-07-13 16:28_
 
 Thanks!
-
----
-
-_Referenced in [astral-sh/ruff#5741](../../astral-sh/ruff/pulls/5741.md) on 2023-07-13 16:51_
 
 ---
 

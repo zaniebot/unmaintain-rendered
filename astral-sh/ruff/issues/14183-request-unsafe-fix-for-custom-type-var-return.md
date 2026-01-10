@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-08T00:48:42Z
 updated_at: 2025-01-28T21:33:59Z
 url: https://github.com/astral-sh/ruff/issues/14183
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Request: Unsafe fix for `custom-type-var-return-type`/`PYI019`
@@ -40,19 +40,7 @@ I feel like logically a fix for this rule should be feasible without too much co
 
 ---
 
-_Referenced in [astral-sh/ruff#14184](../../astral-sh/ruff/issues/14184.md) on 2024-11-08 00:59_
-
----
-
-_Referenced in [microsoft/python-type-stubs#340](../../microsoft/python-type-stubs/pulls/340.md) on 2024-11-08 03:11_
-
----
-
 _Label `fixes` added by @MichaReiser on 2024-11-08 07:39_
-
----
-
-_Referenced in [astral-sh/ruff#14238](../../astral-sh/ruff/pulls/14238.md) on 2024-11-10 03:03_
 
 ---
 
@@ -281,9 +269,5 @@ Bump
 _Comment by @InSyncWithFoo on 2025-01-28 21:33_
 
 @Avasam I think you are better off filing a new issue, as this one is already closed.
-
----
-
-_Referenced in [astral-sh/ruff#15798](../../astral-sh/ruff/issues/15798.md) on 2025-01-28 23:55_
 
 ---

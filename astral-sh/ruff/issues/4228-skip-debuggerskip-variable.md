@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-04T19:26:51Z
 updated_at: 2023-05-08T11:56:19Z
 url: https://github.com/astral-sh/ruff/issues/4228
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Skip __debuggerskip__ variable
@@ -34,10 +34,6 @@ _Label `good first issue` added by @charliermarsh on 2023-05-04 19:28_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-05-04 19:38_
-
----
-
-_Referenced in [astral-sh/ruff#4229](../../astral-sh/ruff/pulls/4229.md) on 2023-05-04 19:39_
 
 ---
 

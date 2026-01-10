@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-04T10:22:37Z
 updated_at: 2023-03-04T17:14:34Z
 url: https://github.com/astral-sh/ruff/issues/3334
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # [Panic] Panic when checking pylint 
@@ -49,10 +49,6 @@ Thanks!
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-03-04 16:07_
-
----
-
-_Referenced in [astral-sh/ruff#3338](../../astral-sh/ruff/pulls/3338.md) on 2023-03-04 16:29_
 
 ---
 

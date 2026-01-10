@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-04T06:15:45Z
 updated_at: 2023-09-05T17:00:09Z
 url: https://github.com/astral-sh/ruff/issues/7125
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Rule SIM300 cause autofix error
@@ -65,10 +65,6 @@ We're fixing this as `A[0][0]>Bor B`. It seems that the "no whitespace between `
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-09-05 16:28_
-
----
-
-_Referenced in [astral-sh/ruff#7167](../../astral-sh/ruff/pulls/7167.md) on 2023-09-05 16:46_
 
 ---
 

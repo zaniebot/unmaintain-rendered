@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-04T08:53:40Z
 updated_at: 2025-03-04T10:01:35Z
 url: https://github.com/astral-sh/ruff/issues/16491
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # collections-named-tuple (PYI024): Potential for an unsafe autofix using `Any`
@@ -101,9 +101,5 @@ _Closed by @Avasam on 2025-03-04 10:00_
 ---
 
 _Closed by @Avasam on 2025-03-04 10:01_
-
----
-
-_Referenced in [microsoft/pylance-release#7009](../../microsoft/pylance-release/issues/7009.md) on 2025-03-04 10:06_
 
 ---

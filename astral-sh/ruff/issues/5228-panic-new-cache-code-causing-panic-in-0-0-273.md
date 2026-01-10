@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-06-20T22:44:54Z
 updated_at: 2023-06-20T23:01:23Z
 url: https://github.com/astral-sh/ruff/issues/5228
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # [Panic] new cache code causing panic in 0.0.273
@@ -83,10 +83,6 @@ Looks like #5225 was created while I wrote this, seems to be the same issue
 _Comment by @charliermarsh on 2023-06-20 22:48_
 
 Sorry, yeah, I'll cut a fix for this tonight. I'm just trying to reproduce first.
-
----
-
-_Referenced in [astral-sh/ruff#5229](../../astral-sh/ruff/pulls/5229.md) on 2023-06-20 22:51_
 
 ---
 

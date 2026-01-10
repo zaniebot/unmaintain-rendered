@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-06T13:46:03Z
 updated_at: 2025-07-11T16:35:43Z
 url: https://github.com/astral-sh/ruff/issues/19159
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # `match_docstring_end` matches too much, making I002 introduce a syntax error
@@ -58,10 +58,6 @@ _Label `bug` added by @ntBre on 2025-07-07 20:59_
 ---
 
 _Label `fixes` added by @ntBre on 2025-07-07 20:59_
-
----
-
-_Referenced in [astral-sh/ruff#19222](../../astral-sh/ruff/pulls/19222.md) on 2025-07-09 00:48_
 
 ---
 

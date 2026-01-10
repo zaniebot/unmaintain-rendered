@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-03T23:38:23Z
 updated_at: 2023-07-04T18:06:03Z
 url: https://github.com/astral-sh/ruff/issues/5496
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Make flake8-quotes descriptions consistent with default settings
@@ -43,10 +43,6 @@ _Label `good first issue` added by @charliermarsh on 2023-07-04 13:26_
 _Comment by @charliermarsh on 2023-07-04 13:26_
 
 (If anyone's interested, we just need to reverse the order of the branches in the violation definition -- the docs just render the first one.)
-
----
-
-_Referenced in [astral-sh/ruff#5507](../../astral-sh/ruff/pulls/5507.md) on 2023-07-04 17:58_
 
 ---
 

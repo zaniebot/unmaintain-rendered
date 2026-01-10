@@ -1,0 +1,76 @@
+```yaml
+number: 12107
+title: Should cursor credit rustc?
+type: issue
+state: closed
+author: sbdchd
+labels:
+  - question
+  - parser
+assignees: []
+created_at: 2024-06-29T21:52:26Z
+updated_at: 2024-06-30T15:53:26Z
+url: https://github.com/astral-sh/ruff/issues/12107
+synced_at: 2026-01-10T11:09:54Z
+```
+
+# Should cursor credit rustc?
+
+---
+
+_Issue opened by @sbdchd on 2024-06-29 21:52_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+
+I was looking at ruff and rustc for inspo for lexing and the cursor files are pretty similar:
+
+https://github.com/astral-sh/ruff/blob/d1079680bb29f6b797b5df15327195300f635f3c/crates/ruff_python_parser/src/lexer/cursor.rs
+
+https://github.com/rust-lang/rust/blob/d1b7355d3d7b4ead564dbecb1d240fcc74fff21b/compiler/rustc_lexer/src/cursor.rs
+
+---
+
+_Label `parser` added by @AlexWaygood on 2024-06-29 22:23_
+
+---
+
+_Comment by @zanieb on 2024-06-29 23:02_
+
+👋 I went on quite the hunt trying to see if there was context about this. As far as I can tell nobody talked about the rustc lexer and they probably would have if they based the design on it? I'm curious to hear from @MichaReiser though. 
+
+Some references I looked at:
+
+- https://github.com/astral-sh/ruff/pull/6099
+- https://github.com/astral-sh/RustPython-Parser/pull/38
+- https://github.com/astral-sh/ruff/pull/5715
+- https://github.com/astral-sh/ruff/pull/4922
+
+---
+
+_Label `question` added by @zanieb on 2024-06-29 23:02_
+
+---
+
+_Comment by @MichaReiser on 2024-06-30 08:10_
+
+Yes, we absolutely should. 
+
+I was fairly certain that I mentioned in some comment that the implementation is derived from Rust in https://github.com/astral-sh/ruff/pull/4922 (inline comment or at least on the PR), but I didn't!
+
+---
+
+_Closed by @MichaReiser on 2024-06-30 15:53_
+
+---

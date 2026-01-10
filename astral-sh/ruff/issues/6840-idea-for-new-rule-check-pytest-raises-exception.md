@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-24T06:32:14Z
 updated_at: 2024-08-20T19:10:01Z
 url: https://github.com/astral-sh/ruff/issues/6840
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Idea for new Rule: Check pytest.raises Exception Info for broad Exceptions
@@ -99,10 +99,6 @@ _Label `needs-decision` added by @charliermarsh on 2023-08-25 21:44_
 
 ---
 
-_Referenced in [astral-sh/ruff#5157](../../astral-sh/ruff/issues/5157.md) on 2024-06-26 21:15_
-
----
-
 _Comment by @Avasam on 2024-08-12 15:17_
 
 https://github.com/astral-sh/ruff/issues/5157#issuecomment-2284256186
@@ -134,9 +130,5 @@ https://github.com/astral-sh/ruff/issues/5157#issuecomment-2284256186
 > ```
 
 A separate rule to avoid using `match=` with a non `re.escape` str could be nice (only disallow string literals, until Ruff gains multifile type information, pre-espaced strings can't be detected obviously)
-
----
-
-_Referenced in [pypa/setuptools#4557](../../pypa/setuptools/pulls/4557.md) on 2024-08-12 15:18_
 
 ---

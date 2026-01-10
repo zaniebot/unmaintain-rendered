@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-22T23:26:16Z
 updated_at: 2023-10-23T13:48:38Z
 url: https://github.com/astral-sh/ruff/issues/8123
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # `uncapitalized-environment-variables` (`SIM112`) false positive on `https_proxy`, `http_proxy` and `no_proxy` variables
@@ -43,10 +43,6 @@ This seems reasonable to me.
 ---
 
 _Label `accepted` added by @charliermarsh on 2023-10-23 03:20_
-
----
-
-_Referenced in [astral-sh/ruff#8140](../../astral-sh/ruff/pulls/8140.md) on 2023-10-23 11:46_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-22T12:08:38Z
 updated_at: 2025-03-23T14:18:31Z
 url: https://github.com/astral-sh/ruff/issues/16912
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] Disambiguate display for intersection types
@@ -47,10 +47,6 @@ _Label `red-knot` added by @MichaReiser on 2025-03-22 12:08_
 _Comment by @MatthewMckee4 on 2025-03-22 12:15_
 
 I can sort this out
-
----
-
-_Referenced in [astral-sh/ruff#16914](../../astral-sh/ruff/pulls/16914.md) on 2025-03-22 12:23_
 
 ---
 

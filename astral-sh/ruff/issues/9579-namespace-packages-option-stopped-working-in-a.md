@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-19T16:19:17Z
 updated_at: 2024-01-22T04:30:03Z
 url: https://github.com/astral-sh/ruff/issues/9579
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # namespace-packages option stopped working in a recent update
@@ -73,10 +73,6 @@ Found 2 errors.
 _Comment by @charliermarsh on 2024-01-22 00:00_
 
 Ah sorry, this is indeed a bug, my fault. Thank you so much for filing!
-
----
-
-_Referenced in [astral-sh/ruff#9603](../../astral-sh/ruff/pulls/9603.md) on 2024-01-22 00:00_
 
 ---
 

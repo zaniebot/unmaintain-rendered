@@ -1,0 +1,53 @@
+```yaml
+number: 938
+title: brew install ruff not find  
+type: issue
+state: closed
+author: me-v2
+labels:
+  - question
+assignees: []
+created_at: 2022-11-28T05:28:28Z
+updated_at: 2022-11-28T11:18:13Z
+url: https://github.com/astral-sh/ruff/issues/938
+synced_at: 2026-01-10T12:09:58Z
+```
+
+# brew install ruff not find  
+
+---
+
+_Issue opened by @me-v2 on 2022-11-28 05:28_
+
+Warning: No available formula with the name "ruff". Did you mean riff?
+==> Searching for similarly named formulae...
+These similarly named formulae were found:
+truffle                                  riff
+To install one of them, run (for example):
+  brew install truffle
+==> Searching for a previously deleted formula (in the last month)...
+Error: No previously deleted formula found.
+==> Searching taps on GitHub...
+Error: No formulae found in taps.
+
+---
+
+_Comment by @charliermarsh on 2022-11-28 05:39_
+
+Can you try running `brew update` first?
+
+---
+
+_Label `question` added by @charliermarsh on 2022-11-28 05:39_
+
+---
+
+_Comment by @me-v2 on 2022-11-28 11:18_
+
+cool,  figure out . by brew update . thanks.
+
+---
+
+_Closed by @me-v2 on 2022-11-28 11:18_
+
+---

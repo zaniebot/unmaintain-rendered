@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-15T18:26:20Z
 updated_at: 2023-04-20T13:53:26Z
 url: https://github.com/astral-sh/ruff/issues/3546
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Feature: rewrite dict.get(key, None) as dict.get(key)
@@ -41,10 +41,6 @@ Yeah just not sure what code this would fall under...
 
 ---
 
-_Referenced in [MartinThoma/flake8-simplify#171](../../MartinThoma/flake8-simplify/issues/171.md) on 2023-03-15 23:32_
-
----
-
 _Comment by @janosh on 2023-03-28 22:52_
 
 Rule name in `flake8-simplify` [will be SIM910](https://github.com/MartinThoma/flake8-simplify/issues/171#issuecomment-1487693798).
@@ -60,10 +56,6 @@ Oh nice!
 _Comment by @kyoto7250 on 2023-03-29 01:44_
 
 I am currently working for making this rule in `flake8-simplify`, and I would also like to implement the rule in `ruff`.
-
----
-
-_Referenced in [astral-sh/ruff#3874](../../astral-sh/ruff/pulls/3874.md) on 2023-04-04 03:00_
 
 ---
 
@@ -86,10 +78,6 @@ https://github.com/Lightning-AI/lightning/blob/8dac2512733bae034f437334a71e4c114
 ```
 src/lightning/pytorch/utilities/parsing.py:102:16: SIM910 Use 'local_vars.get(self_var)' instead of 'local_vars.get(self_var, None)'
 ```
-
----
-
-_Referenced in [Lightning-AI/pytorch-lightning#17386](../../Lightning-AI/pytorch-lightning/pulls/17386.md) on 2023-04-20 11:06_
 
 ---
 

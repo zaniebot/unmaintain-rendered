@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-30T04:19:36Z
 updated_at: 2024-07-12T08:45:47Z
 url: https://github.com/astral-sh/ruff/issues/9696
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Don't add space before new function on top of cell
@@ -461,10 +461,6 @@ $ ruff check test.py test.ipynb
 Now, I'm not exactly sure about the semantics of how pre-commit passes the file - does it pass them all at once or does it pass them one at a time? But, nevertheless you'll need to configure pre-commit for it to find notebook files.
 
 That said, you don't necessarily need to update your `pyproject.toml` file if you're using Ruff only through pre-commit because it takes care of finding all the files. But, if you use Ruff from the CLI / editor with notebooks, then you need to update your `pyproject.toml` file as well.
-
----
-
-_Referenced in [astral-sh/ruff-pre-commit#54](../../astral-sh/ruff-pre-commit/issues/54.md) on 2024-01-30 10:41_
 
 ---
 

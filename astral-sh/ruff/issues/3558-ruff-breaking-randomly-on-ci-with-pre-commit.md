@@ -1,0 +1,180 @@
+```yaml
+number: 3558
+title: Ruff breaking randomly on CI with pre-commit
+type: issue
+state: closed
+author: mounirmesselmeni
+labels:
+  - question
+assignees: []
+created_at: 2023-03-16T13:11:06Z
+updated_at: 2023-03-16T16:04:06Z
+url: https://github.com/astral-sh/ruff/issues/3558
+synced_at: 2026-01-10T11:09:46Z
+```
+
+# Ruff breaking randomly on CI with pre-commit
+
+---
+
+_Issue opened by @mounirmesselmeni on 2023-03-16 13:11_
+
+Running ruff in CI is recently is sometime failing with this error:
+
+```
+/lib/ld-linux-aarch64.so.1: No such file or directory
+```
+
+Ruff version:
+
+```yaml
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    # Ruff version.
+    rev: "v0.0.256"
+    hooks:
+      - id: ruff
+```
+
+Configuration
+
+```toml
+[tool.ruff]
+# Docs: https://beta.ruff.rs/docs/
+# Rules: https://beta.ruff.rs/docs/rules/
+select = ["F", "E", "B", "C4", "EXE", "ISC", "ICN", "INP", "PIE", "SIM", "W", "T20", "UP", "T10", "G", "DJ001", "DJ008", "C90", "ERA"]
+# Later on might be useful C/C90 (Compexity), ERA (Found commented-out code), FBT
+ignore = ["B008", "SIM102"]
+
+# Allow autofix for all enabled rules (when `--fix`) is provided.
+fixable = ["F", "E", "B", "C4", "EXE", "ISC", "ICN", "INP", "PIE", "SIM", "W", "T20", "UP"]
+unfixable = []
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".git",
+    ".mypy_cache",
+    ".pre-commit-cache",
+    ".ruff_cache",
+    ".tox",
+    ".venv",
+    "venv",
+    "docs",
+    "__pycache",
+    "**/migrations/*",
+]
+
+# Same as Black.
+line-length = 120
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# Assume Python 3.10.
+target-version = "py310"
+
+[tool.ruff.mccabe]
+# Unlike Flake8, default to a complexity level of 10.
+max-complexity = 10
+
+[tool.ruff.per-file-ignores]
+"**/management/commands/*.py" = ["T20"]
+```
+
+Issue happened on another project running python 3.11
+
+I can't reproduce the issue locally, but maybe you have some idea about the cause.
+
+If helping, I'm using Gitlab CI and caching of pre-commit files.
+
+```
+PRE_COMMIT_HOME: ".cache/.pre-commit-cache/"
+```
+
+```yaml
+cache:
+    key: $CI_PROJECT_NAME-precommit-cache-v1
+    paths:
+      - .cache/.pre-commit-cache/
+```
+
+If I clear the cache and re-run the job then it's fixed, maybe I'm missing something here to cache the file /lib/ld-linux-aarch64.so.1
+
+---
+
+_Comment by @konstin on 2023-03-16 15:11_
+
+could you add some more information on the ci setup, specifically what target and platform are you running on? from the `/lib/ld-linux-aarch64.so.1` it looks like it's some error with picking the right binary for the right platform
+
+---
+
+_Label `question` added by @charliermarsh on 2023-03-16 15:21_
+
+---
+
+_Comment by @mounirmesselmeni on 2023-03-16 15:54_
+
+Good point, nothing special as I'm using the shared gitlab runners, so no tags or target is set in the job.
+
+```yaml
+python-precommit:
+  extends: .base-job
+  image:
+    name: "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+    entrypoint: [""]
+  stage: test
+  variables:
+    PRE_COMMIT_HOME: ".cache/.pre-commit-cache/"
+  script:
+    # fix git dubious ownership caused by gitlab runner helper fetching the repo as root
+    # while we run as non-root with app user
+    - git config --global --add safe.directory $CI_PROJECT_DIR
+    # Make sure all pre-commit checks are passing
+    - pre-commit run --all
+  rules:
+    - exists:
+        - ".pre-commit-config.yaml"
+  interruptible: true
+  cache:
+    key: $CI_PROJECT_NAME-precommit-cache-v1
+    paths:
+      - .cache/.pre-commit-cache/
+```
+
+---
+
+_Comment by @mounirmesselmeni on 2023-03-16 15:56_
+
+One try could be to somehow include the architecture into the caching key. I'm not aware of gitlab offering shared linux arm runners out of the box. But if you think that's the issue (I will investigate that) then it's not a Ruff issue.
+I will update the issue as soon as I get more details
+
+---
+
+_Comment by @konstin on 2023-03-16 16:00_
+
+are you running your test on x86 or aarch64 and is QEMU involved in any way?
+
+either way, i think including the platform in the cache key would be good.
+
+---
+
+_Comment by @mounirmesselmeni on 2023-03-16 16:02_
+
+A successful one was running on zxwgkjAP
+The next one failed using the cache on XxUrkriX
+
+Both runners seems to have the same setup
+
+<img width="470" alt="image" src="https://user-images.githubusercontent.com/1055731/225679716-1e06d2bc-ccea-4d8c-acc0-c64c90d9035c.png">
+
+
+---
+
+_Comment by @mounirmesselmeni on 2023-03-16 16:04_
+
+I will try to include `CI_RUNNER_EXECUTABLE_ARCH` in the cache. Thank you for the feedback 🤞 
+
+---
+
+_Closed by @mounirmesselmeni on 2023-03-16 16:04_
+
+---

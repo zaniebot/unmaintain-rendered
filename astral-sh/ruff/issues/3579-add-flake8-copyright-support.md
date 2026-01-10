@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-17T16:33:37Z
 updated_at: 2023-06-11T02:18:00Z
 url: https://github.com/astral-sh/ruff/issues/3579
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Add flake8-copyright support
@@ -45,14 +45,6 @@ Some additional information :
 
 ---
 
-_Referenced in [astral-sh/ruff#4701](../../astral-sh/ruff/pulls/4701.md) on 2023-05-29 07:39_
-
----
-
 _Closed by @charliermarsh on 2023-06-11 02:18_
-
----
-
-_Referenced in [astral-sh/ruff#5306](../../astral-sh/ruff/issues/5306.md) on 2023-06-22 16:39_
 
 ---

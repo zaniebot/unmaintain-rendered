@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-02T07:20:48Z
 updated_at: 2023-11-03T04:29:38Z
 url: https://github.com/astral-sh/ruff/issues/8442
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # playground - popover is cut off when at the top of the file
@@ -51,10 +51,6 @@ _Renamed from "playground - popower is cut off when at the top of the file" to "
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-11-03 03:52_
-
----
-
-_Referenced in [astral-sh/ruff#8458](../../astral-sh/ruff/pulls/8458.md) on 2023-11-03 04:23_
 
 ---
 

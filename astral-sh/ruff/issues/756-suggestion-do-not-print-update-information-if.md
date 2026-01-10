@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-15T16:43:47Z
 updated_at: 2022-11-15T20:29:11Z
 url: https://github.com/astral-sh/ruff/issues/756
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # Suggestion: Do not print update information if `--format=json`
@@ -71,6 +71,6 @@ _Referenced in [astral-sh/ruff#760](../../astral-sh/ruff/pulls/760.md) on 2022-1
 
 ---
 
-_Closed by @charliermarsh on 2022-11-15 20:29_
+_Closed by @charliermarsh in #760 on 2022-11-15 20:29_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-30T20:56:35Z
 updated_at: 2023-12-15T10:47:20Z
 url: https://github.com/astral-sh/ruff/issues/8367
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Improve documentation on import sorting
@@ -30,14 +30,6 @@ _Label `documentation` added by @zanieb on 2023-10-30 20:56_
 ---
 
 _Label `configuration` added by @zanieb on 2023-10-30 20:57_
-
----
-
-_Referenced in [astral-sh/ruff#8612](../../astral-sh/ruff/issues/8612.md) on 2023-11-11 12:34_
-
----
-
-_Referenced in [astral-sh/ruff#8926](../../astral-sh/ruff/issues/8926.md) on 2023-11-30 15:55_
 
 ---
 
@@ -61,22 +53,6 @@ ruff format
 
 ---
 
-_Referenced in [astral-sh/ruff#9117](../../astral-sh/ruff/pulls/9117.md) on 2023-12-13 19:06_
-
----
-
-_Referenced in [astral-sh/ruff-vscode#363](../../astral-sh/ruff-vscode/issues/363.md) on 2023-12-14 19:11_
-
----
-
 _Closed by @MichaReiser on 2023-12-15 10:47_
-
----
-
-_Referenced in [astral-sh/rye#804](../../astral-sh/rye/issues/804.md) on 2024-02-27 20:24_
-
----
-
-_Referenced in [JoshHayes/emacs-ruff-format#1](../../JoshHayes/emacs-ruff-format/issues/1.md) on 2024-06-12 09:36_
 
 ---

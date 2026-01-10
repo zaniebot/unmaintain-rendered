@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-02T16:53:46Z
 updated_at: 2025-01-07T03:13:37Z
 url: https://github.com/astral-sh/ruff/issues/15224
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Inconsistent behavior in D405 with capitalization in Google docstrings
@@ -60,10 +60,6 @@ _Label `docstring` added by @AlexWaygood on 2025-01-03 13:32_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2025-01-07 03:03_
-
----
-
-_Referenced in [astral-sh/ruff#15311](../../astral-sh/ruff/pulls/15311.md) on 2025-01-07 03:04_
 
 ---
 

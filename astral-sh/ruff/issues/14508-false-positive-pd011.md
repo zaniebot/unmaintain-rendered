@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-11-21T08:51:14Z
 updated_at: 2024-11-21T10:21:46Z
 url: https://github.com/astral-sh/ruff/issues/14508
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # False positive PD011
@@ -119,13 +119,5 @@ Thanks, this is similar to https://github.com/astral-sh/ruff/issues/6432. We are
 ---
 
 _Closed by @MichaReiser on 2024-11-21 10:21_
-
----
-
-_Referenced in [astral-sh/ruff#14669](../../astral-sh/ruff/issues/14669.md) on 2024-11-29 07:28_
-
----
-
-_Referenced in [astral-sh/ruff#14671](../../astral-sh/ruff/pulls/14671.md) on 2024-11-29 07:33_
 
 ---

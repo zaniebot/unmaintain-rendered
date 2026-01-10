@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-04T15:57:23Z
 updated_at: 2023-07-04T18:01:31Z
 url: https://github.com/astral-sh/ruff/issues/5505
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # `suspicious-eval-usage` doesn't trigger when expected
@@ -57,10 +57,6 @@ I'll take a look.
 ---
 
 _Label `bug` added by @charliermarsh on 2023-07-04 17:52_
-
----
-
-_Referenced in [astral-sh/ruff#5506](../../astral-sh/ruff/pulls/5506.md) on 2023-07-04 17:53_
 
 ---
 

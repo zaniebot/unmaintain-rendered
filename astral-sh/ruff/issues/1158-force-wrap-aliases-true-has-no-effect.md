@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-09T07:04:22Z
 updated_at: 2022-12-09T17:20:16Z
 url: https://github.com/astral-sh/ruff/issues/1158
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:18Z
 ```
 
 # force-wrap-aliases = true has no effect
@@ -74,10 +74,6 @@ Yeah that’s right. I can add a note in the docs.
 ---
 
 _Label `documentation` added by @charliermarsh on 2022-12-09 15:16_
-
----
-
-_Referenced in [astral-sh/ruff#1162](../../astral-sh/ruff/pulls/1162.md) on 2022-12-09 17:20_
 
 ---
 

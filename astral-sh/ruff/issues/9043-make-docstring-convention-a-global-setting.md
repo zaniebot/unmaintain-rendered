@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-12-07T07:00:02Z
 updated_at: 2024-09-13T13:28:34Z
 url: https://github.com/astral-sh/ruff/issues/9043
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Make docstring convention a global setting
@@ -38,10 +38,6 @@ I propose to turn Pydocstyle's convention setting into a global setting to make 
 - Only mention the global setting in the docs
 - Remove the original setting at some point in the future (is Ruff's deprecation process based on time or releases?)
 
-
----
-
-_Referenced in [astral-sh/ruff#8843](../../astral-sh/ruff/pulls/8843.md) on 2023-12-07 07:02_
 
 ---
 

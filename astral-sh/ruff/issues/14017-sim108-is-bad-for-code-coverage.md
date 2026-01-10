@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-31T13:23:01Z
 updated_at: 2024-10-31T13:44:24Z
 url: https://github.com/astral-sh/ruff/issues/14017
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # SIM108 is bad for code coverage
@@ -46,9 +46,5 @@ I'll merge this into https://github.com/astral-sh/ruff/issues/5528 because it's 
 ---
 
 _Closed by @MichaReiser on 2024-10-31 13:44_
-
----
-
-_Referenced in [astral-sh/ruff#14019](../../astral-sh/ruff/pulls/14019.md) on 2024-10-31 14:26_
 
 ---

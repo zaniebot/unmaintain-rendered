@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-12T23:38:32Z
 updated_at: 2025-03-03T12:28:47Z
 url: https://github.com/astral-sh/ruff/issues/13341
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Add a rule-specific equivalent of the `--ignore-noqa` flag
@@ -60,9 +60,5 @@ Is this feature somewhere in your roadmap?
 ---
 
 _Label `needs-design` added by @MichaReiser on 2025-03-03 12:28_
-
----
-
-_Referenced in [astral-sh/ruff#18032](../../astral-sh/ruff/issues/18032.md) on 2025-05-12 06:52_
 
 ---

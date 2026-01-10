@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-13T03:09:11Z
 updated_at: 2023-08-14T19:24:18Z
 url: https://github.com/astral-sh/ruff/issues/6530
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # FBT002 has inaccurate / misleading documentation
@@ -51,15 +51,7 @@ You are right about the current documentation being confusing, though.
 
 ---
 
-_Referenced in [astral-sh/ruff#6556](../../astral-sh/ruff/pulls/6556.md) on 2023-08-14 12:37_
-
----
-
 _Label `documentation` added by @zanieb on 2023-08-14 13:52_
-
----
-
-_Referenced in [astral-sh/ruff#6567](../../astral-sh/ruff/pulls/6567.md) on 2023-08-14 17:33_
 
 ---
 

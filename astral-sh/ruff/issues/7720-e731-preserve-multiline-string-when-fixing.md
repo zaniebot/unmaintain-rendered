@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-30T03:48:58Z
 updated_at: 2024-12-23T09:29:47Z
 url: https://github.com/astral-sh/ruff/issues/7720
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # E731: Preserve multiline string when fixing.
@@ -50,14 +50,6 @@ def x():
 ---
 
 _Label `autofix` added by @charliermarsh on 2023-09-30 09:58_
-
----
-
-_Referenced in [astral-sh/ruff#7799](../../astral-sh/ruff/issues/7799.md) on 2023-10-04 04:54_
-
----
-
-_Referenced in [astral-sh/ruff#15097](../../astral-sh/ruff/pulls/15097.md) on 2024-12-22 02:05_
 
 ---
 

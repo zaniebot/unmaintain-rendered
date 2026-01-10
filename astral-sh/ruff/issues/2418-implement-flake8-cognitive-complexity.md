@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-01-31T21:28:06Z
 updated_at: 2026-01-07T12:17:16Z
 url: https://github.com/astral-sh/ruff/issues/2418
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Implement `flake8-cognitive-complexity`
@@ -169,14 +169,6 @@ I do run McCabe in Ruff as well, but they serve three different purposes, IMHO.
 
 ---
 
-_Referenced in [tough-dev-school/education-backend#2105](../../tough-dev-school/education-backend/pulls/2105.md) on 2023-11-23 13:15_
-
----
-
-_Referenced in [astral-sh/ruff#9812](../../astral-sh/ruff/pulls/9812.md) on 2024-02-04 14:48_
-
----
-
 _Comment by @Anders-Steen on 2024-02-21 14:17_
 
 Anyone want to look at my PR? #9812 
@@ -230,10 +222,6 @@ Hi @MichaReiser! I'm a big fan of the rule proposed in this issue, I'm curious h
 
 ---
 
-_Referenced in [scikit-fingerprints/scikit-fingerprints#377](../../scikit-fingerprints/scikit-fingerprints/issues/377.md) on 2025-01-30 14:58_
-
----
-
 _Comment by @MarcBresson on 2025-03-04 13:41_
 
 Hello! Is there any traction to have this implemented in ruff?
@@ -243,14 +231,6 @@ Hello! Is there any traction to have this implemented in ruff?
 _Comment by @Tishka17 on 2025-05-30 15:53_
 
 Hi. Is there any plan for this feature?
-
----
-
-_Referenced in [rohaquinlop/complexipy#77](../../rohaquinlop/complexipy/issues/77.md) on 2025-06-20 09:22_
-
----
-
-_Referenced in [astral-sh/ruff#20135](../../astral-sh/ruff/issues/20135.md) on 2025-08-28 13:55_
 
 ---
 
@@ -268,21 +248,9 @@ I don't think we're currently in a position where we can accept a PR that replac
 
 ---
 
-_Referenced in [astral-sh/ruff#20392](../../astral-sh/ruff/issues/20392.md) on 2025-09-15 12:46_
-
----
-
 _Comment by @cameronbrill on 2025-09-18 21:54_
 
 no worries, thanks for getting back to me!
-
----
-
-_Referenced in [astral-sh/ruff#20552](../../astral-sh/ruff/issues/20552.md) on 2025-09-24 16:18_
-
----
-
-_Referenced in [astral-sh/ruff#21639](../../astral-sh/ruff/issues/21639.md) on 2025-11-27 07:36_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-25T19:29:22Z
 updated_at: 2023-05-28T23:55:15Z
 url: https://github.com/astral-sh/ruff/issues/4661
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # F401 fix leaves empty space behind
@@ -131,9 +131,5 @@ I didn't know an auto-formatter was planned! I presume you mean https://github.c
 ---
 
 _Closed by @radeklat on 2023-05-28 23:55_
-
----
-
-_Referenced in [astral-sh/ruff#17344](../../astral-sh/ruff/issues/17344.md) on 2025-04-11 00:50_
 
 ---

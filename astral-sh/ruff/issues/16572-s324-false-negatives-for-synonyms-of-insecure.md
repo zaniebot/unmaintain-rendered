@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-08T23:57:45Z
 updated_at: 2025-09-24T20:10:25Z
 url: https://github.com/astral-sh/ruff/issues/16572
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # S324 false negatives for synonyms of insecure algorithm names
@@ -39,10 +39,6 @@ ruff 0.9.10 (0dfa810e9 2025-03-07)
 
 ---
 
-_Referenced in [astral-sh/ruff#16580](../../astral-sh/ruff/pulls/16580.md) on 2025-03-09 20:19_
-
----
-
 _Comment by @VascoSch92 on 2025-03-09 20:23_
 
 I opened a PR as I had already worked on a similar issue. I hope it is good.
@@ -64,10 +60,6 @@ While this is correct, I think it's fine to change the documentation to say that
 ---
 
 _Label `documentation` added by @MichaReiser on 2025-03-10 08:39_
-
----
-
-_Referenced in [astral-sh/ruff#20534](../../astral-sh/ruff/pulls/20534.md) on 2025-09-23 13:58_
 
 ---
 

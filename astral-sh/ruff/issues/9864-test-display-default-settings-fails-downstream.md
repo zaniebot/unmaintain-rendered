@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-06T21:07:00Z
 updated_at: 2024-02-18T13:35:12Z
 url: https://github.com/astral-sh/ruff/issues/9864
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Test display_default_settings fails downstream
@@ -117,10 +117,6 @@ _Label `bug` added by @charliermarsh on 2024-02-06 21:40_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-06 21:40_
-
----
-
-_Referenced in [astral-sh/ruff#9866](../../astral-sh/ruff/pulls/9866.md) on 2024-02-06 21:40_
 
 ---
 

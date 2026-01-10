@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-13T13:55:54Z
 updated_at: 2025-01-08T12:48:02Z
 url: https://github.com/astral-sh/ruff/issues/14959
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # LSP ruff messages about logs, but the LspLog in nvim is empty, is there somewhere else to look?
@@ -66,14 +66,6 @@ require('lspconfig').ruff.setup {
 ---
 
 _Label `question` added by @dhruvmanila on 2024-12-13 16:11_
-
----
-
-_Referenced in [astral-sh/ruff#12523](../../astral-sh/ruff/issues/12523.md) on 2025-01-04 20:01_
-
----
-
-_Referenced in [astral-sh/ruff#15232](../../astral-sh/ruff/pulls/15232.md) on 2025-01-07 05:19_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-11-04T10:14:06Z
 updated_at: 2024-11-04T20:33:32Z
 url: https://github.com/astral-sh/ruff/issues/14089
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # C419 unsafe fixes with trailing comma causes syntax error: "Generator expression must be parenthesized"
@@ -79,10 +79,6 @@ _Label `help wanted` added by @MichaReiser on 2024-11-04 11:11_
 ---
 
 _Label `fixes` added by @MichaReiser on 2024-11-04 11:12_
-
----
-
-_Referenced in [astral-sh/ruff#14097](../../astral-sh/ruff/pulls/14097.md) on 2024-11-04 19:14_
 
 ---
 

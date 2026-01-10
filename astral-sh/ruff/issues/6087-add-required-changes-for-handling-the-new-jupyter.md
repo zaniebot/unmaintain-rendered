@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-26T07:44:02Z
 updated_at: 2023-07-26T09:24:01Z
 url: https://github.com/astral-sh/ruff/issues/6087
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Add required changes for handling the new Jupyter AST nodes
@@ -28,19 +28,11 @@ _Issue opened by @dhruvmanila on 2023-07-26 07:44_
 
 ---
 
-_Referenced in [astral-sh/ruff#5188](../../astral-sh/ruff/issues/5188.md) on 2023-07-26 07:44_
-
----
-
 _Renamed from "Add required changes for handling the new  and  nodes" to "Add required changes for handling the new Jupyter AST nodes" by @dhruvmanila on 2023-07-26 07:45_
 
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2023-07-26 07:45_
-
----
-
-_Referenced in [astral-sh/ruff#6086](../../astral-sh/ruff/pulls/6086.md) on 2023-07-26 07:45_
 
 ---
 

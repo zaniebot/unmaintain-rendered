@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-12-30T17:43:12Z
 updated_at: 2024-01-11T19:42:44Z
 url: https://github.com/astral-sh/ruff/issues/9319
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Implement new SIM rule SIM911: `zip(dict.keys(), dict.values()) → dict.items()`
@@ -70,10 +70,6 @@ I'd like to work on this, please assign me :)
 ---
 
 _Assigned to @trag1c by @charliermarsh on 2024-01-03 19:11_
-
----
-
-_Referenced in [astral-sh/ruff#9460](../../astral-sh/ruff/pulls/9460.md) on 2024-01-10 23:14_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-24T20:52:36Z
 updated_at: 2024-07-06T03:10:17Z
 url: https://github.com/astral-sh/ruff/issues/8184
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Does the Ruff formatter validate the final AST in a similar manner to Black?
@@ -210,10 +210,6 @@ Ah right, i misread the code. Not a bad idea.
 
 ---
 
-_Referenced in [astral-sh/ruff#8624](../../astral-sh/ruff/pulls/8624.md) on 2023-11-12 01:12_
-
----
-
 _Closed by @charliermarsh on 2023-11-13 17:43_
 
 ---
@@ -223,10 +219,6 @@ _Comment by @charliermarsh on 2023-11-13 17:48_
 We now perform this validation during tests.
 
 Interestingly, in implementing this validation, I learned that Black actually _does_ modify the AST during formatting, and so Ruff does too :) Namely, Black modifies indentation within docstrings, which is reflected in the AST; and Black will also parenthesize long `del` statements (e.g., convert `del a, b` to `del (a, b`)), which doesn't change the semantics but does change the AST.
-
----
-
-_Referenced in [yt-project/yt#4748](../../yt-project/yt/issues/4748.md) on 2023-11-22 15:36_
 
 ---
 
@@ -240,9 +232,5 @@ Is there an option to use this at runtime like in black?
 _Comment by @charliermarsh on 2024-07-06 03:10_
 
 No, we don’t support running this check at runtime.
-
----
-
-_Referenced in [iragm/fishauctions#199](../../iragm/fishauctions/pulls/199.md) on 2024-09-01 00:58_
 
 ---

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-23T13:53:12Z
 updated_at: 2025-01-09T13:36:44Z
 url: https://github.com/astral-sh/ruff/issues/13892
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # DJ012 produces false positive when there are other dunder methods in model class
@@ -231,10 +231,6 @@ _Removed from milestone `v0.9` by @MichaReiser on 2025-01-08 13:35_
 ---
 
 _Added to milestone `v.0.10` by @MichaReiser on 2025-01-08 13:35_
-
----
-
-_Referenced in [astral-sh/ruff#15365](../../astral-sh/ruff/pulls/15365.md) on 2025-01-09 03:13_
 
 ---
 

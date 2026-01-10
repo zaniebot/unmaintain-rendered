@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-01-24T15:19:50Z
 updated_at: 2025-01-24T18:45:54Z
 url: https://github.com/astral-sh/ruff/issues/15721
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # N806 - function scoped constans in upper case
@@ -80,9 +80,5 @@ I could see an argument for any of the following:
 4. Skipping the lint if the assignment is to a literal and no further bindings are present in the function scope.
 
 Edit: I didn't see that related issue before. Alex makes good points, I'm sort of inclined to agree.
-
----
-
-_Referenced in [apify/crawlee-python#930](../../apify/crawlee-python/pulls/930.md) on 2025-01-27 07:23_
 
 ---

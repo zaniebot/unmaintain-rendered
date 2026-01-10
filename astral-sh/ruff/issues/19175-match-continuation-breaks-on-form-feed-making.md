@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-07T11:49:11Z
 updated_at: 2025-07-10T14:09:35Z
 url: https://github.com/astral-sh/ruff/issues/19175
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # `match_continuation` breaks on form feed, making TC004 introduce a syntax error
@@ -47,10 +47,6 @@ _Label `bug` added by @ntBre on 2025-07-07 20:59_
 ---
 
 _Label `fixes` added by @ntBre on 2025-07-07 20:59_
-
----
-
-_Referenced in [astral-sh/ruff#19220](../../astral-sh/ruff/pulls/19220.md) on 2025-07-08 21:39_
 
 ---
 

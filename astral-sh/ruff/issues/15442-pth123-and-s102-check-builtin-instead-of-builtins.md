@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-12T16:01:42Z
 updated_at: 2025-01-13T00:45:38Z
 url: https://github.com/astral-sh/ruff/issues/15442
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # PTH123 and S102 check `builtin` instead of `builtins`
@@ -58,10 +58,6 @@ pth123_s102_builtin.py:3:5: S102 Use of `exec` detected
 
 Found 2 errors.
 ```
-
----
-
-_Referenced in [astral-sh/ruff#15443](../../astral-sh/ruff/pulls/15443.md) on 2025-01-12 16:49_
 
 ---
 

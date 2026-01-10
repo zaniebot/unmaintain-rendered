@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-06-21T12:53:19Z
 updated_at: 2023-06-21T16:54:01Z
 url: https://github.com/astral-sh/ruff/issues/5250
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Shadowed variable incorrect report - F821 Undefined name
@@ -83,10 +83,6 @@ _Closed by @charliermarsh on 2023-06-21 14:01_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-06-21 14:30_
-
----
-
-_Referenced in [astral-sh/ruff#5256](../../astral-sh/ruff/pulls/5256.md) on 2023-06-21 15:29_
 
 ---
 

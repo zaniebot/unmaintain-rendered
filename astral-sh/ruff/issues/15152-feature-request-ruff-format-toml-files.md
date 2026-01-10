@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-26T21:27:16Z
 updated_at: 2024-12-27T16:52:02Z
 url: https://github.com/astral-sh/ruff/issues/15152
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Feature request: ruff format toml files
@@ -57,9 +57,5 @@ That's fair. But I think #10738 still captures the feature you're asking for, an
 ---
 
 _Closed by @MichaReiser on 2024-12-27 16:52_
-
----
-
-_Referenced in [tox-dev/toml-fmt#66](../../tox-dev/toml-fmt/issues/66.md) on 2025-10-15 10:26_
 
 ---

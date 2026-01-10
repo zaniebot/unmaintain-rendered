@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-11T09:15:00Z
 updated_at: 2025-11-03T21:38:06Z
 url: https://github.com/astral-sh/ruff/issues/20809
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Extend TD003 to allow "Jira-style" issue IDs on the same line
@@ -90,10 +90,6 @@ I believe it was just to make the minimal change necessary in order to resolve t
 ---
 
 _Label `good first issue` added by @MichaReiser on 2025-10-13 19:18_
-
----
-
-_Referenced in [astral-sh/ruff#20880](../../astral-sh/ruff/pulls/20880.md) on 2025-10-15 03:31_
 
 ---
 

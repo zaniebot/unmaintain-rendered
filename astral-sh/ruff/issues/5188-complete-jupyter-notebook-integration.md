@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-19T18:30:44Z
 updated_at: 2024-02-06T12:13:07Z
 url: https://github.com/astral-sh/ruff/issues/5188
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Complete Jupyter notebook integration
@@ -83,10 +83,6 @@ _Assigned to @dhruvmanila by @dhruvmanila on 2023-06-19 18:35_
 
 ---
 
-_Referenced in [astral-sh/ruff#1218](../../astral-sh/ruff/issues/1218.md) on 2023-06-20 05:43_
-
----
-
 _Comment by @charliermarsh on 2023-06-20 20:54_
 
 My main question would be: at what point do you think we can remove the feature flag, and open this up to users? (Maybe we're already past that point!)
@@ -125,18 +121,6 @@ _Comment by @charliermarsh on 2023-06-21 03:25_
 
 ---
 
-_Referenced in [astral-sh/ruff#5363](../../astral-sh/ruff/pulls/5363.md) on 2023-06-26 15:39_
-
----
-
-_Referenced in [astral-sh/ruff-vscode#256](../../astral-sh/ruff-vscode/issues/256.md) on 2023-08-28 13:59_
-
----
-
-_Referenced in [astral-sh/ruff#8094](../../astral-sh/ruff/issues/8094.md) on 2023-10-20 15:31_
-
----
-
 _Comment by @jpmckinney on 2023-10-30 19:43_
 
 I'm not sure if this deserves its own issue, but: Would it be possible to use `extend-include = ["*.ipynb"]` and `ruff format` to **only** re-format the Python code in cells, and **not** the ipynb file itself?
@@ -149,17 +133,9 @@ I would love to be able to opt out of ipynb formatting, so that only the Python 
 
 ---
 
-_Referenced in [astral-sh/ruff#8370](../../astral-sh/ruff/issues/8370.md) on 2023-10-31 02:22_
-
----
-
 _Comment by @dhruvmanila on 2023-10-31 02:23_
 
 (I think it deserves its own issue, we can discuss it there :))
-
----
-
-_Referenced in [PyLops/pylops#485](../../PyLops/pylops/issues/485.md) on 2023-11-26 06:14_
 
 ---
 
@@ -170,9 +146,5 @@ Closing this as completed. The only thing remaining is to support `--add-noqa`.
 ---
 
 _Closed by @dhruvmanila on 2024-02-06 12:13_
-
----
-
-_Referenced in [rapidsai/deployment#348](../../rapidsai/deployment/pulls/348.md) on 2024-03-19 16:18_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-25T11:13:26Z
 updated_at: 2023-08-07T17:22:35Z
 url: https://github.com/astral-sh/ruff/issues/6068
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Formatter: boolean operator should have equal level
@@ -58,23 +58,11 @@ _Label `formatter` added by @konstin on 2023-07-25 11:13_
 
 ---
 
-_Referenced in [astral-sh/ruff#6069](../../astral-sh/ruff/issues/6069.md) on 2023-07-25 11:22_
-
----
-
 _Added to milestone `Formatter: Alpha` by @MichaReiser on 2023-07-31 16:09_
 
 ---
 
-_Referenced in [astral-sh/ruff#6203](../../astral-sh/ruff/issues/6203.md) on 2023-07-31 17:12_
-
----
-
 _Assigned to @zanieb by @zanieb on 2023-08-02 20:52_
-
----
-
-_Referenced in [astral-sh/ruff#6394](../../astral-sh/ruff/pulls/6394.md) on 2023-08-07 15:49_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-17T19:25:45Z
 updated_at: 2022-11-17T20:32:40Z
 url: https://github.com/astral-sh/ruff/issues/795
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # --fix for D202 removing docstring instead of line afterwards
@@ -116,10 +116,6 @@ _Renamed from "--fix for D300 removing docstring instead of replacing quotes" to
 _Comment by @actionless on 2022-11-17 19:57_
 
 @charliermarsh thanks for clarifying, i've updated the description
-
----
-
-_Referenced in [astral-sh/ruff#797](../../astral-sh/ruff/pulls/797.md) on 2022-11-17 19:57_
 
 ---
 

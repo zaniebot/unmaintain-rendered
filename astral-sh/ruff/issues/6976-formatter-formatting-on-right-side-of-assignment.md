@@ -1,0 +1,71 @@
+```yaml
+number: 6976
+title: "Formatter: `%` formatting on right side of assignment"
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - formatter
+assignees: []
+created_at: 2023-08-29T13:00:58Z
+updated_at: 2023-09-02T08:23:17Z
+url: https://github.com/astral-sh/ruff/issues/6976
+synced_at: 2026-01-10T11:09:49Z
+```
+
+# Formatter: `%` formatting on right side of assignment
+
+---
+
+_Issue opened by @MichaReiser on 2023-08-29 13:00_
+
+Black prefers to keep the `%` on the same line as the string and parenthesize the format arguments:
+
+```python
+def test():
+    if True:
+        if False:
+            if True:
+                if False:
+                    if True:
+                        if False:
+                            self.renamed_models_rel[
+                                renamed_models_rel_key
+                            ] = "%s.%s" % (
+                                model_state.app_label,
+                                model_state.name_lower
+                            )
+                            
+```
+
+Ruff parenthesized the whole assignment value and breaks before the `%` operator
+
+```python
+def test():
+    if True:
+        if False:
+            if True:
+                if False:
+                    if True:
+                        if False:
+                            self.renamed_models_rel[renamed_models_rel_key] = (
+                                "%s.%s"
+                                % (model_state.app_label, model_state.name_lower)
+                            )
+```
+
+IMO, Ruff's layout is more readable because it avoids unnecessary newlines. 
+
+---
+
+_Label `formatter` added by @MichaReiser on 2023-08-29 13:00_
+
+---
+
+_Closed by @MichaReiser on 2023-08-29 13:01_
+
+---
+
+_Added to milestone `Formatter: Alpha` by @MichaReiser on 2023-09-02 08:23_
+
+---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-28T00:33:23Z
 updated_at: 2023-12-09T21:10:39Z
 url: https://github.com/astral-sh/ruff/issues/8863
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Detect `asyncio-dangling-task` (`RUF006`) when discarding return value
@@ -151,10 +151,6 @@ _Label `good first issue` removed by @charliermarsh on 2023-12-05 14:44_
 _Comment by @tjkuson on 2023-12-05 16:51_
 
 @allaboutevemirolive I think you need to select the rule (it isn't enabled by default) using `--select RUF006`.
-
----
-
-_Referenced in [astral-sh/ruff#9060](../../astral-sh/ruff/pulls/9060.md) on 2023-12-08 21:04_
 
 ---
 

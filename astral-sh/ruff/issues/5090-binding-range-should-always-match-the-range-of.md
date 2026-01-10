@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-14T16:37:51Z
 updated_at: 2023-06-15T18:43:21Z
 url: https://github.com/astral-sh/ruff/issues/5090
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Binding range should always match the range of the bound identifier
@@ -34,14 +34,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-06-14 16:37_
 
 ---
 
-_Referenced in [astral-sh/ruff#5110](../../astral-sh/ruff/pulls/5110.md) on 2023-06-15 03:56_
-
----
-
 _Closed by @charliermarsh on 2023-06-15 18:43_
-
----
-
-_Referenced in [astral-sh/ruff#5074](../../astral-sh/ruff/pulls/5074.md) on 2023-06-15 20:38_
 
 ---

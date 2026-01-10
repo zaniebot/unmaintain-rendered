@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-21T10:18:46Z
 updated_at: 2023-08-04T23:00:51Z
 url: https://github.com/astral-sh/ruff/issues/848
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # Implement flake8-pyi
@@ -111,25 +111,9 @@ _Label `plugin` added by @charliermarsh on 2022-12-31 18:18_
 
 ---
 
-_Referenced in [astral-sh/ruff#2682](../../astral-sh/ruff/pulls/2682.md) on 2023-02-09 03:53_
-
----
-
 _Comment by @charliermarsh on 2023-02-10 00:03_
 
 These are being implemented under the `PYI` prefix (we tend to avoid single-letter prefixes like `Y`, since they lead to conflicts).
-
----
-
-_Referenced in [astral-sh/ruff#2717](../../astral-sh/ruff/issues/2717.md) on 2023-02-10 16:03_
-
----
-
-_Referenced in [astral-sh/ruff#2805](../../astral-sh/ruff/pulls/2805.md) on 2023-02-12 10:18_
-
----
-
-_Referenced in [astral-sh/ruff#3230](../../astral-sh/ruff/pulls/3230.md) on 2023-02-26 00:17_
 
 ---
 
@@ -148,89 +132,9 @@ _Comment by @charliermarsh on 2023-02-26 03:23_
 
 ---
 
-_Referenced in [astral-sh/ruff#3238](../../astral-sh/ruff/pulls/3238.md) on 2023-02-26 16:58_
-
----
-
-_Referenced in [astral-sh/ruff#3291](../../astral-sh/ruff/pulls/3291.md) on 2023-03-01 11:18_
-
----
-
 _Comment by @fschulze on 2023-03-06 07:01_
 
 I second @SigureMo, it would be great if some rules like ``Y006`` would apply to ``*.py`` files as well.
-
----
-
-_Referenced in [astral-sh/ruff#3922](../../astral-sh/ruff/pulls/3922.md) on 2023-04-09 04:01_
-
----
-
-_Referenced in [astral-sh/ruff#4211](../../astral-sh/ruff/pulls/4211.md) on 2023-05-03 15:43_
-
----
-
-_Referenced in [astral-sh/ruff#4214](../../astral-sh/ruff/pulls/4214.md) on 2023-05-03 20:55_
-
----
-
-_Referenced in [astral-sh/ruff#4246](../../astral-sh/ruff/issues/4246.md) on 2023-05-15 02:15_
-
----
-
-_Referenced in [astral-sh/ruff#4517](../../astral-sh/ruff/pulls/4517.md) on 2023-05-19 04:24_
-
----
-
-_Referenced in [astral-sh/ruff#4695](../../astral-sh/ruff/pulls/4695.md) on 2023-05-28 17:14_
-
----
-
-_Referenced in [astral-sh/ruff#4700](../../astral-sh/ruff/pulls/4700.md) on 2023-05-29 04:39_
-
----
-
-_Referenced in [astral-sh/ruff#4756](../../astral-sh/ruff/pulls/4756.md) on 2023-05-31 14:08_
-
----
-
-_Referenced in [astral-sh/ruff#4764](../../astral-sh/ruff/pulls/4764.md) on 2023-05-31 19:07_
-
----
-
-_Referenced in [astral-sh/ruff#4770](../../astral-sh/ruff/pulls/4770.md) on 2023-05-31 22:37_
-
----
-
-_Referenced in [astral-sh/ruff#4775](../../astral-sh/ruff/pulls/4775.md) on 2023-06-01 03:52_
-
----
-
-_Referenced in [astral-sh/ruff#4791](../../astral-sh/ruff/pulls/4791.md) on 2023-06-01 17:25_
-
----
-
-_Referenced in [astral-sh/ruff#4820](../../astral-sh/ruff/pulls/4820.md) on 2023-06-02 23:47_
-
----
-
-_Referenced in [astral-sh/ruff#4851](../../astral-sh/ruff/pulls/4851.md) on 2023-06-05 01:50_
-
----
-
-_Referenced in [astral-sh/ruff#4884](../../astral-sh/ruff/pulls/4884.md) on 2023-06-06 00:19_
-
----
-
-_Referenced in [astral-sh/ruff#5021](../../astral-sh/ruff/pulls/5021.md) on 2023-06-12 09:20_
-
----
-
-_Referenced in [astral-sh/ruff#5453](../../astral-sh/ruff/pulls/5453.md) on 2023-06-30 12:56_
-
----
-
-_Referenced in [astral-sh/ruff#5457](../../astral-sh/ruff/pulls/5457.md) on 2023-07-01 19:55_
 
 ---
 
@@ -240,17 +144,9 @@ I'm implementing PYI030
 
 ---
 
-_Referenced in [astral-sh/ruff#5570](../../astral-sh/ruff/pulls/5570.md) on 2023-07-06 19:01_
-
----
-
 _Comment by @density on 2023-07-09 17:56_
 
 I am implementing `PYI036`
-
----
-
-_Referenced in [astral-sh/ruff#5668](../../astral-sh/ruff/pulls/5668.md) on 2023-07-11 01:57_
 
 ---
 
@@ -260,21 +156,9 @@ I'm implementing PYI041
 
 ---
 
-_Referenced in [astral-sh/ruff#5722](../../astral-sh/ruff/pulls/5722.md) on 2023-07-13 15:05_
-
----
-
 _Comment by @LaBatata101 on 2023-07-14 19:57_
 
 I'm implementing `PYI026`
-
----
-
-_Referenced in [astral-sh/ruff#5773](../../astral-sh/ruff/issues/5773.md) on 2023-07-15 09:19_
-
----
-
-_Referenced in [astral-sh/ruff#5844](../../astral-sh/ruff/pulls/5844.md) on 2023-07-17 22:52_
 
 ---
 
@@ -284,39 +168,15 @@ I'm implementing PYI017
 
 ---
 
-_Referenced in [astral-sh/ruff#5895](../../astral-sh/ruff/pulls/5895.md) on 2023-07-19 19:25_
-
----
-
 _Comment by @LaBatata101 on 2023-07-21 20:08_
 
 I'm implementing `PYI056`
 
 ---
 
-_Referenced in [astral-sh/ruff#5959](../../astral-sh/ruff/pulls/5959.md) on 2023-07-21 22:42_
-
----
-
 _Comment by @LaBatata101 on 2023-07-22 16:54_
 
 I'm implementing PYI018 and PYI046, PYI047, PYI049 (which are similar to PYI018)
-
----
-
-_Referenced in [astral-sh/ruff#6018](../../astral-sh/ruff/pulls/6018.md) on 2023-07-24 23:00_
-
----
-
-_Referenced in [astral-sh/ruff#6098](../../astral-sh/ruff/pulls/6098.md) on 2023-07-26 15:13_
-
----
-
-_Referenced in [astral-sh/ruff#6134](../../astral-sh/ruff/pulls/6134.md) on 2023-07-27 21:02_
-
----
-
-_Referenced in [astral-sh/ruff#6136](../../astral-sh/ruff/pulls/6136.md) on 2023-07-27 22:01_
 
 ---
 
@@ -332,31 +192,15 @@ I'm implementing `PYI019`
 
 ---
 
-_Referenced in [astral-sh/ruff#6204](../../astral-sh/ruff/pulls/6204.md) on 2023-07-31 17:18_
-
----
-
-_Referenced in [astral-sh/ruff#6215](../../astral-sh/ruff/pulls/6215.md) on 2023-08-01 13:22_
-
----
-
 _Comment by @LaBatata101 on 2023-08-02 03:23_
 
 I'm implementing `PYI055`
 
 ---
 
-_Referenced in [astral-sh/ruff#6316](../../astral-sh/ruff/pulls/6316.md) on 2023-08-03 20:07_
-
----
-
 _Comment by @LaBatata101 on 2023-08-03 21:36_
 
 I'm implementing `PYI023`
-
----
-
-_Referenced in [astral-sh/ruff#6354](../../astral-sh/ruff/pulls/6354.md) on 2023-08-04 22:25_
 
 ---
 

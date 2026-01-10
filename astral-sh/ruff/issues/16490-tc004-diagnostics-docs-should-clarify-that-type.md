@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-04T08:30:54Z
 updated_at: 2025-12-31T07:55:51Z
 url: https://github.com/astral-sh/ruff/issues/16490
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # TC004 diagnostics/docs should clarify that type hints can be executed at run-time
@@ -115,10 +115,6 @@ Is it necessary to add `from __future__ import annotations` even if working on P
 _Comment by @nathanjmcdougall on 2025-06-13 23:00_
 
 It is necessary if you want deferred evaluation of annotations. [It is planned that in Python 3.14](https://docs.python.org/3.14/whatsnew/3.14.html#pep-649-and-749-deferred-evaluation-of-annotations), this will become the default behaviour.
-
----
-
-_Referenced in [sagemath/sage#40897](../../sagemath/sage/pulls/40897.md) on 2025-09-29 18:09_
 
 ---
 
@@ -290,9 +286,5 @@ index f1918596b1..f6032d184f 100644
 _Comment by @MichaReiser on 2025-12-31 07:55_
 
 This looks nice!
-
----
-
-_Referenced in [astral-sh/ruff#17203](../../astral-sh/ruff/issues/17203.md) on 2025-12-31 14:46_
 
 ---

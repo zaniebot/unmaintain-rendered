@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-03-22T12:12:32Z
 updated_at: 2025-03-24T15:37:04Z
 url: https://github.com/astral-sh/ruff/issues/16913
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Daily property test run failed on Sat Mar 22 2025
@@ -63,10 +63,6 @@ We stabilised this property test in https://github.com/astral-sh/ruff/pull/16801
 I'm not sure we should add more regression tests for `AlwaysTruthy`/`AlwaysFalsy` intersections because we have lots of failing tests already here: https://github.com/astral-sh/ruff/blob/2711e08eb8eb38d1ce323aae0517fede371cba15/crates/red_knot_python_semantic/resources/mdtest/type_properties/is_subtype_of.md?plain=1#L276-L315
 
 But we should add a comment to the property test saying that we should not stabilise the test until those mdtests pass. The `AlwaysTruthy`/`AlwaysFalsy` flakes are obviously very rare on this property test, so we can't rely on local testing to be sure that this one can be stabilised.
-
----
-
-_Referenced in [astral-sh/ruff#16951](../../astral-sh/ruff/pulls/16951.md) on 2025-03-24 15:09_
 
 ---
 

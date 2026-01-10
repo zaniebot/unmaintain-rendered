@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-02T16:13:28Z
 updated_at: 2024-05-24T17:27:04Z
 url: https://github.com/astral-sh/ruff/issues/9789
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # PLC2801 triggers for cases that are not necessarily errors
@@ -100,10 +100,6 @@ _Label `help wanted` added by @zanieb on 2024-02-02 16:23_
 _Comment by @charliermarsh on 2024-02-02 16:37_
 
 Looks like it is similar in Pylint: https://github.com/pylint-dev/pylint/blob/6062c1d8bb16de5d1a9f14f51b265653483ad6dd/pylint/constants.py#L143
-
----
-
-_Referenced in [astral-sh/ruff#9791](../../astral-sh/ruff/pulls/9791.md) on 2024-02-02 17:11_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-16T16:03:02Z
 updated_at: 2025-02-16T19:50:18Z
 url: https://github.com/astral-sh/ruff/issues/16189
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # T100 doesn’t flag `sys.breakpointhook` and `sys.__breakpointhook__`
@@ -30,10 +30,6 @@ _Label `rule` added by @ntBre on 2025-02-16 17:27_
 ---
 
 _Assigned to @ntBre by @ntBre on 2025-02-16 17:39_
-
----
-
-_Referenced in [astral-sh/ruff#16191](../../astral-sh/ruff/pulls/16191.md) on 2025-02-16 18:18_
 
 ---
 

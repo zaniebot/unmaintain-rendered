@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-12T18:02:11Z
 updated_at: 2024-01-11T17:59:41Z
 url: https://github.com/astral-sh/ruff/issues/6524
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # `builtins-ignorelist` for attributes only
@@ -137,10 +137,6 @@ class C:
 ```
 
 The issue is that it _will_ be shadowed if you reference the builtin within the class scope.
-
----
-
-_Referenced in [astral-sh/ruff#9462](../../astral-sh/ruff/pulls/9462.md) on 2024-01-11 02:33_
 
 ---
 

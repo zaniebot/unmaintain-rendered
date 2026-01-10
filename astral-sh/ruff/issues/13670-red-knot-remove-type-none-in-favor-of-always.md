@@ -1,0 +1,66 @@
+```yaml
+number: 13670
+title: "[red-knot] remove `Type::None` in favor of always using `Type::Instance(_typeshed_.NoneType)`"
+type: issue
+state: closed
+author: carljm
+labels:
+  - ty
+assignees: []
+created_at: 2024-10-07T18:52:34Z
+updated_at: 2024-11-04T13:00:07Z
+url: https://github.com/astral-sh/ruff/issues/13670
+synced_at: 2026-01-10T11:09:55Z
+```
+
+# [red-knot] remove `Type::None` in favor of always using `Type::Instance(_typeshed_.NoneType)`
+
+---
+
+_Issue opened by @carljm on 2024-10-07 18:52_
+
+_No description provided._
+
+---
+
+_Label `help wanted` added by @carljm on 2024-10-07 18:52_
+
+---
+
+_Label `red-knot` added by @carljm on 2024-10-07 18:52_
+
+---
+
+_Renamed from "[red-knot] remove Type::None in favor of always using Type::Instance(builtins.NoneType)`" to "[red-knot] remove `Type::None` in favor of always using `Type::Instance(_typeshed_.NoneType)`" by @AlexWaygood on 2024-10-08 08:34_
+
+---
+
+_Label `help wanted` removed by @MichaReiser on 2024-10-09 10:22_
+
+---
+
+_Assigned to @MichaReiser by @MichaReiser on 2024-10-09 10:22_
+
+---
+
+_Comment by @MichaReiser on 2024-10-09 10:22_
+
+Related mypy issue https://github.com/python/mypy/issues/11287 (for context)
+
+---
+
+_Assigned to @sharkdp by @sharkdp on 2024-10-21 10:53_
+
+---
+
+_Unassigned @MichaReiser by @sharkdp on 2024-10-21 10:53_
+
+---
+
+_Closed by @sharkdp on 2024-11-04 13:00_
+
+---
+
+_Closed by @sharkdp on 2024-11-04 13:00_
+
+---

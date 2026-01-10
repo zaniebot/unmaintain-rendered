@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-05-03T13:23:21Z
 updated_at: 2023-05-04T02:44:29Z
 url: https://github.com/astral-sh/ruff/issues/4204
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # F841 is raised when `case other:`
@@ -58,10 +58,6 @@ I just installed Ruff version 0.0.261 and I have not done any Ruff specific sett
 
 -------
 P.s: I searched smong open and closed issues, but considering that the `match`, `case`, and `other` are very common words and Github returns several pages of "matched issues", I might have missed seeing the correct issue and created a duplicate. I apologize if that is the case.
-
----
-
-_Referenced in [astral-sh/ruff#4212](../../astral-sh/ruff/pulls/4212.md) on 2023-05-03 17:32_
 
 ---
 

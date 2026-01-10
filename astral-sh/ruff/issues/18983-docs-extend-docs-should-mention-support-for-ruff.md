@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-27T12:39:50Z
 updated_at: 2025-08-11T06:46:28Z
 url: https://github.com/astral-sh/ruff/issues/18983
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # docs: `extend` docs should mention support for `ruff.toml` format
@@ -24,10 +24,6 @@ The [`extend` option documentation](https://docs.astral.sh/ruff/settings/#extend
 > A path to a local `pyproject.toml` file to merge into this configuration.
 
 Actually, the option also supports files in `ruff.toml` format, so the docs need to be updated to mention this.
-
----
-
-_Referenced in [astral-sh/ruff#12352](../../astral-sh/ruff/issues/12352.md) on 2025-06-27 12:40_
 
 ---
 

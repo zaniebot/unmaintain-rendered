@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-08T01:21:50Z
 updated_at: 2024-10-13T15:16:09Z
 url: https://github.com/astral-sh/ruff/issues/13673
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # G rules seems not working with loguru.
@@ -102,13 +102,5 @@ _Label `question` added by @MichaReiser on 2024-10-08 07:36_
 ---
 
 _Closed by @MichaReiser on 2024-10-13 15:16_
-
----
-
-_Referenced in [astral-sh/ruff#16715](../../astral-sh/ruff/issues/16715.md) on 2025-03-13 19:13_
-
----
-
-_Referenced in [astral-sh/ruff#19075](../../astral-sh/ruff/issues/19075.md) on 2025-07-01 20:54_
 
 ---

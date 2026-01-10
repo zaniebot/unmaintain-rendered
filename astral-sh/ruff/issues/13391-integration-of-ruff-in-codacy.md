@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-18T12:14:24Z
 updated_at: 2025-08-07T16:11:26Z
 url: https://github.com/astral-sh/ruff/issues/13391
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Integration of Ruff in Codacy
@@ -27,14 +27,6 @@ We at [ESMValTool](https://github.com/ESMValGroup/ESMValTool) are looking at mov
 - alternatively, would you be OK with us building and deploying such a package?
 
 Very many thanks in advance, and many thanks for creating this tool! :beer: 
-
----
-
-_Referenced in [codacy/codacy-engine-scala-seed#59](../../codacy/codacy-engine-scala-seed/issues/59.md) on 2024-09-18 12:17_
-
----
-
-_Referenced in [ESMValGroup/ESMValTool#3739](../../ESMValGroup/ESMValTool/issues/3739.md) on 2024-09-18 12:25_
 
 ---
 
@@ -93,10 +85,6 @@ _Comment by @valeriupredoi on 2024-09-20 12:49_
 > We would welcome a third-party codacy extension.
 
 Great! Cheers, mate :beer: I'll discuss with me colleagues, and if we agree on us building one, then I'll get cracking with it :+1: 
-
----
-
-_Referenced in [metabrainz/picard#2583](../../metabrainz/picard/pulls/2583.md) on 2025-02-24 09:34_
 
 ---
 

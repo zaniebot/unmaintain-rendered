@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-14T16:52:46Z
 updated_at: 2024-03-28T11:54:20Z
 url: https://github.com/astral-sh/ruff/issues/8677
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Possible bug: Diff flag suppresses non-fixable errors, with no clear way to enable
@@ -109,13 +109,5 @@ lint.mypy:
 <more lint rules that execute various tools>
 ```
 
-
----
-
-_Referenced in [astral-sh/ruff#7352](../../astral-sh/ruff/issues/7352.md) on 2024-03-28 12:08_
-
----
-
-_Referenced in [nautobot/nautobot#7735](../../nautobot/nautobot/pulls/7735.md) on 2025-08-28 14:26_
 
 ---

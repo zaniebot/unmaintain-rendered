@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-30T06:49:36Z
 updated_at: 2025-07-08T16:53:25Z
 url: https://github.com/astral-sh/ruff/issues/18383
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # missing-maxsplit-arg (PLC0207) is wrong when accessing on the last value
@@ -61,10 +61,6 @@ _Label `documentation` added by @ntBre on 2025-05-30 11:58_
 ---
 
 _Label `help wanted` added by @ntBre on 2025-05-30 11:59_
-
----
-
-_Referenced in [astral-sh/ruff#18949](../../astral-sh/ruff/pulls/18949.md) on 2025-06-26 00:42_
 
 ---
 

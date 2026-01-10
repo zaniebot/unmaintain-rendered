@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-22T10:32:38Z
 updated_at: 2024-12-20T09:36:14Z
 url: https://github.com/astral-sh/ruff/issues/14523
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # RUF035 (unsafe-markup-use) can be noisy and would benefit from a whitelist
@@ -108,18 +108,10 @@ I like your suggestion of a wrapper function for new code. But I can see how exi
 
 ---
 
-_Referenced in [astral-sh/ruff#15076](../../astral-sh/ruff/pulls/15076.md) on 2024-12-20 08:25_
-
----
-
 _Closed by @dhruvmanila on 2024-12-20 09:36_
 
 ---
 
 _Closed by @dhruvmanila on 2024-12-20 09:36_
-
----
-
-_Referenced in [indico/indico-plugins-cern#192](../../indico/indico-plugins-cern/pulls/192.md) on 2025-01-27 20:38_
 
 ---

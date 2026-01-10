@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-02-26T15:08:58Z
 updated_at: 2025-04-15T13:24:09Z
 url: https://github.com/astral-sh/ruff/issues/16399
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Sorting imports with aliases expands to multiple lines (using ruff --select I)
@@ -124,10 +124,6 @@ _Label `isort` added by @MichaReiser on 2025-02-26 16:23_
 ---
 
 _Label `priority:medium` added by @MichaReiser on 2025-02-26 16:23_
-
----
-
-_Referenced in [astral-sh/ruff#17397](../../astral-sh/ruff/issues/17397.md) on 2025-04-14 20:23_
 
 ---
 

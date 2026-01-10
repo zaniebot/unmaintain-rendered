@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-03T14:54:05Z
 updated_at: 2023-03-03T22:13:12Z
 url: https://github.com/astral-sh/ruff/issues/3321
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # D406 auto-detect pydocstyle
@@ -97,10 +97,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-03-03 19:21_
 _Comment by @charliermarsh on 2023-03-03 19:21_
 
 I'll improve this a bit.
-
----
-
-_Referenced in [astral-sh/ruff#3325](../../astral-sh/ruff/pulls/3325.md) on 2023-03-03 21:35_
 
 ---
 

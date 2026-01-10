@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-22T07:05:26Z
 updated_at: 2025-05-28T10:39:07Z
 url: https://github.com/astral-sh/ruff/issues/18250
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Add a PTH rule to replace os.symlink with Path.symlink_to
@@ -32,10 +32,6 @@ Reference: [`symlink_to`](https://docs.python.org/3/library/pathlib.html#pathlib
 ---
 
 _Label `rule` added by @MichaReiser on 2025-05-22 08:42_
-
----
-
-_Referenced in [astral-sh/ruff#18337](../../astral-sh/ruff/pulls/18337.md) on 2025-05-27 18:01_
 
 ---
 

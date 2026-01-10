@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-04-11T16:53:28Z
 updated_at: 2023-04-12T03:10:31Z
 url: https://github.com/astral-sh/ruff/issues/3935
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Improve `PGH003` to require codes for `# pyright: ignore`
@@ -74,10 +74,6 @@ Agreed.
 ---
 
 _Label `good first issue` added by @charliermarsh on 2023-04-11 20:27_
-
----
-
-_Referenced in [astral-sh/ruff#3941](../../astral-sh/ruff/pulls/3941.md) on 2023-04-12 02:51_
 
 ---
 

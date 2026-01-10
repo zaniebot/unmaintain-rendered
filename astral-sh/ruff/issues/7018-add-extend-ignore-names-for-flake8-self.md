@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-31T11:28:53Z
 updated_at: 2023-09-09T14:04:51Z
 url: https://github.com/astral-sh/ruff/issues/7018
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Add `extend-ignore-names` for `flake8-self`
@@ -51,10 +51,6 @@ Another idea. What if users could configure their used frameworks and we would u
 
 ---
 
-_Referenced in [astral-sh/ruff#7194](../../astral-sh/ruff/pulls/7194.md) on 2023-09-06 14:37_
-
----
-
 _Comment by @dhruvmanila on 2023-09-09 14:04_
 
 This was added in #7194
@@ -62,9 +58,5 @@ This was added in #7194
 ---
 
 _Closed by @dhruvmanila on 2023-09-09 14:04_
-
----
-
-_Referenced in [astral-sh/ruff#7276](../../astral-sh/ruff/issues/7276.md) on 2023-09-11 17:54_
 
 ---

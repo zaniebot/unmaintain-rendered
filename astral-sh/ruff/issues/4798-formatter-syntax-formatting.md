@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-06-02T06:28:46Z
 updated_at: 2023-09-08T07:25:40Z
 url: https://github.com/astral-sh/ruff/issues/4798
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # 📋 Formatter: Syntax Formatting
@@ -150,10 +150,6 @@ It seems to be used in `ImportFrom`. I moved it to `ImportFrom`.
 
 ---
 
-_Referenced in [astral-sh/ruff#4822](../../astral-sh/ruff/pulls/4822.md) on 2023-06-03 05:19_
-
----
-
 _Comment by @MichaReiser on 2023-06-05 17:27_
 
 If someone's interested in familiarizing themselves with the formatter API, then the following are probably good starters:
@@ -227,24 +223,12 @@ See  #1904 for an in-depth discussion around the goal. The purpose of this task 
 
 ---
 
-_Referenced in [astral-sh/ruff#4987](../../astral-sh/ruff/issues/4987.md) on 2023-06-09 17:22_
-
----
-
-_Referenced in [astral-sh/ruff#4988](../../astral-sh/ruff/issues/4988.md) on 2023-06-09 17:23_
-
----
-
 _Comment by @MichaReiser on 2023-06-22 06:50_
 
 Some other good first issues could be
 
 * Star expression
 * Yield and Yield from
-
----
-
-_Referenced in [grantjenks/blue#2](../../grantjenks/blue/issues/2.md) on 2023-06-23 02:43_
 
 ---
 
@@ -272,14 +256,6 @@ Ok I'll open the PR!
 
 ---
 
-_Referenced in [astral-sh/ruff#5600](../../astral-sh/ruff/pulls/5600.md) on 2023-07-10 07:27_
-
----
-
-_Referenced in [astral-sh/ruff#5655](../../astral-sh/ruff/pulls/5655.md) on 2023-07-11 06:19_
-
----
-
 _Comment by @cnpryer on 2023-07-15 22:03_
 
 Any chance we can open an issue for `lambda`? I have a [lambda branch](https://github.com/cnpryer/ruff/tree/expr-lambda) but I'm not sure I'm ready to claim it. If I have any questions it'd be nice to ask there.
@@ -291,10 +267,6 @@ _Comment by @MichaReiser on 2023-07-17 08:42_
 > Any chance we can open an issue for `lambda`? I have a [lambda branch](https://github.com/cnpryer/ruff/tree/expr-lambda?rgh-link-date=2023-07-15T22%3A03%3A35Z) but I'm not sure I'm ready to claim it. If I have any questions it'd be nice to ask there.
 
 Sure: https://github.com/astral-sh/ruff/issues/5826 
-
----
-
-_Referenced in [astral-sh/ruff#6170](../../astral-sh/ruff/pulls/6170.md) on 2023-07-29 12:19_
 
 ---
 

@@ -1,0 +1,549 @@
+```yaml
+number: 465
+title: "Import-sorting (a `ruff` approximation of `isort`)"
+type: issue
+state: closed
+author: thejcannon
+labels: []
+assignees: []
+created_at: 2022-10-25T15:44:47Z
+updated_at: 2024-11-29T14:24:28Z
+url: https://github.com/astral-sh/ruff/issues/465
+synced_at: 2026-01-10T11:09:42Z
+```
+
+# Import-sorting (a `ruff` approximation of `isort`)
+
+---
+
+_Issue opened by @thejcannon on 2022-10-25 15:44_
+
+`isort` does have some wacky heuristics to determine first v third party, but ultimately I'd love to elide the import-sorting it does with `ruff` :zap: 
+
+To me, doesn't have to be 1:1, so long as the behavior is there for import sorting/grouping I'm happy :smile: 
+
+If we want to keep this in the realm of `flake8`, it'd be [flake8-import-order](https://pypi.org/project/flake8-import-order/) with a fixer :wink: 
+
+---
+
+_Comment by @thejcannon on 2022-10-25 15:45_
+
+(I continually dip my toe into Rust and even a little PyO3 as I work on [pantsbuild](https://github.com/pantsbuild/pants)) Perhaps one day I'll pick this up myself :wink: 
+
+---
+
+_Comment by @charliermarsh on 2022-10-25 16:30_
+
+Yes! I want to do this. I've been a little intimidated by the sheer amount of functionality that's packaged with `isort`, but we don't need to cover every possible setting right from the start.
+
+I'm not certain if this will fit into the same "autofixable lint error" pattern, or if it will be its own sub-command.
+
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2022-10-26 01:26_
+
+---
+
+_Comment by @andersk on 2022-10-26 16:18_
+
+A potential first approximation that delays dealing with the first vs. third party heuristic would be to sort only within import groups separated by existing blank lines. This would be `isort`-compatible in that it preserves a superset of the possible `isort` outputs.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2022-11-01 02:17_
+
+---
+
+_Comment by @tiangolo on 2022-11-03 21:11_
+
+I like this idea! In my case it's just Isort with the Black profile, that's pretty much what I would like. :nerd_face: 
+
+---
+
+_Comment by @charliermarsh on 2022-11-04 00:55_
+
+👍 I'm thinking that this should be a separate subcommand (`ruff isort`). I've been meaning to introduce subcommands anyway (such that the current `ruff` call becomes `ruff check`; and maybe `ruff --fix` becomes a standalone `ruff fix`?) since it opens the door to bundling a lot more functionality into `ruff`. The downside is that this will likely be a breaking change in the CLI API.
+
+
+---
+
+_Comment by @thejcannon on 2022-11-04 00:58_
+
+Can you explain a little why you think it'd need its own subcommand and not be folded (optionally, config-enabled) into `ruff fix` or `ruff`?
+
+From my perspective seems like I'd need to run two commands when one would be sufficient.
+
+---
+
+_Comment by @charliermarsh on 2022-11-04 01:17_
+
+You're probably right that it could be folded into `ruff` or `ruff fix`. I will aim for that outcome. My main concern is that in order to model this as an autofixable error under the current autofix API, I'll likely need to treat the entire unordered import section as a single violation with a single fix. And if there are unused imports in the import block, there will be conflicting fixes for that chunk of code, and we'll fail to autofix one of them due to the conflicting source code ranges (that is, we'll either fail to remove the import, or fail to reorder the block).
+
+However, these are really deficiencies in the autofix API and not essential blockers to adding import-sorting as a "fixable lint error". And moving `isort` out to its own subcommand is arguably just a hack to get around these problems.
+
+(One solution to this problem, which I don't love but is arguably already needed, is to iteratively re-check and autofix errors until there are no more fixable errors. So, e.g., you'd run `ruff fix` once, then internally, we'd check the file, find the unused import and the unsorted import block, and remove the unused import; we'd then re-check the modified source code, find the unsorted import block, fix that, etc.)
+
+(Another solution is to try and develop a more semantically-aware fix API, or maybe something based on CRDTs (???), that lets you apply both "Reorder these statements" and "Remove this one statement" in a single pass.)
+
+
+---
+
+_Comment by @thejcannon on 2022-11-04 01:20_
+
+I have a suspicion that if you start with the slow-but-correct way, your bar-chart of performance will still hold very relevant.
+
+And then when you figure out the fast-and-correct, everyone rejoices :smile: 
+
+---
+
+_Comment by @charliermarsh on 2022-11-06 03:14_
+
+(I've started work on this tonight.)
+
+---
+
+_Comment by @charliermarsh on 2022-11-09 03:40_
+
+Still a bunch of edge-cases to handle + proper line-length wrapping, but starting to come together:
+
+![Screen Shot 2022-11-08 at 10 39 42 PM](https://user-images.githubusercontent.com/1309177/200732675-703e7f4b-019b-4f6d-809a-e03c098a8339.png)
+
+
+---
+
+_Comment by @lithammer on 2022-11-09 09:27_
+
+Not that my opinion matters much. But I have to admit that I'm not a big fan of how isort sorts out-of-the-box. And prefer something like this:
+
+```toml
+[tool.isort]
+profile = "black"
+force_sort_within_sections = true  # Don't group `from` imports separately
+order_by_type = true  # Order by CONSTANT, CamelCase, snake_case
+```
+
+Mostly because it reduces noise in diffs when going back and forth between `import foo` and `from foo import bar` since the import would remain on the same line.
+
+It's also bit jarring to make such a change, save, and then the line moves 10 lines up/down when you have "format on save" enabled in your editor.
+
+But maybe that's just me 🤷‍♂️ People seems to like separating `import` and `from`.
+
+---
+
+_Comment by @charliermarsh on 2022-11-10 15:40_
+
+I noticed that `isort` seems to avoid merging `from` imports intentionally (this is the [`combine-as-imports`](https://pycqa.github.io/isort/docs/configuration/options.html#combine-as-imports) setting).
+
+That is, `isort` doesn't modify this block:
+
+```py
+from .param_functions import Body as Body
+from .param_functions import Cookie as Cookie
+```
+
+Whereas, if you omit the `as` alias, like so:
+
+```py
+from .param_functions import Body
+from .param_functions import Cookie
+```
+
+Then `isort` gives you:
+
+```py
+from .param_functions import Body, Cookie
+```
+
+Here's an example from FastAPI (\cc @tiangolo):
+
+![Screen Shot 2022-11-10 at 10 30 20 AM](https://user-images.githubusercontent.com/1309177/201138255-78bef6b4-ab49-4f28-9fd6-665cd61a67ac.png)
+
+There are some issues in isort suggesting that they wanted to make this the default (https://github.com/PyCQA/isort/issues/1305, https://github.com/PyCQA/isort/issues/1812).
+
+I'm partial to making this Ruff's default, but curious if others feel strongly?
+
+
+---
+
+_Comment by @thejcannon on 2022-11-10 15:47_
+
+As long as 
+```python
+from .param_functions import Body as Body
+from .param_functions import Cookie as Cookie
+```
+
+became
+```python
+from .param_functions import (
+    Body as Body,
+    Cookie as Cookie,
+)
+```
+and that still is kosher from `mypy`'s ["reexport"](https://mypy.readthedocs.io/en/latest/command_line.html?highlight=reexport#cmdoption-mypy-no-implicit-reexport) stance, I'd +1 the change.
+
+---
+
+(I usually see in our codebase)
+```python
+from .param_functions import Body as Body  # re-export
+from .param_functions import Cookie
+```
+
+which I'd kinda prefer:
+```python
+from .param_functions import (
+    Body as Body,  # re-export
+    Cookie
+)
+```
+ but I understand if that's prohibitively difficult to get right :wink: 
+
+
+---
+
+_Comment by @charliermarsh on 2022-11-10 15:49_
+
+Yeah that's what happens with the current implementation I have going -- you get:
+
+```py
+from .param_functions import (
+    Body as Body,
+    Cookie as Cookie,
+)
+```
+
+---
+
+_Comment by @charliermarsh on 2022-11-10 15:51_
+
+The main unsolved thing with my current implementation is that it removes and disregards comments. Comment handling is tricky (by this, I mean it's hard to know what the best behavior is, not that it's hard to implement).
+
+You can see how `isort` handles comments -- if you start with this:
+
+```py
+# comment 1a
+# comment 1b
+from .param_functions import (
+	Body,  # comment 1c
+	Header,  # comment 1d
+)
+# comment 2a
+# comment 2b
+from .param_functions import Cookie
+from .param_functions import Request
+```
+
+...it becomes:
+
+```py
+# comment 1a
+# comment 1b
+# comment 2a
+# comment 2b
+from .param_functions import Body  # comment 1c
+from .param_functions import Header  # comment 1d
+from .param_functions import Cookie, Request
+```
+
+(So, they move any line-level comments to the top of the import block, retain any end-of-line comments, and avoid merging statements with end-of-line comments.)
+
+
+---
+
+_Comment by @tiangolo on 2022-11-10 16:20_
+
+I don't feel strongly about this, what would matter to me the most would be compatibility with mypy, Black, and minimization of diffs, but apart from that, I'm fine with anything. 🚀
+
+---
+
+_Comment by @charliermarsh on 2022-11-10 22:30_
+
+At the point now where I'm finishing all the test cases, so an initial version of this should go out in the next day or so. There will be a few limitations that I'll document and resolve later (e.g., doesn't preserve comments).
+
+---
+
+_Closed by @charliermarsh on 2022-11-11 00:05_
+
+---
+
+_Comment by @charliermarsh on 2022-11-11 00:28_
+
+The first version of this is going out in [v0.0.110](https://github.com/charliermarsh/ruff/releases/tag/v0.0.110). Feedback and Issues welcome!
+
+There are two main limitations that I want to address in future PRs:
+
+1. We don't preserve comments.
+2. If you have unused _and_ unsorted imports, Ruff will only fix one of those two problems in the first invocation, and you have to run `ruff` again to fix the remaining issue. (See: #660.)
+
+---
+
+_Comment by @charliermarsh on 2022-11-11 00:32_
+
+If you're _just_ using Ruff to sort imports, it's about 30x faster than single-threaded isort, and 10x faster than multi-threaded isort.
+
+But... if you're already using Ruff for linting, the performance hit for adding import sorting _on top_ of that existing workflow should be extremely negligible (in the 5s or 10s of milliseconds for CPython), since the majority of execution is spent on parsing the AST.
+
+In other words: if you already use Ruff for linting, then using Ruff for import sorting should be basically "free".
+
+
+---
+
+_Comment by @andersk on 2022-11-11 00:56_
+
+Nice! I’ve opened these issues I ran into:
+
+- #673
+- #674
+- #675
+
+---
+
+_Comment by @charliermarsh on 2022-11-11 00:57_
+
+Much appreciated!
+
+---
+
+_Comment by @tiangolo on 2022-11-11 08:28_
+
+So awesome! Amazing to see you build these things! 🚀🎉
+
+---
+
+_Comment by @charliermarsh on 2022-11-16 03:26_
+
+[v0.0.122](https://github.com/charliermarsh/ruff/releases/tag/v0.0.122) (which just hit PyPI) contains a bunch of compatibility improvements, including comment preservation, respecting `isort: skip`, and more. It's also about 10% faster than reported above.
+
+If you're able to test it out on your projects, would love feedback, issues, etc.!
+
+---
+
+_Comment by @tekumara on 2022-11-16 07:06_
+
+Fantastic thank you!
+
+I noticed ruff will insert an empty line before comments (unlike isort), eg:
+```python
+import yaml
+
+# use importlib_resources backport for compatibility with python < 3.9
+from importlib_resources import files
+```
+
+I presume this is a deliberate change.
+
+---
+
+_Comment by @andersk on 2022-11-16 07:31_
+
+It’s deliberate. `isort --profile=black`  inserts the same empty line, as does `black` itself.
+
+---
+
+_Comment by @timabbott on 2022-11-16 17:35_
+
+I just integrated the zulip/zulip pull request to use this. `ruff` is amazing, thanks so much for building this!
+
+---
+
+_Comment by @charliermarsh on 2022-11-17 17:04_
+
+That's awesome! Thanks @timabbott! Made my day :)
+
+---
+
+_Comment by @MehulBatra on 2023-09-11 17:37_
+
+I saw Ruff insert a line between  import and from import statements:
+
+``` 
+import Cython.Compiler.Options  
+
+from Cython.Build import build_ext, cythonize 
+```
+
+How can this be avoided, I am on version **v0.0.286**
+
+---
+
+_Comment by @zanieb on 2023-09-11 17:40_
+
+@MehulBatra perhaps you're looking for [`isort-lines-between-types`](https://beta.ruff.rs/docs/settings/#isort-lines-between-types)? I'd suggest reading the isort settings documentation there.
+
+---
+
+_Comment by @samuela on 2023-10-28 03:29_
+
+How does one enable ruff's isort support? I have a project in which `ruff format .` works fine in general, but imports are not being sorted. I'm running ruff v0.1.3. `ruff .` also detects no issues.
+
+Even import blocks as gross as
+```py
+import jax
+import copy
+from typing import Optional
+import jax.numpy as jnp
+import jax.dlpack
+import torch
+
+import math
+
+import functools
+```
+are immune to ruff's import formatting. OTOH, running `isort --dont-follow-links .` works just fine.
+
+---
+
+_Comment by @charliermarsh on 2023-10-28 03:37_
+
+@samuela - Import sorting is currently part of the linter (`ruff check --fix`) rather than the formatter. So in this case, you'd want to add the following to your `pyproject.toml`:
+
+```toml
+[tool.ruff.lint]
+# Enable the isort rules.
+extend-select = ["I"]
+```
+
+Or, e.g., `ruff check --select I --fix /path/to/file.py`.
+
+(We're continuing to discuss whether import sorting should be part of the formatter (`ruff format`), but it's a little tricky because -- unlike the rest of the formatter -- import sorting can actually change the behavior of your code.)
+
+---
+
+_Comment by @samuela on 2023-10-28 04:00_
+
+Thanks so much @charliermarsh ! Using `[tool.ruff.linter]`, gave me an error: `unknown field 'linter'`, but 
+```toml
+[tool.ruff]
+# Enable the isort rules.
+extend-select = ["I"]
+```
+did the trick for me.
+
+Thanks for all your hard work on ruff! 🏄‍♀️
+
+---
+
+_Comment by @charliermarsh on 2023-10-28 04:04_
+
+Oof, sorry, it's `tool.ruff.lint` (but `tool.ruff` also works for compatibility -- so either is fine). Will edit my original message. Really glad to get this working for you!
+
+---
+
+_Comment by @nshern on 2023-10-29 21:38_
+
+> Thanks so much @charliermarsh ! Using `[tool.ruff.linter]`, gave me an error: `unknown field 'linter'`, but
+> 
+> ```toml
+> [tool.ruff]
+> # Enable the isort rules.
+> extend-select = ["I"]
+> ```
+> 
+> did the trick for me.
+> 
+> Thanks for all your hard work on ruff! 🏄‍♀️
+
+Sorry if I am asking a dumb question, but where in the documentation can I find an explanation of this behaviour and why it works?
+
+---
+
+_Comment by @charliermarsh on 2023-10-29 21:45_
+
+Not dumb at all. The generated documentation for that field is here: https://docs.astral.sh/ruff/settings/#extend-select. And a prose write-up on rule selection is here: https://docs.astral.sh/ruff/linter/#rule-selection.
+
+(`extend-select` is like `select`, except it adds to the list rather than replacing it -- so `extend-select = ["I"]` enables the isort rules on top of the default rules, while `select = ["I"]` would enable _only_ the isort rules.)
+
+(You can use either `[tool.ruff.lint]` or `[tool.ruff]` right now. We're moving towards the former, but the latter is still supported and appears in all the docs at the moment.)
+
+---
+
+_Comment by @nshern on 2023-10-30 11:20_
+
+> Not dumb at all. The generated documentation for that field is here: https://docs.astral.sh/ruff/settings/#extend-select. And a prose write-up on rule selection is here: https://docs.astral.sh/ruff/linter/#rule-selection.
+> 
+> (`extend-select` is like `select`, except it adds to the list rather than replacing it -- so `extend-select = ["I"]` enables the isort rules on top of the default rules, while `select = ["I"]` would enable _only_ the isort rules.)
+> 
+> (You can use either `[tool.ruff.lint]` or `[tool.ruff]` right now. We're moving towards the former, but the latter is still supported and appears in all the docs at the moment.)
+
+Thank you for you thorough response. Can I also run the isort functionality from the command line?
+Something like:
+```
+ruff --fix -["I"]
+```
+
+---
+
+_Comment by @Insighttful on 2024-01-14 01:22_
+
+Any chance we might implement isort's [Auto-comment import sections](https://pycqa.github.io/isort/docs/configuration/custom_sections_and_ordering.html)?
+
+> Some projects prefer to have import sections uniquely titled to aid in identifying the sections quickly when visually scanning. isort can automate this as well. To do this simply set the `import_heading_{section_name}` setting for each section you wish to have auto commented - to the desired comment.
+
+> For Example:
+> ```ini
+> import_heading_stdlib=Standard Library
+> import_heading_firstparty=My Stuff
+> ```
+
+Trying with ruff:
+```toml
+[tool.ruff.lint.isort]
+import_heading_stdlib = "Standard Library"
+```
+```bash
+ruff check . --fix
+ruff failed
+  Cause: Failed to parse /Users/***/***/***/pyproject.toml
+  Cause: TOML parse error at line 61, column 1
+   |
+61 | [tool.ruff.lint]
+   | ^^^^^^^^^^^^^^^^
+unknown field `import_heading_stdlib`, expected one of ...
+```
+
+---
+
+_Comment by @nik-hil on 2024-06-12 10:50_
+
+If somebody is wondering how to add this in pre-commit, use this
+```
+-   repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.2.0
+    hooks:
+    -   id: ruff
+        args: ["check", "--select", "I", "--fix"]
+    -   id: ruff-format
+```
+
+---
+
+_Comment by @Testla on 2024-06-15 14:38_
+
+> ```toml
+> [tool.ruff.lint]
+> # Enable the isort rules.
+> extend-select = ["I"]
+> ```
+
+This works for both [ruff-pre-commit](https://github.com/astral-sh/ruff-pre-commit) with example configuration and [ruff-vscode](https://github.com/astral-sh/ruff-vscode).
+
+---
+
+_Comment by @Alex-ley-scrub on 2024-08-29 21:58_
+
+@Insighttful see this issue for tracking: https://github.com/astral-sh/ruff/issues/6371
+
+---
+
+_Comment by @rosmur on 2024-11-29 14:24_
+
+@nik-hil I think that format is now updated? I get an error:
+
+`warning: The top-level linter settings are deprecated in favour of their counterparts in the `lint` section. Please update the following options in `pyproject.toml`:
+  - 'per-file-ignores' -> 'lint.per-file-ignores'
+I:1:1: E902 No such file or directory (os error 2)
+Found 1 error.`
+
+---

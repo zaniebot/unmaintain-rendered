@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-05-29T20:13:47Z
 updated_at: 2023-05-29T21:26:12Z
 url: https://github.com/astral-sh/ruff/issues/4707
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # docs: ambiguous link to settings from rule N802
@@ -46,10 +46,6 @@ You are right, the auto-generated-documentation needs to be updated.
 _Comment by @jlaneve on 2023-05-29 20:53_
 
 @JonathanPlasse I have a PR incoming to fix this!
-
----
-
-_Referenced in [astral-sh/ruff#4711](../../astral-sh/ruff/pulls/4711.md) on 2023-05-29 21:00_
 
 ---
 

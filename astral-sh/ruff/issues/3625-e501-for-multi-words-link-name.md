@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-20T13:39:52Z
 updated_at: 2023-03-26T18:17:36Z
 url: https://github.com/astral-sh/ruff/issues/3625
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # E501 for multi-words link name 
@@ -58,10 +58,6 @@ A possible fix may be to check for the line to match the regex `"^\[.*\]\(https?
 ---
 
 _Label `bug` added by @charliermarsh on 2023-03-21 02:28_
-
----
-
-_Referenced in [astral-sh/ruff#3663](../../astral-sh/ruff/pulls/3663.md) on 2023-03-22 02:53_
 
 ---
 

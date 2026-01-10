@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-21T08:13:11Z
 updated_at: 2023-08-16T07:10:03Z
 url: https://github.com/astral-sh/ruff/issues/5941
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Preserve single `\` in raw string literals
@@ -40,10 +40,6 @@ _Label `formatter` added by @MichaReiser on 2023-07-21 08:13_
 
 ---
 
-_Referenced in [astral-sh/ruff#6069](../../astral-sh/ruff/issues/6069.md) on 2023-07-25 11:33_
-
----
-
 _Comment by @harupy on 2023-07-28 08:27_
 
 @MichaReiser Can I work on this?
@@ -62,23 +58,11 @@ Sure!
 
 ---
 
-_Referenced in [astral-sh/ruff#6152](../../astral-sh/ruff/pulls/6152.md) on 2023-07-28 14:05_
-
----
-
-_Referenced in [astral-sh/ruff#6186](../../astral-sh/ruff/issues/6186.md) on 2023-07-31 08:48_
-
----
-
 _Renamed from "Preserve single `\` in string literals" to "Preserve single `\` in raw string literals" by @konstin on 2023-07-31 08:58_
 
 ---
 
 _Closed by @MichaReiser on 2023-07-31 12:48_
-
----
-
-_Referenced in [astral-sh/ruff#6203](../../astral-sh/ruff/issues/6203.md) on 2023-07-31 16:57_
 
 ---
 

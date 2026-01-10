@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-21T14:17:17Z
 updated_at: 2024-07-22T12:17:01Z
 url: https://github.com/astral-sh/ruff/issues/12430
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Formatter produces invalid python code if comment between decorator and PEP695 function
@@ -52,10 +52,6 @@ _Assigned to @MichaReiser by @MichaReiser on 2024-07-21 14:21_
 _Comment by @MichaReiser on 2024-07-22 07:41_
 
 Thanks for reporting this!
-
----
-
-_Referenced in [astral-sh/ruff#12447](../../astral-sh/ruff/pulls/12447.md) on 2024-07-22 07:42_
 
 ---
 

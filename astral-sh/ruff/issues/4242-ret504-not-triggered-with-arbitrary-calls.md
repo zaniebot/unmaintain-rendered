@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-05T10:55:51Z
 updated_at: 2023-06-10T04:05:04Z
 url: https://github.com/astral-sh/ruff/issues/4242
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # `RET504` not triggered with arbitrary calls
@@ -86,10 +86,6 @@ return x
 ```
 
 That is: such that it only detects "assignment followed by return". 
-
----
-
-_Referenced in [astral-sh/ruff#4997](../../astral-sh/ruff/pulls/4997.md) on 2023-06-10 02:42_
 
 ---
 

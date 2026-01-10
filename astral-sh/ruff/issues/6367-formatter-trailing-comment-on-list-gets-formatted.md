@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-05T15:13:01Z
 updated_at: 2023-08-16T07:11:07Z
 url: https://github.com/astral-sh/ruff/issues/6367
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Formatter: Trailing comment on list gets formatted to a separate line
@@ -80,10 +80,6 @@ https://github.com/astral-sh/ruff/blob/a755afe7288cd17539710a074acbfad57d35be40/
 _Comment by @charliermarsh on 2023-08-05 15:50_
 
 It kind of feels like a bug in line_suffix, but I need to understand the implementation better to say for certain.
-
----
-
-_Referenced in [astral-sh/ruff#6380](../../astral-sh/ruff/pulls/6380.md) on 2023-08-07 01:50_
 
 ---
 

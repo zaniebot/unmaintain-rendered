@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-31T14:23:31Z
 updated_at: 2024-06-06T08:59:57Z
 url: https://github.com/astral-sh/ruff/issues/11639
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Update with-items parsing to use speculative parsing
@@ -42,10 +42,6 @@ _Assigned to @dhruvmanila by @dhruvmanila on 2024-05-31 14:23_
 ---
 
 _Renamed from "Update with-items parsing to use checkpoint - rewind infrastructure" to "Update with-items parsing to use speculative parsing" by @dhruvmanila on 2024-06-04 05:19_
-
----
-
-_Referenced in [astral-sh/ruff#11770](../../astral-sh/ruff/pulls/11770.md) on 2024-06-06 04:48_
 
 ---
 

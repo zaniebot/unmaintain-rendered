@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-12-06T16:58:56Z
 updated_at: 2025-12-06T19:29:51Z
 url: https://github.com/astral-sh/ruff/issues/21825
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # `minimal-size` profile for the workspace
@@ -61,10 +61,6 @@ I tried it out with the same section as the uv workspace has, and built smaller 
 - ty: 8.1M ⇒ 5.6M (-31%)
 
 I'll open a PR, and sure I will remove the panic=abort setting in it 👍 
-
----
-
-_Referenced in [astral-sh/ruff#21826](../../astral-sh/ruff/pulls/21826.md) on 2025-12-06 17:34_
 
 ---
 

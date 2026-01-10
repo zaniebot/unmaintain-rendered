@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-16T11:09:40Z
 updated_at: 2024-01-16T20:26:19Z
 url: https://github.com/astral-sh/ruff/issues/9549
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # FURB118: Failed to create fix for ReimplementedOperator
@@ -58,10 +58,6 @@ _Label `bug` added by @charliermarsh on 2024-01-16 19:38_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-16 20:15_
-
----
-
-_Referenced in [astral-sh/ruff#9556](../../astral-sh/ruff/pulls/9556.md) on 2024-01-16 20:21_
 
 ---
 

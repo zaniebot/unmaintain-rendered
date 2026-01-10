@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-23T19:35:39Z
 updated_at: 2023-09-25T15:39:57Z
 url: https://github.com/astral-sh/ruff/issues/7624
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Panic when formatting file `Unexpected token between nodes: `"\n \u{c}      "`
@@ -189,10 +189,6 @@ _Label `formatter` added by @charliermarsh on 2023-09-23 22:48_
 ---
 
 _Added to milestone `Formatter: Beta` by @charliermarsh on 2023-09-23 22:48_
-
----
-
-_Referenced in [astral-sh/ruff#7626](../../astral-sh/ruff/pulls/7626.md) on 2023-09-23 22:50_
 
 ---
 

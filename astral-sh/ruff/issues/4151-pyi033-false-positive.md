@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-29T14:47:03Z
 updated_at: 2023-04-29T22:41:05Z
 url: https://github.com/astral-sh/ruff/issues/4151
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # PYI033 False positive
@@ -34,10 +34,6 @@ Found 1 error.
 ```
 
 xref https://github.com/pandas-dev/pandas/pull/52974
-
----
-
-_Referenced in [pandas-dev/pandas#52974](../../pandas-dev/pandas/pulls/52974.md) on 2023-04-29 14:47_
 
 ---
 
@@ -90,10 +86,6 @@ So we should just remove it.
 _Comment by @evanrittenhouse on 2023-04-29 19:26_
 
 Perfect, that's what I was leaning towards as well. 
-
----
-
-_Referenced in [astral-sh/ruff#4152](../../astral-sh/ruff/pulls/4152.md) on 2023-04-29 19:32_
 
 ---
 

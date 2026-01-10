@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-04-11T13:31:51Z
 updated_at: 2024-02-17T10:46:39Z
 url: https://github.com/astral-sh/ruff/issues/3933
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Extend SLF001 to allow accessing private fields on "other" instance in binary operators?
@@ -62,10 +62,6 @@ _Label `bug` added by @charliermarsh on 2023-04-12 20:58_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-06-08 17:18_
-
----
-
-_Referenced in [astral-sh/ruff#4968](../../astral-sh/ruff/pulls/4968.md) on 2023-06-08 17:29_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-24T12:37:47Z
 updated_at: 2024-03-25T18:53:00Z
 url: https://github.com/astral-sh/ruff/issues/10546
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Rule Q000-Q002 started to cause panic
@@ -214,18 +214,6 @@ Found 1 error.
 ```
 
 We could potentially fix the range for the rules to be useful in the context of type annotation or ignore them completely. Nevertheless, we should completely avoid rules which might update the quotes because otherwise we need the context of the quote which contains the actual type annotation.
-
----
-
-_Referenced in [astral-sh/ruff#10574](../../astral-sh/ruff/issues/10574.md) on 2024-03-25 17:10_
-
----
-
-_Referenced in [astral-sh/ruff#10585](../../astral-sh/ruff/pulls/10585.md) on 2024-03-25 18:32_
-
----
-
-_Referenced in [astral-sh/ruff#10586](../../astral-sh/ruff/issues/10586.md) on 2024-03-25 18:33_
 
 ---
 

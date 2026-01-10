@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-12T04:49:13Z
 updated_at: 2024-01-12T19:48:44Z
 url: https://github.com/astral-sh/ruff/issues/9486
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # (🐞) bad `unnecessary-dunder-call` report for `object.__getattribute__(self` within a `__getattribute__` implementation
@@ -116,10 +116,6 @@ Yeah we can easily fix that part. The second part is harder and will require us 
 _Comment by @charliermarsh on 2024-01-12 19:16_
 
 (I'll fix the first part now.)
-
----
-
-_Referenced in [astral-sh/ruff#9496](../../astral-sh/ruff/pulls/9496.md) on 2024-01-12 19:32_
 
 ---
 

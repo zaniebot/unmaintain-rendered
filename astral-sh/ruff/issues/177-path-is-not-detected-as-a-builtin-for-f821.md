@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-09-13T06:53:29Z
 updated_at: 2023-02-03T18:28:28Z
 url: https://github.com/astral-sh/ruff/issues/177
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # __path__ is not detected as a builtin for F821
@@ -50,10 +50,6 @@ I'm actually not sure without checking the docs to be honest. Definitely at leas
 ---
 
 _Added to milestone `Release 0.1.0` by @charliermarsh on 2022-09-15 13:28_
-
----
-
-_Referenced in [astral-sh/ruff#201](../../astral-sh/ruff/pulls/201.md) on 2022-09-15 13:42_
 
 ---
 

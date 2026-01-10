@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-09-06T07:43:19Z
 updated_at: 2024-10-03T14:47:52Z
 url: https://github.com/astral-sh/ruff/issues/13260
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Unexpected changes occur when fixing D208 and D209 on the same line
@@ -139,10 +139,6 @@ Hi, I would like to work on this if no one has taken it.
 ---
 
 _Assigned to @ukyen8 by @MichaReiser on 2024-09-15 06:55_
-
----
-
-_Referenced in [astral-sh/ruff#13372](../../astral-sh/ruff/pulls/13372.md) on 2024-09-16 21:31_
 
 ---
 

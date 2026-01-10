@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-12-11T09:00:54Z
 updated_at: 2022-12-11T22:13:11Z
 url: https://github.com/astral-sh/ruff/issues/1193
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:18Z
 ```
 
 # I001 conflicts with isort on blank lines between import and comment before function
@@ -92,10 +92,6 @@ I did:
 _Comment by @charliermarsh on 2022-12-11 20:24_
 
 Okay cool, thanks for the examples! I’ll try to fix it today.
-
----
-
-_Referenced in [astral-sh/ruff#1201](../../astral-sh/ruff/pulls/1201.md) on 2022-12-11 22:09_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-06-19T18:30:49Z
 updated_at: 2024-03-22T11:38:38Z
 url: https://github.com/astral-sh/ruff/issues/5189
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Add `--add-noqa` support for Jupyter notebooks
@@ -21,10 +21,6 @@ synced_at: 2026-01-10T01:56:47Z
 _Issue opened by @dhruvmanila on 2023-06-19 18:30_
 
 _No description provided._
-
----
-
-_Referenced in [astral-sh/ruff#5188](../../astral-sh/ruff/issues/5188.md) on 2023-06-19 18:30_
 
 ---
 
@@ -63,10 +59,6 @@ which made all notebooks in directory unparsable. Maybe best to bail on this ope
 _Comment by @charliermarsh on 2023-07-12 21:08_
 
 Oh weird, I assumed they were just skipped. Will take a look.
-
----
-
-_Referenced in [astral-sh/ruff#5727](../../astral-sh/ruff/pulls/5727.md) on 2023-07-13 07:25_
 
 ---
 

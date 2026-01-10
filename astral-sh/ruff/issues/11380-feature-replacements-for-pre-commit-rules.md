@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-05-12T15:59:59Z
 updated_at: 2024-07-17T06:33:52Z
 url: https://github.com/astral-sh/ruff/issues/11380
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Feature: Replacements for pre-commit rules
@@ -54,10 +54,6 @@ pre-commit is rather slow, so I'm looking for to replace this all:
 ```
 
 Source: https://github.com/Taxel/PlexTraktSync/blob/ab773cc0b3dc1c3c7efbf8509e5627d1dba1d3dd/.pre-commit-config.yaml#L5-L21
-
----
-
-_Referenced in [Taxel/PlexTraktSync#1947](../../Taxel/PlexTraktSync/pulls/1947.md) on 2024-05-12 16:01_
 
 ---
 

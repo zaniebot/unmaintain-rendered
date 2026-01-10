@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-07T02:43:59Z
 updated_at: 2025-12-05T21:41:32Z
 url: https://github.com/astral-sh/ruff/issues/9870
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Different length sort behavior against isort
@@ -180,10 +180,6 @@ _Comment by @yanyongyu on 2024-04-15 08:16_
 _Comment by @rainzee on 2024-04-19 16:55_
 
 This is really the last hurdle for me to fully use ruff, now I have to use both tools, hopefully some progress will be made, please!🙏
-
----
-
-_Referenced in [astral-sh/ruff#11674](../../astral-sh/ruff/issues/11674.md) on 2024-06-01 05:18_
 
 ---
 

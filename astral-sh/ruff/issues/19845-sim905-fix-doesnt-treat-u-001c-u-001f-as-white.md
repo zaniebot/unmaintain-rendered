@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-10T15:13:46Z
 updated_at: 2025-08-14T15:34:37Z
 url: https://github.com/astral-sh/ruff/issues/19845
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # SIM905 fix doesn’t treat U+001C..U+001F as white space
@@ -46,10 +46,6 @@ $ python sim905.py
 ### Version
 
 ruff 0.12.8 (f51a228f0 2025-08-07)
-
----
-
-_Referenced in [astral-sh/ruff#19849](../../astral-sh/ruff/pulls/19849.md) on 2025-08-10 21:05_
 
 ---
 

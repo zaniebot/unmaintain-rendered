@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-25T18:13:02Z
 updated_at: 2023-01-25T19:06:28Z
 url: https://github.com/astral-sh/ruff/issues/2164
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # TRY201 false positive
@@ -121,9 +121,5 @@ _Label `autofix` removed by @charliermarsh on 2023-01-25 18:20_
 _Comment by @JonathanPlasse on 2023-01-25 19:06_
 
 Yes, there is no bug.
-
----
-
-_Referenced in [astral-sh/ruff#2334](../../astral-sh/ruff/issues/2334.md) on 2023-01-30 00:45_
 
 ---

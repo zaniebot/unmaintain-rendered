@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-22T20:11:31Z
 updated_at: 2025-05-09T17:53:06Z
 url: https://github.com/astral-sh/ruff/issues/15100
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # 3.14 deferred evaluation of annotations
@@ -66,10 +66,6 @@ That being said, as far as I know, there's not a 1:1 equivalence in semantics be
 _Comment by @nickdrozd on 2024-12-27 20:38_
 
 Some discussion here: https://github.com/nedbat/coveragepy/issues/1908
-
----
-
-_Referenced in [astral-sh/ruff#15506](../../astral-sh/ruff/issues/15506.md) on 2025-01-15 15:44_
 
 ---
 
@@ -336,10 +332,6 @@ Either way this seems like a good start. Although I think it would be better if 
 
 ---
 
-_Referenced in [astral-sh/ruff#17658](../../astral-sh/ruff/pulls/17658.md) on 2025-04-27 21:01_
-
----
-
 _Closed by @dylwil3 on 2025-05-05 11:40_
 
 ---
@@ -429,9 +421,5 @@ All checks passed!
 _Comment by @nickdrozd on 2025-05-09 17:53_
 
 Whoops! Forgot to update `target-version`. Everything seems to work. Thanks!
-
----
-
-_Referenced in [astral-sh/ty#712](../../astral-sh/ty/issues/712.md) on 2025-06-26 16:41_
 
 ---

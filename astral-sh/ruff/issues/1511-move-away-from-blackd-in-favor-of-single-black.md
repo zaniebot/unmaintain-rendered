@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-12-31T13:10:38Z
 updated_at: 2023-01-07T04:08:26Z
 url: https://github.com/astral-sh/ruff/issues/1511
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Move away from blackd in favor of single black invocations
@@ -70,10 +70,6 @@ From what I remember it's been startup failures. And you're right, it's only 1 s
 _Comment by @charliermarsh on 2023-01-06 21:09_
 
 Yeah that's probably my fault -- I think I reduced them a bit before merging. Let's bump them and close for now. Can always revisit.
-
----
-
-_Referenced in [astral-sh/ruff#1709](../../astral-sh/ruff/pulls/1709.md) on 2023-01-07 03:56_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-08T16:19:17Z
 updated_at: 2024-07-13T20:57:06Z
 url: https://github.com/astral-sh/ruff/issues/12245
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Avoid raising S310 on safe f-strings
@@ -47,14 +47,6 @@ _Label `rule` added by @dhruvmanila on 2024-07-09 12:09_
 ---
 
 _Label `help wanted` added by @dhruvmanila on 2024-07-09 12:09_
-
----
-
-_Referenced in [zzztimbo/ruff#1](../../zzztimbo/ruff/pulls/1.md) on 2024-07-12 14:46_
-
----
-
-_Referenced in [astral-sh/ruff#12305](../../astral-sh/ruff/pulls/12305.md) on 2024-07-12 14:54_
 
 ---
 

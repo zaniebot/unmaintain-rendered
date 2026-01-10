@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-15T10:23:49Z
 updated_at: 2025-03-16T09:10:40Z
 url: https://github.com/astral-sh/ruff/issues/16763
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Treatment of obsolete items
@@ -46,10 +46,6 @@ Reference: https://github.com/SchemaStore/schemastore/blob/19aab1842feb4cd54b603
 
 ---
 
-_Referenced in [SchemaStore/schemastore#4569](../../SchemaStore/schemastore/pulls/4569.md) on 2025-03-15 15:09_
-
----
-
 _Comment by @MichaReiser on 2025-03-15 15:10_
 
 I'm not sure I understand your issue. Can you give me a concrete example of something that isn't working with today's schema?
@@ -78,13 +74,5 @@ Yeah, that makes sense. We're aware of this issue and it isn't just specific to 
 ---
 
 _Closed by @MichaReiser on 2025-03-16 09:10_
-
----
-
-_Referenced in [astral-sh/ruff#14810](../../astral-sh/ruff/issues/14810.md) on 2025-04-11 13:46_
-
----
-
-_Referenced in [astral-sh/ruff#17356](../../astral-sh/ruff/issues/17356.md) on 2025-04-11 16:20_
 
 ---

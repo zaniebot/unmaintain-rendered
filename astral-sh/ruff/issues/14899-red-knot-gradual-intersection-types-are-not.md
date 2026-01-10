@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-10T20:01:41Z
 updated_at: 2025-03-11T14:58:58Z
 url: https://github.com/astral-sh/ruff/issues/14899
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] (Gradual) intersection types are not handled in assignability
@@ -57,10 +57,6 @@ _Label `red-knot` added by @sharkdp on 2024-12-10 20:01_
 
 ---
 
-_Referenced in [astral-sh/ruff#14876](../../astral-sh/ruff/pulls/14876.md) on 2024-12-10 20:16_
-
----
-
 _Label `help wanted` added by @carljm on 2024-12-14 02:17_
 
 ---
@@ -68,26 +64,6 @@ _Label `help wanted` added by @carljm on 2024-12-14 02:17_
 _Comment by @carljm on 2024-12-14 02:19_
 
 Moving this out of Backlog and into Ready, and also marking help-wanted in case a contributor is interested in it, because I think having the quickcheck tests stable and green on main is quite valuable. Just now I was making another change to type relations, ran the quickcheck tests, and hit this failure, which diverted me for a while until I realized it was failing also on main and found this issue.
-
----
-
-_Referenced in [astral-sh/ruff#14967](../../astral-sh/ruff/pulls/14967.md) on 2024-12-14 05:47_
-
----
-
-_Referenced in [astral-sh/ruff#14970](../../astral-sh/ruff/pulls/14970.md) on 2024-12-14 15:44_
-
----
-
-_Referenced in [astral-sh/ruff#15194](../../astral-sh/ruff/pulls/15194.md) on 2025-01-03 16:20_
-
----
-
-_Referenced in [astral-sh/ruff#15242](../../astral-sh/ruff/pulls/15242.md) on 2025-01-03 18:14_
-
----
-
-_Referenced in [astral-sh/ruff#15297](../../astral-sh/ruff/pulls/15297.md) on 2025-01-06 05:55_
 
 ---
 
@@ -152,38 +128,14 @@ This bug now has some failing unit tests here: https://github.com/astral-sh/ruff
 
 ---
 
-_Referenced in [astral-sh/ruff#15358](../../astral-sh/ruff/pulls/15358.md) on 2025-01-08 20:17_
-
----
-
 _Added to milestone `Red Knot Q1 2025` by @carljm on 2025-01-09 17:53_
 
 ---
 
-_Referenced in [astral-sh/ruff#15675](../../astral-sh/ruff/pulls/15675.md) on 2025-01-22 15:43_
-
----
-
-_Referenced in [astral-sh/ruff#16540](../../astral-sh/ruff/pulls/16540.md) on 2025-03-10 09:03_
-
----
-
-_Referenced in [astral-sh/ruff#15697](../../astral-sh/ruff/issues/15697.md) on 2025-03-10 11:30_
-
----
-
-_Referenced in [astral-sh/ruff#16611](../../astral-sh/ruff/pulls/16611.md) on 2025-03-10 22:03_
-
----
-
 _Closed by @carljm on 2025-03-11 14:58_
 
 ---
 
 _Closed by @carljm on 2025-03-11 14:58_
-
----
-
-_Referenced in [astral-sh/ruff#16641](../../astral-sh/ruff/pulls/16641.md) on 2025-03-11 18:16_
 
 ---

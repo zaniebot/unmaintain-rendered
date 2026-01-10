@@ -1,0 +1,231 @@
+```yaml
+number: 10211
+title: Harmonize E301 check with format in --preview mode?
+type: issue
+state: closed
+author: jab
+labels:
+  - bug
+  - preview
+  - incompatibility
+assignees: []
+created_at: 2024-03-03T17:41:17Z
+updated_at: 2024-04-15T08:23:50Z
+url: https://github.com/astral-sh/ruff/issues/10211
+synced_at: 2026-01-10T11:09:52Z
+```
+
+# Harmonize E301 check with format in --preview mode?
+
+---
+
+_Issue opened by @jab on 2024-03-03 17:41_
+
+`ruff format` allows overloaded method stubs to occur before the runtime definition with no blank line in between, which is good. But this style fails the E301 check (in preview mode only). Should these be harmonized?
+
+### minimal code snippet that reproduces the bug
+
+```python
+import typing as t
+
+
+class Foo:
+    """Demo."""
+
+    @t.overload
+    def bar(self, x: int) -> int: ...
+    @t.overload
+    def bar(self, x: str) -> str: ...
+    def bar(self, x: int | str) -> int | str:
+        return x
+```
+
+
+### commands invoked
+```
+❯ ruff format --preview foo.py  # (this example works the same without --preview here too)
+1 file left unchanged
+
+❯ ruff check --preview --extend-select E foo.py  # (--preview required here to reproduce)
+foo.py:11:5: E301 [*] Expected 1 blank line, found 0
+   |
+ 9 |     @t.overload
+10 |     def bar(self, x: str) -> str: ...
+11 |     def bar(self, x: int | str) -> int | str:
+   |     ^^^ E301
+12 |         return x
+   |
+   = help: Add missing blank line
+
+Found 1 error.
+[*] 1 fixable with the `--fix` option.
+```
+
+### ruff version
+
+```
+❯ ruff --version
+ruff 0.3.0
+```
+
+---
+
+_Label `bug` added by @MichaReiser on 2024-03-04 13:02_
+
+---
+
+_Label `preview` added by @MichaReiser on 2024-03-04 13:02_
+
+---
+
+_Comment by @MichaReiser on 2024-03-04 13:03_
+
+I don't know how complicated it is to support this, but I think changing `E301` to accept this syntax would be good regardless.  CC: @hoel-bagard 
+
+---
+
+_Comment by @hoel-bagard on 2024-03-04 14:19_
+
+I don't think that would be an easy change, but I'll have a look. One thing to note is that it would deviate from pycodestyle.
+
+```console
+❯ pycodestyle foo.py
+foo.py:11:5: E301 expected 1 blank line, found 0
+```
+
+---
+
+_Comment by @hoel-bagard on 2024-03-04 14:44_
+
+@MichaReiser One way the to accept this syntax would be to keep track of the function name (since we would only allow the syntax if the name of the function is the same as the previous one) by modifying the enums as shown below. Then it should only be a matter of modifying the `E301`'s `if` condition to not trigger if we have two functions with the same name following each other (here I'm assuming that this would only happen if the first function is decorated with an `@overload`, if we don't make that assumption then we would need to additionally keep track of the previous two lines).
+
+```rust
+enum LogicalLineKind {
+    ...
+    Function,
+    ...
+}
+
+enum Follows {
+    ...
+    Def,
+    ...
+}
+```
+to
+```rust
+enum LogicalLineKind {
+    ...
+    Function(String),
+    ...
+}
+
+enum Follows {
+    ...
+    Def(String),
+    ...
+}
+```
+
+I haven't done it yet, but I can give it a try if you think that's a good idea.
+
+---
+
+_Comment by @hoel-bagard on 2024-03-04 14:48_
+
+We could also allow any function to follow a one-liner function. Right now we allow the first of the two snippets below, but not the second one. This is the same behavior as pycodestyle.
+
+```python
+def foo(self, x: int) -> int: ...
+def bar(self, x: str) -> str: ...
+def baz(self, x: int | str) -> int | str: return x
+``` 
+```python
+def foo(self, x: int) -> int: ...
+def bar(self, x: str) -> str: ...
+def baz(self, x: int | str) -> int | str:
+    return x
+```
+
+---
+
+_Comment by @jab on 2024-03-04 15:38_
+
+Great there is interest in this!
+
+Looks like the same thing applies to E302 with overloaded free functions (not just methods):
+<img width="478" alt="Screenshot 2024-03-04 at 10 31 28 AM" src="https://github.com/astral-sh/ruff/assets/64992/35090bb9-da86-4f04-906a-dc6483da77a3">
+
+
+I'm not very familiar with pycodestyle, but it looks like it's been around since before Python had type hints. Otherwise perhaps it would have accepted (or even required) this style for overloaded functions from the get-go. Given that, maybe there could be a general policy for what to do whenever there is divergence due to type hint related code style that pycodestyle was not designed for (if there isn't one already).
+
+---
+
+_Comment by @jab on 2024-03-04 15:44_
+
+I think ideally the solution here wouldn't be sensitive to how many lines were in the function definition. E.g. This should still be accepted code style:
+
+```python
+@t.overload
+def foo(x: int) -> int: ...
+@t.overload
+def foo(x: str) -> str: ...
+def foo(x: int | str) -> int | str:
+    if not isinstance(x, (int, str)):
+        raise TypeError
+    return x
+```
+
+---
+
+_Comment by @MichaReiser on 2024-03-04 17:17_
+
+> One way the to accept this syntax would be to keep track of the function name (since we would only allow the syntax if the name of the function is the same as the previous one) 
+
+I'm sorry. I should have linked to the formatter issue so you don't have to infer the formatter's rules (which can be difficult to debug). The style change is called [dummy implementations](https://github.com/astral-sh/ruff/issues/8357) and it makes the blank lines between two functions optional if the preceding function has a dummy (`...`) body. It isn't required that the two functions have the same name or that one is marked with `@overloaded`. 
+
+Which is what you're proposing here:
+
+> We could also allow any function to follow a one-liner function. Right now we allow the first of the two snippets below, but not the second one. This is the same behavior as pycodestyle.
+> 
+> ```python
+> def foo(self, x: int) -> int: ...
+> def bar(self, x: str) -> str: ...
+> def baz(self, x: int | str) -> int | str: return x
+> ```
+> 
+> ```python
+> def foo(self, x: int) -> int: ...
+> def bar(self, x: str) -> str: ...
+> def baz(self, x: int | str) -> int | str:
+>     return x
+> ```
+
+
+I think it's a good compromise between pycodestyle and formatter compatibility (and it seems a sensible defaults for stubs to me). The lint rule is allowed to be slightly stricter than the formatter (the formatter makes the blank line optional, it doesn't remove it). That means we could enforce that the functions have the same name, but I don't think that's necessary. @jab what's your take on whether the functions should have the same name?
+
+
+Would we need to make the same change for methods?
+
+
+---
+
+_Label `incompatibility` added by @zanieb on 2024-03-11 17:30_
+
+---
+
+_Comment by @randolf-scholz on 2024-03-31 17:49_
+
+When formatting with `ruff`, is there even a point in having these checks active? Maybe rules could be categorized with some sort of tags, so that one can easily disable all formatting-specific rules, or activate specific rule sets like `format:pycodestyle`, `format:ruff`, `format:black`, etc.
+
+---
+
+_Comment by @dhruvmanila on 2024-04-01 08:28_
+
+@randolf-scholz Thank you for the suggestion! @AlexWaygood is working towards rule categorization (#1774) where it would make sense to have this kind of group.
+
+---
+
+_Closed by @MichaReiser on 2024-04-15 08:23_
+
+---

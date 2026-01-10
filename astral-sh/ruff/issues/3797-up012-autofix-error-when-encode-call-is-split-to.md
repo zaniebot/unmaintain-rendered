@@ -1,0 +1,95 @@
+```yaml
+number: 3797
+title: UP012 autofix error when encode() call is split to multiple lines
+type: issue
+state: closed
+author: jvtm
+labels:
+  - bug
+assignees: []
+created_at: 2023-03-29T16:36:48Z
+updated_at: 2023-03-29T23:07:14Z
+url: https://github.com/astral-sh/ruff/issues/3797
+synced_at: 2026-01-10T11:09:46Z
+```
+
+# UP012 autofix error when encode() call is split to multiple lines
+
+---
+
+_Issue opened by @jvtm on 2023-03-29 16:36_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+UP012 fix / diff mode fails to remove unnecessary `utf-8` (default) encoding parameter when the function call is split to multiple lines.
+
+```python
+def ruff_up012_fix_buggy(a: int, b: str) -> bytes:
+    return f"{a=} {b=}".encode(
+        "utf-8",
+    )
+```
+
+Using `check --show-source`:
+```
+$ ruff check --isolated --extend-select UP up012_fix_bug.py --show-source
+up012_fix_bug.py:2:12: UP012 [*] Unnecessary call to `encode` as UTF-8
+  |
+2 |       return f"{a=} {b=}".encode(
+  |  ____________^
+3 | |         "utf-8",
+4 | |     )
+  | |_____^ UP012
+  |
+  = help: Remove unnecessary `encode`
+
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+```
+
+Trying to `--diff`:
+```
+$ ruff check --isolated --extend-select UP up012_fix_bug.py --diff
+
+error: Autofix introduced a syntax error. Reverting all changes.
+
+This indicates a bug in `ruff`. If you could open an issue at: ...
+```
+
+I'm pretty sure `ruff` is leaving the trailing comma behind, leading to a syntax error.
+
+Looks like using `pyupgrade` collapses the call to a single line.
+
+When the original statement is on a single line everything works.
+
+Note that the help message "Remove unnecessary encode" is misleading. This case is about removing the unnecessary `utf-8` parameter to `encode()`, as that is the same as the default value. In case of f-strings there's no direct "bytes" variant (regular strings could be written as `b"foobar"` directly).
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-03-29 17:21_
+
+---
+
+_Comment by @charliermarsh on 2023-03-29 17:21_
+
+Thanks! Will fix.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-03-29 21:43_
+
+---
+
+_Closed by @charliermarsh on 2023-03-29 23:07_
+
+---

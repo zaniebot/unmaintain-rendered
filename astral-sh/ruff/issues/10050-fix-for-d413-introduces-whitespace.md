@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-19T13:22:05Z
 updated_at: 2024-02-29T13:29:41Z
 url: https://github.com/astral-sh/ruff/issues/10050
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Fix for `D413` introduces whitespace
@@ -107,10 +107,6 @@ def test_func():
 Could we maybe use the range information in `context.following_lines()` to determine the offset?
 
 
-
----
-
-_Referenced in [astral-sh/ruff#10162](../../astral-sh/ruff/pulls/10162.md) on 2024-02-29 07:12_
 
 ---
 

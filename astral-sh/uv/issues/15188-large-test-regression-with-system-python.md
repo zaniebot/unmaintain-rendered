@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-09T05:12:17Z
 updated_at: 2025-08-21T20:56:25Z
 url: https://github.com/astral-sh/uv/issues/15188
-synced_at: 2026-01-10T03:23:54Z
+synced_at: 2026-01-10T11:10:29Z
 ```
 
 # Large test regression with system Python installation over `PYTHON-BIN` changes
@@ -219,7 +219,7 @@ snapshot assertion for 'install_git_private_https_interactive' failed in line 25
   × Failed to download and build `uv-private-pypackage @ git+https://git:****@github.com/astral-test/uv-private-pypackage`
   ├─▶ Git operation failed
   ├─▶ failed to clone into: /var/tmp/portage/dev-python/uv-0.8.8/temp/uv/tests/.tmppHynld/cache/git-v0/db/8401f5508e3e612d
-  ╰─▶ process didn't exit successfully: `/usr/bin/git fetch --force --update-head-ok 'https://git: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@github.com/astral-test/uv-private-pypackage' '+HEAD:refs/remotes/origin/HEAD'` (exit status: 128)
+  ╰─▶ process didn't exit successfully: `/usr/bin/git fetch --force --update-head-ok 'https://git:[REDACTED]@github.com/astral-test/uv-private-pypackage' '+HEAD:refs/remotes/origin/HEAD'` (exit status: 128)
       --- stderr
       remote: Invalid username or token. Password authentication is not supported for Git operations.
       fatal: Authentication failed for 'https://github.com/astral-test/uv-private-pypackage/'

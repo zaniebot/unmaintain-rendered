@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-23T12:26:24Z
 updated_at: 2025-06-13T06:57:02Z
 url: https://github.com/astral-sh/ruff/issues/16925
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # RET503 reported for method returning None only
@@ -43,10 +43,6 @@ This does not really make sense, as the corresponding method is type annotated a
 ### Version
 
 ruff 0.11.2
-
----
-
-_Referenced in [py-pdf/pypdf#3209](../../py-pdf/pypdf/pulls/3209.md) on 2025-03-23 15:23_
 
 ---
 

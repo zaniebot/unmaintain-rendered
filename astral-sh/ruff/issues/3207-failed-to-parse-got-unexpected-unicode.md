@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-24T16:58:29Z
 updated_at: 2023-02-28T17:21:30Z
 url: https://github.com/astral-sh/ruff/issues/3207
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Failed to parse: Got unexpected unicode
@@ -60,10 +60,6 @@ It's something data-dependent. `print("\N{SNOWMAN} another cool trick")` works f
 
 ---
 
-_Referenced in [RustPython/RustPython#4566](../../RustPython/RustPython/issues/4566.md) on 2023-02-24 20:17_
-
----
-
 _Comment by @rouge8 on 2023-02-24 21:02_
 
 That is fun 💀 
@@ -83,10 +79,6 @@ Being discussed a bit in the RustPython issue. Hopefully fixed there then we can
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-24 22:32_
-
----
-
-_Referenced in [astral-sh/ruff#3277](../../astral-sh/ruff/pulls/3277.md) on 2023-02-28 17:10_
 
 ---
 

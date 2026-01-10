@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-21T14:46:29Z
 updated_at: 2025-01-01T06:22:36Z
 url: https://github.com/astral-sh/ruff/issues/8106
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Improve line-length vs. autofix interactions (force-allow? force-disallows?)
@@ -34,10 +34,6 @@ $ ruff --version
 ruff 0.1.1
 ```
 
-
----
-
-_Referenced in [astral-sh/ruff#8107](../../astral-sh/ruff/issues/8107.md) on 2023-10-21 14:53_
 
 ---
 
@@ -138,10 +134,6 @@ I think the example in #1766 is quite helpful. A formatter would not resolve tha
 
 ---
 
-_Referenced in [astral-sh/ruff#8158](../../astral-sh/ruff/issues/8158.md) on 2023-10-24 09:40_
-
----
-
 _Comment by @charliermarsh on 2023-10-27 13:41_
 
 @zanieb - I wonder if there's... some other way for us to gate that simplicity rule, in those cases. Like, if the body is multiline, perhaps we should skip that rule, since it's unlikely to be "simpler"?
@@ -151,10 +143,6 @@ _Comment by @charliermarsh on 2023-10-27 13:41_
 _Comment by @Avasam on 2023-11-28 18:03_
 
 Since the message `No fixes available (X hidden fix can be enabled with the '--unsafe-fixes' option).` exists. Could the same be added for line length? Like `No fixes available (X fix skipped due to line-length).` (doesn't really solve cases above 320, but at least the user is made aware, and not left to think Ruff is inconsistent)
-
----
-
-_Referenced in [astral-sh/ruff#9203](../../astral-sh/ruff/issues/9203.md) on 2023-12-20 00:29_
 
 ---
 
@@ -179,22 +167,6 @@ _Renamed from "Support forcing all autofixes regardless of line length when usin
 ---
 
 _Label `configuration` added by @charliermarsh on 2024-01-02 18:01_
-
----
-
-_Referenced in [astral-sh/ruff#9449](../../astral-sh/ruff/pulls/9449.md) on 2024-01-09 16:58_
-
----
-
-_Referenced in [astral-sh/ruff#9512](../../astral-sh/ruff/issues/9512.md) on 2024-01-14 15:13_
-
----
-
-_Referenced in [astral-sh/ruff#10259](../../astral-sh/ruff/issues/10259.md) on 2024-03-07 05:48_
-
----
-
-_Referenced in [astral-sh/ruff#10263](../../astral-sh/ruff/pulls/10263.md) on 2024-03-07 07:48_
 
 ---
 
@@ -224,9 +196,5 @@ code = (np.asarray(inference_result.pooling_output, dtype=np.float64)
         else None)
 ```
 It's an improvement because the logic is simpler (only one assignment target).
-
----
-
-_Referenced in [astral-sh/ruff#15820](../../astral-sh/ruff/issues/15820.md) on 2025-01-30 01:33_
 
 ---

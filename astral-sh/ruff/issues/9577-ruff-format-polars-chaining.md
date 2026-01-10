@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-19T08:58:24Z
 updated_at: 2024-01-25T14:34:35Z
 url: https://github.com/astral-sh/ruff/issues/9577
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Ruff format - polars chaining
@@ -76,9 +76,5 @@ I'll close this issue in favour of #8598
 ---
 
 _Closed by @MichaReiser on 2024-01-25 14:34_
-
----
-
-_Referenced in [astral-sh/ruff#8598](../../astral-sh/ruff/issues/8598.md) on 2024-05-10 18:41_
 
 ---

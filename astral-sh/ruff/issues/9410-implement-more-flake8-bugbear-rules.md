@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-06T17:45:57Z
 updated_at: 2024-01-06T22:41:03Z
 url: https://github.com/astral-sh/ruff/issues/9410
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Implement more flake8-bugbear rules
@@ -71,10 +71,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-01-06 20:29_
 _Comment by @charliermarsh on 2024-01-06 20:29_
 
 I'm gonna do this for fun, and move the rule to `B035`.
-
----
-
-_Referenced in [astral-sh/ruff#9411](../../astral-sh/ruff/pulls/9411.md) on 2024-01-06 20:35_
 
 ---
 

@@ -1,0 +1,133 @@
+```yaml
+number: 128
+title: "`F821` on use of `Literal` with strings, e.g. `Literal['foo']`"
+type: issue
+state: closed
+author: samuelcolvin
+labels: []
+assignees: []
+created_at: 2022-09-08T09:06:05Z
+updated_at: 2023-04-04T16:44:50Z
+url: https://github.com/astral-sh/ruff/issues/128
+synced_at: 2026-01-10T11:09:42Z
+```
+
+# `F821` on use of `Literal` with strings, e.g. `Literal['foo']`
+
+---
+
+_Issue opened by @samuelcolvin on 2022-09-08 09:06_
+
+Since #119 was fixed via #125, I tried ruff again (build from `main`) with pydantic.
+
+I get a few remaining `F821` errors due to use of strings in `Literal`, the line numbers are also incorrect - seems to always be `1`.
+
+From [this](https://github.com/pydantic/pydantic/blob/f341049b9e5538a125751d75b4e44c1609b53df6/pydantic/config.py#L65-L66) code (and some other places in that file), I get:
+
+```
+pydantic/config.py:1:1: F821 Undefined name `deep`
+pydantic/config.py:1:1: F821 Undefined name `none`
+pydantic/config.py:1:1: F821 Undefined name `deep`
+pydantic/config.py:1:1: F821 Undefined name `shallow`
+pydantic/config.py:1:1: F821 Undefined name `before_validation`
+pydantic/config.py:1:1: F821 Undefined name `after_validation`
+pydantic/config.py:1:1: F821 Undefined name `none`
+pydantic/config.py:1:1: F821 Undefined name `shallow`
+pydantic/config.py:1:1: F821 Undefined name `before_validation`
+pydantic/config.py:1:1: F821 Undefined name `after_validation`
+```
+
+Example code:
+
+```py
+    copy_on_model_validation: Literal['none', 'deep', 'shallow']
+    post_init_call: Literal['before_validation', 'after_validation']
+```
+
+---
+
+_Comment by @samuelcolvin on 2022-09-08 09:18_
+
+I have no idea how you differentiate in a general way between the following:
+
+---
+```py
+from typing import Literal
+
+def foo(x: Literal['int']):
+    pass
+```
+---
+```py
+from typing import List
+
+def foo(x: List['int']):
+    pass
+```
+---
+```py
+from .local_types import CustomThing
+
+def foo(x: CustomThing['int']):
+    pass
+```
+---
+
+Obviously you can whitelist `Literal`, but I have no idea how you would work out whether `CustomThing` is parameterised with strings or types which might be strings.
+
+I guess you have to assume it's parameterised with types, can maybe one day allow a magic comment or magic property which tells ruff that `CustomThing` is parameterised with literals - maybe there's a pep for this, but I don't know of it.
+
+---
+
+_Comment by @charliermarsh on 2022-09-08 13:26_
+
+Yeah it looks like PyFlakes special-cases `Literal`: https://github.com/PyCQA/pyflakes/blob/master/pyflakes/checker.py#L1464. Will fix.
+
+PyFlakes actually has a lot of custom logic for caching forward-reference annotation in `cast` and `TypeVar` calls which we're yet to handle, so this may pop up there too.
+
+
+---
+
+_Closed by @charliermarsh on 2022-09-08 15:07_
+
+---
+
+_Comment by @charliermarsh on 2022-09-08 15:08_
+
+(The `1:1` issue will be handled separately, tracking in #132. Thank you!)
+
+---
+
+_Comment by @vianmixtkz on 2023-04-04 11:25_
+
+I still have the same issue
+![image](https://user-images.githubusercontent.com/122097976/229777092-644cc36b-5509-4e38-bb73-5fba4bc4c5a9.png)
+
+What version of ruff fixes it ?
+
+I am using ruff==0.0.254
+
+---
+
+_Comment by @charliermarsh on 2023-04-04 14:48_
+
+@vianmixtkz - This was fixed long long ago. How are you importing `Literal`?
+
+---
+
+_Comment by @vianmixtkz on 2023-04-04 15:08_
+
+Gotcha,
+
+I was importing it from another module. I tried to import it directly from typing and it fixed the issue. 
+Thanks.
+
+What caused that though ?
+
+---
+
+_Comment by @charliermarsh on 2023-04-04 16:44_
+
+If you add that module to [`typing-modules`](https://beta.ruff.rs/docs/settings/#typing-modules), that should fix the issue for you without having to import from `typing` directly. We don't trace imports across files, so if you import `Literal` in one file, export it, and then import that export elsewhere, we don't know that it's equivalent to `typing.Literal`. By adding your first-party module to `typing-modules`, you can tell Ruff that anything imported from that module should be considered equivalent to a `typing` import.
+
+---

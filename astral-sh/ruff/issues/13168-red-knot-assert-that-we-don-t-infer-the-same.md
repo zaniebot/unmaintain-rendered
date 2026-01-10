@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-30T19:23:36Z
 updated_at: 2024-11-07T15:20:18Z
 url: https://github.com/astral-sh/ruff/issues/13168
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] assert that we don't infer the same expression/definition in multiple regions
@@ -28,10 +28,6 @@ This will probably be a bit costly, so we probably want to do it only in a debug
 ---
 
 _Label `red-knot` added by @carljm on 2024-08-30 19:23_
-
----
-
-_Referenced in [astral-sh/ruff#13267](../../astral-sh/ruff/pulls/13267.md) on 2024-09-08 05:34_
 
 ---
 

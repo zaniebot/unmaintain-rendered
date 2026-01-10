@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-24T08:47:21Z
 updated_at: 2023-08-25T22:11:57Z
 url: https://github.com/astral-sh/ruff/issues/6846
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # PTH122 makes an inaccurate (incomplete) recommendation
@@ -60,10 +60,6 @@ Thanks for the thorough write-up. This makes sense and is easy to fix.
 ---
 
 _Label `documentation` added by @charliermarsh on 2023-08-25 21:41_
-
----
-
-_Referenced in [astral-sh/ruff#6884](../../astral-sh/ruff/pulls/6884.md) on 2023-08-25 22:03_
 
 ---
 

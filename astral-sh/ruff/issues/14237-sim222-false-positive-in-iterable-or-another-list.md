@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-10T01:56:38Z
 updated_at: 2024-11-11T20:23:35Z
 url: https://github.com/astral-sh/ruff/issues/14237
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # SIM222 false positive in `[*iterable] or [another list]`
@@ -53,10 +53,6 @@ I'll work on a PR.
 ---
 
 _Label `bug` added by @MichaReiser on 2024-11-10 09:24_
-
----
-
-_Referenced in [astral-sh/ruff#14263](../../astral-sh/ruff/pulls/14263.md) on 2024-11-11 05:15_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-19T07:34:34Z
 updated_at: 2024-08-19T08:02:57Z
 url: https://github.com/astral-sh/ruff/issues/12979
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Inconsistent quoting style among `config`'s default values
@@ -57,10 +57,6 @@ Unquoted:
 * [`lint.flake8-copyright.notice-rgx`](https://docs.astral.sh/ruff/settings/#lint_flake8-copyright_notice-rgx)
 * [`lint.isort.default-section`](https://docs.astral.sh/ruff/settings/#lint_isort_default-section)
 * [`lint.isort.relative-imports-order`](https://docs.astral.sh/ruff/settings/#lint_isort_relative-imports-order)
-
----
-
-_Referenced in [astral-sh/ruff#12981](../../astral-sh/ruff/pulls/12981.md) on 2024-08-19 07:37_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-15T22:03:35Z
 updated_at: 2024-03-21T16:34:00Z
 url: https://github.com/astral-sh/ruff/issues/10427
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Some docs not rendering properly
@@ -47,10 +47,6 @@ _Label `documentation` added by @zanieb on 2024-03-15 22:37_
 _Comment by @zanieb on 2024-03-15 22:38_
 
 Thanks for flagging this!
-
----
-
-_Referenced in [Python-Markdown/markdown#1452](../../Python-Markdown/markdown/issues/1452.md) on 2024-03-17 04:44_
 
 ---
 
@@ -238,10 +234,6 @@ So adding it as part of generate_mkdocs.py would make sense, since that gets run
 
 ---
 
-_Referenced in [astral-sh/ruff#10484](../../astral-sh/ruff/pulls/10484.md) on 2024-03-20 01:30_
-
----
-
 _Comment by @charliermarsh on 2024-03-21 00:31_
 
 So some of this is resolved, but I'm still seeing invalid references like this (possibly new ones?):
@@ -256,10 +248,6 @@ _Comment by @augustelalande on 2024-03-21 00:34_
 Ya I was gonna work on that next.
 
 The problem is that when someone attempts a reference to a setting, but doesn't make an options section with that setting, the reference doesn't get linked. My approach is gonna be to check any reference which matches the pattern [`word`][word], check if it's a valid setting, and if it is link it.
-
----
-
-_Referenced in [astral-sh/ruff#10498](../../astral-sh/ruff/pulls/10498.md) on 2024-03-21 00:41_
 
 ---
 
@@ -284,10 +272,6 @@ Honestly, I'm fine with either. We should _at least_ flag references that are mi
 _Comment by @augustelalande on 2024-03-21 00:48_
 
 Ok I will work on that
-
----
-
-_Referenced in [astral-sh/ruff#10499](../../astral-sh/ruff/pulls/10499.md) on 2024-03-21 02:03_
 
 ---
 

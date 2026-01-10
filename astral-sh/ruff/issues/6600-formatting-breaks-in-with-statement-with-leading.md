@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-15T16:56:13Z
 updated_at: 2023-08-18T03:30:40Z
 url: https://github.com/astral-sh/ruff/issues/6600
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Formatting breaks in `with` statement with leading comments on `as`
@@ -71,10 +71,6 @@ It looks like there are a lot of deviations in our `with` formatting, I need to 
 ---
 
 _Added to milestone `Formatter: Alpha` by @MichaReiser on 2023-08-16 07:12_
-
----
-
-_Referenced in [astral-sh/ruff#6621](../../astral-sh/ruff/pulls/6621.md) on 2023-08-16 16:34_
 
 ---
 

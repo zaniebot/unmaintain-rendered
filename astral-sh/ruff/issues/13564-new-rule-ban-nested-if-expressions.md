@@ -1,0 +1,69 @@
+```yaml
+number: 13564
+title: new rule - ban nested if expressions
+type: issue
+state: open
+author: DetachHead
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2024-09-30T06:25:30Z
+updated_at: 2024-10-02T05:56:21Z
+url: https://github.com/astral-sh/ruff/issues/13564
+synced_at: 2026-01-10T11:09:55Z
+```
+
+# new rule - ban nested if expressions
+
+---
+
+_Issue opened by @DetachHead on 2024-09-30 06:25_
+
+i keep stumbling across code where, for whatever reason, the person writing it thought it was a good idea to have several nested conditions in an `if` expression, which looks absolutely awful:
+
+```py
+foo = (
+    "a"
+    if bool()
+    else str(
+        "b"
+        if bool()
+        else (
+            "c"
+            if bool()
+            else str(
+                "d"
+                if bool()
+                else "e"
+            )
+        )
+    )
+)
+```
+
+it would be nice if ruff had a rule to enforce that if expressions do not have any nested if expressions inside them, and instead suggests writing it as a regular if statement which is far easier to read
+
+---
+
+_Label `rule` added by @AlexWaygood on 2024-09-30 11:49_
+
+---
+
+_Label `needs-decision` added by @AlexWaygood on 2024-09-30 11:49_
+
+---
+
+_Comment by @lsouder-ozone3d on 2024-10-01 23:46_
+
+It's possible you just want some combination of:
+- [too-many-nested-blocks (PLR1702)](https://docs.astral.sh/ruff/rules/too-many-nested-blocks/#too-many-nested-blocks-plr1702)
+- [complex-structure (C901)](https://docs.astral.sh/ruff/rules/complex-structure/#complex-structure-c901)
+
+---
+
+_Comment by @DetachHead on 2024-10-02 05:56_
+
+hmm, it looks like neither of those rules report on if expressions no matter how nested i make it
+
+---

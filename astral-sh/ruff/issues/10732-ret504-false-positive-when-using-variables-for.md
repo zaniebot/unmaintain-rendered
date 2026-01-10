@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-02T04:19:53Z
 updated_at: 2024-04-02T20:18:07Z
 url: https://github.com/astral-sh/ruff/issues/10732
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # RET504 "false positive" when using variables for typing
@@ -120,10 +120,6 @@ This is already working without issue, but then you have to annotate the variabl
 _Comment by @charliermarsh on 2024-04-02 18:43_
 
 Oh, hah, I didn't realize that. I think we can support the variant from your first post.
-
----
-
-_Referenced in [astral-sh/ruff#10741](../../astral-sh/ruff/pulls/10741.md) on 2024-04-02 19:50_
 
 ---
 

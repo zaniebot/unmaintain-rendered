@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-03-18T18:03:51Z
 updated_at: 2023-03-19T18:37:29Z
 url: https://github.com/astral-sh/ruff/issues/3598
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Update C416 rule with dict comprehensions and make autofixable
@@ -49,17 +49,9 @@ _Label `rule` added by @charliermarsh on 2023-03-18 18:12_
 
 ---
 
-_Referenced in [sympy/sympy#24935](../../sympy/sympy/issues/24935.md) on 2023-03-19 01:59_
-
----
-
 _Comment by @dhruvmanila on 2023-03-19 09:15_
 
 Hi, can I take this?
-
----
-
-_Referenced in [astral-sh/ruff#3605](../../astral-sh/ruff/pulls/3605.md) on 2023-03-19 09:40_
 
 ---
 

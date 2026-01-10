@@ -1,0 +1,118 @@
+```yaml
+number: 15828
+title: Reimplement popular Mypy plugins
+type: issue
+state: closed
+author: johnthagen
+labels:
+  - needs-decision
+  - needs-design
+  - ty
+assignees: []
+created_at: 2025-01-30T13:15:38Z
+updated_at: 2025-05-09T13:30:35Z
+url: https://github.com/astral-sh/ruff/issues/15828
+synced_at: 2026-01-10T11:09:57Z
+```
+
+# Reimplement popular Mypy plugins
+
+---
+
+_Issue opened by @johnthagen on 2025-01-30 13:15_
+
+### Description
+
+In order to migrate from Mypy to Ruff for static type checking, one thing users may need are reimplementations of the most popular Mypy plugins.
+
+- https://mypy.readthedocs.io/en/stable/extending_mypy.html#extending-mypy-using-plugins
+
+Assuming for a moment that exposing a Mypy-compatible plugin interface is out of scope, the following Mypy plugins are ones I've seen in wide use within the community and could be considered:
+
+- Some appear built into Mypy already: https://github.com/python/mypy/tree/master/mypy/plugins
+- (Deprecated) Numpy: https://numpy.org/devdocs/reference/typing.html#mypy-plugin
+- Pydantic: https://docs.pydantic.dev/latest/integrations/mypy/#enabling-the-plugin
+- `django-stubs`: https://github.com/typeddjango/django-stubs?tab=readme-ov-file#installation
+- `djangorestframework-stubs`: https://github.com/typeddjango/djangorestframework-stubs?tab=readme-ov-file#installation
+
+Another list of Mypy plugins I found:
+
+- https://github.com/typeddjango/awesome-python-typing?tab=readme-ov-file#mypy-plugins
+
+Related to
+
+- #3893
+
+---
+
+_Label `wish` added by @dylwil3 on 2025-01-30 13:35_
+
+---
+
+_Label `red-knot` added by @AlexWaygood on 2025-01-30 15:22_
+
+---
+
+_Label `wish` removed by @AlexWaygood on 2025-01-30 16:48_
+
+---
+
+_Label `needs-decision` added by @AlexWaygood on 2025-01-30 16:48_
+
+---
+
+_Label `needs-design` added by @AlexWaygood on 2025-01-30 16:48_
+
+---
+
+_Comment by @NeilGirdhar on 2025-02-01 00:30_
+
+The numpy plugin is deprecated and the stubs are not plugins, right?  Might want to remove those from your list.
+
+---
+
+_Comment by @UnknownPlatypus on 2025-02-01 14:12_
+
+`django-stubs` and `djangorestframework-stubs` both expose mypy plugin on top of the stubs
+
+---
+
+_Comment by @MichaReiser on 2025-03-06 17:38_
+
+We don't plan to support Mypy plugins for our initial static type checker release, but it's something that's on our mind. I'll close this as it's not planned until after the initial type checker release.
+
+---
+
+_Closed by @MichaReiser on 2025-03-06 17:38_
+
+---
+
+_Comment by @johnthagen on 2025-05-08 21:01_
+
+@MichaReiser Now that [`ty`](https://github.com/astral-sh/ty/) is public and released as alpha on PyPI, should this issue be re-opened and/or migrated to https://github.com/astral-sh/ty/issues ?
+
+---
+
+_Comment by @MichaReiser on 2025-05-09 06:25_
+
+Sure. I think it could help document our position. @dcreager did [give an answer to this question on hackernews] and you can find a somewhat longer answer from @carljm in [this podcast](https://www.youtube.com/live/XVwpL_cAvrw?feature=shared&t=2528)
+
+---
+
+_Comment by @johnthagen on 2025-05-09 11:47_
+
+@MichaReiser Thanks for the references!
+
+I cross posted to
+
+- https://github.com/astral-sh/ty/issues/291
+
+For others interested, here is the HackerNews post about this topic
+
+- https://news.ycombinator.com/item?id=43919746
+
+Also related
+
+- https://github.com/astral-sh/ruff/discussions/15149
+
+---

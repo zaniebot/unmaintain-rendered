@@ -1,0 +1,70 @@
+```yaml
+number: 18590
+title: Fixes for FURB122 and FURB142 should parenthesize lambdas and ternary expressions
+type: issue
+state: closed
+author: dscorbett
+labels:
+  - bug
+  - fixes
+assignees: []
+created_at: 2025-06-09T12:57:34Z
+updated_at: 2025-06-09T20:07:35Z
+url: https://github.com/astral-sh/ruff/issues/18590
+synced_at: 2026-01-10T11:09:58Z
+```
+
+# Fixes for FURB122 and FURB142 should parenthesize lambdas and ternary expressions
+
+---
+
+_Issue opened by @dscorbett on 2025-06-09 12:57_
+
+### Summary
+
+The fixes for [`for-loop-writes` (FURB122)](https://docs.astral.sh/ruff/rules/for-loop-writes/) and [`for-loop-set-mutations` (FURB142)](https://docs.astral.sh/ruff/rules/for-loop-set-mutations/) should parenthesize the iterable expression when it is a lambda expression or a ternary conditional expression and it is not already parenthesized and the fix produces a comprehension.
+
+```console
+$ cat >furb122.py <<'# EOF'
+from pathlib import Path
+def write(lines_a, lines_b, *, write_a):
+    with Path("file.txt").open("w", encoding="utf-8") as f:
+        for line in lines_a if write_a else lines_b:
+            f.write(f"[{line}]")
+with Path("file.txt").open("w", encoding="utf-8") as f:
+    for l in lambda: 0:
+        f.write(f"[{l}]")
+# EOF
+
+$ ruff --isolated check furb122.py --select FURB122 --preview --diff 2>&1 | grep error:
+error: Fix introduced a syntax error. Reverting all changes.
+
+$ cat >furb142.py <<'# EOF'
+s = set()
+for x in (1,) if True else (2,):
+    s.add(-x)
+for x in lambda: 0:
+    s.discard(-x)
+# EOF
+
+$ ruff --isolated check furb142.py --select FURB142 --preview --diff 2>&1 | grep error:
+error: Fix introduced a syntax error. Reverting all changes.
+```
+
+### Version
+
+ruff 0.11.13 (5faf72a4d 2025-06-05)
+
+---
+
+_Label `bug` added by @ntBre on 2025-06-09 13:00_
+
+---
+
+_Label `fixes` added by @ntBre on 2025-06-09 13:00_
+
+---
+
+_Closed by @ntBre on 2025-06-09 20:07_
+
+---

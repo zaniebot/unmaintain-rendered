@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-12T18:50:15Z
 updated_at: 2023-01-14T01:48:19Z
 url: https://github.com/astral-sh/ruff/issues/1829
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Ruff with Ale in Nvim Shows errors on things that should be ignored
@@ -69,9 +69,5 @@ Gonna close since I think this is handled by the upstream issue.
 ---
 
 _Closed by @charliermarsh on 2023-01-14 01:48_
-
----
-
-_Referenced in [astral-sh/ruff#1857](../../astral-sh/ruff/pulls/1857.md) on 2023-01-14 02:06_
 
 ---

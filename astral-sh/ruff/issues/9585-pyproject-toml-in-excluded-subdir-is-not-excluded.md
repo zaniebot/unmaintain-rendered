@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-19T19:40:51Z
 updated_at: 2025-10-22T12:09:21Z
 url: https://github.com/astral-sh/ruff/issues/9585
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # pyproject.toml in excluded subdir is not excluded when passed explicitly (=pre-commit)
@@ -94,10 +94,6 @@ trying to read the offending .toml file, making it work fine again:
 **Conclusion**: I think ruff should not look for config files in
 excluded dirs.
 
-
----
-
-_Referenced in [astral-sh/ruff#7959](../../astral-sh/ruff/issues/7959.md) on 2024-01-19 19:44_
 
 ---
 

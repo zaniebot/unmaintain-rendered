@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-03T22:49:37Z
 updated_at: 2024-10-07T14:13:30Z
 url: https://github.com/astral-sh/ruff/issues/13620
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # FURB188 calculates lengths wrong for non-ASCII affixes
@@ -62,10 +62,6 @@ Thank you! I'll try to fix this shortly.
 ---
 
 _Label `bug` added by @AlexWaygood on 2024-10-04 09:44_
-
----
-
-_Referenced in [astral-sh/ruff#13631](../../astral-sh/ruff/pulls/13631.md) on 2024-10-04 16:24_
 
 ---
 

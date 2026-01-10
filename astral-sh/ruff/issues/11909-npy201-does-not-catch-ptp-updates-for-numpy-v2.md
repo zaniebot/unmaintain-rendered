@@ -1,0 +1,58 @@
+```yaml
+number: 11909
+title: "NPY201 does not catch `ptp` updates for numpy v2"
+type: issue
+state: open
+author: jvavrek
+labels:
+  - rule
+  - type-inference
+assignees: []
+created_at: 2024-06-17T19:05:55Z
+updated_at: 2024-06-18T05:31:24Z
+url: https://github.com/astral-sh/ruff/issues/11909
+synced_at: 2026-01-10T11:09:53Z
+```
+
+# NPY201 does not catch `ptp` updates for numpy v2
+
+---
+
+_Issue opened by @jvavrek on 2024-06-17 19:05_
+
+`ruff` does not catch the `arr.ptp() --> np.ptp(arr)` updates necessary in `numpy>=2`
+
+MWE:
+```py
+# tmp.py
+import numpy as np
+
+x = np.arange(10)
+print(x.ptp())
+```
+
+```sh
+ruff check tmp.py --select NPY201 --isolated  # (same without the --isolated flag)
+# All checks passed!
+```
+
+```sh
+ruff --version
+# ruff 0.4.9
+```
+
+---
+
+_Comment by @dhruvmanila on 2024-06-18 05:31_
+
+Thank you for highlighting this! I think this is difficult with the current semantic model as it requires Ruff to understand that the type of the variable `x` is a NumPy array. Related to https://github.com/astral-sh/ruff/issues/6432, if Ruff were to just check for the `.ptp` method, it would raise false positives if the variable is not a Numpy array.
+
+---
+
+_Label `rule` added by @dhruvmanila on 2024-06-18 05:31_
+
+---
+
+_Label `type-inference` added by @dhruvmanila on 2024-06-18 05:31_
+
+---

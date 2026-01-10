@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-19T09:19:24Z
 updated_at: 2025-01-15T23:47:34Z
 url: https://github.com/astral-sh/ruff/issues/8061
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Align `TD003` with VSCode github extension automatic issue creation
@@ -90,22 +90,6 @@ _Comment by @charliermarsh on 2023-11-10 14:36_
 
 ---
 
-_Referenced in [astral-sh/ruff#9627](../../astral-sh/ruff/pulls/9627.md) on 2024-01-23 18:10_
-
----
-
-_Referenced in [astral-sh/ruff#9986](../../astral-sh/ruff/issues/9986.md) on 2024-02-14 18:07_
-
----
-
-_Referenced in [astral-sh/ruff#15519](../../astral-sh/ruff/pulls/15519.md) on 2025-01-15 23:22_
-
----
-
 _Closed by @dylwil3 on 2025-01-15 23:47_
-
----
-
-_Referenced in [astral-sh/ruff#20809](../../astral-sh/ruff/issues/20809.md) on 2025-10-11 09:15_
 
 ---

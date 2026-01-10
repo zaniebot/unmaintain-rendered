@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-02-12T21:33:39Z
 updated_at: 2023-02-12T22:22:21Z
 url: https://github.com/astral-sh/ruff/issues/2825
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # SIM114: duplicate reports and same source code is shown
@@ -69,10 +69,6 @@ Found 4 errors.
 _Comment by @charliermarsh on 2023-02-12 21:38_
 
 Thanks, doing another pass on this one anyway to improve a few things.
-
----
-
-_Referenced in [astral-sh/ruff#2827](../../astral-sh/ruff/pulls/2827.md) on 2023-02-12 22:13_
 
 ---
 

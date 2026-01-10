@@ -1,0 +1,48 @@
+```yaml
+number: 15502
+title: "[red-knot] Shell completion"
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - ty
+assignees: []
+created_at: 2025-01-15T14:28:39Z
+updated_at: 2025-05-07T01:04:58Z
+url: https://github.com/astral-sh/ruff/issues/15502
+synced_at: 2026-01-10T11:09:57Z
+```
+
+# [red-knot] Shell completion
+
+---
+
+_Issue opened by @MichaReiser on 2025-01-15 14:28_
+
+Add a command to generate the shell completion. The name is TBD but we discussed `completion` or `generate-shell-completion` (similar to ruff/uv)
+
+---
+
+_Label `red-knot` added by @MichaReiser on 2025-01-15 14:28_
+
+---
+
+_Added to milestone `Red Knot Beta` by @carljm on 2025-03-27 18:35_
+
+---
+
+_Removed from milestone `Red Knot Beta` by @carljm on 2025-03-27 18:36_
+
+---
+
+_Added to milestone `Red Knot Public Release` by @carljm on 2025-03-27 18:36_
+
+---
+
+_Closed by @carljm on 2025-05-07 01:04_
+
+---
+
+_Closed by @carljm on 2025-05-07 01:04_
+
+---

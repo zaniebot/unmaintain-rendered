@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-02T14:35:31Z
 updated_at: 2025-01-07T14:52:04Z
 url: https://github.com/astral-sh/ruff/issues/12632
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # New rule: fast-api-unused-path-parameter
@@ -50,10 +50,6 @@ If this rule is a good fit for ruff, i'd love to make a PR to implement it!
 ---
 
 _Renamed from "New rule: fast-api-unused-path-parameters" to "New rule: fast-api-unused-path-parameter" by @Matthieu-LAURENT39 on 2024-08-02 14:35_
-
----
-
-_Referenced in [astral-sh/ruff#12638](../../astral-sh/ruff/pulls/12638.md) on 2024-08-02 18:10_
 
 ---
 

@@ -1,0 +1,85 @@
+```yaml
+number: 14881
+title: "[check] Basic, non-CFG, after-return dead code detection"
+type: issue
+state: closed
+author: gsnedders
+labels:
+  - rule
+assignees: []
+created_at: 2024-12-09T21:45:49Z
+updated_at: 2025-01-03T03:57:25Z
+url: https://github.com/astral-sh/ruff/issues/14881
+synced_at: 2026-01-10T11:09:56Z
+```
+
+# [check] Basic, non-CFG, after-return dead code detection
+
+---
+
+_Issue opened by @gsnedders on 2024-12-09 21:45_
+
+I had some code that was similar to:
+
+```
+import sys
+
+def is_python3():
+    if sys.version_info >= (3, 0):
+        return True
+
+    return False
+```
+
+(This matches the style required by [RET505](https://docs.astral.sh/ruff/rules/superfluous-else-return/).)
+
+
+If I then run:
+
+```
+% ruff check --select F401,UP036 foo.py --target-version py39  --unsafe-fixes --fix
+Found 2 errors (2 fixed, 0 remaining).
+```
+
+I get an output of:
+
+```
+
+def is_python3():
+    return True
+
+    return False
+```
+
+It would both:
+
+ 1. Be good if UP036's (admittedly unsafe) fix didn't leave obviously dead code behind,
+ 2. Be good to have some rule that catches at least trivial dead code like this (which doesn't need any sort of CFG analysis to find).
+
+Mostly filing this as a feature request for the latter, because I'm… in that state now.
+
+---
+
+_Renamed from "[check] Basic dead code detection" to "[check] Basic, non-CFG, after-return dead code detection" by @gsnedders on 2024-12-09 21:48_
+
+---
+
+_Comment by @MichaReiser on 2024-12-10 07:09_
+
+Related to https://github.com/astral-sh/ruff/pull/10891
+
+---
+
+_Label `rule` added by @MichaReiser on 2024-12-10 07:09_
+
+---
+
+_Comment by @dylwil3 on 2025-01-03 03:56_
+
+Now available, under `preview` in the next release, with the merging of #10891 
+
+---
+
+_Closed by @dylwil3 on 2025-01-03 03:56_
+
+---

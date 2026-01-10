@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-11T12:38:38Z
 updated_at: 2024-07-12T12:56:54Z
 url: https://github.com/astral-sh/ruff/issues/12288
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # RUF012 false positive with annotations set as strings
@@ -108,13 +108,5 @@ I guess that might not work because in theory these need to be evaluated lazily,
 _Comment by @dhruvmanila on 2024-07-12 12:56_
 
 At least for these 3 rules, they all require a class node which means we can store them in `Analyze` struct (https://github.com/astral-sh/ruff/blob/ecd6865d2800a574baf122583b6e463605af2ef5/crates/ruff_linter/src/checkers/ast/deferred.rs#L30-L37) and then later use `deferred_class.rs` (similar to `deferred_lambdas.rs`) to check for violations for these rules. We might want to update existing logic to not raise a violation if the annotation is a string.
-
----
-
-_Referenced in [astral-sh/ruff#15345](../../astral-sh/ruff/pulls/15345.md) on 2025-01-08 10:36_
-
----
-
-_Referenced in [astral-sh/ruff#15857](../../astral-sh/ruff/issues/15857.md) on 2025-01-31 17:23_
 
 ---

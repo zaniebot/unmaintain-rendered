@@ -1,0 +1,204 @@
+```yaml
+number: 15048
+title: "[red-knot] Make `Type::in_type_expression()` exhaustive"
+type: issue
+state: closed
+author: AlexWaygood
+labels:
+  - help wanted
+  - ty
+assignees: []
+created_at: 2024-12-18T19:09:54Z
+updated_at: 2025-03-19T14:36:31Z
+url: https://github.com/astral-sh/ruff/issues/15048
+synced_at: 2026-01-10T11:09:56Z
+```
+
+# [red-knot] Make `Type::in_type_expression()` exhaustive
+
+---
+
+_Issue opened by @AlexWaygood on 2024-12-18 19:09_
+
+`Type::in_type_expression()` already  errors for some types that are invalid in type expression contexts:
+https://github.com/astral-sh/ruff/blob/ed2bce6ebb56c84c5ecd22cbe8aac4a887c403ca/crates/red_knot_python_semantic/src/types.rs#L2031-L2043
+
+However, there are many other types that are invalid in type expression contexts. We should remove the final fallback branch from this `match` statement and make it exhaustive so that all typing errors are correctly reported.
+
+I expect that many invalid types can be covered by a single branch. Doing so might require changing this method so that its return type is `std::fmt::Arguments` rather than `&'static str`:
+
+https://github.com/astral-sh/ruff/blob/ed2bce6ebb56c84c5ecd22cbe8aac4a887c403ca/crates/red_knot_python_semantic/src/types.rs#L2208-L2215
+
+---
+
+_Label `help wanted` added by @AlexWaygood on 2024-12-18 19:09_
+
+---
+
+_Label `red-knot` added by @AlexWaygood on 2024-12-18 19:09_
+
+---
+
+_Comment by @brandonsorensen on 2025-02-12 10:59_
+
+Hi. I'm interested in contributing to red_knot. I'm happy to give this issue a go.
+
+---
+
+_Comment by @AlexWaygood on 2025-02-12 11:12_
+
+> Hi. I'm interested in contributing to red_knot. I'm happy to give this issue a go.
+
+Fantastic! Feel free to give me a ping if you need any help on how to tackle it :-D
+
+---
+
+_Assigned to @brandonsorensen by @AlexWaygood on 2025-02-12 11:12_
+
+---
+
+_Comment by @carljm on 2025-03-15 16:25_
+
+It looks like this match is now exhaustive, but some branches still return Todo types, which could be addressed.
+
+@brandonsorensen are you still taking a look at this, or should I un-assign for now?
+
+---
+
+_Comment by @AlexWaygood on 2025-03-15 16:44_
+
+> It looks like this match is now exhaustive
+
+Yes, sorry! I should have updated the status of this issue following https://github.com/astral-sh/ruff/pull/16427.
+
+> but some branches still return Todo types, which could be addressed.
+
+I think this Todo is somewhat hard to address without an understanding of generics (we'd start erroring on "instances of `typing.TypeVar` being used in type expressions"):
+
+https://github.com/astral-sh/ruff/blob/2de8455e43efc55b2ed302c0bdf4e59744338504/crates/red_knot_python_semantic/src/types.rs#L3282-L3284
+
+But I think this one is doable right now, and would be a great contributor task -- we just need to expand the `match` so that it is exhaustive over all `KnownInstanceType` variants:
+
+https://github.com/astral-sh/ruff/blob/2de8455e43efc55b2ed302c0bdf4e59744338504/crates/red_knot_python_semantic/src/types.rs#L3279-L3281
+
+This one is also possibly doable, but might be trickier for a contributor to take on:
+
+https://github.com/astral-sh/ruff/blob/2de8455e43efc55b2ed302c0bdf4e59744338504/crates/red_knot_python_semantic/src/types.rs#L3285
+
+---
+
+_Comment by @MatthewMckee4 on 2025-03-16 22:46_
+
+> But I think this one is doable right now, and would be a great contributor task -- we just need to expand the `match` so that it is exhaustive over all `KnownInstanceType` variants:
+> 
+> [ruff/crates/red_knot_python_semantic/src/types.rs](https://github.com/astral-sh/ruff/blob/2de8455e43efc55b2ed302c0bdf4e59744338504/crates/red_knot_python_semantic/src/types.rs#L3279-L3281)
+> 
+> Lines 3279 to 3281 in [2de8455](/astral-sh/ruff/commit/2de8455e43efc55b2ed302c0bdf4e59744338504)
+>  Type::KnownInstance(_) => Ok(todo_type!( 
+>      "Invalid or unsupported `KnownInstanceType` in `Type::to_type_expression`" 
+>  )), 
+
+@AlexWaygood do you think this is something i could take a look into?
+
+---
+
+_Comment by @AlexWaygood on 2025-03-17 16:17_
+
+> [@AlexWaygood](https://github.com/AlexWaygood?rgh-link-date=2025-03-16T22%3A46%3A47.000Z) do you think this is something i could take a look into?
+
+@MatthewMckee4 yes absolutely! To make the `match` exhaustive, for each `KnownInstanceType` variant you'll need to either:
+- emit an appropriate error message (if the `KnownInstanceType` variant is only valid in a type expression when it's parameterized with a type argument), OR
+- return `Ok(todo_type!())` with a precise TODO error message that states exactly what the missing feature is
+
+You may find the "type expression grammar" in the typing spec helpful for this task: https://typing.python.org/en/latest/spec/annotations.html#type-and-annotation-expressions
+
+---
+
+_Comment by @AlexWaygood on 2025-03-17 16:18_
+
+@brandonsorensen, I'll unassign you for now so that others can work on this :-) but feel free to work on any of our other "help wanted" tasks!
+
+---
+
+_Unassigned @brandonsorensen by @AlexWaygood on 2025-03-17 16:18_
+
+---
+
+_Comment by @MatthewMckee4 on 2025-03-18 17:35_
+
+For example, something like
+```py
+from typing import Optional
+
+def f(x: Optional) -> None:
+    reveal_type(x)  # revealed: Unknown
+```
+I could catch this and say "Variable of type `typing.Optional` is not allowed in a type expression", with InvalidTypeExpression::InvalidType. But this is not a great message, so should i create a new enum type "BareOptional"?
+
+---
+
+_Comment by @MatthewMckee4 on 2025-03-18 17:43_
+
+Or would it be better to make a enum type like InvalidBareType, so we're not duplicating tons of code. This type should take the known instance type too I think 
+
+---
+
+_Comment by @carljm on 2025-03-18 18:48_
+
+It looks to me like `InvalidTypeExpression` enum already has `BareAnnotated` and `BareLiteral` variants; I think adding `BareOptional` makes sense there.
+
+If the list of `Bare*` variants grows very large, we could consider the commonality between their error messages and see if they are similar enough that we can reasonably share a single `BareSpecialForm` variant, but I think it would be premature to do that now.
+
+---
+
+_Comment by @MatthewMckee4 on 2025-03-18 19:51_
+
+This is what i have right now
+```rust
+            Type::KnownInstance(
+                KnownInstanceType::Literal
+                | KnownInstanceType::Optional
+                | KnownInstanceType::Union
+                | KnownInstanceType::Protocol
+                | KnownInstanceType::Not
+                | KnownInstanceType::Intersection
+                | KnownInstanceType::TypeOf
+                | KnownInstanceType::CallableTypeFromFunction,
+            ) => Err(InvalidTypeExpressionError {
+                invalid_expressions: smallvec::smallvec![InvalidTypeExpression::InvalidBareType(
+                    *self
+                )],
+                fallback_type: Type::unknown(),
+            }),
+            Type::KnownInstance(
+                KnownInstanceType::TypingSelf
+                | KnownInstanceType::ReadOnly
+                | KnownInstanceType::TypeAlias
+                | KnownInstanceType::NotRequired
+                | KnownInstanceType::Concatenate
+                | KnownInstanceType::TypeIs
+                | KnownInstanceType::TypeGuard
+                | KnownInstanceType::Unpack
+                | KnownInstanceType::Required,
+            ) => Ok(todo_type!(
+                "Invalid or unsupported `KnownInstanceType` in `Type::to_type_expression`"
+            )),
+```
+
+---
+
+_Comment by @carljm on 2025-03-18 22:41_
+
+Commented on the pull request. Looking at the complete list, it does look like there are quite a few that could share the same error message, so what you've done looks good! Just `Protocol` needs to be handled differently.
+
+(`Union` and `Intersection` are odd, as they are only _meaningful_ with 2+ arguments, but we currently allow them with one argument, and it seems harmless to allow, so I think we can also just say "requires at least one argument" for them.)
+
+---
+
+_Closed by @carljm on 2025-03-19 14:36_
+
+---
+
+_Closed by @carljm on 2025-03-19 14:36_
+
+---

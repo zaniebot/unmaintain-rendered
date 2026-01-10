@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-14T17:09:24Z
 updated_at: 2023-03-14T19:15:44Z
 url: https://github.com/astral-sh/ruff/issues/3515
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # PIE810 autofixit bug - removes parentheses
@@ -61,9 +61,5 @@ _Label `question` added by @charliermarsh on 2023-03-14 17:15_
 ---
 
 _Closed by @Skylion007 on 2023-03-14 19:15_
-
----
-
-_Referenced in [ArduPilot/ardupilot#30343](../../ArduPilot/ardupilot/pulls/30343.md) on 2025-06-14 09:04_
 
 ---

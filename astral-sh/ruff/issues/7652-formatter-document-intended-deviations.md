@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-25T11:59:52Z
 updated_at: 2023-09-29T17:27:32Z
 url: https://github.com/astral-sh/ruff/issues/7652
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter: Document intended deviations
@@ -37,10 +37,6 @@ _Label `formatter` added by @MichaReiser on 2023-09-25 12:00_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-09-27 18:42_
-
----
-
-_Referenced in [astral-sh/ruff#7679](../../astral-sh/ruff/pulls/7679.md) on 2023-09-27 20:18_
 
 ---
 

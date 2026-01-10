@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-05T12:31:20Z
 updated_at: 2025-10-15T15:06:04Z
 url: https://github.com/astral-sh/ruff/issues/20265
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # PYI061 fix can change operator precedence
@@ -55,14 +55,6 @@ Thanks -- as always! While this is a valid bug report, I don't think this one sh
 ---
 
 _Label `fixes` added by @AlexWaygood on 2025-09-05 12:38_
-
----
-
-_Referenced in [astral-sh/ruff#20236](../../astral-sh/ruff/pulls/20236.md) on 2025-09-05 14:05_
-
----
-
-_Referenced in [astral-sh/ruff#20508](../../astral-sh/ruff/pulls/20508.md) on 2025-09-22 05:22_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-11T08:19:54Z
 updated_at: 2024-12-23T08:22:00Z
 url: https://github.com/astral-sh/ruff/issues/14905
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # N816 doesn't flag lower-case variable names
@@ -88,10 +88,6 @@ _Label `rule` added by @MichaReiser on 2024-12-16 08:01_
 ---
 
 _Label `needs-decision` added by @MichaReiser on 2024-12-16 08:01_
-
----
-
-_Referenced in [astral-sh/ruff#15069](../../astral-sh/ruff/issues/15069.md) on 2024-12-20 07:39_
 
 ---
 

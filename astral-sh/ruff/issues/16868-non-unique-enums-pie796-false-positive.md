@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-20T13:02:03Z
 updated_at: 2025-04-08T19:53:29Z
 url: https://github.com/astral-sh/ruff/issues/16868
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # non-unique-enums (PIE796): false positive
@@ -84,10 +84,6 @@ I'd like to work on this.
 ---
 
 _Assigned to @kiran-4444 by @ntBre on 2025-03-23 14:45_
-
----
-
-_Referenced in [astral-sh/ruff#17274](../../astral-sh/ruff/pulls/17274.md) on 2025-04-07 13:34_
 
 ---
 

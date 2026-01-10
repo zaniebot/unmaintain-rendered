@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-09T18:55:56Z
 updated_at: 2023-05-18T14:33:35Z
 url: https://github.com/astral-sh/ruff/issues/4323
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # [Autofix error] PIE810 autofix fails when inside f-string: `f"{key.startswith('a') or key.startswith('b')}"`
@@ -82,14 +82,6 @@ Another option is to avoid autofixing entirely when we're in f-strings, because 
 
 ---
 
-_Referenced in [astral-sh/ruff#4487](../../astral-sh/ruff/pulls/4487.md) on 2023-05-18 02:47_
-
----
-
 _Closed by @charliermarsh on 2023-05-18 14:33_
-
----
-
-_Referenced in [ArduPilot/ardupilot#30343](../../ArduPilot/ardupilot/pulls/30343.md) on 2025-06-14 09:04_
 
 ---

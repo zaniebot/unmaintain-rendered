@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-15T19:15:49Z
 updated_at: 2023-11-20T20:02:25Z
 url: https://github.com/astral-sh/ruff/issues/8703
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Change PT015 to trigger only on tests
@@ -50,14 +50,6 @@ What do you think?
 ---
 
 _Renamed from "Why does PT015 trigger outside tests?" to "Change PT015 to trigger only on tests" by @NeilGirdhar on 2023-11-16 17:08_
-
----
-
-_Referenced in [astral-sh/ruff#8145](../../astral-sh/ruff/issues/8145.md) on 2023-11-18 23:10_
-
----
-
-_Referenced in [astral-sh/ruff#8794](../../astral-sh/ruff/issues/8794.md) on 2023-11-20 19:27_
 
 ---
 

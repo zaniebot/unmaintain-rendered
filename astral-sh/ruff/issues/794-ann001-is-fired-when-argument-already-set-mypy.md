@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-17T18:02:58Z
 updated_at: 2022-11-17T23:33:56Z
 url: https://github.com/astral-sh/ruff/issues/794
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # ANN001 is fired when argument already set (`mypy` not complain in such case).
@@ -79,9 +79,5 @@ https://stackoverflow.com/a/64500210/1850190
 ---
 
 _Closed by @actionless on 2022-11-17 23:33_
-
----
-
-_Referenced in [astral-sh/ruff#5958](../../astral-sh/ruff/issues/5958.md) on 2023-07-21 21:59_
 
 ---

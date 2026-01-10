@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-03T08:42:20Z
 updated_at: 2023-09-03T13:31:15Z
 url: https://github.com/astral-sh/ruff/issues/7072
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Rule B013 cause autofix error
@@ -67,10 +67,6 @@ _Label `fuzzer` added by @charliermarsh on 2023-09-03 12:03_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-09-03 13:15_
-
----
-
-_Referenced in [astral-sh/ruff#7080](../../astral-sh/ruff/pulls/7080.md) on 2023-09-03 13:21_
 
 ---
 

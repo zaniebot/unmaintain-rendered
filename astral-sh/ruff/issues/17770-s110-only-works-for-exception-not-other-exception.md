@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-01T16:24:40Z
 updated_at: 2025-05-02T07:28:38Z
 url: https://github.com/astral-sh/ruff/issues/17770
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # `S110` only works for `Exception` not other exception types for multi-line `try` blocks
@@ -114,10 +114,6 @@ On Thu, 1 May 2025, 18:12 Micha Reiser, ***@***.***> wrote:
 --
 John Shearer
 
-
----
-
-_Referenced in [astral-sh/ruff#17786](../../astral-sh/ruff/pulls/17786.md) on 2025-05-02 07:13_
 
 ---
 

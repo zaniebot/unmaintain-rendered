@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-07-17T06:47:08Z
 updated_at: 2023-08-22T14:20:18Z
 url: https://github.com/astral-sh/ruff/issues/5821
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Formatter: stub files only have one empty lines between top level items
@@ -87,10 +87,6 @@ Note: This requires knowing the file type during formatting by passing it to the
 
 ---
 
-_Referenced in [astral-sh/ruff#5828](../../astral-sh/ruff/issues/5828.md) on 2023-07-17 09:32_
-
----
-
 _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-07-31 16:16_
 
 ---
@@ -106,10 +102,6 @@ _Label `help wanted` added by @konstin on 2023-08-10 08:43_
 _Comment by @konstin on 2023-08-10 08:45_
 
 `PyFormatOptions` now has a `source_type` field
-
----
-
-_Referenced in [astral-sh/ruff#6501](../../astral-sh/ruff/pulls/6501.md) on 2023-08-11 13:01_
 
 ---
 

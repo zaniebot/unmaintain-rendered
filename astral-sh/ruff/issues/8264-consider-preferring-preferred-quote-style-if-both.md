@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-26T22:42:18Z
 updated_at: 2023-11-28T06:09:45Z
 url: https://github.com/astral-sh/ruff/issues/8264
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Consider preferring preferred quote style if both styles require backslashes
@@ -40,10 +40,6 @@ This came up in the Pydantic migration: https://github.com/pydantic/pydantic/pul
 ---
 
 _Label `formatter` added by @charliermarsh on 2023-10-26 22:42_
-
----
-
-_Referenced in [pydantic/pydantic#7930](../../pydantic/pydantic/pulls/7930.md) on 2023-10-26 22:42_
 
 ---
 

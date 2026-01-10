@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-09-08T18:06:20Z
 updated_at: 2023-09-14T15:44:18Z
 url: https://github.com/astral-sh/ruff/issues/7247
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Missing info about name of broken files when using `ruff format`
@@ -82,10 +82,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-09-12 02:18_
 ---
 
 _Label `cli` added by @MichaReiser on 2023-09-13 07:37_
-
----
-
-_Referenced in [astral-sh/ruff#7377](../../astral-sh/ruff/pulls/7377.md) on 2023-09-14 02:26_
 
 ---
 

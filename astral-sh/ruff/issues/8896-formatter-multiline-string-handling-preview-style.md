@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-29T02:46:50Z
 updated_at: 2024-01-10T11:47:36Z
 url: https://github.com/astral-sh/ruff/issues/8896
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Formatter: `multiline_string_handling` preview style
@@ -77,10 +77,6 @@ _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-11-29 02:46_
 
 ---
 
-_Referenced in [astral-sh/ruff#8678](../../astral-sh/ruff/issues/8678.md) on 2023-11-29 02:46_
-
----
-
 _Renamed from "Formatter: `multiline_string_handling` preview style. Ruff stable implements this partially, and we generally received positive feedback." to "Formatter: `multiline_string_handling` preview style" by @MichaReiser on 2023-11-29 02:47_
 
 ---
@@ -94,13 +90,5 @@ _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-12-22 06:15_
 ---
 
 _Closed by @MichaReiser on 2024-01-10 11:47_
-
----
-
-_Referenced in [astral-sh/ruff#13371](../../astral-sh/ruff/issues/13371.md) on 2024-09-16 16:19_
-
----
-
-_Referenced in [psf/black#4501](../../psf/black/issues/4501.md) on 2024-10-23 13:50_
 
 ---

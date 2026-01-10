@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-01-29T02:37:37Z
 updated_at: 2023-01-29T18:08:21Z
 url: https://github.com/astral-sh/ruff/issues/2318
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Difference between Ruff's I and isort with import *
@@ -89,10 +89,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-01-29 03:02_
 ---
 
 _Label `bug` added by @charliermarsh on 2023-01-29 03:04_
-
----
-
-_Referenced in [astral-sh/ruff#2320](../../astral-sh/ruff/pulls/2320.md) on 2023-01-29 03:14_
 
 ---
 

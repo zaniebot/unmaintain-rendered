@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-04T11:34:12Z
 updated_at: 2025-03-04T17:06:21Z
 url: https://github.com/astral-sh/ruff/issues/16496
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Make `UP028` always fixable again
@@ -145,9 +145,5 @@ I'll close this. Feel free to open a new issue if you want to request a rule. A 
 ---
 
 _Closed by @MichaReiser on 2025-03-04 17:06_
-
----
-
-_Referenced in [astral-sh/ruff#16507](../../astral-sh/ruff/issues/16507.md) on 2025-03-04 18:33_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-07T06:58:57Z
 updated_at: 2025-06-07T14:02:44Z
 url: https://github.com/astral-sh/ruff/issues/18529
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # formatter moves `ty:ignore` comments
@@ -77,18 +77,6 @@ _Comment by @MichaReiser on 2025-06-07 13:10_
 > PGH003
 
 I think we should instead make it an option for ty whether blanked ignore comments are allowed or not, rather than building it into ruff
-
----
-
-_Referenced in [astral-sh/ruff#18532](../../astral-sh/ruff/pulls/18532.md) on 2025-06-07 13:13_
-
----
-
-_Referenced in [astral-sh/ty#605](../../astral-sh/ty/issues/605.md) on 2025-06-07 14:00_
-
----
-
-_Referenced in [astral-sh/ty#606](../../astral-sh/ty/issues/606.md) on 2025-06-07 14:02_
 
 ---
 

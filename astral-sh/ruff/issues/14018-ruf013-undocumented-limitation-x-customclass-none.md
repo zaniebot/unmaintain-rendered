@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-10-31T13:26:21Z
 updated_at: 2024-11-06T04:58:40Z
 url: https://github.com/astral-sh/ruff/issues/14018
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # RUF013 undocumented limitation `x: CustomClass = None` is not caught
@@ -52,10 +52,6 @@ def f(
 * The command you invoked: `ruff check file.py --select RUF013`
 * The current Ruff settings: in the snippet.
 * The current Ruff version: 0.7.1
-
----
-
-_Referenced in [mlrun/mlrun#6607](../../mlrun/mlrun/pulls/6607.md) on 2024-10-31 13:29_
 
 ---
 

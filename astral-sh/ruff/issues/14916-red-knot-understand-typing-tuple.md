@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-11T13:51:37Z
 updated_at: 2024-12-12T00:58:08Z
 url: https://github.com/astral-sh/ruff/issues/14916
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Understand `typing.Tuple`
@@ -27,19 +27,7 @@ _Label `red-knot` added by @MichaReiser on 2024-12-11 13:52_
 
 ---
 
-_Referenced in [astral-sh/ruff#14172](../../astral-sh/ruff/issues/14172.md) on 2024-12-11 13:59_
-
----
-
 _Assigned to @InSyncWithFoo by @AlexWaygood on 2024-12-11 13:59_
-
----
-
-_Referenced in [astral-sh/ruff#14913](../../astral-sh/ruff/pulls/14913.md) on 2024-12-11 14:25_
-
----
-
-_Referenced in [astral-sh/ruff#14927](../../astral-sh/ruff/pulls/14927.md) on 2024-12-12 00:05_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-25T08:33:13Z
 updated_at: 2023-05-02T08:32:58Z
 url: https://github.com/astral-sh/ruff/issues/4090
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # B023 potential false positive (with shadowed variable names)
@@ -90,10 +90,6 @@ _Label `bug` added by @charliermarsh on 2023-04-25 15:15_
 _Comment by @charliermarsh on 2023-04-26 00:18_
 
 Agree, does look like a bug. We probably don't have proper scope tracking there.
-
----
-
-_Referenced in [astral-sh/ruff#4111](../../astral-sh/ruff/pulls/4111.md) on 2023-04-26 04:44_
 
 ---
 

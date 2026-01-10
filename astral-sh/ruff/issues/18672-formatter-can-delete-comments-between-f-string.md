@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-14T00:49:20Z
 updated_at: 2025-06-17T05:39:43Z
 url: https://github.com/astral-sh/ruff/issues/18672
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Formatter can delete comments between f-string expr and format spec
@@ -126,10 +126,6 @@ x = f"{x  !s
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2025-06-16 09:06_
-
----
-
-_Referenced in [astral-sh/ruff#18704](../../astral-sh/ruff/pulls/18704.md) on 2025-06-16 11:40_
 
 ---
 

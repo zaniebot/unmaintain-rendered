@@ -1,0 +1,202 @@
+```yaml
+number: 9150
+title: "[Bug] Ruff doesn't detect DJ012 rule after first fix"
+type: issue
+state: closed
+author: vldmrrz
+labels:
+  - bug
+assignees: []
+created_at: 2023-12-15T14:07:57Z
+updated_at: 2023-12-15T18:01:33Z
+url: https://github.com/astral-sh/ruff/issues/9150
+synced_at: 2026-01-10T11:09:51Z
+```
+
+# [Bug] Ruff doesn't detect DJ012 rule after first fix
+
+---
+
+_Issue opened by @vldmrrz on 2023-12-15 14:07_
+
+### Bug description
+
+I got an error DJ012 with some models when running command. 
+
+```
+apps/app/models.py:113:5: DJ012 Order of model's inner classes, methods, and fields does not follow the Django Style Guide: field declaration should come before `Meta` class
+```
+Code example:
+```(python)
+class MyModel(models.Model):
+    class Meta:
+        db_table = "my_model_table"
+
+    model_field = models.TextField()
+
+class MySecondModel(models.Model):
+    class Meta:
+        db_table = "my_second_model_table"
+
+    model_field = models.TextField()
+```
+
+After fixing the first model and running the `ruff check .` I didn't get a warning about the second model
+
+```(python)
+class MyModel(models.Model):
+    model_field = models.TextField()
+
+    class Meta:
+        db_table = "my_model_table"
+
+class MySecondModel(models.Model):
+    class Meta:
+        db_table = "my_second_model_table"
+
+    model_field = models.TextField()
+```
+### My configuration
+
+- Command I run: `ruff check .`
+- Ruff settings:
+```
+[tool.ruff]
+# Enabled rules
+select = [
+    "E", # pycodestyle
+    "F", # pyflakes
+    "W", # pycodestyle
+    "B", # bugbear
+    "I", # isort
+    "RUF", # ruff
+    "UP", # pyupgrade
+    "DJ", # django
+    "N", # pep8-naming
+    "PL", # pylint
+    "TD", # todos
+    "TCH", # flake8-type-checking
+    "SIM", # flake8-simplify
+    "Q", # flake8-quotes
+    "T20", # flake8-print
+    "COM", # flake8-comas
+    "C90", # mccabe
+]
+# Ignored rules
+ignore = [
+    "RUF012", # mutable default values in class attributes
+    "I001", # isort import ordering and blank lines in imports
+    "DJ001", # Avoid using `null=True` on string-based fields such as TextField
+]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["B", "C", "D", "E", "F", "G", "I", "N", "Q", "S", "T", "W", "ANN", "ARG", "BLE", "COM", "DJ", "DTZ", "EM", "ERA", "EXE", "FBT", "ICN", "INP", "ISC", "NPY", "PD", "PGH", "PIE", "PL", "PT", "PTH", "PYI", "RET", "RSE", "RUF", "SIM", "SLF", "TCH", "TID", "TRY", "UP", "YTT"]
+unfixable = []
+
+line-length = 120
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+# Assume Python 3.11
+target-version = "py311"
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".direnv",
+    ".git",
+    ".mypy_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "venv",
+]
+
+[tool.ruff.mccabe]
+max-complexity = 10
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
+```
+- ruff 0.1.8
+- python 3.11.7
+- Django 4.2.8
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+
+---
+
+_Comment by @dhruvmanila on 2023-12-15 14:22_
+
+I might be missing some context here but the playground shows the warning with the second code snippet: https://play.ruff.rs/407c7303-ed56-4cc0-8300-fd523728e97a
+
+---
+
+_Comment by @vldmrrz on 2023-12-15 14:35_
+
+@dhruvmanila I found the problem.
+
+Warning not fires when model inherited from another model (even non-abstract), like this https://play.ruff.rs/b7dbc350-21a2-4f97-9490-165d6226720c 
+
+But still looks like bug for me
+
+---
+
+_Comment by @dhruvmanila on 2023-12-15 14:44_
+
+Thanks! Yes, the rule wouldn't trigger if the model isn't inherited _directly_ from Django's `Model` class. I'll have to check if it's currently possible to resolve inheritance all the way to the base class \cc @charliermarsh ?
+
+---
+
+_Comment by @vldmrrz on 2023-12-15 14:45_
+
+@dhruvmanila thank you so much for your attention. Hope it will be possible to fix this issue :)
+
+---
+
+_Comment by @charliermarsh on 2023-12-15 14:45_
+
+We can do it within a single file, but not across files. So we can fix the single-file case, but the multi-file analysis case should just be merged into the larger tracking issue since it’s not at all specific to the Django rules.
+
+---
+
+_Comment by @vldmrrz on 2023-12-15 14:48_
+
+@charliermarsh appreciate it. 
+It would be nice if we will have this functionality across multiple files in the future
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-12-15 17:22_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-12-15 17:22_
+
+---
+
+_Comment by @charliermarsh on 2023-12-15 17:22_
+
+I can fix within the same file and make a note in the multi-file issue!
+
+---
+
+_Closed by @charliermarsh on 2023-12-15 18:01_
+
+---

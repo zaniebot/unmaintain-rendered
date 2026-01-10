@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-28T12:58:41Z
 updated_at: 2023-08-10T11:06:41Z
 url: https://github.com/astral-sh/ruff/issues/4693
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Autofix B006 (mutable-argument-default)
@@ -61,14 +61,6 @@ I'll give this one a go
 ---
 
 _Assigned to @qdegraaf by @MichaReiser on 2023-06-05 06:18_
-
----
-
-_Referenced in [astral-sh/ruff#4880](../../astral-sh/ruff/pulls/4880.md) on 2023-06-05 21:02_
-
----
-
-_Referenced in [astral-sh/ruff#6131](../../astral-sh/ruff/pulls/6131.md) on 2023-07-27 16:10_
 
 ---
 

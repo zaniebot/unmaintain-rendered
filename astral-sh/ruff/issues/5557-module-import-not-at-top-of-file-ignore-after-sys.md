@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-06T09:20:01Z
 updated_at: 2023-12-07T18:35:56Z
 url: https://github.com/astral-sh/ruff/issues/5557
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # `module-import-not-at-top-of-file` ignore after `sys.path.insert`
@@ -56,10 +56,6 @@ _Label `needs-decision` added by @charliermarsh on 2023-07-10 01:06_
 ---
 
 _Label `rule` added by @charliermarsh on 2023-07-10 01:06_
-
----
-
-_Referenced in [astral-sh/ruff#9047](../../astral-sh/ruff/pulls/9047.md) on 2023-12-07 16:23_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-29T18:18:18Z
 updated_at: 2023-11-09T05:22:17Z
 url: https://github.com/astral-sh/ruff/issues/6988
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Rules EM102 cause autofix error
@@ -64,18 +64,6 @@ _Label `bug` added by @charliermarsh on 2023-08-30 00:43_
 ---
 
 _Label `fuzzer` added by @charliermarsh on 2023-08-30 00:43_
-
----
-
-_Referenced in [astral-sh/ruff#7736](../../astral-sh/ruff/issues/7736.md) on 2023-10-01 18:40_
-
----
-
-_Referenced in [astral-sh/ruff#7746](../../astral-sh/ruff/pulls/7746.md) on 2023-10-01 19:08_
-
----
-
-_Referenced in [astral-sh/ruff#7799](../../astral-sh/ruff/issues/7799.md) on 2023-10-04 04:54_
 
 ---
 

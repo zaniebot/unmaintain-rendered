@@ -1,0 +1,587 @@
+```yaml
+number: 16945
+title: Configuring for Neovim - invalid client settings
+type: issue
+state: closed
+author: jacanchaplais
+labels:
+  - question
+assignees: []
+created_at: 2025-03-24T11:14:39Z
+updated_at: 2025-03-24T11:28:04Z
+url: https://github.com/astral-sh/ruff/issues/16945
+synced_at: 2026-01-10T11:09:58Z
+```
+
+# Configuring for Neovim - invalid client settings
+
+---
+
+_Issue opened by @jacanchaplais on 2025-03-24 11:14_
+
+### Question
+
+I am getting an error in neovim `LSP[ruff] Ruff received invalid client settings - falling back to default client settings.` I'd really appreciate help on how to fix this.
+
+I have installed ruff via micromamba into a virtual environment. I set up neovim for ruff using the docs, and not much else. I am using pyright alongside ruff.
+
+Here are my config files:
+
+<details>
+ <summary>Micromamba config: environment.yml</summary>
+
+```yaml
+name: tesseract
+variables:
+  PYTHONBREAKPOINT: ipdb.set_trace
+channels:
+  - conda-forge
+dependencies:
+  - python=3
+  - click=8.1.8
+  - fastapi=0.115.11
+  - httpx=0.28.1
+  - ipdb
+  - ipython
+  - jinja2=3.1.6
+  - jsf=0.11.2
+  - jupyterlab
+  - jupyterlab-lsp
+  - jupyterlab_vim
+  - numpy=2.2.4
+  - pandas
+  - pip
+  - plotly
+  - pre-commit=4.1.0
+  - pybase64=1.4.1
+  - pydantic=2.10.6
+  - pytest-cov=6.0.0
+  - pytest-mock=3.14.0
+  - pytest=8.3.5
+  - pyyaml=6.0.1
+  - requests=2.32.3
+  - rich=13.9.4
+  - setuptools
+  - tqdm
+  - typeguard=4.4.2
+  - typer=0.15.2
+  - uvicorn=0.34.0
+  - ruff
+  - pip:
+    - "tesseract-core"
+    - "jax"
+    - "moto[server]==5.1.1"
+    - "fsspec[http,s3]==2025.3.0"
+    - "msgpack==1.1.0"
+```
+
+</details>
+
+<details>
+
+ <summary>Neovim config: init.lua</summary>
+
+```lua
+require "paq" {
+    "savq/paq-nvim", -- Let Paq manage itself
+
+    "neovim/nvim-lspconfig",
+    "hrsh7th/nvim-cmp",
+    "hrsh7th/cmp-nvim-lsp",
+    "hrsh7th/cmp-path",
+    "hrsh7th/cmp-cmdline",
+    "hrsh7th/cmp-vsnip",
+    "hrsh7th/vim-vsnip",
+    "nvim-lua/plenary.nvim",
+    "vim-airline/vim-airline",
+    "navarasu/onedark.nvim",
+    "tpope/vim-fugitive",
+    "junegunn/fzf",
+    "junegunn/fzf.vim",
+    "preservim/nerdtree",
+    "airblade/vim-gitgutter",
+    "christoomey/vim-tmux-navigator",
+    "lukas-reineke/indent-blankline.nvim",
+    "mbbill/undotree",
+    "voldikss/vim-floaterm",
+    "m-pilia/vim-ccls",
+    "danymat/neogen",
+    "rust-lang/rust.vim",
+
+    { "lervag/vimtex", opt = true }, -- Use braces when passing options
+    { 'nvim-treesitter/nvim-treesitter', build = ':TSUpdate' },
+}
+
+require('onedark').setup {
+  style = 'darker',
+  transparent = true,
+}
+
+require('neogen').setup {
+  enabled = true,
+  snippet_engine = 'vsnip',
+  languages = {
+    python = {
+      template = { annotation_convention = 'numpydoc' }
+    }
+  }
+}
+
+local opts = { noremap = true, silent = true }
+vim.api.nvim_set_keymap("n", "<Leader>nf", ":lua require('neogen').generate()<CR>", opts)
+
+require('onedark').load()
+ -- Set up nvim-cmp.
+local cmp = require'cmp'
+
+local has_words_before = function()
+  unpack = unpack or table.unpack
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+
+local feedkey = function(key, mode)
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
+end
+
+cmp.setup({
+  snippet = {
+    -- REQUIRED - you must specify a snippet engine
+    expand = function(args)
+      vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
+      -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+      -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+      -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+      -- vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
+    end,
+  },
+  window = {
+    -- completion = cmp.config.window.bordered(),
+    -- documentation = cmp.config.window.bordered(),
+  },
+  mapping = cmp.mapping.preset.insert({
+    ['<C-f>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-g>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.abort(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      elseif vim.fn["vsnip#available"](1) == 1 then
+        feedkey("<Plug>(vsnip-expand-or-jump)", "")
+      elseif has_words_before() then
+        cmp.complete()
+      else
+        fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
+      end
+    end, { "i", "s" }),
+
+    ["<S-Tab>"] = cmp.mapping(function()
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif vim.fn["vsnip#jumpable"](-1) == 1 then
+        feedkey("<Plug>(vsnip-jump-prev)", "")
+      end
+    end, { "i", "s" }),
+  }),
+
+  sources = cmp.config.sources({
+    { name = 'nvim_lsp' },
+    { name = 'vsnip' }, -- For vsnip users.
+    -- { name = 'luasnip' }, -- For luasnip users.
+    -- { name = 'ultisnips' }, -- For ultisnips users.
+    -- { name = 'snippy' }, -- For snippy users.
+  }, {
+    { name = 'buffer' },
+  })
+})
+
+-- To use git you need to install the plugin petertriho/cmp-git and uncomment lines below
+-- Set configuration for specific filetype.
+--[[ cmp.setup.filetype('gitcommit', {
+  sources = cmp.config.sources({
+    { name = 'git' },
+  }, {
+    { name = 'buffer' },
+  })
+})
+require("cmp_git").setup() ]]-- 
+
+-- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline({ '/', '?' }, {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = {
+    { name = 'buffer' }
+  }
+})
+
+-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+cmp.setup.cmdline(':', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({
+    { name = 'path' }
+  }, {
+    { name = 'cmdline' }
+  }),
+  matching = { disallow_symbol_nonprefix_matching = false }
+})
+
+-- Set up lspconfig.
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+local pyright_markdown = {
+    textDocument = {
+        hover = {
+            contentFormat = { "plaintext" },
+            dynamicRegistration = true,
+        },
+    }
+}
+local pyright_capabilities = vim.tbl_deep_extend("force", capabilities, pyright_markdown)
+
+require('lspconfig').pyright.setup{
+  capabilities = pyright_capabilities
+}
+require('lspconfig').ruff.setup({
+  capabilities = capabilities,
+  autostart = true,
+  init_options = {
+    settings = {
+      -- Ruff language server settings go here
+    }
+  }
+})
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup('lsp_attach_disable_ruff_hover', { clear = true }),
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if client == nil then
+      return
+    end
+    if client.name == 'ruff' then
+      -- Disable hover in favor of Pyright
+      client.server_capabilities.hoverProvider = false
+    end
+  end,
+  desc = 'LSP: Disable hover capability from Ruff',
+})
+
+require('lspconfig').nil_ls.setup{
+  capabilities = capabilities
+}
+require('lspconfig').nimls.setup{
+  capabilities = capabilities
+}
+require('lspconfig').ccls.setup{
+  capabilities = capabilities
+}
+require('lspconfig').rust_analyzer.setup{
+  capabilities = capabilities
+}
+
+vim.g.maplocalleader = '<space>'
+vim.g.python3_host_prog = '/home/jacan/Documents/code/python/.micromamba/envs/hep/bin/python' -- virtual env set
+
+vim.g.floaterm_keymap_new = '<Leader>to'
+vim.g.floaterm_keymap_toggle = '<Leader>tt'
+vim.g.floaterm_keymap_prev = '<Leader>tb'
+vim.g.floaterm_keymap_next = '<Leader>tn'
+vim.g.floaterm_keymap_kill = '<Leader>tq'
+
+vim.opt.tabstop = 4 -- A TAB character looks like 4 spaces
+vim.opt.expandtab = true -- TAB key insert spaces instead of TAB char
+vim.opt.softtabstop = 4 -- Num of spaces inserted
+vim.opt.shiftwidth = 4 -- Num of spaces indented
+vim.opt.number = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.hlsearch = false
+vim.opt.wrap = true
+vim.opt.breakindent = true
+vim.opt.termguicolors = true
+vim.opt.updatetime = 100
+vim.opt.colorcolumn = "72,79"
+vim.opt.mouse = ""
+
+vim.cmd('syntax enable')
+vim.cmd('filetype plugin indent on')
+-- vim.cmd('hi Normal guibg=NONE ctermbg=NONE')
+vim.cmd [[
+  highlight Normal guibg=none
+  highlight NonText guibg=none
+  highlight Normal ctermbg=none
+  highlight NonText ctermbg=none
+]]
+
+vim.keymap.set('n', '<leader>n', '<cmd>NERDTreeFocus<cr>', {desc = 'Go to NERDTREE'})
+vim.keymap.set('n', '<C-n>', '<cmd>NERDTreeToggle<cr>', {desc = 'Toggle NERDTREE'})
+vim.keymap.set('n', '<C-f>', '<cmd>NERDTreeFind<cr>', {desc = 'Find with NERDTREE'})
+
+vim.keymap.set('n', '<leader>o', '<cmd>Files<cr>')
+vim.keymap.set('n', '<leader>O', '<cmd>Files!<cr>')
+vim.keymap.set('n', '<leader>g', '<cmd>GFiles --cached --others --exclude-standard<cr>')
+vim.keymap.set('n', '<leader>G', '<cmd>GFiles! --cached --others --exclude-standard<cr>')
+vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle)
+vim.keymap.set('t', '<C-Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
+```
+
+</details>
+
+<details>
+
+ <summary>Ruff config: ruff.toml</summary>
+
+```toml
+# Set to the lowest supported Python version.
+# !! tesseract_runtime still supports Python 3.9 !!
+target-version = "py39"
+
+# Set the target line length for formatting.
+line-length = 88
+
+# Exclude a variety of commonly ignored directories.
+extend-exclude = [
+    ".venv",
+    "_version.py",
+    "tesseract_core/**/vendor/**/*.py",
+]
+
+# Also lint/format Jupyter Notebooks.
+extend-include = [ "*.ipynb" ]
+
+src = ["."]
+
+[lint]
+# Select and/or ignore rules for linting.
+# Full list of available rules: https://docs.astral.sh/ruff/rules/
+extend-select = [
+    "ANN", # Type annotations
+    "B", # Flake8 bugbear
+    "D", # Pydocstyle
+    "E", # Pycodestyle errors
+    "F", # Pyflakes
+    "I", # Isort
+    "NPY", # Numpy
+    "RUF", # Ruff-specific rules
+    "UP", # Pyupgrade
+    "W", # Pycodestyle warnings
+]
+ignore = [
+    "E731", # Do not assign a lambda expression, use a def
+    "D100", # Pydocstyle: missing docstring in public module
+    "D104", # Pydocstyle: missing docstring in public package
+    "D105", # Pydocstyle: missing docstring in magic method
+    "D107", # Pydocstyle: missing docstring in __init__
+    "D203", # Pydocstyle: one blank line before class' docstring. Conflicts with D211
+    "D213", # Pydocstyle: multiline docstring summary start on 2nd line. Conflicts with D212
+    "ANN202", # Type annotations: allow missing return type for private functions
+    "ANN401", # Type annotations: allow Any
+]
+
+[lint.extend-per-file-ignores]
+# Ignore missing docstrings and type annotations for selected directories
+"./*.py" = ["D101", "D102", "D103", "ANN"]
+"tests/*" = ["D101", "D102", "D103", "ANN"]
+"examples/**/*" = ["D101", "D102", "D103", "ANN"]
+"tesseract_core/sdk/templates/*" = ["D101", "D102", "D103", "ANN"]
+
+[lint.pydocstyle]
+convention = "google"
+
+[lint.pycodestyle]
+max-line-length = 120 # Allow some flexibility in line lengths: up to 120 cols
+max-doc-length = 120
+
+[format]
+# Enable reformatting of code snippets in docstrings.
+docstring-code-format = true
+```
+
+</details>
+
+and here is the output of `:LspLog` in neovim
+
+```
+[ERROR][2025-03-24 09:40:10] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 09:40:10.469021432  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 09:40:10] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 09:40:10.474995059  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n"
+[ERROR][2025-03-24 09:40:10] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 09:40:10.475359185  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 09:48:35] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 09:48:35.882156882  INFO Shutdown request received. Waiting for an exit notification...\n"
+[START][2025-03-24 09:48:41] LSP logging initiated
+[WARN][2025-03-24 09:48:41] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[ERROR][2025-03-24 09:48:41] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 09:48:41.458030699  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 09:48:41] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 09:48:41.458181578  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 09:48:41] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 09:48:41.468512806  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n"
+[ERROR][2025-03-24 09:48:41] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 09:48:41.468818064  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n"
+[ERROR][2025-03-24 09:48:41] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 09:48:41.470228855  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 09:48:41] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 09:48:41.470500193  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 09:48:46] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 09:48:46.171311480  INFO Shutdown request received. Waiting for an exit notification...\n"
+[ERROR][2025-03-24 09:48:46] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 09:48:46.171813034  INFO Shutdown request received. Waiting for an exit notification...\n"
+[START][2025-03-24 09:48:47] LSP logging initiated
+[WARN][2025-03-24 09:48:47] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[ERROR][2025-03-24 09:48:47] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 09:48:47.603308891  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 09:48:47] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 09:48:47.603401694  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 09:48:47] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 09:48:47.612987565  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n"
+[ERROR][2025-03-24 09:48:47] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 09:48:47.613394917  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 09:48:47] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 09:48:47.613587705  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n"
+[ERROR][2025-03-24 09:48:47] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 09:48:47.614679896  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 10:03:52] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:03:52.208332089  INFO Shutdown request received. Waiting for an exit notification...\n"
+[ERROR][2025-03-24 10:03:52] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:03:52.208506422  INFO Shutdown request received. Waiting for an exit notification...\n"
+[START][2025-03-24 10:03:52] LSP logging initiated
+[WARN][2025-03-24 10:03:52] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[ERROR][2025-03-24 10:03:52] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"error: unexpected argument '--stdio' found\n\nUsage: ruff server [OPTIONS]\n\nFor more information, try '--help'.\n"
+[ERROR][2025-03-24 10:03:52] ...m/lsp/client.lua:974	"LSP[ruff]"	"on_error"	{  code = "ON_EXIT_CALLBACK_ERROR",  err = "...pack/paqs/start/nvim-lspconfig/lua/lspconfig/manager.lua:109: bad argument #1 to 'pairs' (table expected, got nil)"}
+[ERROR][2025-03-24 10:03:52] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"error: unexpected argument '--stdio' found\n\nUsage: ruff server [OPTIONS]\n\nFor more information, try '--help'.\n"
+[START][2025-03-24 10:17:13] LSP logging initiated
+[WARN][2025-03-24 10:17:13] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[ERROR][2025-03-24 10:17:13] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"error: unexpected argument '--stdio' found\n\nUsage: ruff server [OPTIONS]\n\nFor more information, try '--help'.\n"
+[ERROR][2025-03-24 10:17:13] ...m/lsp/client.lua:974	"LSP[ruff]"	"on_error"	{  code = "ON_EXIT_CALLBACK_ERROR",  err = "...pack/paqs/start/nvim-lspconfig/lua/lspconfig/manager.lua:109: bad argument #1 to 'pairs' (table expected, got nil)"}
+[ERROR][2025-03-24 10:17:13] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"error: unexpected argument '--stdio' found\n\nUsage: ruff server [OPTIONS]\n\nFor more information, try '--help'.\n"
+[START][2025-03-24 10:17:42] LSP logging initiated
+[WARN][2025-03-24 10:17:42] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[ERROR][2025-03-24 10:17:42] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:17:42.551308263  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 10:17:42] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:17:42.551335050  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 10:17:42] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:17:42.561656109  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n"
+[ERROR][2025-03-24 10:17:42] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:17:42.562050465  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n"
+[ERROR][2025-03-24 10:17:42] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:17:42.562074671  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 10:17:42] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:17:42.564272431  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 10:23:18] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:23:18.558588408  INFO Shutdown request received. Waiting for an exit notification...\n"
+[ERROR][2025-03-24 10:23:18] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:23:18.558683180  INFO Shutdown request received. Waiting for an exit notification...\n"
+[START][2025-03-24 10:23:20] LSP logging initiated
+[WARN][2025-03-24 10:23:20] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[ERROR][2025-03-24 10:23:20] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:23:20.398615354  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 10:23:20] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:23:20.398778788  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 10:23:20] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:23:20.408530994  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n"
+[ERROR][2025-03-24 10:23:20] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:23:20.409200439  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 10:23:20] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:23:20.409553538  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n"
+[ERROR][2025-03-24 10:23:20] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:23:20.410915476  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 10:23:28] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:23:28.329793782  INFO Shutdown request received. Waiting for an exit notification...\n"
+[ERROR][2025-03-24 10:23:28] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:23:28.330181471  INFO Shutdown request received. Waiting for an exit notification...\n"
+[START][2025-03-24 10:28:47] LSP logging initiated
+[WARN][2025-03-24 10:28:47] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[ERROR][2025-03-24 10:28:47] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:28:47.232055679  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 10:28:47] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:28:47.232205238  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 10:28:47] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:28:47.241987690  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n"
+[ERROR][2025-03-24 10:28:47] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:28:47.242239563  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n"
+[ERROR][2025-03-24 10:28:47] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:28:47.242684463  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 10:28:47] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:28:47.243130360  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 10:28:50] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:28:50.010212010  INFO Shutdown request received. Waiting for an exit notification...\n"
+[ERROR][2025-03-24 10:28:50] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:28:50.010432440  INFO Shutdown request received. Waiting for an exit notification...\n"
+[START][2025-03-24 10:35:48] LSP logging initiated
+[WARN][2025-03-24 10:35:48] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[ERROR][2025-03-24 10:35:48] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:35:48.730066494  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 10:35:48] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:35:48.730196688  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 10:35:48] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:35:48.739474165  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n"
+[ERROR][2025-03-24 10:35:48] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:35:48.740035694  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 10:35:48] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:35:48.741474190  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n"
+[ERROR][2025-03-24 10:35:48] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:35:48.742734524  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[START][2025-03-24 10:37:46] LSP logging initiated
+[WARN][2025-03-24 10:37:46] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[ERROR][2025-03-24 10:37:46] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:37:46.698816028  INFO No workspace(s) were provided during initialization. Using the current working directory as a default workspace: /home/jacan/Downloads\n2025-03-24 10:37:46.698859997  INFO No workspace settings found for file:///home/jacan/Downloads, using default settings\n2025-03-24 10:37:46.699670488  INFO Registering workspace: /home/jacan/Downloads\n"
+[ERROR][2025-03-24 10:37:46] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:37:46.698749860  INFO No workspace(s) were provided during initialization. Using the current working directory as a default workspace: /home/jacan/Downloads\n2025-03-24 10:37:46.698867237  INFO No workspace settings found for file:///home/jacan/Downloads, using default settings\n2025-03-24 10:37:46.699670467  INFO Registering workspace: /home/jacan/Downloads\n"
+[ERROR][2025-03-24 10:37:46] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:37:46.705285525  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 10:37:46] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:37:46.706502453  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 10:37:46] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:37:46.719117371  INFO Registering workspace: /home/jacan/Downloads\n"
+[ERROR][2025-03-24 10:37:46] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:37:46.720469100  INFO Registering workspace: /home/jacan/Downloads\n"
+[ERROR][2025-03-24 10:39:18] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:39:18.112096833  INFO Shutdown request received. Waiting for an exit notification...\n"
+[ERROR][2025-03-24 10:39:18] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:39:18.112528520  INFO Shutdown request received. Waiting for an exit notification...\n"
+[ERROR][2025-03-24 10:42:10] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:10.430603590  INFO Shutdown request received. Waiting for an exit notification...\n"
+[ERROR][2025-03-24 10:42:10] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:10.430681852  INFO Shutdown request received. Waiting for an exit notification...\n"
+[START][2025-03-24 10:42:12] LSP logging initiated
+[WARN][2025-03-24 10:42:12] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[WARN][2025-03-24 10:42:12] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[ERROR][2025-03-24 10:42:12] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:12.179201143  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 10:42:12] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:12.179197509  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 10:42:12] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:12.191118555  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n"
+[ERROR][2025-03-24 10:42:12] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:12.191516275  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 10:42:12] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:12.192551444  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n"
+[ERROR][2025-03-24 10:42:12] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:12.194915303  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 10:42:26] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:26.814626163  INFO Shutdown request received. Waiting for an exit notification...\n"
+[ERROR][2025-03-24 10:42:26] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:26.814641728  INFO Shutdown request received. Waiting for an exit notification...\n"
+[START][2025-03-24 10:42:28] LSP logging initiated
+[WARN][2025-03-24 10:42:28] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[WARN][2025-03-24 10:42:28] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[ERROR][2025-03-24 10:42:28] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:28.323440888  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 10:42:28] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:28.323437242  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 10:42:28] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:28.335196078  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n2025-03-24 10:42:28.336245004  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 10:42:28] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:28.336239756  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n"
+[ERROR][2025-03-24 10:42:28] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:28.337916505  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[START][2025-03-24 10:42:43] LSP logging initiated
+[WARN][2025-03-24 10:42:43] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[WARN][2025-03-24 10:42:43] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[ERROR][2025-03-24 10:42:43] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:43.205155040  INFO No workspace(s) were provided during initialization. Using the current working directory as a default workspace: /home/jacan/Downloads\n2025-03-24 10:42:43.205237707  INFO No workspace settings found for file:///home/jacan/Downloads, using default settings\n2025-03-24 10:42:43.206064152  INFO Registering workspace: /home/jacan/Downloads\n"
+[ERROR][2025-03-24 10:42:43] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:43.205330125  INFO No workspace(s) were provided during initialization. Using the current working directory as a default workspace: /home/jacan/Downloads\n2025-03-24 10:42:43.205378493  INFO No workspace settings found for file:///home/jacan/Downloads, using default settings\n2025-03-24 10:42:43.206064220  INFO Registering workspace: /home/jacan/Downloads\n"
+[ERROR][2025-03-24 10:42:43] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:43.209279103  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 10:42:43] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:43.211937729  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 10:42:43] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:43.228538289  INFO Registering workspace: /home/jacan/Downloads\n"
+[ERROR][2025-03-24 10:42:43] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:43.230861476  INFO Registering workspace: /home/jacan/Downloads\n"
+[ERROR][2025-03-24 10:42:48] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:48.445964186  INFO Shutdown request received. Waiting for an exit notification...\n"
+[ERROR][2025-03-24 10:42:48] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:42:48.446265878  INFO Shutdown request received. Waiting for an exit notification...\n"
+[ERROR][2025-03-24 10:47:13] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:47:13.236475822  INFO Shutdown request received. Waiting for an exit notification...\n"
+[ERROR][2025-03-24 10:47:13] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:47:13.236753626  INFO Shutdown request received. Waiting for an exit notification...\n"
+[START][2025-03-24 10:47:34] LSP logging initiated
+[WARN][2025-03-24 10:47:34] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[WARN][2025-03-24 10:47:34] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[ERROR][2025-03-24 10:47:34] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:47:34.377753540  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 10:47:34] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:47:34.377834365  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 10:47:34] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:47:34.390222159  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n2025-03-24 10:47:34.390701040  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 10:47:34] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:47:34.390434224  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n2025-03-24 10:47:34.392121427  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 10:47:36] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:47:36.221747970  INFO Shutdown request received. Waiting for an exit notification...\n"
+[ERROR][2025-03-24 10:47:36] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 10:47:36.221912991  INFO Shutdown request received. Waiting for an exit notification...\n"
+[START][2025-03-24 11:02:25] LSP logging initiated
+[WARN][2025-03-24 11:02:25] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[WARN][2025-03-24 11:02:25] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[ERROR][2025-03-24 11:02:25] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:02:25.189369388  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 11:02:25] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:02:25.189361243  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 11:02:25] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:02:25.200979882  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n"
+[ERROR][2025-03-24 11:02:25] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:02:25.201314499  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n"
+[ERROR][2025-03-24 11:02:25] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:02:25.202011486  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 11:02:25] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:02:25.203162284  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[START][2025-03-24 11:05:03] LSP logging initiated
+[WARN][2025-03-24 11:05:03] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[WARN][2025-03-24 11:05:03] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[ERROR][2025-03-24 11:05:03] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:05:03.165959000  INFO No workspace(s) were provided during initialization. Using the current working directory as a default workspace: /home/jacan/Downloads\n2025-03-24 11:05:03.166021710  INFO No workspace settings found for file:///home/jacan/Downloads, using default settings\n2025-03-24 11:05:03.166857589  INFO Registering workspace: /home/jacan/Downloads\n"
+[ERROR][2025-03-24 11:05:03] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:05:03.166046540  INFO No workspace(s) were provided during initialization. Using the current working directory as a default workspace: /home/jacan/Downloads\n2025-03-24 11:05:03.166094843  INFO No workspace settings found for file:///home/jacan/Downloads, using default settings\n2025-03-24 11:05:03.166718922  INFO Registering workspace: /home/jacan/Downloads\n"
+[ERROR][2025-03-24 11:05:03] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:05:03.168733926  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 11:05:03] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:05:03.172292835  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 11:05:03] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:05:03.188953406  INFO Registering workspace: /home/jacan/Downloads\n"
+[ERROR][2025-03-24 11:05:03] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:05:03.190922252  INFO Registering workspace: /home/jacan/Downloads\n"
+[ERROR][2025-03-24 11:05:06] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:05:06.182923644  INFO Shutdown request received. Waiting for an exit notification...\n"
+[ERROR][2025-03-24 11:05:06] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:05:06.183094925  INFO Shutdown request received. Waiting for an exit notification...\n"
+[ERROR][2025-03-24 11:05:15] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:05:15.094641949  INFO Shutdown request received. Waiting for an exit notification...\n"
+[ERROR][2025-03-24 11:05:15] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:05:15.094744539  INFO Shutdown request received. Waiting for an exit notification...\n"
+[ERROR][2025-03-24 11:05:15] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:05:15.158032645  INFO Exit notification received. Server shutting down...\n"
+[START][2025-03-24 11:05:15] LSP logging initiated
+[WARN][2025-03-24 11:05:15] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[WARN][2025-03-24 11:05:15] .../lua/vim/lsp.lua:628	"buf_attach_client called on unloaded buffer (id: 1): "
+[ERROR][2025-03-24 11:05:16] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:05:16.078616541  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 11:05:16] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:05:16.079951204  INFO No workspace settings found for file:///home/jacan/Documents/work/tesseract-core, using default settings\n"
+[ERROR][2025-03-24 11:05:16] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:05:16.090534633  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n"
+[ERROR][2025-03-24 11:05:16] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:05:16.091035842  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+[ERROR][2025-03-24 11:05:16] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:05:16.091599385  INFO Registering workspace: /home/jacan/Documents/work/tesseract-core\n"
+[ERROR][2025-03-24 11:05:16] .../vim/lsp/rpc.lua:770	"rpc"	"/home/jacan/.micromamba/envs/tesseract/bin/ruff"	"stderr"	"2025-03-24 11:05:16.092740032  WARN LSP client does not support dynamic capability registration - automatic configuration reloading will not be available.\n"
+```
+
+### Version
+
+ruff 0.11.2
+
+---
+
+_Label `question` added by @jacanchaplais on 2025-03-24 11:14_
+
+---
+
+_Renamed from "Configuring for Neovim" to "Configuring for Neovim - invalid client settings" by @jacanchaplais on 2025-03-24 11:15_
+
+---
+
+_Comment by @jacanchaplais on 2025-03-24 11:28_
+
+Never mind, it turns out that just having a single setting in the `settings` in the lspconfig setup was enough to make it go away. Classic n00b error. Nothing to see here...
+
+---
+
+_Closed by @jacanchaplais on 2025-03-24 11:28_
+
+---

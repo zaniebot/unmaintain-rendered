@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-31T13:37:55Z
 updated_at: 2023-06-20T16:46:50Z
 url: https://github.com/astral-sh/ruff/issues/4754
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Writing lint output to file
@@ -148,10 +148,6 @@ For Ruff, I think we should default to `NO_COLOR=1` in case we're writing the ou
 ---
 
 _Assigned to @dhruvmanila by @charliermarsh on 2023-06-06 14:28_
-
----
-
-_Referenced in [astral-sh/ruff#4950](../../astral-sh/ruff/pulls/4950.md) on 2023-06-08 04:53_
 
 ---
 

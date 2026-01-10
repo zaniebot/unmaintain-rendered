@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-09T16:15:45Z
 updated_at: 2023-01-09T16:30:11Z
 url: https://github.com/astral-sh/ruff/issues/1746
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # error unknown variant `W503`
@@ -66,9 +66,5 @@ _Comment by @12rambau on 2023-01-09 16:29_
 
 thanks!  deploying in my CI then! 
 
-
----
-
-_Referenced in [wagtail/wagtail#10324](../../wagtail/wagtail/pulls/10324.md) on 2023-04-08 15:48_
 
 ---

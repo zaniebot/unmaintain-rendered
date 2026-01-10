@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-05T12:23:05Z
 updated_at: 2023-02-03T18:28:30Z
 url: https://github.com/astral-sh/ruff/issues/1055
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # [feature-request] Config inheritance
@@ -77,23 +77,11 @@ Thanks-- yeah I've done a lot over the past 24 hours assessing `ruff` and trying
 
 ---
 
-_Referenced in [astral-sh/ruff#1069](../../astral-sh/ruff/issues/1069.md) on 2022-12-05 19:57_
-
----
-
-_Referenced in [dagster-io/dagster#10901](../../dagster-io/dagster/pulls/10901.md) on 2022-12-06 04:13_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2022-12-06 14:45_
 
 ---
 
 _Added to milestone `Release 0.1.0` by @charliermarsh on 2022-12-08 18:38_
-
----
-
-_Referenced in [astral-sh/ruff#1219](../../astral-sh/ruff/pulls/1219.md) on 2022-12-12 20:52_
 
 ---
 

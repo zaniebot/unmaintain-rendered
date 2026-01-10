@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-01-13T03:55:57Z
 updated_at: 2024-01-13T12:43:14Z
 url: https://github.com/astral-sh/ruff/issues/9501
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # [docs] Admonition in dark mode
@@ -28,10 +28,6 @@ I propose to move admonition in real dark mode as shown below
 - Proposal
 ![image](https://github.com/astral-sh/ruff/assets/45884742/7279cb02-e6af-4320-9dee-486fbfddcbc8)
 
-
----
-
-_Referenced in [astral-sh/ruff#9502](../../astral-sh/ruff/pulls/9502.md) on 2024-01-13 03:57_
 
 ---
 

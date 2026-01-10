@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-21T15:51:41Z
 updated_at: 2025-12-24T13:54:26Z
 url: https://github.com/astral-sh/ruff/issues/4560
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Fix (E712) changing `==`/`!=` to `is`/`is not` is not correct for some types
@@ -111,10 +111,6 @@ c.is_not(False)
 
 ---
 
-_Referenced in [astral-sh/ruff#2443](../../astral-sh/ruff/issues/2443.md) on 2023-05-21 16:01_
-
----
-
 _Label `bug` added by @charliermarsh on 2023-05-21 16:06_
 
 ---
@@ -153,10 +149,6 @@ I think making this a suggested fix (as it is now) will have the same effect, on
 
 The problem with removing the autofix entirely is that it doesn't really reduce the burden or expectation on the user, because this diagnostic will still be _raised_, and so users will still be required to look at the code and understand whether or not to change it. Performing the fix _automatically_ has the downside of silently breaking the code, but requiring users to opt-in to the change explicitly seems (to me) as safe as pointing them to the diagnostic without including any possible fix.
 
-
----
-
-_Referenced in [astral-sh/ruff#5526](../../astral-sh/ruff/issues/5526.md) on 2023-07-05 13:33_
 
 ---
 
@@ -220,14 +212,6 @@ Is there an existing ongoing effort for this that's public?
 
 ---
 
-_Referenced in [chaoss/augur#2474](../../chaoss/augur/pulls/2474.md) on 2023-08-02 13:59_
-
----
-
-_Referenced in [astral-sh/ruff#8023](../../astral-sh/ruff/issues/8023.md) on 2023-10-17 20:30_
-
----
-
 _Comment by @zanieb on 2023-10-17 20:32_
 
 Note [as of v0.1.0](#7769 ) we do not apply unsafe fixes by default — so this fix will not be applied by default.
@@ -257,14 +241,6 @@ The libraries that are the focus of this issue have designed APIs where specific
 
 ---
 
-_Referenced in [astral-sh/ruff#9063](../../astral-sh/ruff/issues/9063.md) on 2023-12-09 00:49_
-
----
-
-_Referenced in [NREL/flasc#154](../../NREL/flasc/pulls/154.md) on 2023-12-15 23:45_
-
----
-
 _Comment by @VictorGob on 2023-12-22 10:23_
 
 Just to add an example, of an error that took me a while to fix.
@@ -284,10 +260,6 @@ b = df[df["col_2"] is False]
 print(b)
 ```
 
-
----
-
-_Referenced in [astral-sh/ruff#9883](../../astral-sh/ruff/issues/9883.md) on 2024-02-08 03:32_
 
 ---
 
@@ -311,10 +283,6 @@ If replaced by `Station.triggered is False` the result is not what is expected
 
 ---
 
-_Referenced in [astral-sh/ruff#10344](../../astral-sh/ruff/issues/10344.md) on 2024-03-11 18:04_
-
----
-
 _Comment by @psychedelicious on 2024-06-12 23:44_
 
 Same thing with [E711](https://docs.astral.sh/ruff/rules/none-comparison/).
@@ -326,14 +294,6 @@ Would be nice to have a brief mention in the rule's docs calling out common situ
 _Comment by @zanieb on 2024-06-13 00:48_
 
 Thanks @psychedelicious. Would you be willing to open a pull request?
-
----
-
-_Referenced in [astral-sh/ruff#11859](../../astral-sh/ruff/pulls/11859.md) on 2024-06-13 13:49_
-
----
-
-_Referenced in [astral-sh/ruff#12290](../../astral-sh/ruff/issues/12290.md) on 2024-07-11 18:11_
 
 ---
 
@@ -386,14 +346,6 @@ By broader, I mean something like `Any` or `bool | int` or `np.bool | bool`, etc
 
 ---
 
-_Referenced in [astral-sh/ruff#12765](../../astral-sh/ruff/issues/12765.md) on 2024-08-09 01:33_
-
----
-
-_Referenced in [astral-sh/ruff#12769](../../astral-sh/ruff/pulls/12769.md) on 2024-08-09 01:37_
-
----
-
 _Comment by @subnix on 2024-09-18 12:07_
 
 Note about SQLAlchemy:
@@ -420,22 +372,6 @@ c == sqlalchemy.true()
 
 ---
 
-_Referenced in [blacklanternsecurity/bbot#1997](../../blacklanternsecurity/bbot/pulls/1997.md) on 2024-11-21 10:23_
-
----
-
-_Referenced in [darrenburns/posting#158](../../darrenburns/posting/pulls/158.md) on 2024-12-15 11:03_
-
----
-
-_Referenced in [astral-sh/ruff#17014](../../astral-sh/ruff/issues/17014.md) on 2025-03-27 17:01_
-
----
-
-_Referenced in [unb-mds/VIDAProject#75](../../unb-mds/VIDAProject/pulls/75.md) on 2025-06-17 01:22_
-
----
-
 _Comment by @yomajo on 2025-07-08 17:06_
 
 Just adding my case in sqlalchemy world:
@@ -445,10 +381,6 @@ Just adding my case in sqlalchemy world:
 >>> len(db.session.scalars(select(SKU).where(SKU.left <= 0).where(not SKU.discontinued)).all())
 0
 ```
-
----
-
-_Referenced in [redpanda-data/redpanda#28275](../../redpanda-data/redpanda/pulls/28275.md) on 2025-10-30 03:16_
 
 ---
 

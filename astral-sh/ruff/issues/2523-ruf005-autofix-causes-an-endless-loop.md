@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-03T10:34:30Z
 updated_at: 2023-02-03T18:05:57Z
 url: https://github.com/astral-sh/ruff/issues/2523
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # RUF005 autofix causes an endless loop
@@ -65,10 +65,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-02-03 14:52_
 _Comment by @charliermarsh on 2023-02-03 17:05_
 
 Wow it actually hangs. I thought you meant an autofix loop :joy:
-
----
-
-_Referenced in [astral-sh/ruff#2549](../../astral-sh/ruff/pulls/2549.md) on 2023-02-03 17:51_
 
 ---
 

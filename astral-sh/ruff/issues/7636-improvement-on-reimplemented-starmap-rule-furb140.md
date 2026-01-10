@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-09-25T08:00:51Z
 updated_at: 2023-10-03T01:38:07Z
 url: https://github.com/astral-sh/ruff/issues/7636
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Improvement on reimplemented-starmap rule (FURB140)
@@ -51,10 +51,6 @@ _Label `good first issue` added by @charliermarsh on 2023-09-25 15:42_
 _Comment by @charliermarsh on 2023-09-25 15:42_
 
 Makes sense! 
-
----
-
-_Referenced in [astral-sh/ruff#7768](../../astral-sh/ruff/pulls/7768.md) on 2023-10-02 21:58_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-20T02:50:45Z
 updated_at: 2023-05-23T07:35:46Z
 url: https://github.com/astral-sh/ruff/issues/4037
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # PLR0913 excludes kwargs
@@ -107,10 +107,6 @@ We could also open this issue in Pylint to make them aware, it might be that thi
 _Comment by @charliermarsh on 2023-05-08 22:24_
 
 Created an issue here: https://github.com/pylint-dev/pylint/issues/8667
-
----
-
-_Referenced in [astral-sh/ruff#4329](../../astral-sh/ruff/pulls/4329.md) on 2023-05-09 20:39_
 
 ---
 

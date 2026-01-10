@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-06T11:46:36Z
 updated_at: 2023-12-13T03:12:39Z
 url: https://github.com/astral-sh/ruff/issues/5559
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # `TCH` setting to autofix with conversion to string
@@ -77,10 +77,6 @@ This would make `TCH` autofix a lot more useful for us and probably many other p
 
 ---
 
-_Referenced in [dagster-io/dagster#14675](../../dagster-io/dagster/pulls/14675.md) on 2023-07-06 11:52_
-
----
-
 _Comment by @charliermarsh on 2023-07-06 13:54_
 
 Yeah, I agree this would be useful. I'm not yet certain how hard it is to get right, but I agree that it would be useful... flake8-type-checking has rules for this, which we could look at for reference: https://pypi.org/project/flake8-type-checking/.
@@ -101,10 +97,6 @@ _Comment by @smackesey on 2023-07-06 14:04_
 >Can you give an example of this, just to illustrate the problem?
 
 I updated OP with an example.
-
----
-
-_Referenced in [astral-sh/ruff#5753](../../astral-sh/ruff/issues/5753.md) on 2023-07-14 01:41_
 
 ---
 
@@ -184,10 +176,6 @@ Ah I see -- so we would avoid quoting annotations that rely on symbols defined o
 _Comment by @charliermarsh on 2023-07-14 22:30_
 
 It's also a little less critical for the TCH rules in particular since we're only dealing with imported symbols. But I suppose if the import itself is within a function scope...
-
----
-
-_Referenced in [astral-sh/ruff#6001](../../astral-sh/ruff/pulls/6001.md) on 2023-07-23 04:42_
 
 ---
 

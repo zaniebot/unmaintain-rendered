@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-31T17:28:09Z
 updated_at: 2025-12-31T10:33:17Z
 url: https://github.com/astral-sh/ruff/issues/2402
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Implement remaining `pycodestyle` rules
@@ -123,10 +123,6 @@ _Label `plugin` added by @charliermarsh on 2023-01-31 17:28_
 
 ---
 
-_Referenced in [astral-sh/ruff#1073](../../astral-sh/ruff/issues/1073.md) on 2023-01-31 17:28_
-
----
-
 _Comment by @charliermarsh on 2023-01-31 17:35_
 
 I'm happy to support these, but I likely won't enable them by default -- I'd like them to be opt-in.
@@ -142,14 +138,6 @@ _Comment by @charliermarsh on 2023-01-31 17:35_
 _Comment by @charliermarsh on 2023-01-31 17:35_
 
 \cc @saadmk11 
-
----
-
-_Referenced in [scipy/scipy#17892](../../scipy/scipy/pulls/17892.md) on 2023-01-31 18:03_
-
----
-
-_Referenced in [astral-sh/ruff#2407](../../astral-sh/ruff/issues/2407.md) on 2023-01-31 19:15_
 
 ---
 
@@ -184,35 +172,15 @@ _Comment by @charliermarsh on 2023-02-05 00:55_
 
 ---
 
-_Referenced in [astral-sh/ruff#2653](../../astral-sh/ruff/pulls/2653.md) on 2023-02-08 03:24_
-
----
-
-_Referenced in [astral-sh/ruff#2654](../../astral-sh/ruff/pulls/2654.md) on 2023-02-08 04:41_
-
----
-
 _Comment by @charliermarsh on 2023-02-08 04:42_
 
 Knocked out eight more rules behind the feature flag.
 
 ---
 
-_Referenced in [astral-sh/ruff#2680](../../astral-sh/ruff/pulls/2680.md) on 2023-02-09 03:28_
-
----
-
 _Comment by @charliermarsh on 2023-02-09 03:57_
 
 Four more done.
-
----
-
-_Referenced in [scipy/scipy#17874](../../scipy/scipy/pulls/17874.md) on 2023-02-12 22:34_
-
----
-
-_Referenced in [astral-sh/ruff#3008](../../astral-sh/ruff/issues/3008.md) on 2023-02-18 18:01_
 
 ---
 
@@ -231,10 +199,6 @@ One more in https://github.com/charliermarsh/ruff/pull/3249.
 _Comment by @charliermarsh on 2023-03-05 20:05_
 
 One more in https://github.com/charliermarsh/ruff/pull/3344.
-
----
-
-_Referenced in [mne-tools/mne-python#11534](../../mne-tools/mne-python/issues/11534.md) on 2023-03-07 13:11_
 
 ---
 
@@ -271,22 +235,6 @@ I'm hoping that we can finish and release this soon enough that it's not worth s
 
 ---
 
-_Referenced in [astral-sh/ruff#3576](../../astral-sh/ruff/issues/3576.md) on 2023-03-17 21:33_
-
----
-
-_Referenced in [astral-sh/ruff#3720](../../astral-sh/ruff/issues/3720.md) on 2023-03-24 19:07_
-
----
-
-_Referenced in [vega/altair#3008](../../vega/altair/pulls/3008.md) on 2023-04-01 19:01_
-
----
-
-_Referenced in [wagtail/wagtail#10324](../../wagtail/wagtail/pulls/10324.md) on 2023-04-08 15:48_
-
----
-
 _Comment by @jamesbraza on 2023-04-27 04:52_
 
 This conquest is awesome!  I see many of these as being checked (e.g. `E2` whitespace is done).
@@ -311,14 +259,6 @@ EDIT: I'm doing all of `E3 Blank line` since they are closely related.
 
 ---
 
-_Referenced in [astral-sh/ruff#4635](../../astral-sh/ruff/pulls/4635.md) on 2023-05-24 15:16_
-
----
-
-_Referenced in [cockpit-project/bots#4799](../../cockpit-project/bots/pulls/4799.md) on 2023-05-24 16:03_
-
----
-
 _Comment by @devbis on 2023-05-25 06:54_
 
 E241 and E242 is missing in the list for pycodestyle.
@@ -337,18 +277,6 @@ _Comment by @charliermarsh on 2023-05-25 13:30_
 
 I believe those are intentionally omitted -- we're not planning to implement the rules that are omitted from pycodestyle's default configuration ("not unanimously accepted, and PEP 8 does not enforce them"), at least not to start.
 
-
----
-
-_Referenced in [astral-sh/ruff#4666](../../astral-sh/ruff/issues/4666.md) on 2023-05-26 09:35_
-
----
-
-_Referenced in [astral-sh/ruff#4694](../../astral-sh/ruff/pulls/4694.md) on 2023-05-28 17:08_
-
----
-
-_Referenced in [pymor/pymor#2069](../../pymor/pymor/issues/2069.md) on 2023-06-16 12:13_
 
 ---
 
@@ -378,39 +306,11 @@ I think the lint should also check for the second version, or am I wrong?
 
 ---
 
-_Referenced in [astral-sh/ruff#5564](../../astral-sh/ruff/issues/5564.md) on 2023-07-06 15:42_
-
----
-
-_Referenced in [Unidata/MetPy#3115](../../Unidata/MetPy/pulls/3115.md) on 2023-07-15 19:32_
-
----
-
-_Referenced in [astral-sh/ruff#6094](../../astral-sh/ruff/pulls/6094.md) on 2023-07-26 12:55_
-
----
-
 _Comment by @spaceone on 2023-08-03 13:44_
 
 > I'm hoping that we can finish and release this soon enough that it's not worth shipping an `extra_requires` variant. (And if not, I'd probably rather ship with a command-line or feature flag rather than an `extras`, so that it's available regardless of how you install Ruff.)
 
 I think this will take a lot of extra time right? Maybe it's possible to add that command line flag already?
-
----
-
-_Referenced in [Cray-HPE/libCSM#47](../../Cray-HPE/libCSM/pulls/47.md) on 2023-08-14 19:27_
-
----
-
-_Referenced in [jorenham/mainpy#2](../../jorenham/mainpy/pulls/2.md) on 2023-08-26 19:57_
-
----
-
-_Referenced in [astral-sh/ruff#7388](../../astral-sh/ruff/issues/7388.md) on 2023-09-14 11:23_
-
----
-
-_Referenced in [astral-sh/ruff#7414](../../astral-sh/ruff/issues/7414.md) on 2023-09-15 18:44_
 
 ---
 
@@ -453,10 +353,6 @@ For E122, I've just edited my comment saying I was looking into it. A while ago 
 
 ---
 
-_Referenced in [astral-sh/ruff#7655](../../astral-sh/ruff/pulls/7655.md) on 2023-09-25 13:31_
-
----
-
 _Comment by @shikari08 on 2023-10-26 15:41_
 
 Is there an update on when E3 Blank line will get released? 
@@ -473,57 +369,9 @@ Edit:
 
 ---
 
-_Referenced in [astral-sh/ruff#8557](../../astral-sh/ruff/pulls/8557.md) on 2023-11-08 13:09_
-
----
-
-_Referenced in [astral-sh/ruff#8720](../../astral-sh/ruff/pulls/8720.md) on 2023-11-16 13:54_
-
----
-
-_Referenced in [PyLops/pylops#485](../../PyLops/pylops/issues/485.md) on 2023-11-26 06:14_
-
----
-
 _Comment by @Avasam on 2023-12-14 07:34_
 
 `W391` is checked but I don't see the rule in Ruff
-
----
-
-_Referenced in [Joinee-IM/backend#77](../../Joinee-IM/backend/pulls/77.md) on 2023-12-15 05:38_
-
----
-
-_Referenced in [commaai/openpilot#30792](../../commaai/openpilot/pulls/30792.md) on 2023-12-19 00:47_
-
----
-
-_Referenced in [astral-sh/ruff#9266](../../astral-sh/ruff/pulls/9266.md) on 2023-12-24 13:33_
-
----
-
-_Referenced in [astral-sh/ruff#9544](../../astral-sh/ruff/issues/9544.md) on 2024-01-16 07:53_
-
----
-
-_Referenced in [sphinx-doc/sphinx#11902](../../sphinx-doc/sphinx/pulls/11902.md) on 2024-01-21 20:28_
-
----
-
-_Referenced in [canonical/operator#1114](../../canonical/operator/pulls/1114.md) on 2024-01-26 03:50_
-
----
-
-_Referenced in [canonical/operator#1120](../../canonical/operator/pulls/1120.md) on 2024-02-02 07:28_
-
----
-
-_Referenced in [astral-sh/ruff#9811](../../astral-sh/ruff/issues/9811.md) on 2024-02-05 00:33_
-
----
-
-_Referenced in [odoo/odoo#151483](../../odoo/odoo/pulls/151483.md) on 2024-02-07 08:52_
 
 ---
 
@@ -542,10 +390,6 @@ Are meanwhile all above checked rules now available, at least behind the [previe
 _Comment by @charliermarsh on 2024-02-18 14:17_
 
 @spaceone - Yup, they're all behind `--preview`.
-
----
-
-_Referenced in [slack-samples/bolt-python-starter-template#32](../../slack-samples/bolt-python-starter-template/issues/32.md) on 2024-02-23 22:53_
 
 ---
 
@@ -652,18 +496,6 @@ Exactly.
 
 ---
 
-_Referenced in [astral-sh/ruff#10243](../../astral-sh/ruff/pulls/10243.md) on 2024-03-06 05:35_
-
----
-
-_Referenced in [astral-sh/ruff#10292](../../astral-sh/ruff/pulls/10292.md) on 2024-03-08 04:03_
-
----
-
-_Referenced in [sphinx-doc/sphinx#12163](../../sphinx-doc/sphinx/pulls/12163.md) on 2024-03-21 17:22_
-
----
-
 _Comment by @kaddkaka on 2024-03-23 09:13_
 
 > Note: some of the checked-off rules are still gated behind the `logical_lines` feature flag. To see the list of rules enabled in the current release, refer to the [docs](https://github.com/charliermarsh/ruff#error-e).
@@ -681,10 +513,6 @@ _Comment by @MichaReiser on 2024-03-25 08:21_
 No, that's no longer the case. You can opt in by using `--preview` and enabling the desired rules (e.g. `--extend-select=E3`) 
 
 All checked rules in this issue are implemented as stable or preview rules and the rules use the same codes as `pycodestyle`. So there should be no need to cross-reference except if you need to know if the rule is preview only.
-
----
-
-_Referenced in [astral-sh/ruff#10677](../../astral-sh/ruff/issues/10677.md) on 2024-03-30 23:25_
 
 ---
 
@@ -710,18 +538,6 @@ I hope this helps :)
 
 ---
 
-_Referenced in [astral-sh/ruff#11038](../../astral-sh/ruff/issues/11038.md) on 2024-04-19 13:50_
-
----
-
-_Referenced in [astral-sh/ruff#11349](../../astral-sh/ruff/pulls/11349.md) on 2024-05-09 01:54_
-
----
-
-_Referenced in [astral-sh/ruff#12140](../../astral-sh/ruff/pulls/12140.md) on 2024-07-02 11:29_
-
----
-
 _Comment by @Alex-ley-scrub on 2024-07-02 22:22_
 
 This is awesome work 👏 
@@ -737,30 +553,6 @@ autopep8 foo.py --in-place [--aggressive]
 If so, that would be amazing! autopep8 is really good at fixing broken indentation and adding this to ruff would be 😍 
 
 E1 rules don't have automatic fixes at the minute - is that just a case of priority/time or is there a technical challenge / performance concern / reluctance for this to be default behaviour etc. as somewhat discussed in https://github.com/astral-sh/ruff/pull/1130
-
----
-
-_Referenced in [astral-sh/ruff#13585](../../astral-sh/ruff/pulls/13585.md) on 2024-10-01 10:17_
-
----
-
-_Referenced in [astral-sh/ruff#13897](../../astral-sh/ruff/issues/13897.md) on 2024-10-23 17:18_
-
----
-
-_Referenced in [jonescompneurolab/hnn-core#934](../../jonescompneurolab/hnn-core/pulls/934.md) on 2024-11-08 21:57_
-
----
-
-_Referenced in [astral-sh/ruff#14651](../../astral-sh/ruff/issues/14651.md) on 2024-11-28 06:32_
-
----
-
-_Referenced in [astral-sh/ruff#14673](../../astral-sh/ruff/issues/14673.md) on 2024-11-29 21:40_
-
----
-
-_Referenced in [sphinx-doc/sphinx#13204](../../sphinx-doc/sphinx/pulls/13204.md) on 2025-01-02 20:50_
 
 ---
 
@@ -790,14 +582,6 @@ Details:
 _Comment by @MartinRoth on 2025-01-07 13:23_
 
 Is there any update on when the rules E122 - E131 enter the preview stage? 
-
----
-
-_Referenced in [Voyz/ibind#45](../../Voyz/ibind/issues/45.md) on 2025-02-12 04:38_
-
----
-
-_Referenced in [astral-sh/ruff#17031](../../astral-sh/ruff/issues/17031.md) on 2025-03-28 07:57_
 
 ---
 
@@ -867,10 +651,6 @@ Beside of that using formaters at all is a bad habit and prevent fresh coders fr
 
 ---
 
-_Referenced in [astral-sh/ruff#18795](../../astral-sh/ruff/issues/18795.md) on 2025-06-19 15:00_
-
----
-
 _Comment by @jgbishop on 2025-06-25 23:35_
 
 Are E122 - E131 still planned?
@@ -880,10 +660,6 @@ Are E122 - E131 still planned?
 _Comment by @hoel-bagard on 2025-06-25 23:56_
 
 There is [a PR](https://github.com/astral-sh/ruff/pull/13585) implementing the E12X rules.
-
----
-
-_Referenced in [archlinux/archweb#579](../../archlinux/archweb/pulls/579.md) on 2025-09-01 09:40_
 
 ---
 
@@ -902,10 +678,6 @@ _Comment by @kaddkaka on 2025-11-14 15:16_
 > Any chance of re-evaluation? Or some middle-ground like bringing the rules into stable but making them "more" opt-in by grouping them in a subcategory of E? (I guess it's quite common to enable the E rules which means just stabilizing them would make them appear in many people's lint setup automatically. Maybe that's not a problem though.)
 
 Over half a year has passed, could we discuss this? 
-
----
-
-_Referenced in [astral-sh/ruff#21785](../../astral-sh/ruff/issues/21785.md) on 2025-12-04 09:20_
 
 ---
 

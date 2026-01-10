@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-12T16:13:27Z
 updated_at: 2023-11-08T10:54:15Z
 url: https://github.com/astral-sh/ruff/issues/1820
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Splitting up the `ruff_linter` crate for faster compile times
@@ -36,14 +36,6 @@ These graph were generated via `cargo build --release --timings`, see the [timin
 I think the question is if/how we could further split up the `ruff` library. Currently the rule implementations depend on `ast::Checker` and `ast::Checker` depends on the rule implementations. I am not sure what we can do about that.
 
 With my PR #1816 `cargo build -p ruff` for the first time now builds ~100 dependencies fewer than `cargo build` for the first time (since it doesn't build the CLI), so this might still be neat for people who just want to contribute a lint and test that it works.
-
----
-
-_Referenced in [astral-sh/ruff#1547](../../astral-sh/ruff/issues/1547.md) on 2023-01-12 16:14_
-
----
-
-_Referenced in [astral-sh/ruff#1816](../../astral-sh/ruff/pulls/1816.md) on 2023-01-12 16:15_
 
 ---
 
@@ -87,10 +79,6 @@ As an initial proposal to tear down, would something like this work?
 - A couple one-off crates that can exist as standalone libraries, like the current `source` crate that contains `Generator`, `Locator`, etc.
 - (Not sure what to do with `Settings` and the per-linter settings structs.)
 
-
----
-
-_Referenced in [astral-sh/ruff#2559](../../astral-sh/ruff/pulls/2559.md) on 2023-02-04 00:00_
 
 ---
 
@@ -149,21 +137,9 @@ I've probably overlooked a few dependencies but it seems less hard than others (
 
 ---
 
-_Referenced in [astral-sh/ruff#3171](../../astral-sh/ruff/pulls/3171.md) on 2023-02-23 14:06_
-
----
-
 _Comment by @charliermarsh on 2023-03-02 04:54_
 
 I am starting to hack on a few of these problems in https://github.com/charliermarsh/ruff/pull/3298, mostly to see what breaks and what problems we run into. (Not ready for review but feedback welcome, etc.)
-
----
-
-_Referenced in [astral-sh/ruff#3370](../../astral-sh/ruff/pulls/3370.md) on 2023-03-06 22:40_
-
----
-
-_Referenced in [astral-sh/ruff#8288](../../astral-sh/ruff/issues/8288.md) on 2023-10-30 21:02_
 
 ---
 

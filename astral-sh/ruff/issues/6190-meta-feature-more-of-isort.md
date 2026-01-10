@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-31T09:46:52Z
 updated_at: 2025-03-17T14:12:57Z
 url: https://github.com/astral-sh/ruff/issues/6190
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # [meta][feature] more of `isort`
@@ -69,10 +69,6 @@ _Label `isort` added by @charliermarsh on 2023-08-04 02:23_
 
 ---
 
-_Referenced in [FEniCS/basix#748](../../FEniCS/basix/pulls/748.md) on 2023-11-26 09:20_
-
----
-
 _Comment by @Cadair on 2024-02-06 15:17_
 
 One major bump in my projects adopting the ruff isort'er is the [length sort sections](https://pycqa.github.io/isort/docs/configuration/options.html#length-sort-sections) option. Is this something that a contribution would be welcome for?
@@ -83,10 +79,6 @@ _Comment by @Skypekey on 2024-06-29 10:28_
 
 Is there a plan for resolve the first issue?
 Support heading setting for isort 
-
----
-
-_Referenced in [astral-sh/ruff#6371](../../astral-sh/ruff/issues/6371.md) on 2024-09-14 23:38_
 
 ---
 

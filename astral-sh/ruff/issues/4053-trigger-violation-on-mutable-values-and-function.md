@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-20T23:08:03Z
 updated_at: 2023-06-12T16:55:30Z
 url: https://github.com/astral-sh/ruff/issues/4053
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Trigger violation on mutable values and function calls for non-dataclass attribute defaults
@@ -92,14 +92,6 @@ Yes, exactly.
 _Comment by @adampauls on 2023-04-21 02:47_
 
 Though I would settle for the more targeted warning on just dataclass.field if that's preferable!
-
----
-
-_Referenced in [astral-sh/ruff#4096](../../astral-sh/ruff/pulls/4096.md) on 2023-04-25 15:58_
-
----
-
-_Referenced in [astral-sh/ruff#4390](../../astral-sh/ruff/pulls/4390.md) on 2023-05-12 16:12_
 
 ---
 

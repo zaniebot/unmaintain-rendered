@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-11-08T21:23:29Z
 updated_at: 2022-11-25T03:32:51Z
 url: https://github.com/astral-sh/ruff/issues/662
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # Explore use of globset
@@ -134,10 +134,6 @@ my code is still rather messy (a lot of `.expects` because `globset` really like
 _Comment by @charliermarsh on 2022-11-21 02:11_
 
 @CelebrateVC - Awesome! Happy to review whenever it's ready for a look.
-
----
-
-_Referenced in [astral-sh/ruff#883](../../astral-sh/ruff/pulls/883.md) on 2022-11-23 00:38_
 
 ---
 

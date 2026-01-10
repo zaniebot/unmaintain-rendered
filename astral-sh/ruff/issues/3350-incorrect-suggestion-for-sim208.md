@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-05T00:32:18Z
 updated_at: 2024-08-06T17:46:38Z
 url: https://github.com/astral-sh/ruff/issues/3350
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Incorrect suggestion for SIM208
@@ -56,10 +56,6 @@ Oh interesting, thanks, I think we do this already (or something like it) for `S
 ---
 
 _Label `bug` added by @charliermarsh on 2023-03-05 00:36_
-
----
-
-_Referenced in [astral-sh/ruff#4294](../../astral-sh/ruff/pulls/4294.md) on 2023-05-08 23:28_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-04T20:56:07Z
 updated_at: 2025-09-18T15:24:17Z
 url: https://github.com/astral-sh/ruff/issues/20255
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # `single-item-membership-test` (FURB171) should be marked unsafe
@@ -64,10 +64,6 @@ _Label `preview` added by @ntBre on 2025-09-04 23:30_
 
 ---
 
-_Referenced in [astral-sh/ruff#20254](../../astral-sh/ruff/pulls/20254.md) on 2025-09-04 23:30_
-
----
-
 _Comment by @TaKO8Ki on 2025-09-05 11:12_
 
 I will take this one.
@@ -75,10 +71,6 @@ I will take this one.
 ---
 
 _Assigned to @TaKO8Ki by @ntBre on 2025-09-05 12:49_
-
----
-
-_Referenced in [astral-sh/ruff#20279](../../astral-sh/ruff/pulls/20279.md) on 2025-09-06 10:10_
 
 ---
 

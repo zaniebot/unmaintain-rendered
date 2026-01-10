@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-10T23:08:38Z
 updated_at: 2024-10-08T11:55:22Z
 url: https://github.com/astral-sh/ruff/issues/5667
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # I001: ruff isort does not always respect the global src option
@@ -173,14 +173,6 @@ detect-same-package = false
 # Mark the directory as a namespace package
 namespace-packages = ["mycompany/myproject/httpx"]
 ```
-
----
-
-_Referenced in [astral-sh/ruff#10266](../../astral-sh/ruff/issues/10266.md) on 2024-03-07 06:25_
-
----
-
-_Referenced in [ImperialCollegeLondon/SWMManywhere#295](../../ImperialCollegeLondon/SWMManywhere/pulls/295.md) on 2024-09-25 14:11_
 
 ---
 

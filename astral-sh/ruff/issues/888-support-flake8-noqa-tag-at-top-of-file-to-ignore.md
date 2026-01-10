@@ -1,0 +1,85 @@
+```yaml
+number: 888
+title: "Support # flake8: noqa tag at top of file to ignore entire file"
+type: issue
+state: closed
+author: jhallard
+labels: []
+assignees: []
+created_at: 2022-11-23T06:51:40Z
+updated_at: 2022-12-03T04:56:57Z
+url: https://github.com/astral-sh/ruff/issues/888
+synced_at: 2026-01-10T12:09:58Z
+```
+
+# Support # flake8: noqa tag at top of file to ignore entire file
+
+---
+
+_Issue opened by @jhallard on 2022-11-23 06:51_
+
+We occasionally have files in our code base that we want to ignore certain flake8 errors for. Instead of marking each line, `flake8` allows one to simply tag the file with 
+```
+# flake8: noqa F402
+```
+
+to ignore a specific error or 
+```
+# flake8: noqa
+```
+
+to ignore all errors 
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2022-11-23 14:47_
+
+---
+
+_Comment by @onerandomusername on 2022-12-02 04:08_
+
+I might be in the minority here, but I appreciate that ruff *doesn't* support this. The same thing can be accomplished with providing the file in the pyproject.toml config key `tool.ruff.per-file-ignores`, and using this mandates a single list of all per file ignored error codes, which I think is less confusing.
+
+---
+
+_Comment by @jhallard on 2022-12-02 04:18_
+
+Seems like an odd thing to appreciate _not_ supporting? @onerandomusername if you don't like that way of specifying ignores, you'd be free to not use it, but since that method is used extensively in the wild, it makes it much easier to transition to `ruff` if it was supported. 
+
+---
+
+_Comment by @charliermarsh on 2022-12-02 14:26_
+
+I don't personally use this but am happy to support it. I have to look at Flake8 to understand the exact behavior around when this does / doesn't get picked up.
+
+---
+
+_Comment by @charliermarsh on 2022-12-02 14:29_
+
+I can probably do it today.
+
+---
+
+_Comment by @charliermarsh on 2022-12-02 18:05_
+
+@jhallard - AFAICT `# flake8: noqa F402` isn't supported by Flake8, in that any `# flake8: noqa` disables Flake8 for the entire file.
+
+As an example:
+
+```py
+# flake8: noqa F841
+
+import os
+
+def f():
+    x = 1
+```
+
+This snippet contains an F841 violation (`F841 local variable 'x' is assigned to but never used`) and an F401 violation (`F401 'os' imported but unused`), but both are ignored no matter how I modify the `noqa` at the top. The Flake8 source code seems to suggest the same thing.
+
+
+---
+
+_Closed by @charliermarsh on 2022-12-03 04:56_
+
+---

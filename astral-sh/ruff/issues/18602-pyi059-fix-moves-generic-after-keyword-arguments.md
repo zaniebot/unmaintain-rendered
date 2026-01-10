@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-10T00:37:18Z
 updated_at: 2025-06-10T16:27:07Z
 url: https://github.com/astral-sh/ruff/issues/18602
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # PYI059 fix moves `Generic` after keyword arguments
@@ -71,10 +71,6 @@ _Label `fixes` added by @ntBre on 2025-06-10 02:23_
 
 ---
 
-_Referenced in [astral-sh/ruff#18601](../../astral-sh/ruff/pulls/18601.md) on 2025-06-10 02:23_
-
----
-
 _Comment by @ntBre on 2025-06-10 02:35_
 
 Thanks for all of these reports, they're very helpful in our stabilization decisions for the release.
@@ -94,10 +90,6 @@ The `C2` pattern has [some hits on GitHub](https://github.com/search?q=language%
 ---
 
 _Assigned to @ntBre by @ntBre on 2025-06-10 13:09_
-
----
-
-_Referenced in [astral-sh/ruff#18611](../../astral-sh/ruff/pulls/18611.md) on 2025-06-10 14:30_
 
 ---
 

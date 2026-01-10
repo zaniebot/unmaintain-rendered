@@ -1,0 +1,46 @@
+```yaml
+number: 491
+title: "Feature request: add support for C901, McCabe cyclomatic complexity"
+type: issue
+state: closed
+author: tgross35
+labels:
+  - good first issue
+  - rule
+assignees: []
+created_at: 2022-10-27T17:58:03Z
+updated_at: 2022-11-17T22:40:52Z
+url: https://github.com/astral-sh/ruff/issues/491
+synced_at: 2026-01-10T12:09:58Z
+```
+
+# Feature request: add support for C901, McCabe cyclomatic complexity
+
+---
+
+_Issue opened by @tgross35 on 2022-10-27 17:58_
+
+Sorry for the recent flurry of issues, this is just one for a "blue sky" milestone
+
+Link to relevant source: https://github.com/PyCQA/mccabe
+
+This can be run in flake8 `--max-complexity 10` which creates C901, or run on its own to show the complexity of various functions. Anything ≤ 10 is usually considered acceptable.
+
+Implementation is pretty basic: for each function start with 1, then add 1 for every `if`, `elif`, `for`, `while`, `try`, `except`, `case` or `def` block it contains (but not for `else` since that's the "default" path).
+
+This site describes it a bit better https://www.flake8rules.com/rules/C901.html
+
+
+---
+
+_Label `rule` added by @charliermarsh on 2022-10-27 18:20_
+
+---
+
+_Label `good first issue` added by @charliermarsh on 2022-11-07 20:19_
+
+---
+
+_Closed by @charliermarsh on 2022-11-17 22:40_
+
+---

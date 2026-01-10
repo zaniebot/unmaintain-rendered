@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-29T15:42:35Z
 updated_at: 2024-08-30T16:39:07Z
 url: https://github.com/astral-sh/ruff/issues/12568
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # `PLR6301` not aware of `attrs` validation decorator 
@@ -63,18 +63,10 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-30 16:25_
 
 ---
 
-_Referenced in [astral-sh/ruff#13166](../../astral-sh/ruff/pulls/13166.md) on 2024-08-30 16:31_
-
----
-
 _Closed by @charliermarsh on 2024-08-30 16:39_
 
 ---
 
 _Closed by @charliermarsh on 2024-08-30 16:39_
-
----
-
-_Referenced in [astral-sh/ruff#19396](../../astral-sh/ruff/issues/19396.md) on 2025-07-17 10:56_
 
 ---

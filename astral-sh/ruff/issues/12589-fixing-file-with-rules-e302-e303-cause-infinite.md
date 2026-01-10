@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-31T05:05:47Z
 updated_at: 2024-08-01T02:09:06Z
 url: https://github.com/astral-sh/ruff/issues/12589
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Fixing file with rules E302, E303 cause infinite loop
@@ -58,10 +58,6 @@ Ruff build, that was used to reproduce problem(compiled on Ubuntu 22.04 with rel
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-01 01:44_
-
----
-
-_Referenced in [astral-sh/ruff#12604](../../astral-sh/ruff/pulls/12604.md) on 2024-08-01 01:45_
 
 ---
 

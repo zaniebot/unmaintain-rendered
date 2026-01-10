@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-29T23:02:39Z
 updated_at: 2022-12-31T03:11:02Z
 url: https://github.com/astral-sh/ruff/issues/1452
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T12:05:29Z
 ```
 
 # ASCII control characters escaping in error messages
@@ -56,10 +56,6 @@ _Label `bug` added by @charliermarsh on 2022-12-29 23:05_
 _Comment by @not-my-profile on 2022-12-30 07:10_
 
 Sidenote: We do not want to escape all error message arguments: e.g. the messages (`.msg`) of the new `banned-api` setting should be interpolated into the error message without being escaped (so that they can contain newlines).
-
----
-
-_Referenced in [astral-sh/ruff#1493](../../astral-sh/ruff/pulls/1493.md) on 2022-12-31 03:10_
 
 ---
 

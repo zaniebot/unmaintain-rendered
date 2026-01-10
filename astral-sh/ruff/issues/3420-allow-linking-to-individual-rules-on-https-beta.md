@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-09T16:04:34Z
 updated_at: 2023-05-04T17:43:54Z
 url: https://github.com/astral-sh/ruff/issues/3420
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Allow linking to individual rules on https://beta.ruff.rs/docs/rules
@@ -25,10 +25,6 @@ Currently you can link to rulesets e.g. `https://beta.ruff.rs/docs/rules/#ruff-s
 ---
 
 _Label `documentation` added by @charliermarsh on 2023-03-09 16:13_
-
----
-
-_Referenced in [astral-sh/ruff#4158](../../astral-sh/ruff/pulls/4158.md) on 2023-04-30 10:25_
 
 ---
 

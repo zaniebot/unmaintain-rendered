@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-06T07:22:45Z
 updated_at: 2024-05-06T07:43:17Z
 url: https://github.com/astral-sh/ruff/issues/11303
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Warning in release build: `MarkVerbatimCommentsAsFormattedVisitor` is unused
@@ -39,10 +39,6 @@ https://github.com/astral-sh/ruff/blob/6a1e5555377457f4a7c799b72341684a58c0887b/
 ---
 
 _Label `bug` added by @konstin on 2024-05-06 07:22_
-
----
-
-_Referenced in [astral-sh/ruff#11304](../../astral-sh/ruff/pulls/11304.md) on 2024-05-06 07:35_
 
 ---
 

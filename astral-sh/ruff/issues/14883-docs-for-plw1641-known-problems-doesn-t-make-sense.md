@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-09T23:34:48Z
 updated_at: 2024-12-20T08:33:17Z
 url: https://github.com/astral-sh/ruff/issues/14883
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # (📚) docs for `PLW1641` `known problems` doesn't make sense
@@ -75,10 +75,6 @@ print(B.__hash__) # None
 
 ---
 
-_Referenced in [astral-sh/ruff#6932](../../astral-sh/ruff/issues/6932.md) on 2024-12-10 00:26_
-
----
-
 _Comment by @KotlinIsland on 2024-12-10 00:27_
 
 > A class that overrides [**eq**()](https://docs.python.org/3/reference/datamodel.html#object.__eq__) and does not define [**hash**()](https://docs.python.org/3/reference/datamodel.html#object.__hash__) will have its [**hash**()](https://docs.python.org/3/reference/datamodel.html#object.__hash__) implicitly set to None.
@@ -112,10 +108,6 @@ _Comment by @KotlinIsland on 2024-12-10 01:01_
 fail...
 
 i've updated it
-
----
-
-_Referenced in [astral-sh/ruff#14885](../../astral-sh/ruff/pulls/14885.md) on 2024-12-10 01:14_
 
 ---
 

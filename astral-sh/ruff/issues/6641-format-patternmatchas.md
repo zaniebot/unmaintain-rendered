@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-17T09:51:25Z
 updated_at: 2023-08-22T23:58:16Z
 url: https://github.com/astral-sh/ruff/issues/6641
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Format `PatternMatchAs`
@@ -32,10 +32,6 @@ match x:
 
 ---
 
-_Referenced in [astral-sh/ruff#5834](../../astral-sh/ruff/issues/5834.md) on 2023-08-17 09:51_
-
----
-
 _Label `formatter` added by @MichaReiser on 2023-08-17 09:51_
 
 ---
@@ -45,10 +41,6 @@ _Label `help wanted` added by @MichaReiser on 2023-08-17 09:51_
 ---
 
 _Added to milestone `Formatter: Alpha` by @MichaReiser on 2023-08-17 09:51_
-
----
-
-_Referenced in [astral-sh/ruff#6652](../../astral-sh/ruff/pulls/6652.md) on 2023-08-17 14:31_
 
 ---
 

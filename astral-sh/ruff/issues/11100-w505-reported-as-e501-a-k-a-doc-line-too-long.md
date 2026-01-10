@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-23T07:36:43Z
 updated_at: 2024-04-26T07:04:43Z
 url: https://github.com/astral-sh/ruff/issues/11100
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # `W505` reported as `E501` a.k.a doc-line-too-long
@@ -29,10 +29,6 @@ using:
     hooks:
       - id: ruff
 ```
-
----
-
-_Referenced in [unit8co/darts#2341](../../unit8co/darts/pulls/2341.md) on 2024-04-23 07:37_
 
 ---
 

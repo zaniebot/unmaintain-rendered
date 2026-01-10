@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-05T06:22:14Z
 updated_at: 2025-09-16T15:00:08Z
 url: https://github.com/astral-sh/ruff/issues/19752
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # E301 is inconsistent with `flake8`
@@ -59,10 +59,6 @@ _Label `rule` added by @ntBre on 2025-08-05 12:51_
 
 ---
 
-_Referenced in [GlasgowEmbedded/glasgow#993](../../GlasgowEmbedded/glasgow/pulls/993.md) on 2025-08-05 13:43_
-
----
-
 _Comment by @mikeleppane on 2025-08-05 16:11_
 
 I will take a look on this.
@@ -76,10 +72,6 @@ Thank you!
 ---
 
 _Assigned to @mikeleppane by @ntBre on 2025-08-05 18:22_
-
----
-
-_Referenced in [astral-sh/ruff#19768](../../astral-sh/ruff/pulls/19768.md) on 2025-08-05 18:27_
 
 ---
 

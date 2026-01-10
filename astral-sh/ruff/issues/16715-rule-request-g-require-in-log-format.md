@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-13T19:13:16Z
 updated_at: 2025-09-16T15:54:51Z
 url: https://github.com/astral-sh/ruff/issues/16715
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Rule request: G: Require {} in log format
@@ -87,10 +87,6 @@ _Label `rule` added by @MichaReiser on 2025-03-14 08:34_
 _Comment by @colindean on 2025-03-17 23:31_
 
 Yes! Those sound good to me. Thank you.
-
----
-
-_Referenced in [astral-sh/ruff#19075](../../astral-sh/ruff/issues/19075.md) on 2025-07-01 20:54_
 
 ---
 

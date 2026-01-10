@@ -1,0 +1,45 @@
+```yaml
+number: 21520
+title: Better uv/ruff integration
+type: issue
+state: open
+author: MichaReiser
+labels:
+  - uv
+assignees: []
+created_at: 2025-11-19T09:31:40Z
+updated_at: 2025-11-19T09:31:40Z
+url: https://github.com/astral-sh/ruff/issues/21520
+synced_at: 2026-01-10T11:10:00Z
+```
+
+# Better uv/ruff integration
+
+---
+
+_Issue opened by @MichaReiser on 2025-11-19 09:31_
+
+> A better integration story between our tools is very much on our minds and I outlined (internally) a few ideas on how it could be done. Unfortunately, I was kept busy with working on other parts of ty that prevented me to make much progress on it. I hope that I can come back to it soon, once we're further along with ty. 
+> 
+> 
+> In short: We probably don't want to parse any uv metadata from pyproject.tomls because any change to the schema (or how uv discovers projects) would then have to be coordinated across all our tools. Instead, a more likely outcome is to have a `uv metadata --version <X>` command that allows other tools (not just Astral tools but any python tool) to query metadata about a workspace and use that to enrich its configuration. 
+> 
+> The benefit of this is that uv can change its project discovery or settings, for as long as it doesn't break the output of the metadata command. The metadata command can also expose more information that would be hard for ruff to compute on its own, like:
+> 
+> * The python version 
+> * installed dependencies
+> * package layouts (and which package depend on each other)
+> * ...
+> 
+> 
+> (I should see if ty already supports uv workspaces, and if not I'll open an issue there, link it here, and replace this comment with the URL)
+> 
+> ty doesn't support uv workspaces yet. But it's on our mind.  
+
+ _Originally posted by @MichaReiser in [#20954](https://github.com/astral-sh/ruff/issues/20954#issuecomment-3420894195)_
+
+---
+
+_Label `uv` added by @MichaReiser on 2025-11-19 09:31_
+
+---

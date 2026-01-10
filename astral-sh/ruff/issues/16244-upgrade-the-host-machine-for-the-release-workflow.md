@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-19T04:07:37Z
 updated_at: 2025-02-19T05:35:16Z
 url: https://github.com/astral-sh/ruff/issues/16244
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Upgrade the host machine for the release workflow
@@ -46,9 +46,5 @@ _Label `release` added by @dhruvmanila on 2025-02-19 04:07_
 ---
 
 _Label `upstream` added by @dhruvmanila on 2025-02-19 05:35_
-
----
-
-_Referenced in [astral-sh/ruff#16245](../../astral-sh/ruff/pulls/16245.md) on 2025-02-19 06:40_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-12T01:01:22Z
 updated_at: 2024-03-13T03:32:45Z
 url: https://github.com/astral-sh/ruff/issues/10350
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # (🎁) Add "Search terms" to the new issue template
@@ -40,10 +40,6 @@ typescript has this super useful section in the issue template where you list se
 
 ---
 
-_Referenced in [astral-sh/ruff#10261](../../astral-sh/ruff/issues/10261.md) on 2024-03-12 01:01_
-
----
-
 _Comment by @charliermarsh on 2024-03-12 01:18_
 
 Oh, that's a nice idea.
@@ -51,10 +47,6 @@ Oh, that's a nice idea.
 ---
 
 _Label `documentation` added by @charliermarsh on 2024-03-12 01:18_
-
----
-
-_Referenced in [astral-sh/ruff#10352](../../astral-sh/ruff/pulls/10352.md) on 2024-03-12 01:41_
 
 ---
 

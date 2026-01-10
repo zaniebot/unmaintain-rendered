@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-07T08:51:59Z
 updated_at: 2023-05-08T18:20:46Z
 url: https://github.com/astral-sh/ruff/issues/4268
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # I suggest that ruff should update the code for detecting ambiguous unicode characters with following VSCode's code.
@@ -95,10 +95,6 @@ _Label `configuration` added by @charliermarsh on 2023-05-07 13:52_
 _Comment by @charliermarsh on 2023-05-07 13:52_
 
 Nice, we'll pull in this update, thanks.
-
----
-
-_Referenced in [astral-sh/ruff#4274](../../astral-sh/ruff/pulls/4274.md) on 2023-05-08 09:57_
 
 ---
 

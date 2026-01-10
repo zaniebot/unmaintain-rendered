@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-12-01T10:09:20Z
 updated_at: 2023-12-04T23:32:52Z
 url: https://github.com/astral-sh/ruff/issues/8945
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # feature request: allow PLR0913 in `@override`n methods
@@ -23,10 +23,6 @@ Basically same scenario of #8867 - in case of `@override` there is nothing I can
 ---
 
 _Renamed from "feature request: allow PLR0913 in `@override`d methods" to "feature request: allow PLR0913 in `@override`n methods" by @ZeeD on 2023-12-01 10:09_
-
----
-
-_Referenced in [astral-sh/ruff#8954](../../astral-sh/ruff/pulls/8954.md) on 2023-12-01 18:16_
 
 ---
 

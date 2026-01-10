@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-23T09:30:59Z
 updated_at: 2024-07-24T20:03:24Z
 url: https://github.com/astral-sh/ruff/issues/12476
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # NPY201 triggers on code written to support both numpy 2 and legacy numpy
@@ -105,10 +105,6 @@ _Assigned to @AlexWaygood by @AlexWaygood on 2024-07-23 14:14_
 
 ---
 
-_Referenced in [astral-sh/ruff#12479](../../astral-sh/ruff/pulls/12479.md) on 2024-07-23 17:17_
-
----
-
 _Comment by @mtsokol on 2024-07-23 17:27_
 
 > I can see how the violation is undesired in this case, and we could probably specialize the rule to detect this very specific pattern. But I think it's also valid to use a suppression comment in this case to explicitly state that the use of the deprecated API is fine.
@@ -137,10 +133,6 @@ I personally would be fine with just adding a suppression comment as long as thi
 _Comment by @AlexWaygood on 2024-07-23 17:34_
 
 I'm working on a fix as per my suggestion in https://github.com/astral-sh/ruff/issues/12476#issuecomment-2245116474.
-
----
-
-_Referenced in [astral-sh/ruff#12490](../../astral-sh/ruff/pulls/12490.md) on 2024-07-24 12:32_
 
 ---
 

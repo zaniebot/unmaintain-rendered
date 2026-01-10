@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-12T20:53:26Z
 updated_at: 2023-09-29T17:27:34Z
 url: https://github.com/astral-sh/ruff/issues/7317
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter undocumented deviation: multi assignment wrapping
@@ -143,10 +143,6 @@ _Added to milestone `Formatter: Beta` by @MichaReiser on 2023-09-13 06:37_
 
 ---
 
-_Referenced in [astral-sh/ruff#7053](../../astral-sh/ruff/issues/7053.md) on 2023-09-13 07:40_
-
----
-
 _Label `needs-decision` removed by @MichaReiser on 2023-09-27 15:06_
 
 ---
@@ -162,10 +158,6 @@ _Label `documentation` added by @MichaReiser on 2023-09-27 16:04_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-09-27 18:45_
-
----
-
-_Referenced in [astral-sh/ruff#7679](../../astral-sh/ruff/pulls/7679.md) on 2023-09-27 20:18_
 
 ---
 

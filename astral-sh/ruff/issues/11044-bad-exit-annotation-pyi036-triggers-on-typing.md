@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-19T14:32:29Z
 updated_at: 2024-04-24T15:48:53Z
 url: https://github.com/astral-sh/ruff/issues/11044
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # `bad-exit-annotation` (`PYI036`) triggers on `typing.overload` definitions
@@ -98,10 +98,6 @@ _Assigned to @AlexWaygood by @AlexWaygood on 2024-04-20 12:41_
 _Comment by @charliermarsh on 2024-04-20 13:36_
 
 Thanks Alex!
-
----
-
-_Referenced in [astral-sh/ruff#11057](../../astral-sh/ruff/pulls/11057.md) on 2024-04-20 13:55_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-10T12:41:59Z
 updated_at: 2025-06-13T21:24:17Z
 url: https://github.com/astral-sh/ruff/issues/13307
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # `FURB180` should consider allowlisting some classes
@@ -73,14 +73,6 @@ Maybe 3 should happen anyway as this fix cannot be blindly applied without break
 Before I invest time I'd like to know which option(s) you prefer.
 
 PS: if the label "question" means "user question", I don't think the issue is labeled quite right. It's not really that I don't know how to use the tool, but more that I am of the opinion that this rule needs some small fixing.
-
----
-
-_Referenced in [astral-sh/ruff#18148](../../astral-sh/ruff/pulls/18148.md) on 2025-05-17 11:06_
-
----
-
-_Referenced in [astral-sh/ruff#18149](../../astral-sh/ruff/pulls/18149.md) on 2025-05-17 11:32_
 
 ---
 

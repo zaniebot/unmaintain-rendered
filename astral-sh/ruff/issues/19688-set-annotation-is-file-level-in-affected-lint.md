@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-01T14:57:55Z
 updated_at: 2025-08-04T18:34:09Z
 url: https://github.com/astral-sh/ruff/issues/19688
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Set `Annotation::is_file_level` in affected lint rules
@@ -46,10 +46,6 @@ _Label `internal` added by @ntBre on 2025-08-01 14:58_
 ---
 
 _Label `diagnostics` added by @ntBre on 2025-08-01 14:58_
-
----
-
-_Referenced in [astral-sh/ruff#19690](../../astral-sh/ruff/issues/19690.md) on 2025-08-01 15:16_
 
 ---
 
@@ -115,13 +111,5 @@ After writing that, I think the first and second cases should probably be the sa
 I'm not quite sure what the use-case for an intentional `None` range on `Some(span)` would be.
 
 In any case, I think we'll need to assess this for each lint rule, which is the main connection to this issue.
-
----
-
-_Referenced in [astral-sh/ruff#19653](../../astral-sh/ruff/pulls/19653.md) on 2025-08-04 18:43_
-
----
-
-_Referenced in [astral-sh/ruff#19415](../../astral-sh/ruff/pulls/19415.md) on 2025-08-06 12:28_
 
 ---

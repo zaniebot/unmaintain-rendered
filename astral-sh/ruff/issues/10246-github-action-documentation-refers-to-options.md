@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-06T11:20:51Z
 updated_at: 2024-03-06T18:10:47Z
 url: https://github.com/astral-sh/ruff/issues/10246
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Github action documentation refers to 'options' instead of 'args'
@@ -50,10 +50,6 @@ _Label `documentation` added by @MichaReiser on 2024-03-06 12:45_
 _Comment by @MichaReiser on 2024-03-06 12:46_
 
 Thanks; you're right. This should be `args`, according to the [GitHub action's documentation](https://github.com/ChartBoost/ruff-action). Would you be interested PRing a fix for the documentation?
-
----
-
-_Referenced in [astral-sh/ruff#10249](../../astral-sh/ruff/pulls/10249.md) on 2024-03-06 16:20_
 
 ---
 

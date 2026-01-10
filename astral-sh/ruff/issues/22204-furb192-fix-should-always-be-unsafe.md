@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-12-26T10:40:28Z
 updated_at: 2025-12-29T14:17:35Z
 url: https://github.com/astral-sh/ruff/issues/22204
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # FURB192 fix should always be unsafe?
@@ -108,10 +108,6 @@ _Label `fixes` added by @ntBre on 2025-12-26 15:20_
 _Comment by @harupy on 2025-12-26 15:26_
 
 @ntBre Thanks for the comment! Can I file a PR for this?
-
----
-
-_Referenced in [astral-sh/ruff#22210](../../astral-sh/ruff/pulls/22210.md) on 2025-12-26 15:49_
 
 ---
 

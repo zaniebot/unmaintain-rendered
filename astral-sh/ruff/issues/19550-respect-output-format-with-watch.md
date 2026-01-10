@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-25T04:03:59Z
 updated_at: 2025-10-27T18:35:47Z
 url: https://github.com/astral-sh/ruff/issues/19550
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Respect `--output-format` with `--watch`
@@ -90,10 +90,6 @@ As far as I'm aware, currently `--watch` only supports that singular output form
 
 ---
 
-_Referenced in [astral-sh/ruff#19552](../../astral-sh/ruff/issues/19552.md) on 2025-07-25 06:09_
-
----
-
 _Comment by @sathishvj on 2025-07-25 06:17_
 
 Oh. My apologies for not being clearer in the original issue message - I shouldn't have wasted your time like that and I shall do better next time. Yet, thank you for your responses. 
@@ -161,10 +157,6 @@ So, is this a fix needed in the docs? Or planned for a later release?
 _Comment by @ntBre on 2025-07-25 19:53_
 
 Glad to hear it! Yeah, I guess this was supposed to be stabilized in a release at some point, but I think it would still be nice to respect `--output-format` instead of just switching the default to `full`. If this preview behavior isn't document anywhere, that could be nice to add in the meantime.
-
----
-
-_Referenced in [astral-sh/ruff#19734](../../astral-sh/ruff/pulls/19734.md) on 2025-08-04 09:00_
 
 ---
 
@@ -236,10 +228,6 @@ I'd be inclined to just support different output formats (at least in preview), 
 _Comment by @ntBre on 2025-10-27 13:09_
 
 I don't think this is related to showing fixes. I thought there was an even older issue about this, but https://github.com/astral-sh/ruff/issues/19552 is the best I found. Non-preview watch mode uses concise output, and at some point we planned to switch to full output, but it has been in preview for quite a while. Neither stable nor preview currently support `--output-format`, but I agree that they should!
-
----
-
-_Referenced in [astral-sh/ruff#21097](../../astral-sh/ruff/pulls/21097.md) on 2025-10-27 13:17_
 
 ---
 

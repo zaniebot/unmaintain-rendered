@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-19T07:44:15Z
 updated_at: 2025-12-29T15:56:35Z
 url: https://github.com/astral-sh/ruff/issues/19983
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # File path not clickable in PyCharm
@@ -155,14 +155,6 @@ _Comment by @Danipulok on 2025-08-20 20:17_
 @ntBre thanks a lot! This works!
 
 I guess I will create an issue in the plugin you have mentioned. It would be better and more convenient for the users, you are completely right
-
----
-
-_Referenced in [koxudaxi/ruff-pycharm-plugin#614](../../koxudaxi/ruff-pycharm-plugin/issues/614.md) on 2025-08-20 20:43_
-
----
-
-_Referenced in [astral-sh/ty#1079](../../astral-sh/ty/issues/1079.md) on 2025-08-21 10:44_
 
 ---
 

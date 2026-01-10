@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-09T19:36:34Z
 updated_at: 2023-10-10T03:04:09Z
 url: https://github.com/astral-sh/ruff/issues/7877
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Restore minimum and maximum line-length enforcement in JSON schema
@@ -26,14 +26,6 @@ As an aside, the 320 limit _also_ isn't enforced statically. I'm not sure where 
 ---
 
 _Label `configuration` added by @charliermarsh on 2023-10-09 19:36_
-
----
-
-_Referenced in [astral-sh/ruff#7875](../../astral-sh/ruff/pulls/7875.md) on 2023-10-09 19:36_
-
----
-
-_Referenced in [astral-sh/ruff#7883](../../astral-sh/ruff/pulls/7883.md) on 2023-10-10 02:39_
 
 ---
 

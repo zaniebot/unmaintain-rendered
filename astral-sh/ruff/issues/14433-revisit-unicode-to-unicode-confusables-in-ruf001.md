@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-18T13:06:00Z
 updated_at: 2025-03-15T11:51:11Z
 url: https://github.com/astral-sh/ruff/issues/14433
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Revisit unicode-to-unicode confusables in `RUF001`, `RUF002`, `RUF003`
@@ -34,14 +34,6 @@ _Label `rule` added by @dylwil3 on 2024-11-18 13:06_
 ---
 
 _Label `preview` added by @dylwil3 on 2024-11-18 13:06_
-
----
-
-_Referenced in [astral-sh/ruff#14403](../../astral-sh/ruff/pulls/14403.md) on 2024-11-18 13:06_
-
----
-
-_Referenced in [astral-sh/ruff#15056](../../astral-sh/ruff/issues/15056.md) on 2024-12-23 08:26_
 
 ---
 
@@ -154,13 +146,5 @@ print(hex(ord(dir(C)[-1])))
 
 #### Conclusion
 For the people that want to limit their .py files to unambiguous characters only, PEP-3131 replaces micro µ `\u00b5`  with mu μ `\u03bc`. Or dare I say: muve over, micro.
-
----
-
-_Referenced in [astral-sh/ruff#17710](../../astral-sh/ruff/issues/17710.md) on 2025-04-30 06:44_
-
----
-
-_Referenced in [home-assistant/core#144853](../../home-assistant/core/pulls/144853.md) on 2025-05-17 19:57_
 
 ---

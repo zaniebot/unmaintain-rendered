@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-20T15:46:19Z
 updated_at: 2023-10-21T23:08:19Z
 url: https://github.com/astral-sh/ruff/issues/8095
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # `UP036` (outdated-version-block) does not work with slicing
@@ -43,10 +43,6 @@ _Label `bug` added by @charliermarsh on 2023-10-20 18:01_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-21 22:57_
-
----
-
-_Referenced in [astral-sh/ruff#8112](../../astral-sh/ruff/pulls/8112.md) on 2023-10-21 23:00_
 
 ---
 

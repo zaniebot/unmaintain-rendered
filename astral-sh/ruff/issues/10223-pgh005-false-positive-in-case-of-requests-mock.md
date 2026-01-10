@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-04T08:40:33Z
 updated_at: 2024-03-13T17:31:57Z
 url: https://github.com/astral-sh/ruff/issues/10223
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # PGH005: False positive in case of `requests-mock` fixture `called_once` property/attribute
@@ -78,10 +78,6 @@ def test_unittest_context_manager():
 ```
 
 It would be nice if it possible to add some exclusion list for objects, but I don't have much hope since this might be only the grep rule without analysing original object types.
-
----
-
-_Referenced in [apache/airflow#37874](../../apache/airflow/pulls/37874.md) on 2024-03-04 08:53_
 
 ---
 

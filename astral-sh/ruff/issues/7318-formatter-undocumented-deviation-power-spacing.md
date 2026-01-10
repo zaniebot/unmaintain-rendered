@@ -13,7 +13,7 @@ assignees: []
 created_at: 2023-09-12T20:55:56Z
 updated_at: 2023-09-14T15:36:23Z
 url: https://github.com/astral-sh/ruff/issues/7318
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter undocumented deviation: power spacing
@@ -76,18 +76,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-09-13 22:54_
 
 ---
 
-_Referenced in [astral-sh/ruff#7371](../../astral-sh/ruff/pulls/7371.md) on 2023-09-13 23:00_
-
----
-
 _Closed by @charliermarsh on 2023-09-14 15:36_
-
----
-
-_Referenced in [astral-sh/ruff#7394](../../astral-sh/ruff/issues/7394.md) on 2023-09-15 20:44_
-
----
-
-_Referenced in [astral-sh/ruff#15130](../../astral-sh/ruff/issues/15130.md) on 2024-12-24 13:26_
 
 ---

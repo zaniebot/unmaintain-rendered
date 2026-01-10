@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-01-14T17:52:06Z
 updated_at: 2023-01-15T23:57:39Z
 url: https://github.com/astral-sh/ruff/issues/1873
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Unnecessary D102 for property setter if getter has already a docstring
@@ -65,10 +65,6 @@ Sounds like an oversight! Thanks for filing.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-01-15 22:02_
-
----
-
-_Referenced in [astral-sh/ruff#1899](../../astral-sh/ruff/pulls/1899.md) on 2023-01-15 23:57_
 
 ---
 

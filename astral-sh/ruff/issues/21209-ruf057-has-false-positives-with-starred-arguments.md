@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-11-02T22:28:59Z
 updated_at: 2025-11-05T17:07:34Z
 url: https://github.com/astral-sh/ruff/issues/21209
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # RUF057 has false positives with starred arguments
@@ -56,10 +56,6 @@ _Label `bug` added by @ntBre on 2025-11-03 14:53_
 ---
 
 _Label `rule` added by @ntBre on 2025-11-03 14:53_
-
----
-
-_Referenced in [astral-sh/ruff#21256](../../astral-sh/ruff/pulls/21256.md) on 2025-11-03 15:09_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-19T19:05:06Z
 updated_at: 2023-03-24T20:21:54Z
 url: https://github.com/astral-sh/ruff/issues/2004
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Ruff's first party import detection treats any folder in root as a package
@@ -66,9 +66,5 @@ _Label `core` added by @charliermarsh on 2023-01-19 22:31_
 _Comment by @Cjkjvfnby on 2023-03-24 20:21_
 
 The same behavior is in isort  https://github.com/PyCQA/isort/issues/2101
-
----
-
-_Referenced in [astral-sh/ruff#8372](../../astral-sh/ruff/issues/8372.md) on 2023-10-31 10:18_
 
 ---

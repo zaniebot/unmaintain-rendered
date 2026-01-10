@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-31T22:11:22Z
 updated_at: 2025-04-07T13:45:58Z
 url: https://github.com/astral-sh/ruff/issues/17103
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [airflow] Autofix is suggesting to replace with the same symbol
@@ -55,10 +55,6 @@ This will be addressed in the reorg PR. This is later moved to provider as well.
 ---
 
 _Assigned to @Lee-W by @MichaReiser on 2025-04-01 11:09_
-
----
-
-_Referenced in [astral-sh/ruff#17123](../../astral-sh/ruff/pulls/17123.md) on 2025-04-02 02:12_
 
 ---
 

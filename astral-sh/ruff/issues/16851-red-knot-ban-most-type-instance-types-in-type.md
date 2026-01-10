@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-19T16:00:41Z
 updated_at: 2025-03-20T22:19:58Z
 url: https://github.com/astral-sh/ruff/issues/16851
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] Ban most `Type::Instance` types in type expressions
@@ -64,10 +64,6 @@ _Label `help wanted` added by @AlexWaygood on 2025-03-19 16:00_
 ---
 
 _Label `red-knot` added by @AlexWaygood on 2025-03-19 16:00_
-
----
-
-_Referenced in [astral-sh/ruff#16872](../../astral-sh/ruff/pulls/16872.md) on 2025-03-20 15:00_
 
 ---
 

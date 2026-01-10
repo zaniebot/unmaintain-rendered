@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-16T17:28:21Z
 updated_at: 2022-11-17T16:35:00Z
 url: https://github.com/astral-sh/ruff/issues/773
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # Remove unnecessary abspath has been removed from pyupgrade
@@ -45,10 +45,6 @@ Of course, that would be welcome.
 ---
 
 _Label `bug` added by @charliermarsh on 2022-11-16 21:50_
-
----
-
-_Referenced in [astral-sh/ruff#781](../../astral-sh/ruff/pulls/781.md) on 2022-11-17 08:18_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-17T02:29:02Z
 updated_at: 2025-11-20T16:18:02Z
 url: https://github.com/astral-sh/ruff/issues/21495
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # No error for nonlocal with a missing variable
@@ -72,9 +72,5 @@ I see. I think it would be better if you enabled these errors as soon as they ar
 ---
 
 _Closed by @eltoder on 2025-11-20 16:18_
-
----
-
-_Referenced in [astral-sh/ruff#21494](../../astral-sh/ruff/issues/21494.md) on 2025-11-20 16:31_
 
 ---

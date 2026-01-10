@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-06T23:06:31Z
 updated_at: 2025-06-06T17:15:50Z
 url: https://github.com/astral-sh/ruff/issues/13273
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # FA100 issue: Ruff doesnt suggest adding `from __future__ import annotations`
@@ -246,15 +246,7 @@ Please take a look at:
 
 ---
 
-_Referenced in [astral-sh/ruff#17763](../../astral-sh/ruff/issues/17763.md) on 2025-05-04 19:33_
-
----
-
 _Label `rule` added by @MichaReiser on 2025-05-05 05:54_
-
----
-
-_Referenced in [astral-sh/ruff#18502](../../astral-sh/ruff/issues/18502.md) on 2025-06-06 16:35_
 
 ---
 
@@ -265,9 +257,5 @@ I'm closing this in favour of https://github.com/astral-sh/ruff/issues/18502, be
 ---
 
 _Closed by @AlexWaygood on 2025-06-06 17:15_
-
----
-
-_Referenced in [astral-sh/ruff#18919](../../astral-sh/ruff/pulls/18919.md) on 2025-06-25 08:59_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-11T18:02:50Z
 updated_at: 2023-07-04T09:09:12Z
 url: https://github.com/astral-sh/ruff/issues/1785
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Implement flake8-type-checking
@@ -40,10 +40,6 @@ Came here to file this exact same issue. I had no idea it was supported in flake
 ---
 
 _Renamed from "Implement flake8-typing-only-imports" to "Implement flake8-type-checking" by @charliermarsh on 2023-01-19 16:44_
-
----
-
-_Referenced in [astral-sh/ruff#283](../../astral-sh/ruff/issues/283.md) on 2023-01-19 16:52_
 
 ---
 
@@ -104,10 +100,6 @@ A couple things:
 
 I _may_ get started on this tonight (at least to setup the plugin scaffolding), but either way, I'll post here at the end of the day so that you know whether there's any overlap!
 
-
----
-
-_Referenced in [astral-sh/ruff#2048](../../astral-sh/ruff/pulls/2048.md) on 2023-01-21 03:31_
 
 ---
 
@@ -204,10 +196,6 @@ One way to implement this would be as follows:
 
 ---
 
-_Referenced in [astral-sh/ruff#2096](../../astral-sh/ruff/issues/2096.md) on 2023-01-23 00:17_
-
----
-
 _Comment by @sondrelg on 2023-01-23 17:58_
 
 That seems great. 
@@ -278,14 +266,6 @@ It's really only the lack of IDE support that makes it hard to work with in my e
 
 ---
 
-_Referenced in [astral-sh/ruff#2146](../../astral-sh/ruff/pulls/2146.md) on 2023-01-25 03:48_
-
----
-
-_Referenced in [astral-sh/ruff#2147](../../astral-sh/ruff/pulls/2147.md) on 2023-01-25 04:34_
-
----
-
 _Closed by @charliermarsh on 2023-01-25 04:48_
 
 ---
@@ -312,10 +292,6 @@ On second thought: `TC` causes the same issue, since it conflicts with the _actu
 
 ---
 
-_Referenced in [astral-sh/ruff#2175](../../astral-sh/ruff/pulls/2175.md) on 2023-01-25 21:22_
-
----
-
 _Comment by @charliermarsh on 2023-01-25 21:23_
 
 I'm going to rename to `TYC`, which is an uglier prefix, but it avoids all of the possible conflicts. I've added a redirect from `TYP` to `TYC` for now (with a warning), since a few users are already using `TYP`.
@@ -331,10 +307,6 @@ I originally used TCH. Not sure if that's taken, but could be appropriate. Uglie
 _Comment by @charliermarsh on 2023-01-25 21:46_
 
 Oh, cool. If you used that originally, let's go with that over `TYC`. Neither seems to be used.
-
----
-
-_Referenced in [astral-sh/ruff#2195](../../astral-sh/ruff/issues/2195.md) on 2023-01-26 14:49_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-11-06T06:19:25Z
 updated_at: 2024-11-07T12:00:21Z
 url: https://github.com/astral-sh/ruff/issues/14123
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Request: Fix to remove docstrings in stubs (PYI021/docstring-in-stub)
@@ -43,14 +43,6 @@ I'm leaning towards making this fix unsafe by default, just because it's fairly 
 
 ---
 
-_Referenced in [astral-sh/ruff#14150](../../astral-sh/ruff/pulls/14150.md) on 2024-11-07 11:00_
-
----
-
 _Closed by @AlexWaygood on 2024-11-07 12:00_
-
----
-
-_Referenced in [microsoft/python-type-stubs#340](../../microsoft/python-type-stubs/pulls/340.md) on 2024-11-08 03:11_
 
 ---

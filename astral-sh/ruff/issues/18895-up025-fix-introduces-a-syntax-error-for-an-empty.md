@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-06-23T13:30:30Z
 updated_at: 2025-07-01T13:34:09Z
 url: https://github.com/astral-sh/ruff/issues/18895
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # UP025 fix introduces a syntax error for an empty string followed by a `u`-prefixed string
@@ -60,10 +60,6 @@ i want to work on this
 ---
 
 _Assigned to @lubaskinc0de by @MichaReiser on 2025-06-23 15:46_
-
----
-
-_Referenced in [astral-sh/ruff#18899](../../astral-sh/ruff/pulls/18899.md) on 2025-06-23 17:08_
 
 ---
 

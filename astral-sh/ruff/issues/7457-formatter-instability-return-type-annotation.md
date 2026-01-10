@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-17T14:52:34Z
 updated_at: 2023-09-20T20:20:23Z
 url: https://github.com/astral-sh/ruff/issues/7457
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter instability: Return type annotation
@@ -99,10 +99,6 @@ You're fearless!
 _Comment by @charliermarsh on 2023-09-20 16:52_
 
 Oh I think we actually handle this correctly (we special-case empty parameters _already_), there's just a bug in the empty detection...
-
----
-
-_Referenced in [astral-sh/ruff#7550](../../astral-sh/ruff/pulls/7550.md) on 2023-09-20 17:02_
 
 ---
 

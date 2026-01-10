@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-21T15:27:57Z
 updated_at: 2023-01-23T18:36:12Z
 url: https://github.com/astral-sh/ruff/issues/2060
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Feature request - support `flake8-use-pathlib` plugin
@@ -81,10 +81,6 @@ I'll make a PR for this today, super useful plugin
 _Comment by @charliermarsh on 2023-01-22 17:25_
 
 Awesome. We should be well-positioned to implement this via `checker.resolve_call_path`. (I doubt we can autofix these though... maybe some subset of them?)
-
----
-
-_Referenced in [astral-sh/ruff#2090](../../astral-sh/ruff/pulls/2090.md) on 2023-01-22 18:50_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-29T23:39:43Z
 updated_at: 2023-05-31T17:53:37Z
 url: https://github.com/astral-sh/ruff/issues/2329
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # autofix for TCH (flake8-type-checking) rules
@@ -135,18 +135,6 @@ What do you think?
 
 ---
 
-_Referenced in [astral-sh/ruff#3120](../../astral-sh/ruff/issues/3120.md) on 2023-02-22 19:31_
-
----
-
-_Referenced in [Olegt0rr/WebServiceTemplate#1](../../Olegt0rr/WebServiceTemplate/issues/1.md) on 2023-02-23 13:18_
-
----
-
-_Referenced in [great-expectations/great_expectations#7274](../../great-expectations/great_expectations/pulls/7274.md) on 2023-03-03 17:39_
-
----
-
 _Comment by @charliermarsh on 2023-05-18 15:28_
 
 I'm currently working on this.
@@ -157,14 +145,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-05-18 15:28_
 
 ---
 
-_Referenced in [astral-sh/ruff#4742](../../astral-sh/ruff/pulls/4742.md) on 2023-05-31 03:17_
-
----
-
 _Closed by @charliermarsh on 2023-05-31 17:53_
-
----
-
-_Referenced in [astral-sh/ruff#20237](../../astral-sh/ruff/issues/20237.md) on 2025-09-04 14:31_
 
 ---

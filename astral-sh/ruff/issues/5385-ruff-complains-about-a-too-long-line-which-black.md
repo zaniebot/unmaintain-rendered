@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-27T10:26:03Z
 updated_at: 2023-06-30T00:18:29Z
 url: https://github.com/astral-sh/ruff/issues/5385
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Ruff complains about a too long line which black does not format
@@ -202,10 +202,6 @@ _Comment by @zanieb on 2023-06-29 16:27_
 @nbro10 I think this is clearly documented at https://beta.ruff.rs/docs/faq/#is-ruff-compatible-with-black — is there somewhere else you think this information should be highlighted?
 
 Black cannot safely automatically split some long lines. In these cases, it is valuable to many users to have a linter highlight the line length violation so it can be split manually.
-
----
-
-_Referenced in [astral-sh/ruff#5443](../../astral-sh/ruff/issues/5443.md) on 2023-06-29 16:27_
 
 ---
 

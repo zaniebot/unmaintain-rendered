@@ -1,0 +1,109 @@
+```yaml
+number: 22237
+title: "Ruff format: Blank line after \"class\" keyword"
+type: issue
+state: closed
+author: danijar
+labels:
+  - formatter
+  - style
+assignees: []
+created_at: 2025-12-28T19:05:09Z
+updated_at: 2025-12-29T02:08:57Z
+url: https://github.com/astral-sh/ruff/issues/22237
+synced_at: 2026-01-10T11:10:00Z
+```
+
+# Ruff format: Blank line after "class" keyword
+
+---
+
+_Issue opened by @danijar on 2025-12-28 19:05_
+
+This feature request is for ruff format to place blank line below the "class" keyword if there is no class docstring, either via a new configuration option or as the default behavior.
+
+I'm aware that ruff format aims to stay close to black and have as little configuration as possible. However, after using ruff format for a couple of weeks I got around to all formatting decisions except for this one. I'd argue that code is significantly less readable with the current behavior of removing the blank line.
+
+As example, take this real world code example of a unit test for a build backend, as processed by ruff format. In this example, the class name and first method name become difficult to see at a quick glance, because they are "merged" together:
+
+```python3
+class TestInstall:
+    @pytest.mark.parametrize('project', PROJECTS)
+    def test_sync_editable(self, project):
+        path = ROOT / project.path
+        system = utils.System(cwd=path)
+        system('rm -rf .venv')
+        system('uv sync --editable')
+        code = f'import {project.name}; print({project.name}.foo())'
+        assert system(f'uv run python -c "{code}"') == '42\n'
+
+    @pytest.mark.parametrize('project', PROJECTS)
+    def test_sync_no_editable(self, project):
+        path = ROOT / project.path
+        system = utils.System(cwd=path)
+        system('rm -rf .venv')
+        system('uv sync --no-editable')
+        code = f'import {project.name}; print({project.name}.foo())'
+        assert system(f'uv run python -c "{code}"') == '42\n'
+
+    @pytest.mark.parametrize('project', PROJECTS)
+    def test_build_wheel(self, tmpdir, project):
+        packages = []
+        for folder in [project.path, *(project.deps or [])]:
+            path = ROOT / folder
+            system = utils.System(cwd=path)
+            system('rm -rf .venv')
+            system('rm -rf dist')
+            system('uv sync')
+            system('uv build')
+            wheels = list((path / 'dist').glob('*.whl'))
+            assert len(wheels) == 1, wheels
+            packages += [str(x) for x in wheels]
+        ...
+```
+
+Note that when there is a class docstring, black and ruff format will already insert a blank line below the docstring, clearly separating the class name from the first method:
+
+```python3
+class TestInstall:
+    """Test installation"""
+
+    @pytest.mark.parametrize('project', PROJECTS)
+    def test_sync_editable(self, project):
+        path = ROOT / project.path
+        system = utils.System(cwd=path)
+        system('rm -rf .venv')
+        system('uv sync --editable')
+        code = f'import {project.name}; print({project.name}.foo())'
+        assert system(f'uv run python -c "{code}"') == '42\n'
+```
+
+We found ourselves inserting useless class docstrings across the code base to satisfy the formatter, which adds overhead when reading and modifying the code.
+
+Moreover, in the case that the first method of the class is `__init__()`, having it visually connected to the class name may be less of a concern, so the current behaviors works there too.
+
+I suspect that when the formatting decision was made in black, the creators mostly had the above two common cases in mind. I would argue that explicitly placing a blank line below a "class" keyword that has no docstring solves a visual clarity issue in the general case, and is thus a worthwhile deviation from black (whether configurable or not).
+
+Thank you for your consideration.
+
+---
+
+_Comment by @ntBre on 2025-12-29 02:08_
+
+Thank you for the feedback and the great write-up! I think this is a duplicate of #21380, which also links to some of the previous discussion.
+
+We recently added an exception for function headers in #21110 and are open to doing the same for classes, but we're still collecting feedback (such as this issue!) to help us decide.
+
+---
+
+_Closed by @ntBre on 2025-12-29 02:08_
+
+---
+
+_Label `formatter` added by @ntBre on 2025-12-29 02:08_
+
+---
+
+_Label `style` added by @ntBre on 2025-12-29 02:08_
+
+---

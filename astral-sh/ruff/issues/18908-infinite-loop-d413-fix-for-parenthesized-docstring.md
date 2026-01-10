@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-06-24T05:06:59Z
 updated_at: 2025-06-30T14:49:15Z
 url: https://github.com/astral-sh/ruff/issues/18908
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # [Infinite loop] D413 fix for parenthesized docstring
@@ -275,10 +275,6 @@ _Label `docstring` added by @AlexWaygood on 2025-06-24 10:05_
 ---
 
 _Label `fixes` added by @AlexWaygood on 2025-06-24 10:05_
-
----
-
-_Referenced in [astral-sh/ruff#18930](../../astral-sh/ruff/pulls/18930.md) on 2025-06-25 02:33_
 
 ---
 

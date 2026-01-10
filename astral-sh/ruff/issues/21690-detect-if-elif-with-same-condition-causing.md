@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-11-29T10:05:10Z
 updated_at: 2025-11-30T12:02:21Z
 url: https://github.com/astral-sh/ruff/issues/21690
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # Detect `if-elif` with same condition causing unreachable branch
@@ -101,10 +101,6 @@ Which makes it slightly harder to understand _why_ it's unreachable (`if-elif` w
 ---
 
 _Renamed from "Detect if-elif with same condition causing unreachable branch" to "Detect `if-elif` with same condition causing unreachable branch" by @injust on 2025-11-29 10:22_
-
----
-
-_Referenced in [astral-sh/ruff#21692](../../astral-sh/ruff/issues/21692.md) on 2025-11-29 10:27_
 
 ---
 

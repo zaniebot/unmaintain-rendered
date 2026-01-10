@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-26T14:05:41Z
 updated_at: 2024-08-26T16:06:12Z
 url: https://github.com/astral-sh/ruff/issues/13110
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Cannot find ruff on Windows in venv using --system-site-packages
@@ -65,9 +65,5 @@ Ruff version: 0.6.2
 ---
 
 _Label `windows` added by @dhruvmanila on 2024-08-26 16:06_
-
----
-
-_Referenced in [astral-sh/ruff#15630](../../astral-sh/ruff/issues/15630.md) on 2025-01-29 09:11_
 
 ---

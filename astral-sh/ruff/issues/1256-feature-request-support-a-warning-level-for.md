@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-12-16T01:47:57Z
 updated_at: 2025-10-04T13:09:12Z
 url: https://github.com/astral-sh/ruff/issues/1256
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Feature request: Support a "warning" level for linting
@@ -74,10 +74,6 @@ The most basic thing would be a map from check code prefix to level, like:
 
 ---
 
-_Referenced in [canonical/craft-parts#337](../../canonical/craft-parts/pulls/337.md) on 2022-12-16 14:43_
-
----
-
 _Comment by @lengau on 2022-12-17 01:45_
 
 Not really sure... Naively, it appears to me that the most consistent way to configure it would be to have `warn` and `extend-warn` (or `warning` & `extend-warning`).
@@ -101,10 +97,6 @@ _Label `core` added by @charliermarsh on 2022-12-31 18:14_
 ---
 
 _Label `configuration` added by @charliermarsh on 2022-12-31 18:14_
-
----
-
-_Referenced in [astral-sh/ruff#645](../../astral-sh/ruff/issues/645.md) on 2022-12-31 18:27_
 
 ---
 
@@ -146,10 +138,6 @@ If by "type of diagnostic" you mean warning or error, it wouldn't be able to. I 
 
 ---
 
-_Referenced in [astral-sh/ruff#1992](../../astral-sh/ruff/issues/1992.md) on 2023-01-26 19:28_
-
----
-
 _Comment by @lengau on 2023-01-30 02:10_
 
 @jfmengels while what you mention would be ideal, I don't believe it's practical for ruff.
@@ -173,10 +161,6 @@ Perhaps elm as a language doesn't have this. I'm not familiar enough with it to 
 ## Thank you
 
 That's not to say that your post wasn't without inspiration for me. To start, I think having certain rules [ignore noqa commets](https://jfmengels.net/disable-comments/#non-disableable-rules-by-default) is a great idea, and this could be implemented with only a small tweak to my feature request. A "critical" level would be great for allowing a project maintainer to prevent certain rules from being disabled. I'd imagine rules like F401 (unused import), F631/631 (assert/if is always true) and E999 (syntax error) could even be made critical by default. With that, explanations for noqa comments and the already-extant `RUF100` rule to alert about unused `noqa` comments (allowing an update to ruff to alert the user of fixes to bugs in the linter).
-
----
-
-_Referenced in [astral-sh/ruff#2349](../../astral-sh/ruff/issues/2349.md) on 2023-01-30 12:10_
 
 ---
 
@@ -307,14 +291,6 @@ But... it'd be nice to have a unified API for turning errors "on" and "off", _an
 
 ---
 
-_Referenced in [astral-sh/ruff#3070](../../astral-sh/ruff/issues/3070.md) on 2023-02-23 07:03_
-
----
-
-_Referenced in [astral-sh/ruff#2179](../../astral-sh/ruff/issues/2179.md) on 2023-03-07 02:26_
-
----
-
 _Comment by @Avasam on 2023-03-07 16:27_
 
 I have two main uses for setting a linter rule as warning:
@@ -337,31 +313,11 @@ Because ruff includes rules of really varying importance. If you have an importa
 
 ---
 
-_Referenced in [python-lsp/python-lsp-ruff#21](../../python-lsp/python-lsp-ruff/issues/21.md) on 2023-03-12 18:57_
-
----
-
-_Referenced in [astral-sh/ruff-vscode#161](../../astral-sh/ruff-vscode/issues/161.md) on 2023-03-19 18:16_
-
----
-
 _Comment by @teucer on 2023-03-24 23:48_
 
 Having configurable severity levels is important for pipelines. Having gitlab levels (potentially preconfigured) would add a lot of value. 
 
 Right now everything is major. I have added a script to postprocess the generated json file, but it is very hard to decide on the levels.
-
----
-
-_Referenced in [astral-sh/ruff#3734](../../astral-sh/ruff/issues/3734.md) on 2023-03-25 23:04_
-
----
-
-_Referenced in [astral-sh/ruff#3782](../../astral-sh/ruff/issues/3782.md) on 2023-03-28 23:34_
-
----
-
-_Referenced in [Toufool/AutoSplit#207](../../Toufool/AutoSplit/pulls/207.md) on 2023-04-08 00:24_
 
 ---
 
@@ -395,14 +351,6 @@ autofix = "never"
 
 ---
 
-_Referenced in [astral-sh/ruff#1774](../../astral-sh/ruff/issues/1774.md) on 2023-06-14 22:09_
-
----
-
-_Referenced in [astral-sh/ruff#6294](../../astral-sh/ruff/issues/6294.md) on 2024-03-25 19:44_
-
----
-
 _Comment by @kaddkaka on 2024-04-09 08:53_
 
 Jenkins CI has a plugin called warnings-ng for reporting issues from various tools. see https://github.com/jenkinsci/warnings-ng-plugin/blob/main/doc/Documentation.md#issues-history-new-fixed-and-outstanding-issues
@@ -410,10 +358,6 @@ Jenkins CI has a plugin called warnings-ng for reporting issues from various too
 Unfortunately ruff format is not supported yet. If we could have that it might be able to detect which warnings are new and which are old. This would make it easier to start using ruff in a repo with a lot of warnings by using a baseline.
 
 see https://github.com/jenkinsci/warnings-ng-plugin/blob/main/SUPPORTED-FORMATS.md
-
----
-
-_Referenced in [astral-sh/ruff#11877](../../astral-sh/ruff/issues/11877.md) on 2024-06-14 15:23_
 
 ---
 
@@ -449,10 +393,6 @@ This should only add `noqa` comments for the selected rules.
 
 ---
 
-_Referenced in [astral-sh/ruff#12805](../../astral-sh/ruff/issues/12805.md) on 2024-08-16 15:51_
-
----
-
 _Comment by @FichteFoll on 2024-08-21 09:32_
 
 Since it hasn't been explicitly mentioned yet, I'd also like to point one use case of autofixing. 
@@ -460,18 +400,6 @@ Since it hasn't been explicitly mentioned yet, I'd also like to point one use ca
 For some eslint project, I have turned the most common autofixable lint errors into warnings so that I am aware of them while editing. Since I personally am auto-formatting on save (and fixing all these autofixables at once) I don't need them to be marked as warnings, but not everyone else on the team might be, I still want these to cause the CI lint pass to fail.
 
 Thus, perhaps a way of specifying the level/severity of all autofixable rules at once on a machine-by-machine basis, e.g. by a parameter to the language server, would make sense here.
-
----
-
-_Referenced in [microsoft/python-type-stubs#340](../../microsoft/python-type-stubs/pulls/340.md) on 2024-11-08 03:09_
-
----
-
-_Referenced in [microsoft/python-type-stubs#341](../../microsoft/python-type-stubs/pulls/341.md) on 2024-11-08 03:47_
-
----
-
-_Referenced in [microsoft/python-type-stubs#342](../../microsoft/python-type-stubs/pulls/342.md) on 2024-11-08 04:09_
 
 ---
 
@@ -493,55 +421,15 @@ Junit support was actually added in #968
 
 ---
 
-_Referenced in [astral-sh/ruff#14680](../../astral-sh/ruff/issues/14680.md) on 2024-11-29 19:28_
-
----
-
-_Referenced in [astral-sh/ruff#14568](../../astral-sh/ruff/issues/14568.md) on 2024-12-29 01:03_
-
----
-
-_Referenced in [python/typeshed#13295](../../python/typeshed/issues/13295.md) on 2024-12-29 01:10_
-
----
-
-_Referenced in [astral-sh/ruff#15801](../../astral-sh/ruff/issues/15801.md) on 2025-02-04 02:29_
-
----
-
-_Referenced in [astral-sh/ruff#15952](../../astral-sh/ruff/issues/15952.md) on 2025-02-04 22:40_
-
----
-
-_Referenced in [astral-sh/ruff-vscode#721](../../astral-sh/ruff-vscode/issues/721.md) on 2025-03-20 11:03_
-
----
-
 _Comment by @ShravanSunder on 2025-07-25 11:45_
 
 It would be great to have severity levels and have this be integrated into ruff vscode plugin
 
 ---
 
-_Referenced in [astral-sh/ruff#18221](../../astral-sh/ruff/pulls/18221.md) on 2025-08-07 15:22_
-
----
-
 _Comment by @Sillocan on 2025-08-15 23:50_
 
 I would absolutely love warnings in codeclimate rather than errors for some errors such as TODOs
-
----
-
-_Referenced in [astral-sh/ruff#20038](../../astral-sh/ruff/issues/20038.md) on 2025-08-22 18:39_
-
----
-
-_Referenced in [astral-sh/ruff#16867](../../astral-sh/ruff/issues/16867.md) on 2025-09-03 17:30_
-
----
-
-_Referenced in [astral-sh/ruff-vscode#852](../../astral-sh/ruff-vscode/issues/852.md) on 2025-09-29 19:43_
 
 ---
 
@@ -560,13 +448,5 @@ And all of `E` is "error", except for `E115` which is "warning".
 And the rest of `ALL` is all "hint", except for `PLC0208` which is "warning" and `A001` which is "error".
 
 It would be bad to have to specify hundreds of "hint" lines in `ruff.toml` for something like that.
-
----
-
-_Referenced in [astral-sh/ruff-pre-commit#146](../../astral-sh/ruff-pre-commit/issues/146.md) on 2025-12-03 12:14_
-
----
-
-_Referenced in [etiennebacher/jarl#231](../../etiennebacher/jarl/issues/231.md) on 2025-12-11 10:00_
 
 ---

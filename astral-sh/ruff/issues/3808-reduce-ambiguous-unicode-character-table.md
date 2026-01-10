@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-03-30T10:41:20Z
 updated_at: 2023-06-27T13:16:24Z
 url: https://github.com/astral-sh/ruff/issues/3808
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Reduce ambiguous unicode character table
@@ -159,10 +159,6 @@ _Comment by @charliermarsh on 2023-06-06 01:35_
      8094 (0.5%,  2.6%)      1 (0.0%,  0.0%)  <ruff[58726c95636f7b65]::codes::Rule>::noqa_code
      7315 (0.4%,  3.1%)      1 (0.0%,  0.0%)  <ruff[58726c95636f7b65]::checkers::ast::Checker as ruff_python_ast[2ac961f4186054]::visitor::Visitor>::visit_stmt
 ```
-
----
-
-_Referenced in [astral-sh/ruff#4926](../../astral-sh/ruff/pulls/4926.md) on 2023-06-07 12:33_
 
 ---
 

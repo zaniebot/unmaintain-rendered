@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-12-21T21:09:28Z
 updated_at: 2022-12-22T02:15:58Z
 url: https://github.com/astral-sh/ruff/issues/1315
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:25Z
 ```
 
 # Implement E401 ("multiple imports on one line")
@@ -40,10 +40,6 @@ _Comment by @charliermarsh on 2022-12-21 21:11_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2022-12-22 02:06_
-
----
-
-_Referenced in [astral-sh/ruff#1326](../../astral-sh/ruff/pulls/1326.md) on 2022-12-22 02:15_
 
 ---
 

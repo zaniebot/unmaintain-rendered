@@ -1,0 +1,97 @@
+```yaml
+number: 15227
+title: "[RUF027] missing-f-string-syntax has false negatives if calling a function inside brackets or accessing attribute of interpolated variable"
+type: issue
+state: open
+author: sjdemartini
+labels:
+  - rule
+  - preview
+assignees: []
+created_at: 2025-01-02T20:24:04Z
+updated_at: 2025-04-11T08:42:55Z
+url: https://github.com/astral-sh/ruff/issues/15227
+synced_at: 2026-01-10T11:09:56Z
+```
+
+# [RUF027] missing-f-string-syntax has false negatives if calling a function inside brackets or accessing attribute of interpolated variable
+
+---
+
+_Issue opened by @sjdemartini on 2025-01-02 20:24_
+
+With RUF027 enabled, I would expect it to flag both of these, which it currently does not:
+1. function calls within the bracketed expression, like `print("Hello {foo()}")`
+2. bracketed expressions that access an attribute of an in-scope variable, like `print("Hello {foo.bar}")`
+
+Neither of these situations seems to be explicitly part of the [listed exceptions](https://docs.astral.sh/ruff/rules/missing-f-string-syntax/#details) to the rule, and don't seem like they should be.
+
+Example:
+
+```python
+def fibonacci(n):
+    """Compute the nth number in the Fibonacci sequence."""
+    if n == 0:
+        return 0
+    elif n == 1:
+        return 1
+    else:
+        return fibonacci(n - 1) + fibonacci(n - 2)
+
+class Foo:
+    BAR = 5
+
+name = "Sarah"
+day_of_week = "Tuesday"
+
+print("Hello {name}! It is {day_of_week} today!")  # Correctly flagged by RUF027
+print("Hello {fibonacci}") # Correctly flagged by RUF027
+
+print("Hello {fibonacci(1)}") # Should be flagged by RUF027 but is not
+print("Hello {Foo.BAR}") # Should be flagged by RUF027 but is not
+```
+
+Playground: https://play.ruff.rs/ff81d90f-a1d6-4842-8b1b-b31ede9edbaf
+
+---
+
+_Comment by @dhruvmanila on 2025-01-03 02:47_
+
+Yeah, this seems like something that we should catch. It could be that we're deliberately ignoring expressions that are not pure variables although I'll have to check the source code to confirm. Thanks for the report.
+
+---
+
+_Label `rule` added by @dhruvmanila on 2025-01-03 02:48_
+
+---
+
+_Label `preview` added by @dhruvmanila on 2025-01-03 02:48_
+
+---
+
+_Comment by @MichaReiser on 2025-01-03 07:52_
+
+The rule only flags f-strings referencing a local variable to reduce false positives. This can be found here:
+
+https://github.com/astral-sh/ruff/blob/c0b7c36d435441788b5a1f2330a66613656a3e47/crates/ruff_linter/src/rules/ruff/rules/missing_fstring_syntax.rs#L207-L225
+
+We could extend the rule to support more expressions, e.g. attribute access or call expressions. The ideal solution is probably to extract the left-most name and try to lookup that name
+
+---
+
+_Comment by @bittner on 2025-04-11 08:42_
+
+Same here:
+
+```python
+from django.db import models
+
+class BehaveTestModel(models.Model):
+    name = models.CharField(max_length=255)
+    number = models.IntegerField()
+
+    def get_absolute_url(self):
+        return '/behave/test/{self.number}/{self.name}'  # Should be flagged by RUF027 but is not
+```
+
+---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-08T16:33:40Z
 updated_at: 2023-07-08T16:51:38Z
 url: https://github.com/astral-sh/ruff/issues/5617
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Support `# flake8: noqa: F401`
@@ -24,10 +24,6 @@ Flake8 treats this equivalently to `# flake8: noqa` -- that is, it turns off all
 ---
 
 _Label `noqa` added by @charliermarsh on 2023-07-08 16:33_
-
----
-
-_Referenced in [astral-sh/ruff#5618](../../astral-sh/ruff/pulls/5618.md) on 2023-07-08 16:39_
 
 ---
 

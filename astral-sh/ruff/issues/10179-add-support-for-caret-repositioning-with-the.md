@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-01T06:07:19Z
 updated_at: 2025-07-17T21:42:55Z
 url: https://github.com/astral-sh/ruff/issues/10179
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Add support for caret repositioning with the formatter
@@ -35,10 +35,6 @@ new caret position: 1:2
 
 This is desired for IDE integration:
 - PyCharm: https://github.com/koxudaxi/ruff-pycharm-plugin/issues/388
-
----
-
-_Referenced in [koxudaxi/ruff-pycharm-plugin#388](../../koxudaxi/ruff-pycharm-plugin/issues/388.md) on 2024-03-01 06:10_
 
 ---
 
@@ -437,10 +433,6 @@ There are PRs about making the external formatter and Ruff executable directory 
 I would also like to address other issues tagged with `enhancement` and `bug` as soon as I have time.
 
 
-
----
-
-_Referenced in [astral-sh/ruff#17572](../../astral-sh/ruff/issues/17572.md) on 2025-04-23 06:25_
 
 ---
 

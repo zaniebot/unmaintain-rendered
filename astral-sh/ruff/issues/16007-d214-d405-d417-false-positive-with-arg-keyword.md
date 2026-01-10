@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-07T00:16:20Z
 updated_at: 2025-02-11T17:05:30Z
 url: https://github.com/astral-sh/ruff/issues/16007
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [D214, D405, D417] False positive with arg keyword `attributes`
@@ -108,10 +108,6 @@ _Label `bug` added by @ntBre on 2025-02-07 04:08_
 ---
 
 _Label `docstring` added by @ntBre on 2025-02-07 04:08_
-
----
-
-_Referenced in [astral-sh/ruff#16011](../../astral-sh/ruff/pulls/16011.md) on 2025-02-07 04:48_
 
 ---
 

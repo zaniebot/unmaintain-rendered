@@ -8,9 +8,9 @@ labels:
   - wish
 assignees: []
 created_at: 2023-03-29T09:26:30Z
-updated_at: 2026-01-02T04:26:03Z
+updated_at: 2026-01-09T01:26:25Z
 url: https://github.com/astral-sh/ruff/issues/3792
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Apply `ruff` to `markdown` code blocks
@@ -156,18 +156,6 @@ Cool!
 
 ---
 
-_Referenced in [astral-sh/ruff#4375](../../astral-sh/ruff/pulls/4375.md) on 2023-05-11 13:48_
-
----
-
-_Referenced in [astral-sh/ruff#5123](../../astral-sh/ruff/pulls/5123.md) on 2023-06-15 20:38_
-
----
-
-_Referenced in [astral-sh/ruff#5356](../../astral-sh/ruff/pulls/5356.md) on 2023-06-25 21:36_
-
----
-
 _Comment by @evanrittenhouse on 2023-06-29 23:50_
 
 Listing down some of the issues I see after hacking around locally: 
@@ -278,10 +266,6 @@ cc @dhruvmanila (who implemented Jupyter support and is on the core team)
 
 ---
 
-_Referenced in [astral-sh/ruff#6140](../../astral-sh/ruff/issues/6140.md) on 2023-07-28 01:25_
-
----
-
 _Comment by @RonnyPfannschmidt on 2023-07-29 09:51_
 
 for sanity it might make absolute sense to consider each markdown fragment a "own file" with a offset starting point
@@ -293,38 +277,6 @@ this capability might actually make it easier to make IDE/language server helper
 
 
 
-
----
-
-_Referenced in [astral-sh/ruff-pre-commit#55](../../astral-sh/ruff-pre-commit/issues/55.md) on 2023-10-24 17:44_
-
----
-
-_Referenced in [opensafely-core/ehrql#1346](../../opensafely-core/ehrql/issues/1346.md) on 2023-10-25 10:30_
-
----
-
-_Referenced in [astral-sh/ruff#8236](../../astral-sh/ruff/issues/8236.md) on 2023-10-26 02:51_
-
----
-
-_Referenced in [astral-sh/ruff#8237](../../astral-sh/ruff/issues/8237.md) on 2023-10-26 02:56_
-
----
-
-_Referenced in [astropy/astropy#15367](../../astropy/astropy/pulls/15367.md) on 2023-11-17 05:03_
-
----
-
-_Referenced in [astral-sh/ruff#8800](../../astral-sh/ruff/issues/8800.md) on 2023-11-21 14:45_
-
----
-
-_Referenced in [astral-sh/ruff#8811](../../astral-sh/ruff/pulls/8811.md) on 2023-12-13 20:37_
-
----
-
-_Referenced in [pybamm-team/PyBaMM#3656](../../pybamm-team/PyBaMM/pulls/3656.md) on 2023-12-23 22:03_
 
 ---
 
@@ -358,10 +310,6 @@ _Comment by @tvatter on 2024-01-26 09:07_
 
 ---
 
-_Referenced in [apify/apify-docs#864](../../apify/apify-docs/issues/864.md) on 2024-03-01 09:19_
-
----
-
 _Comment by @Avasam on 2024-08-18 05:23_
 
 > ### Embedded Languages
@@ -392,34 +340,6 @@ It is new and I'm very open to feedback on it.
 By default, `doccmd` basically adds newlines to the beginning of the extracted code block to make line numbers in errors match the documentation file. This doesn't work for `ruff format` which expects to not have a bunch of newlines at the start, so there is the `--no-pad-file` option.
 
 I'm also using it to run `mypy`, `pyright`, `vulture`, `interrogate` ... on my documentation.
-
----
-
-_Referenced in [glass-dev/glass#250](../../glass-dev/glass/pulls/250.md) on 2024-09-25 14:44_
-
----
-
-_Referenced in [pyvista/pyvista#6991](../../pyvista/pyvista/pulls/6991.md) on 2024-12-17 08:57_
-
----
-
-_Referenced in [astral-sh/ruff#15650](../../astral-sh/ruff/issues/15650.md) on 2025-01-21 17:11_
-
----
-
-_Referenced in [ethereum/consensus-specs#4159](../../ethereum/consensus-specs/pulls/4159.md) on 2025-03-11 03:10_
-
----
-
-_Referenced in [modelcontextprotocol/python-sdk#286](../../modelcontextprotocol/python-sdk/pulls/286.md) on 2025-03-14 11:27_
-
----
-
-_Referenced in [astral-sh/ruff#17417](../../astral-sh/ruff/issues/17417.md) on 2025-04-16 10:15_
-
----
-
-_Referenced in [seedcase-project/seedcase-sprout#1310](../../seedcase-project/seedcase-sprout/issues/1310.md) on 2025-05-02 11:52_
 
 ---
 
@@ -531,22 +451,6 @@ Thanks @34j for writing the tool and letting users know about it. I suggest that
 
 ---
 
-_Referenced in [HEFTIEProject/heftie-textbook#101](../../HEFTIEProject/heftie-textbook/issues/101.md) on 2025-07-22 16:01_
-
----
-
-_Referenced in [RadioAstronomySoftwareGroup/pyuvdata#1603](../../RadioAstronomySoftwareGroup/pyuvdata/pulls/1603.md) on 2025-08-14 17:02_
-
----
-
-_Referenced in [glass-dev/glass#751](../../glass-dev/glass/issues/751.md) on 2025-11-03 15:43_
-
----
-
-_Referenced in [ome-zarr-models/ome-zarr-book#4](../../ome-zarr-models/ome-zarr-book/issues/4.md) on 2025-11-03 16:17_
-
----
-
 _Comment by @DetachHead on 2026-01-02 04:26_
 
 as a workaround to format python codeblocks in markdown files, you can use the [ruff dprint plugin](https://dprint.dev/plugins/ruff/):
@@ -556,5 +460,9 @@ uv add --dev dprint-py
 dprint config add ruff
 dprint config add markdown
 ```
+
+---
+
+_Assigned to @amyreese by @amyreese on 2026-01-09 01:26_
 
 ---

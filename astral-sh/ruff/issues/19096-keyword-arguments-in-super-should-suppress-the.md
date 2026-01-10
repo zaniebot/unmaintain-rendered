@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-07-02T16:12:42Z
 updated_at: 2025-07-09T19:13:24Z
 url: https://github.com/astral-sh/ruff/issues/19096
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Keyword arguments in `super` should suppress the UP008 fix
@@ -102,10 +102,6 @@ print(len(Ord(8)))
            ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 TypeError: super() takes no keyword arguments
 ```
-
----
-
-_Referenced in [astral-sh/ruff#19131](../../astral-sh/ruff/pulls/19131.md) on 2025-07-03 21:25_
 
 ---
 

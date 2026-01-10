@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-09T01:02:59Z
 updated_at: 2023-08-09T02:36:42Z
 url: https://github.com/astral-sh/ruff/issues/6433
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # `F823` false positive in ruff 0.0.283
@@ -125,10 +125,6 @@ _Label `bug` added by @charliermarsh on 2023-08-09 01:45_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-08-09 02:11_
-
----
-
-_Referenced in [astral-sh/ruff#6435](../../astral-sh/ruff/pulls/6435.md) on 2023-08-09 02:26_
 
 ---
 

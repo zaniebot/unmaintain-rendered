@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-08-01T06:44:05Z
 updated_at: 2023-08-01T14:02:59Z
 url: https://github.com/astral-sh/ruff/issues/6224
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # pydocstyle errors should not appear in `.pyi` files
@@ -48,10 +48,6 @@ def asdf():
 asdf.pyi:2:5: PYI021 Docstrings should not be included in stubs
 Found 1 error.
 ```
-
----
-
-_Referenced in [astral-sh/ruff#6239](../../astral-sh/ruff/pulls/6239.md) on 2023-08-01 12:54_
 
 ---
 

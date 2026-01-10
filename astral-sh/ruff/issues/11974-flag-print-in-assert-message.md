@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-21T18:21:04Z
 updated_at: 2024-06-23T17:30:41Z
 url: https://github.com/astral-sh/ruff/issues/11974
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # flag `print` in `assert` message
@@ -74,10 +74,6 @@ I wonder if it makes sense to phrase this rule more generally. Overall, it is pr
 _Comment by @denwong47 on 2024-06-22 09:39_
 
 With type inference this rule could become a nice-to-have: since the return type of print already violates the type of the expression, the only thing that this rule will provide is a nicer error message instead of "str is expected but found NoneType".
-
----
-
-_Referenced in [astral-sh/ruff#11981](../../astral-sh/ruff/pulls/11981.md) on 2024-06-22 12:22_
 
 ---
 

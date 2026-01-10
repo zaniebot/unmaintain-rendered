@@ -1,0 +1,234 @@
+```yaml
+number: 14070
+title: "[Rule Request] Enforce consistency between `import ...` and `from ... import ...`"
+type: issue
+state: open
+author: jimmyt857
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2024-11-04T00:41:02Z
+updated_at: 2025-01-22T09:49:06Z
+url: https://github.com/astral-sh/ruff/issues/14070
+synced_at: 2026-01-10T11:09:55Z
+```
+
+# [Rule Request] Enforce consistency between `import ...` and `from ... import ...`
+
+---
+
+_Issue opened by @jimmyt857 on 2024-11-04 00:41_
+
+When it comes to readability, consistency is the most important factor. Our team would love to see a rule that does the following:
+
+Before:
+```
+from a.b import c
+from d.e import g as f
+import u.v as v
+import x.y as z
+```
+
+After (`Option 1`):
+```
+from a.b import c
+from d.e import g as f
+from u import v
+from x import y as z
+```
+
+After (`Option 2`):
+```
+import a.b.c as c
+import d.e.g as f
+import u.v as v
+import x.y as z
+```
+
+Whether `Option 1` or `Option 2` is used would be a configurable parameter. Our team prefers Option 2 because it visually separates the full module name from the alias, and because it makes reverse dependency lookups via search/grepping easier. But I imagine other teams might prefer Option 1, and I noticed there is already a rule ([PLR0402](https://docs.astral.sh/ruff/rules/manual-from-import/)) which would be incompatible with option 2.
+
+---
+
+_Comment by @MichaReiser on 2024-11-04 07:06_
+
+@AlexWaygood what's your take on this?
+
+---
+
+_Comment by @AlexWaygood on 2024-11-04 18:41_
+
+So to clarify, PLR0402 currently complains about the first of these, but not the second -- i.e., it only complains if the name the submodule is being aliased to is actually the same as the last part of the submodule's name:
+
+```py
+import x.y as y
+import x.y as z
+```
+
+One way of interpreting @jimmyt857's issue here is that it would be nice to also have a rule that complained about the second of these. I can see why many people might prefer that as a stylistic preference. I'm torn whether it should be part of PLR0402 or a separate rule, though. On the one hand it feels more pedantic and opinionated than what PLR0402 does currently:
+- The first of these import statements really does feel like a "redundant" alias, a reinvention of `from` imports. The second feels ~fine to me, but as I say, I can see why some people might not like it from a consistency perspective.
+- But having a new rule just for complaining about the second pattern feels almost like overkill, given how similar it would be to what PLR0402 already does
+- Maybe we could make PLR0402 configurable? By default, it would only complain about the first pattern, but if you enabled a setting, it would also complain about the second pattern? But we already have so many configuration settings :(
+
+But @jimmyt857 also says that his _real_ preference would be to enforce the _opposite_ of what PRL0402 currently enforces -- he _ideally_ wants a rule that would enforce using `import x.y as y` instead of `from x import y`. I don't think we should add a new rule to do this: it's really confusing when we have different rules that recommend contradictory things. Possibly, again, we could make PLR0402 configurable so that you could reverse the kinds of things it complains about -- but I'm not sure it's worth it here... it's just my opinion, but I think Option (1) is the more common preference among Python programmers.
+
+---
+
+_Renamed from "[Rule Request] Enforce consistency between `import a.b.c as d` and `from a.b import c as d`" to "[Rule Request] Enforce consistency between `import ...` and `from ... import ...`" by @jimmyt857 on 2024-11-04 21:00_
+
+---
+
+_Comment by @jimmyt857 on 2024-11-04 21:47_
+
+Yep, you got it @AlexWaygood! Another way of phrasing this request is that it should enforce either that all import lines start with `from` or that all import lines start with `import`. There would be a few exceptions in either case, e.g. we wouldn't want to force changes to `import enum`, `import numpy as np` or `from typing import Callable`.
+
+The current state of affairs is the worst of all worlds; the two styles are mixed throughout our codebase and even within individual python files. If only Option 1 (all imports start with `from`) was supported, it would still be an improvement. I got chatgpt to help generate a more interesting example:
+
+Mixed:
+```python
+import internal_package.module_h as module_h
+import internal_package.module_one as module_one
+import internal_package.module_two as module_two
+import internal_package.submodule_a.submodule_b as submodule_b
+import internal_package.submodule_c as submodule_c
+import internal_package.submodule_d as d_submodule
+from internal_package.submodule_e import logger as log
+import internal_package.submodule_f.submodule_g
+from internal_package.submodule_i.submodule_j as api_client
+import internal_package.submodule_k as submodule_k
+import internal_package.submodule_l.submodule_m as submodule_m
+from internal_package.submodule_n import formatter as fmt
+import internal_package.utils.data_processor as data_processor
+```
+
+`Option 1`
+```python
+from internal_package import module_h
+from internal_package import module_one
+from internal_package import module_two
+from internal_package.submodule_a import submodule_b
+from internal_package import submodule_c
+from internal_package import submodule_d as d_submodule
+from internal_package.submodule_e import logger as log
+from internal_package.submodule_f import submodule_g
+from internal_package.submodule_i.submodule_j import api_client
+from internal_package import submodule_k
+from internal_package.submodule_l import submodule_m
+from internal_package.submodule_n import formatter as fmt
+from internal_package.utils.data_processor import data_processor
+```
+
+`Option 2`
+```python
+import internal_package.module_h as module_h
+import internal_package.module_one as module_one
+import internal_package.module_two as module_two
+import internal_package.submodule_a.submodule_b as submodule_b
+import internal_package.submodule_c as submodule_c
+import internal_package.submodule_d as d_submodule
+import internal_package.submodule_e as log
+import internal_package.submodule_f.submodule_g as submodule_g
+import internal_package.submodule_i.submodule_j as api_client
+import internal_package.submodule_k as submodule_k
+import internal_package.submodule_l.submodule_m as submodule_m
+import internal_package.submodule_n as formatter
+import internal_package.utils.data_processor as data_processor
+```
+
+I agree that Option 1 is likely the more common preference, and should at least be the default setting. A configurable parameter would be nice though, because Option 2 has a few benefits:
+
+- The normally-cited benefit of `from` statements, that they are shorter, is flipped when an alias is used; `from mylib1 import mylib2 as mylib3` is longer than `import mylib1.mylib2 as mylib3`.
+- `from` statements make the reader jump across the `import` keyword and perform mental concatenation to figure out the module being imported. They are arguably less readable in the most important sense, which is the amount of time required to understand their meaning.
+- When doing a text-based search or grep of a codebase to find usages of a module, the `from` syntax makes the search query awkward (`grep -r "mylib1 import mylib2"` vs `grep -r "mylib1.mylib2"`). It will also miss string-based imports e.g. in test mocks like `with mock.patch("mylib1.mylib2.my_func")`, forcing the user to perform 2 separate searches (assuming they remember this edge case in the first place).
+- `from` statements are inappropriate for standard libraries e.g. `import enum`, `import time`, etc, so the end result is less aesthetically appealing. `import` style has fewer exceptions (`typing` and `collections.abc` come to mind).
+
+---
+
+_Comment by @jimmyt857 on 2024-11-05 01:22_
+
+Regarding the dilemma you've highlighted about how to structure the rules, IMO it would be reasonable to think of PLR0402 as a check for redundancy, and have a new rule that is focused on stylistic consistency, i.e. it checks all options (not merely `import x.y as z` but also `import x.y as y`). This makes the role of each rule very clear, at the cost of creating some overlap between the types of statements they operate on. With the default behavior being `Option 1`, the new rule would be in alignment with PLR0402 unless the user opts-out.
+
+---
+
+_Label `rule` added by @dhruvmanila on 2024-11-05 04:13_
+
+---
+
+_Label `needs-decision` added by @dhruvmanila on 2024-11-05 04:13_
+
+---
+
+_Comment by @epenet on 2025-01-22 09:30_
+
+I come here from a similar request in #15639.
+
+I think it's very important to also consider functions, variables, or classes... which I don't think ruff is aware of, without type-inference and multi-file analysis.
+
+With that in mind, I think implementing option 1 would be straightforward.
+
+If the import is a top-level module, then it can't (and shouldn't) be changed:
+```python
+import x
+import y as z
+```
+
+If the import is a sub-level module, then it depends if there is an alias or not:
+```python
+import a.b
+import c.d as e
+
+a.b.do_something()
+e.do_something_else()
+```
+
+Only the aliased import can be converted safely:
+```python
+from a import b # unsafe change
+from c import d as e # safe change
+
+# this one no longer works, and need to be adjusted
+# a.b.do_something()
+b.do_something()
+# this one is safe
+e.do_something_else()
+```
+
+I think it should be implemented as two separate opt-in rules.
+- Rule 1 to prevent aliased sub-imports `import x.y as z` with safe fix to `from x import y as z`
+- Rule 2 to prevent not-aliased sub-import `import x.y` with unsafe fix to `from x import y`
+
+---
+
+_Comment by @epenet on 2025-01-22 09:33_
+
+Regarding option 2, I am not sure it can de done at all without type-inference and multi-file analysis.
+
+How would ruff be able convert this?
+```python
+from package import module as module_a
+from package import function as function_a
+```
+
+Converting both wouldn't work:
+```python
+import package.module as module_a # OK
+import package.function as function_a # ImportError: No module named function
+```
+
+So I don't think it's a good idea to try to implement option 2
+
+---
+
+_Comment by @epenet on 2025-01-22 09:44_
+
+> I think it should be implemented as two separate opt-in rules.
+> 
+> * Rule 1 to prevent aliased sub-imports `import x.y as z` with safe fix to `from x import y as z`
+> * Rule 2 to prevent not-aliased sub-import `import x.y` with unsafe fix to `from x import y`
+
+I would also be happy if it was a configurable option for `PLR0402`:
+- Checks for submodule imports that are aliased to the submodule name (default/current behavior)
+- Checks for submodule imports that are aliased (even if the alias is different from the submodule name - see [#15639](https://github.com/astral-sh/ruff/issues/15639))
+- Checks for submodule imports (even if there is no alias)
+
+---

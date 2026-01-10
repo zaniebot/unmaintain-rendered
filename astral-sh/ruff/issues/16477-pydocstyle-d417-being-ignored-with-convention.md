@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-03T18:21:54Z
 updated_at: 2025-03-04T17:49:53Z
 url: https://github.com/astral-sh/ruff/issues/16477
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [pydocstyle]: d417 being ignored with convention=google
@@ -130,10 +130,6 @@ Thanks for the kind words and the great write up!
 I think what you want is the stricter https://github.com/astral-sh/ruff/pull/13280 that flags all functions regardless if they have an `Args` section or not if any of the parameters are undocumented. 
 
 I do think that we could improve our documentation on D417, it took me a while to understand what the issue was
-
----
-
-_Referenced in [astral-sh/ruff#16494](../../astral-sh/ruff/pulls/16494.md) on 2025-03-04 10:21_
 
 ---
 

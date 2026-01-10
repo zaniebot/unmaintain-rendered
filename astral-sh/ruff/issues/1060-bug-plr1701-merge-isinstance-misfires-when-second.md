@@ -1,0 +1,68 @@
+```yaml
+number: 1060
+title: "[bug] `PLR1701` (merge isinstance) misfires when second clause is not `isinstance`"
+type: issue
+state: closed
+author: smackesey
+labels:
+  - bug
+assignees: []
+created_at: 2022-12-05T14:03:36Z
+updated_at: 2022-12-05T16:22:33Z
+url: https://github.com/astral-sh/ruff/issues/1060
+synced_at: 2026-01-10T12:09:58Z
+```
+
+# [bug] `PLR1701` (merge isinstance) misfires when second clause is not `isinstance`
+
+---
+
+_Issue opened by @smackesey on 2022-12-05 14:03_
+
+The below code block incorrectly produced the below error message. The suggested replacement completely drops the second clause of the `or`:
+
+```
+if isinstance(
+    target,
+    (
+        AssetGroup,
+        GraphDefinition,
+        PipelineDefinition,
+        PendingRepositoryDefinition,
+        RepositoryDefinition,
+    ),
+) or not callable(target):
+    return _check_is_loadable(target)  # type: ignore
+```
+
+Error:
+
+```
+PLR1701 Consider merging these isinstance calls: `isinstance(target, (AssetGroup, GraphDefinition, PendingRepositoryDefinition, PipelineDefinition, RepositoryDefinition))`
+```
+
+---
+
+_Label `bug` added by @charliermarsh on 2022-12-05 14:05_
+
+---
+
+_Comment by @charliermarsh on 2022-12-05 14:09_
+
+Will fix this today.
+
+---
+
+_Renamed from "[bug] `PLR1701` (merge isinstance) misfires when second clauses is not `isinstance`" to "[bug] `PLR1701` (merge isinstance) misfires when second clause is not `isinstance`" by @smackesey on 2022-12-05 14:15_
+
+---
+
+_Closed by @charliermarsh on 2022-12-05 15:07_
+
+---
+
+_Comment by @charliermarsh on 2022-12-05 16:22_
+
+This is going out in [v0.0.159](https://github.com/charliermarsh/ruff/releases/tag/v0.0.159) (building now).
+
+---

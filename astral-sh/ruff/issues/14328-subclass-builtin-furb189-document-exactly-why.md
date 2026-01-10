@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-14T00:30:00Z
 updated_at: 2025-03-23T17:24:41Z
 url: https://github.com/astral-sh/ruff/issues/14328
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # `subclass-builtin` (`FURB189`) - document exactly why `UserDict`, `UserList` etc are preferred over `dict` and `list`
@@ -84,10 +84,6 @@ print(user_dict)  # {'A': 1, 'B': 2}
 _Comment by @dan-wilton on 2025-03-23 14:47_
 
 Looking for a good place to get started in contributing to `ruff`, this looks like it! Will update the docs now ❤ 
-
----
-
-_Referenced in [astral-sh/ruff#16927](../../astral-sh/ruff/pulls/16927.md) on 2025-03-23 15:24_
 
 ---
 

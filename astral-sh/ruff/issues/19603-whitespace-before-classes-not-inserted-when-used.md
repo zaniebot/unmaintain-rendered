@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-28T15:01:33Z
 updated_at: 2025-08-28T14:22:55Z
 url: https://github.com/astral-sh/ruff/issues/19603
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Whitespace before classes not inserted when used with "modificationsIfAvailable" in vscode
@@ -122,9 +122,5 @@ _Comment by @maltevesper on 2025-08-28 14:22_
 @ntBre : I think I still owe you an answer: I set my editor to format only the code I changed, to cause less issues with projects not using a formatter, and noticed when a project which uses a pipeline to check formatting complained.
 In hindsight I think this issue is minor. It might help with easing in teams which are reluctant on enforced formatting (introducing it for new code first), but as long as CI and formatting are consistent it should be fine. Obviously one would have to write a CI pipeline to only format the changed code for the last usecase to work. I assume this usecase would work with the current implementation as the reformatting should be consistent between duing it in bulk in the ci or running this from the editor.
 
-
----
-
-_Referenced in [astral-sh/ruff#20482](../../astral-sh/ruff/issues/20482.md) on 2025-09-19 13:37_
 
 ---

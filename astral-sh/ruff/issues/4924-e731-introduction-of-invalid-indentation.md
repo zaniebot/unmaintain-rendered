@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-07T11:59:17Z
 updated_at: 2024-12-24T06:10:16Z
 url: https://github.com/astral-sh/ruff/issues/4924
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # E731: Introduction of invalid indentation
@@ -57,10 +57,6 @@ _Label `bug` added by @charliermarsh on 2023-06-07 21:22_
 _Comment by @dhruvmanila on 2023-06-08 19:14_
 
 This is occurring because the `detect_indentation` function will use the first `Indent` token to determine the indentation which in this case is the indented body of function `a`. I'm not sure what the correct solution would look like. If each block can have it's own indentation, a possible solution would be to keep track of indentation per-block and resolve it as per the location of the code generation.
-
----
-
-_Referenced in [astral-sh/ruff#4972](../../astral-sh/ruff/issues/4972.md) on 2023-06-08 19:55_
 
 ---
 

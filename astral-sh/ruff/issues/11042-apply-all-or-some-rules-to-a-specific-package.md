@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-19T13:56:32Z
 updated_at: 2024-04-24T12:49:40Z
 url: https://github.com/astral-sh/ruff/issues/11042
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Apply all, or some rules, to a specific package/folder
@@ -123,9 +123,5 @@ _Closed by @ggravlingen on 2024-04-24 12:30_
 _Comment by @carljm on 2024-04-24 12:49_
 
 No worries! Thank you for reporting issues. 
-
----
-
-_Referenced in [astral-sh/ruff#17391](../../astral-sh/ruff/issues/17391.md) on 2025-04-14 12:01_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-04T08:41:32Z
 updated_at: 2025-01-07T17:26:06Z
 url: https://github.com/astral-sh/ruff/issues/15248
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Long freeze(>3 minutes - probably infinite) when checking file
@@ -158,10 +158,6 @@ Cc. @dylwil3 as well
 
 ---
 
-_Referenced in [astral-sh/ruff#15252](../../astral-sh/ruff/pulls/15252.md) on 2025-01-04 11:29_
-
----
-
 _Comment by @MichaReiser on 2025-01-04 11:29_
 
 I demoted the rule to testing only for now, see https://github.com/astral-sh/ruff/pull/15252
@@ -174,18 +170,6 @@ _Assigned to @dylwil3 by @MichaReiser on 2025-01-04 11:34_
 
 ---
 
-_Referenced in [astral-sh/ruff#15276](../../astral-sh/ruff/pulls/15276.md) on 2025-01-05 19:47_
-
----
-
-_Referenced in [astral-sh/ruff#15278](../../astral-sh/ruff/pulls/15278.md) on 2025-01-05 21:36_
-
----
-
 _Closed by @dylwil3 on 2025-01-07 17:26_
-
----
-
-_Referenced in [astral-sh/ruff#15707](../../astral-sh/ruff/issues/15707.md) on 2025-01-24 04:16_
 
 ---

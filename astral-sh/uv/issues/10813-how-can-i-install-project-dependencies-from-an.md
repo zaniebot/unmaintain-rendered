@@ -8,9 +8,9 @@ labels:
   - question
 assignees: []
 created_at: 2025-01-21T13:16:27Z
-updated_at: 2025-01-21T14:10:00Z
+updated_at: 2026-01-10T11:30:36Z
 url: https://github.com/astral-sh/uv/issues/10813
-synced_at: 2026-01-10T04:27:58Z
+synced_at: 2026-01-10T11:59:57Z
 ```
 
 # How can I install project dependencies from an existing pyproject.toml?
@@ -89,5 +89,72 @@ _Label `question` added by @charliermarsh on 2025-01-21 14:06_
 _Comment by @alexted on 2025-01-21 14:09_
 
 Thank you!
+
+---
+
+_Comment by @jrosell on 2026-01-10 09:13_
+
+> It sounds like you're looking for `uv sync`? You're being incredibly rude.
+
+
+To be constructive, I believe that the meaning of sync/build should be clarified to non native speaking users. Installs first time? Installs if not installed? Doesn't uprade? What's the difference?
+
+```
+### Syncing the environment
+
+While the environment is synced automatically, it may also be explicitly synced using uv sync:
+
+uv sync 
+
+Syncing the environment manually is especially useful for ensuring your editor has the correct versions of dependencies.
+```
+
+
+---
+
+_Comment by @alexted on 2026-01-10 11:26_
+
+The tool is functionally capable. The problem is not what it does, but how that functionality is exposed to users.
+
+From a user’s perspective, the interface and documentation expose internal implementation concepts rather than user-level tasks. As a result, performing a basic operation - such as installing project dependencies - requires understanding the system’s internal model instead of invoking a clear, intention-driven command.
+
+A user comes with a simple intent:  
+`install project packages`
+
+Instead, they are presented with commands like:  
+`uv sync`, `uv add`, `uv run`
+
+These are internal operations, not task-oriented actions. The interface mirrors how the system works rather than what the user wants to do, forcing the user to infer which internal command matches their goal.
+
+This also breaks established CLI expectations shaped by tools like `pip install`, `npm install`, or `cargo build`, which provide a clear entry point for common workflows. Requiring users to adapt to internal abstractions instead of meeting those expectations increases cognitive load and friction.
+
+This is not a documentation problem. Documentation cannot compensate for a missing abstraction in the interface. If users must read architectural explanations, issues, or source code to perform a basic task, the interface is incomplete.
+
+Well-known tools demonstrate that this is avoidable. **Git** explicitly separates user-facing *porcelain* commands from internal *plumbing* operations. **Mercurial (hg)** goes even further by aggressively hiding internal concepts behind an intention-driven interface. Both show that implementation complexity does not have to leak into UX.
+
+**In short:**  
+The interface exposes internal mechanics instead of user workflows, forcing users to think like system implementers rather than consumers of functionality.
+
+
+---
+
+_Comment by @alexted on 2026-01-10 11:29_
+
+### Useful Resources
+
+Here are some sources that explore this topic in both academic and practical ways:
+
+- **Donald Norman – Design of Everyday Things**  
+  Covers user-centered interaction design. Explains how to create interfaces focused on user goals, not implementation details.  [Link to book](https://www.amazon.com/Design-Everyday-Things-Revised-Expanded/dp/0465050654)
+
+- **Cognitive Load in UX**  
+  Explains why additional "mental work" for the user always worsens the experience.  [Article: Cognitive Load Theory in UX](https://www.nngroup.com/articles/cognitive-load/)
+
+- **Principle of Reducing Cognitive Load**  
+  Practical approaches for minimizing the number of decisions and complex steps required from the user.  [Article: Reducing Cognitive Load in UI](https://uxdesign.cc/reduce-cognitive-load-in-your-ui-10-practical-tips-1463e57ef9a4)
+
+- **Leaky Abstractions Research**  
+  Academic perspective on how leaking implementation details into higher-level layers affects user experience and engineering practices.  [Joel Spolsky – The Law of Leaky Abstractions](https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/)
+
 
 ---

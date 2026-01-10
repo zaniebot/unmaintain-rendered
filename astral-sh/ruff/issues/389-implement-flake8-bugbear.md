@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-10-10T14:28:32Z
 updated_at: 2023-04-30T02:23:35Z
 url: https://github.com/astral-sh/ruff/issues/389
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # Implement flake8-bugbear
@@ -25,22 +25,6 @@ This is a big set of rules but `flake8-bugbear` is extremely popular (~1.5M down
 ---
 
 _Label `rule` added by @charliermarsh on 2022-10-10 14:28_
-
----
-
-_Referenced in [astral-sh/ruff#390](../../astral-sh/ruff/pulls/390.md) on 2022-10-10 14:55_
-
----
-
-_Referenced in [astral-sh/ruff#391](../../astral-sh/ruff/pulls/391.md) on 2022-10-10 16:18_
-
----
-
-_Referenced in [astral-sh/ruff#392](../../astral-sh/ruff/pulls/392.md) on 2022-10-10 16:53_
-
----
-
-_Referenced in [astral-sh/ruff#300](../../astral-sh/ruff/issues/300.md) on 2022-10-18 21:09_
 
 ---
 
@@ -62,37 +46,9 @@ Cool, those are all pretty straightforward! Will prioritize them over the others
 
 ---
 
-_Referenced in [astral-sh/ruff#467](../../astral-sh/ruff/pulls/467.md) on 2022-10-26 00:54_
-
----
-
-_Referenced in [astral-sh/ruff#468](../../astral-sh/ruff/pulls/468.md) on 2022-10-26 01:10_
-
----
-
-_Referenced in [astral-sh/ruff#473](../../astral-sh/ruff/pulls/473.md) on 2022-10-26 16:01_
-
----
-
-_Referenced in [astral-sh/ruff#503](../../astral-sh/ruff/pulls/503.md) on 2022-10-29 11:53_
-
----
-
 _Comment by @harupy on 2022-10-30 01:31_
 
 I'm working on B006 implementation.
-
----
-
-_Referenced in [astral-sh/ruff#515](../../astral-sh/ruff/pulls/515.md) on 2022-10-30 02:46_
-
----
-
-_Referenced in [astral-sh/ruff#582](../../astral-sh/ruff/pulls/582.md) on 2022-11-04 14:48_
-
----
-
-_Referenced in [astral-sh/ruff#587](../../astral-sh/ruff/pulls/587.md) on 2022-11-04 16:25_
 
 ---
 
@@ -147,45 +103,9 @@ I'm tentatively marking B001 and B950 as complete, since IIUC B001 is the same a
 
 ---
 
-_Referenced in [astral-sh/ruff#594](../../astral-sh/ruff/pulls/594.md) on 2022-11-05 05:02_
-
----
-
-_Referenced in [astral-sh/ruff#595](../../astral-sh/ruff/pulls/595.md) on 2022-11-05 10:04_
-
----
-
-_Referenced in [astral-sh/ruff#596](../../astral-sh/ruff/pulls/596.md) on 2022-11-05 11:18_
-
----
-
-_Referenced in [astral-sh/ruff#638](../../astral-sh/ruff/pulls/638.md) on 2022-11-07 14:13_
-
----
-
 _Comment by @charliermarsh on 2022-11-07 14:26_
 
 Just updated the list as @harupy is making awesome progress here. We're now at 50% coverage.
-
----
-
-_Referenced in [astral-sh/ruff#643](../../astral-sh/ruff/pulls/643.md) on 2022-11-07 15:03_
-
----
-
-_Referenced in [astral-sh/ruff#668](../../astral-sh/ruff/pulls/668.md) on 2022-11-10 15:40_
-
----
-
-_Referenced in [astral-sh/ruff#669](../../astral-sh/ruff/pulls/669.md) on 2022-11-10 16:27_
-
----
-
-_Referenced in [astral-sh/ruff#683](../../astral-sh/ruff/pulls/683.md) on 2022-11-11 12:59_
-
----
-
-_Referenced in [astral-sh/ruff#695](../../astral-sh/ruff/pulls/695.md) on 2022-11-12 06:37_
 
 ---
 
@@ -203,10 +123,6 @@ _Comment by @edgarrmondragon on 2022-11-12 19:53_
 
 ---
 
-_Referenced in [astral-sh/ruff#706](../../astral-sh/ruff/pulls/706.md) on 2022-11-12 20:06_
-
----
-
 _Comment by @charliermarsh on 2022-11-12 21:48_
 
 @grillazz - This is now supported thanks to @edgarrmondragon. So now you can add this to your `pyproject.toml`:
@@ -218,14 +134,6 @@ extend-immutable-calls = ["fastapi.Depends", "fastapi.Query"]
 
 (Going out in v0.0.115 which is building now.)
 
-
----
-
-_Referenced in [astral-sh/ruff#718](../../astral-sh/ruff/pulls/718.md) on 2022-11-13 14:11_
-
----
-
-_Referenced in [astral-sh/ruff#719](../../astral-sh/ruff/pulls/719.md) on 2022-11-13 14:42_
 
 ---
 
@@ -244,10 +152,6 @@ extend-immutable-calls = ["fastapi.Depends", "fastapi.Query"]
 Ideas ?
 
 ps. Also I can't spec ruff = "0.0.115" only 116 and 117 working
-
----
-
-_Referenced in [astral-sh/ruff#734](../../astral-sh/ruff/pulls/734.md) on 2022-11-14 10:53_
 
 ---
 
@@ -321,10 +225,6 @@ env_files = [".env"]
 
 ---
 
-_Referenced in [astral-sh/ruff#738](../../astral-sh/ruff/pulls/738.md) on 2022-11-14 15:56_
-
----
-
 _Comment by @harupy on 2022-11-14 16:14_
 
 @grillazz Can you try running `ruff --no-cache ...`?
@@ -358,10 +258,6 @@ I may have forgotten to include the bugbear settings in the hash key. (I’m on 
 
 ---
 
-_Referenced in [astral-sh/ruff#739](../../astral-sh/ruff/pulls/739.md) on 2022-11-14 17:29_
-
----
-
 _Comment by @charliermarsh on 2022-11-14 17:29_
 
 If that _is_ the issue, it'll be fixed by https://github.com/charliermarsh/ruff/pull/739.
@@ -371,10 +267,6 @@ If that _is_ the issue, it'll be fixed by https://github.com/charliermarsh/ruff/
 _Comment by @grillazz on 2022-11-15 07:41_
 
 Test 0.0.120 and problem solved. Thx
-
----
-
-_Referenced in [astral-sh/ruff#753](../../astral-sh/ruff/pulls/753.md) on 2022-11-15 14:40_
 
 ---
 
@@ -390,21 +282,9 @@ Nice to see a task list with lots of ✅ :)
 
 ---
 
-_Referenced in [astral-sh/ruff#823](../../astral-sh/ruff/pulls/823.md) on 2022-11-20 08:06_
-
----
-
-_Referenced in [astral-sh/ruff#824](../../astral-sh/ruff/pulls/824.md) on 2022-11-20 08:47_
-
----
-
 _Comment by @charliermarsh on 2022-11-22 22:06_
 
 I think if we implement B023, we should feel comfortable closing this.
-
----
-
-_Referenced in [astral-sh/ruff#892](../../astral-sh/ruff/pulls/892.md) on 2022-11-23 14:04_
 
 ---
 
@@ -441,10 +321,6 @@ _Comment by @charliermarsh on 2022-11-25 04:44_
 
 ---
 
-_Referenced in [astral-sh/ruff#907](../../astral-sh/ruff/pulls/907.md) on 2022-11-25 23:29_
-
----
-
 _Closed by @charliermarsh on 2022-11-25 23:30_
 
 ---
@@ -453,10 +329,6 @@ _Comment by @g-as on 2022-12-07 09:52_
 
 B905 was just [added](https://github.com/PyCQA/flake8-bugbear/releases/tag/22.12.6):
 > B905: zip() without an explicit strict= parameter set. strict=True causes the resulting iterator to raise a ValueError if the arguments are exhausted at differing lengths. The strict= argument was added in Python 3.10, so don't enable this flag for code that should work on <3.10. For more information: https://peps.python.org/pep-0618/
-
----
-
-_Referenced in [astral-sh/ruff#1120](../../astral-sh/ruff/issues/1120.md) on 2022-12-07 14:25_
 
 ---
 
@@ -504,10 +376,6 @@ _Comment by @SRv6d on 2023-01-27 22:54_
 
 ---
 
-_Referenced in [materialsproject/atomate2#250](../../materialsproject/atomate2/pulls/250.md) on 2023-02-23 16:34_
-
----
-
 _Comment by @jamesbraza on 2023-04-30 02:22_
 
 @SRv6d to make [`E501`](https://beta.ruff.rs/docs/rules/line-too-long/) behave like [`B950`](https://github.com/PyCQA/flake8-bugbear#opinionated-warnings) I am just using this:
@@ -518,25 +386,5 @@ _Comment by @jamesbraza on 2023-04-30 02:22_
 # Line length to use when enforcing long-lines violations (like `E501`).
 line-length = 97  # ceil(1.1 * 88) makes `E501` equivalent to `B950`
 ```
-
----
-
-_Referenced in [xpublish-community/xpublish-opendap#5](../../xpublish-community/xpublish-opendap/pulls/5.md) on 2023-04-30 15:04_
-
----
-
-_Referenced in [astral-sh/ruff#4429](../../astral-sh/ruff/issues/4429.md) on 2023-05-14 11:22_
-
----
-
-_Referenced in [opentargets/gentropy#154](../../opentargets/gentropy/pulls/154.md) on 2023-10-03 11:54_
-
----
-
-_Referenced in [VOICEVOX/voicevox_engine#1563](../../VOICEVOX/voicevox_engine/pulls/1563.md) on 2025-03-22 01:14_
-
----
-
-_Referenced in [astral-sh/ruff#17439](../../astral-sh/ruff/issues/17439.md) on 2025-04-17 01:30_
 
 ---

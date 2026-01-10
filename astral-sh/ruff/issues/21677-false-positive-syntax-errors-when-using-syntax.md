@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-28T13:42:39Z
 updated_at: 2025-12-19T18:28:56Z
 url: https://github.com/astral-sh/ruff/issues/21677
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # false positive syntax errors when using syntax for newer python version in `.pyi` files
@@ -54,10 +54,6 @@ One option is to ensure we always pass the latest Python version to `parse` if t
 ---
 
 _Label `help wanted` added by @MichaReiser on 2025-11-28 14:15_
-
----
-
-_Referenced in [astral-sh/ruff#21702](../../astral-sh/ruff/pulls/21702.md) on 2025-11-30 12:28_
 
 ---
 

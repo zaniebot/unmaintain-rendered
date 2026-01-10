@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-18T19:02:31Z
 updated_at: 2023-10-19T00:14:21Z
 url: https://github.com/astral-sh/ruff/issues/8051
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # [formatter] target-python option
@@ -45,10 +45,6 @@ All that being said... I think we should add this flag to the formatter, even if
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-18 20:32_
-
----
-
-_Referenced in [astral-sh/ruff#8055](../../astral-sh/ruff/pulls/8055.md) on 2023-10-18 20:44_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-12T18:23:10Z
 updated_at: 2023-03-16T17:49:38Z
 url: https://github.com/astral-sh/ruff/issues/3468
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # `--ignore-noqa` isn't respected when `RUF100` is enabled
@@ -24,10 +24,6 @@ If `RUF100` is enabled, we end up running the `noqa` checker even if the `noqa` 
 ---
 
 _Label `bug` added by @charliermarsh on 2023-03-12 18:23_
-
----
-
-_Referenced in [astral-sh/ruff#3469](../../astral-sh/ruff/pulls/3469.md) on 2023-03-12 18:27_
 
 ---
 

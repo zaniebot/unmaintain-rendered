@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-03T13:46:37Z
 updated_at: 2024-12-03T15:18:38Z
 url: https://github.com/astral-sh/ruff/issues/14757
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # RUF055 ignores backslashes in the `repl` argument of `re.sub`
@@ -73,10 +73,6 @@ _Comment by @MichaReiser on 2024-12-03 14:07_
 ---
 
 _Assigned to @AlexWaygood by @AlexWaygood on 2024-12-03 14:17_
-
----
-
-_Referenced in [astral-sh/ruff#14679](../../astral-sh/ruff/pulls/14679.md) on 2024-12-03 15:13_
 
 ---
 

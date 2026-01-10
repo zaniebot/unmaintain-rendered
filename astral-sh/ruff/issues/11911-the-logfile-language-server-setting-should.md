@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-18T03:43:30Z
 updated_at: 2024-06-20T18:51:47Z
 url: https://github.com/astral-sh/ruff/issues/11911
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # The `logFile` language server setting should support shell expansion
@@ -34,10 +34,6 @@ _Added to milestone `Ruff Server: Stable` by @snowsignal on 2024-06-18 03:43_
 ---
 
 _Assigned to @snowsignal by @snowsignal on 2024-06-18 03:43_
-
----
-
-_Referenced in [astral-sh/ruff#11945](../../astral-sh/ruff/pulls/11945.md) on 2024-06-20 02:53_
 
 ---
 

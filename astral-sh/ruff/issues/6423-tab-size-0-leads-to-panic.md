@@ -1,0 +1,107 @@
+```yaml
+number: 6423
+title: "`tab-size = 0` leads to `panic`."
+type: issue
+state: closed
+author: Nuno-Mota
+labels:
+  - bug
+  - configuration
+  - help wanted
+assignees: []
+created_at: 2023-08-08T10:44:23Z
+updated_at: 2023-08-08T20:51:38Z
+url: https://github.com/astral-sh/ruff/issues/6423
+synced_at: 2026-01-10T11:09:48Z
+```
+
+# `tab-size = 0` leads to `panic`.
+
+---
+
+_Issue opened by @Nuno-Mota on 2023-08-08 10:44_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+Hi.
+
+Setting `tab-size = 0` creates a `panic` (it's unsurprising that an error occurs, but it should probably be handled gracefully):
+Note that this was tested using a `pyproject.toml` configuration file, for `ruff 0.0.282`.
+
+```
+warning: Linting panicked test.py: This indicates a bug in `ruff`. If you could open an issue at:
+
+https://github.com/astral-sh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+
+panicked at 'attempt to calculate the remainder with a divisor of zero', crates/ruff/src/line_width.rs:90:49
+Backtrace:    0: <unknown>
+   1: <unknown>
+   2: <unknown>
+   3: <unknown>
+   4: <unknown>
+   5: <unknown>
+   6: <unknown>
+   7: <unknown>
+   8: <unknown>
+   9: <unknown>
+  10: <unknown>
+  11: <unknown>
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: <unknown>
+  17: <unknown>
+  18: <unknown>
+  19: <unknown>
+```
+
+
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-08-08 12:36_
+
+---
+
+_Label `configuration` added by @charliermarsh on 2023-08-08 12:36_
+
+---
+
+_Comment by @charliermarsh on 2023-08-08 12:36_
+
+Thanks!
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2023-08-08 14:22_
+
+---
+
+_Comment by @tjkuson on 2023-08-08 15:45_
+
+Should this warn the user if a zero tab size is set and then fall back to a default tab size, or should it return an error?
+
+---
+
+_Comment by @charliermarsh on 2023-08-08 15:50_
+
+IMO it should raise an error.
+
+---
+
+_Closed by @charliermarsh on 2023-08-08 20:51_
+
+---

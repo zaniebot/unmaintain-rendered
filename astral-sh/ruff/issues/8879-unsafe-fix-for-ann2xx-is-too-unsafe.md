@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-28T20:01:59Z
 updated_at: 2023-11-28T21:10:44Z
 url: https://github.com/astral-sh/ruff/issues/8879
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Unsafe fix for `ANN2XX` is too unsafe
@@ -77,10 +77,6 @@ Huh, I can reproduce this in the playground but not locally.
 _Comment by @charliermarsh on 2023-11-28 20:38_
 
 Oh, you need to have the target Python version set to >= 3.10. Okay. I'm on it.
-
----
-
-_Referenced in [astral-sh/ruff#8881](../../astral-sh/ruff/pulls/8881.md) on 2023-11-28 21:03_
 
 ---
 

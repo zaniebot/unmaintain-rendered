@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-02T06:12:55Z
 updated_at: 2023-09-14T18:58:40Z
 url: https://github.com/astral-sh/ruff/issues/7058
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Panicked at 'byte index 220 is not a char boundary; it is inside '�' (bytes 218..221) 
@@ -88,10 +88,6 @@ _Label `help wanted` added by @MichaReiser on 2023-09-02 08:09_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-09-14 18:41_
-
----
-
-_Referenced in [astral-sh/ruff#7392](../../astral-sh/ruff/pulls/7392.md) on 2023-09-14 18:48_
 
 ---
 

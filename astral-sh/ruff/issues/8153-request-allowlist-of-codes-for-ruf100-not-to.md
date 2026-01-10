@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-24T05:26:23Z
 updated_at: 2023-10-24T17:24:31Z
 url: https://github.com/astral-sh/ruff/issues/8153
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Request: allowlist of codes for `RUF100` not to autoremove
@@ -86,10 +86,6 @@ Thank you!  Interested in hearing what you think of moving `external` to work us
 _Comment by @charliermarsh on 2023-10-24 17:01_
 
 I think matching prefixes is pretty reasonable.
-
----
-
-_Referenced in [astral-sh/ruff#8174](../../astral-sh/ruff/issues/8174.md) on 2023-10-24 17:09_
 
 ---
 

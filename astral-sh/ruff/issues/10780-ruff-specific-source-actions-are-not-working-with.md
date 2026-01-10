@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-04T22:34:35Z
 updated_at: 2024-04-16T18:21:10Z
 url: https://github.com/astral-sh/ruff/issues/10780
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Ruff-specific source actions are not working with `ruff server`
@@ -57,10 +57,6 @@ _Assigned to @snowsignal by @snowsignal on 2024-04-04 22:34_
 ---
 
 _Label `bug` added by @snowsignal on 2024-04-04 22:40_
-
----
-
-_Referenced in [astral-sh/ruff#10916](../../astral-sh/ruff/pulls/10916.md) on 2024-04-13 06:27_
 
 ---
 

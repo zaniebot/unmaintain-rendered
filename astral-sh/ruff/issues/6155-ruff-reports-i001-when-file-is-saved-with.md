@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-28T14:37:05Z
 updated_at: 2023-07-29T11:47:15Z
 url: https://github.com/astral-sh/ruff/issues/6155
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Ruff reports I001 when file is saved with encoding "UTF-8 with BOM"
@@ -46,10 +46,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-07-28 17:47_
 ---
 
 _Label `bug` added by @charliermarsh on 2023-07-28 17:47_
-
----
-
-_Referenced in [astral-sh/ruff#6159](../../astral-sh/ruff/pulls/6159.md) on 2023-07-28 17:52_
 
 ---
 

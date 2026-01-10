@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-18T13:27:05Z
 updated_at: 2023-07-28T04:55:57Z
 url: https://github.com/astral-sh/ruff/issues/5858
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # PERF203 should only trigger for exception handler that unconditionally raises
@@ -49,10 +49,6 @@ Where it should not be caught is, in my opinion constructs like the one displaye
 As for where it should be caught, I think it's tricky because there's a balance.  While it is more efficient to have try/except around the loop, it means that more code is protected by the try/except, which is a downside.  Ideally, you want the minimum amount of code in a try/except.
 
 I'm not sure what others like, but personally I don't find this error useful in the first place since it is trying to add more code to the try/except.
-
----
-
-_Referenced in [astral-sh/ruff#6145](../../astral-sh/ruff/pulls/6145.md) on 2023-07-28 04:46_
 
 ---
 

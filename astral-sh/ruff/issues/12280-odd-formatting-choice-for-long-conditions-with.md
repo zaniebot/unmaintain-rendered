@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-10T17:56:31Z
 updated_at: 2024-07-11T20:38:13Z
 url: https://github.com/astral-sh/ruff/issues/12280
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Odd formatting choice for long conditions with comments in list/dict comprehensions
@@ -107,10 +107,6 @@ Black version: 24.3.0
 ---
 
 _Label `formatter` added by @MichaReiser on 2024-07-10 19:59_
-
----
-
-_Referenced in [astral-sh/ruff#12282](../../astral-sh/ruff/pulls/12282.md) on 2024-07-10 20:47_
 
 ---
 

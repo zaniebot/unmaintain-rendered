@@ -1,0 +1,61 @@
+```yaml
+number: 18081
+title: Autofix for ISC003
+type: issue
+state: closed
+author: ktbarrett
+labels:
+  - fixes
+assignees: []
+created_at: 2025-05-13T22:47:50Z
+updated_at: 2025-05-28T07:30:52Z
+url: https://github.com/astral-sh/ruff/issues/18081
+synced_at: 2026-01-10T11:09:58Z
+```
+
+# Autofix for ISC003
+
+---
+
+_Issue opened by @ktbarrett on 2025-05-13 22:47_
+
+### Summary
+
+It seems like it would be fairly trivial to implement an autofix for ISC003. No refactoring of the string would be necessary. If adjacent nodes are any type of string literal (normal, format, raw, raw+format) and there is a `+` joining them, the `+` can be removed without affecting other lines. This works for strings with mixtures of string literals and non-literals as well.
+
+```python
+a = (
+    "123" +
+    "456"
+    + my_string +
+    "789"
+    + "0"
+)
+```
+
+to ...
+```python
+a = (
+    "123"
+    "456"
+    + my_string +
+    "789"
+    "0"
+)
+```
+
+---
+
+_Label `fixes` added by @MichaReiser on 2025-05-14 06:21_
+
+---
+
+_Comment by @maxmynter on 2025-05-22 09:50_
+
+On it :) 
+
+---
+
+_Closed by @MichaReiser on 2025-05-28 07:30_
+
+---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-05-30T12:56:01Z
 updated_at: 2025-04-29T13:28:58Z
 url: https://github.com/astral-sh/ruff/issues/4725
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # ruff.toml doesn't work with [tool.ruff] hierarchy
@@ -44,10 +44,6 @@ If I change the name of `ruff.toml` to `pyproject.toml`, or remove the `[ruff.to
 
 ---
 
-_Referenced in [OCHA-DAP/hdx-python-utilities#16](../../OCHA-DAP/hdx-python-utilities/pulls/16.md) on 2023-05-30 12:56_
-
----
-
 _Comment by @charliermarsh on 2023-05-30 13:19_
 
 The documentation should be clearer on this point: `[tool.ruff]` _has_ to be omitted for `ruff.toml` (it's not optional).
@@ -55,10 +51,6 @@ The documentation should be clearer on this point: `[tool.ruff]` _has_ to be omi
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-05-30 17:25_
-
----
-
-_Referenced in [astral-sh/ruff#4732](../../astral-sh/ruff/pulls/4732.md) on 2023-05-30 17:27_
 
 ---
 
@@ -84,10 +76,6 @@ _Comment by @phillipjohnston on 2024-03-13 15:06_
 _Comment by @charliermarsh on 2024-03-13 15:07_
 
 I don't think we can put tabs in the README (unlike in the docs). I'll try to clarify it.
-
----
-
-_Referenced in [astral-sh/ruff#10393](../../astral-sh/ruff/pulls/10393.md) on 2024-03-13 18:07_
 
 ---
 

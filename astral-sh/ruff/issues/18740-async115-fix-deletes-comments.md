@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-06-18T01:47:17Z
 updated_at: 2025-06-19T11:01:35Z
 url: https://github.com/astral-sh/ruff/issues/18740
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # ASYNC115 fix deletes comments
@@ -67,10 +67,6 @@ _Label `fixes` added by @ntBre on 2025-06-18 03:06_
 ---
 
 _Label `help wanted` added by @ntBre on 2025-06-18 03:06_
-
----
-
-_Referenced in [astral-sh/ruff#18753](../../astral-sh/ruff/pulls/18753.md) on 2025-06-18 14:16_
 
 ---
 

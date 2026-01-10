@@ -8,9 +8,9 @@ labels:
   - rule
 assignees: []
 created_at: 2023-10-23T06:47:44Z
-updated_at: 2026-01-03T13:50:53Z
+updated_at: 2026-01-10T09:44:50Z
 url: https://github.com/astral-sh/ruff/issues/8125
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T12:06:06Z
 ```
 
 # `if-with-same-arms` (`SIM114`) false negative on `if` statements that raise or return
@@ -115,5 +115,11 @@ The functions have exactly the same behavior, and in both, SIM114 is valid. But 
 I propose making SIM114 check, similarly to what RET505 checks in the first block, if the blocks return in all paths. If that is the case, pretend like it is `if-elif`.
 
 This will make the rule more complex, as it will need to run on all pairs/sets of if statements. This can be a new RUF rule as well, if you don't want to overload SIM114.
+
+---
+
+_Comment by @GideonBear on 2026-01-10 09:44_
+
+Opened #22489
 
 ---

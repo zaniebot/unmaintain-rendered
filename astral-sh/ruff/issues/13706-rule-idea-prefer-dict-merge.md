@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-10T15:42:57Z
 updated_at: 2024-10-17T16:04:40Z
 url: https://github.com/astral-sh/ruff/issues/13706
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Rule idea: Prefer dict merge
@@ -91,10 +91,6 @@ python3.13 -m timeit -s "a = {'a': 1};b = {'b': 2};c = {'a': 0}" "m = {**a, **b,
 ```
 
 Opinions may vary on the readability of the latter, but I'm fine with either.
-
----
-
-_Referenced in [leukeleu/django-hidp#189](../../leukeleu/django-hidp/pulls/189.md) on 2024-10-15 07:26_
 
 ---
 

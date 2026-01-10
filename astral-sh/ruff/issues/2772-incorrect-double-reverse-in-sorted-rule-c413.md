@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-11T17:23:14Z
 updated_at: 2023-02-12T15:56:08Z
 url: https://github.com/astral-sh/ruff/issues/2772
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Incorrect double reverse in sorted rule C413
@@ -59,10 +59,6 @@ _Label `bug` added by @charliermarsh on 2023-02-11 17:25_
 _Comment by @sbrugman on 2023-02-12 08:58_
 
 Working on a fix
-
----
-
-_Referenced in [astral-sh/ruff#2804](../../astral-sh/ruff/pulls/2804.md) on 2023-02-12 10:16_
 
 ---
 

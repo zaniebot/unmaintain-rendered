@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-19T03:37:33Z
 updated_at: 2024-03-18T09:14:18Z
 url: https://github.com/astral-sh/ruff/issues/10035
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Config override key flag does not work for `extend` option
@@ -25,14 +25,6 @@ Example command:
 ```
 ruff format --check --diff --config "extend='ruff_defaults.toml'" .
 ```
-
----
-
-_Referenced in [astral-sh/ruff#8737](../../astral-sh/ruff/issues/8737.md) on 2024-02-19 03:38_
-
----
-
-_Referenced in [astral-sh/ruff#9599](../../astral-sh/ruff/pulls/9599.md) on 2024-02-19 03:39_
 
 ---
 
@@ -84,10 +76,6 @@ _Comment by @AlexWaygood on 2024-02-19 17:28_
 Yeah, I'll have a think...
 
 If we decide that this kind of thing _should_ be done via a separate flag, then we should probably explicitly _reject_ trying to override `extend` via `--config`, on the grounds that it's probably not going to do what you expect, as @MichaReiser mentioned above. So whether we go with "fix behaviour of `--config` w.r.t. `extend`" or "introduce another flag", it's likely the behaviour of `--config` should be changed in some way here :)
-
----
-
-_Referenced in [astral-sh/ruff#10135](../../astral-sh/ruff/pulls/10135.md) on 2024-02-26 13:10_
 
 ---
 

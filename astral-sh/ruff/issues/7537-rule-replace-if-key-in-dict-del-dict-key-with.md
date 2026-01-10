@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-20T08:31:48Z
 updated_at: 2024-12-11T11:12:25Z
 url: https://github.com/astral-sh/ruff/issues/7537
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # [rule] replace `if key in dict: del dict[key]` with `dict.pop(key, None)`
@@ -29,10 +29,6 @@ If there's a better place to suggest it, please let me know and I'll copy it the
 + dictionary.pop(key, None)
 ```
 
-
----
-
-_Referenced in [demisto/content#29756](../../demisto/content/pulls/29756.md) on 2023-09-20 08:33_
 
 ---
 
@@ -96,14 +92,6 @@ wrote:
 _Comment by @harupy on 2023-10-14 02:59_
 
 @charliermarsh Can I work on this?
-
----
-
-_Referenced in [astral-sh/ruff#14553](../../astral-sh/ruff/pulls/14553.md) on 2024-11-23 04:29_
-
----
-
-_Referenced in [MartinThoma/flake8-simplify#195](../../MartinThoma/flake8-simplify/issues/195.md) on 2024-11-25 09:19_
 
 ---
 

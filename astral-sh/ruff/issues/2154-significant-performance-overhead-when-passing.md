@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-25T14:00:38Z
 updated_at: 2023-01-26T07:35:49Z
 url: https://github.com/astral-sh/ruff/issues/2154
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Significant performance overhead when passing files and using multiple `per-file-ignores`
@@ -119,10 +119,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-01-25 18:27_
 _Comment by @charliermarsh on 2023-01-25 18:32_
 
 It looks like we're loading and parsing the configuration file a zillion times here.
-
----
-
-_Referenced in [astral-sh/ruff#2165](../../astral-sh/ruff/pulls/2165.md) on 2023-01-25 18:34_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-09-01T22:20:09Z
 updated_at: 2023-04-17T12:50:50Z
 url: https://github.com/astral-sh/ruff/issues/82
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # ruff incorrectly flags imports included in __all__
@@ -156,9 +156,5 @@ Yeah looks like that first case is a bug.
 _Comment by @charliermarsh on 2022-12-05 15:51_
 
 (The explicit re-export (`import bar as bar`) is always protected.)
-
----
-
-_Referenced in [iris-hep/analysis-grand-challenge#158](../../iris-hep/analysis-grand-challenge/pulls/158.md) on 2023-06-12 14:03_
 
 ---

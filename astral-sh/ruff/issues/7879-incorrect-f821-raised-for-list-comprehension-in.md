@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-09T21:31:36Z
 updated_at: 2023-10-10T03:51:01Z
 url: https://github.com/astral-sh/ruff/issues/7879
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Incorrect F821 raised for list comprehension in `Annotated`
@@ -101,10 +101,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-10-10 03:34_
 _Comment by @charliermarsh on 2023-10-10 03:34_
 
 I see the error here.
-
----
-
-_Referenced in [astral-sh/ruff#7885](../../astral-sh/ruff/pulls/7885.md) on 2023-10-10 03:42_
 
 ---
 

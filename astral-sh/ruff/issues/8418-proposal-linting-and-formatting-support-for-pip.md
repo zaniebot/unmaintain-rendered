@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-11-01T18:43:58Z
 updated_at: 2023-11-01T22:03:29Z
 url: https://github.com/astral-sh/ruff/issues/8418
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Proposal: linting and formatting support for pip requirements files, `(foo-)requirements.txt`
@@ -81,9 +81,5 @@ Thank you for the help! I'll definitely use this instead. I'll close this issue 
 ---
 
 _Closed by @Eutropios on 2023-11-01 22:03_
-
----
-
-_Referenced in [NYPL/digital-research-books#870](../../NYPL/digital-research-books/pulls/870.md) on 2025-11-07 16:43_
 
 ---

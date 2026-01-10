@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-18T09:53:23Z
 updated_at: 2024-02-12T09:30:09Z
 url: https://github.com/astral-sh/ruff/issues/9185
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Stabilize `quote-style: preserve`
@@ -34,14 +34,6 @@ _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-12-18 09:53_
 ---
 
 _Renamed from "Stabalize `quote-style: preserve`" to "Stabilize `quote-style: preserve`" by @konstin on 2023-12-18 10:02_
-
----
-
-_Referenced in [nteract/papermill#763](../../nteract/papermill/pulls/763.md) on 2023-12-18 13:35_
-
----
-
-_Referenced in [astral-sh/ruff#9922](../../astral-sh/ruff/pulls/9922.md) on 2024-02-10 06:29_
 
 ---
 

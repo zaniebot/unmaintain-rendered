@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-08T21:08:53Z
 updated_at: 2025-01-09T08:36:50Z
 url: https://github.com/astral-sh/ruff/issues/15360
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Panic in `call/bind.rs` (argument index should not be out of range)
@@ -227,10 +227,6 @@ _Label `red-knot` added by @sharkdp on 2025-01-08 21:08_
 ---
 
 _Assigned to @carljm by @carljm on 2025-01-08 21:13_
-
----
-
-_Referenced in [astral-sh/ruff#15362](../../astral-sh/ruff/pulls/15362.md) on 2025-01-08 22:44_
 
 ---
 

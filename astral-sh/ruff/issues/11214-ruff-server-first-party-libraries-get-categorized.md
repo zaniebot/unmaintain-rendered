@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-30T14:25:23Z
 updated_at: 2024-05-02T02:24:37Z
 url: https://github.com/astral-sh/ruff/issues/11214
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # `ruff server` first-party libraries get categorized as third-party
@@ -116,10 +116,6 @@ _Assigned to @snowsignal by @snowsignal on 2024-04-30 14:40_
 _Comment by @charliermarsh on 2024-04-30 15:57_
 
 It's similar to #11185: we need to determine and provide the containing package at that call site.
-
----
-
-_Referenced in [astral-sh/ruff#11224](../../astral-sh/ruff/pulls/11224.md) on 2024-05-01 00:26_
 
 ---
 

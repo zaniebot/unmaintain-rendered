@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-12-31T08:26:37Z
 updated_at: 2023-12-31T12:54:33Z
 url: https://github.com/astral-sh/ruff/issues/9328
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Rule PLR2044 cause panic
@@ -111,10 +111,6 @@ _Label `fuzzer` added by @charliermarsh on 2023-12-31 12:41_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-31 12:44_
-
----
-
-_Referenced in [astral-sh/ruff#9331](../../astral-sh/ruff/pulls/9331.md) on 2023-12-31 12:49_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-01-28T17:19:05Z
 updated_at: 2023-01-28T18:32:51Z
 url: https://github.com/astral-sh/ruff/issues/2304
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Using global config is impacting the behaviour of the tests
@@ -115,14 +115,6 @@ _Label `internal` added by @charliermarsh on 2023-01-28 17:29_
 
 ---
 
-_Referenced in [astral-sh/ruff#2306](../../astral-sh/ruff/pulls/2306.md) on 2023-01-28 18:02_
-
----
-
 _Closed by @charliermarsh on 2023-01-28 18:32_
-
----
-
-_Referenced in [astral-sh/ruff#9870](../../astral-sh/ruff/issues/9870.md) on 2025-12-05 19:23_
 
 ---

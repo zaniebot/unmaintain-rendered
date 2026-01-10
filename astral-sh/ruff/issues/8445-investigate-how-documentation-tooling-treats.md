@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-02T10:37:10Z
 updated_at: 2024-02-08T14:14:12Z
 url: https://github.com/astral-sh/ruff/issues/8445
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Investigate how documentation tooling treats indents in docstrings
@@ -31,10 +31,6 @@ This becomes a problem when using the formatter with tab indentation, esp. with 
 ---
 
 _Label `docstring` added by @charliermarsh on 2023-11-02 12:55_
-
----
-
-_Referenced in [astral-sh/ruff#8430](../../astral-sh/ruff/issues/8430.md) on 2023-11-03 01:24_
 
 ---
 

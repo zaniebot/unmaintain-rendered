@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-11T06:55:14Z
 updated_at: 2025-02-18T23:10:48Z
 url: https://github.com/astral-sh/ruff/issues/13713
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [TCH001] Improvement with FastAPI dependencies
@@ -119,10 +119,6 @@ _Comment by @pySilver on 2024-10-28 12:35_
 
 ---
 
-_Referenced in [astral-sh/ruff#13926](../../astral-sh/ruff/issues/13926.md) on 2024-10-28 12:40_
-
----
-
 _Comment by @pySilver on 2024-10-28 12:47_
 
 For anyone looking at this, the only solution until we get something better is to:
@@ -132,10 +128,6 @@ For anyone looking at this, the only solution until we get something better is t
 So for example move `app = FastAPI()` into `apps.py` and import it from there while adding `myproject.myapp.apps.app.post` into `runtime-evaluated-decorators`
 
 Or disable this checks for now.
-
----
-
-_Referenced in [astral-sh/ruff#14140](../../astral-sh/ruff/issues/14140.md) on 2024-11-06 21:49_
 
 ---
 
@@ -160,14 +152,6 @@ Turns out ruff already properly clears the `TYPE_DEFINITION` flag for the second
 Not clearing those flags makes sense to me, since they provide important context, however we never check for `TYPE_DEFINITION` on `is_typing_reference`, so we treat `Depends` and `get_foo` as typing references, despite not being part of a type definition. Technically this is once again somewhat correct (especially for the `from __future__ import annotations` case), however it's not really helpful to treat those references that way, so it's better to never treat non-type-definitions as typing references (unless they're within a type checking block).
 
 I'll get a PR up with a fix.
-
----
-
-_Referenced in [astral-sh/ruff#14311](../../astral-sh/ruff/pulls/14311.md) on 2024-11-13 09:00_
-
----
-
-_Referenced in [astral-sh/ruff#15060](../../astral-sh/ruff/pulls/15060.md) on 2024-12-19 12:27_
 
 ---
 

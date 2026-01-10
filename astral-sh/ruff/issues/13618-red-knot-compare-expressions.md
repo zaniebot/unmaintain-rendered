@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-03T20:24:04Z
 updated_at: 2024-11-07T19:51:31Z
 url: https://github.com/astral-sh/ruff/issues/13618
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] Compare expressions
@@ -40,38 +40,6 @@ This is a roadmap of features and `// TODO` to mark `compare expression` as comp
 ---
 
 _Label `red-knot` added by @dhruvmanila on 2024-10-04 03:56_
-
----
-
-_Referenced in [astral-sh/ruff#13634](../../astral-sh/ruff/pulls/13634.md) on 2024-10-04 19:48_
-
----
-
-_Referenced in [astral-sh/ruff#13635](../../astral-sh/ruff/pulls/13635.md) on 2024-10-04 19:52_
-
----
-
-_Referenced in [astral-sh/ty#244](../../astral-sh/ty/issues/244.md) on 2024-10-07 16:22_
-
----
-
-_Referenced in [astral-sh/ruff#13688](../../astral-sh/ruff/issues/13688.md) on 2024-10-09 08:45_
-
----
-
-_Referenced in [astral-sh/ruff#13712](../../astral-sh/ruff/pulls/13712.md) on 2024-10-11 06:48_
-
----
-
-_Referenced in [astral-sh/ruff#13779](../../astral-sh/ruff/issues/13779.md) on 2024-10-16 17:31_
-
----
-
-_Referenced in [astral-sh/ruff#13854](../../astral-sh/ruff/issues/13854.md) on 2024-10-21 10:52_
-
----
-
-_Referenced in [astral-sh/ruff#13872](../../astral-sh/ruff/issues/13872.md) on 2024-10-22 05:49_
 
 ---
 

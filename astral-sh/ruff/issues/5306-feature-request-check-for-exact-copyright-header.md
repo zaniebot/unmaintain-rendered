@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-06-22T16:39:00Z
 updated_at: 2024-06-18T15:23:40Z
 url: https://github.com/astral-sh/ruff/issues/5306
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Feature Request: Check for exact copyright header
@@ -102,10 +102,6 @@ _Label `needs-decision` added by @charliermarsh on 2023-07-10 01:09_
 
 ---
 
-_Referenced in [astral-sh/ruff#5709](../../astral-sh/ruff/issues/5709.md) on 2023-07-12 13:56_
-
----
-
 _Comment by @jeaboswell on 2023-09-22 07:02_
 
 > `flake8-copyright` is a good starting point for this, although converting the header to validate into a regular expression is a bit tedious (lots of escapes).
@@ -160,10 +156,6 @@ _Comment by @aaronsteers on 2024-05-07 22:28_
 +1 to this request. And to raise an alternative more generic implementation - which would be "file_starts_with" customization.
 
 This variant would allow auto-fixing of CPY1 _indirectly_, but with an approach more generic. The generic implementation would allow Ruff to check for (and auto-fix) a mandatory pre-amble for each python file.
-
----
-
-_Referenced in [astral-sh/ruff#11927](../../astral-sh/ruff/pulls/11927.md) on 2024-06-18 14:48_
 
 ---
 

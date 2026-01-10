@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-12-24T19:05:53Z
 updated_at: 2025-10-30T17:04:37Z
 url: https://github.com/astral-sh/ruff/issues/15136
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Feature request: Autofix for `none-not-at-end-of-union (RUF036)`
@@ -48,10 +48,6 @@ can I work on this?
 
 ---
 
-_Referenced in [astral-sh/ruff#15139](../../astral-sh/ruff/pulls/15139.md) on 2024-12-25 03:27_
-
----
-
 _Comment by @kiran-4444 on 2025-05-07 09:18_
 
 I'd like to work on this. Can someone assign this to me? Thanks!
@@ -59,10 +55,6 @@ I'd like to work on this. Can someone assign this to me? Thanks!
 ---
 
 _Assigned to @kiran-4444 by @ntBre on 2025-05-07 18:14_
-
----
-
-_Referenced in [astral-sh/ruff#18964](../../astral-sh/ruff/pulls/18964.md) on 2025-06-26 16:23_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-20T16:35:07Z
 updated_at: 2025-01-21T13:40:58Z
 url: https://github.com/astral-sh/ruff/issues/14494
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Extend `docstring-missing-exception` to empty exception description (`DOC501`)
@@ -58,10 +58,6 @@ _Label `rule` added by @AlexWaygood on 2024-11-20 17:54_
 ---
 
 _Label `docstring` added by @AlexWaygood on 2024-11-20 17:54_
-
----
-
-_Referenced in [astral-sh/ruff#14496](../../astral-sh/ruff/pulls/14496.md) on 2024-11-20 19:02_
 
 ---
 

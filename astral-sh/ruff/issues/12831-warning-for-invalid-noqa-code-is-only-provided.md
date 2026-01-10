@@ -1,0 +1,69 @@
+```yaml
+number: 12831
+title: "Warning for invalid `noqa` code is only provided when related rules are selected"
+type: issue
+state: closed
+author: dhruvmanila
+labels:
+  - suppression
+assignees: []
+created_at: 2024-08-12T04:55:37Z
+updated_at: 2025-02-16T19:58:19Z
+url: https://github.com/astral-sh/ruff/issues/12831
+synced_at: 2026-01-10T11:09:54Z
+```
+
+# Warning for invalid `noqa` code is only provided when related rules are selected
+
+---
+
+_Issue opened by @dhruvmanila on 2024-08-12 04:55_
+
+It seems that the warning is only provided when a rule from the `LintSource::Noqa` is enabled which is unexpected (I think?):
+
+```console
+❯ ruff check ~/playground/ruff/src/play.py --isolated --no-cache                                 
+All checks passed!
+
+❯ ruff check ~/playground/ruff/src/play.py --isolated --no-cache --extend-select=RUF100
+warning: Invalid rule code provided to `# ruff: noqa` at /Users/dhruv/playground/ruff/src/play.py:1: HEL101
+All checks passed!
+```
+
+---
+
+_Label `suppression` added by @dhruvmanila on 2024-08-12 04:55_
+
+---
+
+_Renamed from "Warning for invalid `noqa` code is only provided when `RUF100` is selected" to "Warning for invalid `noqa` code is only provided when related rules are selected" by @dhruvmanila on 2024-08-12 04:55_
+
+---
+
+_Comment by @charliermarsh on 2024-08-12 14:34_
+
+I didn't look closely at all but could it also be that we skip this entirely when there aren't any lint errors (but RUF100 is special since it _can_ trigger when there are no other lint errors)?
+
+---
+
+_Comment by @dhruvmanila on 2024-08-12 15:54_
+
+Yeah, we do skip it when there aren't any lint errors:
+
+https://github.com/astral-sh/ruff/blob/aa8081d72eb439783acf9d956c81b9904da67d2d/crates/ruff_linter/src/linter.rs#L267-L273
+
+---
+
+_Comment by @dhruvmanila on 2024-08-13 15:59_
+
+@charliermarsh Is this an expected behavior? I find it a bit confusing that we show warnings only in certain scenarios.
+
+---
+
+_Closed by @dylwil3 on 2025-02-16 19:58_
+
+---
+
+_Closed by @dylwil3 on 2025-02-16 19:58_
+
+---

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-09-17T09:26:04Z
 updated_at: 2023-09-17T20:13:35Z
 url: https://github.com/astral-sh/ruff/issues/7451
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # PLW3201 conflicts with attrs initialization best practices
@@ -51,10 +51,6 @@ _Label `good first issue` added by @charliermarsh on 2023-09-17 16:17_
 ---
 
 _Label `help wanted` added by @charliermarsh on 2023-09-17 16:17_
-
----
-
-_Referenced in [astral-sh/ruff#7472](../../astral-sh/ruff/pulls/7472.md) on 2023-09-17 19:49_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-13T10:56:24Z
 updated_at: 2025-04-03T10:21:43Z
 url: https://github.com/astral-sh/ruff/issues/12856
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Nested expression formatting
@@ -35,26 +35,6 @@ Because a) implementing this in Ruff is kind of hard (or slow) and b) it goes ag
 ---
 
 _Label `formatter` added by @MichaReiser on 2024-08-13 10:56_
-
----
-
-_Referenced in [astral-sh/ruff#12854](../../astral-sh/ruff/issues/12854.md) on 2024-08-13 10:58_
-
----
-
-_Referenced in [astral-sh/ruff#12870](../../astral-sh/ruff/issues/12870.md) on 2024-08-16 02:18_
-
----
-
-_Referenced in [astral-sh/ruff#13371](../../astral-sh/ruff/issues/13371.md) on 2024-09-16 16:19_
-
----
-
-_Referenced in [psf/black#4501](../../psf/black/issues/4501.md) on 2024-10-23 13:50_
-
----
-
-_Referenced in [astral-sh/ruff#17155](../../astral-sh/ruff/issues/17155.md) on 2025-04-02 15:46_
 
 ---
 
@@ -86,25 +66,5 @@ class Klass:
 
         return f'{other} is not {another} while {one_more_argument} happens'
 ```
-
----
-
-_Referenced in [astral-sh/ruff#18193](../../astral-sh/ruff/issues/18193.md) on 2025-05-19 13:39_
-
----
-
-_Referenced in [astral-sh/ruff#20482](../../astral-sh/ruff/issues/20482.md) on 2025-09-20 11:12_
-
----
-
-_Referenced in [astral-sh/ruff#21005](../../astral-sh/ruff/pulls/21005.md) on 2025-10-21 06:38_
-
----
-
-_Referenced in [psf/black#4875](../../psf/black/issues/4875.md) on 2025-11-29 15:45_
-
----
-
-_Referenced in [astral-sh/ruff#21369](../../astral-sh/ruff/pulls/21369.md) on 2025-12-05 07:10_
 
 ---

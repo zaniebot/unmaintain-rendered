@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-21T06:00:44Z
 updated_at: 2024-01-26T07:30:55Z
 url: https://github.com/astral-sh/ruff/issues/9224
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Optimize production binaries
@@ -100,13 +100,5 @@ _Closed by @MichaReiser on 2024-01-26 07:30_
 ---
 
 _Closed by @MichaReiser on 2024-01-26 07:30_
-
----
-
-_Referenced in [astral-sh/uv#5904](../../astral-sh/uv/pulls/5904.md) on 2024-08-08 11:47_
-
----
-
-_Referenced in [astral-sh/uv#5909](../../astral-sh/uv/pulls/5909.md) on 2024-08-08 14:10_
 
 ---

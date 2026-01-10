@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-12T17:36:37Z
 updated_at: 2023-04-12T21:30:17Z
 url: https://github.com/astral-sh/ruff/issues/3950
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # False positive: `PYI015` does not allow assigning `typing_extensions.TypeVar`
@@ -62,10 +62,6 @@ It looks like we allow `from typing import TypeVar` here but not `from typing_ex
 _Comment by @bryanforbes on 2023-04-12 20:19_
 
 It looks like `flake8-pyi` checks for both `typing` and `typing_extensions` here: https://github.com/PyCQA/flake8-pyi/blob/64863f80c7f91fae23418db048bb41185c2fb5ed/pyi.py#L354
-
----
-
-_Referenced in [astral-sh/ruff#3951](../../astral-sh/ruff/pulls/3951.md) on 2023-04-12 20:39_
 
 ---
 

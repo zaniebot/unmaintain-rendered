@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-30T10:06:56Z
 updated_at: 2024-10-30T11:54:17Z
 url: https://github.com/astral-sh/ruff/issues/13990
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] Union incorrectly reported as not iterable
@@ -127,10 +127,6 @@ _Label `bug` added by @AlexWaygood on 2024-10-30 11:26_
 ---
 
 _Assigned to @AlexWaygood by @AlexWaygood on 2024-10-30 11:30_
-
----
-
-_Referenced in [astral-sh/ruff#13992](../../astral-sh/ruff/pulls/13992.md) on 2024-10-30 11:40_
 
 ---
 

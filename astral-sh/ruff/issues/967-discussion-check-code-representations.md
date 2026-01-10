@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-11-30T03:02:31Z
 updated_at: 2022-12-16T05:26:19Z
 url: https://github.com/astral-sh/ruff/issues/967
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:22Z
 ```
 
 # Discussion: check code representations
@@ -69,13 +69,5 @@ We actually already have a short-name internally for every check (`UnusedLoopCon
 ---
 
 _Closed by @charliermarsh on 2022-12-16 05:26_
-
----
-
-_Referenced in [astral-sh/ruff#1235](../../astral-sh/ruff/pulls/1235.md) on 2022-12-18 16:55_
-
----
-
-_Referenced in [astral-sh/ruff#1773](../../astral-sh/ruff/issues/1773.md) on 2023-01-10 20:57_
 
 ---

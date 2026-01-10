@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-24T05:24:49Z
 updated_at: 2023-08-29T00:51:16Z
 url: https://github.com/astral-sh/ruff/issues/6839
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # `banned-from` docs is confusing
@@ -44,10 +44,6 @@ _Label `documentation` added by @charliermarsh on 2023-08-24 14:04_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-08-24 14:04_
-
----
-
-_Referenced in [astral-sh/ruff#6959](../../astral-sh/ruff/pulls/6959.md) on 2023-08-29 00:42_
 
 ---
 

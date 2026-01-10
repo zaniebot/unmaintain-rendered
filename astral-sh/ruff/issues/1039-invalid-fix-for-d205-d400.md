@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-04T16:50:48Z
 updated_at: 2022-12-04T18:56:52Z
 url: https://github.com/astral-sh/ruff/issues/1039
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:15Z
 ```
 
 # Invalid fix for D205+D400
@@ -91,10 +91,6 @@ _Comment by @charliermarsh on 2022-12-04 17:29_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2022-12-04 18:36_
-
----
-
-_Referenced in [astral-sh/ruff#1041](../../astral-sh/ruff/pulls/1041.md) on 2022-12-04 18:55_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-19T14:36:50Z
 updated_at: 2024-10-22T06:50:08Z
 url: https://github.com/astral-sh/ruff/issues/13821
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # dict-index-missing-items (PLC0206) should allow assignment by key
@@ -147,9 +147,5 @@ I do think that the current behavior captures the rules intent correctly. The ru
 ---
 
 _Closed by @MichaReiser on 2024-10-22 06:50_
-
----
-
-_Referenced in [astral-sh/ruff#14585](../../astral-sh/ruff/issues/14585.md) on 2024-11-25 15:58_
 
 ---

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-03-11T17:20:36Z
 updated_at: 2024-03-11T18:57:27Z
 url: https://github.com/astral-sh/ruff/issues/10343
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Allow trailing comments after supression comments
@@ -42,10 +42,6 @@ _Label `help wanted` added by @zanieb on 2024-03-11 17:20_
 ---
 
 _Label `needs-design` added by @zanieb on 2024-03-11 17:20_
-
----
-
-_Referenced in [astral-sh/ruff#10239](../../astral-sh/ruff/issues/10239.md) on 2024-03-11 17:21_
 
 ---
 

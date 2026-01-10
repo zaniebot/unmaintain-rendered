@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-19T02:13:49Z
 updated_at: 2023-07-19T03:59:36Z
 url: https://github.com/astral-sh/ruff/issues/5875
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Incorrect `--show-source` for Jupyter Notebooks with continuous import blocks
@@ -72,10 +72,6 @@ Oh, I think I found the problem. Should be an easy fix actually :)
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2023-07-19 02:21_
-
----
-
-_Referenced in [astral-sh/ruff#5876](../../astral-sh/ruff/pulls/5876.md) on 2023-07-19 02:26_
 
 ---
 

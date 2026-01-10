@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-03-21T16:57:25Z
 updated_at: 2023-04-05T22:02:34Z
 url: https://github.com/astral-sh/ruff/issues/3652
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # PLW2901 ignore when using cast
@@ -85,10 +85,6 @@ _Comment by @dhruvmanila on 2023-04-05 17:22_
 > I would like to work on it.
 
 @JonathanPlasse are you working on this?
-
----
-
-_Referenced in [astral-sh/ruff#3891](../../astral-sh/ruff/pulls/3891.md) on 2023-04-05 18:53_
 
 ---
 

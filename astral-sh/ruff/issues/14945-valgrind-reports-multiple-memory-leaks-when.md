@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-12T20:09:43Z
 updated_at: 2024-12-14T02:14:23Z
 url: https://github.com/astral-sh/ruff/issues/14945
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Valgrind reports multiple memory leaks, when checking random folders with red_knot
@@ -211,9 +211,5 @@ I'm not super experienced reading valgrind output, but the remaining issues don'
 ---
 
 _Closed by @carljm on 2024-12-14 02:14_
-
----
-
-_Referenced in [astral-sh/ty#689](../../astral-sh/ty/issues/689.md) on 2025-06-21 13:01_
 
 ---

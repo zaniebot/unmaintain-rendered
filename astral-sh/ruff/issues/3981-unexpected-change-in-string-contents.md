@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-04-16T00:26:35Z
 updated_at: 2023-04-16T23:27:10Z
 url: https://github.com/astral-sh/ruff/issues/3981
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Unexpected change in string contents
@@ -37,10 +37,6 @@ not entirely sure which rule is changing it, but for some reason the help text s
 +    max_length=255, help_text="The customer`s email address."
  )
 ```
-
----
-
-_Referenced in [chdsbd/kodiak#872](../../chdsbd/kodiak/pulls/872.md) on 2023-04-16 00:29_
 
 ---
 

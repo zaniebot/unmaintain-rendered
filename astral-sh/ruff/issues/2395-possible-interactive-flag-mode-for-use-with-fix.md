@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-31T13:37:18Z
 updated_at: 2023-05-10T20:45:40Z
 url: https://github.com/astral-sh/ruff/issues/2395
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Possible `--interactive` flag/mode for use with `--fix`?
@@ -36,10 +36,6 @@ _Label `cli` added by @charliermarsh on 2023-02-03 18:23_
 _Comment by @charliermarsh on 2023-03-13 21:24_
 
 \cc @MichaReiser regarding "review mode"
-
----
-
-_Referenced in [astral-sh/ruff#4361](../../astral-sh/ruff/issues/4361.md) on 2023-05-10 20:38_
 
 ---
 

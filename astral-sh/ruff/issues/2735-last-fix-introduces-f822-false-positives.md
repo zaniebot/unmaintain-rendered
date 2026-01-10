@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-10T19:42:36Z
 updated_at: 2023-02-10T20:16:22Z
 url: https://github.com/astral-sh/ruff/issues/2735
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # last fix introduces F822 false positives
@@ -38,10 +38,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-02-10 19:44_
 ---
 
 _Label `bug` added by @charliermarsh on 2023-02-10 19:44_
-
----
-
-_Referenced in [astral-sh/ruff#2738](../../astral-sh/ruff/pulls/2738.md) on 2023-02-10 20:09_
 
 ---
 

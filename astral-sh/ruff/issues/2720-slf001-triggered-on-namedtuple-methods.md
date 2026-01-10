@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-10T17:21:40Z
 updated_at: 2023-02-17T22:16:27Z
 url: https://github.com/astral-sh/ruff/issues/2720
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # `SLF001` triggered on namedtuple methods
@@ -48,10 +48,6 @@ _Label `bug` added by @charliermarsh on 2023-02-10 17:22_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-17 22:07_
-
----
-
-_Referenced in [astral-sh/ruff#2998](../../astral-sh/ruff/pulls/2998.md) on 2023-02-17 22:09_
 
 ---
 

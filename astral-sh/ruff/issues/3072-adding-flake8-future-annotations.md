@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-20T22:01:59Z
 updated_at: 2025-01-03T13:22:49Z
 url: https://github.com/astral-sh/ruff/issues/3072
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Adding flake8-future-annotations
@@ -152,27 +152,7 @@ In other words: it's an unused import and imo should be treated as such.
 
 ---
 
-_Referenced in [Toufool/AutoSplit#207](../../Toufool/AutoSplit/pulls/207.md) on 2023-04-08 00:24_
-
----
-
 _Renamed from "Adding flake8-future-annotatations" to "Adding flake8-future-annotations" by @TylerYep on 2023-04-08 06:54_
-
----
-
-_Referenced in [astral-sh/ruff#3928](../../astral-sh/ruff/issues/3928.md) on 2023-04-11 23:09_
-
----
-
-_Referenced in [astral-sh/ruff#3979](../../astral-sh/ruff/pulls/3979.md) on 2023-04-15 18:47_
-
----
-
-_Referenced in [astral-sh/ruff#4553](../../astral-sh/ruff/issues/4553.md) on 2023-05-21 19:38_
-
----
-
-_Referenced in [astral-sh/ruff#4702](../../astral-sh/ruff/pulls/4702.md) on 2023-05-29 08:45_
 
 ---
 

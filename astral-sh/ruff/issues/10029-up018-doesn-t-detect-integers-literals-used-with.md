@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-18T19:59:13Z
 updated_at: 2024-02-20T18:21:08Z
 url: https://github.com/astral-sh/ruff/issues/10029
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # `UP018` doesn't detect integers literals used with unary operators
@@ -53,10 +53,6 @@ Agreed.
 _Comment by @sanxiyn on 2024-02-20 12:00_
 
 I am not sure about `~1`. It is bad, but `~1` is not a literal, so I think it is out of scope for UP018.
-
----
-
-_Referenced in [astral-sh/ruff#10060](../../astral-sh/ruff/pulls/10060.md) on 2024-02-20 12:01_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-13T19:14:47Z
 updated_at: 2025-02-14T06:57:15Z
 url: https://github.com/astral-sh/ruff/issues/16143
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Dead link in playground README
@@ -54,10 +54,6 @@ The project was renamed to Biome, so the link should now point to https://biomej
 _Comment by @vladNed on 2025-02-14 06:03_
 
 sure, I can make a fast PR replacing the link 
-
----
-
-_Referenced in [astral-sh/ruff#16153](../../astral-sh/ruff/pulls/16153.md) on 2025-02-14 06:10_
 
 ---
 

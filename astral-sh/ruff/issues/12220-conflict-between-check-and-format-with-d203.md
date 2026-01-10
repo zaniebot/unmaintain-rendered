@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-06T19:20:10Z
 updated_at: 2024-07-08T13:13:38Z
 url: https://github.com/astral-sh/ruff/issues/12220
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Conflict between check and format with D203
@@ -94,10 +94,6 @@ I don't think there's a way to make this rule formatter compatible. But we shoul
 ---
 
 _Label `incompatibility` added by @MichaReiser on 2024-07-08 08:07_
-
----
-
-_Referenced in [astral-sh/ruff#12238](../../astral-sh/ruff/pulls/12238.md) on 2024-07-08 08:17_
 
 ---
 

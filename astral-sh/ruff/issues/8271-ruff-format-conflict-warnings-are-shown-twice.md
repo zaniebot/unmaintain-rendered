@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-27T07:12:13Z
 updated_at: 2024-05-03T21:13:59Z
 url: https://github.com/astral-sh/ruff/issues/8271
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Ruff format conflict warnings are shown twice
@@ -162,10 +162,6 @@ I have one too. Here is a minimal repo reproducing the bug: https://github.com/y
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-27 13:46_
-
----
-
-_Referenced in [astral-sh/ruff#8292](../../astral-sh/ruff/pulls/8292.md) on 2023-10-28 01:29_
 
 ---
 

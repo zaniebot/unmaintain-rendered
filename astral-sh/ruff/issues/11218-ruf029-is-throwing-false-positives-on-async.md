@@ -1,0 +1,87 @@
+```yaml
+number: 11218
+title: RUF029 is throwing false positives on async iterators since v0.4.2
+type: issue
+state: closed
+author: frgfm
+labels:
+  - bug
+assignees: []
+created_at: 2024-04-30T18:00:58Z
+updated_at: 2024-05-01T18:31:59Z
+url: https://github.com/astral-sh/ruff/issues/11218
+synced_at: 2026-01-10T11:09:53Z
+```
+
+# RUF029 is throwing false positives on async iterators since v0.4.2
+
+---
+
+_Issue opened by @frgfm on 2024-04-30 18:00_
+
+Hello there :wave: 
+
+Kudos for this great tool, it's more than useful for so many projects.
+I noticed that with the latest release, ruff is throwing errors on RUF029 on async interators.
+The snippet below:
+```python
+import asyncio
+from typing import Tuple
+
+
+async def example(time: int) -> Tuple[int, int, int]:
+    await asyncio.sleep(time)
+    return (1, 2, 3)
+
+
+async def my_function() -> str:
+    vals = [str(val) for val in await example(1)]
+    return ",".join(vals)
+```
+is working alright with v0.4.1. But when running v0.4.2, it raises:
+```
+RUF029 Function `my_function` is declared `async`, but doesn't `await` or use `async` features.
+```
+
+Now the strange part is that I looked around and found #11070 which supposedly fixes this exact problem mentioned in #11043. I've tried to downgrade and upgrade several times, I'm getting the same problem consistently on 0.4.2 but not on 0.4.1.
+
+Am I misunderstanding #11043 and this isn't the same problem? Or did the fix not cover everything?
+
+I'm not proficient with Rust, but happy to help if I can!
+
+Cheers!
+
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-04-30 18:29_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-04-30 18:29_
+
+---
+
+_Comment by @charliermarsh on 2024-04-30 18:29_
+
+Apologies, I see the issue -- will fix now.
+
+---
+
+_Comment by @zanieb on 2024-04-30 19:08_
+
+Fixed in https://github.com/astral-sh/ruff/pull/11219, I presume?
+
+---
+
+_Closed by @zanieb on 2024-04-30 19:08_
+
+---
+
+_Comment by @frgfm on 2024-05-01 18:31_
+
+Don't be sorry @charliermarsh, you're doing an amazing job with ruff! And it's all the more commendable to address & fix reported issues that fast :clap:
+
+Thanks for the fix!
+
+---

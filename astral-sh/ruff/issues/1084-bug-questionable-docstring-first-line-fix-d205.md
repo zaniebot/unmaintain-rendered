@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-12-05T22:51:49Z
 updated_at: 2023-03-10T20:49:51Z
 url: https://github.com/astral-sh/ruff/issues/1084
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # [bug?] Questionable docstring first line fix (`D205`)
@@ -56,10 +56,6 @@ IMO it should not be fixable. The only thing that would make sense to me is if t
 
 ---
 
-_Referenced in [astral-sh/ruff#1091](../../astral-sh/ruff/pulls/1091.md) on 2022-12-06 00:00_
-
----
-
 _Comment by @charliermarsh on 2022-12-06 00:01_
 
 Yeah, what _can_ be safely fixed is this:
@@ -78,10 +74,6 @@ def get_class_definitions(name: str, schema: dict) -> Dict[str, Dict[str, Schema
 ---
 
 _Closed by @charliermarsh on 2022-12-06 00:01_
-
----
-
-_Referenced in [astral-sh/ruff#1672](../../astral-sh/ruff/issues/1672.md) on 2023-01-06 01:24_
 
 ---
 

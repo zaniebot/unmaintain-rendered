@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-07T09:36:40Z
 updated_at: 2024-10-24T14:34:08Z
 url: https://github.com/astral-sh/ruff/issues/7214
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # TCH004: false positive for import that is used only in type hints
@@ -157,22 +157,10 @@ _Label `multifile-analysis` added by @zanieb on 2023-10-03 17:23_
 
 ---
 
-_Referenced in [astral-sh/ruff#7769](../../astral-sh/ruff/pulls/7769.md) on 2023-10-03 17:27_
-
----
-
 _Closed by @zanieb on 2023-10-06 03:41_
 
 ---
 
 _Label `multifile-analysis` removed by @MichaReiser on 2024-10-24 14:34_
-
----
-
-_Referenced in [populationgenomics/ClinvArbitration#17](../../populationgenomics/ClinvArbitration/pulls/17.md) on 2025-04-29 23:34_
-
----
-
-_Referenced in [glass-dev/glass#619](../../glass-dev/glass/pulls/619.md) on 2025-05-07 12:56_
 
 ---

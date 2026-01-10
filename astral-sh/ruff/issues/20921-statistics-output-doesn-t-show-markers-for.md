@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-16T14:17:33Z
 updated_at: 2025-11-27T17:03:37Z
 url: https://github.com/astral-sh/ruff/issues/20921
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # Statistics output doesn't show `[*]` markers for partially-fixable error types
@@ -89,10 +89,6 @@ https://github.com/astral-sh/ruff/blob/73520e4acd9cb259f41a60b0b6396c66ea32950a/
 ---
 
 _Label `cli` added by @ntBre on 2025-10-16 14:59_
-
----
-
-_Referenced in [astral-sh/ruff#21513](../../astral-sh/ruff/pulls/21513.md) on 2025-11-18 16:21_
 
 ---
 

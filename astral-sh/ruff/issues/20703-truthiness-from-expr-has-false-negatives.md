@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-05T19:41:39Z
 updated_at: 2025-10-14T08:06:19Z
 url: https://github.com/astral-sh/ruff/issues/20703
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # `Truthiness:from_expr` has false negatives
@@ -45,10 +45,6 @@ All checks passed!
 ### Version
 
 ruff 0.13.3 (188c0dce2 2025-10-02)
-
----
-
-_Referenced in [astral-sh/ruff#20704](../../astral-sh/ruff/pulls/20704.md) on 2025-10-05 22:27_
 
 ---
 

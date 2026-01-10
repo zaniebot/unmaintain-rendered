@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-26T05:11:44Z
 updated_at: 2024-12-27T19:33:05Z
 url: https://github.com/astral-sh/ruff/issues/14600
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # no UP031 fix for `"%d" % 1`
@@ -116,9 +116,5 @@ I agree that it's a partial solution, and the conversion of "%d" need be keep un
 _Comment by @Skylion007 on 2024-12-27 19:32_
 
 Wouldn't just `f"a {2.34:d}"` be equivalent?
-
----
-
-_Referenced in [astral-sh/ruff-vscode#670](../../astral-sh/ruff-vscode/issues/670.md) on 2025-01-17 11:36_
 
 ---

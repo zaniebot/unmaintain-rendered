@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-16T18:31:20Z
 updated_at: 2024-08-17T14:51:11Z
 url: https://github.com/astral-sh/ruff/issues/12940
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # N817 not correctly detecting `from xml.etree import ElementTree as ET`
@@ -103,10 +103,6 @@ _Assigned to @MichaReiser by @MichaReiser on 2024-08-17 11:33_
 
 ---
 
-_Referenced in [astral-sh/ruff#12946](../../astral-sh/ruff/pulls/12946.md) on 2024-08-17 11:34_
-
----
-
 _Closed by @MichaReiser on 2024-08-17 12:05_
 
 ---
@@ -114,9 +110,5 @@ _Closed by @MichaReiser on 2024-08-17 12:05_
 _Comment by @lengau on 2024-08-17 14:51_
 
 That was quick! Thank you! 
-
----
-
-_Referenced in [astral-sh/ruff#12916](../../astral-sh/ruff/issues/12916.md) on 2024-08-19 18:51_
 
 ---

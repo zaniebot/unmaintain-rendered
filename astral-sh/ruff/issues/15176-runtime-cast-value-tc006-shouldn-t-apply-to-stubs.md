@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-29T01:36:43Z
 updated_at: 2024-12-29T19:39:17Z
 url: https://github.com/astral-sh/ruff/issues/15176
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # `runtime-cast-value (TC006)` shouldn't apply to stubs
@@ -41,10 +41,6 @@ Command: `ruff check --preview --select=TC006 --isolated`
 _Comment by @Daverball on 2024-12-29 07:32_
 
 My bad, some of the other new `flake8-type-checking` rules I added might also currently be active in stub files. None of them should really be active.
-
----
-
-_Referenced in [astral-sh/ruff#15179](../../astral-sh/ruff/pulls/15179.md) on 2024-12-29 07:56_
 
 ---
 

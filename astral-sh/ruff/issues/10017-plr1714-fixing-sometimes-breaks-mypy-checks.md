@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-17T16:56:32Z
 updated_at: 2024-02-20T19:03:34Z
 url: https://github.com/astral-sh/ruff/issues/10017
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # PLR1714 fixing sometimes breaks mypy checks
@@ -48,10 +48,6 @@ _Label `good first issue` added by @charliermarsh on 2024-02-17 18:04_
 ---
 
 _Label `rule` added by @AlexWaygood on 2024-02-18 11:31_
-
----
-
-_Referenced in [astral-sh/ruff#10054](../../astral-sh/ruff/pulls/10054.md) on 2024-02-19 23:53_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-22T11:30:36Z
 updated_at: 2022-12-26T00:53:51Z
 url: https://github.com/astral-sh/ruff/issues/1331
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:26Z
 ```
 
 # [feature-request] `required-version` option
@@ -50,10 +50,6 @@ _Comment by @charliermarsh on 2022-12-22 16:21_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2022-12-24 20:04_
-
----
-
-_Referenced in [astral-sh/ruff#1376](../../astral-sh/ruff/pulls/1376.md) on 2022-12-26 00:34_
 
 ---
 

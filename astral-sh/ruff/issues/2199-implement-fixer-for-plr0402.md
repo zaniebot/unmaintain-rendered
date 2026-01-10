@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-26T16:49:17Z
 updated_at: 2023-02-03T04:25:24Z
 url: https://github.com/astral-sh/ruff/issues/2199
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Implement fixer for PLR0402
@@ -48,10 +48,6 @@ for filename, _, _, rest in lines:
 ```
 
 don't forget to execute `isort` afterwards.
-
----
-
-_Referenced in [astral-sh/ruff#2504](../../astral-sh/ruff/pulls/2504.md) on 2023-02-02 23:45_
 
 ---
 

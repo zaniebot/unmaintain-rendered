@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-20T18:10:22Z
 updated_at: 2025-06-23T09:06:45Z
 url: https://github.com/astral-sh/ruff/issues/18828
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Use the `LinterSettings` on `LintContext` instead of `Checker`
@@ -92,10 +92,6 @@ _Comment by @LaBatata101 on 2025-06-21 02:21_
 > Could you open a draft PR? I usually have to play with these lifetime errors to figure them out 😅
 
 Here it is https://github.com/astral-sh/ruff/pull/18845
-
----
-
-_Referenced in [astral-sh/ruff#18845](../../astral-sh/ruff/pulls/18845.md) on 2025-06-21 20:45_
 
 ---
 

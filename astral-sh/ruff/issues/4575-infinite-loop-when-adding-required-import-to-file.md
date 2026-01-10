@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-22T11:31:08Z
 updated_at: 2023-05-22T15:49:05Z
 url: https://github.com/astral-sh/ruff/issues/4575
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # [Infinite loop] When adding required import to file with `# isort: off` as first line
@@ -259,10 +259,6 @@ _Label `isort` added by @charliermarsh on 2023-05-22 13:12_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-05-22 15:09_
-
----
-
-_Referenced in [astral-sh/ruff#4581](../../astral-sh/ruff/pulls/4581.md) on 2023-05-22 15:35_
 
 ---
 

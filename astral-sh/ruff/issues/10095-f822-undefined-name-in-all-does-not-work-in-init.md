@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-23T12:55:50Z
 updated_at: 2024-05-30T03:15:07Z
 url: https://github.com/astral-sh/ruff/issues/10095
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # F822 Undefined name in `__all__` does not work in `__init__.py`
@@ -111,24 +111,12 @@ Note that e.g. Pyright follows that approach.
 
 ---
 
-_Referenced in [pydata/xarray#8791](../../pydata/xarray/pulls/8791.md) on 2024-02-28 01:17_
-
----
-
 _Comment by @charliermarsh on 2024-04-12 02:03_
 
 I kind of agree with @hassec. I'm curious how disruptive this would be to change.
 
 ---
 
-_Referenced in [astral-sh/ruff#11370](../../astral-sh/ruff/pulls/11370.md) on 2024-05-11 17:32_
-
----
-
 _Closed by @charliermarsh on 2024-05-30 03:15_
-
----
-
-_Referenced in [astral-sh/ruff#19740](../../astral-sh/ruff/issues/19740.md) on 2025-08-04 10:59_
 
 ---

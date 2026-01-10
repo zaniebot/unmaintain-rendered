@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-12T14:06:33Z
 updated_at: 2025-02-12T16:27:39Z
 url: https://github.com/astral-sh/ruff/issues/16117
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # RUF001 reports multiple violations for the same character in a nested typing string
@@ -44,10 +44,6 @@ _Label `bug` added by @AlexWaygood on 2025-02-12 16:14_
 ---
 
 _Label `rule` added by @AlexWaygood on 2025-02-12 16:14_
-
----
-
-_Referenced in [astral-sh/ruff#16122](../../astral-sh/ruff/pulls/16122.md) on 2025-02-12 16:22_
 
 ---
 

@@ -1,0 +1,137 @@
+```yaml
+number: 893
+title: FBT003 triggered on dict 
+type: issue
+state: closed
+author: obi-081
+labels:
+  - bug
+assignees: []
+created_at: 2022-11-23T14:20:58Z
+updated_at: 2022-12-01T22:33:59Z
+url: https://github.com/astral-sh/ruff/issues/893
+synced_at: 2026-01-10T12:09:58Z
+```
+
+# FBT003 triggered on dict 
+
+---
+
+_Issue opened by @obi-081 on 2022-11-23 14:20_
+
+Hi !
+I found four false positives for the rule FBT003 on dict objects.
+get, pop, setdefault and fromkeys take a default argument that is not declared positional but is in fact.
+
+https://docs.python.org/2/library/stdtypes.html#dict.get
+https://docs.python.org/2/library/stdtypes.html#dict.pop
+https://docs.python.org/2/library/stdtypes.html#dict.setdefault
+https://docs.python.org/2/library/stdtypes.html#dict.fromkeys
+
+Here's the demo (FTB must be activated off course)
+`
+>ruff --version
+ruff 0.0.135
+
+>ruff dict.py
+Found 4 error(s).
+dict.py:4:17: FBT003 Boolean positional value in function call
+dict.py:5:24: FBT003 Boolean positional value in function call
+dict.py:6:17: FBT003 Boolean positional value in function call
+dict.py:7:27: FBT003 Boolean positional value in function call
+
+>cat dict.py
+"""
+FBT003 Boolean positional value on dict
+"""
+{}.get("hello", False)
+{}.setdefault("hello", True)
+{}.pop("hello", False)
+dict.fromkeys(("world",), True)
+`
+
+Thank you for this amazing tool ! 🥇 
+
+---
+
+_Label `bug` added by @charliermarsh on 2022-11-23 14:49_
+
+---
+
+_Comment by @charliermarsh on 2022-11-23 14:50_
+
+Oh interesting! Thank you. \cc @pwoolvett 
+
+---
+
+_Comment by @pwoolvett on 2022-11-23 15:36_
+
+# problem
+1. It is a [boolean trap](https://youtu.be/CnRkXO_a5mI?t=90) !
+2. Those links are from python2! 
+The problem is (python3.8 at least, probably earlier) the signature of the method in fact [enforces positional only](https://peps.python.org/pep-0570/#recap)! :
+
+```python
+>>> help(dict.get)
+Help on method_descriptor:
+
+get(self, key, default=None, /)  # here, the / at the end
+    Return the value for key if key is in the dictionary, else default.
+```
+3. Normally you would do `{}.get("non_existent key", default=4)`, but the new signature wont allow it given (2) above
+
+# workaround
+
+temporarily you'll have to
+
+*  turn off FBT003 :mask: 
+*  replace on a case be case bases, eg `{}.get(None) or False` :nauseated_face: 
+* add `# noqa: FBT003` to every one of those calls :vomiting_face: 
+* define function wrappers for those methods and add noqas there :nauseated_face: 
+
+# solution
+No sane person would start adding noqas to every `dict.get`, in a bigger codebase, so we have to solve it somehow. My suggestion would be:
+
+1) Define a cst whitelist. Either explicitly (as issues arise, manually growing it) or with stdlib methods (how would we capture those?)
+2) Update the signature [here](https://github.com/charliermarsh/ruff/blob/bd08fc359d06b624283c8be801056b228f83447f/src/flake8_boolean_trap/plugins.rs#L63) to receive information upper on the cst, not just the args: I think adding either `expr` or `func` (or both) should be enough.
+3) Forward required ast spec [here](https://github.com/charliermarsh/ruff/blob/77e0be346474decc6bca583b1466974e27780db8/src/check_ast.rs)
+4) Add extra conditional [here](https://github.com/charliermarsh/ruff/blob/bd08fc359d06b624283c8be801056b228f83447f/src/flake8_boolean_trap/plugins.rs#L65) to skip whitelist based on `expr` and/or `func`
+
+
+
+
+
+---
+
+_Closed by @charliermarsh on 2022-11-28 21:17_
+
+---
+
+_Comment by @arthurazs on 2022-12-01 22:21_
+
+```python
+dict_frame = {"trip": []}
+dict_frame["trip"].append(False)
+```
+
+This triggers `FBT003 Boolean positional value in function call`. 
+
+Is this the intended behaviour? If it is, how am I to avoid this boolean trap?
+
+
+---
+Edit
+
+The same happens for 
+
+```python
+trip = []
+trip.append(False)
+```
+
+```bash
+$ ruff --version
+ruff 0.0.150
+```
+
+---

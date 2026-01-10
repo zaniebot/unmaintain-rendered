@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-27T10:27:07Z
 updated_at: 2025-02-27T14:14:05Z
 url: https://github.com/astral-sh/ruff/issues/16412
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [`flake8-type-checking`] TC004 is too strict for SQLAlchemy's `Mapped`
@@ -60,9 +60,5 @@ Eventually type inference could let us do something more targeted for SQLAlchemy
 ---
 
 _Label `bug` added by @MichaReiser on 2025-02-27 14:14_
-
----
-
-_Referenced in [astral-sh/ruff#14140](../../astral-sh/ruff/issues/14140.md) on 2025-03-18 21:48_
 
 ---

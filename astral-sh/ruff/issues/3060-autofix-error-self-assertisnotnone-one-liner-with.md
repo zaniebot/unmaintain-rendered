@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-20T15:09:32Z
 updated_at: 2023-02-20T17:49:24Z
 url: https://github.com/astral-sh/ruff/issues/3060
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # [Autofix error] - self.assertIsNotNone one-liner with if/else
@@ -95,10 +95,6 @@ _Label `bug` added by @charliermarsh on 2023-02-20 16:39_
 _Comment by @charliermarsh on 2023-02-20 16:39_
 
 Thanks!
-
----
-
-_Referenced in [astral-sh/ruff#3062](../../astral-sh/ruff/pulls/3062.md) on 2023-02-20 17:44_
 
 ---
 

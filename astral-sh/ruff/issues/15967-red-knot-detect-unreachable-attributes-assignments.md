@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-05T13:13:05Z
 updated_at: 2025-04-14T07:23:22Z
 url: https://github.com/astral-sh/ruff/issues/15967
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [red-knot] Detect unreachable attributes assignments
@@ -45,10 +45,6 @@ https://github.com/astral-sh/ruff/blob/16f2a93fca20082179df082bc16a2c5095933772/
 
 ---
 
-_Referenced in [astral-sh/ruff#14164](../../astral-sh/ruff/issues/14164.md) on 2025-02-05 13:13_
-
----
-
 _Renamed from "Hide attributes assignments that occur in statically-known-to-be-false branches" to "[red-knot] Attributes assignments in statically-known branches" by @sharkdp on 2025-02-05 13:13_
 
 ---
@@ -58,10 +54,6 @@ _Label `red-knot` added by @sharkdp on 2025-02-05 13:13_
 ---
 
 _Renamed from "[red-knot] Attributes assignments in statically-known branches" to "[red-knot] Detect unreachable attributes assignments" by @sharkdp on 2025-02-05 13:14_
-
----
-
-_Referenced in [astral-sh/ruff#16852](../../astral-sh/ruff/pulls/16852.md) on 2025-03-19 17:22_
 
 ---
 

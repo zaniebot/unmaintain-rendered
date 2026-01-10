@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-05T17:23:59Z
 updated_at: 2024-11-05T22:22:45Z
 url: https://github.com/astral-sh/ruff/issues/14113
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # B007 does not detect unused variables when they are shadowed or appear in inner scope
@@ -99,9 +99,5 @@ But, as you also point out, this is caught by [PLW2901](https://docs.astral.sh/r
 ---
 
 _Assigned to @dylwil3 by @dylwil3 on 2024-11-05 22:22_
-
----
-
-_Referenced in [astral-sh/ruff#14122](../../astral-sh/ruff/pulls/14122.md) on 2024-11-06 04:09_
 
 ---

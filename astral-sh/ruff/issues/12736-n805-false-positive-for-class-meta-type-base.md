@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-07T17:28:29Z
 updated_at: 2024-08-09T20:10:14Z
 url: https://github.com/astral-sh/ruff/issues/12736
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # N805 False positive for `class Meta(type(base))`
@@ -49,18 +49,10 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-08-09 01:18_
 
 ---
 
-_Referenced in [astral-sh/ruff#12770](../../astral-sh/ruff/pulls/12770.md) on 2024-08-09 02:04_
-
----
-
 _Closed by @charliermarsh on 2024-08-09 20:10_
 
 ---
 
 _Closed by @charliermarsh on 2024-08-09 20:10_
-
----
-
-_Referenced in [astral-sh/ruff#14675](../../astral-sh/ruff/issues/14675.md) on 2024-11-29 11:44_
 
 ---

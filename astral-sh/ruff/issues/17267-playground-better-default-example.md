@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-07T07:31:36Z
 updated_at: 2025-04-07T19:52:08Z
 url: https://github.com/astral-sh/ruff/issues/17267
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [playground] Better default example
@@ -59,10 +59,6 @@ _Comment by @MichaReiser on 2025-04-07 08:22_
 > Not that we have to do this (right away), but some playgrounds also have something like a dropdown selection of various examples, which can be illustrative as well.
 
 Monaco's playground is like this, but I don't think it has good ergonomics. I very much prefer react's embedded playground for examples like this (https://react.dev/learn). For the beginning, it could simply be a markdown with examples and links to the playground
-
----
-
-_Referenced in [astral-sh/ruff#17277](../../astral-sh/ruff/pulls/17277.md) on 2025-04-07 14:24_
 
 ---
 

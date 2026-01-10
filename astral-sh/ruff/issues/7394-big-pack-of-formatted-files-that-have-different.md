@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-14T20:11:28Z
 updated_at: 2023-09-28T07:35:02Z
 url: https://github.com/astral-sh/ruff/issues/7394
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Big pack of formatted files that have different output than black
@@ -94,14 +94,6 @@ A surprisingly large number of these are https://github.com/astral-sh/ruff/issue
 
 ---
 
-_Referenced in [astral-sh/ruff#7420](../../astral-sh/ruff/issues/7420.md) on 2023-09-15 20:53_
-
----
-
-_Referenced in [astral-sh/ruff#7421](../../astral-sh/ruff/issues/7421.md) on 2023-09-15 20:57_
-
----
-
 _Comment by @charliermarsh on 2023-09-15 21:03_
 
 The most common thing I'm seeing are cases like:
@@ -122,14 +114,6 @@ Which I believe is intentional.
 
 ---
 
-_Referenced in [astral-sh/ruff#7422](../../astral-sh/ruff/issues/7422.md) on 2023-09-15 21:11_
-
----
-
-_Referenced in [astral-sh/ruff#7423](../../astral-sh/ruff/issues/7423.md) on 2023-09-15 21:15_
-
----
-
 _Comment by @T-256 on 2023-09-15 21:41_
 
 Hello, first of all, a special thanks for your hard works on this part of Ruff @MichaReiser.
@@ -146,10 +130,6 @@ reasons = ["await expression parentheses"]
 > Is there a way to remove automatically known incompatibilities?
 
 By these metadata we can skip known incompatibilities.
-
----
-
-_Referenced in [astral-sh/ruff#7431](../../astral-sh/ruff/issues/7431.md) on 2023-09-16 03:17_
 
 ---
 

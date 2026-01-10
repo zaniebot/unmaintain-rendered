@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-31T21:48:51Z
 updated_at: 2025-03-10T23:18:54Z
 url: https://github.com/astral-sh/ruff/issues/11653
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # [red-knot] PEP 561 compliant module resolver
@@ -57,14 +57,6 @@ _Renamed from "PEP 561 compliant module resolver" to "[red-knot] PEP 561 complia
 
 ---
 
-_Referenced in [astral-sh/ruff#11767](../../astral-sh/ruff/pulls/11767.md) on 2024-06-06 13:13_
-
----
-
-_Referenced in [astral-sh/ruff#11779](../../astral-sh/ruff/pulls/11779.md) on 2024-06-06 19:55_
-
----
-
 _Comment by @MichaReiser on 2024-06-08 15:28_
 
 One thing that we need to implement as part of this is a vendored filesystem. It's not a functionality but a task to complete on our way to get there.
@@ -83,26 +75,6 @@ since, as you say, it's necessary to implement a vendored filesystem in order to
 
 ---
 
-_Referenced in [astral-sh/ruff#11836](../../astral-sh/ruff/pulls/11836.md) on 2024-06-12 11:03_
-
----
-
-_Referenced in [astral-sh/ruff#11863](../../astral-sh/ruff/pulls/11863.md) on 2024-06-13 19:16_
-
----
-
-_Referenced in [astral-sh/ruff#12224](../../astral-sh/ruff/pulls/12224.md) on 2024-07-07 22:01_
-
----
-
-_Referenced in [astral-sh/ruff#12307](../../astral-sh/ruff/pulls/12307.md) on 2024-07-12 19:51_
-
----
-
-_Referenced in [ami-iit/jaxsim#190](../../ami-iit/jaxsim/issues/190.md) on 2024-08-26 12:44_
-
----
-
 _Comment by @MichaReiser on 2024-10-30 08:26_
 
 @AlexWaygood is there more work that needs doing or can we consider this done?
@@ -118,14 +90,6 @@ We can't call ourself PEP-561-compliant until we do this, which is still outstan
 But we decided to defer work on it for now because the type-inference work is more important.
 
 We should also add support for `py.typed` files that explicitly mark type annotations as `partial`, which is specified by the PEP but not listed in the tasks above; I'll add that now.
-
----
-
-_Referenced in [astral-sh/ruff#14007](../../astral-sh/ruff/issues/14007.md) on 2024-11-03 06:28_
-
----
-
-_Referenced in [astral-sh/ruff#15697](../../astral-sh/ruff/issues/15697.md) on 2025-03-07 13:37_
 
 ---
 

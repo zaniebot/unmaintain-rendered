@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-15T16:50:36Z
 updated_at: 2025-10-27T16:12:00Z
 url: https://github.com/astral-sh/ruff/issues/19365
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # [website]: Add structured metadata to rules, e.g. to indicate which version a rule was introduced in
@@ -38,10 +38,6 @@ I would also appreciate (structured) metadata being shown in docs, such as versi
 ---
 
 _Renamed from "Add structured metadata to rules, e.g. to indicate which version they were introduced in, made stable etc." to "Add structured metadata to rule docs, e.g. to indicate which version they were introduced in, made stable etc." by @corneliusroemer on 2025-07-15 16:50_
-
----
-
-_Referenced in [astral-sh/ruff#9507](../../astral-sh/ruff/issues/9507.md) on 2025-07-15 16:51_
 
 ---
 

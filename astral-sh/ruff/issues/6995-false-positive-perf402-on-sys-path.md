@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-29T20:05:20Z
 updated_at: 2023-08-29T23:15:30Z
 url: https://github.com/astral-sh/ruff/issues/6995
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # False positive `PERF402` on `sys.path`
@@ -50,10 +50,6 @@ sys.path.extend((ONE_FOLDER_UP,))
 ---
 
 _Label `bug` added by @charliermarsh on 2023-08-29 20:17_
-
----
-
-_Referenced in [astral-sh/ruff#6994](../../astral-sh/ruff/pulls/6994.md) on 2023-08-29 21:32_
 
 ---
 

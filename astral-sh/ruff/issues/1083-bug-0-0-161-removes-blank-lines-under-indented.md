@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-12-05T22:42:31Z
 updated_at: 2022-12-06T01:46:39Z
 url: https://github.com/astral-sh/ruff/issues/1083
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:16Z
 ```
 
 # [bug?] 0.0.161 removes blank lines under indented import blocks
@@ -47,10 +47,6 @@ This seemed to happen wherever an import block was indented-- was that intended?
 _Comment by @charliermarsh on 2022-12-05 22:55_
 
 Not intended, will fix in a sec.
-
----
-
-_Referenced in [astral-sh/ruff#1085](../../astral-sh/ruff/pulls/1085.md) on 2022-12-05 23:02_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-12-16T23:27:53Z
 updated_at: 2024-12-17T11:45:38Z
 url: https://github.com/astral-sh/ruff/issues/15027
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Import-related mdtests aren't isolated
@@ -86,10 +86,6 @@ reveal_type(X)  # revealed: Literal[42]
 ````
 
 Edit: Never mind, I guess it is a namespace package?
-
----
-
-_Referenced in [astral-sh/ruff#15030](../../astral-sh/ruff/pulls/15030.md) on 2024-12-17 08:27_
 
 ---
 

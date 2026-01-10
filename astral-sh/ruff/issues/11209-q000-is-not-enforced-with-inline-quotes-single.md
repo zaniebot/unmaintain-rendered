@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-29T23:39:43Z
 updated_at: 2024-05-04T21:12:43Z
 url: https://github.com/astral-sh/ruff/issues/11209
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Q000 is not enforced with  `inline-quotes = "single"`
@@ -43,10 +43,6 @@ logger.info(
     f"Connecting to {username}@{hostname} via ssh. If you encounter any issues, you can try `ssh -v -p {self._ssh_port} {username}@{hostname}` with the password '{self._ssh_password}' and report the issue on GitHub."
 )
 ```
-
----
-
-_Referenced in [OpenHands/OpenHands#1425](../../OpenHands/OpenHands/pulls/1425.md) on 2024-04-29 23:39_
 
 ---
 

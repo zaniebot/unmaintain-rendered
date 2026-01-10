@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-03T03:47:55Z
 updated_at: 2023-10-03T14:17:23Z
 url: https://github.com/astral-sh/ruff/issues/7772
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # C414 removes comment
@@ -57,10 +57,6 @@ Thanks. We handle these fixes manually with LibCST. We should be able to preserv
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-03 04:22_
-
----
-
-_Referenced in [astral-sh/ruff#7775](../../astral-sh/ruff/pulls/7775.md) on 2023-10-03 04:25_
 
 ---
 

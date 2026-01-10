@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-30T17:37:57Z
 updated_at: 2024-01-30T17:38:16Z
 url: https://github.com/astral-sh/ruff/issues/9711
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Improve display of rule table legend
@@ -24,9 +24,5 @@ Discussed in https://github.com/astral-sh/ruff/pull/9689#discussion_r1470435588
 ---
 
 _Label `documentation` added by @zanieb on 2024-01-30 17:38_
-
----
-
-_Referenced in [astral-sh/ruff#9689](../../astral-sh/ruff/pulls/9689.md) on 2024-01-30 17:39_
 
 ---

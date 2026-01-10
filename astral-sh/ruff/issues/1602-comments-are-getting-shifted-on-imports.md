@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-01-03T15:10:02Z
 updated_at: 2023-01-04T12:43:25Z
 url: https://github.com/astral-sh/ruff/issues/1602
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Comments are getting shifted on imports
@@ -84,10 +84,6 @@ Thanks for filing :)
 _Comment by @charliermarsh on 2023-01-03 19:27_
 
 \cc @squiddy in case he gets to it first
-
----
-
-_Referenced in [astral-sh/ruff#1609](../../astral-sh/ruff/pulls/1609.md) on 2023-01-04 01:00_
 
 ---
 

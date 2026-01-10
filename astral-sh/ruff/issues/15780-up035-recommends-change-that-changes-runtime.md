@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-28T05:40:18Z
 updated_at: 2025-01-29T18:05:47Z
 url: https://github.com/astral-sh/ruff/issues/15780
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # UP035 recommends change that changes runtime behavior for is_typeddict
@@ -45,10 +45,6 @@ In the description of UP035:
 ---
 
 _Label `bug` added by @AlexWaygood on 2025-01-28 11:29_
-
----
-
-_Referenced in [astral-sh/ruff#15800](../../astral-sh/ruff/pulls/15800.md) on 2025-01-29 00:51_
 
 ---
 

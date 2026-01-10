@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-31T08:43:46Z
 updated_at: 2025-04-04T08:06:00Z
 url: https://github.com/astral-sh/ruff/issues/17084
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Implement "Invalid rule code provided to `# noqa`" as rule
@@ -40,10 +40,6 @@ I would try my luck with this one, if that's fine :)
 ---
 
 _Assigned to @maxmynter by @ntBre on 2025-04-01 18:32_
-
----
-
-_Referenced in [astral-sh/ruff#17138](../../astral-sh/ruff/pulls/17138.md) on 2025-04-02 03:20_
 
 ---
 

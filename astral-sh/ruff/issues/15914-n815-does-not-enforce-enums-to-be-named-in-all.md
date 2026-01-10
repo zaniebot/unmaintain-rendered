@@ -1,0 +1,65 @@
+```yaml
+number: 15914
+title: N815 does not enforce enums to be named IN_ALL_CAPS (pylint invalid-name)
+type: issue
+state: closed
+author: Apakottur
+labels: []
+assignees: []
+created_at: 2025-02-03T15:49:05Z
+updated_at: 2025-02-03T15:59:25Z
+url: https://github.com/astral-sh/ruff/issues/15914
+synced_at: 2026-01-10T11:09:57Z
+```
+
+# N815 does not enforce enums to be named IN_ALL_CAPS (pylint invalid-name)
+
+---
+
+_Issue opened by @Apakottur on 2025-02-03 15:49_
+
+# Description
+Consider the following code:
+```python
+# test.py
+from enum import Enum, auto
+
+class MyEnum(Enum):
+    mango = auto()
+    BANANA = auto()
+```
+
+Running
+```shell
+pylint test.py
+```
+Gives:
+```
+test.py:6:4: C0103: Class constant name "mango" doesn't conform to UPPER_CASE naming style (invalid-name)
+```
+
+According to the [Pylint tracking issue](https://github.com/astral-sh/ruff/issues/970), the `invalid-name` check is already implemented in Ruff under rule N815. However, running Ruff:
+```shell
+ruff check --select ALL test.py
+```
+Does not give any errors regarding the enum naming.
+
+I'd expect Ruff to have a check that enforces enum members to be named in all caps, which is [recommended in the official docs](https://docs.python.org/3.10/library/enum.html#module-enum).
+
+# Details
+```shell
+ruff 0.9.4
+pylint 3.3.4
+astroid 3.3.8
+Python 3.12.3 (main, Jan 17 2025, 18:03:48) [GCC 13.3.0]
+```
+[Pylint Issue about this check](https://github.com/pylint-dev/pylint/issues/3834)
+
+ 
+
+
+---
+
+_Closed by @MichaReiser on 2025-02-03 15:59_
+
+---

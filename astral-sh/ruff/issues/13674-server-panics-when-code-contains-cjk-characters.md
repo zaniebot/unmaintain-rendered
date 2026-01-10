@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-08T06:39:41Z
 updated_at: 2024-11-01T07:16:55Z
 url: https://github.com/astral-sh/ruff/issues/13674
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Server panics when code contains CJK characters
@@ -423,10 +423,6 @@ _Label `needs-mre` removed by @MichaReiser on 2024-10-31 08:29_
 ---
 
 _Label `bug` added by @MichaReiser on 2024-10-31 08:29_
-
----
-
-_Referenced in [astral-sh/ruff#14010](../../astral-sh/ruff/pulls/14010.md) on 2024-10-31 08:36_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-14T20:26:25Z
 updated_at: 2023-03-14T22:08:45Z
 url: https://github.com/astral-sh/ruff/issues/3523
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # [Autofix error] `Autofix introduced a syntax error. Reverting all changes.`
@@ -51,10 +51,6 @@ _Label `bug` added by @charliermarsh on 2023-03-14 21:00_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-03-14 22:02_
-
----
-
-_Referenced in [astral-sh/ruff#3527](../../astral-sh/ruff/pulls/3527.md) on 2023-03-14 22:03_
 
 ---
 

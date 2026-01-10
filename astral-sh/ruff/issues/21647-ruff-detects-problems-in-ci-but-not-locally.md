@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-26T21:24:37Z
 updated_at: 2025-12-10T21:52:50Z
 url: https://github.com/astral-sh/ruff/issues/21647
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # ruff detects problems in CI, but not locally
@@ -62,10 +62,6 @@ My colleague @nkkarpov suggested a plausible explanation:
 I think isort should not change behavior based on existence of local folders - at least not by default.
 
 And in verbose mode ruff should certainly print any of these decisions taken, and all cache access events as well.
-
----
-
-_Referenced in [wandb/wandb#10997](../../wandb/wandb/issues/10997.md) on 2025-11-28 21:15_
 
 ---
 

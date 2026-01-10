@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-02-14T01:21:48Z
 updated_at: 2023-02-14T02:51:14Z
 url: https://github.com/astral-sh/ruff/issues/2879
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Example of incorrect RET508 Unnecessary `else` after `break` statement
@@ -86,10 +86,6 @@ Which is, I guess, correct, but not good.
 
 It's consistent with the original `flake8-return`, but I'm going to change, because it's really confusing.
 
-
----
-
-_Referenced in [astral-sh/ruff#2881](../../astral-sh/ruff/pulls/2881.md) on 2023-02-14 02:48_
 
 ---
 

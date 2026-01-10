@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-11-09T10:37:32Z
 updated_at: 2024-11-16T07:36:58Z
 url: https://github.com/astral-sh/ruff/issues/14222
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Spurious panic in file watcher test
@@ -42,10 +42,6 @@ _Label `testing` added by @AlexWaygood on 2024-11-09 11:20_
 ---
 
 _Added to milestone `Red Knot 2024` by @carljm on 2024-11-09 19:15_
-
----
-
-_Referenced in [astral-sh/ruff#14364](../../astral-sh/ruff/pulls/14364.md) on 2024-11-15 16:51_
 
 ---
 

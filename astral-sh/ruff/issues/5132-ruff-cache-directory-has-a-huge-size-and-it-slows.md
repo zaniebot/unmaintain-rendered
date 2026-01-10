@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-15T21:19:19Z
 updated_at: 2023-06-27T13:17:09Z
 url: https://github.com/astral-sh/ruff/issues/5132
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # 🐢 `.ruff_cache` directory has a huge size and it slows down PyCharm load
@@ -51,10 +51,6 @@ PS: MacBook Pro Intel Core i9 with SSD
 _Comment by @charliermarsh on 2023-06-15 21:28_
 
 Thanks for this. Coincidentally, we're actually working on the cache a bit now (\cc @Thomasdezeeuw). It has a couple significant problems. (You can always run `ruff clean` to remove all caches recursively, though it's not self-cleaning.)
-
----
-
-_Referenced in [astral-sh/ruff#5117](../../astral-sh/ruff/pulls/5117.md) on 2023-06-15 22:02_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-20T14:42:00Z
 updated_at: 2023-03-29T03:53:40Z
 url: https://github.com/astral-sh/ruff/issues/3059
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # isort: bug in sorting sub-package modules
@@ -100,10 +100,6 @@ The intent is to be `isort`-compatible, but we do deviate in a small number of c
 
 ---
 
-_Referenced in [astral-sh/ruff#3064](../../astral-sh/ruff/pulls/3064.md) on 2023-02-20 18:26_
-
----
-
 _Comment by @spaceone on 2023-02-20 18:39_
 
 I provided a fix in #3064. Isort has a test case for it: https://github.com/PyCQA/isort/blob/main/tests/unit/test_isort.py#L2213-L2304 → `test_placement_control()` and `test_custom_sections()` 
@@ -121,10 +117,6 @@ default_section = THIRDPARTY
 ```
 
 I played around with `known_first_party` and `known_third_party` options but I cannot get packages with the same namespace prefix to end up in different sections.
-
----
-
-_Referenced in [astral-sh/ruff#3768](../../astral-sh/ruff/pulls/3768.md) on 2023-03-28 12:41_
 
 ---
 

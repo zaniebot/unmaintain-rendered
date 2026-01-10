@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-01-26T17:43:46Z
 updated_at: 2023-02-03T01:59:48Z
 url: https://github.com/astral-sh/ruff/issues/2207
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # B007 breaks code
@@ -74,10 +74,6 @@ It's possible for us to avoid this, but it requires some refactoring. We do trac
 
 ---
 
-_Referenced in [astral-sh/ruff#2397](../../astral-sh/ruff/issues/2397.md) on 2023-01-31 14:22_
-
----
-
 _Comment by @spaceone on 2023-02-01 15:02_
 
 another real life example which was caused by this:
@@ -91,14 +87,6 @@ another real life example which was caused by this:
 
 ---
 
-_Referenced in [astral-sh/ruff#2509](../../astral-sh/ruff/pulls/2509.md) on 2023-02-03 01:55_
-
----
-
 _Closed by @charliermarsh on 2023-02-03 01:59_
-
----
-
-_Referenced in [astral-sh/ruff#2511](../../astral-sh/ruff/pulls/2511.md) on 2023-02-03 03:25_
 
 ---

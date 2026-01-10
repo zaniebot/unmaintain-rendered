@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-28T20:10:20Z
 updated_at: 2025-05-29T18:59:50Z
 url: https://github.com/astral-sh/ruff/issues/15792
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # FURB171 Does not trigger when calling set(...)
@@ -39,10 +39,6 @@ Command:
 No other settings. 
 
 Ruff version 0.9.3.
-
----
-
-_Referenced in [astral-sh/ruff#15793](../../astral-sh/ruff/pulls/15793.md) on 2025-01-28 20:14_
 
 ---
 
@@ -101,10 +97,6 @@ _Label `needs-decision` removed by @dylwil3 on 2025-01-30 13:32_
 ---
 
 _Label `preview` added by @dylwil3 on 2025-01-30 13:32_
-
----
-
-_Referenced in [astral-sh/ruff#18035](../../astral-sh/ruff/pulls/18035.md) on 2025-05-12 09:39_
 
 ---
 

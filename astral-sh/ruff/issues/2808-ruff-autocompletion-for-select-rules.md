@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-12T11:55:21Z
 updated_at: 2023-02-15T17:50:45Z
 url: https://github.com/astral-sh/ruff/issues/2808
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # ruff autocompletion for --select rules
@@ -44,10 +44,6 @@ Probably has to do with the fact that we use a custom `from_str` for these, so t
 _Comment by @not-my-profile on 2023-02-12 17:05_
 
 Yes there's indeed a way around this. I have already implemented this locally but would wait till #2517 is merged since that logic has to change when the `RuleCodePrefix` enum is split up.
-
----
-
-_Referenced in [astral-sh/ruff#2906](../../astral-sh/ruff/pulls/2906.md) on 2023-02-14 23:37_
 
 ---
 
@@ -155,9 +151,5 @@ I can recommend zsh ... it does in general have much better autocompletion than 
 _Comment by @spaceone on 2023-02-15 17:50_
 
 ok, thanks
-
----
-
-_Referenced in [astral-sh/ruff#4551](../../astral-sh/ruff/issues/4551.md) on 2023-05-20 19:55_
 
 ---

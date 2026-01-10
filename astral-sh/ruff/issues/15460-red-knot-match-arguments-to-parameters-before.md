@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-13T18:33:35Z
 updated_at: 2025-03-21T13:38:13Z
 url: https://github.com/astral-sh/ruff/issues/15460
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] match arguments to parameters before inferring argument types
@@ -42,14 +42,6 @@ _Assigned to @dcreager by @carljm on 2025-03-10 23:21_
 ---
 
 _Unassigned @carljm by @carljm on 2025-03-10 23:21_
-
----
-
-_Referenced in [astral-sh/ruff#16568](../../astral-sh/ruff/pulls/16568.md) on 2025-03-11 18:07_
-
----
-
-_Referenced in [astral-sh/ruff#16546](../../astral-sh/ruff/pulls/16546.md) on 2025-03-18 20:56_
 
 ---
 

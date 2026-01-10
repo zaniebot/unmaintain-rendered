@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-23T07:48:44Z
 updated_at: 2025-08-04T14:24:59Z
 url: https://github.com/astral-sh/ruff/issues/4595
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Possibility to implement flake8-length into ruff
@@ -94,10 +94,6 @@ _Label `needs-decision` added by @charliermarsh on 2023-07-10 01:13_
 
 ---
 
-_Referenced in [astral-sh/ruff#5899](../../astral-sh/ruff/issues/5899.md) on 2023-07-19 22:54_
-
----
-
 _Comment by @stinodego on 2023-08-09 19:03_
 
 I have tried `flake8-length` before, but I found that I get pretty much the same behavior by ignoring `E501` (line too long) and enabling pycodestyle's `max-doc-length`:
@@ -146,10 +142,6 @@ _Comment by @lev-blit on 2023-08-22 12:47_
 @stinodego I agree that black takes care of that, but it adds a large overhead. There's a project I worked on which had about 200~ files, with some of them being very large, and running ruff was shorter than a blink of an eye but running black against all those files felt like an eternity compared to that (and it was quite long without comparison too - about 8 seconds). That's just because ruff doesn't ignore comments and other examples given above regarding `flake8-length`.
 
 It would be really useful for ruff to be able to support those features, then I would be able to use black only as a formatting tool and not as a linting tool just for E501.
-
----
-
-_Referenced in [astral-sh/ruff#7414](../../astral-sh/ruff/issues/7414.md) on 2023-09-15 18:17_
 
 ---
 

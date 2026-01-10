@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-12T12:34:05Z
 updated_at: 2023-09-21T02:05:41Z
 url: https://github.com/astral-sh/ruff/issues/2812
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # `ruff rule E` could print all sub-rules of E
@@ -39,14 +39,6 @@ This could be rather a lot of output. Might be nice to implement pager support?
 ---
 
 _Renamed from "ruff rule E could print all sub-rules" to "`ruff rule E` could print all sub-rules of E" by @spaceone on 2023-02-12 21:39_
-
----
-
-_Referenced in [astral-sh/ruff#5495](../../astral-sh/ruff/issues/5495.md) on 2023-07-03 20:54_
-
----
-
-_Referenced in [astral-sh/ruff#7560](../../astral-sh/ruff/pulls/7560.md) on 2023-09-21 01:29_
 
 ---
 

@@ -1,0 +1,152 @@
+```yaml
+number: 13916
+title: "UP032: Don't suggest f-string inside logging statements"
+type: issue
+state: closed
+author: rpdelaney
+labels:
+  - rule
+assignees: []
+created_at: 2024-10-24T17:37:38Z
+updated_at: 2025-02-17T18:44:26Z
+url: https://github.com/astral-sh/ruff/issues/13916
+synced_at: 2026-01-10T11:09:55Z
+```
+
+# UP032: Don't suggest f-string inside logging statements
+
+---
+
+_Issue opened by @rpdelaney on 2024-10-24 17:37_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+Keywords: UP302, G004
+
+```console
+$ ruff --version
+ruff 0.6.9
+```
+
+Consider this statement. [UP032](https://docs.astral.sh/ruff/rules/f-string/) objects to the use of `str.format` here:
+```python
+logger.info("Result received: {}".format(result))
+```
+
+Following its suggestion to use an f-string instead, one might try this:
+
+```python
+logger.info(f"Result received: {result}")
+```
+
+However, the recommendation to use an f-string is inappropriate, as this code now throws [G004](https://docs.astral.sh/ruff/rules/logging-f-string/). 
+
+Better is:
+
+```python
+logger.info("Result received: %s", result)
+```
+
+---
+
+_Comment by @MichaReiser on 2024-10-25 06:31_
+
+Ruff should suggest you two violations for your code example if you have both UP032 and G001 enabled ([playground](https://play.ruff.rs/3cb1e0a7-44fa-445f-90f7-38c4f0ed3de4))
+
+```python
+logger.info("Result received: {}".format(result))
+```
+
+1. that the there's a `str.format` call in a logging call and 2. that the string could be replaced with an f-string
+
+I do see how, ideally, Ruff would only flag 1. because fixing 1. also address 2. However, it introduces some complexity. E.g should 2. be raised if the user suppressed 1. with a `noqa` comment? That's why we avoid adding rule logic rely on other rules, in addition to that doing so increases the complexity of rule implementations (and that makes ruff slower). 
+
+That G004 flags the f-string is correct and consistent to the behavior with UP032 and G001. 
+
+---
+
+_Label `question` added by @MichaReiser on 2024-10-25 06:31_
+
+---
+
+_Comment by @rpdelaney on 2024-10-25 15:10_
+
+> That G004 flags the f-string is correct 
+
+Fully agree.
+
+As a user, I want the linter to give me the shortest path to resolution. Resolving the UP032 finding by following ruff's suggestion, only to get another finding, is not ideal. 
+
+Perhaps it would be enough if UP032 checks for a logging context, and if found, offers the solution from G004 instead?
+
+---
+
+_Comment by @MichaReiser on 2024-10-25 15:20_
+
+> Perhaps it would be enough if UP032 checks for a logging context, and if found, offers the solution from G004 instead?
+
+That would be possible but we prefer to avoid it because rules then become very interdependent. E.g. it should only do so when `G004` is enabled, otherwise you still want to see the errors. 
+
+I would have to look at the fixability of those rules but `ruff check --fix` iterates until there are no new fixable violations. 
+
+---
+
+_Comment by @MichaReiser on 2024-10-26 08:27_
+
+Maybe I'm overly strict here. @AlexWaygood what's your take on whether we should make `UP032` logger aware (but only if `G004` is enabled?)
+
+---
+
+_Comment by @rpdelaney on 2024-10-26 22:01_
+
+> but only if G004 is enabled?
+
+I am nearing the limits of my knowledge, and therefore, my confidence. That said, I'll provide an opposing argument for your consideration. The current behavior is that UP032 recommends an f-string in this case: a recommendation that is categorically wrong. Although the user might not have selected G004, that doesn't support giving _wrong_ advice about how to resolve UP032.
+
+---
+
+_Label `question` removed by @MichaReiser on 2024-10-27 08:21_
+
+---
+
+_Label `rule` added by @MichaReiser on 2024-10-27 08:21_
+
+---
+
+_Comment by @MichaReiser on 2024-10-27 08:27_
+
+I looked at how we detect logging calls, and the implementation is prone to false positives because of Ruff's lack of multifile analysis (we're working on it). Ignoring `UP032` in logging statements would also disable the rule for some call sites where it isn't an actual logging call. This is less of a problem for `G004` because you would notice that it isn't a logging call and add a `noqa`. However, you would then want the linter to raise `G004` because this string should now be rewritten as an f-string.
+
+ > Although the user might not have selected G004, that doesn't support giving wrong advice about how to resolve UP032.
+
+A user that disabled `G004` and enabled `UP032` decided that string formatting in logging calls is okay for them. Whatever the reasons. But they do care that al code uses f-string formatting. I would be surprised if my linter didn't flag `UP032` in this case because using an f-string is the "correct" fix given my preference. 
+
+Either way, I think the current behavior isn't unreasonable, and suppressing the error would lead to too many false negatives because our "is logging call" method has a fair number of false positives. I'll wait to hear @AlexWaygood thoughts but I'm for closing this issue given these considerations. 
+
+---
+
+_Comment by @tdulcet on 2025-01-12 21:36_
+
+Maybe another solution to this would be to add an autofix for the G001, G002 and G004 rules. This would effectively perform the reverse of pyupgrade and convert the printf, `str.format` and f-string syntax to use the logger's builtin formatter, which is of course just the printf style without the `%` operator. That would be compatible with the UP031 and UP032 rules, and it should not matter what order the autofixes were performed, as it would eventually produce the same result and resolve all of the lint errors.
+
+---
+
+_Comment by @rpdelaney on 2025-02-17 18:43_
+
+I find the responses from Micha are reasonable and persuasive, so I'm withdrawing this feature request. If anyone else wants to re-open discussion they can create another issue, discussion thread, or whatever is appropriate at that time.
+
+---
+
+_Closed by @rpdelaney on 2025-02-17 18:43_
+
+---

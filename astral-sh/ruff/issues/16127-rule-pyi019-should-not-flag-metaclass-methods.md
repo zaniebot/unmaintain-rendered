@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-02-12T21:54:16Z
 updated_at: 2025-02-13T18:44:12Z
 url: https://github.com/astral-sh/ruff/issues/16127
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Rule `PYI019` should not flag metaclass methods
@@ -152,10 +152,6 @@ _Comment by @AlexWaygood on 2025-02-13 15:17_
 ---
 
 _Assigned to @vladNed by @AlexWaygood on 2025-02-13 15:17_
-
----
-
-_Referenced in [astral-sh/ruff#16141](../../astral-sh/ruff/pulls/16141.md) on 2025-02-13 17:31_
 
 ---
 

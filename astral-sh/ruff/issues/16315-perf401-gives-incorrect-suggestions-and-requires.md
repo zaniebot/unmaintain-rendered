@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-22T12:46:42Z
 updated_at: 2025-11-10T18:35:59Z
 url: https://github.com/astral-sh/ruff/issues/16315
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # PERF401 gives incorrect suggestions and requires suboptimal workarounds with async iterators
@@ -230,9 +230,5 @@ output:
 
 I see the same on python 3.12 and python 3.14
 generators are slower than normal for loop
-
----
-
-_Referenced in [astral-sh/ruff#21891](../../astral-sh/ruff/issues/21891.md) on 2025-12-10 16:21_
 
 ---

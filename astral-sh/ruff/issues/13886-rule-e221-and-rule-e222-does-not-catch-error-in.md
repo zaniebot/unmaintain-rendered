@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-23T10:25:46Z
 updated_at: 2024-10-23T13:02:30Z
 url: https://github.com/astral-sh/ruff/issues/13886
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Rule E221 and Rule E222 does not catch error in if condition 
@@ -85,10 +85,6 @@ _Label `help wanted` added by @MichaReiser on 2024-10-23 12:14_
 _Comment by @MichaReiser on 2024-10-23 12:34_
 
 The rule correctly detects leading whitespace for `<=`. For some reason, `EqEqual` is missing from https://github.com/astral-sh/ruff/blob/fc7fa59e5fcdef7f83fbf8e6228be434930af66c/crates/ruff_linter/src/rules/pycodestyle/rules/logical_lines/space_around_operator.rs#L292-L327
-
----
-
-_Referenced in [astral-sh/ruff#13890](../../astral-sh/ruff/pulls/13890.md) on 2024-10-23 12:45_
 
 ---
 

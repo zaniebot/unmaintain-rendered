@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-23T22:11:15Z
 updated_at: 2025-05-07T15:21:04Z
 url: https://github.com/astral-sh/ruff/issues/17595
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] Failed to narrow in nested function
@@ -52,10 +52,6 @@ _Added to milestone `Red Knot Beta` by @carljm on 2025-04-23 22:22_
 
 ---
 
-_Referenced in [astral-sh/ruff#17591](../../astral-sh/ruff/pulls/17591.md) on 2025-04-23 22:24_
-
----
-
 _Comment by @mtshiba on 2025-04-24 10:50_
 
 The current implementation of narrowing only covers cases where the predicate scope and the definition scope are the same. We need to be able to use predicates of different scopes.
@@ -73,14 +69,6 @@ c = C()
 if c.x is not None:
     reveal_type(c.x)  # int
 ```
-
----
-
-_Referenced in [astral-sh/ruff#17630](../../astral-sh/ruff/pulls/17630.md) on 2025-04-25 15:33_
-
----
-
-_Referenced in [astral-sh/ty#164](../../astral-sh/ty/issues/164.md) on 2025-04-25 15:44_
 
 ---
 

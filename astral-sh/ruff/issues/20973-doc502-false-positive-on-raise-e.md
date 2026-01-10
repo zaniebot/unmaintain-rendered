@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-10-19T22:12:52Z
 updated_at: 2025-10-24T20:54:11Z
 url: https://github.com/astral-sh/ruff/issues/20973
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # DOC502 false positive on `raise e`
@@ -60,10 +60,6 @@ _Label `bug` added by @ntBre on 2025-10-20 13:25_
 ---
 
 _Label `rule` added by @ntBre on 2025-10-20 13:25_
-
----
-
-_Referenced in [astral-sh/ruff#21011](../../astral-sh/ruff/pulls/21011.md) on 2025-10-21 02:08_
 
 ---
 

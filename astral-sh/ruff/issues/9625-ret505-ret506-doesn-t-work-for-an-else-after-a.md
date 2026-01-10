@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-23T16:45:59Z
 updated_at: 2024-01-27T08:22:50Z
 url: https://github.com/astral-sh/ruff/issues/9625
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # RET505/RET506 doesn't work for an else after a return/raise in a try/except block
@@ -84,9 +84,5 @@ Indeed, edited it as you said for better clarity.
 ---
 
 _Renamed from "RET505/RET506 doesn't work for after a return/raise in a try/except block" to "RET505/RET506 doesn't work for an else after a return/raise in a try/except block" by @Greesb on 2024-01-27 08:22_
-
----
-
-_Referenced in [astral-sh/ruff#8018](../../astral-sh/ruff/issues/8018.md) on 2024-06-09 14:37_
 
 ---

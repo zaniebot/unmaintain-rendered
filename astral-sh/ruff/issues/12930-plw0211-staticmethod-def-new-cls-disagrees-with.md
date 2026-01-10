@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-16T13:45:54Z
 updated_at: 2024-08-18T15:30:24Z
 url: https://github.com/astral-sh/ruff/issues/12930
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # PLW0211: `@staticmethod ; def __new__(cls, ...)` disagrees with the Python docs
@@ -49,10 +49,6 @@ _Label `bug` added by @AlexWaygood on 2024-08-16 14:06_
 ---
 
 _Label `accepted` added by @AlexWaygood on 2024-08-16 14:06_
-
----
-
-_Referenced in [astral-sh/ruff#12958](../../astral-sh/ruff/pulls/12958.md) on 2024-08-17 20:43_
 
 ---
 

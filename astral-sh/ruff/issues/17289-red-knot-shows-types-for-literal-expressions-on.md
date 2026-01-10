@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-08T01:10:24Z
 updated_at: 2025-04-08T10:52:18Z
 url: https://github.com/astral-sh/ruff/issues/17289
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Red Knot shows types for literal expressions on hover
@@ -31,10 +31,6 @@ def f():
 ```
 
 This information is, arguably, redundant and should not be emitted.
-
----
-
-_Referenced in [astral-sh/ruff#17290](../../astral-sh/ruff/pulls/17290.md) on 2025-04-08 01:13_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-23T01:58:14Z
 updated_at: 2024-01-04T04:03:04Z
 url: https://github.com/astral-sh/ruff/issues/4592
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # __dunder_blunder___ support
@@ -56,10 +56,6 @@ Probably! Sunder method mistakes would be good to catch as well.
 ---
 
 _Label `needs-decision` added by @charliermarsh on 2023-07-10 01:25_
-
----
-
-_Referenced in [astral-sh/ruff#7971](../../astral-sh/ruff/issues/7971.md) on 2023-10-16 01:27_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-01T01:50:37Z
 updated_at: 2022-12-01T15:22:13Z
 url: https://github.com/astral-sh/ruff/issues/974
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # Add GitHub output format
@@ -45,10 +45,6 @@ _Label `enhancement` added by @charliermarsh on 2022-12-01 01:51_
 ---
 
 _Label `configuration` added by @charliermarsh on 2022-12-01 01:51_
-
----
-
-_Referenced in [astral-sh/ruff#975](../../astral-sh/ruff/pulls/975.md) on 2022-12-01 03:43_
 
 ---
 

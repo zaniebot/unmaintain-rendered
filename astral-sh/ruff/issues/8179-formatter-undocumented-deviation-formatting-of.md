@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-24T19:42:12Z
 updated_at: 2025-12-12T17:03:39Z
 url: https://github.com/astral-sh/ruff/issues/8179
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Formatter undocumented deviation: Formatting of long lambda as keyword argument 
@@ -104,10 +104,6 @@ _Assigned to @DarthMuzammil by @MichaReiser on 2023-10-24 23:41_
 
 ---
 
-_Referenced in [ibis-project/ibis#7447](../../ibis-project/ibis/pulls/7447.md) on 2023-10-27 00:57_
-
----
-
 _Comment by @charliermarsh on 2023-10-29 16:24_
 
 @DarthMuzammil -- have you had a chance to look into this? If not, do you still plan to? (No pressure, I just want to make sure we find an owner soon if it's not being addressed.)
@@ -195,27 +191,11 @@ Related black issue: https://github.com/psf/black/issues/809
 
 ---
 
-_Referenced in [astral-sh/ruff#8465](../../astral-sh/ruff/pulls/8465.md) on 2023-11-03 05:20_
-
----
-
 _Unassigned @DarthMuzammil by @MichaReiser on 2023-11-28 06:33_
 
 ---
 
 _Removed from milestone `Formatter: Stable` by @MichaReiser on 2024-02-13 11:38_
-
----
-
-_Referenced in [astral-sh/ruff#13371](../../astral-sh/ruff/issues/13371.md) on 2024-09-16 16:19_
-
----
-
-_Referenced in [astral-sh/ruff#20482](../../astral-sh/ruff/issues/20482.md) on 2025-09-19 13:37_
-
----
-
-_Referenced in [astral-sh/ruff#21385](../../astral-sh/ruff/pulls/21385.md) on 2025-11-12 15:33_
 
 ---
 
@@ -226,9 +206,5 @@ _Closed by @ntBre on 2025-12-12 17:02_
 _Comment by @MichaReiser on 2025-12-12 17:03_
 
 @ntBre just realized. We shouldl update our black deviation documentation and explain our new lambda formatting (or update the existing section). 
-
----
-
-_Referenced in [astral-sh/ruff#21954](../../astral-sh/ruff/pulls/21954.md) on 2025-12-12 17:26_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-16T10:10:30Z
 updated_at: 2025-01-15T09:50:17Z
 url: https://github.com/astral-sh/ruff/issues/12923
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Create a test corpus with invalid programs
@@ -25,10 +25,6 @@ Invalid programs are the default-state in editors. We should add extensive tests
 ---
 
 _Label `red-knot` added by @MichaReiser on 2024-08-16 10:10_
-
----
-
-_Referenced in [astral-sh/ruff#13058](../../astral-sh/ruff/issues/13058.md) on 2024-08-22 14:58_
 
 ---
 

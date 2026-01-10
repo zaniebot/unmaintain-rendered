@@ -1,0 +1,97 @@
+```yaml
+number: 18781
+title: Add lint rule for specific exceptions with empty handlers?
+type: issue
+state: closed
+author: IndrajeetPatil
+labels: []
+assignees: []
+created_at: 2025-06-19T03:29:55Z
+updated_at: 2025-06-19T03:54:15Z
+url: https://github.com/astral-sh/ruff/issues/18781
+synced_at: 2026-01-10T11:09:58Z
+```
+
+# Add lint rule for specific exceptions with empty handlers?
+
+---
+
+_Issue opened by @IndrajeetPatil on 2025-06-19 03:29_
+
+## TLDR
+
+Request for a new lint rule to flag specific exception handlers that only contain `pass` (or are otherwise empty), as these often hide important errors.
+
+## Current behaviour
+
+Ruff flags bare `except: pass` but doesn't consistently flag specific exceptions with empty handlers:
+
+```python
+# Currently flagged by existing rules
+try:
+    foo()
+except:
+    pass
+
+# Not flagged, but arguably should be
+try:
+    foo()
+except ValueError:
+    pass  # Silent failure - debugging nightmare
+
+try:
+    foo()
+except (KeyError, AttributeError):
+    pass  # Multiple specific exceptions, still problematic
+```
+
+## Proposed rule
+
+Flag specific exception handlers with only `pass` or empty bodies. This would catch "exception swallowing" that can hide real problems.
+
+**Should flag:**
+
+- `except SpecificError: pass`
+- `except (Error1, Error2): pass`
+- Empty except blocks (just whitespace/comments)
+
+**Should not flag:**
+
+- `except: pass` (already handled by existing rules)
+- Exception handlers with any substantive content (logging, return, etc.)
+
+## Rationale
+
+Empty specific exception handlers are usually incomplete error handling that silently masks failures. Unlike bare `except:`, these appear more intentional, but are often equally problematic. For source code, a linter rule requiring at least a comment explaining why the exception is being ignored would be valuable. E.g. this is far better:
+
+```python
+try:
+    foo()
+except ValueError:
+    pass  # Explicitly ignoring lint rule: explanation of why 
+```
+
+## Relationship to existing rules
+
+Ruff already has `S110` (try-except-pass) which catches some cases, but it appears focused on bare `except:` blocks. Not sure if this should extend `S110` or be a separate rule since the specific exception case has different implications.
+
+---
+
+_Comment by @MeGaGiGaGon on 2025-06-19 03:41_
+
+That does already exist as `SIM105` [playground](https://play.ruff.rs/ee87b988-7a14-40d1-a80a-785420973487) 
+https://docs.astral.sh/ruff/rules/suppressible-exception/
+
+---
+
+_Comment by @IndrajeetPatil on 2025-06-19 03:54_
+
+Awesome! Thanks for the playground example :)
+
+Sorry for missing this.
+
+---
+
+_Closed by @IndrajeetPatil on 2025-06-19 03:54_
+
+---

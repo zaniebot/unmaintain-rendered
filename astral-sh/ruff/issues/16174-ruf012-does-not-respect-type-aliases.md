@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-15T02:48:24Z
 updated_at: 2025-02-17T09:40:25Z
 url: https://github.com/astral-sh/ruff/issues/16174
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # RUF012 does not respect type aliases
@@ -74,9 +74,5 @@ Sure, go for it
 ---
 
 _Assigned to @vladNed by @MichaReiser on 2025-02-17 09:40_
-
----
-
-_Referenced in [astral-sh/ruff#16210](../../astral-sh/ruff/pulls/16210.md) on 2025-02-17 12:23_
 
 ---

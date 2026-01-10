@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-17T19:17:21Z
 updated_at: 2024-06-18T14:12:32Z
 url: https://github.com/astral-sh/ruff/issues/11910
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Issues with rule PD101.
@@ -129,10 +129,6 @@ if array.shape[0] == 0 or ((dropna or data.notna().all()) and (array[0] == array
 
 
 
-
----
-
-_Referenced in [pandas-dev/pandas#58806](../../pandas-dev/pandas/issues/58806.md) on 2024-06-17 19:40_
 
 ---
 

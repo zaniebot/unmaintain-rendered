@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-02-24T20:49:20Z
 updated_at: 2023-02-24T22:55:34Z
 url: https://github.com/astral-sh/ruff/issues/3214
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # disable EXE001 when linting from stdin
@@ -51,10 +51,6 @@ _Label `good first issue` added by @charliermarsh on 2023-02-24 21:18_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-24 22:10_
-
----
-
-_Referenced in [astral-sh/ruff#3218](../../astral-sh/ruff/pulls/3218.md) on 2023-02-24 22:52_
 
 ---
 

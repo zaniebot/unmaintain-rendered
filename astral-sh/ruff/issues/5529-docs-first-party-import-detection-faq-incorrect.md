@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-05T11:14:59Z
 updated_at: 2023-07-26T22:39:03Z
 url: https://github.com/astral-sh/ruff/issues/5529
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # [docs] First party import detection FAQ incorrect
@@ -314,10 +314,6 @@ _Comment by @smackesey on 2023-07-25 20:06_
 >Am I right that within (e.g.) python_modules/libraries/dagster-airbyte, other packages like dagster_managed_elements should be considered third-party?
 
 yes
-
----
-
-_Referenced in [astral-sh/ruff#6107](../../astral-sh/ruff/pulls/6107.md) on 2023-07-26 22:01_
 
 ---
 

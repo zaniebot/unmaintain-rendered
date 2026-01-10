@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-31T21:18:26Z
 updated_at: 2022-12-31T23:38:23Z
 url: https://github.com/astral-sh/ruff/issues/1518
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T12:05:30Z
 ```
 
 # D400: false positive and bad autofix
@@ -201,10 +201,6 @@ _Label `bug` removed by @charliermarsh on 2022-12-31 22:37_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2022-12-31 23:09_
-
----
-
-_Referenced in [astral-sh/ruff#1521](../../astral-sh/ruff/pulls/1521.md) on 2022-12-31 23:38_
 
 ---
 

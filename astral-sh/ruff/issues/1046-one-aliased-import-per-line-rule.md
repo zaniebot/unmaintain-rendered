@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-12-05T01:05:35Z
 updated_at: 2022-12-05T02:23:13Z
 url: https://github.com/astral-sh/ruff/issues/1046
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:15Z
 ```
 
 # One aliased import per line rule
@@ -116,10 +116,6 @@ _Comment by @charliermarsh on 2022-12-05 01:23_
 _Comment by @smackesey on 2022-12-05 01:25_
 
 I think the rule makes sense for all `from X import Y as Z` imports-- visually parsing multiple `Y as Z` clauses on the same line can be difficult, regardless of whether they're explicit reexports (i.e. redundant aliases) or not. But if it only applies to re-exports, that would still solve our problem.
-
----
-
-_Referenced in [astral-sh/ruff#1047](../../astral-sh/ruff/pulls/1047.md) on 2022-12-05 01:48_
 
 ---
 

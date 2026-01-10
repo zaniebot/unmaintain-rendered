@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-11T23:22:57Z
 updated_at: 2023-01-16T08:20:47Z
 url: https://github.com/astral-sh/ruff/issues/1798
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # PIE794 should only remove simple code?
@@ -60,9 +60,5 @@ Actually, here's what I would propose (which would also resolve the other issue 
 ---
 
 _Closed by @charliermarsh on 2023-01-16 08:20_
-
----
-
-_Referenced in [astral-sh/ruff#2397](../../astral-sh/ruff/issues/2397.md) on 2023-01-31 14:22_
 
 ---

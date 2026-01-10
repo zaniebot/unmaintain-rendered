@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-01-18T23:47:58Z
 updated_at: 2023-06-12T18:12:12Z
 url: https://github.com/astral-sh/ruff/issues/1983
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Missing check and fix for pep 484 implicit optional
@@ -82,10 +82,6 @@ I think this is a good rule to add along with the auto-fix ability. Should this 
 _Comment by @dhruvmanila on 2023-06-02 06:44_
 
 I've started working on this
-
----
-
-_Referenced in [astral-sh/ruff#4831](../../astral-sh/ruff/pulls/4831.md) on 2023-06-03 11:27_
 
 ---
 

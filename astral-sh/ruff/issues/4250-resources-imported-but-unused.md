@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-05T18:42:21Z
 updated_at: 2024-04-11T09:04:13Z
 url: https://github.com/astral-sh/ruff/issues/4250
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # `resources` imported but unused
@@ -165,10 +165,6 @@ https://github.com/charliermarsh/ruff/blob/fc63c6f2e260760963c5fdea2d9d4e0cf38ec
 
 ---
 
-_Referenced in [astral-sh/ruff#4691](../../astral-sh/ruff/pulls/4691.md) on 2023-05-28 11:51_
-
----
-
 _Comment by @charliermarsh on 2023-05-30 17:33_
 
 > No I want to see this error for other import code
@@ -218,9 +214,5 @@ from ImportFrom import (
 ---
 
 _Closed by @IamRezaMousavi on 2024-04-11 09:04_
-
----
-
-_Referenced in [astral-sh/ruff#9962](../../astral-sh/ruff/issues/9962.md) on 2024-08-15 13:44_
 
 ---

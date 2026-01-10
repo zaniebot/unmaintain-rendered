@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-05-24T07:13:33Z
 updated_at: 2023-05-24T20:31:51Z
 url: https://github.com/astral-sh/ruff/issues/4618
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # False-positive ERA001 with `# nuitka-project:` configuration
@@ -77,10 +77,6 @@ This is great! It would be even greater if that was documented at https://beta.r
 _Comment by @JonathanPlasse on 2023-05-24 12:36_
 
 Would you be open to making a pull-request for this?
-
----
-
-_Referenced in [astral-sh/ruff#4644](../../astral-sh/ruff/pulls/4644.md) on 2023-05-24 20:11_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-30T12:42:36Z
 updated_at: 2022-12-30T17:59:41Z
 url: https://github.com/astral-sh/ruff/issues/1477
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T12:05:29Z
 ```
 
 # Fixing I001 turns file with CRLF line endings into mixed line endings
@@ -59,18 +59,6 @@ I'm looking into this.
 
 ---
 
-_Referenced in [astral-sh/ruff#1482](../../astral-sh/ruff/pulls/1482.md) on 2022-12-30 16:55_
-
----
-
 _Closed by @charliermarsh on 2022-12-30 17:59_
-
----
-
-_Referenced in [astral-sh/ruff#1487](../../astral-sh/ruff/pulls/1487.md) on 2022-12-30 21:07_
-
----
-
-_Referenced in [astral-sh/ruff#1490](../../astral-sh/ruff/issues/1490.md) on 2022-12-30 23:34_
 
 ---

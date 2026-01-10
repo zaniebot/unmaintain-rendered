@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-30T21:07:41Z
 updated_at: 2025-09-08T16:10:39Z
 url: https://github.com/astral-sh/ruff/issues/17749
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Consider stabilizing Airflow 3.0 migration rules
@@ -36,10 +36,6 @@ _Added to milestone `v0.12` by @dhruvmanila on 2025-04-30 21:07_
 
 ---
 
-_Referenced in [astral-sh/ruff#17570](../../astral-sh/ruff/pulls/17570.md) on 2025-04-30 21:08_
-
----
-
 _Renamed from "Stabilize Airflow 3.0 migration rules" to "Consider stabilizing Airflow 3.0 migration rules" by @dhruvmanila on 2025-04-30 21:09_
 
 ---
@@ -57,14 +53,6 @@ _Removed from milestone `v0.12` by @dhruvmanila on 2025-05-01 13:07_
 ---
 
 _Added to milestone `v0.13` by @dhruvmanila on 2025-05-01 13:07_
-
----
-
-_Referenced in [astral-sh/ruff#19239](../../astral-sh/ruff/pulls/19239.md) on 2025-07-09 17:07_
-
----
-
-_Referenced in [astral-sh/ruff#20250](../../astral-sh/ruff/pulls/20250.md) on 2025-09-04 23:27_
 
 ---
 

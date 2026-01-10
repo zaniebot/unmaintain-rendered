@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-05T10:32:55Z
 updated_at: 2024-07-12T04:10:10Z
 url: https://github.com/astral-sh/ruff/issues/12202
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Broken link in 0.5.0 release notes
@@ -53,9 +53,5 @@ Can you point out which link(s) are you talking about here?
 _Comment by @thewh1teagle on 2024-07-12 04:10_
 
 https://astral.sh/ruff/install.ps1
-
----
-
-_Referenced in [astral-sh/ruff#12298](../../astral-sh/ruff/issues/12298.md) on 2024-07-12 12:06_
 
 ---

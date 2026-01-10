@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-23T07:49:43Z
 updated_at: 2024-05-26T18:47:14Z
 url: https://github.com/astral-sh/ruff/issues/11506
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # `ruff server` detects config file differently to `ruff check`
@@ -105,10 +105,6 @@ _Label `server` added by @snowsignal on 2024-05-24 06:51_
 _Comment by @snowsignal on 2024-05-24 06:56_
 
 Thank you for opening this issue. I was able to reproduce this locally in Helix. I'll look into it 👍 
-
----
-
-_Referenced in [astral-sh/ruff#11537](../../astral-sh/ruff/pulls/11537.md) on 2024-05-24 22:16_
 
 ---
 

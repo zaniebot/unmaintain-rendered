@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-02T21:34:36Z
 updated_at: 2024-01-26T14:46:55Z
 url: https://github.com/astral-sh/ruff/issues/9368
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Fuzzer fails to build memchr
@@ -24,10 +24,6 @@ See https://github.com/astral-sh/ruff/actions/runs/7390478731/job/20105487965
 ---
 
 _Label `ci` added by @zanieb on 2024-01-02 21:34_
-
----
-
-_Referenced in [astral-sh/ruff#9369](../../astral-sh/ruff/pulls/9369.md) on 2024-01-02 21:36_
 
 ---
 
@@ -64,10 +60,6 @@ Yup, just verified locally: building with [the version provided by cargo-fuzz up
 
 ---
 
-_Referenced in [rust-fuzz/cargo-fuzz#355](../../rust-fuzz/cargo-fuzz/issues/355.md) on 2024-01-03 00:15_
-
----
-
 _Comment by @charliermarsh on 2024-01-03 00:26_
 
 Nice, thank you. I was able to get CI passing by pinning to the previous minor: https://github.com/astral-sh/ruff/pull/9372
@@ -77,10 +69,6 @@ Nice, thank you. I was able to get CI passing by pinning to the previous minor: 
 _Comment by @addisoncrump on 2024-01-03 00:36_
 
 Resolved at record pace :rocket: I'll communicate upstream to try to resolve this there so we can remove the pinning. Don't close this issue yet?
-
----
-
-_Referenced in [astral-sh/ruff#9372](../../astral-sh/ruff/pulls/9372.md) on 2024-01-03 00:45_
 
 ---
 
@@ -105,9 +93,5 @@ Thanks!
 ---
 
 _Closed by @charliermarsh on 2024-01-26 14:46_
-
----
-
-_Referenced in [astral-sh/ruff#14478](../../astral-sh/ruff/pulls/14478.md) on 2024-11-20 05:04_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-09T15:08:31Z
 updated_at: 2025-12-31T17:45:08Z
 url: https://github.com/astral-sh/ruff/issues/13692
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Ruff incorrectly matches .gitignore rules with sub-directories and has issues with `respect-gitignore = false`
@@ -366,14 +366,6 @@ All checks passed!
 Even more perplexing to me is that if I repeatedly run `ruff --verbose check --no-cache web`, it will sometimes work (catching F403 despite the `.gitignore` exclude behavior). When this happens, I can see in the verbose logs that it's still reading the `.gitignore` file, but never logs about matching on the specific path.
 
 However, this only happens in my main repository and I haven't been able to reproduce this inconsistent behavior in the toy repo example above.
-
----
-
-_Referenced in [astral-sh/ruff#17392](../../astral-sh/ruff/issues/17392.md) on 2025-04-14 13:08_
-
----
-
-_Referenced in [astral-sh/ruff#18720](../../astral-sh/ruff/issues/18720.md) on 2025-06-17 14:24_
 
 ---
 

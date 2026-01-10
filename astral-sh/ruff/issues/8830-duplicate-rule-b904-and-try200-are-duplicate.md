@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-23T19:20:42Z
 updated_at: 2024-02-01T19:35:06Z
 url: https://github.com/astral-sh/ruff/issues/8830
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Duplicate rule `B904` and `TRY200` are duplicate
@@ -44,17 +44,9 @@ _Label `rule` added by @charliermarsh on 2023-11-24 15:22_
 
 ---
 
-_Referenced in [astral-sh/ruff#7993](../../astral-sh/ruff/issues/7993.md) on 2023-11-24 15:22_
-
----
-
 _Comment by @Skylion007 on 2023-11-24 18:24_
 
 Ah apparently, this itself is a duplicate issue: See https://github.com/astral-sh/ruff/issues/8736
-
----
-
-_Referenced in [astral-sh/ruff#9461](../../astral-sh/ruff/issues/9461.md) on 2024-01-11 01:18_
 
 ---
 
@@ -63,10 +55,6 @@ _Added to milestone `v0.2.0` by @MichaReiser on 2024-01-19 14:21_
 ---
 
 _Assigned to @zanieb by @zanieb on 2024-01-30 01:21_
-
----
-
-_Referenced in [astral-sh/ruff#9680](../../astral-sh/ruff/pulls/9680.md) on 2024-01-30 19:18_
 
 ---
 

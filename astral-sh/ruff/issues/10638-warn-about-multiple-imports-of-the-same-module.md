@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-27T20:46:47Z
 updated_at: 2025-08-04T23:03:00Z
 url: https://github.com/astral-sh/ruff/issues/10638
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Warn about multiple imports of the same module
@@ -73,10 +73,6 @@ I also think it would be useful to get a new or extended rule for the original p
 
 ---
 
-_Referenced in [astral-sh/ruff#970](../../astral-sh/ruff/issues/970.md) on 2025-08-04 22:34_
-
----
-
 _Comment by @friday on 2025-08-04 23:03_
 
 Thanks for pointing me here @ntBre 
@@ -92,13 +88,5 @@ import module as module2
 ```
 
 I'm not sure flake8 also does, but I think this is less important to cover anyway (I never had that in real code).
-
----
-
-_Referenced in [pydata/xarray#10743](../../pydata/xarray/pulls/10743.md) on 2025-09-16 11:41_
-
----
-
-_Referenced in [astral-sh/ruff#20544](../../astral-sh/ruff/issues/20544.md) on 2025-09-24 12:53_
 
 ---

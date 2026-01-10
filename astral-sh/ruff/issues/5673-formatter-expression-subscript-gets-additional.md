@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-11T07:40:26Z
 updated_at: 2023-07-20T15:05:23Z
 url: https://github.com/astral-sh/ruff/issues/5673
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Formatter: Expression subscript gets additional whitespace where black doesn't insert any
@@ -51,10 +51,6 @@ both plus and minus work, `not` doesn't, for other operators i'd have to check t
 ---
 
 _Label `help wanted` added by @MichaReiser on 2023-07-11 10:11_
-
----
-
-_Referenced in [astral-sh/ruff#5922](../../astral-sh/ruff/pulls/5922.md) on 2023-07-20 14:58_
 
 ---
 

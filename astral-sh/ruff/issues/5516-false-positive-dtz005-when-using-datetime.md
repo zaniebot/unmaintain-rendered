@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-07-04T21:47:41Z
 updated_at: 2023-07-06T04:03:24Z
 url: https://github.com/astral-sh/ruff/issues/5516
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # False Positive `DTZ005`: When using `datetime.datetime.now().astimezone()`
@@ -94,10 +94,6 @@ _Label `help wanted` added by @charliermarsh on 2023-07-05 02:11_
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2023-07-05 02:35_
-
----
-
-_Referenced in [astral-sh/ruff#5524](../../astral-sh/ruff/pulls/5524.md) on 2023-07-05 03:05_
 
 ---
 

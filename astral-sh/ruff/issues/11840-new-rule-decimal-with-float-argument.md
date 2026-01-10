@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-11T21:39:56Z
 updated_at: 2024-11-15T09:56:25Z
 url: https://github.com/astral-sh/ruff/issues/11840
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # New rule: Decimal with float argument
@@ -76,10 +76,6 @@ This would be a good addition, I have use cases where this has caused potential 
 _Comment by @Matthieu-LAURENT39 on 2024-08-03 11:24_
 
 this is a footgun i keep forgetting, and i would definitely enjoy seeing this rule implemented.
-
----
-
-_Referenced in [astral-sh/ruff#12909](../../astral-sh/ruff/pulls/12909.md) on 2024-08-15 18:50_
 
 ---
 

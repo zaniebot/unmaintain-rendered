@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-12T13:54:58Z
 updated_at: 2023-07-21T19:32:51Z
 url: https://github.com/astral-sh/ruff/issues/1817
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Namespace packages confuse isort's first party detection
@@ -111,10 +111,6 @@ Looking at the [Mypy docs](https://mypy.readthedocs.io/en/stable/running_mypy.ht
 
 ---
 
-_Referenced in [astral-sh/ruff#1859](../../astral-sh/ruff/pulls/1859.md) on 2023-01-14 03:16_
-
----
-
 _Comment by @charliermarsh on 2023-01-14 03:18_
 
 I've implemented that logic in tested it in Airflow by running `cargo run ../airflow --extend-ignore ALL --extend-select I` with these `pyproject.toml` changes:
@@ -198,10 +194,6 @@ Yeah given the various different layouts you have to support being explicit abou
 ---
 
 _Closed by @charliermarsh on 2023-01-14 12:31_
-
----
-
-_Referenced in [astral-sh/ruff#5149](../../astral-sh/ruff/issues/5149.md) on 2023-06-16 16:32_
 
 ---
 

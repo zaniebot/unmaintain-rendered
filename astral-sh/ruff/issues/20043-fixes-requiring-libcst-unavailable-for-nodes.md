@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-22T14:12:31Z
 updated_at: 2025-09-11T19:49:10Z
 url: https://github.com/astral-sh/ruff/issues/20043
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Fixes requiring LibCST unavailable for nodes containing t-strings
@@ -39,10 +39,6 @@ Unfortunately it is not obvious to users which rules use `libcst` in the backend
 [2025-08-22][09:26:17][ruff_linter::checkers::ast][DEBUG] Failed to create fix for explicit-f-string-type-conversion: Failed to extract expression from source
 ```
 
-
----
-
-_Referenced in [astral-sh/ruff#19895](../../astral-sh/ruff/issues/19895.md) on 2025-08-22 14:14_
 
 ---
 

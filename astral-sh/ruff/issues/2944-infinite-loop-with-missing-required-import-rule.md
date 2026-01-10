@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-16T01:25:12Z
 updated_at: 2023-02-16T03:24:57Z
 url: https://github.com/astral-sh/ruff/issues/2944
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # [Infinite loop] with missing required import rule
@@ -74,10 +74,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-02-16 02:17_
 _Comment by @charliermarsh on 2023-02-16 03:13_
 
 Woah not sure what happened here but definitely broken! Will make sure it's fixed for the next release (maybe Friday-ish).
-
----
-
-_Referenced in [astral-sh/ruff#2946](../../astral-sh/ruff/pulls/2946.md) on 2023-02-16 03:22_
 
 ---
 

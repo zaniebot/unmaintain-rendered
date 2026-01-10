@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-28T21:31:50Z
 updated_at: 2023-09-12T11:54:42Z
 url: https://github.com/astral-sh/ruff/issues/6958
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Feature request: ignore `PLW3201` for methods marked with `@override`
@@ -56,14 +56,6 @@ _Assigned to @brendonh8 by @charliermarsh on 2023-09-02 18:58_
 
 ---
 
-_Referenced in [astral-sh/ruff#7224](../../astral-sh/ruff/pulls/7224.md) on 2023-09-07 16:13_
-
----
-
 _Closed by @charliermarsh on 2023-09-12 11:54_
-
----
-
-_Referenced in [astral-sh/ruff#8867](../../astral-sh/ruff/issues/8867.md) on 2023-11-28 19:19_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-21T14:29:52Z
 updated_at: 2022-11-21T18:39:20Z
 url: https://github.com/astral-sh/ruff/issues/853
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # per-file-ignores glob **.py crash
@@ -40,10 +40,6 @@ os: Ubuntu 20.04
 ---
 
 _Label `bug` added by @charliermarsh on 2022-11-21 14:49_
-
----
-
-_Referenced in [astral-sh/ruff#858](../../astral-sh/ruff/pulls/858.md) on 2022-11-21 18:23_
 
 ---
 

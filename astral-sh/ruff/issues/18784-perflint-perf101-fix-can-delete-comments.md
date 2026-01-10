@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-19T07:06:20Z
 updated_at: 2025-06-26T20:58:49Z
 url: https://github.com/astral-sh/ruff/issues/18784
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [Perflint] PERF101 fix can delete comments
@@ -104,10 +104,6 @@ _Label `help wanted` added by @MichaReiser on 2025-06-19 09:02_
 _Comment by @LaBatata101 on 2025-06-19 14:45_
 
 I'm working on this
-
----
-
-_Referenced in [astral-sh/ruff#18803](../../astral-sh/ruff/pulls/18803.md) on 2025-06-19 20:00_
 
 ---
 

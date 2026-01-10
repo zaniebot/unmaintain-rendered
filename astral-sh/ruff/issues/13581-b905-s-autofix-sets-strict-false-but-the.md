@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-01T04:54:19Z
 updated_at: 2024-10-07T11:56:18Z
 url: https://github.com/astral-sh/ruff/issues/13581
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # B905's autofix sets strict=False, but the suggested fix is strict=True
@@ -83,14 +83,6 @@ I don't think we should remove the autofix entirely though, just change the mess
 
 ---
 
-_Referenced in [astral-sh/ruff#13656](../../astral-sh/ruff/pulls/13656.md) on 2024-10-07 10:04_
-
----
-
 _Closed by @AlexWaygood on 2024-10-07 11:56_
-
----
-
-_Referenced in [rapidsai/cudf#15835](../../rapidsai/cudf/issues/15835.md) on 2025-08-01 19:15_
 
 ---

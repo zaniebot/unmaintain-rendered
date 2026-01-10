@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-25T18:59:25Z
 updated_at: 2025-10-29T21:45:10Z
 url: https://github.com/astral-sh/ruff/issues/20583
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # RUF065 should not apply to the combination of `%r` and `repr`
@@ -84,10 +84,6 @@ The combinations of `%r` with `repr` and `%a` with `ascii` are probably mistakes
 
 ---
 
-_Referenced in [astral-sh/ruff#20600](../../astral-sh/ruff/pulls/20600.md) on 2025-09-27 04:59_
-
----
-
 _Comment by @danparizher on 2025-09-27 05:01_
 
 I've opened a PR that addresses the main issue.
@@ -103,10 +99,6 @@ Let me know what you think is preferable!
 _Comment by @ntBre on 2025-09-30 19:53_
 
 Thanks @danparizher! I commented this on the PR too, but I think it made sense to split off the immediate bug fix for `%r` + `repr`. The remaining part of this issue is expanding the rule to handle the other appropriate cases. Feel free to follow up on that if you're interested!
-
----
-
-_Referenced in [astral-sh/ruff#20657](../../astral-sh/ruff/pulls/20657.md) on 2025-10-01 00:25_
 
 ---
 

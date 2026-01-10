@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-11T17:45:55Z
 updated_at: 2023-03-14T18:34:30Z
 url: https://github.com/astral-sh/ruff/issues/3450
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # [feature-request] Ruff version of isort action comments
@@ -33,10 +33,6 @@ Yeah this makes total sense. It’s nice to be isort-compatible, but strange tha
 ---
 
 _Label `isort` added by @charliermarsh on 2023-03-11 18:23_
-
----
-
-_Referenced in [astral-sh/ruff#3493](../../astral-sh/ruff/pulls/3493.md) on 2023-03-13 21:38_
 
 ---
 

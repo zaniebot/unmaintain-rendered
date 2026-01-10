@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-23T01:30:19Z
 updated_at: 2025-01-07T18:21:02Z
 url: https://github.com/astral-sh/ruff/issues/13065
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # `incorrectly-parenthesized-tuple-in-subscript` (`RUF031`) - false positives with `parenthesize-tuple-in-subscript = true` on types outside of type annotations
@@ -153,10 +153,6 @@ _Comment by @AlexWaygood on 2024-09-04 13:20_
 > See [peps.python.org/pep-0586#illegal-parameters-for-literal-at-type-check-time](https://peps.python.org/pep-0586/#illegal-parameters-for-literal-at-type-check-time)
 
 TIL! And pyright appears to enforce that rule, too. Thanks!
-
----
-
-_Referenced in [astral-sh/ruff#15264](../../astral-sh/ruff/issues/15264.md) on 2025-01-05 03:48_
 
 ---
 

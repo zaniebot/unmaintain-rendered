@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-09-18T14:15:04Z
 updated_at: 2025-09-18T14:20:21Z
 url: https://github.com/astral-sh/ruff/issues/20468
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Reconsider `valid-magic-values` option
@@ -43,9 +43,5 @@ Thanks for the suggestion and finding the old issue! There's a bit more recent d
 ---
 
 _Closed by @ntBre on 2025-09-18 14:20_
-
----
-
-_Referenced in [astral-sh/ruff#10009](../../astral-sh/ruff/issues/10009.md) on 2025-09-18 20:08_
 
 ---

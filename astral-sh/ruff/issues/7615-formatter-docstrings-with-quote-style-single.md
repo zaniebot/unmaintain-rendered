@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-23T12:42:07Z
 updated_at: 2025-08-31T05:28:21Z
 url: https://github.com/astral-sh/ruff/issues/7615
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter: Docstrings with `quote-style = "single"` configuration
@@ -94,10 +94,6 @@ So the majority of projects that are using single quotes only apply it to non-do
 ---
 
 _Added to milestone `Formatter: Beta` by @MichaReiser on 2023-09-24 15:22_
-
----
-
-_Referenced in [astral-sh/ruff#7642](../../astral-sh/ruff/issues/7642.md) on 2023-09-25 09:35_
 
 ---
 
@@ -215,10 +211,6 @@ If there's still strong demand, we'll then consider adding an additional dedicat
 
 ---
 
-_Referenced in [astral-sh/ruff#7525](../../astral-sh/ruff/issues/7525.md) on 2023-09-27 16:26_
-
----
-
 _Comment by @tanoc on 2023-09-27 17:11_
 
 Seems reasonable. Just to add to your data, please keep in mind that there [a lot of projects](https://github.com/search?type=code&q=%22id%3A+double-quote-string-fixer%22+path%3A.pre-commit-config.yaml) using pre-commit with `double-quote-string-fixer` (that just fixes normal strings and doesn't change docstrings or triple-quoted strings, so maybe is not so black an white as it seems).
@@ -257,10 +249,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-09-27 20:23_
 
 ---
 
-_Referenced in [astral-sh/ruff#7680](../../astral-sh/ruff/pulls/7680.md) on 2023-09-27 20:51_
-
----
-
 _Closed by @charliermarsh on 2023-09-28 19:11_
 
 ---
@@ -288,10 +276,6 @@ _Comment by @Destroy666x on 2023-10-20 14:47_
 Formatter is unrelated to rules, as can be also seen from my comment above. Doing that changed nothing indeed. There's currently no way to disable the quote formatting, pretty sure.
 
 EDIT: comment got deleted in case someone is confused.
-
----
-
-_Referenced in [astral-sh/ruff#8252](../../astral-sh/ruff/issues/8252.md) on 2023-10-26 13:54_
 
 ---
 
@@ -440,18 +424,6 @@ Actually, if you want a single setting: How about a `quotes = match-linter` opti
 _Comment by @MichaReiser on 2023-11-29 03:59_
 
 We're considering adding the `preserve` option in https://github.com/astral-sh/ruff/pull/8822. Please comment on the PR if you use `--skip-string-normalization` and your use case isn't covered by Ruff's settings today nor after adding the `preserve` option. Thanks
-
----
-
-_Referenced in [astral-sh/ruff#15910](../../astral-sh/ruff/issues/15910.md) on 2025-02-03 12:33_
-
----
-
-_Referenced in [astral-sh/ruff#17056](../../astral-sh/ruff/issues/17056.md) on 2025-03-31 09:13_
-
----
-
-_Referenced in [astral-sh/ruff#17401](../../astral-sh/ruff/issues/17401.md) on 2025-04-22 09:07_
 
 ---
 

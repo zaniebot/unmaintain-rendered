@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-29T06:56:54Z
 updated_at: 2023-12-22T05:53:46Z
 url: https://github.com/astral-sh/ruff/issues/8904
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Other changes (discovered in test files)
@@ -24,10 +24,6 @@ Changes to Black's formatting that seem to change but have no explicit preview f
 
 * [x] [`preview_percent_precedence.py`](https://github.com/psf/black/blob/a0e270d0f246387202e676b25abbf7a02ddcbc71/tests/data/cases/preview_percent_precedence.py)
 * [x] `FIXME` in [`ignore_pyi`](https://github.com/psf/black/blob/a0e270d0f246387202e676b25abbf7a02ddcbc71/tests/data/cases/ignore_pyi.py) https://github.com/astral-sh/ruff/pull/8984
-
----
-
-_Referenced in [astral-sh/ruff#8678](../../astral-sh/ruff/issues/8678.md) on 2023-11-29 06:56_
 
 ---
 

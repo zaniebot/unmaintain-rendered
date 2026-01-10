@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-07-22T20:35:32Z
 updated_at: 2025-07-30T16:12:47Z
 url: https://github.com/astral-sh/ruff/issues/19498
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # `start_of_file` ignores a backslash, making I002 introduce a syntax error
@@ -66,10 +66,6 @@ _Label `fixes` added by @ntBre on 2025-07-22 21:32_
 ---
 
 _Label `help wanted` added by @ntBre on 2025-07-22 21:32_
-
----
-
-_Referenced in [astral-sh/ruff#19505](../../astral-sh/ruff/pulls/19505.md) on 2025-07-23 10:32_
 
 ---
 

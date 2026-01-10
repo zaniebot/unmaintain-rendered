@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-24T11:29:47Z
 updated_at: 2023-10-25T08:25:01Z
 url: https://github.com/astral-sh/ruff/issues/8162
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Don't move type param opening parenthesis comments
@@ -71,10 +71,6 @@ _Label `bug` added by @konstin on 2023-10-24 11:36_
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2023-10-24 11:44_
-
----
-
-_Referenced in [astral-sh/ruff#8163](../../astral-sh/ruff/pulls/8163.md) on 2023-10-24 11:54_
 
 ---
 

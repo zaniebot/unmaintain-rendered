@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-29T00:56:35Z
 updated_at: 2025-06-16T17:26:31Z
 url: https://github.com/astral-sh/ruff/issues/9664
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # [Feature Request] [NPY] Detect accidental cubic runtime cost due to `numpy.trace`
@@ -70,14 +70,6 @@ The last one also does [another sin, they invert](https://www.johndcook.com/blog
 
 ---
 
-_Referenced in [numpy/numpy#25713](../../numpy/numpy/issues/25713.md) on 2024-01-29 02:43_
-
----
-
-_Referenced in [astral-sh/ruff#12349](../../astral-sh/ruff/issues/12349.md) on 2024-07-18 11:56_
-
----
-
 _Comment by @randolf-scholz on 2024-07-18 12:29_
 
 <details> <summary>Reran the script with torch==2.3.1 and numpy==2.0.0 </summary>
@@ -120,9 +112,5 @@ Results:
 | pt.tensordot(A.T, B) | 38.8 μs | 309 μs | 4740 μs | 19 ms  |
 
 In `numpy` the overhead is patched, but `torch` is slower until very large arrays. I'll open an issue.
-
----
-
-_Referenced in [pytorch/pytorch#145731](../../pytorch/pytorch/issues/145731.md) on 2025-01-27 14:58_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-31T05:17:54Z
 updated_at: 2024-01-02T14:20:44Z
 url: https://github.com/astral-sh/ruff/issues/9327
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Request: extending `unnecessary-assign` (`RET504`) to account for `+=` (`__iadd__`)
@@ -50,10 +50,6 @@ Feel free to assign this to me
 ---
 
 _Assigned to @evanrittenhouse by @zanieb on 2023-12-31 22:16_
-
----
-
-_Referenced in [astral-sh/ruff#9348](../../astral-sh/ruff/pulls/9348.md) on 2024-01-01 16:06_
 
 ---
 

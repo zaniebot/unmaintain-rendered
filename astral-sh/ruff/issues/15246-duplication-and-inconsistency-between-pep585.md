@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-01-04T00:18:30Z
 updated_at: 2025-01-04T12:20:57Z
 url: https://github.com/astral-sh/ruff/issues/15246
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Duplication and inconsistency between pep585 annotation rules: UP006, UP035
@@ -201,21 +201,9 @@ So, allowing this in py39 is just yet another problem with https://github.com/as
 
 ---
 
-_Referenced in [astral-sh/ruff#5454](../../astral-sh/ruff/pulls/5454.md) on 2025-01-04 01:03_
-
----
-
-_Referenced in [astral-sh/ruff#15245](../../astral-sh/ruff/issues/15245.md) on 2025-01-04 01:21_
-
----
-
 _Comment by @charliermarsh on 2025-01-04 02:54_
 
 (At minimum we should definitely move `Callable` to Python 3.10 and later.)
-
----
-
-_Referenced in [astral-sh/ruff#15251](../../astral-sh/ruff/issues/15251.md) on 2025-01-04 11:09_
 
 ---
 

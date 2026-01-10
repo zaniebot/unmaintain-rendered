@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-17T15:28:14Z
 updated_at: 2023-10-18T01:50:27Z
 url: https://github.com/astral-sh/ruff/issues/8017
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # F401 false positive with PEP-695 upper bound specification
@@ -70,10 +70,6 @@ Strange, will take a look.
 _Comment by @charliermarsh on 2023-10-17 23:46_
 
 This is a regression in the most recent release due to #7968.
-
----
-
-_Referenced in [astral-sh/ruff#8033](../../astral-sh/ruff/pulls/8033.md) on 2023-10-18 01:23_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-11T16:00:55Z
 updated_at: 2024-04-16T14:33:25Z
 url: https://github.com/astral-sh/ruff/issues/10885
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # F541 does not find violations in concatenations
@@ -62,10 +62,6 @@ This was demonstrated in a clean venv with `ruff` 0.3.5.
 
 ---
 
-_Referenced in [astral-sh/ruff#10886](../../astral-sh/ruff/pulls/10886.md) on 2024-04-11 16:28_
-
----
-
 _Comment by @samueljsb on 2024-04-11 16:28_
 
 I've opened #10886 to demonstrate this in a test.
@@ -97,9 +93,5 @@ I'll close this issue, since F541 is behaving as expected.
 ---
 
 _Closed by @samueljsb on 2024-04-16 14:33_
-
----
-
-_Referenced in [astral-sh/ruff#11357](../../astral-sh/ruff/issues/11357.md) on 2024-05-10 05:17_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-17T16:09:16Z
 updated_at: 2025-01-17T17:46:37Z
 url: https://github.com/astral-sh/ruff/issues/15554
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # `SIM108` false negative when variable has type annotation
@@ -77,9 +77,5 @@ else:
 ```
 
 Mypy might also flag this as redefinition but I'd have to check if this is true for every type checker (including red knot). But I could still see us flagging this but we may not want to provide a fix for it.
-
----
-
-_Referenced in [astral-sh/ruff#15665](../../astral-sh/ruff/pulls/15665.md) on 2025-01-22 00:11_
 
 ---

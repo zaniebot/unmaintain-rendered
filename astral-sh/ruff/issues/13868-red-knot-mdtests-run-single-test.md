@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-21T20:04:43Z
 updated_at: 2024-11-29T11:59:09Z
 url: https://github.com/astral-sh/ruff/issues/13868
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] mdtests - Run single test
@@ -53,10 +53,6 @@ _Unassigned @dylwil3 by @dylwil3 on 2024-11-08 17:15_
 ---
 
 _Assigned to @carljm by @carljm on 2024-11-22 22:42_
-
----
-
-_Referenced in [astral-sh/ruff#14670](../../astral-sh/ruff/pulls/14670.md) on 2024-11-29 06:52_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-30T16:38:45Z
 updated_at: 2025-09-19T22:26:34Z
 url: https://github.com/astral-sh/ruff/issues/8361
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Bash completion emits error about invalid nosort option after installing ruff
@@ -115,10 +115,6 @@ Surprisingly there are no issues on `clap` for this — if you have the time I s
 _Comment by @gbelouze on 2023-10-30 20:52_
 
 Thanks for the quick response, I'll run it by the `clap` people then.
-
----
-
-_Referenced in [clap-rs/clap#5190](../../clap-rs/clap/issues/5190.md) on 2023-10-30 21:13_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-27T02:20:23Z
 updated_at: 2023-11-28T06:23:34Z
 url: https://github.com/astral-sh/ruff/issues/8846
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # PD003 raise an error for xarray.DataArray
@@ -48,10 +48,6 @@ ruff 0.1.6
 
 ---
 
-_Referenced in [GenericMappingTools/pygmt#2830](../../GenericMappingTools/pygmt/pulls/2830.md) on 2023-11-27 02:21_
-
----
-
 _Comment by @dhruvmanila on 2023-11-27 15:38_
 
 Thanks for raising this. This is similar to #6432 and is a limitation without having a proper type inference logic. Maybe we could define a `is_pandas_dataframe` method similar to `is_list` \cc @charliermarsh who has more context on the current type inference logic.
@@ -75,13 +71,5 @@ _Comment by @charliermarsh on 2023-11-28 06:23_
 ---
 
 _Closed by @charliermarsh on 2023-11-28 06:23_
-
----
-
-_Referenced in [OpenSenseAction/pypwsqc#16](../../OpenSenseAction/pypwsqc/pulls/16.md) on 2024-03-14 06:48_
-
----
-
-_Referenced in [astral-sh/ruff#14671](../../astral-sh/ruff/pulls/14671.md) on 2024-11-29 07:33_
 
 ---

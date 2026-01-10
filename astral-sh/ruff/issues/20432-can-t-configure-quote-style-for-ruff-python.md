@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-16T07:53:13Z
 updated_at: 2025-09-18T10:57:22Z
 url: https://github.com/astral-sh/ruff/issues/20432
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Can't configure quote style for `ruff_python_codegen::Generator`
@@ -102,10 +102,6 @@ _Comment by @ShaharNaveh on 2025-09-16 08:43_
 
 Fair enough. ty for the swift response:)
 Will poke the code a bit and see what's the effort
-
----
-
-_Referenced in [astral-sh/ruff#20434](../../astral-sh/ruff/pulls/20434.md) on 2025-09-16 10:13_
 
 ---
 

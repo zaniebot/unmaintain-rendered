@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-28T16:02:22Z
 updated_at: 2023-11-28T20:38:27Z
 url: https://github.com/astral-sh/ruff/issues/8870
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # ruff formatting not working if `match` statements exists anywhere (vscode; vscode extension; ipynb)
@@ -93,10 +93,6 @@ Ok, found the issue, pushing a fix for it. Thanks again for highlighting this!
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2023-11-28 20:20_
-
----
-
-_Referenced in [astral-sh/ruff#8880](../../astral-sh/ruff/pulls/8880.md) on 2023-11-28 20:27_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-02-11T15:02:30Z
 updated_at: 2025-02-15T17:45:42Z
 url: https://github.com/astral-sh/ruff/issues/16099
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # C403 fix fails when a comma follows the list
@@ -57,10 +57,6 @@ _Label `help wanted` added by @dylwil3 on 2025-02-11 17:22_
 _Comment by @dylwil3 on 2025-02-11 17:22_
 
 I'll put `help wanted` for now and if no one picks it up in a few days I can take it - thanks!
-
----
-
-_Referenced in [astral-sh/ruff#16110](../../astral-sh/ruff/pulls/16110.md) on 2025-02-12 01:04_
 
 ---
 

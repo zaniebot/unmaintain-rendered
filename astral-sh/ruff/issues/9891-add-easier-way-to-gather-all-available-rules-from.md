@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-08T08:07:04Z
 updated_at: 2025-10-20T07:09:53Z
 url: https://github.com/astral-sh/ruff/issues/9891
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Add easier way to gather all available rules from ruff
@@ -69,10 +69,6 @@ It would be good to add to this json the fields `"removed'': bool` and `"depreca
 _Comment by @ofek on 2024-02-18 18:12_
 
 Yes I was just about to open a feature request for this; currently the JSON output does not contain any information regarding whether a rule still exists. Either there should be a key or there should be a flag to exclude removed rules.
-
----
-
-_Referenced in [astral-sh/ruff#20168](../../astral-sh/ruff/pulls/20168.md) on 2025-08-30 16:01_
 
 ---
 

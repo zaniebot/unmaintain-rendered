@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-24T05:49:17Z
 updated_at: 2025-01-29T18:15:11Z
 url: https://github.com/astral-sh/ruff/issues/10108
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # new rule: variable is assigned and read only one time
@@ -154,9 +154,5 @@ h(f(), g())
 ```
 
 Still call `f` before `g`? Depends on how Python order of argument evaluation, which is ???. So there are some subtleties to consider.
-
----
-
-_Referenced in [astral-sh/ruff#15477](../../astral-sh/ruff/issues/15477.md) on 2025-01-29 18:17_
 
 ---

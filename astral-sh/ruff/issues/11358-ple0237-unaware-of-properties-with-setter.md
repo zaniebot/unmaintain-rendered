@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-10T08:08:58Z
 updated_at: 2024-05-13T00:23:02Z
 url: https://github.com/astral-sh/ruff/issues/11358
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # PLE0237 unaware of properties with setter
@@ -54,10 +54,6 @@ _Label `bug` added by @charliermarsh on 2024-05-10 13:25_
 _Comment by @charliermarsh on 2024-05-10 13:25_
 
 Thanks, looks like a bug.
-
----
-
-_Referenced in [astral-sh/ruff#11377](../../astral-sh/ruff/pulls/11377.md) on 2024-05-12 09:41_
 
 ---
 

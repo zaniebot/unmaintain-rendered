@@ -1,0 +1,279 @@
+```yaml
+number: 11922
+title: Rule D102 cause panic
+type: issue
+state: closed
+author: qarmin
+labels:
+  - bug
+assignees: []
+created_at: 2024-06-18T10:35:23Z
+updated_at: 2024-06-18T14:25:24Z
+url: https://github.com/astral-sh/ruff/issues/11922
+synced_at: 2026-01-10T11:09:54Z
+```
+
+# Rule D102 cause panic
+
+---
+
+_Issue opened by @qarmin on 2024-06-18 10:35_
+
+ruff 0.4.9+14 (8499abfa7 2024-06-17) (latest changes from main branch)
+```
+ruff  *.py --select D102 --no-cache --fix --unsafe-fixes --preview --output-format concise --isolated
+```
+
+file content:
+```
+_AVAILABLE_COMMANDS_STR = """\
+ping                test the connection with the remote server"""
+USAGE = f"""\
+{_AVAILABLE_COMMANDS_STR"""
+        return f"""\
+Multiple commands can be given in a single line, either from the shell or from command line, \
+{_AVAILABLE_COMMANDS_STR}"""
+```
+
+error
+```
+All checks passed!
+
+error: Panicked while linting /opt/tmp_folder/6086508128891050848.py: This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+...with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+
+panicked at /home/runner/work/Automated-Fuzzer/Automated-Fuzzer/ruff/crates/ruff_text_size/src/range.rs:48:9:
+assertion failed: start.raw <= end.raw
+Backtrace:    0: ruff::panic::catch_unwind::{{closure}}
+             at ./ruff/crates/ruff/src/panic.rs:31:25
+   1: <alloc::boxed::Box<F,A> as core::ops::function::Fn<Args>>::call
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/alloc/src/boxed.rs:2034:9
+   2: std::panicking::rust_panic_with_hook
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/std/src/panicking.rs:783:13
+   3: std::panicking::begin_panic_handler::{{closure}}
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/std/src/panicking.rs:649:13
+   4: std::sys_common::backtrace::__rust_end_short_backtrace
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/std/src/sys_common/backtrace.rs:171:18
+   5: rust_begin_unwind
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/std/src/panicking.rs:645:5
+   6: core::panicking::panic_fmt
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/core/src/panicking.rs:72:14
+   7: core::panicking::panic
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/core/src/panicking.rs:145:5
+   8: ruff_python_index::indexer::Indexer::from_tokens
+   9: ruff_linter::linter::lint_fix
+             at ./ruff/crates/ruff_linter/src/linter.rs:544:23
+  10: ruff::diagnostics::lint_path
+             at ./ruff/crates/ruff/src/diagnostics.rs:274:14
+  11: ruff::commands::check::lint_path::{{closure}}
+             at ./ruff/crates/ruff/src/commands/check.rs:192:9
+  12: std::panicking::try::do_call
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/std/src/panicking.rs:552:40
+  13: std::panicking::try
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/std/src/panicking.rs:516:19
+  14: std::panic::catch_unwind
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/std/src/panic.rs:146:14
+  15: ruff::panic::catch_unwind
+             at ./ruff/crates/ruff/src/panic.rs:40:18
+  16: ruff::commands::check::lint_path
+             at ./ruff/crates/ruff/src/commands/check.rs:191:18
+  17: ruff::commands::check::check::{{closure}}
+             at ./ruff/crates/ruff/src/commands/check.rs:93:17
+  18: <rayon::iter::filter_map::FilterMapFolder<C,P> as rayon::iter::plumbing::Folder<T>>::consume
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/filter_map.rs:123:36
+  19: rayon::iter::plumbing::Folder::consume_iter
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:178:20
+  20: rayon::iter::plumbing::Producer::fold_with
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:109:9
+  21: rayon::iter::plumbing::bridge_producer_consumer::helper
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:437:13
+  22: rayon::iter::plumbing::bridge_producer_consumer
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:396:12
+  23: <rayon::iter::plumbing::bridge::Callback<C> as rayon::iter::plumbing::ProducerCallback<I>>::callback
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:372:13
+  24: <rayon::slice::Iter<T> as rayon::iter::IndexedParallelIterator>::with_producer
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/slice/mod.rs:826:9
+  25: rayon::iter::plumbing::bridge
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/plumbing/mod.rs:356:12
+  26: <rayon::slice::Iter<T> as rayon::iter::ParallelIterator>::drive_unindexed
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/slice/mod.rs:802:9
+  27: <rayon::iter::filter_map::FilterMap<I,P> as rayon::iter::ParallelIterator>::drive_unindexed
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/filter_map.rs:46:9
+  28: <rayon::iter::fold::Fold<I,ID,F> as rayon::iter::ParallelIterator>::drive_unindexed
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/fold.rs:59:9
+  29: rayon::iter::reduce::reduce
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/reduce.rs:15:5
+  30: rayon::iter::ParallelIterator::reduce
+             at /home/runner/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.10.0/src/iter/mod.rs:998:9
+  31: ruff::commands::check::check
+             at ./ruff/crates/ruff/src/commands/check.rs:163:10
+  32: ruff::check
+             at ./ruff/crates/ruff/src/lib.rs:429:13
+  33: ruff::run
+             at ./ruff/crates/ruff/src/lib.rs:202:33
+  34: ruff::main
+             at ./ruff/crates/ruff/src/main.rs:65:11
+  35: core::ops::function::FnOnce::call_once
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/core/src/ops/function.rs:250:5
+  36: std::sys_common::backtrace::__rust_begin_short_backtrace
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/std/src/sys_common/backtrace.rs:155:18
+  37: std::rt::lang_start::{{closure}}
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/std/src/rt.rs:166:18
+  38: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/core/src/ops/function.rs:284:13
+  39: std::panicking::try::do_call
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/std/src/panicking.rs:552:40
+  40: std::panicking::try
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/std/src/panicking.rs:516:19
+  41: std::panic::catch_unwind
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/std/src/panic.rs:146:14
+  42: std::rt::lang_start_internal::{{closure}}
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/std/src/rt.rs:148:48
+  43: std::panicking::try::do_call
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/std/src/panicking.rs:552:40
+  44: std::panicking::try
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/std/src/panicking.rs:516:19
+  45: std::panic::catch_unwind
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/std/src/panic.rs:146:14
+  46: std::rt::lang_start_internal
+             at /rustc/9b00956e56009bab2aa15d7bff10916599e3d6d6/library/std/src/rt.rs:148:20
+  47: main
+  48: <unknown>
+  49: __libc_start_main
+  50: _start
+
+```
+
+[python_compressed.zip](https://github.com/user-attachments/files/15884677/python_compressed.zip)
+
+
+---
+
+_Label `bug` added by @MichaReiser on 2024-06-18 11:37_
+
+---
+
+_Comment by @MichaReiser on 2024-06-18 11:38_
+
+@dhruvmanila I suspect this might be because of the latest parser recovery changes. Do you think you have time to have a look?
+
+---
+
+_Comment by @dhruvmanila on 2024-06-18 11:47_
+
+Yes, looking at it now
+
+---
+
+_Comment by @dhruvmanila on 2024-06-18 11:51_
+
+It doesn't occur on `main` but it does panic on https://github.com/astral-sh/ruff/commit/8499abfa7feec5b496a438c4dc310ee9130d4745. I suspect that https://github.com/astral-sh/ruff/commit/1e0642fac8e98a93c4e416886eb8af93a187984d fixed it. Let me look at what caused this panic.
+
+---
+
+_Comment by @dhruvmanila on 2024-06-18 12:02_
+
+Yeah, I think I got it. So, basically there's a missing `}` on line 4 after `_AVAILABLE_COMMANDS_STR`:
+```py
+_AVAILABLE_COMMANDS_STR = """\
+ping                test the connection with the remote server"""
+USAGE = f"""\
+{_AVAILABLE_COMMANDS_STR"""
+#                       ^ f-string: expecting '}'
+        return f"""\
+Multiple commands can be given in a single line, either from the shell or from command line, \
+{_AVAILABLE_COMMANDS_STR}"""
+```
+
+Earlier, unterminated f-strings didn't recover well but the nesting level is affected by the curly braces which forms an expression element of an f-string. So, the parser was always in a parenthesized context because it didn't recover from an unclosed `{`. With https://github.com/astral-sh/ruff/commit/1e0642fac8e98a93c4e416886eb8af93a187984d, we now reduce the nesting level correctly by calling in the re-lexing logic for f-string recovery (via `parse_list`).
+
+The difference can be seen in the token stream:
+
+Before (which would panic):
+```
+0 Name 23
+24 Equal 25
+26 String 96
+96 Newline 97
+97 Name 102
+103 Equal 104
+105 FStringStart 109
+109 FStringMiddle 111
+111 Lbrace 112
+112 Name 135
+135 String 158
+160 Name 168
+169 Name 177
+178 Name 181
+182 Name 184
+185 Name 190
+191 In 193
+194 Name 195
+196 Name 202
+203 Name 207
+207 Comma 208
+209 Name 215
+216 From 220
+221 Name 224
+225 Name 230
+231 Or 233
+234 From 238
+238 FStringMiddle 255 <- panic is probably because of
+254 FStringMiddle 255 <- either of these two tokens
+255 Lbrace 256
+256 Name 279
+279 Rbrace 280
+280 FStringEnd 283
+283 Newline 284
+```
+
+After:
+```
+0 Name 23
+24 Equal 25
+26 String 96
+96 Newline 97
+97 Name 102
+103 Equal 104
+105 FStringStart 109
+109 FStringMiddle 111
+111 Lbrace 112
+112 Name 135
+135 String 158
+158 FStringMiddle 255
+255 Lbrace 256
+256 Name 279
+279 Rbrace 280
+280 FStringEnd 283
+283 Newline 284
+```
+
+---
+
+_Comment by @dhruvmanila on 2024-06-18 12:06_
+
+I'll consider this issue as fixed by https://github.com/astral-sh/ruff/pull/11871. Thank you for raising this ticket!
+
+On a side note, @qarmin do you mind sharing how you're running the fuzzer? Do you have a custom setup to find these bugs? If so, I'd appreciate if you can share that.
+
+---
+
+_Closed by @dhruvmanila on 2024-06-18 12:06_
+
+---
+
+_Comment by @qarmin on 2024-06-18 14:25_
+
+https://github.com/qarmin/Automated-Fuzzer (this is mainly a tool for internal use, so the code is not very elegant)
+- it simply downloads the python files from https://github.com/qarmin/Automated-Fuzzer/releases/tag/test (~1 year ago I downloaded this files from pip from almost all available packages)
+- randomly add python keywords and frequently used expressions or remove/replace any characters (https://github.com/qarmin/Automated-Fuzzer/blob/308b709ca57c272109685819763977554f41a635/src/broken_files.rs#L15-L24)
+- ruff check this file and the output is checked to see if contains certain words like "RUST_BACKTRACE" or "failed to fix"
+- problematic file is minimized
+- results are packed so to report bug I just need to unpack them and copy and paste content to new issue
+
+I run this daily in CI
+
+---

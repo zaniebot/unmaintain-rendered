@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-16T19:53:51Z
 updated_at: 2025-10-30T16:59:08Z
 url: https://github.com/astral-sh/ruff/issues/20929
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # False positive for UP046
@@ -95,10 +95,6 @@ I'm working on a fix for this.
 ---
 
 _Assigned to @prakhar1144 by @ntBre on 2025-10-18 16:03_
-
----
-
-_Referenced in [astral-sh/ruff#21045](../../astral-sh/ruff/pulls/21045.md) on 2025-10-23 13:22_
 
 ---
 

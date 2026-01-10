@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-31T16:37:46Z
 updated_at: 2023-12-31T18:23:34Z
 url: https://github.com/astral-sh/ruff/issues/9334
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # False positive RUF013 PEP 484 prohibits implicit `Optional`
@@ -37,10 +37,6 @@ _Label `bug` added by @charliermarsh on 2023-12-31 16:41_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-31 16:44_
-
----
-
-_Referenced in [astral-sh/ruff#9335](../../astral-sh/ruff/pulls/9335.md) on 2023-12-31 16:47_
 
 ---
 

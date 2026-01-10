@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-21T04:38:32Z
 updated_at: 2023-08-21T15:30:18Z
 url: https://github.com/astral-sh/ruff/issues/6711
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Add `next` to FBT003 exclusions
@@ -46,10 +46,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-08-21 14:44_
 
 ---
 
-_Referenced in [astral-sh/ruff#6729](../../astral-sh/ruff/pulls/6729.md) on 2023-08-21 14:44_
-
----
-
 _Closed by @charliermarsh on 2023-08-21 14:56_
 
 ---
@@ -57,13 +53,5 @@ _Closed by @charliermarsh on 2023-08-21 14:56_
 _Comment by @Garrett-R on 2023-08-21 15:30_
 
 Heyooo!  :rocket: 
-
----
-
-_Referenced in [astral-sh/ruff#10356](../../astral-sh/ruff/issues/10356.md) on 2024-03-12 10:10_
-
----
-
-_Referenced in [astral-sh/ruff#10485](../../astral-sh/ruff/issues/10485.md) on 2024-03-20 14:38_
 
 ---

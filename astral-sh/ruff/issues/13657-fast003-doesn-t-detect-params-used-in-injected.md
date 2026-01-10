@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-10-07T10:27:10Z
 updated_at: 2025-01-13T08:51:04Z
 url: https://github.com/astral-sh/ruff/issues/13657
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # FAST003 doesn't detect params used in injected dependencies
@@ -89,14 +89,6 @@ _Label `help wanted` added by @MichaReiser on 2025-01-08 08:21_
 
 ---
 
-_Referenced in [astral-sh/ruff#15364](../../astral-sh/ruff/pulls/15364.md) on 2025-01-09 03:13_
-
----
-
 _Closed by @MichaReiser on 2025-01-13 08:51_
-
----
-
-_Referenced in [astral-sh/ruff#18009](../../astral-sh/ruff/issues/18009.md) on 2025-05-11 20:36_
 
 ---

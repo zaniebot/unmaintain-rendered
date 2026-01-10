@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-29T19:50:38Z
 updated_at: 2024-03-30T01:05:06Z
 url: https://github.com/astral-sh/ruff/issues/10663
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # unnecessary-lambda fix is unsafe even when there are no side-effects 
@@ -50,10 +50,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-30 00:47_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-03-30 00:55_
-
----
-
-_Referenced in [astral-sh/ruff#10668](../../astral-sh/ruff/pulls/10668.md) on 2024-03-30 00:56_
 
 ---
 

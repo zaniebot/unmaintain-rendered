@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-23T13:15:32Z
 updated_at: 2022-11-25T18:14:32Z
 url: https://github.com/astral-sh/ruff/issues/891
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # Implementing .format checks
@@ -85,14 +85,6 @@ I was thinking to place them in `src/pyflakes/helpers.rs` unless you have a bett
 _Comment by @charliermarsh on 2022-11-23 15:22_
 
 Maybe `pyflakes/format.rs`? Or `pyflakes/strings.rs`? But not picky.
-
----
-
-_Referenced in [astral-sh/ruff#898](../../astral-sh/ruff/pulls/898.md) on 2022-11-24 12:04_
-
----
-
-_Referenced in [astral-sh/ruff#899](../../astral-sh/ruff/pulls/899.md) on 2022-11-25 00:43_
 
 ---
 

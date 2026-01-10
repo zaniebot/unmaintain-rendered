@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-07-25T07:56:52Z
 updated_at: 2023-07-25T10:59:09Z
 url: https://github.com/astral-sh/ruff/issues/6056
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # PERF401 (use-list-comprehension) with walrus operator
@@ -71,13 +71,5 @@ _Closed by @fabien-michel on 2023-07-25 10:47_
 _Comment by @tjkuson on 2023-07-25 10:56_
 
 No need to apologise! Many Python developers don't like the walrus operator, so I think the issue is entirely reasonable. Personally, I like them. However, there's probably a compelling reason to implement something like [flake8-walrus](https://github.com/asottile/flake8-walrus) in a hypothetical Ruff category that prevents the use of language and library features (similar to `clippy::restriction`).
-
----
-
-_Referenced in [astral-sh/ruff#7418](../../astral-sh/ruff/issues/7418.md) on 2024-10-03 23:06_
-
----
-
-_Referenced in [astral-sh/ruff#13621](../../astral-sh/ruff/issues/13621.md) on 2024-10-03 23:13_
 
 ---

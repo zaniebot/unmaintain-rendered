@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-11T21:20:58Z
 updated_at: 2025-02-11T21:51:33Z
 url: https://github.com/astral-sh/ruff/issues/16105
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Ruff parenthesizing multiple context managers despite `requires-python = ">=3.8"`
@@ -150,9 +150,5 @@ _Label `cli` added by @MichaReiser on 2025-02-11 21:49_
 ---
 
 _Closed by @MichaReiser on 2025-02-11 21:51_
-
----
-
-_Referenced in [astral-sh/ruff#16180](../../astral-sh/ruff/issues/16180.md) on 2025-02-16 10:28_
 
 ---

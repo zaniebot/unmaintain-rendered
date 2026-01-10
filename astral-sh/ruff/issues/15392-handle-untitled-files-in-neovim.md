@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-10T08:20:20Z
 updated_at: 2025-02-21T09:18:23Z
 url: https://github.com/astral-sh/ruff/issues/15392
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Handle "untitled" files in Neovim
@@ -226,13 +226,5 @@ ruff failed
 Cause: failed to convert workspace URL to file path
 ```
 
-
----
-
-_Referenced in [astral-sh/ruff#9918](../../astral-sh/ruff/issues/9918.md) on 2025-02-24 21:14_
-
----
-
-_Referenced in [astral-sh/ruff#19264](../../astral-sh/ruff/pulls/19264.md) on 2025-07-16 12:13_
 
 ---

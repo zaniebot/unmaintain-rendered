@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-25T09:23:37Z
 updated_at: 2024-07-04T16:39:06Z
 url: https://github.com/astral-sh/ruff/issues/8206
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Disable some rule in `format`
@@ -118,13 +118,5 @@ You're welcome
 _Comment by @avylove on 2024-07-04 16:39_
 
 I finally went to try ruff today (it's been on my list for a while). But the formatter is  a non-starter without configurable rules. I understand that some are tied to each other and more difficult to implement, but others should be easier to ignore. In my case, removing the `u` prefix for unicode strings breaks backwards compatibility. There are other things I find annoying and might want to disable, but this is a functional change.
-
----
-
-_Referenced in [astral-sh/ruff#14948](../../astral-sh/ruff/issues/14948.md) on 2024-12-13 07:36_
-
----
-
-_Referenced in [astral-sh/ruff#15024](../../astral-sh/ruff/issues/15024.md) on 2024-12-17 04:33_
 
 ---

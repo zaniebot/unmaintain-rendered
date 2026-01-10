@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-23T23:23:00Z
 updated_at: 2023-09-29T02:55:41Z
 url: https://github.com/astral-sh/ruff/issues/6831
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # [Linter panic] failing to parse odd f-string `f"{x, y=}"`
@@ -115,14 +115,6 @@ how far away is the new parser? are we ok to just wait? if not maybe we can try 
 _Comment by @dhruvmanila on 2023-09-02 03:53_
 
 Hey, sorry for not replying soon, I somehow missed this in the notifications. You can track the parser progress at https://github.com/astral-sh/ruff/pull/7041 and that fixes this issue. I think we're ok to wait as otherwise the fix would become redundant.
-
----
-
-_Referenced in [astral-sh/ruff#7041](../../astral-sh/ruff/pulls/7041.md) on 2023-09-02 03:53_
-
----
-
-_Referenced in [astral-sh/ruff#7049](../../astral-sh/ruff/issues/7049.md) on 2023-09-02 03:55_
 
 ---
 

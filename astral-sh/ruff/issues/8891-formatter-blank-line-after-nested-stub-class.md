@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-11-29T01:27:12Z
 updated_at: 2024-01-30T18:39:40Z
 url: https://github.com/astral-sh/ruff/issues/8891
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Formatter: `blank_line_after_nested_stub_class` preview style
@@ -47,10 +47,6 @@ See added new lines after the nested classes (that don't have a dummy body)
 
 ---
 
-_Referenced in [astral-sh/ruff#8678](../../astral-sh/ruff/issues/8678.md) on 2023-11-29 01:27_
-
----
-
 _Renamed from "`blank_line_after_nested_stub_class`: only applies to stub files (`.pyi`)" to "Formatter: `blank_line_after_nested_stub_class` preview style" by @MichaReiser on 2023-11-29 01:28_
 
 ---
@@ -72,10 +68,6 @@ _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-11-29 01:30_
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2023-12-15 19:46_
-
----
-
-_Referenced in [astral-sh/ruff#9155](../../astral-sh/ruff/pulls/9155.md) on 2023-12-16 01:04_
 
 ---
 

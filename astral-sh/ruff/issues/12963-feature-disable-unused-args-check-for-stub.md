@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-18T13:33:50Z
 updated_at: 2024-08-18T23:21:34Z
 url: https://github.com/astral-sh/ruff/issues/12963
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Feature: Disable unused args check for stub functions
@@ -103,18 +103,10 @@ For some reason we already do this for all of the `ARG` rules except `ARG001`.
 
 ---
 
-_Referenced in [astral-sh/ruff#12966](../../astral-sh/ruff/pulls/12966.md) on 2024-08-18 22:55_
-
----
-
 _Closed by @charliermarsh on 2024-08-18 23:21_
 
 ---
 
 _Closed by @charliermarsh on 2024-08-18 23:21_
-
----
-
-_Referenced in [canonical/craft-store#205](../../canonical/craft-store/pulls/205.md) on 2024-09-09 18:46_
 
 ---

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-05-21T00:14:45Z
 updated_at: 2024-05-21T21:01:15Z
 url: https://github.com/astral-sh/ruff/issues/11480
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # docstring-code-format incorrectly formats semicolons+expressions
@@ -101,13 +101,5 @@ _Renamed from "docstring-code-format fails with semicolons+expressions" to "docs
 _Comment by @charliermarsh on 2024-05-21 21:00_
 
 Thanks for the follow-up. The request makes sense to me.
-
----
-
-_Referenced in [astral-sh/ruff#13371](../../astral-sh/ruff/issues/13371.md) on 2024-09-16 16:19_
-
----
-
-_Referenced in [astral-sh/ruff#20482](../../astral-sh/ruff/issues/20482.md) on 2025-09-19 13:37_
 
 ---

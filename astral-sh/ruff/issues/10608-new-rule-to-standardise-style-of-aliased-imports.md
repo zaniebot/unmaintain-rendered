@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-26T10:12:56Z
 updated_at: 2024-03-26T10:21:29Z
 url: https://github.com/astral-sh/ruff/issues/10608
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # New rule to standardise style of aliased imports
@@ -43,9 +43,5 @@ FWIW, this is also quite close to [`PLR0402`](https://docs.astral.sh/ruff/rules/
 ---
 
 _Label `rule` added by @AlexWaygood on 2024-03-26 10:21_
-
----
-
-_Referenced in [astral-sh/ruff#10599](../../astral-sh/ruff/issues/10599.md) on 2024-03-26 10:23_
 
 ---

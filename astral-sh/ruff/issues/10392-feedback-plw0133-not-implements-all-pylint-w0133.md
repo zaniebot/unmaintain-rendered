@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-03-13T17:58:33Z
 updated_at: 2024-03-13T19:26:12Z
 url: https://github.com/astral-sh/ruff/issues/10392
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # [Feedback] `PLW0133` not implements all pylint `W0133` detections
@@ -182,10 +182,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-13 18:55_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-03-13 18:55_
-
----
-
-_Referenced in [astral-sh/ruff#10394](../../astral-sh/ruff/pulls/10394.md) on 2024-03-13 19:12_
 
 ---
 

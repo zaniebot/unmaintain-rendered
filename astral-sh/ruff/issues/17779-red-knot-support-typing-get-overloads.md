@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-01T19:36:14Z
 updated_at: 2025-05-01T20:39:40Z
 url: https://github.com/astral-sh/ruff/issues/17779
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] Support `typing.get_overloads`
@@ -20,10 +20,6 @@ synced_at: 2026-01-10T01:56:56Z
 _Issue opened by @dhruvmanila on 2025-05-01 19:36_
 
 Documentation: https://docs.python.org/3/library/typing.html#typing.get_overloads
-
----
-
-_Referenced in [astral-sh/ruff#15383](../../astral-sh/ruff/issues/15383.md) on 2025-05-01 19:36_
 
 ---
 

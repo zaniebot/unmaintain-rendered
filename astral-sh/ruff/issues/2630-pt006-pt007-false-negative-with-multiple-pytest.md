@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-07T17:08:43Z
 updated_at: 2023-04-12T16:46:21Z
 url: https://github.com/astral-sh/ruff/issues/2630
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # `PT006` & `PT007`: False negative with multiple `@pytest.mark.parametrize()` decorators
@@ -63,10 +63,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-02-08 15:47_
 ---
 
 _Label `bug` added by @charliermarsh on 2023-02-08 15:47_
-
----
-
-_Referenced in [astral-sh/ruff#2662](../../astral-sh/ruff/pulls/2662.md) on 2023-02-08 16:07_
 
 ---
 

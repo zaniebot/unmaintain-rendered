@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-27T14:31:25Z
 updated_at: 2025-09-30T21:11:36Z
 url: https://github.com/astral-sh/ruff/issues/20601
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # [Infinite loop] I002 and UP029
@@ -59,10 +59,6 @@ I will take this one
 ---
 
 _Assigned to @IDrokin117 by @ntBre on 2025-09-27 19:36_
-
----
-
-_Referenced in [astral-sh/ruff#20634](../../astral-sh/ruff/pulls/20634.md) on 2025-09-29 17:48_
 
 ---
 

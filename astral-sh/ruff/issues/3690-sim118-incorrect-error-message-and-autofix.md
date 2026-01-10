@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-03-23T18:29:51Z
 updated_at: 2023-03-23T21:15:10Z
 url: https://github.com/astral-sh/ruff/issues/3690
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # SIM118 Incorrect error message and autofix
@@ -75,10 +75,6 @@ Oh yeah, definitely. Thanks for filing.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-03-23 18:46_
-
----
-
-_Referenced in [astral-sh/ruff#3695](../../astral-sh/ruff/pulls/3695.md) on 2023-03-23 20:49_
 
 ---
 

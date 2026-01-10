@@ -1,0 +1,120 @@
+```yaml
+number: 9353
+title: "Ruff format insist on \"single line after imports\" for pyi files"
+type: issue
+state: closed
+author: kkpattern
+labels:
+  - configuration
+assignees: []
+created_at: 2024-01-02T07:49:10Z
+updated_at: 2024-02-28T16:36:53Z
+url: https://github.com/astral-sh/ruff/issues/9353
+synced_at: 2026-01-10T11:09:51Z
+```
+
+# Ruff format insist on "single line after imports" for pyi files
+
+---
+
+_Issue opened by @kkpattern on 2024-01-02 07:49_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+When formatting a pyi file, `ruff format` only keeps a single line after the imports. If `ruff.lint.isort.lines-after-imports` is configured to `2`. `ruff format` will conflict with `ruff check`.
+
+This doesn't happen to py files. `ruff format` will keep the two lines after the imports.
+
+Example:
+
+```bash
+(.venv) ☁  ruff-demo  cat test.py
+from typing import Any
+
+
+class Foo:
+    def bar(self, data: Any) -> None:
+        pass
+(.venv) ☁  ruff-demo  ruff format --check test.py
+1 file already formatted
+
+
+(.venv) ☁  ruff-demo  cat test.pyi
+from typing import Any
+
+
+class Foo:
+    def bar(self, data: Any) -> None: ...
+(.venv) ☁  ruff-demo  ruff format --check test.pyi
+Would reformat: test.pyi
+1 file would be reformatted
+(.venv) ☁  ruff-demo
+```
+
+Ruff Version: 0.1.9
+Ruff Command: `ruff format`
+
+---
+
+_Comment by @charliermarsh on 2024-01-02 16:50_
+
+This feels like it's "working as intended" even though the option is conflicting. If anything, we may want to warn here, as we do for other incompatible options (`2` is a permitted value, but I don't think we considered that it would conflict for `.pyi` files). The alternative would be to ignore `lines-after-imports` in `.pyi` files.
+
+---
+
+_Label `configuration` added by @charliermarsh on 2024-01-02 16:50_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2024-01-02 16:50_
+
+---
+
+_Comment by @kkpattern on 2024-01-03 01:39_
+
+Ignore `lines-after-imports` in .pyi files would be nice. Currently, we're using both `ruff check` and `ruff format --check` in our CI pipeline. We do want two lines after the imports in py files. So, in order to make the CI green, we need to skip `ruff check` for all the pyi files for now.
+
+---
+
+_Added to milestone `Formatter: Stable` by @MichaReiser on 2024-01-08 07:16_
+
+---
+
+_Comment by @MichaReiser on 2024-01-08 07:21_
+
+Thank you for reporting this issue. That's something I haven't been aware when adding the warnings. 
+
+Warning when setting `lines-after-imports` to a value other than 1 might be noisy, except if we limit it only to warn when formatting a pyi file (which would be different from the other incompatible warnings). It would also not enable the use case mentioned by @kkpattern. 
+
+I think I would start by ignoring `lines-after-imports` in `pyi` files. But we may need to do run a GitHub code search first to find projects that use `lines-after-imports` with a value other than 1 and have `pyi` files to not break their setup. 
+
+---
+
+_Comment by @MichaReiser on 2024-02-13 07:48_
+
+`isort` fixes `lines-after-imports` and `lines-before-imports` to 1 when using the `black` profile
+
+https://github.com/PyCQA/isort/blob/eed5d059a8ea5442266be892322f8815074800a5/isort/output.py#L211-L225
+
+---
+
+_Label `needs-decision` removed by @MichaReiser on 2024-02-13 11:37_
+
+---
+
+_Assigned to @MichaReiser by @MichaReiser on 2024-02-13 11:37_
+
+---
+
+_Closed by @MichaReiser on 2024-02-28 16:36_
+
+---

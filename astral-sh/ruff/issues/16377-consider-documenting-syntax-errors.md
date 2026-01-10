@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-25T17:28:01Z
 updated_at: 2025-02-25T17:35:31Z
 url: https://github.com/astral-sh/ruff/issues/16377
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Consider documenting syntax errors
@@ -31,10 +31,6 @@ Some errors that we may want to provide per-error docs for are errors that only 
 
 _Originally posted by @AlexWaygood in https://github.com/astral-sh/ruff/pull/16090#discussion_r1969810589_
             
-
----
-
-_Referenced in [astral-sh/ruff#16090](../../astral-sh/ruff/pulls/16090.md) on 2025-02-25 17:29_
 
 ---
 

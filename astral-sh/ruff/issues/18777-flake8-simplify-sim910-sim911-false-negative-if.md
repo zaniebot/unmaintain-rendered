@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-19T01:04:57Z
 updated_at: 2025-06-20T17:25:37Z
 url: https://github.com/astral-sh/ruff/issues/18777
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [flake8-simplify] SIM910/SIM911 false negative if variable is named dict
@@ -58,18 +58,10 @@ I'm working on this one
 
 ---
 
-_Referenced in [astral-sh/ruff#18794](../../astral-sh/ruff/pulls/18794.md) on 2025-06-19 14:38_
-
----
-
 _Assigned to @LaBatata101 by @ntBre on 2025-06-20 13:14_
 
 ---
 
 _Closed by @ntBre on 2025-06-20 17:25_
-
----
-
-_Referenced in [astral-sh/ruff#18855](../../astral-sh/ruff/issues/18855.md) on 2025-06-21 20:35_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-06-12T20:42:09Z
 updated_at: 2024-06-27T13:51:33Z
 url: https://github.com/astral-sh/ruff/issues/5037
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Detect variable shadowing / redefinition
@@ -58,9 +58,5 @@ _Label `needs-decision` added by @charliermarsh on 2023-07-10 01:11_
 ---
 
 _Label `question` removed by @charliermarsh on 2023-07-10 01:11_
-
----
-
-_Referenced in [element-hq/synapse#17187](../../element-hq/synapse/pulls/17187.md) on 2024-05-23 19:55_
 
 ---

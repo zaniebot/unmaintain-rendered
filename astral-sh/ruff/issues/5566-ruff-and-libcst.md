@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-06T16:34:14Z
 updated_at: 2023-08-31T19:07:41Z
 url: https://github.com/astral-sh/ruff/issues/5566
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # `ruff` and `libcst`
@@ -199,9 +199,5 @@ Above was executed on system with access to public network.
 _Comment by @zanieb on 2023-08-31 19:07_
 
 Hm. Sorry, it runs fine on my machine so unfortunately I cannot provide more guidance. The message sure makes it look like a networking issue though.
-
----
-
-_Referenced in [pydantic/pydantic#8099](../../pydantic/pydantic/issues/8099.md) on 2023-11-14 20:52_
 
 ---

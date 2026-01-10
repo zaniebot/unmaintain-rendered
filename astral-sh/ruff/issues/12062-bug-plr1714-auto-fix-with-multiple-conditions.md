@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-27T04:28:33Z
 updated_at: 2024-07-17T15:49:28Z
 url: https://github.com/astral-sh/ruff/issues/12062
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Bug: PLR1714 auto-fix with multiple conditions
@@ -78,10 +78,6 @@ Thanks, we'll fix!
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-17 14:34_
-
----
-
-_Referenced in [astral-sh/ruff#12368](../../astral-sh/ruff/pulls/12368.md) on 2024-07-17 15:19_
 
 ---
 

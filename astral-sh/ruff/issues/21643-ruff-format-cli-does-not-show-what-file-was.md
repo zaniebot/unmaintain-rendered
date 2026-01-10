@@ -1,0 +1,35 @@
+```yaml
+number: 21643
+title: ruff format cli does not show what file was changed.
+type: issue
+state: closed
+author: toppk
+labels: []
+assignees: []
+created_at: 2025-11-26T15:19:00Z
+updated_at: 2025-11-27T07:28:06Z
+url: https://github.com/astral-sh/ruff/issues/21643
+synced_at: 2026-01-10T11:10:00Z
+```
+
+# ruff format cli does not show what file was changed.
+
+---
+
+_Issue opened by @toppk on 2025-11-26 15:19_
+
+### Summary
+
+This is a frequently annoy bug for my pre-commit, that running ruff format will not tell you what file was actually updated, even with '-v'.    My issue happened when I accidentally staged a file that needed work, but didn't see any file that I wanted to commit in "changes".   
+
+See also, https://github.com/astral-sh/ruff-pre-commit/issues/145  which I suspect will need to add "-v" default args or some such once ruff format has a capability /option to show what files it modified.
+
+### Version
+
+_No response_
+
+---
+
+_Closed by @MichaReiser on 2025-11-27 07:28_
+
+---

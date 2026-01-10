@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-19T19:36:40Z
 updated_at: 2023-03-24T21:20:15Z
 url: https://github.com/astral-sh/ruff/issues/3612
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # pre-commit is not ran in ci, resulting in possible commits that don't pass pre-commit
@@ -67,17 +67,9 @@ I would like to implement this, as said in the original issue text 🙂
 
 ---
 
-_Referenced in [astral-sh/ruff#3615](../../astral-sh/ruff/pulls/3615.md) on 2023-03-19 20:48_
-
----
-
 _Comment by @JonathanPlasse on 2023-03-19 20:49_
 
 Sorry, go ahead.
-
----
-
-_Referenced in [astral-sh/ruff#3707](../../astral-sh/ruff/pulls/3707.md) on 2023-03-24 02:01_
 
 ---
 

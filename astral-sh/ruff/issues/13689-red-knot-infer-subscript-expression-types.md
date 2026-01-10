@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-09T09:08:13Z
 updated_at: 2024-10-29T11:14:43Z
 url: https://github.com/astral-sh/ruff/issues/13689
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] Infer subscript expression types
@@ -25,10 +25,6 @@ Limited support for inferring subscript expressions, e.g when the value is a tup
 def test(a: str):
 	c = a[0]
 ```
-
----
-
-_Referenced in [astral-sh/ty#244](../../astral-sh/ty/issues/244.md) on 2024-10-09 09:08_
 
 ---
 
@@ -72,19 +68,11 @@ We could probably also add special handling for subscript expressions where Byte
 
 ---
 
-_Referenced in [astral-sh/ruff#13853](../../astral-sh/ruff/issues/13853.md) on 2024-10-21 10:16_
-
----
-
 _Unassigned @MichaReiser by @sharkdp on 2024-10-21 10:47_
 
 ---
 
 _Assigned to @sharkdp by @sharkdp on 2024-10-21 10:47_
-
----
-
-_Referenced in [astral-sh/ruff#13901](../../astral-sh/ruff/pulls/13901.md) on 2024-10-24 07:38_
 
 ---
 

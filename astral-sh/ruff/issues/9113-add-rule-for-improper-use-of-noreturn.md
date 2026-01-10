@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-12-13T11:59:28Z
 updated_at: 2024-04-03T14:04:31Z
 url: https://github.com/astral-sh/ruff/issues/9113
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Add rule for improper use of `NoReturn` 
@@ -86,10 +86,6 @@ _Label `accepted` added by @charliermarsh on 2023-12-20 17:42_
 _Comment by @charliermarsh on 2023-12-20 17:52_
 
 Will add.
-
----
-
-_Referenced in [astral-sh/ruff#9217](../../astral-sh/ruff/pulls/9217.md) on 2023-12-20 18:35_
 
 ---
 

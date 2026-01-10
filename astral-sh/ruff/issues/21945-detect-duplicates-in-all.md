@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-12T13:05:57Z
 updated_at: 2025-12-16T16:24:20Z
 url: https://github.com/astral-sh/ruff/issues/21945
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # Detect duplicates in `__all__`
@@ -94,9 +94,5 @@ _Comment by @leandrobbraga on 2025-12-16 16:14_
 Thank you for your input, @ntBre, it was really helpful.
 
 I wasn't aware of [fix safety docs](https://docs.astral.sh/ruff/linter/#fix-safety) nor the comment in the range pattern.
-
----
-
-_Referenced in [astral-sh/ruff#22114](../../astral-sh/ruff/pulls/22114.md) on 2025-12-20 15:36_
 
 ---

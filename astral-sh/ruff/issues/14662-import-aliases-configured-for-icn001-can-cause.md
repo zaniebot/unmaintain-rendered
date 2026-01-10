@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-28T19:26:14Z
 updated_at: 2024-12-03T04:41:48Z
 url: https://github.com/astral-sh/ruff/issues/14662
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Import aliases configured for ICN001 can cause syntax errors
@@ -98,10 +98,6 @@ _Label `configuration` added by @AlexWaygood on 2024-11-28 20:36_
 ---
 
 _Assigned to @dylwil3 by @dylwil3 on 2024-11-28 22:35_
-
----
-
-_Referenced in [astral-sh/ruff#14745](../../astral-sh/ruff/pulls/14745.md) on 2024-12-03 00:08_
 
 ---
 

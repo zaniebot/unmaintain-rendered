@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-04T09:35:34Z
 updated_at: 2023-08-05T19:45:51Z
 url: https://github.com/astral-sh/ruff/issues/6335
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # No Python files found under the given path(s)
@@ -288,14 +288,6 @@ So I'm guessing that this behavior in Ruff stems from us setting `require_git(fa
 _Comment by @BurntSushi on 2023-08-05 19:21_
 
 Yeah it sounds like expected behavior to me. Note that ripgrep exposes the `require_git` option as a `--no-require-git` flag. Some people really want ripgrep to not care about `.git` and some do. IIRC, ripgrep originally didn't care, but the VS Code folks convinced me to switch over to caring about whether to respect `.gitignore` based on whether `.git` was there or not. (I may be mis-remembering, this was a while ago.)
-
----
-
-_Referenced in [astral-sh/ruff#6368](../../astral-sh/ruff/pulls/6368.md) on 2023-08-05 19:35_
-
----
-
-_Referenced in [astral-sh/ruff#5930](../../astral-sh/ruff/issues/5930.md) on 2023-08-05 19:38_
 
 ---
 

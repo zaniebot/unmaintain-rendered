@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-30T08:46:40Z
 updated_at: 2023-08-02T21:32:04Z
 url: https://github.com/astral-sh/ruff/issues/6176
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # [rule proposal] prevent `all` on a len-1 iterable
@@ -39,10 +39,6 @@ I'd suggest it to flake8-simplify for reusing the error code, but their repo see
 If you have a suggestion for another Python-based linter, I can implement & contribute it there. 
 
 P.S. same goes for `any`
-
----
-
-_Referenced in [astral-sh/ruff#6270](../../astral-sh/ruff/issues/6270.md) on 2023-08-02 11:22_
 
 ---
 

@@ -1,0 +1,136 @@
+```yaml
+number: 6617
+title: "`FA100` and `UP006` are technically incorrect and recommend code that can crash"
+type: issue
+state: closed
+author: pfaion
+labels: []
+assignees: []
+created_at: 2023-08-16T14:21:35Z
+updated_at: 2023-08-16T16:01:09Z
+url: https://github.com/astral-sh/ruff/issues/6617
+synced_at: 2026-01-10T11:09:48Z
+```
+
+# `FA100` and `UP006` are technically incorrect and recommend code that can crash
+
+---
+
+_Issue opened by @pfaion on 2023-08-16 14:21_
+
+Hi everyone,
+
+(adding @TylerYep who added `FA100` to ruff, not sure who would be responsible for `UP006`)
+thanks for everyone's efforts in creating and maintaining ruff!
+
+While trying to enable all ruff rules, I came across an issue with rule [`FA100`](https://beta.ruff.rs/docs/rules/future-rewritable-type-annotation/). I wasn't sure if I should report this in the [repo for the corresponding flake8 plugin](https://github.com/tyleryep/flake8-future-annotations) or here. But since I don't use flake8, but only ruff, I decided to create the issue here.
+
+The [rule](https://beta.ruff.rs/docs/rules/future-rewritable-type-annotation/) states:
+> PEP 563 enabled the use of a number of convenient type annotations, such as `list[str]` instead of `List[str]`, or `str | None` instead of `Optional[str]`. However, these annotations are only available on Python 3.9 and higher, unless the `from __future__ import annotations` import is present.
+
+However, this is technically not correct. [PEP 563](https://peps.python.org/pep-0563/) only causes postponed evaluation of type annotations. It does **not** allow using generic types on standard collections (e.g. `list[str]`), which is covered by [PEP 585](https://peps.python.org/pep-0585/). Enabling the postponed evaluation of type annotations only means that the **errors** of using generic types on standard collections will actually not be raised until you evaluate the type. I admit this is a bit confusing. I have just recently asked about this on the CPython repository: https://github.com/python/cpython/issues/107530
+
+So using `from __future__ import annotations` will just suppress the errors of using those incorrect types as long as you don't evaluate them. I just run into an issue with [Pydantic](https://docs.pydantic.dev/), which _will_ evaluate the type annotations to generate appropriate field validators. So the following code evaluates fine on Python 3.8:
+
+```python
+from typing import List
+from pydantic import BaseModel
+
+class Foo(BaseModel):
+    data: List[str]
+```
+
+But ruff will show me a warning for FA100:
+> Missing `from __future__ import annotations`, but uses `typing.List` (FA100)
+
+However, if I follow this suggestion I will end up with:
+
+```python
+from __future__ import annotations
+from pydantic import BaseModel
+
+class Foo(BaseModel):
+    data: list[str]
+```
+
+Where `list[str]` is technically not a valid type annotation in Python 3.8, but the future import will suppress this issue by not immediately evaluating the type annotation. But when I execute this code in Python 3.8, it will throw an error, because Pydantic _will evaluate_ the annotation (rightfully so):
+> TypeError: 'type' object is not subscriptable
+
+I think there's a corresponding issue with [UP006](https://beta.ruff.rs/docs/rules/non-pep585-annotation/), which will flag the following code:
+```python
+from __future__ import annotations
+from typing import List
+from pydantic import BaseModel
+
+class Foo(BaseModel):
+    data: List[str]
+```
+
+and recommends to replace `List` with `list`. But this will similarly create invalid code that will throw an error at runtime.
+
+---
+
+_Comment by @charliermarsh on 2023-08-16 14:25_
+
+If you're using a library that relies on evaluating types at runtime, I'd strongly recommend setting [`keep-runtime-typing`](https://beta.ruff.rs/docs/settings/#pyupgrade-keep-runtime-typing), which should avoid all of these issues.
+
+---
+
+_Comment by @pfaion on 2023-08-16 14:33_
+
+💡 Thanks, I wasn't aware of this setting!
+
+I see that this is filed as a "pyupgrade" setting... should this maybe be a top-level setting, as it seems to affect non-pyupgrade-related rules (e.g. `FA100`) as well?
+
+---
+
+_Comment by @pfaion on 2023-08-16 14:37_
+
+This might be a question of preference, but to me it sounds like this should be the default behavior? I still think that these rules recommend invalid code, even if the resulting error is suppressed.
+
+---
+
+_Comment by @charliermarsh on 2023-08-16 14:50_
+
+It's definitely a reasonable opinion but I likely won't change the default for now. I left it as non-default to match pyupgrade. There are a few discussions to that effect in the pyupgrade repo (for example, https://github.com/asottile/pyupgrade/issues/587). The gist of it is that code relying on type annotations at runtime is less common than code that does not. You could imagine that making this default would _also_ be confusing to some users ("I have `__future__` annotations enabled, why isn't Ruff updating my code?").
+
+Personally, I'd probably recommend against using `from __future__ import annotations` if you're writing code that relies on the runtime evaluation of type annotations.
+
+
+---
+
+_Comment by @pfaion on 2023-08-16 15:02_
+
+I understand that there are many discussions in the Python community about `from __future__ import annotations` and the recent decisions to not make that a default behavior in Python 3.11 (see the [footnote](https://docs.python.org/3/library/__future__.html#id1) on the official docs). So I understand that you might not want to touch this right now and wait on more community consensus first.
+
+Still, `FA100` is at least not technically correct, as PEP 563 does **not** enable using `list[str]`. The intended use of PEP 563 is self-referential or otherwise cyclic types, which _require_ postponed evaluation. I think using PEP 563 to "enable" generic types on standard containers is a mis-use of that feature that shouldn't be promoted, as it will further increase the confusion across the community about this feature. And I am counting myself in there.
+
+But that's my last attempt at convincing you, in the end it is your call! As long as I can disable this for my project (with `keep-runtime-typing`), I am fine 🙂 
+
+---
+
+_Comment by @zanieb on 2023-08-16 15:14_
+
+PEP 563 enables using `list[str]` for use with static type checking tools like `mypy` and `pyright`, correct?
+
+---
+
+_Comment by @pfaion on 2023-08-16 15:27_
+
+Mypy allows `list[str]` when using the future import. There were also some voiced raised about this actually not being standard conforming in https://github.com/python/mypy/issues/7907, but that discussion was shut down quickly. There seems to be a disconnect between the community and the standard about this feature. FWIW the folks from CPython specifically told me that PEP 563 does _not_ enable `list[str]`. So I guess starting to push for standard conformity here is not something that I should do, I'll just add this to my list of weird quirks of Python 🤷 
+
+---
+
+_Comment by @zanieb on 2023-08-16 16:01_
+
+I appreciate all the additional context you've provided! It'll be helpful guiding our decisions in this area in the future.
+
+For now, it looks like there is consensus in tooling that using generics with standard container types is desirable to support in older Python versions and changing our defaults would be a breaking change that would be hard for our typical user to understand.
+
+Let us know if you run into any troubles with [`keep-runtime-typing`](https://beta.ruff.rs/docs/settings/#pyupgrade-keep-runtime-typing).
+
+---
+
+_Closed by @zanieb on 2023-08-16 16:01_
+
+---

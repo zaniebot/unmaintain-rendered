@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-26T08:08:04Z
 updated_at: 2024-01-16T02:48:42Z
 url: https://github.com/astral-sh/ruff/issues/9282
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # explicit-preview-rules does not work for fixes
@@ -63,15 +63,7 @@ _Label `bug` added by @zanieb on 2023-12-26 17:59_
 
 ---
 
-_Referenced in [astral-sh/ruff#9284](../../astral-sh/ruff/pulls/9284.md) on 2023-12-26 18:44_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-15 20:11_
-
----
-
-_Referenced in [astral-sh/ruff#9538](../../astral-sh/ruff/pulls/9538.md) on 2024-01-15 20:15_
 
 ---
 

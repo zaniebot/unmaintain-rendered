@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-01T00:03:14Z
 updated_at: 2025-02-05T08:44:27Z
 url: https://github.com/astral-sh/ruff/issues/15863
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # `UP015`'s range and message are slightly incorrect
@@ -55,10 +55,6 @@ Changing the diagnostic range is, very unfortunately, a breaking change and thus
 ---
 
 _Label `diagnostics` added by @dhruvmanila on 2025-02-01 05:32_
-
----
-
-_Referenced in [astral-sh/ruff#15872](../../astral-sh/ruff/pulls/15872.md) on 2025-02-01 15:30_
 
 ---
 

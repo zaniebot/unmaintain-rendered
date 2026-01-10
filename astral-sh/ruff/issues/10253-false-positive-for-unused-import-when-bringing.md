@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-06T19:12:42Z
 updated_at: 2025-02-23T08:08:47Z
 url: https://github.com/astral-sh/ruff/issues/10253
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # False positive for unused import when bringing things forward in __init__.py
@@ -51,10 +51,6 @@ from .login import LoginForm
 
 __all__ = ("LoginForm",)
 ```
-
----
-
-_Referenced in [wainuiomata/sambal#20](../../wainuiomata/sambal/issues/20.md) on 2024-03-06 19:19_
 
 ---
 
@@ -167,10 +163,6 @@ _Label `rule` added by @MichaReiser on 2024-03-07 08:06_
 ---
 
 _Label `multifile-analysis` added by @MichaReiser on 2024-03-07 08:06_
-
----
-
-_Referenced in [hypothesis/lms#6248](../../hypothesis/lms/pulls/6248.md) on 2024-05-03 10:18_
 
 ---
 

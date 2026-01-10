@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-10T16:06:33Z
 updated_at: 2023-03-13T03:03:39Z
 url: https://github.com/astral-sh/ruff/issues/3443
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Use `CI_PROJECT_DIR`-relative paths for GitLab annotations
@@ -41,10 +41,6 @@ I'd say there are two options:
 _Comment by @charliermarsh on 2023-03-10 16:32_
 
 I guess my initial reaction is that we should try to make relative to `CI_PROJECT_DIR`, then fallback to cwd-relative if it's not defined.
-
----
-
-_Referenced in [astral-sh/ruff#3475](../../astral-sh/ruff/pulls/3475.md) on 2023-03-13 02:55_
 
 ---
 

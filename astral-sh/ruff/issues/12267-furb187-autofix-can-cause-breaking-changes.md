@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-10T06:04:54Z
 updated_at: 2024-07-13T19:45:36Z
 url: https://github.com/astral-sh/ruff/issues/12267
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # FURB187 autofix can cause breaking changes 
@@ -66,10 +66,6 @@ _Label `fixes` added by @MichaReiser on 2024-07-10 07:08_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-12 12:51_
-
----
-
-_Referenced in [astral-sh/ruff#12303](../../astral-sh/ruff/pulls/12303.md) on 2024-07-12 13:13_
 
 ---
 

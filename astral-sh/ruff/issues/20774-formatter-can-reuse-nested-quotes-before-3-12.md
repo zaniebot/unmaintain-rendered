@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-08T19:26:06Z
 updated_at: 2025-10-17T12:49:17Z
 url: https://github.com/astral-sh/ruff/issues/20774
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Formatter can reuse nested quotes before 3.12
@@ -57,18 +57,6 @@ _Label `formatter` added by @ntBre on 2025-10-08 19:26_
 _Comment by @MichaReiser on 2025-10-08 20:41_
 
 Could we list the syntax errors at the end of the test snapshot? We could even use diagnostics to render them nicely 
-
----
-
-_Referenced in [astral-sh/ruff#20777](../../astral-sh/ruff/pulls/20777.md) on 2025-10-08 22:00_
-
----
-
-_Referenced in [astral-sh/ruff#20794](../../astral-sh/ruff/pulls/20794.md) on 2025-10-09 21:54_
-
----
-
-_Referenced in [astral-sh/ruff#20930](../../astral-sh/ruff/pulls/20930.md) on 2025-10-16 20:33_
 
 ---
 

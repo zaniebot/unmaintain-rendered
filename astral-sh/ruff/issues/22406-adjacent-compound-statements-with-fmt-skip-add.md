@@ -11,7 +11,7 @@ assignees: []
 created_at: 2026-01-05T18:41:27Z
 updated_at: 2026-01-06T15:09:57Z
 url: https://github.com/astral-sh/ruff/issues/22406
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # Adjacent compound statements with `fmt: skip` add extraneous empty lines
@@ -56,14 +56,6 @@ _Label `bug` added by @dylwil3 on 2026-01-05 18:41_
 ---
 
 _Label `formatter` added by @dylwil3 on 2026-01-05 18:41_
-
----
-
-_Referenced in [astral-sh/ruff#22405](../../astral-sh/ruff/pulls/22405.md) on 2026-01-05 18:41_
-
----
-
-_Referenced in [astral-sh/ruff#22119](../../astral-sh/ruff/pulls/22119.md) on 2026-01-05 22:03_
 
 ---
 

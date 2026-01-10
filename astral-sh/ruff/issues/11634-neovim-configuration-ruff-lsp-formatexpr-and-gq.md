@@ -1,0 +1,125 @@
+```yaml
+number: 11634
+title: "Neovim configuration: Ruff LSP, formatexpr and gq command"
+type: issue
+state: closed
+author: gzagatti
+labels:
+  - question
+assignees: []
+created_at: 2024-05-31T11:04:17Z
+updated_at: 2024-05-31T14:53:13Z
+url: https://github.com/astral-sh/ruff/issues/11634
+synced_at: 2026-01-10T11:09:53Z
+```
+
+# Neovim configuration: Ruff LSP, formatexpr and gq command
+
+---
+
+_Issue opened by @gzagatti on 2024-05-31 11:04_
+
+I am tring to use Ruff in Neovim via LSP, but I have been having trouble with `formatexpr`. Once ruff LSP is started, I can't reformat a long line by pressing `gq`.
+
+For some context, I have installed ruff with [Mason](https://github.com/williamboman/mason.nvim), and the LSP config with [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig). I have also followed [the guide in the ruff documentation](https://github.com/astral-sh/ruff/blob/main/crates/ruff_server/docs/setup/NEOVIM.md).
+
+I have tried different things to fix this issue. First, I tried to modify the server capabilities on attach:
+
+```lua
+ client.server_capabilities.documentFormattingProvider = false
+ client.server_capabilities.documentRangeFormattingProvider = false
+```
+
+Second, I tried to modify the settings capabilities which is passed to the setup
+
+```lua
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.formatting = { dynamicRegistration = false }
+capabilities.textDocument.rangeFormatting = { dynamicRegistration = false }
+```
+
+I also found additional references related with this problem on [`none-ls` documentation](https://github.com/nvimtools/none-ls.nvim/wiki/Avoiding-LSP-formatting-conflicts).
+
+I suspect the problem is related with `ruff` LSP client. I tested a similar setup with `pyright`, and `gq` formats lines without any issues. I would appreciate any help in locating and fixin this bug.
+
+---
+
+_Comment by @dhruvmanila on 2024-05-31 11:19_
+
+Interesting, let me try this out myself and come back.
+
+---
+
+_Comment by @dhruvmanila on 2024-05-31 11:30_
+
+> I can't reformat a long line by pressing `gq`.
+
+I'm assuming by "reformat a long line", you mean that the editor is reformatting it to satisfy the `textwidth` value.
+
+So, the value of `formatexpr` is by default set by Neovim (https://github.com/neovim/neovim/blob/7e44ab696a0488ad234b0915a8cf804fd6d79156/runtime/lua/vim/lsp.lua#L347-L353) to use the language server.
+
+As per https://neovim.io/doc/user/lsp.html#lsp-quickstart:
+
+> ['formatexpr'](https://neovim.io/doc/user/options.html#'formatexpr') is set to [vim.lsp.formatexpr()](https://neovim.io/doc/user/lsp.html#vim.lsp.formatexpr()), so you can format lines via [gq](https://neovim.io/doc/user/change.html#gq) if the language server supports it.
+> To opt out of this use [gw](https://neovim.io/doc/user/change.html#gw) instead of gq, or clear ['formatexpr'](https://neovim.io/doc/user/options.html#'formatexpr') on [LspAttach](https://neovim.io/doc/user/lsp.html#LspAttach).
+
+Can you try doing this?
+
+---
+
+_Label `question` added by @dhruvmanila on 2024-05-31 11:30_
+
+---
+
+_Comment by @gzagatti on 2024-05-31 11:51_
+
+Including the following line on my `on_attach` function does the trick.
+
+```
+vim.bo[bufnr].formatexpr = nil
+```
+
+At the same time, it seems weird that `ruff` LSP set `gq` to a no-operation while `pyright` does not.
+
+Thanks for your prompt response.
+
+---
+
+_Comment by @dhruvmanila on 2024-05-31 12:27_
+
+> At the same time, it seems weird that `ruff` LSP set `gq` to a no-operation while `pyright` does not.
+
+Just to clarify, it's not `ruff` who is setting the `formatexpr` option value but rather Neovim. And the reason it does it only for `ruff` is because Ruff supports formatting capability while Pyright doesn't. You can see in https://github.com/neovim/neovim/blob/7e44ab696a0488ad234b0915a8cf804fd6d79156/runtime/lua/vim/lsp.lua#L347-L353 that Neovim checks if the server supports range formatting and updates `formatexpr` only if it does.
+
+I'm glad that the solution works. I'll close the issue now.
+
+---
+
+_Closed by @dhruvmanila on 2024-05-31 12:27_
+
+---
+
+_Comment by @gegoune on 2024-05-31 12:54_
+
+I wanted to respond saying that it would be nice have this use case working as well, but it actually works fine for me (don't have the issue that OP reported).
+On a too long line, formatting works when I press `gql`.
+
+---
+
+_Comment by @gzagatti on 2024-05-31 13:19_
+
+Thanks for your answer! From your response, I suspect that there must be some unexpected interaction going on with my setup that somehow leads to the problem I reported above.
+
+Since the solution of setting `formatexpr = nil` works reasonably well for now. I'll just leave to debug my setup to some point in the future.
+
+---
+
+_Comment by @dhruvmanila on 2024-05-31 14:53_
+
+> From your response, I suspect that there must be some unexpected interaction going on with my setup that somehow leads to the problem I reported above.
+
+I'm sorry if my response wasn't clear but there's nothing wrong with your config. It's just that Neovim sets the value of `formatexpr` to use the language server if _any_ of them supports range formatting[^1]. This is done by default. To avoid having this default behavior, it's recommended to set `formatexpr = nil` in the LSP config as per Neovim docs.
+
+[^1]: Source https://github.com/neovim/neovim/blob/7e44ab696a0488ad234b0915a8cf804fd6d79156/runtime/lua/vim/lsp.lua#L347-L353, specifically this code: `client.supports_method(ms.textDocument_rangeFormatting)`
+
+---

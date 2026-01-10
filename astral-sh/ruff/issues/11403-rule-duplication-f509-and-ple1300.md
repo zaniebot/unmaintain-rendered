@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-13T11:29:31Z
 updated_at: 2024-06-25T16:04:45Z
 url: https://github.com/astral-sh/ruff/issues/11403
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Rule duplication `F509` and `PLE1300`
@@ -38,10 +38,6 @@ Reference:
 ---
 
 _Label `rule` added by @dhruvmanila on 2024-05-13 11:29_
-
----
-
-_Referenced in [astral-sh/ruff#2714](../../astral-sh/ruff/issues/2714.md) on 2024-05-13 11:29_
 
 ---
 
@@ -93,10 +89,6 @@ Yeah, sorry, I meant that `F509` will redirect to `PLE1300` similar to https://g
 
 ---
 
-_Referenced in [astral-sh/ruff#12020](../../astral-sh/ruff/pulls/12020.md) on 2024-06-25 04:44_
-
----
-
 _Comment by @dhruvmanila on 2024-06-25 16:04_
 
 We've decided to not do this via rule redirection but wait until rule re-categorization (#1774) is complete and merge these rules instead. Refer to #12020 for context.
@@ -108,13 +100,5 @@ _Removed from milestone `v0.5.0` by @dhruvmanila on 2024-06-25 16:04_
 ---
 
 _Unassigned @dhruvmanila by @dhruvmanila on 2024-06-25 16:04_
-
----
-
-_Referenced in [astral-sh/ruff#12178](../../astral-sh/ruff/issues/12178.md) on 2024-07-04 04:47_
-
----
-
-_Referenced in [astral-sh/ruff#12481](../../astral-sh/ruff/issues/12481.md) on 2024-07-24 14:10_
 
 ---

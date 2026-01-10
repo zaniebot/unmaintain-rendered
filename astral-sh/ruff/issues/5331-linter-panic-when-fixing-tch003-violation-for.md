@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-23T12:32:21Z
 updated_at: 2023-12-20T16:03:03Z
 url: https://github.com/astral-sh/ruff/issues/5331
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # [Linter panic] when fixing `TCH003` violation for `typing` import
@@ -117,18 +117,6 @@ _Label `bug` added by @charliermarsh on 2023-06-23 13:00_
 _Comment by @charliermarsh on 2023-06-23 14:02_
 
 This might need special-casing. The problem is that we're trying to modify the `from typing` import to add `TYPE_CHECKING`, but we're also trying to remove the `Iterable` member from it.
-
----
-
-_Referenced in [astral-sh/ruff#7059](../../astral-sh/ruff/issues/7059.md) on 2023-09-02 06:19_
-
----
-
-_Referenced in [astral-sh/ruff#9196](../../astral-sh/ruff/issues/9196.md) on 2023-12-19 10:00_
-
----
-
-_Referenced in [astral-sh/ruff#9214](../../astral-sh/ruff/pulls/9214.md) on 2023-12-20 15:49_
 
 ---
 

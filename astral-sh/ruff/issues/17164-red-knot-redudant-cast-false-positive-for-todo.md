@@ -1,0 +1,56 @@
+```yaml
+number: 17164
+title: "[red-knot] Redudant-cast false positive for `@Todo` types"
+type: issue
+state: closed
+author: sharkdp
+labels:
+  - bug
+  - ty
+assignees: []
+created_at: 2025-04-03T08:11:45Z
+updated_at: 2025-04-03T14:00:01Z
+url: https://github.com/astral-sh/ruff/issues/17164
+synced_at: 2026-01-10T11:09:58Z
+```
+
+# [red-knot] Redudant-cast false positive for `@Todo` types
+
+---
+
+_Issue opened by @sharkdp on 2025-04-03 08:11_
+
+We have existing handling for filtering out `@Todo` types, but apparently it doesn't work in this case:
+```py
+from typing import cast, Any
+
+def f(a: Any):
+    cast(dict[str, Any], a)  # Value is already of type `@Todo`
+```
+(https://playknot.ruff.rs/d1038da7-7198-4650-8288-548a94b74c77)
+
+---
+
+_Label `bug` added by @sharkdp on 2025-04-03 08:11_
+
+---
+
+_Label `red-knot` added by @sharkdp on 2025-04-03 08:11_
+
+---
+
+_Added to milestone `Red Knot Alpha` by @sharkdp on 2025-04-03 08:11_
+
+---
+
+_Renamed from "[red-knot] Redudant cast false positive for `@Todo` types" to "[red-knot] Redudant-cast false positive for `@Todo` types" by @sharkdp on 2025-04-03 08:30_
+
+---
+
+_Closed by @AlexWaygood on 2025-04-03 14:00_
+
+---
+
+_Closed by @AlexWaygood on 2025-04-03 14:00_
+
+---

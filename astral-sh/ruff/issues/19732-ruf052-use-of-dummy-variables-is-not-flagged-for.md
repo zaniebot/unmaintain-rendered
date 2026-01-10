@@ -1,0 +1,80 @@
+```yaml
+number: 19732
+title: "RUF052: Use of dummy variables is not flagged for loop variables"
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - rule
+  - help wanted
+assignees: []
+created_at: 2025-08-04T08:13:42Z
+updated_at: 2025-11-21T17:57:03Z
+url: https://github.com/astral-sh/ruff/issues/19732
+synced_at: 2026-01-10T11:09:59Z
+```
+
+# RUF052: Use of dummy variables is not flagged for loop variables
+
+---
+
+_Issue opened by @MichaReiser on 2025-08-04 08:13_
+
+@AlexWaygood @MichaReiser Searching https://github.com/search?q=repo%3Aastral-sh%2Fruff+RUF052&type=issues does not reveal previous discussions on detecting used dummy variables inside FOR loops and list comprehensions. To avoid extra noise from rushing into opening a new issue, I would like to clarify:  Was this rejected somewhere, or was this just not discussed and not implemented yet?
+
+Example:
+
+```py
+def no_ruff_warnings():
+    my_list = [{"foo": 1}, {"foo": 2}]
+
+    i = 0
+    for _ in my_list:
+        i += _["foo"]  # A dummy variable is used, but no warnings. 
+
+    for _item in my_list:
+        i += _item["foo"]  # A dummy variable is used, but no warnings. 
+
+    [_["foo"] for _ in my_list]  # A dummy variable is used, but no warnings. 
+
+    [_item["foo"] for _item in my_list]  # A dummy variable is used, but no warnings. 
+```
+
+_Originally posted by @alessio-locatelli in https://github.com/astral-sh/ruff/issues/14755#issuecomment-3148350171_
+            
+
+---
+
+_Comment by @MichaReiser on 2025-08-04 08:15_
+
+I don't think this behavior is intentional. It is due to this check:
+
+https://github.com/astral-sh/ruff/blob/331beca469edda71f214d2aa2a8b985d5641da73/crates/ruff_linter/src/rules/ruff/rules/used_dummy_variable.rs#L113-L131
+
+The comment suggests that the intention was to only exclude parameters, but the way it is implemented excludes many other bindings too. 
+
+We should consider making this check more fine grained (behind preview) and have a look at the ecosystem changes.
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-08-04 08:15_
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2025-08-04 08:15_
+
+---
+
+_Comment by @mikeleppane on 2025-08-06 14:12_
+
+I can take a look at this.
+
+---
+
+_Assigned to @mikeleppane by @ntBre on 2025-08-06 15:13_
+
+---
+
+_Closed by @ntBre on 2025-11-21 17:57_
+
+---

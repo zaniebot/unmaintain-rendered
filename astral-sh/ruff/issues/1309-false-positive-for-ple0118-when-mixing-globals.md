@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-21T16:49:28Z
 updated_at: 2022-12-21T19:34:10Z
 url: https://github.com/astral-sh/ruff/issues/1309
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:25Z
 ```
 
 # False positive for PLE0118 when mixing globals and f-strings
@@ -64,10 +64,6 @@ _Label `bug` added by @charliermarsh on 2022-12-21 17:04_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2022-12-21 19:23_
-
----
-
-_Referenced in [astral-sh/ruff#1314](../../astral-sh/ruff/pulls/1314.md) on 2022-12-21 19:32_
 
 ---
 

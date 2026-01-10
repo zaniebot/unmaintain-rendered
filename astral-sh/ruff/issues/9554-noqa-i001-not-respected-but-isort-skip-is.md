@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-16T19:11:28Z
 updated_at: 2024-01-16T20:19:34Z
 url: https://github.com/astral-sh/ruff/issues/9554
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # `# noqa: I001` not respected but `# isort:skip` is
@@ -152,14 +152,6 @@ Does that make sense?
 
 ---
 
-_Referenced in [astral-sh/ruff#9555](../../astral-sh/ruff/pulls/9555.md) on 2024-01-16 20:16_
-
----
-
 _Closed by @charliermarsh on 2024-01-16 20:19_
-
----
-
-_Referenced in [astral-sh/ruff#16774](../../astral-sh/ruff/issues/16774.md) on 2025-03-16 12:37_
 
 ---

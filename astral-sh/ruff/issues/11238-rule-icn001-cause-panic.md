@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-02T07:07:21Z
 updated_at: 2024-05-02T17:59:40Z
 url: https://github.com/astral-sh/ruff/issues/11238
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Rule ICN001 cause panic
@@ -193,10 +193,6 @@ _Label `bug` added by @AlexWaygood on 2024-05-02 07:34_
 ---
 
 _Label `fuzzer` added by @AlexWaygood on 2024-05-02 07:34_
-
----
-
-_Referenced in [astral-sh/ruff#11249](../../astral-sh/ruff/pulls/11249.md) on 2024-05-02 17:55_
 
 ---
 

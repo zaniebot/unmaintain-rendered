@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-11T19:50:03Z
 updated_at: 2024-03-27T23:32:45Z
 url: https://github.com/astral-sh/ruff/issues/9935
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # TRIO115 false positive with with `sleep(var)` where `var` starts as `0`
@@ -35,10 +35,6 @@ async def main() -> None:
 
 trio.run(main)
 ```
-
----
-
-_Referenced in [python-trio/trio#2947](../../python-trio/trio/pulls/2947.md) on 2024-02-11 20:21_
 
 ---
 
@@ -88,10 +84,6 @@ _Comment by @jakkdl on 2024-02-12 10:10_
 
 flake8-trio dev here:
 the "constant" in the source code is just how the AST labels literals, flake8-trio doesn't track the values of any variables (and has no straightforward way of doing so)
-
----
-
-_Referenced in [astral-sh/ruff#10376](../../astral-sh/ruff/pulls/10376.md) on 2024-03-13 04:30_
 
 ---
 

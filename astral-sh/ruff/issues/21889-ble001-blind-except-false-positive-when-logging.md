@@ -1,0 +1,102 @@
+```yaml
+number: 21889
+title: "BLE001 (blind-except): false positive when logging via `warning`"
+type: issue
+state: open
+author: bentheiii
+labels:
+  - rule
+assignees: []
+created_at: 2025-12-10T08:21:57Z
+updated_at: 2025-12-16T14:26:02Z
+url: https://github.com/astral-sh/ruff/issues/21889
+synced_at: 2026-01-10T11:10:00Z
+```
+
+# BLE001 (blind-except): false positive when logging via `warning`
+
+---
+
+_Issue opened by @bentheiii on 2025-12-10 08:21_
+
+### Summary
+
+As per the documentation for BLE001, the following will not trigger the rule:
+```py
+try:
+    foo()
+except BaseException:
+    logging.error("Something went wrong", exc_info=True)
+```
+But this will
+```py
+try:
+    foo()
+except BaseException:
+    logging.warning("Something went wrong", exc_info=True)
+```
+I'd argue that, from a user perspective, the two are equivalent in terms of error handling. The user decided to log the error, including its entire stack trace. The level of the log then, is more or less irrelevant. For the purpose of the argument, the following will also be flagged:
+```py
+try:
+    foo()
+except BaseException:
+    logging.log(logging.ERROR, "Something went wrong", exc_info=True)
+```
+I propose that instead of [only validating logger method calls](https://github.com/astral-sh/ruff/blob/8293afe2ae7af79fe7d646c39dc2636d38b29fa0/crates/ruff_linter/src/rules/flake8_blind_except/rules/blind_except.rs#L226) to `error`/`critical` with `exc_info`,  the lint will validate calls to all log levels (`critical`, `error`, `warning`, `info`, `debug`, and the level-agnostic `log`) with `exc_info`
+
+---
+
+_Comment by @ntBre on 2025-12-10 17:07_
+
+Hmm, yeah this makes sense to me! I looked through the history a bit and didn't see any reason why these were restricted to `error` and `critical` (`critical` itself is relatively new in https://github.com/astral-sh/ruff/pull/19520). All of the other methods seem to take `exc_info` too: https://docs.python.org/3/library/logging.html#logging.Logger.info, so I think they should all suppress the diagnostic.
+
+---
+
+_Label `rule` added by @ntBre on 2025-12-10 17:07_
+
+---
+
+_Comment by @lubaskinc0de on 2025-12-14 22:22_
+
+Hello can i work on it? Or this is already taken?
+
+---
+
+_Comment by @ntBre on 2025-12-15 14:22_
+
+Go for it! I don't see any open PRs for this issue or this rule.
+
+---
+
+_Assigned to @lubaskinc0de by @ntBre on 2025-12-15 14:22_
+
+---
+
+_Comment by @lubaskinc0de on 2025-12-16 08:45_
+
+> Go for it! I don't see any open PRs for this issue or this rule.
+https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/rules/flake8_blind_except/rules/blind_except.rs#L228
+
+Right now I can see that only the ``exc_info`` set to the ``True`` constant is checked, even though the documentation says that ``exc_info`` can also be set to more than just ``True``
+
+> If exc_info does not evaluate as false, it causes exception information to be added to the logging message. If an exception tuple (in the format returned by [sys.exc_info()](https://docs.python.org/3/library/sys.html#sys.exc_info)) or an exception instance is provided, it is used; otherwise, [sys.exc_info()](https://docs.python.org/3/library/sys.html#sys.exc_info) is called to get the exception information.
+
+```py
+import logging
+
+try:
+    2 + "a"
+except BaseException as e:
+    logging.error("aaa", exc_info=e)
+```
+In the current version of ruff, this code also throws error BLE001 if ``exc_info`` is set to ``e`` and not ``True``, although it shouldn't.
+
+The question is, should I correct this as well?
+
+---
+
+_Comment by @ntBre on 2025-12-16 14:26_
+
+I think it would be okay to try that change too and take a look at the ecosystem impact. I took a brief look through the git history and didn't see any reason we only consider literal `True`. We could at least try using [`Truthiness`](https://github.com/astral-sh/ruff/blob/0f373603ebd007196af4f211e14d421024a6b947/crates/ruff_python_ast/src/helpers.rs#L1201), which would only be a little more relaxed.
+
+---

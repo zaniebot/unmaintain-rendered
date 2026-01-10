@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-20T08:30:52Z
 updated_at: 2023-03-23T17:36:51Z
 url: https://github.com/astral-sh/ruff/issues/3622
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # [Autofix error] Invalid code produce autofix error
@@ -106,10 +106,6 @@ Err(parse_error) => {
 ```
 
 That needs to respect the _whole file_ ignores, not just the inline ignores.
-
----
-
-_Referenced in [astral-sh/ruff#3665](../../astral-sh/ruff/pulls/3665.md) on 2023-03-22 04:08_
 
 ---
 

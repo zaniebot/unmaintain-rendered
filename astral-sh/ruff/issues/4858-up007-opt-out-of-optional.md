@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-06-05T07:18:42Z
 updated_at: 2025-02-19T11:28:19Z
 url: https://github.com/astral-sh/ruff/issues/4858
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # UP007: opt out of Optional
@@ -98,10 +98,6 @@ _Label `needs-decision` added by @charliermarsh on 2023-07-10 01:12_
 
 ---
 
-_Referenced in [spear-ai/citizen#336](../../spear-ai/citizen/issues/336.md) on 2023-12-19 18:19_
-
----
-
 _Comment by @ktbarrett on 2024-03-12 03:37_
 
 Whose decision is this waiting on? I think the first solution is the least disruptive and I would also like to see this rule split between `Union` and `Optional` as I *much* prefer `Optional`: it's clearer documentation that the argument is optional to those not in the know. I'd also would ***not*** like to see recommendations in the other direction (to prefer `Optional` over `X | None`).
@@ -130,10 +126,6 @@ _Label `help wanted` added by @zanieb on 2024-03-12 05:58_
 
 ---
 
-_Referenced in [astral-sh/ruff#11379](../../astral-sh/ruff/pulls/11379.md) on 2024-05-12 11:43_
-
----
-
 _Comment by @JelleZijlstra on 2024-05-14 14:11_
 
 > it's clearer documentation that the argument is optional to those not in the know
@@ -145,18 +137,6 @@ But it isn't: Optional means the parameter may be None, not that it is optional.
 _Comment by @ktbarrett on 2024-05-14 19:56_
 
 Perhaps `Optional` *shouldn't* mean the same thing as `X | None`, but instead pass X, or don't give an argument, giving a warning otherwise. Not that I expect this to ever change... but explicitly passing None to optional arguments (which apparently has no spelling at all) is a code smell.
-
----
-
-_Referenced in [edwardzjl/chatbot#527](../../edwardzjl/chatbot/pulls/527.md) on 2024-07-11 09:11_
-
----
-
-_Referenced in [oerc0122/castep_outputs#163](../../oerc0122/castep_outputs/pulls/163.md) on 2024-09-06 08:44_
-
----
-
-_Referenced in [astral-sh/ruff#15313](../../astral-sh/ruff/pulls/15313.md) on 2025-01-07 06:20_
 
 ---
 
@@ -173,9 +153,5 @@ Clearly this is the opportunity for a new linting rule, enforcing a consistent s
 1. When `Optional[T]` is used as an annotation for a function parameter or class attribute, it must have a default value
 2. For parameters/variables without a default value, use `T | None` instead.
 
-
----
-
-_Referenced in [microsoft/pyright#9793](../../microsoft/pyright/issues/9793.md) on 2025-03-18 19:20_
 
 ---

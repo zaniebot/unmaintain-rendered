@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-26T09:28:24Z
 updated_at: 2025-01-06T09:21:36Z
 url: https://github.com/astral-sh/ruff/issues/15146
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Ecosystem check: Set `--no-fix`
@@ -63,10 +63,6 @@ Right now for a new rule with a fix that either always works or works most of th
 
 ---
 
-_Referenced in [eclbg/ruff#1](../../eclbg/ruff/pulls/1.md) on 2025-01-01 12:27_
-
----
-
 _Comment by @eclbg on 2025-01-03 10:35_
 
 Hey! I'm working on this and will submit a PR shortly. Feel free to assign it to me.
@@ -75,10 +71,6 @@ Hey! I'm working on this and will submit a PR shortly. Feel free to assign it to
 ---
 
 _Assigned to @eclbg by @MichaReiser on 2025-01-03 11:00_
-
----
-
-_Referenced in [astral-sh/ruff#15267](../../astral-sh/ruff/pulls/15267.md) on 2025-01-05 09:34_
 
 ---
 

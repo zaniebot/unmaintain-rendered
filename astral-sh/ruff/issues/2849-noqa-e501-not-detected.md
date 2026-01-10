@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-02-13T11:12:09Z
 updated_at: 2023-02-13T13:45:58Z
 url: https://github.com/astral-sh/ruff/issues/2849
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # noqa: E501 not detected
@@ -54,9 +54,5 @@ _Closed by @charliermarsh on 2023-02-13 13:39_
 _Comment by @spaceone on 2023-02-13 13:45_
 
 OK, feels better. But this was supported by `flake8` and then different with ruff. but `flake8` also support the ruff-noqa variant → switched the code to that.
-
----
-
-_Referenced in [aws-powertools/powertools-lambda-python#2495](../../aws-powertools/powertools-lambda-python/pulls/2495.md) on 2023-06-18 10:58_
 
 ---

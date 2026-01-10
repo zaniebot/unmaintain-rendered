@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-27T11:18:55Z
 updated_at: 2025-06-07T08:51:35Z
 url: https://github.com/astral-sh/ruff/issues/18331
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # unnecessary-literal-set (C405): also warn about `set({})`
@@ -47,10 +47,6 @@ I realize I should have raised this in upstream flake8-comprehensions first for 
 
 ---
 
-_Referenced in [adamchainz/flake8-comprehensions#619](../../adamchainz/flake8-comprehensions/issues/619.md) on 2025-05-30 09:52_
-
----
-
 _Comment by @adamchainz on 2025-05-30 14:12_
 
 I would prefer to not extend flake8-comprehensions, now that I only use Ruff. But if I were to add this feature there, I would make it a new rule. Perhaps you can use the next C4xx code for consistency?
@@ -67,16 +63,8 @@ _Label `needs-design` removed by @MichaReiser on 2025-05-30 20:10_
 
 ---
 
-_Referenced in [astral-sh/ruff#18492](../../astral-sh/ruff/issues/18492.md) on 2025-06-07 00:19_
-
----
-
 _Comment by @grihabor on 2025-06-07 08:51_
 
 Are you taking C421? I'm going to take C422 for filter https://github.com/astral-sh/ruff/issues/18492
-
----
-
-_Referenced in [astral-sh/ruff#19267](../../astral-sh/ruff/issues/19267.md) on 2025-07-11 16:42_
 
 ---

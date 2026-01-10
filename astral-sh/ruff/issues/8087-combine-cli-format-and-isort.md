@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-20T04:05:26Z
 updated_at: 2023-10-26T02:44:37Z
 url: https://github.com/astral-sh/ruff/issues/8087
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Combine CLI format and isort
@@ -45,13 +45,5 @@ Regardless, per #8232 we intend to introduce a unified command that should suffi
 ---
 
 _Closed by @zanieb on 2023-10-26 02:44_
-
----
-
-_Referenced in [python-lsp/python-lsp-ruff#53](../../python-lsp/python-lsp-ruff/issues/53.md) on 2023-10-30 12:41_
-
----
-
-_Referenced in [astral-sh/ruff#8926](../../astral-sh/ruff/issues/8926.md) on 2023-11-30 15:55_
 
 ---

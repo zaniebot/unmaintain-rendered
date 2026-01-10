@@ -3,7 +3,7 @@ number: 8191
 title: "Add an `--exit-non-zero-on-fix` equivalent to the formatter."
 type: issue
 state: closed
-author: TheReverend403
+author: lwatsondev
 labels:
   - formatter
   - needs-decision
@@ -11,14 +11,14 @@ assignees: []
 created_at: 2023-10-25T00:40:49Z
 updated_at: 2025-03-19T14:55:06Z
 url: https://github.com/astral-sh/ruff/issues/8191
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Add an `--exit-non-zero-on-fix` equivalent to the formatter.
 
 ---
 
-_Issue opened by @TheReverend403 on 2023-10-25 00:40_
+_Issue opened by @lwatsondev on 2023-10-25 00:40_
 
 Title says it all really. `--exit-non-zero-on-change`? I think this would be useful when using tools like pre-commit with CI in the same way as the checker's `--exit-non-zero-on-fix`.
 
@@ -36,7 +36,7 @@ How do you detect changes when using `ruff` in CI when using `--diff` or `--chec
 
 ---
 
-_Comment by @TheReverend403 on 2023-10-25 01:13_
+_Comment by @lwatsondev on 2023-10-25 01:13_
 
 > How does your setup look like?
 
@@ -56,7 +56,7 @@ _Comment by @MichaReiser on 2023-10-25 01:16_
 
 ---
 
-_Comment by @TheReverend403 on 2023-10-25 01:20_
+_Comment by @lwatsondev on 2023-10-25 01:20_
 
 Updated my previous comment.
 
@@ -84,7 +84,7 @@ _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-10-25 03:05_
 
 ---
 
-_Comment by @TheReverend403 on 2023-10-25 09:57_
+_Comment by @lwatsondev on 2023-10-25 09:57_
 
 > If I understand you correctly, you're asking that `ruff format --check` exits with a non-zero exit code if it would reformat any files but it would also write the changes back to disk so that running `ruff format` isn't necessary locally.
 
@@ -114,7 +114,7 @@ Yes, a non-zero exit code has always only been required if there were no file ch
 
 ---
 
-_Comment by @TheReverend403 on 2023-10-26 14:14_
+_Comment by @lwatsondev on 2023-10-26 14:14_
 
 Oh shit you're right. How did I overlook the fact that pre-commit has its own exit code? Idiot. 😔
 
@@ -201,10 +201,6 @@ format:
 
 ---
 
-_Referenced in [ADemkin/aaa-frontend-app#3](../../ADemkin/aaa-frontend-app/pulls/3.md) on 2024-05-03 10:58_
-
----
-
 _Comment by @noamraph on 2024-06-13 16:58_
 
 @zanieb I have another use case: I'm trying leftcommit (a pre-commit alternative) and it doesn't check if the files were changed.
@@ -233,10 +229,6 @@ As a developer running a formatter on pre-commit, I want the formatter to format
 
 ---
 
-_Referenced in [astral-sh/ruff#15906](../../astral-sh/ruff/issues/15906.md) on 2025-02-03 09:35_
-
----
-
 _Comment by @thejcannon on 2025-02-05 03:09_
 
 Toss my name in the mix of users "who want this", I'm trying out using `lefthook`: https://github.com/evilmartians/lefthook
@@ -259,22 +251,6 @@ My 2c: They (maybe*) are, but that's bad ergonomics.
 
 ---
 
-_Referenced in [astral-sh/ruff#16009](../../astral-sh/ruff/pulls/16009.md) on 2025-02-07 02:40_
-
----
-
-_Referenced in [astral-sh/ruff#1667](../../astral-sh/ruff/issues/1667.md) on 2025-03-18 05:21_
-
----
-
 _Closed by @ntBre on 2025-03-19 14:55_
-
----
-
-_Referenced in [hukkin/mdformat#531](../../hukkin/mdformat/issues/531.md) on 2025-08-16 05:20_
-
----
-
-_Referenced in [TobikoData/sqlmesh#5121](../../TobikoData/sqlmesh/pulls/5121.md) on 2025-08-19 14:30_
 
 ---

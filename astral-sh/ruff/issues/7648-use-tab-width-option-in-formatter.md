@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-25T09:20:29Z
 updated_at: 2023-10-18T23:48:17Z
 url: https://github.com/astral-sh/ruff/issues/7648
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Use `tab_width` option in formatter
@@ -34,19 +34,11 @@ _Label `formatter` added by @MichaReiser on 2023-09-25 09:20_
 
 ---
 
-_Referenced in [astral-sh/ruff#7642](../../astral-sh/ruff/issues/7642.md) on 2023-09-25 09:23_
-
----
-
 _Added to milestone `Formatter: Beta` by @MichaReiser on 2023-09-25 09:40_
 
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2023-10-17 10:14_
-
----
-
-_Referenced in [astral-sh/ruff#8006](../../astral-sh/ruff/pulls/8006.md) on 2023-10-17 10:17_
 
 ---
 

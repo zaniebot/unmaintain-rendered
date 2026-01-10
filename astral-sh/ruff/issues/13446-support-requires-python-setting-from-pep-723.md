@@ -3,20 +3,20 @@ number: 13446
 title: Support requires-python setting from PEP 723
 type: issue
 state: closed
-author: majutsushi
+author: janlarres
 labels: []
 assignees: []
 created_at: 2024-09-22T05:07:34Z
 updated_at: 2024-09-22T05:31:19Z
 url: https://github.com/astral-sh/ruff/issues/13446
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Support requires-python setting from PEP 723
 
 ---
 
-_Issue opened by @majutsushi on 2024-09-22 05:07_
+_Issue opened by @janlarres on 2024-09-22 05:07_
 
 <!--
 Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
@@ -37,16 +37,12 @@ In my case I ran into this because I was using the `zoneinfo` module that was ad
 
 ---
 
-_Comment by @majutsushi on 2024-09-22 05:31_
+_Comment by @janlarres on 2024-09-22 05:31_
 
 I just noticed that https://github.com/astral-sh/ruff/issues/10457 already exists, so I'll add a comment there instead.
 
 ---
 
-_Closed by @majutsushi on 2024-09-22 05:31_
-
----
-
-_Referenced in [astral-sh/ruff#14258](../../astral-sh/ruff/issues/14258.md) on 2024-11-11 08:06_
+_Closed by @janlarres on 2024-09-22 05:31_
 
 ---

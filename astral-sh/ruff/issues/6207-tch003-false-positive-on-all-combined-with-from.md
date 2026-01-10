@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-31T19:25:16Z
 updated_at: 2023-08-01T15:04:47Z
 url: https://github.com/astral-sh/ruff/issues/6207
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # `TCH003` false positive on `__all__` combined with `from __future__ import annotations`
@@ -89,15 +89,7 @@ This is a subtle bug related to the order in which we visit things internally. I
 
 ---
 
-_Referenced in [astral-sh/ruff#6208](../../astral-sh/ruff/pulls/6208.md) on 2023-07-31 19:37_
-
----
-
 _Closed by @charliermarsh on 2023-07-31 19:46_
-
----
-
-_Referenced in [astral-sh/ruff#6233](../../astral-sh/ruff/issues/6233.md) on 2023-08-01 10:54_
 
 ---
 

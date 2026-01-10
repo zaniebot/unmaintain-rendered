@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-31T22:44:55Z
 updated_at: 2023-08-01T04:20:31Z
 url: https://github.com/astral-sh/ruff/issues/6214
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Unnecessary semicolon fix removes subsequent lines
@@ -74,10 +74,6 @@ Aborted
 
 ---
 
-_Referenced in [astral-sh/ruff#4972](../../astral-sh/ruff/issues/4972.md) on 2023-07-31 22:45_
-
----
-
 _Comment by @addisoncrump on 2023-07-31 22:50_
 
 Note that this happens in a variety of scenarios:
@@ -96,10 +92,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-08-01 03:36_
 ---
 
 _Label `bug` added by @charliermarsh on 2023-08-01 03:36_
-
----
-
-_Referenced in [astral-sh/ruff#6219](../../astral-sh/ruff/pulls/6219.md) on 2023-08-01 03:41_
 
 ---
 

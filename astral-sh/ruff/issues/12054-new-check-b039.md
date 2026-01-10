@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-06-26T21:51:24Z
 updated_at: 2024-07-01T01:55:50Z
 url: https://github.com/astral-sh/ruff/issues/12054
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # New check: B039 
@@ -40,10 +40,6 @@ _Label `accepted` added by @charliermarsh on 2024-06-26 21:55_
 _Comment by @charliermarsh on 2024-06-26 21:55_
 
 Thanks!
-
----
-
-_Referenced in [astral-sh/ruff#12113](../../astral-sh/ruff/pulls/12113.md) on 2024-06-30 21:39_
 
 ---
 

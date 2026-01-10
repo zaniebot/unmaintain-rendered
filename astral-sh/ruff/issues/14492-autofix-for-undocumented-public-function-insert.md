@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-20T15:46:36Z
 updated_at: 2024-11-20T17:54:50Z
 url: https://github.com/astral-sh/ruff/issues/14492
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Autofix for `undocumented-public-function`: insert docstring stub
@@ -105,10 +105,6 @@ Applying the fix will break down `undocumented-public-function` (`D103`) into mu
 - `undocumented-param` (`D417`): Missing argument descriptions in the docstring for `func1`
 - and various others related to the function summary/description D415, D212, D205
 
-
----
-
-_Referenced in [astral-sh/ruff#14494](../../astral-sh/ruff/issues/14494.md) on 2024-11-20 16:35_
 
 ---
 

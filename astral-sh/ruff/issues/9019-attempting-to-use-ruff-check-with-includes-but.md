@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-12-06T02:25:22Z
 updated_at: 2025-04-16T10:03:38Z
 url: https://github.com/astral-sh/ruff/issues/9019
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Attempting to use `ruff check` with includes, but without specifying a directory, picks up nested projects
@@ -61,10 +61,6 @@ warning: No Python files found under the given path(s)
 ```
 
 Afterwards I realized that it was conditional on the subdirectory also having a .ruff.toml, which made me rethink whether that was related at all.
-
----
-
-_Referenced in [astral-sh/ruff#12757](../../astral-sh/ruff/issues/12757.md) on 2024-08-08 16:39_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-07-03T13:26:10Z
 updated_at: 2023-07-03T14:11:11Z
 url: https://github.com/astral-sh/ruff/issues/5477
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Autofix for UP012 (`unnecessary-encode-utf8`) fixes incorrect range when `func` node starts with `(`
@@ -42,10 +42,6 @@ to:
 ```
 
 `"utf-8"` should be removed, but `f"foo{bar}"` is removed.
-
----
-
-_Referenced in [astral-sh/ruff#5478](../../astral-sh/ruff/pulls/5478.md) on 2023-07-03 13:26_
 
 ---
 

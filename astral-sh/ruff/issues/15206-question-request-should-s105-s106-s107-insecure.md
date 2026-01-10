@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-30T22:04:22Z
 updated_at: 2025-01-03T17:24:31Z
 url: https://github.com/astral-sh/ruff/issues/15206
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Question/Request: Should `S105`, `S106`, `S107` (Insecure hardcoded password) apply to stubs?
@@ -24,10 +24,6 @@ _Issue opened by @Avasam on 2024-12-30 22:04_
 Or should one be encouraged to disable these rules for stubs in one's projects if they produce too many false-positives ?
 
 (this question is extracted from https://github.com/astral-sh/ruff/issues/14535#issuecomment-2561461038 for ease of tracking and discussion)
-
----
-
-_Referenced in [astral-sh/ruff#14535](../../astral-sh/ruff/issues/14535.md) on 2024-12-30 22:14_
 
 ---
 

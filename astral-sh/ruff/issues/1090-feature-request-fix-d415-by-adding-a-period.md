@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-12-05T23:49:52Z
 updated_at: 2022-12-06T01:24:57Z
 url: https://github.com/astral-sh/ruff/issues/1090
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:16Z
 ```
 
 # [feature-request] Fix `D415` by adding a period
@@ -47,10 +47,6 @@ I think if the fix applies to the first logical line (i.e. whether it's a single
 _Comment by @charliermarsh on 2022-12-06 01:02_
 
 @smackesey - This will also go out tonight (just a heads up in case it saves you time).
-
----
-
-_Referenced in [astral-sh/ruff#1094](../../astral-sh/ruff/pulls/1094.md) on 2022-12-06 01:10_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-02-24T20:19:48Z
 updated_at: 2024-03-01T09:30:55Z
 url: https://github.com/astral-sh/ruff/issues/10114
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # [E301] Failing to catch blank lines above classmethods when compared to pycodestyle
@@ -147,10 +147,6 @@ _Label `preview` added by @MichaReiser on 2024-02-25 09:21_
 _Comment by @hoel-bagard on 2024-02-25 09:34_
 
 @MichaReiser I'll look into fixing this, thanks for the notice!
-
----
-
-_Referenced in [astral-sh/ruff#10117](../../astral-sh/ruff/pulls/10117.md) on 2024-02-25 10:47_
 
 ---
 

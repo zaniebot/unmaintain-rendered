@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-21T03:44:14Z
 updated_at: 2025-04-29T19:32:32Z
 url: https://github.com/astral-sh/ruff/issues/8800
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Support text Jupyter notebooks created with Jupytext
@@ -84,25 +84,13 @@ _Label `wish` added by @dhruvmanila on 2023-12-01 01:14_
 
 ---
 
-_Referenced in [astral-sh/ruff#3792](../../astral-sh/ruff/issues/3792.md) on 2024-01-26 09:07_
-
----
-
 _Comment by @tvatter on 2024-01-26 09:10_
 
 There's a similar request for quarto notebooks (#6140), and generally for Python code included in Markdown code blocks (#3792).
 
 ---
 
-_Referenced in [astral-sh/ruff#6140](../../astral-sh/ruff/issues/6140.md) on 2024-01-26 09:24_
-
----
-
 _Label `notebook` added by @dhruvmanila on 2024-02-12 06:14_
-
----
-
-_Referenced in [astral-sh/ruff#11160](../../astral-sh/ruff/issues/11160.md) on 2024-04-26 14:44_
 
 ---
 
@@ -143,10 +131,6 @@ I haven't been able to work out exactly what happens, but the `jupytext.cli` mod
 
 ---
 
-_Referenced in [ImperialCollegeLondon/pyrealm#247](../../ImperialCollegeLondon/pyrealm/pulls/247.md) on 2024-06-06 19:50_
-
----
-
 _Comment by @davidorme on 2024-06-07 09:16_
 
 OK - so `jupytext` converts the notebook to `percent` format, which is a python file with the markdown content stored as comments. `black` can then run on the code alone and the format can be converted back. 
@@ -181,18 +165,6 @@ However, we're not using paired notebooks and only have the MyST `.md` versions 
 
 ---
 
-_Referenced in [ImperialCollegeLondon/virtual_ecosystem#607](../../ImperialCollegeLondon/virtual_ecosystem/pulls/607.md) on 2024-10-16 12:26_
-
----
-
-_Referenced in [ImperialCollegeLondon/pyrealm#329](../../ImperialCollegeLondon/pyrealm/issues/329.md) on 2024-10-16 12:49_
-
----
-
-_Referenced in [astral-sh/ruff#17117](../../astral-sh/ruff/issues/17117.md) on 2025-04-01 12:42_
-
----
-
 _Comment by @ctcjab on 2025-04-29 17:35_
 
 #17117 was recently closed as a duplicate of this issue. Should that instead be added as a subtask of this issue, to make sure that specific issue is resolved as part of this more general effort?
@@ -204,13 +176,5 @@ _Comment by @dhruvmanila on 2025-04-29 19:32_
 > [#17117](https://github.com/astral-sh/ruff/issues/17117) was recently closed as a duplicate of this issue. Should that instead be added as a subtask of this issue, to make sure that specific issue is resolved as part of this more general effort?
 
 Thank you for the suggestion, but I don't think that's necessary here as that rule is already ignored for Jupyter Notebooks and adding support for notebooks created by Jupytext should automatically consider that.
-
----
-
-_Referenced in [plenoptic-org/plenoptic#362](../../plenoptic-org/plenoptic/pulls/362.md) on 2025-07-11 13:58_
-
----
-
-_Referenced in [astral-sh/ruff#19885](../../astral-sh/ruff/issues/19885.md) on 2025-08-13 14:51_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-02T16:31:18Z
 updated_at: 2023-05-04T18:42:36Z
 url: https://github.com/astral-sh/ruff/issues/4194
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # ruff panics in debug_assert 'Prefer `Fix::deletion`' when fixing bokeh with `--select ALL`
@@ -408,14 +408,6 @@ However in this example I think the indentation is correct and should not be aut
 _Comment by @charliermarsh on 2023-05-04 02:59_
 
 I think the fix you have there seems correct to me. I don't mind if the diagnostics are a bit wonky as long as they're consistent with pydocstyle for now :)
-
----
-
-_Referenced in [astral-sh/ruff#4216](../../astral-sh/ruff/pulls/4216.md) on 2023-05-04 05:42_
-
----
-
-_Referenced in [astral-sh/ruff#4193](../../astral-sh/ruff/pulls/4193.md) on 2023-05-04 09:01_
 
 ---
 

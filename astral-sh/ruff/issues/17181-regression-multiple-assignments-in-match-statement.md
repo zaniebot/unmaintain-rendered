@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-03T18:32:56Z
 updated_at: 2025-04-03T21:32:40Z
 url: https://github.com/astral-sh/ruff/issues/17181
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Regression: multiple assignments in match statement
@@ -64,26 +64,10 @@ Thanks for looking into it!
 
 ---
 
-_Referenced in [astral-sh/ruff#17184](../../astral-sh/ruff/pulls/17184.md) on 2025-04-03 19:55_
-
----
-
 _Closed by @ntBre on 2025-04-03 21:32_
 
 ---
 
 _Closed by @ntBre on 2025-04-03 21:32_
-
----
-
-_Referenced in [astral-sh/ruff#17193](../../astral-sh/ruff/issues/17193.md) on 2025-04-04 06:55_
-
----
-
-_Referenced in [astral-sh/ruff#16957](../../astral-sh/ruff/pulls/16957.md) on 2025-04-04 14:14_
-
----
-
-_Referenced in [astral-sh/ruff#17207](../../astral-sh/ruff/issues/17207.md) on 2025-04-04 14:14_
 
 ---

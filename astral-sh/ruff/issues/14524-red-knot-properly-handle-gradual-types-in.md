@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-22T10:51:32Z
 updated_at: 2024-12-04T16:11:26Z
 url: https://github.com/astral-sh/ruff/issues/14524
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Properly handle gradual types in subtyping/equivalence relations
@@ -51,14 +51,6 @@ _Label `red-knot` added by @sharkdp on 2024-11-22 10:51_
 ---
 
 _Assigned to @sharkdp by @sharkdp on 2024-11-22 10:51_
-
----
-
-_Referenced in [astral-sh/ruff#14178](../../astral-sh/ruff/pulls/14178.md) on 2024-12-03 08:02_
-
----
-
-_Referenced in [astral-sh/ruff#14758](../../astral-sh/ruff/pulls/14758.md) on 2024-12-03 14:16_
 
 ---
 

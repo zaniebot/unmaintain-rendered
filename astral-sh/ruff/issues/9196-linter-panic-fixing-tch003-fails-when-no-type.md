@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-12-19T09:57:44Z
 updated_at: 2023-12-20T16:03:04Z
 url: https://github.com/astral-sh/ruff/issues/9196
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # [Linter panic] Fixing TCH003 fails when no `TYPE_CHECKING` block exists and `exempt-modules` is empty
@@ -163,15 +163,7 @@ _Label `linter` added by @MichaReiser on 2023-12-19 10:02_
 
 ---
 
-_Referenced in [astral-sh/ruff#9197](../../astral-sh/ruff/issues/9197.md) on 2023-12-19 10:15_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-19 14:58_
-
----
-
-_Referenced in [astral-sh/ruff#9214](../../astral-sh/ruff/pulls/9214.md) on 2023-12-20 15:49_
 
 ---
 

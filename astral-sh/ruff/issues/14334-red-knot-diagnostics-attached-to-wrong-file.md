@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-14T09:46:38Z
 updated_at: 2024-11-14T14:39:52Z
 url: https://github.com/astral-sh/ruff/issues/14334
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Diagnostics attached to wrong file
@@ -58,10 +58,6 @@ _Label `bug` added by @sharkdp on 2024-11-14 09:46_
 ---
 
 _Label `red-knot` added by @sharkdp on 2024-11-14 09:49_
-
----
-
-_Referenced in [astral-sh/ruff#14337](../../astral-sh/ruff/pulls/14337.md) on 2024-11-14 12:43_
 
 ---
 

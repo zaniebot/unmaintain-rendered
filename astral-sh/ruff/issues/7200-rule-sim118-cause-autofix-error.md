@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-06T15:32:06Z
 updated_at: 2023-09-07T15:16:25Z
 url: https://github.com/astral-sh/ruff/issues/7200
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Rule SIM118 cause autofix error
@@ -88,10 +88,6 @@ _Comment by @qarmin on 2023-09-06 18:17_
 No problem, especially since I have currently run out of bugs to report.
 
 If I notice panic errors, I'll still report them because they occur quite rarely and won't litter the issue tracker too much.
-
----
-
-_Referenced in [astral-sh/ruff#7223](../../astral-sh/ruff/pulls/7223.md) on 2023-09-07 14:53_
 
 ---
 

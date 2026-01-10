@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-04-14T07:04:48Z
 updated_at: 2023-04-14T12:43:59Z
 url: https://github.com/astral-sh/ruff/issues/3972
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # "# noqa" is ignored when `per-file-ignores` is provided
@@ -87,9 +87,5 @@ Flake8 respects _either_ variant, so changing this should retain Flake8 compatib
 ---
 
 _Closed by @charliermarsh on 2023-04-14 12:43_
-
----
-
-_Referenced in [GenericMappingTools/pygmt#2747](../../GenericMappingTools/pygmt/pulls/2747.md) on 2023-10-15 10:16_
 
 ---

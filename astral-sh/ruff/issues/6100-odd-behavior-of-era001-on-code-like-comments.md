@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-26T17:54:50Z
 updated_at: 2023-12-15T18:23:27Z
 url: https://github.com/astral-sh/ruff/issues/6100
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Odd behavior of `ERA001` on code-like comments
@@ -138,13 +138,5 @@ I think the logic to determine what's code and what isn't should be pretty stric
 For things that look like valid function/class call statements, one possibility could be checking if the function name exists in the scope. If not, don't consider it a statement.
 
 IMHO this kind of rule is the one where you should rather get false negative than false positives: There's no harm/annoyance in missing some commented-out code. But it's very annoying if your valid comments trigger this rule
-
----
-
-_Referenced in [streamlit/streamlit#11210](../../streamlit/streamlit/pulls/11210.md) on 2025-04-28 12:01_
-
----
-
-_Referenced in [astral-sh/ruff#17713](../../astral-sh/ruff/issues/17713.md) on 2025-04-29 15:10_
 
 ---

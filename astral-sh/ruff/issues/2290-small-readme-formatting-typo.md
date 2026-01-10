@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-28T04:36:05Z
 updated_at: 2023-01-28T12:16:25Z
 url: https://github.com/astral-sh/ruff/issues/2290
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # small README formatting typo
@@ -31,10 +31,6 @@ I noticed very minor typos in README, I will open a PR for it.
 _Comment by @charliermarsh on 2023-01-28 05:03_
 
 Oops, thank you! PR welcome!
-
----
-
-_Referenced in [astral-sh/ruff#2291](../../astral-sh/ruff/pulls/2291.md) on 2023-01-28 05:25_
 
 ---
 

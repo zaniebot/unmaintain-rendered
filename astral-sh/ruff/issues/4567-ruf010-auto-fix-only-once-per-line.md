@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-21T21:10:56Z
 updated_at: 2023-06-06T00:52:13Z
 url: https://github.com/astral-sh/ruff/issues/4567
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # RUF010 auto-fix only once per line
@@ -371,10 +371,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-06-06 00:43_
 _Comment by @charliermarsh on 2023-06-06 00:43_
 
 This was actually just a bug in the rule.
-
----
-
-_Referenced in [astral-sh/ruff#4886](../../astral-sh/ruff/pulls/4886.md) on 2023-06-06 00:45_
 
 ---
 

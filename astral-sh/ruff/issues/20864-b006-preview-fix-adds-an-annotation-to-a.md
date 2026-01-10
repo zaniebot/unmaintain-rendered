@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-10-14T13:24:21Z
 updated_at: 2025-10-15T01:14:02Z
 url: https://github.com/astral-sh/ruff/issues/20864
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # B006 preview fix adds an annotation to a previously annotated variable
@@ -93,10 +93,6 @@ _Label `preview` added by @dylwil3 on 2025-10-14 19:44_
 ---
 
 _Assigned to @dylwil3 by @dylwil3 on 2025-10-14 19:51_
-
----
-
-_Referenced in [astral-sh/ruff#20877](../../astral-sh/ruff/pulls/20877.md) on 2025-10-15 01:09_
 
 ---
 

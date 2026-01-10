@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-28T13:32:11Z
 updated_at: 2025-05-28T20:24:53Z
 url: https://github.com/astral-sh/ruff/issues/18353
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # B010 should ignore the attribute `__debug__`
@@ -55,10 +55,6 @@ _Label `bug` added by @MichaReiser on 2025-05-28 13:34_
 ---
 
 _Label `help wanted` added by @MichaReiser on 2025-05-28 13:34_
-
----
-
-_Referenced in [astral-sh/ruff#18357](../../astral-sh/ruff/pulls/18357.md) on 2025-05-28 19:56_
 
 ---
 

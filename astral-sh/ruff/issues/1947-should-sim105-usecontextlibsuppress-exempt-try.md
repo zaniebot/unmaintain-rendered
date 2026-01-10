@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-18T04:48:45Z
 updated_at: 2023-01-18T05:22:23Z
 url: https://github.com/astral-sh/ruff/issues/1947
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Should SIM105 `UseContextlibSuppress` exempt try blocks with unreachable end?
@@ -76,22 +76,6 @@ _Label `bug` added by @charliermarsh on 2023-01-18 05:17_
 
 ---
 
-_Referenced in [astral-sh/ruff#1948](../../astral-sh/ruff/pulls/1948.md) on 2023-01-18 05:19_
-
----
-
 _Closed by @charliermarsh on 2023-01-18 05:22_
-
----
-
-_Referenced in [astral-sh/ruff#8593](../../astral-sh/ruff/issues/8593.md) on 2023-11-10 13:18_
-
----
-
-_Referenced in [GenericMappingTools/pygmt#3448](../../GenericMappingTools/pygmt/pulls/3448.md) on 2024-09-24 01:56_
-
----
-
-_Referenced in [GenericMappingTools/pygmt#3523](../../GenericMappingTools/pygmt/pulls/3523.md) on 2024-10-16 08:40_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-15T21:08:08Z
 updated_at: 2025-03-17T10:09:09Z
 url: https://github.com/astral-sh/ruff/issues/16771
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # FURB157 fix panics on `Decimal(float("\x2dnan"))`
@@ -141,14 +141,6 @@ Actually, as a compromise, I think I'll just do this: In the case where we are r
 
 ---
 
-_Referenced in [astral-sh/ruff#16777](../../astral-sh/ruff/pulls/16777.md) on 2025-03-16 15:39_
-
----
-
 _Closed by @dylwil3 on 2025-03-17 10:09_
-
----
-
-_Referenced in [astral-sh/ruff#19468](../../astral-sh/ruff/pulls/19468.md) on 2025-07-21 16:15_
 
 ---

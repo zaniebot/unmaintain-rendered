@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-23T15:10:45Z
 updated_at: 2025-08-08T19:02:31Z
 url: https://github.com/astral-sh/ruff/issues/19511
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # C420 false positive when the assignment mutates a pre-existing object
@@ -68,10 +68,6 @@ _Label `bug` added by @ntBre on 2025-07-23 15:39_
 ---
 
 _Label `rule` added by @ntBre on 2025-07-23 15:39_
-
----
-
-_Referenced in [astral-sh/ruff#19513](../../astral-sh/ruff/pulls/19513.md) on 2025-07-23 17:10_
 
 ---
 

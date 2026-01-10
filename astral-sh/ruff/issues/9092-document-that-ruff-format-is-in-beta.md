@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-11T13:19:08Z
 updated_at: 2023-12-11T20:50:03Z
 url: https://github.com/astral-sh/ruff/issues/9092
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Document that `ruff format` is in Beta
@@ -42,10 +42,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-12-11 17:06_
 _Comment by @charliermarsh on 2023-12-11 17:06_
 
 I can add this, thanks!
-
----
-
-_Referenced in [astral-sh/ruff#9097](../../astral-sh/ruff/pulls/9097.md) on 2023-12-11 18:00_
 
 ---
 

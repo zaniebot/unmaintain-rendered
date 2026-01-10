@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-03T13:45:58Z
 updated_at: 2023-10-06T03:41:45Z
 url: https://github.com/astral-sh/ruff/issues/3863
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # fixable groups
@@ -136,14 +136,6 @@ Personally I'd prefer to have the flexibility to define my own groups, though ha
 
 ---
 
-_Referenced in [astral-sh/ruff#7769](../../astral-sh/ruff/pulls/7769.md) on 2023-10-03 17:29_
-
----
-
 _Closed by @zanieb on 2023-10-06 03:41_
-
----
-
-_Referenced in [astral-sh/ruff#6796](../../astral-sh/ruff/issues/6796.md) on 2023-10-06 13:03_
 
 ---

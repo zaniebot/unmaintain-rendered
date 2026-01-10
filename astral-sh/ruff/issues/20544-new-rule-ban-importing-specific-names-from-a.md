@@ -1,0 +1,71 @@
+```yaml
+number: 20544
+title: new rule - ban importing specific names from a module if the whole module is already imported (or vice versa)
+type: issue
+state: open
+author: DetachHead
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-09-24T07:45:06Z
+updated_at: 2025-11-09T07:24:52Z
+url: https://github.com/astral-sh/ruff/issues/20544
+synced_at: 2026-01-10T11:09:59Z
+```
+
+# new rule - ban importing specific names from a module if the whole module is already imported (or vice versa)
+
+---
+
+_Issue opened by @DetachHead on 2025-09-24 07:45_
+
+### Summary
+
+my codebase has a lot of imports like this in the same file:
+
+```py
+from foo import some_module
+from foo.some_module import a, b, c
+```
+
+which means there are often inconsistent usages of the names imported from that module:
+
+```py
+a()
+some_module.a()
+```
+
+it would be nice if ruff had a rule to enforce that only one kind of import is allowed for each module being imported in the current file.
+
+note that i don't necessarily want to enforce one or the other, because whether we want to import the whole module or just a few names from it usually depends on how many names we want to import. so the rule would only complain if *both* methods of importing from the same module are present.
+
+---
+
+_Renamed from "ban importing specific names from a module if the whole module is already imported (or vice versa)" to "new rule - ban importing specific names from a module if the whole module is already imported (or vice versa)" by @DetachHead on 2025-09-24 07:45_
+
+---
+
+_Label `rule` added by @ntBre on 2025-09-24 12:52_
+
+---
+
+_Label `needs-decision` added by @ntBre on 2025-09-24 12:52_
+
+---
+
+_Comment by @ntBre on 2025-09-24 12:53_
+
+I thought there was an existing request for this, but I was thinking of https://github.com/astral-sh/ruff/issues/10638, which seems a bit different.
+
+---
+
+_Comment by @injust on 2025-11-09 07:24_
+
+Adding some context that was discussed over at https://github.com/DetachHead/basedpyright/issues/1633:
+
+> There is definitely a valid use case for combining `import foo` and `from foo import bar` for the same module. For example, `randrange()` is self-explanatory in what it does, `choices()` is unclear and should be instead written as `random.choices()`.
+
+I don't disagree with this rule proposal, but I've definitely written code that goes against it (with good reason, I think).
+
+---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-06T22:51:13Z
 updated_at: 2023-02-07T19:28:10Z
 url: https://github.com/astral-sh/ruff/issues/2613
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # `Removes quotes from annotations` removes quotes from literal values
@@ -131,10 +131,6 @@ _Label `bug` added by @charliermarsh on 2023-02-06 23:09_
 
 ---
 
-_Referenced in [astral-sh/ruff#2614](../../astral-sh/ruff/pulls/2614.md) on 2023-02-06 23:14_
-
----
-
 _Comment by @charliermarsh on 2023-02-06 23:15_
 
 The issues that @henryiii raised are fixed in #2614.
@@ -182,28 +178,12 @@ Gonna try and fix that tonight.
 
 ---
 
-_Referenced in [astral-sh/ruff#2615](../../astral-sh/ruff/pulls/2615.md) on 2023-02-07 00:39_
-
----
-
 _Closed by @charliermarsh on 2023-02-07 00:51_
-
----
-
-_Referenced in [scikit-hep/awkward#2215](../../scikit-hep/awkward/pulls/2215.md) on 2023-02-07 15:28_
 
 ---
 
 _Comment by @Czaki on 2023-02-07 19:28_
 
 Thanks for the really fast action :) :heart: 
-
----
-
-_Referenced in [astral-sh/ruff#2677](../../astral-sh/ruff/issues/2677.md) on 2023-02-09 03:45_
-
----
-
-_Referenced in [astral-sh/ruff#3508](../../astral-sh/ruff/issues/3508.md) on 2023-03-14 20:46_
 
 ---

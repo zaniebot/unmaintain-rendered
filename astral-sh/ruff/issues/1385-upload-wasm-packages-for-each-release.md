@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-26T19:00:46Z
 updated_at: 2024-07-18T20:21:03Z
 url: https://github.com/astral-sh/ruff/issues/1385
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Upload WASM packages for each release
@@ -82,10 +82,6 @@ If anyone needs a CodeMirror 6 linter, see https://github.com/vshymanskyy/ViperI
 
 ![image](https://github.com/user-attachments/assets/f02d4290-1e5b-4875-b1e2-dff6526c328b)
 
-
----
-
-_Referenced in [astral-sh/ruff#12317](../../astral-sh/ruff/pulls/12317.md) on 2024-07-14 07:23_
 
 ---
 

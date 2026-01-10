@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-26T10:24:05Z
 updated_at: 2024-11-10T16:30:07Z
 url: https://github.com/astral-sh/ruff/issues/10131
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Allow to declare modules/calls as deprecated
@@ -115,10 +115,6 @@ _Comment by @sscherfke on 2024-02-29 08:12_
 Here are the docs for it: https://docs.astral.sh/ruff/settings/#lint_flake8-tidy-imports_banned-api
 
 Looks good enough for me.  What do you think, @CarliJoy ?
-
----
-
-_Referenced in [astral-sh/ruff#12693](../../astral-sh/ruff/issues/12693.md) on 2024-08-06 06:04_
 
 ---
 

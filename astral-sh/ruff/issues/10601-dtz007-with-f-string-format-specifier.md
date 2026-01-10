@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-26T07:45:41Z
 updated_at: 2024-03-29T04:27:14Z
 url: https://github.com/astral-sh/ruff/issues/10601
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # `DTZ007` with F-string format specifier
@@ -53,10 +53,6 @@ _Label `rule` added by @MichaReiser on 2024-03-26 07:45_
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2024-03-29 03:18_
-
----
-
-_Referenced in [astral-sh/ruff#10651](../../astral-sh/ruff/pulls/10651.md) on 2024-03-29 03:21_
 
 ---
 

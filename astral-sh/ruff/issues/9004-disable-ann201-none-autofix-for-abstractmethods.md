@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-05T04:10:43Z
 updated_at: 2023-12-07T02:47:38Z
 url: https://github.com/astral-sh/ruff/issues/9004
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Disable ANN201 None-autofix for abstractmethods?
@@ -77,14 +77,6 @@ I stumbled into these cases when trying to run ruff with the preview fixes on pa
 
 ---
 
-_Referenced in [astral-sh/ruff#9034](../../astral-sh/ruff/pulls/9034.md) on 2023-12-07 02:35_
-
----
-
 _Closed by @dhruvmanila on 2023-12-07 02:47_
-
----
-
-_Referenced in [astral-sh/ruff#9270](../../astral-sh/ruff/issues/9270.md) on 2023-12-25 03:17_
 
 ---

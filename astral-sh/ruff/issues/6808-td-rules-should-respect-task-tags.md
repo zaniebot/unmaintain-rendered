@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-08-23T09:53:20Z
 updated_at: 2023-08-25T21:34:48Z
 url: https://github.com/astral-sh/ruff/issues/6808
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # `TD` rules should respect `task-tags`
@@ -31,9 +31,5 @@ Makes sense -- I think this is similar to https://github.com/astral-sh/ruff/issu
 ---
 
 _Closed by @charliermarsh on 2023-08-25 21:34_
-
----
-
-_Referenced in [astral-sh/ruff#5407](../../astral-sh/ruff/issues/5407.md) on 2025-02-10 19:32_
 
 ---

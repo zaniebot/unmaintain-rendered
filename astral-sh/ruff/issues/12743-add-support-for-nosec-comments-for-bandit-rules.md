@@ -1,0 +1,57 @@
+```yaml
+number: 12743
+title: Add support for nosec comments for bandit rules
+type: issue
+state: open
+author: Daverball
+labels:
+  - suppression
+  - needs-decision
+assignees: []
+created_at: 2024-08-08T07:21:21Z
+updated_at: 2024-08-09T06:43:42Z
+url: https://github.com/astral-sh/ruff/issues/12743
+synced_at: 2026-01-10T11:09:54Z
+```
+
+# Add support for nosec comments for bandit rules
+
+---
+
+_Issue opened by @Daverball on 2024-08-08 07:21_
+
+I already brought this up a while back in the issue for the flake8-bandit rules, which has recently been completed.
+
+I personally think it would be a good idea to support them, because they provide better visibility for potential security flaws in the code than their equivalent `noqa` comment, which I find easy to gloss over by comparison. It also means improved interoperability between bandit and ruff without the need for flake8-bandit as a compatibility shim.
+
+There was some push back against the idea last time, but I wanted to try again, since ruff has has undergone some big changes in relevant portions like the parser in the meantime, from what I can tell ruff already recognizes `nosec` as a pragma so the cost of adding support should be overall a bit lower now.
+
+I'd be happy to give the implementation a try myself, if there is no significant push back against the idea.
+
+The most difficult thing to support will probably be a bare `nosec` without a code. Since that should only silence bandit rules, so it can't be equivalent to a bare `noqa`. For the rest of the rules it should be possible to treat it as an alias to an equivalent `noqa` rule.
+
+Although there's also a broader question of the interaction with flake8-noqa. Should `nosec` comments be able to trigger `NQA10X` rules? Or do we add some ruff specific rules to tidy up `nosec` rules? bandit itself does emit warnings for `nosec` comments, where the supplied rule doesn't apply (although there are some false positives).
+
+---
+
+_Label `suppression` added by @charliermarsh on 2024-08-09 01:24_
+
+---
+
+_Comment by @charliermarsh on 2024-08-09 01:38_
+
+I'm not totally opposed if the implementation doesn't add much complexity. What do you think @MichaReiser?
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2024-08-09 01:38_
+
+---
+
+_Comment by @MichaReiser on 2024-08-09 06:43_
+
+I feel hesitant about adding new suppression pragmas without knowing the outcome of #1774. The bandit group will likely be gone afterward, and it then becomes unclear why some rules can be suppressed by `nosec` while others can't. Unless we make `noses` an alias of `no,`, but that misses the author's point of having something more explicit around security-related suppressions.
+
+Rule categorization might also solve this if we allow `noqa` with rule names. E.g. `noqa: security/some-rule` would make for an easy grepable string. 
+
+---

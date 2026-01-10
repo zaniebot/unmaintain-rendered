@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-10T10:01:28Z
 updated_at: 2025-11-10T15:51:53Z
 url: https://github.com/astral-sh/ruff/issues/21360
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # False positive: `invalid-syntax` alternative patterns bind different names
@@ -52,10 +52,6 @@ _Assigned to @ntBre by @MichaReiser on 2025-11-10 10:23_
 ---
 
 _Label `bug` added by @MichaReiser on 2025-11-10 10:23_
-
----
-
-_Referenced in [astral-sh/ruff#21362](../../astral-sh/ruff/pulls/21362.md) on 2025-11-10 13:28_
 
 ---
 

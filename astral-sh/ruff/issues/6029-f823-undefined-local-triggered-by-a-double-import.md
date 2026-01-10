@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-07-24T13:15:31Z
 updated_at: 2023-07-24T14:42:50Z
 url: https://github.com/astral-sh/ruff/issues/6029
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # F823 (undefined local) triggered by a double import
@@ -59,10 +59,6 @@ Found 1 error.
 It does feel right to call out the double `import sys` as unnecessary here, but F823 seems misleading. Is this change intentional?
 
 _I didn't see an obvious answer in the `0.0.279` changelog though there are a couple changes that seem possibly relevant. Will update here if I find anything useful. The change that seems _most_ relevant at a glance (to my untrained eye anyway) is bcec2f0c4ce626c22c0727d02195ec077572ea98._
-
----
-
-_Referenced in [cloud-custodian/cloud-custodian#8755](../../cloud-custodian/cloud-custodian/pulls/8755.md) on 2023-07-24 13:22_
 
 ---
 
@@ -125,9 +121,5 @@ _Closed by @ajkerrigan on 2023-07-24 14:35_
 _Comment by @charliermarsh on 2023-07-24 14:42_
 
 I had the same reaction as you, I actually thought that code was fine! I'm gonna add some test cases so that we're at least explicit about this.
-
----
-
-_Referenced in [astral-sh/ruff#6036](../../astral-sh/ruff/pulls/6036.md) on 2023-07-24 15:40_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-03-15T10:48:32Z
 updated_at: 2023-03-17T02:36:27Z
 url: https://github.com/astral-sh/ruff/issues/3538
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # D400 auto-fix is incorrect
@@ -95,10 +95,6 @@ def check_clockwise(polygon: List[LatLong]) -> bool:
 
 If we're considering the "summary line" to be the first logical line, rather than the first physical line.
 
-
----
-
-_Referenced in [astral-sh/ruff#3564](../../astral-sh/ruff/pulls/3564.md) on 2023-03-16 22:15_
 
 ---
 

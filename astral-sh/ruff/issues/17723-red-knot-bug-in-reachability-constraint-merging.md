@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-29T20:52:08Z
 updated_at: 2025-04-30T07:32:14Z
 url: https://github.com/astral-sh/ruff/issues/17723
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] Bug in reachability constraint merging
@@ -46,14 +46,6 @@ _Assigned to @sharkdp by @sharkdp on 2025-04-29 20:52_
 ---
 
 _Renamed from "[red-knot]" to "[red-knot] Bug in reachability constraint merging" by @sharkdp on 2025-04-29 20:52_
-
----
-
-_Referenced in [astral-sh/ruff#17702](../../astral-sh/ruff/pulls/17702.md) on 2025-04-29 21:02_
-
----
-
-_Referenced in [astral-sh/ruff#17731](../../astral-sh/ruff/pulls/17731.md) on 2025-04-30 07:15_
 
 ---
 

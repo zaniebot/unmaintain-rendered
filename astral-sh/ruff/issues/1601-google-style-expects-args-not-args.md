@@ -1,0 +1,55 @@
+```yaml
+number: 1601
+title: "Google style expects *args not args"
+type: issue
+state: closed
+author: twoertwein
+labels:
+  - bug
+  - docstring
+assignees: []
+created_at: 2023-01-03T15:00:27Z
+updated_at: 2023-01-03T23:17:43Z
+url: https://github.com/astral-sh/ruff/issues/1601
+synced_at: 2026-01-10T12:05:31Z
+```
+
+# Google style expects *args not args
+
+---
+
+_Issue opened by @twoertwein on 2023-01-03 15:00_
+
+```py
+def test(*args, **kwargs):
+    """A summary description.
+
+    Args:
+        *args: google-style expects *args, not args.
+        **kwargs: google-style expects **kwargs, not kwargs.
+
+    Note:
+        https://www.sphinx-doc.org/en/master/usage/extensions/example_google.html
+    """
+```
+
+> test.py:1:1: D417 Missing argument descriptions in the docstring: `**kwargs`, `*args`
+
+From https://www.sphinx-doc.org/en/master/usage/extensions/example_google.html:
+
+>     If ``*args`` or ``**kwargs`` are accepted,
+>     they should be listed as ``*args`` and ``**kwargs``.
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-01-03 15:02_
+
+---
+
+_Label `docstring` added by @charliermarsh on 2023-01-03 15:02_
+
+---
+
+_Closed by @charliermarsh on 2023-01-03 23:17_
+
+---

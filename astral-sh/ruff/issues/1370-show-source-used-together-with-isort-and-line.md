@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-25T06:15:30Z
 updated_at: 2022-12-26T00:52:43Z
 url: https://github.com/astral-sh/ruff/issues/1370
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:27Z
 ```
 
 # `--show-source` used together with isort and line continuation characters panics
@@ -64,10 +64,6 @@ _Label `bug` added by @charliermarsh on 2022-12-25 06:17_
 _Comment by @charliermarsh on 2022-12-26 00:37_
 
 (Just clarifying to myself that this requires that the file is missing a trailing newline.)
-
----
-
-_Referenced in [astral-sh/ruff#1377](../../astral-sh/ruff/pulls/1377.md) on 2022-12-26 00:52_
 
 ---
 

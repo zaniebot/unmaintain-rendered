@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-21T12:10:07Z
 updated_at: 2023-12-22T18:06:41Z
 url: https://github.com/astral-sh/ruff/issues/9230
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # F821 Undefined name `item` when assigning a set comprehension in an if-clause
@@ -114,10 +114,6 @@ _Label `question` removed by @charliermarsh on 2023-12-21 23:06_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-22 15:50_
-
----
-
-_Referenced in [astral-sh/ruff#9248](../../astral-sh/ruff/pulls/9248.md) on 2023-12-22 17:59_
 
 ---
 

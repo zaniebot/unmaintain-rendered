@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-02-22T19:14:48Z
 updated_at: 2023-02-22T19:35:55Z
 url: https://github.com/astral-sh/ruff/issues/3138
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # isort no-lines-before incorrect in presence of preceding empty sections
@@ -50,10 +50,6 @@ from __future__ import print  # future
 from django import db         # third-party
 from . import y               # local-folder
 ```
-
----
-
-_Referenced in [astral-sh/ruff#3139](../../astral-sh/ruff/pulls/3139.md) on 2023-02-22 19:15_
 
 ---
 

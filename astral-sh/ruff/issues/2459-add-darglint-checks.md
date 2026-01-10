@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-02-02T00:11:24Z
 updated_at: 2023-02-02T00:19:40Z
 url: https://github.com/astral-sh/ruff/issues/2459
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Add Darglint Checks
@@ -43,9 +43,5 @@ Everyone wants darglint :joy:
 _Comment by @rbebb on 2023-02-02 00:19_
 
 @charliermarsh Haha I’m sure! Sorry that I didn’t come across that ticket before making a new one. I appreciate you linking the original ticket! 
-
----
-
-_Referenced in [meltano/sdk#1462](../../meltano/sdk/pulls/1462.md) on 2023-02-27 20:23_
 
 ---

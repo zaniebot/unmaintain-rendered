@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-01-20T02:33:48Z
 updated_at: 2025-01-24T10:34:58Z
 url: https://github.com/astral-sh/ruff/issues/15598
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # RUF057 fix introduces an error when the argument contains a newline
@@ -122,10 +122,6 @@ _Label `fixes` added by @dhruvmanila on 2025-01-20 05:01_
 ---
 
 _Label `preview` added by @dylwil3 on 2025-01-24 00:09_
-
----
-
-_Referenced in [astral-sh/ruff#15703](../../astral-sh/ruff/pulls/15703.md) on 2025-01-24 00:11_
 
 ---
 

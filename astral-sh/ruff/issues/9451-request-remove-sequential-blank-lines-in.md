@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-10T00:20:15Z
 updated_at: 2024-02-07T19:28:47Z
 url: https://github.com/astral-sh/ruff/issues/9451
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Request: Remove sequential blank lines in docstrings
@@ -143,13 +143,5 @@ Seems like a bug in D413 (which was incorrectly implemented before that PR, and 
 _Comment by @BrentWilkins on 2024-02-07 19:28_
 
 Only in as much as this issue is to remove excessive whitespace like that bug is enforcing. I'll create a new issue for that. Thanks.
-
----
-
-_Referenced in [astral-sh/ruff#13284](../../astral-sh/ruff/issues/13284.md) on 2024-09-08 17:01_
-
----
-
-_Referenced in [astral-sh/ruff#11318](../../astral-sh/ruff/issues/11318.md) on 2025-05-10 13:06_
 
 ---

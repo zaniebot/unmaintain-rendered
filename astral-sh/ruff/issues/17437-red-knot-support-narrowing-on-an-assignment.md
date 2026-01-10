@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-16T23:14:16Z
 updated_at: 2025-04-18T00:28:07Z
 url: https://github.com/astral-sh/ruff/issues/17437
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] support narrowing on an assignment expression in a predicate
@@ -47,17 +47,9 @@ _Label `red-knot` added by @carljm on 2025-04-16 23:14_
 
 ---
 
-_Referenced in [astral-sh/ruff#17434](../../astral-sh/ruff/pulls/17434.md) on 2025-04-16 23:14_
-
----
-
 _Comment by @sharkdp on 2025-04-17 06:25_
 
 This looks like a duplicate of https://github.com/astral-sh/ruff/issues/14866?
-
----
-
-_Referenced in [astral-sh/ruff#17448](../../astral-sh/ruff/pulls/17448.md) on 2025-04-17 12:27_
 
 ---
 

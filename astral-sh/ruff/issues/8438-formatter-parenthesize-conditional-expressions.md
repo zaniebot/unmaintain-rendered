@@ -1,0 +1,116 @@
+```yaml
+number: 8438
+title: "Formatter: `parenthesize_conditional_expressions` preview style"
+type: issue
+state: closed
+author: zanieb
+labels:
+  - formatter
+  - preview
+  - style
+assignees: []
+created_at: 2023-11-02T05:15:03Z
+updated_at: 2024-01-10T16:52:59Z
+url: https://github.com/astral-sh/ruff/issues/8438
+synced_at: 2026-01-10T11:09:50Z
+```
+
+# Formatter: `parenthesize_conditional_expressions` preview style
+
+---
+
+_Issue opened by @zanieb on 2023-11-02 05:15_
+
+Implement Black's [`parenthesize_conditional_expressions`](https://github.com/psf/black/pull/2278) style as a preview style in Ruff. 
+
+> **Note**: This new style might not be accepted as part of Black's 2024 style guide.
+
+Unformatted:
+
+```python
+[
+    "____________________________",
+    "foo",
+    "bar",
+    "baz" if some_really_looooooooong_variable else "some other looooooooooooooong value"
+]
+```
+
+Formatted (Black stable, Ruff):
+```python
+[
+    "____________________________",
+    "foo",
+    "bar",
+    "baz"
+    if some_really_looooooooong_variable
+    else "some other looooooooooooooong value",
+]
+```
+
+Formatted (Black preview):
+
+```python
+[
+    "____________________________",
+    "foo",
+    "bar",
+    (
+        "baz"
+        if some_really_looooooooong_variable
+        else "some other looooooooooooooong value"
+    ),
+]
+```
+
+When it fits again...
+
+
+Formatter (Ruff, Black stable, Black preview):
+
+```python
+[
+    "____________________________",
+    "foo",
+    "bar",
+    ("baz" if some_really_looooooooong_variable else "some other loooooooooong value"),
+]
+```
+
+Arguably, these should be removed to ensure the formatting is reversible. 
+
+---
+
+_Label `formatter` added by @zanieb on 2023-11-02 05:15_
+
+---
+
+_Label `preview` added by @zanieb on 2023-11-02 05:15_
+
+---
+
+_Label `style` added by @zanieb on 2023-11-02 05:15_
+
+---
+
+_Added to milestone `Formatter: Stable` by @zanieb on 2023-11-02 05:18_
+
+---
+
+_Renamed from "Formatter: Parenthesize long expressions in lists" to "Formatter: `parenthesize_conditional_expressions` preview style" by @MichaReiser on 2023-11-29 03:01_
+
+---
+
+_Comment by @MichaReiser on 2023-12-22 10:34_
+
+We don't plan to implement this preview style as part of Ruff's 2024 style guide because we believe that improving the binary expression formatting solves the problem more holistically. See https://github.com/psf/black/issues/4123 for the details
+
+---
+
+_Removed from milestone `Formatter: Stable` by @MichaReiser on 2023-12-22 10:34_
+
+---
+
+_Closed by @MichaReiser on 2024-01-10 16:52_
+
+---

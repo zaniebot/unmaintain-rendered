@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-05T15:59:40Z
 updated_at: 2025-01-05T17:17:17Z
 url: https://github.com/astral-sh/ruff/issues/15271
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Strange error emitted on variable annotated with `type[EllipsisType]`
@@ -93,9 +93,5 @@ Thanks!
 ---
 
 _Closed by @AlexWaygood on 2025-01-05 17:17_
-
----
-
-_Referenced in [astral-sh/ruff#15272](../../astral-sh/ruff/pulls/15272.md) on 2025-01-05 22:16_
 
 ---

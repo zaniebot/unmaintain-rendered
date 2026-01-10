@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-22T05:49:30Z
 updated_at: 2024-10-26T18:19:58Z
 url: https://github.com/astral-sh/ruff/issues/13872
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] Compare expression inference - Instance (+ Rich Comparison, Membership Test)
@@ -55,10 +55,6 @@ See also:
 _Comment by @AlexWaygood on 2024-10-22 12:47_
 
 Very happy to give additional clarifications if you need any further pointers!
-
----
-
-_Referenced in [astral-sh/ruff#13618](../../astral-sh/ruff/issues/13618.md) on 2024-10-22 13:31_
 
 ---
 
@@ -109,10 +105,6 @@ reveal_type(A() == B())  # revealed: bool? or Unknown?
 ```
 
 I think it should reveal `bool`. However, I'm not sure if this understanding is correct.. What do you think about it?
-
----
-
-_Referenced in [astral-sh/ruff#13903](../../astral-sh/ruff/pulls/13903.md) on 2024-10-24 10:04_
 
 ---
 

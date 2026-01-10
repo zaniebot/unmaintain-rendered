@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-10-21T12:56:46Z
 updated_at: 2025-10-22T22:11:52Z
 url: https://github.com/astral-sh/ruff/issues/21017
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # UP032 fix doesn’t account for underscores in decimal `int` literals
@@ -69,10 +69,6 @@ I will take this one.
 ---
 
 _Assigned to @TaKO8Ki by @ntBre on 2025-10-21 16:23_
-
----
-
-_Referenced in [astral-sh/ruff#21022](../../astral-sh/ruff/pulls/21022.md) on 2025-10-21 16:54_
 
 ---
 

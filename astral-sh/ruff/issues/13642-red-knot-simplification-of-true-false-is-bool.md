@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-05T16:08:08Z
 updated_at: 2024-10-05T18:01:11Z
 url: https://github.com/astral-sh/ruff/issues/13642
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] simplification of 'True | False' is bool class (instead of bool instance)
@@ -28,10 +28,6 @@ Extracted [this comment](https://github.com/astral-sh/ruff/pull/13615#discussion
 
 ---
 
-_Referenced in [astral-sh/ruff#13615](../../astral-sh/ruff/pulls/13615.md) on 2024-10-05 16:08_
-
----
-
 _Label `red-knot` added by @AlexWaygood on 2024-10-05 16:09_
 
 ---
@@ -41,10 +37,6 @@ _Label `bug` added by @AlexWaygood on 2024-10-05 16:52_
 ---
 
 _Label `help wanted` added by @AlexWaygood on 2024-10-05 16:52_
-
----
-
-_Referenced in [astral-sh/ruff#13644](../../astral-sh/ruff/pulls/13644.md) on 2024-10-05 17:10_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-12-18T18:19:39Z
 updated_at: 2024-02-29T02:39:17Z
 url: https://github.com/astral-sh/ruff/issues/9190
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Expand `RUF015` rule for `list(iterable).pop(0)` idiom
@@ -179,10 +179,6 @@ Hope this helps, feel free to ask any other questions that you might have. I'll 
 ---
 
 _Assigned to @rmad17 by @dhruvmanila on 2024-02-15 05:00_
-
----
-
-_Referenced in [astral-sh/ruff#10148](../../astral-sh/ruff/pulls/10148.md) on 2024-02-27 22:21_
 
 ---
 

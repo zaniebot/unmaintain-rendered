@@ -1,0 +1,56 @@
+```yaml
+number: 9634
+title: Ruff formatter does not break long strings into multiple lines.
+type: issue
+state: closed
+author: MiguelMonteiro
+labels:
+  - question
+  - formatter
+assignees: []
+created_at: 2024-01-24T14:41:43Z
+updated_at: 2024-01-24T18:32:30Z
+url: https://github.com/astral-sh/ruff/issues/9634
+synced_at: 2026-01-10T11:09:51Z
+```
+
+# Ruff formatter does not break long strings into multiple lines.
+
+---
+
+_Issue opened by @MiguelMonteiro on 2024-01-24 14:41_
+
+The ruff formatter does not seem to obey  `line-length` when it comes to long strings. See [this example](https://play.ruff.rs/b2a3f481-06ec-4017-93a9-b290da212158).
+Is this intended behavior? Is there a configuration setting that breaks long strings into multiple lines? 
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+
+---
+
+_Comment by @charliermarsh on 2024-01-24 18:32_
+
+Thanks for filing (and for the playground link)! We don't currently break strings, but there's a tracking issue here: https://github.com/astral-sh/ruff/issues/6936.
+
+---
+
+_Closed by @charliermarsh on 2024-01-24 18:32_
+
+---
+
+_Label `question` added by @charliermarsh on 2024-01-24 18:32_
+
+---
+
+_Label `formatter` added by @charliermarsh on 2024-01-24 18:32_
+
+---

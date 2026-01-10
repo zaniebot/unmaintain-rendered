@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-09-05T20:36:34Z
 updated_at: 2024-09-07T13:25:50Z
 url: https://github.com/astral-sh/ruff/issues/13258
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # RUF032 fix can produce strings that are invalid for `Decimal`
@@ -75,10 +75,6 @@ _Label `help wanted` added by @MichaReiser on 2024-09-06 05:34_
 ---
 
 _Label `preview` added by @MichaReiser on 2024-09-06 05:34_
-
----
-
-_Referenced in [astral-sh/ruff#13275](../../astral-sh/ruff/pulls/13275.md) on 2024-09-07 05:18_
 
 ---
 

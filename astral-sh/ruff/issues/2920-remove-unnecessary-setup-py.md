@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-02-15T13:34:08Z
 updated_at: 2023-02-15T14:35:13Z
 url: https://github.com/astral-sh/ruff/issues/2920
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Remove unnecessary `setup.py`
@@ -19,10 +19,6 @@ synced_at: 2026-01-10T01:56:46Z
 _Issue opened by @charliermarsh on 2023-02-15 13:34_
 
 https://github.blog/changelog/2023-02-13-dependency-graph-supports-the-python-pep-621-standard/
-
----
-
-_Referenced in [astral-sh/ruff#2922](../../astral-sh/ruff/pulls/2922.md) on 2023-02-15 14:31_
 
 ---
 

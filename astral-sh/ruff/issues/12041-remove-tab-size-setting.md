@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-26T08:15:50Z
 updated_at: 2024-10-08T13:45:24Z
 url: https://github.com/astral-sh/ruff/issues/12041
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Remove `tab-size` setting
@@ -28,10 +28,6 @@ _Added to milestone `v0.6` by @MichaReiser on 2024-06-26 08:15_
 ---
 
 _Label `configuration` added by @MichaReiser on 2024-06-26 08:15_
-
----
-
-_Referenced in [astral-sh/ruff#12835](../../astral-sh/ruff/pulls/12835.md) on 2024-08-12 09:11_
 
 ---
 

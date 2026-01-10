@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-10T11:43:47Z
 updated_at: 2025-12-15T15:29:51Z
 url: https://github.com/astral-sh/ruff/issues/8598
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # ruff formatter: one call per line for chained method calls
@@ -87,18 +87,6 @@ From a very brief consideration, I can only come up with chained method calls as
 
 ---
 
-_Referenced in [astral-sh/ruff#9577](../../astral-sh/ruff/issues/9577.md) on 2024-01-25 13:26_
-
----
-
-_Referenced in [pola-rs/polars#14223](../../pola-rs/polars/pulls/14223.md) on 2024-02-02 19:50_
-
----
-
-_Referenced in [astral-sh/ruff#9999](../../astral-sh/ruff/issues/9999.md) on 2024-02-15 13:00_
-
----
-
 _Comment by @nick4u on 2024-02-21 07:55_
 
 I would love to see some option to preserve chain methods-call-per-line
@@ -131,10 +119,6 @@ It is heavily used in the [expression](https://github.com/dbrattli/Expression?ta
 )
 ```
 
-
----
-
-_Referenced in [astral-sh/ruff#5343](../../astral-sh/ruff/issues/5343.md) on 2024-03-08 11:42_
 
 ---
 
@@ -247,10 +231,6 @@ _Comment by @the-infinity on 2024-06-12 10:57_
 
 ---
 
-_Referenced in [astral-sh/ruff#12312](../../astral-sh/ruff/issues/12312.md) on 2024-07-15 06:35_
-
----
-
 _Comment by @yamplum on 2024-08-13 18:14_
 
 Just wanted to raise another voice in support of this feature. It seems like Black supports this style of formatting? https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html#call-chains
@@ -356,10 +336,6 @@ https://github.com/psf/black/issues/67 (I suppose this was the "original")
 
 There's also talk outside of Github on the matter, for example this lonely dude: https://stackoverflow.com/questions/77921369/black-formatting-of-fluent-method-calls
 
-
----
-
-_Referenced in [ebonnal/streamable#49](../../ebonnal/streamable/issues/49.md) on 2025-01-02 12:37_
 
 ---
 
@@ -516,10 +492,6 @@ which is a syntax error, so there's a bug in ruff here.
 
 ---
 
-_Referenced in [astral-sh/ruff#19350](../../astral-sh/ruff/issues/19350.md) on 2025-07-15 10:58_
-
----
-
 _Comment by @alexreinking on 2025-07-28 14:05_
 
 Another example from Halide...
@@ -664,10 +636,6 @@ There's a draft PR exploring this right now in https://github.com/astral-sh/ruff
 _Comment by @laundmo on 2025-12-04 17:02_
 
 Oh very nice! I didnt see any PRs linked, good to know that work is ongoing!
-
----
-
-_Referenced in [astral-sh/ruff#21369](../../astral-sh/ruff/pulls/21369.md) on 2025-12-04 21:56_
 
 ---
 

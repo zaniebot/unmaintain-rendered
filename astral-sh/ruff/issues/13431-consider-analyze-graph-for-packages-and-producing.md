@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-20T21:04:11Z
 updated_at: 2025-10-06T10:49:26Z
 url: https://github.com/astral-sh/ruff/issues/13431
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Consider analyze-graph for packages and producing graph?
@@ -63,19 +63,11 @@ Big +1! I've implemented cycle detection as well (which I assume will eventually
 
 ---
 
-_Referenced in [astral-sh/ruff#15195](../../astral-sh/ruff/issues/15195.md) on 2024-12-30 06:09_
-
----
-
 _Comment by @nickdrozd on 2025-01-06 19:51_
 
 Pyreverse produces import graphs in various formats (Graphviz, Mermaid, etc). It would be useful to have something like that.
 
 https://pylint.readthedocs.io/en/latest/additional_tools/pyreverse/index.html
-
----
-
-_Referenced in [astral-sh/ruff#16205](../../astral-sh/ruff/issues/16205.md) on 2025-02-17 16:33_
 
 ---
 
@@ -112,9 +104,5 @@ Hi! Just came across this thread. I'm the maintainer of [Import Linter](https://
 We're currently working on [a new contract type for Import Linter that detects cycles](https://github.com/seddonym/import-linter/pull/279), may be of interest.
 
 I'm not sure what plans Astral has in this space, but do reach out if you see any opportunities for collaboration!
-
----
-
-_Referenced in [astral-sh/ruff#20736](../../astral-sh/ruff/issues/20736.md) on 2025-11-04 06:48_
 
 ---

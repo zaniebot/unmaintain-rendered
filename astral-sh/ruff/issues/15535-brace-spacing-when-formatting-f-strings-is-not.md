@@ -1,0 +1,50 @@
+```yaml
+number: 15535
+title: Brace spacing when formatting f-strings is not idempotent
+type: issue
+state: closed
+author: dscorbett
+labels:
+  - bug
+  - formatter
+assignees: []
+created_at: 2025-01-16T16:21:08Z
+updated_at: 2025-01-17T08:02:36Z
+url: https://github.com/astral-sh/ruff/issues/15535
+synced_at: 2026-01-10T11:09:57Z
+```
+
+# Brace spacing when formatting f-strings is not idempotent
+
+---
+
+_Issue opened by @dscorbett on 2025-01-16 16:21_
+
+Formatting an f-string is not idempotent in Ruff 0.9.2 for an unparenthesized tuple whose first and only element starts with a brace.
+```console
+$ printf 'f"{ {}, }"\n' | ruff format --isolated -
+f"{ ({},) }"
+
+$ printf 'f"{ {}, }"\n' | ruff format --isolated - | ruff format --isolated -
+f"{({},)}"
+```
+
+---
+
+_Label `formatter` added by @AlexWaygood on 2025-01-16 17:13_
+
+---
+
+_Label `bug` added by @MichaReiser on 2025-01-16 17:16_
+
+---
+
+_Comment by @MichaReiser on 2025-01-16 17:17_
+
+Nice find. Luckily, this should be easy to fix.
+
+---
+
+_Closed by @MichaReiser on 2025-01-17 08:02_
+
+---

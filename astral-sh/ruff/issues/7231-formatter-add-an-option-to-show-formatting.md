@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-08T07:00:45Z
 updated_at: 2023-10-18T11:55:07Z
 url: https://github.com/astral-sh/ruff/issues/7231
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter: Add an option to show formatting changes when running `--check`
@@ -58,10 +58,6 @@ _Renamed from "Formatter: Add `--diff` option to CLI or respect `format` configu
 
 ---
 
-_Referenced in [astral-sh/ruff#1904](../../astral-sh/ruff/issues/1904.md) on 2023-09-18 12:00_
-
----
-
 _Comment by @charliermarsh on 2023-09-22 21:17_
 
 I believe we've settled on `ruff format --diff`, which will have the same semantics as `ruff check --diff` (i.e., it exits with status code 1 if there are any diffs).
@@ -74,14 +70,6 @@ _Label `help wanted` added by @charliermarsh on 2023-09-22 21:17_
 ---
 
 _Assigned to @konstin by @MichaReiser on 2023-09-29 11:22_
-
----
-
-_Referenced in [astral-sh/ruff#7782](../../astral-sh/ruff/issues/7782.md) on 2023-10-03 14:24_
-
----
-
-_Referenced in [astral-sh/ruff#7937](../../astral-sh/ruff/pulls/7937.md) on 2023-10-13 09:31_
 
 ---
 

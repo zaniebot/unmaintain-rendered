@@ -1,0 +1,151 @@
+```yaml
+number: 12902
+title: "ISC001: False positive for comma-separated strings"
+type: issue
+state: closed
+author: MichaReiser
+labels: []
+assignees: []
+created_at: 2024-08-15T09:53:03Z
+updated_at: 2024-08-15T11:31:24Z
+url: https://github.com/astral-sh/ruff/issues/12902
+synced_at: 2026-01-10T11:09:54Z
+```
+
+# ISC001: False positive for comma-separated strings
+
+---
+
+_Issue opened by @MichaReiser on 2024-08-15 09:53_
+
+Not sure if this is the right thread (maybe this should be a new issue), but there is a conflict between ISC001 and Ruff format if the string has a method associated with it.
+
+```
+parcels/tools/exampledata_utils.py:135:13: ISC001 Implicitly concatenated string literals on one line
+    |
+133 |     if dataset not in example_data_files:
+134 |         raise ValueError(
+135 |             f"Dataset {dataset!r} not found. Available datasets are: " ", ".join(example_data_files.keys())
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ISC001
+136 |         )
+```
+
+Of course, those string literals can't be combined because of the join.
+
+_Originally posted by @VeckoTheGecko in https://github.com/astral-sh/ruff/issues/8272#issuecomment-2290988399_
+            
+
+Very basic example:
+
+```python
+ValueError("Dataset {dataset!r} not found. Available datasets are: " ", ".join(example_data_files.keys()))
+```
+
+Flags ISC001 but there's no implicit string concatenation because a comma separates the strings ([playground](https://play.ruff.rs/d7a58ca4-23ab-4fff-a69c-105eabd02f2d)).
+
+---
+
+_Label `bug` added by @MichaReiser on 2024-08-15 09:53_
+
+---
+
+_Comment by @VeckoTheGecko on 2024-08-15 09:54_
+
+Hey thanks! I was just going to make a issue for this :D
+
+```
+ruff --version
+ruff 0.5.6
+```
+
+---
+
+_Label `bug` removed by @MichaReiser on 2024-08-15 09:55_
+
+---
+
+_Comment by @MichaReiser on 2024-08-15 09:58_
+
+@VeckoTheGecko the rule seems correct to me. At least, I don't think your code produces what you want.
+
+Here a more simple example:
+
+```python
+>>> "Dataset not found. Available datasets are: " ", ".join(["a", "b", "c"])
+'aDataset not found. Available datasets are: , bDataset not found. Available datasets are: , c'
+```
+
+I don't think that's what you want. 
+
+The problem is that the `,` is inside of a string. That means, your code contains two strings that are implicitly concatenated.:
+
+```python
+f"Dataset {dataset!r} not found. Available datasets are: " ", ".join(example_data_files.keys())
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ^^^^
+string 1                                                   string 2
+```
+
+
+
+You probably want:
+
+```python
+f"Dataset not found. Available datasets are: '{", ".join(["a", "b", "c"])}'"
+```
+
+(Only works with Python 3.12 or newer)
+
+
+
+
+---
+
+_Comment by @AlexWaygood on 2024-08-15 09:59_
+
+I agree with @MichaReiser; I think Ruff is accurately flagging here that your code isn't doing quite what you thought it did. Another thing that also demonstrates that Ruff's interpretation of the code here is correct is that CPython eagerly merges the two adjacent strings when parsing the AST -- the `.join()` call is a method called on the merged string formed by the implicit concatenation:
+
+```pycon
+>>> import ast
+>>> source = '''ValueError("Dataset {dataset!r} not found. Available datasets are: " ", ".join(example_data_files.keys()))'''
+>>> print(ast.dump(ast.parse(source), indent=2))
+Module(
+  body=[
+    Expr(
+      value=Call(
+        func=Name(id='ValueError', ctx=Load()),
+        args=[
+          Call(
+            func=Attribute(
+              value=Constant(value='Dataset {dataset!r} not found. Available datasets are: , '),
+              attr='join',
+              ctx=Load()),
+            args=[
+              Call(
+                func=Attribute(
+                  value=Name(id='example_data_files', ctx=Load()),
+                  attr='keys',
+                  ctx=Load()),
+                args=[],
+                keywords=[])],
+            keywords=[])],
+        keywords=[]))],
+  type_ignores=[])
+```
+
+---
+
+_Comment by @VeckoTheGecko on 2024-08-15 10:07_
+
+Yes, it's a bug on my end. Thanks for the reply, didn't know implicit concatenation worked like that. Need to be a bit more careful with my multiline implicit concats
+
+---
+
+_Closed by @AlexWaygood on 2024-08-15 10:07_
+
+---
+
+_Comment by @steve-mavens on 2024-08-15 11:31_
+
+@VeckoTheGecko: Honestly, implicit string concatenation is a horrible feature best avoided. But https://peps.python.org/pep-3126/ was rejected, so we have to put up with it.
+
+---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-23T17:52:58Z
 updated_at: 2023-01-04T19:26:28Z
 url: https://github.com/astral-sh/ruff/issues/1353
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Option to enable the fixable errors only?
@@ -56,17 +56,9 @@ At least personally, I'm ok without the `--exit-zero` flag I think. I can ignore
 
 ---
 
-_Referenced in [dropseed/forge#57](../../dropseed/forge/pulls/57.md) on 2022-12-23 19:19_
-
----
-
 _Comment by @charliermarsh on 2022-12-25 05:10_
 
 Maybe it's a flag like `ruff --fix-only` instead of `ruff --fix`?
-
----
-
-_Referenced in [astral-sh/ruff#1375](../../astral-sh/ruff/pulls/1375.md) on 2022-12-25 23:38_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-23T06:19:42Z
 updated_at: 2025-04-23T06:46:19Z
 url: https://github.com/astral-sh/ruff/issues/17572
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Cursor jumps to end of file when formatting files with large tuples
@@ -68,9 +68,5 @@ However, Black Formatter is significantly slower when formatting this file with 
 _Comment by @MichaReiser on 2025-04-23 06:46_
 
 Interesting, nice find. Another possibility here is that using a different diff algorithm when computing the text edits between the formatted and unformatted string might produce better results.
-
----
-
-_Referenced in [astral-sh/ty#71](../../astral-sh/ty/issues/71.md) on 2025-05-05 13:44_
 
 ---

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-03-25T13:11:21Z
 updated_at: 2025-04-01T08:52:11Z
 url: https://github.com/astral-sh/ruff/issues/10570
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Update `PatternMatchMapping` AST node
@@ -66,18 +66,6 @@ _Label `needs-design` added by @dhruvmanila on 2024-03-25 13:11_
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2024-03-25 13:11_
-
----
-
-_Referenced in [astral-sh/ruff#10477](../../astral-sh/ruff/pulls/10477.md) on 2024-03-25 13:11_
-
----
-
-_Referenced in [astral-sh/ruff#10653](../../astral-sh/ruff/issues/10653.md) on 2024-03-29 07:59_
-
----
-
-_Referenced in [astral-sh/ruff#11267](../../astral-sh/ruff/pulls/11267.md) on 2024-05-06 16:48_
 
 ---
 

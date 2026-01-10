@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-12-11T23:49:53Z
 updated_at: 2025-10-07T21:19:33Z
 url: https://github.com/astral-sh/ruff/issues/1203
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Respect pylint ignore directives
@@ -58,10 +58,6 @@ _Comment by @joshuachapnick-bc on 2023-01-02 13:55_
 
 ---
 
-_Referenced in [astral-sh/ruff#689](../../astral-sh/ruff/issues/689.md) on 2023-01-17 12:53_
-
----
-
 _Comment by @charliermarsh on 2023-01-17 12:58_
 
 I think there are two pieces here:
@@ -92,10 +88,6 @@ In the case of replacing pylint entirely with ruff, there could simply be a rule
 
 ---
 
-_Referenced in [astral-sh/ruff#970](../../astral-sh/ruff/issues/970.md) on 2023-01-30 15:06_
-
----
-
 _Comment by @spaceone on 2023-01-30 15:10_
 
 A fixer which transforms the pylint-comments into ruff noqa-comments would be helpful.
@@ -119,10 +111,6 @@ _Comment by @StefanKX on 2024-01-16 06:24_
 
 ---
 
-_Referenced in [astral-sh/ruff#10142](../../astral-sh/ruff/issues/10142.md) on 2024-02-27 08:13_
-
----
-
 _Comment by @kaddkaka on 2024-02-27 09:06_
 
 > A fixer which transforms the pylint-comments into ruff noqa-comments would be helpful.
@@ -142,10 +130,6 @@ Pylint disable support rule names. Without rule names, this lowers the value of 
 After this transformation the next person arriving at the code will not easily understand why the disable is there.
 
 After ruff adopts #1773 "human-friendly rules names", this transformation feels more attractive. 
-
----
-
-_Referenced in [astral-sh/ruff#10439](../../astral-sh/ruff/issues/10439.md) on 2024-03-17 21:42_
 
 ---
 
@@ -172,10 +156,6 @@ _Comment by @gsemet on 2025-01-02 09:47_
 
 If you really want ruff to be a must have in enterprise, you would indeed support pylint, bandit, flake8 in-code exception directly.
 But if you really want to hit a score for sensitive code, you would provide a way to support “justification comments” to describe why this rules is disabled in this place. This would need to be reported in the report file as “violation with justification”.
-
----
-
-_Referenced in [astral-sh/ruff#16630](../../astral-sh/ruff/issues/16630.md) on 2025-03-12 09:12_
 
 ---
 

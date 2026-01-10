@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-05T13:35:39Z
 updated_at: 2024-05-05T13:41:54Z
 url: https://github.com/astral-sh/ruff/issues/11290
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Feature request: include isort `line_length` option (to allow decouping of linting from formatting)
@@ -77,9 +77,5 @@ _Comment by @rwarren on 2024-05-05 13:41_
 I think this is because I landed here after finding #4048 (about `use_parentheses`) and re-targeted the report while writing it.
 
 Rationale here is basically in support of #3206. Shall I move the text over there?
-
----
-
-_Referenced in [astral-sh/ruff#3206](../../astral-sh/ruff/issues/3206.md) on 2024-05-05 13:58_
 
 ---

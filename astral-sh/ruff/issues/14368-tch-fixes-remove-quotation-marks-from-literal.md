@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-15T19:36:33Z
 updated_at: 2024-11-16T17:58:04Z
 url: https://github.com/astral-sh/ruff/issues/14368
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # TCH fixes remove quotation marks from `Literal` strings
@@ -107,10 +107,6 @@ def f(x: "Sequence[Literal['1']]") -> bool:
 ---
 
 _Assigned to @dylwil3 by @dylwil3 on 2024-11-15 21:53_
-
----
-
-_Referenced in [astral-sh/ruff#14371](../../astral-sh/ruff/pulls/14371.md) on 2024-11-15 22:11_
 
 ---
 

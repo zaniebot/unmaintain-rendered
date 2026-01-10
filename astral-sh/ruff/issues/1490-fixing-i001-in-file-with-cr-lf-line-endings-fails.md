@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-30T23:34:14Z
 updated_at: 2022-12-31T12:37:28Z
 url: https://github.com/astral-sh/ruff/issues/1490
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T12:05:29Z
 ```
 
 # Fixing I001 in file with Cr Lf line endings fails after 100 iterations
@@ -87,14 +87,6 @@ Example: a properly sorted file is still continously fixed:
 `echo -e -n 'import os\r\nimport sys\r\n' | cargo run -- - --select I001 --fix`
 
 I'll prepare a fix and some tests to prevent in this in the future.
-
----
-
-_Referenced in [astral-sh/ruff#1501](../../astral-sh/ruff/pulls/1501.md) on 2022-12-31 08:00_
-
----
-
-_Referenced in [astral-sh/ruff#1504](../../astral-sh/ruff/pulls/1504.md) on 2022-12-31 08:16_
 
 ---
 

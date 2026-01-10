@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-04T07:07:17Z
 updated_at: 2023-08-04T16:08:38Z
 url: https://github.com/astral-sh/ruff/issues/6329
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # [Linter panic] --select=D203
@@ -60,10 +60,6 @@ Thanks! Here's an MRE:
 def test_class(self):
     class C: "New-style class"
 ```
-
----
-
-_Referenced in [astral-sh/ruff#6344](../../astral-sh/ruff/pulls/6344.md) on 2023-08-04 15:27_
 
 ---
 

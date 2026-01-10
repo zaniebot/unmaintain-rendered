@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-29T12:51:45Z
 updated_at: 2022-12-09T22:50:07Z
 url: https://github.com/astral-sh/ruff/issues/960
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:14Z
 ```
 
 # F821 when using `global` 
@@ -98,9 +98,5 @@ This actually got fixed in #1154!
 ---
 
 _Closed by @charliermarsh on 2022-12-09 22:50_
-
----
-
-_Referenced in [strawberry-graphql/strawberry#2395](../../strawberry-graphql/strawberry/pulls/2395.md) on 2022-12-12 15:45_
 
 ---

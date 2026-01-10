@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-30T00:45:32Z
 updated_at: 2023-01-30T02:16:20Z
 url: https://github.com/astral-sh/ruff/issues/2334
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Another TRY201 false positive
@@ -41,10 +41,6 @@ except (ValueError, KeyError) as e:
 Run it with `ruff 0.0.237` and `TRY201` enabled and you will get `test.py:14:19: TRY201 Use `raise` without specifying exception name`
 
 This is a false positive as doing `raise` alone would raise the `TypeError`.
-
----
-
-_Referenced in [astral-sh/ruff#2337](../../astral-sh/ruff/pulls/2337.md) on 2023-01-30 01:02_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-02T18:35:40Z
 updated_at: 2023-11-02T17:01:36Z
 url: https://github.com/astral-sh/ruff/issues/7066
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter collapses parenthesized if-expression
@@ -117,10 +117,6 @@ It would be nice to map this behavior to code in Black to better understand the 
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-09-03 15:29_
-
----
-
-_Referenced in [astral-sh/ruff#7082](../../astral-sh/ruff/pulls/7082.md) on 2023-09-03 15:30_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-09T08:19:34Z
 updated_at: 2025-03-13T14:37:40Z
 url: https://github.com/astral-sh/ruff/issues/15368
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Rename `flake8-builtins` options to remove the "builtins" prefix
@@ -30,10 +30,6 @@ Although we _can_ tackle this in 0.9 release, I'd say we do the rename (maintain
 ---
 
 _Label `configuration` added by @dhruvmanila on 2025-01-09 08:19_
-
----
-
-_Referenced in [astral-sh/ruff#15348](../../astral-sh/ruff/pulls/15348.md) on 2025-01-09 08:20_
 
 ---
 
@@ -58,10 +54,6 @@ _Comment by @AlexWaygood on 2025-01-09 13:21_
 Yeah, the backwards incompatibility issue was why I didn't rename the setting at the same time as the rule (but I also didn't think hard about it; thanks @dhruvmanila for bringing this up!).
 
 I agree that we should probably change the name of all settings together (the `builtins-` prefix is redundant), and going through a deprecation period. Let's add the new names for the settings (and add a deprecation message for the old ones) in the next patch release after v0.9. We can then add a hard error on using the old names for the settings from v0.11.0.
-
----
-
-_Referenced in [astral-sh/ruff#16092](../../astral-sh/ruff/pulls/16092.md) on 2025-02-11 01:51_
 
 ---
 

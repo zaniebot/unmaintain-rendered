@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-15T10:40:13Z
 updated_at: 2024-05-07T17:33:24Z
 url: https://github.com/astral-sh/ruff/issues/8691
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # F401 false positive with global
@@ -64,9 +64,5 @@ _Comment by @lgammo on 2024-05-07 17:33_
 Any language processor that applies language rules to fix a program in that language has to understand the semantics of that language. Thus, for ruff to ignore the semantics of global declarations indicates that ruff is indeed rough, and not to be trusted.
 
 You can't say tough don't use globals. This type of fixes should definitely be made unsafe, but better still if global semantics were understood by ruff.
-
----
-
-_Referenced in [astral-sh/ruff#11518](../../astral-sh/ruff/issues/11518.md) on 2024-05-23 18:04_
 
 ---

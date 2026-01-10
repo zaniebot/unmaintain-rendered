@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-09T08:45:10Z
 updated_at: 2024-10-16T11:39:56Z
 url: https://github.com/astral-sh/ruff/issues/13688
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] Compare expression inference - Tuple
@@ -30,14 +30,6 @@ _Label `red-knot` added by @dhruvmanila on 2024-10-09 08:49_
 ---
 
 _Assigned to @cake-monotone by @MichaReiser on 2024-10-09 09:18_
-
----
-
-_Referenced in [astral-sh/ruff#13618](../../astral-sh/ruff/issues/13618.md) on 2024-10-09 09:19_
-
----
-
-_Referenced in [astral-sh/ruff#13712](../../astral-sh/ruff/pulls/13712.md) on 2024-10-11 06:48_
 
 ---
 

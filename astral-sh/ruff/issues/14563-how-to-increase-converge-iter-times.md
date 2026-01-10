@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-24T04:56:16Z
 updated_at: 2025-01-19T16:43:58Z
 url: https://github.com/astral-sh/ruff/issues/14563
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # How to increase converge iter times
@@ -197,10 +197,6 @@ Okay. I think the main issue here isn't about sorting, but that there are too ma
 _Comment by @charliermarsh on 2024-12-06 02:57_
 
 Yeah, it _is_ possible to hit the iteration limit naturally. We could consider making it larger...? Like, 1000 would not be totally unreasonable.
-
----
-
-_Referenced in [astral-sh/ruff#15182](../../astral-sh/ruff/issues/15182.md) on 2024-12-30 08:23_
 
 ---
 

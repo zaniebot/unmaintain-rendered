@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-03T05:18:04Z
 updated_at: 2023-02-10T04:16:51Z
 url: https://github.com/astral-sh/ruff/issues/2514
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Remove public API in `lib_native.rs`?
@@ -24,10 +24,6 @@ Undecided, but up for consideration. We don't officially support a public or sta
 ---
 
 _Label `question` added by @charliermarsh on 2023-02-03 05:18_
-
----
-
-_Referenced in [astral-sh/ruff#2709](../../astral-sh/ruff/pulls/2709.md) on 2023-02-10 04:07_
 
 ---
 

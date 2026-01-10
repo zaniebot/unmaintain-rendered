@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-22T12:47:56Z
 updated_at: 2023-07-26T11:48:02Z
 url: https://github.com/astral-sh/ruff/issues/5976
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Hang on multiline nested f-string missing placeholder with CRLF line endings
@@ -126,9 +126,5 @@ Looks to be fixed after the merge of https://github.com/astral-sh/ruff/pull/6012
 ---
 
 _Closed by @DanGonite57 on 2023-07-26 11:48_
-
----
-
-_Referenced in [astral-sh/ruff#17040](../../astral-sh/ruff/issues/17040.md) on 2025-03-28 17:16_
 
 ---

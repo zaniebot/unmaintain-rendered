@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-30T04:25:59Z
 updated_at: 2024-10-07T07:39:34Z
 url: https://github.com/astral-sh/ruff/issues/3807
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # False positive for `PD011` when `pd` does not exist in module
@@ -103,9 +103,5 @@ This is related to https://github.com/astral-sh/ruff/issues/6432. I'll merge the
 ---
 
 _Closed by @MichaReiser on 2024-10-07 07:39_
-
----
-
-_Referenced in [astral-sh/ruff#14671](../../astral-sh/ruff/pulls/14671.md) on 2024-11-29 07:33_
 
 ---

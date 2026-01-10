@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-01T13:37:40Z
 updated_at: 2023-09-15T07:31:35Z
 url: https://github.com/astral-sh/ruff/issues/7043
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Add support for PEP 701 in the parser
@@ -41,14 +41,6 @@ _Label `python312` added by @dhruvmanila on 2023-09-01 13:37_
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2023-09-01 13:37_
-
----
-
-_Referenced in [astral-sh/ruff#7041](../../astral-sh/ruff/pulls/7041.md) on 2023-09-01 13:38_
-
----
-
-_Referenced in [astral-sh/ruff#6502](../../astral-sh/ruff/issues/6502.md) on 2023-09-01 13:38_
 
 ---
 

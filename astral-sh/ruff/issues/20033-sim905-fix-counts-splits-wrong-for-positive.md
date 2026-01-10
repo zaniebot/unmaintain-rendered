@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-21T20:21:49Z
 updated_at: 2025-09-18T20:56:36Z
 url: https://github.com/astral-sh/ruff/issues/20033
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # SIM905 fix counts splits wrong for positive `maxsplit` and unspecified `sep`
@@ -49,10 +49,6 @@ _Label `bug` added by @ntBre on 2025-08-21 23:58_
 ---
 
 _Label `fixes` added by @ntBre on 2025-08-21 23:58_
-
----
-
-_Referenced in [astral-sh/ruff#20056](../../astral-sh/ruff/pulls/20056.md) on 2025-08-23 15:03_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-20T06:05:18Z
 updated_at: 2024-11-28T12:58:24Z
 url: https://github.com/astral-sh/ruff/issues/13829
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [preview] FURB118 can be unsafe for methods
@@ -111,10 +111,6 @@ This might possibly be addressed by https://github.com/astral-sh/ruff/issues/735
 ---
 
 _Assigned to @AlexWaygood by @AlexWaygood on 2024-11-21 17:29_
-
----
-
-_Referenced in [astral-sh/ruff#14639](../../astral-sh/ruff/pulls/14639.md) on 2024-11-27 17:52_
 
 ---
 

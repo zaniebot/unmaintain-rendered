@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-30T08:43:01Z
 updated_at: 2024-02-15T16:02:49Z
 url: https://github.com/astral-sh/ruff/issues/2342
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # F722 and F821 errors reported using typing annotations.
@@ -129,9 +129,5 @@ For future visitors, the solution above will throw a warning `warning: The top-l
 [tool.ruff.lint]
 typing-modules = ["colour.hints"]
 ```
-
----
-
-_Referenced in [beartype/beartype#326](../../beartype/beartype/issues/326.md) on 2024-02-15 16:05_
 
 ---

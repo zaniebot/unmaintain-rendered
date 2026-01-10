@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-10T01:11:55Z
 updated_at: 2023-08-10T14:20:11Z
 url: https://github.com/astral-sh/ruff/issues/6466
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # type-comparison (E721) doesn't work on classes with a method called `type`
@@ -39,10 +39,6 @@ since `type` does not refer to the shadowed method (to do that you would need to
 ---
 
 _Label `bug` added by @charliermarsh on 2023-08-10 02:23_
-
----
-
-_Referenced in [astral-sh/ruff#6468](../../astral-sh/ruff/pulls/6468.md) on 2023-08-10 02:23_
 
 ---
 

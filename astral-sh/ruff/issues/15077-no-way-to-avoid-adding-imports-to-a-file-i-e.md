@@ -1,0 +1,76 @@
+```yaml
+number: 15077
+title: "No way to avoid adding imports to a file (i.e. \"isort: dont-add-imports\")"
+type: issue
+state: closed
+author: chrisburr
+labels:
+  - question
+assignees: []
+created_at: 2024-12-20T09:57:00Z
+updated_at: 2024-12-21T13:50:53Z
+url: https://github.com/astral-sh/ruff/issues/15077
+synced_at: 2026-01-10T11:09:56Z
+```
+
+# No way to avoid adding imports to a file (i.e. "isort: dont-add-imports")
+
+---
+
+_Issue opened by @chrisburr on 2024-12-20 09:57_
+
+In my project there are a couple of files where `from __future__ import annotations` can't be used due to upstream bugs but we want to enforce the future import for all other files.
+
+As it stands there doesn't seem to be a way to do this in ruff.
+
+When using isort `# isort: dont-add-imports` can be used, however ruff ignores this option:
+
+```bash
+$ echo '# isort: dont-add-imports' > test.py; echo '' >> test.py; echo 'x: int = 5' >> test.py
+$ ruff check --config lint.select='["I"]' --config lint.isort.required-imports='["from __future__ import annotations"]' --fix test.py
+Found 1 error (1 fixed, 0 remaining).
+$ cat test.py
+# isort: dont-add-imports
+from __future__ import annotations
+
+x: int = 5
+```
+
+---
+
+_Comment by @chrisburr on 2024-12-20 10:09_
+
+After posting this I realised I can get what I need with:
+
+```toml
+[tool.ruff.lint.extend-per-file-ignores]
+"my/problematic/file.py" = ["I002"]
+```
+
+---
+
+_Comment by @dylwil3 on 2024-12-20 21:11_
+
+Glad that config worked for you! You can also add
+
+```python
+# ruff: noqa: I002
+```
+
+at the top of any file where you'd like to ignore the rule. For more info [see here](https://docs.astral.sh/ruff/linter/#error-suppression).
+
+---
+
+_Label `question` added by @dylwil3 on 2024-12-20 21:12_
+
+---
+
+_Comment by @MichaReiser on 2024-12-21 13:50_
+
+It looks like you found a solution for your problem. If not, feel free to comment and we can re-open this issue
+
+---
+
+_Closed by @MichaReiser on 2024-12-21 13:50_
+
+---

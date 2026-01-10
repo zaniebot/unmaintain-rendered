@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-09-30T15:32:32Z
 updated_at: 2025-09-30T15:32:32Z
 url: https://github.com/astral-sh/ruff/issues/20648
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Move diff rendering into `annotate-snippets`
@@ -46,9 +46,5 @@ _Label `needs-design` added by @ntBre on 2025-09-30 15:32_
 ---
 
 _Label `diagnostics` added by @ntBre on 2025-09-30 15:32_
-
----
-
-_Referenced in [astral-sh/ruff#20649](../../astral-sh/ruff/issues/20649.md) on 2025-09-30 15:58_
 
 ---

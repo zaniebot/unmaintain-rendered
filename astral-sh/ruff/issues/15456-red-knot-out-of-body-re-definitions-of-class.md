@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-13T13:52:33Z
 updated_at: 2025-01-22T09:42:49Z
 url: https://github.com/astral-sh/ruff/issues/15456
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Out-of-body (re-)definitions of class variables
@@ -70,18 +70,10 @@ Okay, I have updated the description.
 
 ---
 
-_Referenced in [astral-sh/ruff#15613](../../astral-sh/ruff/pulls/15613.md) on 2025-01-20 10:46_
-
----
-
 _Closed by @sharkdp on 2025-01-22 09:42_
 
 ---
 
 _Closed by @sharkdp on 2025-01-22 09:42_
-
----
-
-_Referenced in [astral-sh/ruff#14164](../../astral-sh/ruff/issues/14164.md) on 2025-01-27 14:38_
 
 ---

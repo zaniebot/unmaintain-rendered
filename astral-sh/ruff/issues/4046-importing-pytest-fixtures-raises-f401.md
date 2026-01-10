@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-04-20T13:31:27Z
 updated_at: 2023-04-27T21:38:13Z
 url: https://github.com/astral-sh/ruff/issues/4046
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # importing pytest fixtures raises F401
@@ -124,29 +124,5 @@ Today, `F401` autofixes wiped away my fixture imports a few times.  I can think 
 3. Place `F401` in `unfixable` aspect of config
 
 I went with option 3, marking `F401` as `unfixable`.
-
----
-
-_Referenced in [astral-sh/ruff#2044](../../astral-sh/ruff/issues/2044.md) on 2023-07-05 21:47_
-
----
-
-_Referenced in [hgrecco/pint-pandas#193](../../hgrecco/pint-pandas/issues/193.md) on 2023-07-05 23:10_
-
----
-
-_Referenced in [mandiant/capa#1592](../../mandiant/capa/issues/1592.md) on 2023-07-07 09:03_
-
----
-
-_Referenced in [astral-sh/ruff#10662](../../astral-sh/ruff/issues/10662.md) on 2024-03-30 00:47_
-
----
-
-_Referenced in [flexcompute/Flow360#242](../../flexcompute/Flow360/pulls/242.md) on 2024-04-17 09:03_
-
----
-
-_Referenced in [acdh-oeaw/rdfproxy#21](../../acdh-oeaw/rdfproxy/pulls/21.md) on 2024-07-26 20:23_
 
 ---

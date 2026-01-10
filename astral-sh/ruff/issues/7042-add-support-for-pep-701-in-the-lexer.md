@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-01T13:28:39Z
 updated_at: 2023-09-15T07:30:16Z
 url: https://github.com/astral-sh/ruff/issues/7042
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Add support for PEP 701 in the lexer
@@ -30,10 +30,6 @@ Some of the error handling which was previously done in the parser will need to 
 
 ---
 
-_Referenced in [astral-sh/ruff#6502](../../astral-sh/ruff/issues/6502.md) on 2023-09-01 13:28_
-
----
-
 _Renamed from "Update the lexer to emit new tokens (, , )" to "Add support for PEP 701 in the lexer" by @dhruvmanila on 2023-09-01 13:29_
 
 ---
@@ -42,19 +38,11 @@ _Assigned to @dhruvmanila by @dhruvmanila on 2023-09-01 13:32_
 
 ---
 
-_Referenced in [astral-sh/ruff#6659](../../astral-sh/ruff/pulls/6659.md) on 2023-09-01 13:33_
-
----
-
 _Label `parser` added by @dhruvmanila on 2023-09-01 13:34_
 
 ---
 
 _Label `python312` added by @dhruvmanila on 2023-09-01 13:34_
-
----
-
-_Referenced in [astral-sh/ruff#7043](../../astral-sh/ruff/issues/7043.md) on 2023-09-01 13:37_
 
 ---
 

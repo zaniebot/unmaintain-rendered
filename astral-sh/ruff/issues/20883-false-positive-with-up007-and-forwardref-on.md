@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-15T06:09:37Z
 updated_at: 2025-10-16T13:50:03Z
 url: https://github.com/astral-sh/ruff/issues/20883
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # False positive with `UP007` and `ForwardRef` on python 3.10
@@ -38,10 +38,6 @@ I know you're not really supposed to instantiate `ForwardRef` yourself, so you m
 ### Version
 
 ruff 0.14.0 (beea8cdfe 2025-10-07)
-
----
-
-_Referenced in [HypothesisWorks/hypothesis#4558](../../HypothesisWorks/hypothesis/pulls/4558.md) on 2025-10-15 06:10_
 
 ---
 

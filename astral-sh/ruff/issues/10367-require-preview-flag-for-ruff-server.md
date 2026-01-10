@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-12T17:36:31Z
 updated_at: 2024-03-13T23:52:46Z
 url: https://github.com/astral-sh/ruff/issues/10367
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Require `--preview` flag for `ruff server`
@@ -35,10 +35,6 @@ _Label `server` added by @snowsignal on 2024-03-12 17:36_
 ---
 
 _Label `preview` added by @snowsignal on 2024-03-12 17:37_
-
----
-
-_Referenced in [astral-sh/ruff#10368](../../astral-sh/ruff/pulls/10368.md) on 2024-03-12 17:48_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-04T08:11:36Z
 updated_at: 2025-04-06T17:09:58Z
 url: https://github.com/astral-sh/ruff/issues/17195
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] 'Reset' functionality for the playground
@@ -50,10 +50,6 @@ _Comment by @AlexWaygood on 2025-04-04 11:21_
 > but I don't think anyone's writing playgrounds on mobile anyway
 
 I actually did this quite a lot with mypy-playground, which is quite mobile-friendly: it was a great way to triage mypy issues while travelling. But it's quite hard to write code in the Ruff and red-knot playgrounds, so I generally don't use them at all on my phone right now
-
----
-
-_Referenced in [astral-sh/ruff#17236](../../astral-sh/ruff/pulls/17236.md) on 2025-04-06 17:00_
 
 ---
 

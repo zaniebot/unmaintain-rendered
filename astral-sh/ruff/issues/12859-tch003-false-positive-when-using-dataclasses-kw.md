@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-13T12:54:45Z
 updated_at: 2024-09-19T10:41:49Z
 url: https://github.com/astral-sh/ruff/issues/12859
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # TCH003 false-positive when using dataclasses.KW_ONLY
@@ -72,10 +72,6 @@ So probably somewhat rare (but should be fixed).
 
 ---
 
-_Referenced in [astral-sh/ruff#12863](../../astral-sh/ruff/pulls/12863.md) on 2024-08-13 15:24_
-
----
-
 _Closed by @charliermarsh on 2024-08-13 18:34_
 
 ---
@@ -101,9 +97,5 @@ strict = true
 ```
 
 because that way I can use new `typing` features without having to pay attention that they are imported from `typing_extensions` or in a `if TYPE_CHECKING` block for backwards compatibility. They just always are in there.
-
----
-
-_Referenced in [astral-sh/ruff#21121](../../astral-sh/ruff/issues/21121.md) on 2025-10-29 04:51_
 
 ---

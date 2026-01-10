@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-01T11:10:35Z
 updated_at: 2024-07-29T13:05:06Z
 url: https://github.com/astral-sh/ruff/issues/8402
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Pack of fuzzer Autofix/Infinite loop errors [2]
@@ -424,26 +424,6 @@ _Label `bug` added by @dhruvmanila on 2023-11-01 12:47_
 
 ---
 
-_Referenced in [astral-sh/ruff#8433](../../astral-sh/ruff/pulls/8433.md) on 2023-11-02 03:20_
-
----
-
-_Referenced in [astral-sh/ruff#8434](../../astral-sh/ruff/pulls/8434.md) on 2023-11-02 03:23_
-
----
-
-_Referenced in [astral-sh/ruff#8450](../../astral-sh/ruff/pulls/8450.md) on 2023-11-03 00:49_
-
----
-
-_Referenced in [astral-sh/ruff#8462](../../astral-sh/ruff/pulls/8462.md) on 2023-11-03 04:59_
-
----
-
-_Referenced in [astral-sh/ruff#8495](../../astral-sh/ruff/pulls/8495.md) on 2023-11-05 11:07_
-
----
-
 _Comment by @qarmin on 2023-11-14 17:48_
 
 Ruff 0.1.5 (latest changes from main branch)
@@ -686,14 +666,6 @@ class _RouteMethod(Enum):
 
 ---
 
-_Referenced in [astral-sh/ruff#8713](../../astral-sh/ruff/issues/8713.md) on 2023-11-16 04:14_
-
----
-
-_Referenced in [astral-sh/ruff#8730](../../astral-sh/ruff/pulls/8730.md) on 2023-11-17 01:03_
-
----
-
 _Comment by @qarmin on 2024-01-30 07:08_
 
 Ruff 0.1.5 (latest changes from main branch)
@@ -729,10 +701,6 @@ __all__ = (
 _Comment by @MichaReiser on 2024-01-30 07:11_
 
 @AlexWaygood you might be interested in the above `__all__` edge case.
-
----
-
-_Referenced in [astral-sh/ruff#7455](../../astral-sh/ruff/issues/7455.md) on 2024-01-30 07:15_
 
 ---
 
@@ -899,25 +867,9 @@ class BNode (object) :
 
 ---
 
-_Referenced in [astral-sh/ruff#9698](../../astral-sh/ruff/pulls/9698.md) on 2024-01-30 09:43_
-
----
-
-_Referenced in [astral-sh/ruff#8074](../../astral-sh/ruff/issues/8074.md) on 2024-01-30 10:59_
-
----
-
 _Comment by @charliermarsh on 2024-01-30 13:56_
 
 @diceroll123 - Are you interested in taking a look at some of the `RET` and `SIM` issues in the last few comments? They might be related to your recent fixes.
-
----
-
-_Referenced in [astral-sh/ruff#9704](../../astral-sh/ruff/pulls/9704.md) on 2024-01-30 14:32_
-
----
-
-_Referenced in [astral-sh/ruff#9705](../../astral-sh/ruff/pulls/9705.md) on 2024-01-30 14:49_
 
 ---
 
@@ -995,10 +947,6 @@ class IfrArray (object):
 ```
 [python_compressed.zip](https://github.com/astral-sh/ruff/files/14357539/python_compressed.zip)
 
-
----
-
-_Referenced in [astral-sh/ruff#10074](../../astral-sh/ruff/pulls/10074.md) on 2024-02-21 21:42_
 
 ---
 

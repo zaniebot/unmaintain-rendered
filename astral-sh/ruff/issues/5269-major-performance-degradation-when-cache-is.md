@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-06-21T20:05:19Z
 updated_at: 2023-06-22T19:15:07Z
 url: https://github.com/astral-sh/ruff/issues/5269
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Major performance degradation when cache is enabled on 0.0.274
@@ -145,10 +145,6 @@ _Label `performance` added by @MichaReiser on 2023-06-21 20:43_
 _Comment by @charliermarsh on 2023-06-21 20:44_
 
 Oh, thank you so much for doing that! That's really helpful to hear. I probably won't release tonight (just a little drained from yesterday's release cycle), but before the end of the week.
-
----
-
-_Referenced in [astral-sh/ruff#5267](../../astral-sh/ruff/pulls/5267.md) on 2023-06-21 21:07_
 
 ---
 

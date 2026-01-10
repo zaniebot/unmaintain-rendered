@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-22T14:46:20Z
 updated_at: 2023-05-22T16:41:20Z
 url: https://github.com/astral-sh/ruff/issues/4580
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Autofix PYI009 errors
@@ -47,10 +47,6 @@ _Label `autofix` added by @charliermarsh on 2023-05-22 15:04_
 _Comment by @qdegraaf on 2023-05-22 15:21_
 
 I would like to try a first autofix. I'll see if I can give this a go.
-
----
-
-_Referenced in [astral-sh/ruff#4583](../../astral-sh/ruff/pulls/4583.md) on 2023-05-22 15:46_
 
 ---
 

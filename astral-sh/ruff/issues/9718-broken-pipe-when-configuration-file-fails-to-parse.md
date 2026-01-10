@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-01-30T20:04:47Z
 updated_at: 2024-02-08T17:33:32Z
 url: https://github.com/astral-sh/ruff/issues/9718
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Broken pipe when configuration file fails to parse
@@ -140,10 +140,6 @@ process.wait()
 ```
 
 Do you have a reproducible example?
-
----
-
-_Referenced in [astral-sh/ruff#9719](../../astral-sh/ruff/issues/9719.md) on 2024-01-30 20:47_
 
 ---
 

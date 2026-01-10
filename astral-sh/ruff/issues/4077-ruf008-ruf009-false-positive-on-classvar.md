@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-24T13:45:01Z
 updated_at: 2023-04-24T23:58:32Z
 url: https://github.com/astral-sh/ruff/issues/4077
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # RUF008/RUF009 False positive on ClassVar
@@ -86,10 +86,6 @@ _Label `bug` added by @charliermarsh on 2023-04-24 15:26_
 ---
 
 _Assigned to @dhruvmanila by @charliermarsh on 2023-04-24 15:26_
-
----
-
-_Referenced in [astral-sh/ruff#4081](../../astral-sh/ruff/pulls/4081.md) on 2023-04-24 15:48_
 
 ---
 

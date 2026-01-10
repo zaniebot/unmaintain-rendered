@@ -1,0 +1,114 @@
+```yaml
+number: 17197
+title: "Don't trigger SLF001 on access to a class member from an instance of the class"
+type: issue
+state: open
+author: cbornet
+labels:
+  - rule
+assignees: []
+created_at: 2025-04-04T10:33:50Z
+updated_at: 2025-12-08T18:23:28Z
+url: https://github.com/astral-sh/ruff/issues/17197
+synced_at: 2026-01-10T11:09:58Z
+```
+
+# Don't trigger SLF001 on access to a class member from an instance of the class
+
+---
+
+_Issue opened by @cbornet on 2025-04-04 10:33_
+
+### Summary
+
+SLF001 triggers for this code:
+```python
+class A:
+    def _foo(self):
+        do_something()
+
+    def is_foo_overridden(self):
+        """Returns true if the subclass of A overrides the _foo method."""
+        return type(self)._foo is A._foo  # SLF001
+```
+
+It would be nice if it didn't trigger.
+
+
+---
+
+_Comment by @trag1c on 2025-04-04 10:40_
+
+This doesn't trigger SLF001 (the rule is about private member access, maybe you're thinking of something else?). Matter of fact there are zero violations on that line for latest ruff release with `--select ALL --preview` 😅
+
+---
+
+_Comment by @cbornet on 2025-04-04 11:08_
+
+Sorry, I meant `_foo`, not `foo`.
+Will update the description.
+
+---
+
+_Label `bug` added by @ntBre on 2025-04-04 18:04_
+
+---
+
+_Comment by @ntBre on 2025-04-04 18:04_
+
+This looks like it could be a further extension to the work in https://github.com/astral-sh/ruff/pull/16149.
+
+---
+
+_Label `bug` removed by @MichaReiser on 2025-04-05 07:27_
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-04-05 07:27_
+
+---
+
+_Comment by @tpoliaw on 2025-12-08 18:23_
+
+This appears to also cause problems when using Self or `"StringName"` to avoid dependency issues, eg
+
+```python
+from typing import Self
+
+class Foo:
+    def __init__(self, bar: int):
+        self._bar = bar
+    def stringed(self, other: "Foo") -> int:
+        return self._bar + other._bar
+    def selfed(self, other: Self) -> int:
+        return self._bar + other._bar
+```
+Running `uvx ruff check --select SLF001 /tmp/demo.py` gives
+
+```
+SLF001 Private member accessed: `_bar`
+ --> /tmp/demo.py:7:28
+  |
+5 |         self._bar = bar
+6 |     def stringed(self, other: "Foo") -> int:
+7 |         return self._bar + other._bar
+  |                            ^^^^^^^^^^
+8 |     def selfed(self, other: Self) -> int:
+9 |         return self._bar + other._bar
+  |
+
+SLF001 Private member accessed: `_bar`
+ --> /tmp/demo.py:9:28
+  |
+7 |         return self._bar + other._bar
+8 |     def selfed(self, other: Self) -> int:
+9 |         return self._bar + other._bar
+  |                            ^^^^^^^^^^
+  |
+
+Found 2 errors.
+```
+
+where I wouldn't expect either to give errors
+
+---

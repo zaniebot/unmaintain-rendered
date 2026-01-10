@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-05-11T21:23:36Z
 updated_at: 2023-05-11T22:00:56Z
 url: https://github.com/astral-sh/ruff/issues/4382
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # False positives for some methods of lists for boolean trap rule FBT003
@@ -46,10 +46,6 @@ Thank you!
 
 ---
 
-_Referenced in [astral-sh/ruff#4385](../../astral-sh/ruff/pulls/4385.md) on 2023-05-11 21:49_
-
----
-
 _Closed by @charliermarsh on 2023-05-11 21:55_
 
 ---
@@ -63,9 +59,5 @@ Wow, that was quick!  Thank you for fixing it!
 _Comment by @charliermarsh on 2023-05-11 22:00_
 
 No prob, it's an easy one :)
-
----
-
-_Referenced in [astral-sh/ruff#10485](../../astral-sh/ruff/issues/10485.md) on 2024-03-20 14:38_
 
 ---

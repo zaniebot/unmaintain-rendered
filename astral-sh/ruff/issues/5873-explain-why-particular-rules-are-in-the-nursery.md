@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-18T22:47:24Z
 updated_at: 2024-05-12T20:33:41Z
 url: https://github.com/astral-sh/ruff/issues/5873
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Explain why particular rules are in the nursery category
@@ -79,10 +79,6 @@ _Label `help wanted` added by @zanieb on 2023-07-19 00:26_
 ---
 
 _Label `documentation` added by @charliermarsh on 2023-07-19 01:23_
-
----
-
-_Referenced in [astral-sh/ruff#5879](../../astral-sh/ruff/pulls/5879.md) on 2023-07-19 10:34_
 
 ---
 

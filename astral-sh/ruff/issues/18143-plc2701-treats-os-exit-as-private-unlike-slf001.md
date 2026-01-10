@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-16T20:46:53Z
 updated_at: 2025-05-18T18:20:02Z
 url: https://github.com/astral-sh/ruff/issues/18143
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # PLC2701 treats `os._exit` as private, unlike SLF001
@@ -57,9 +57,5 @@ Are there any situations where we would need to expand on this?
 _Comment by @dscorbett on 2025-05-18 18:20_
 
 That solution could work. There are other underscore-initial public module members in the standard library, though, so the list will probably be expanded at some point.
-
----
-
-_Referenced in [astral-sh/ruff#18166](../../astral-sh/ruff/pulls/18166.md) on 2025-05-18 20:52_
 
 ---

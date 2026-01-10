@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-15T12:38:57Z
 updated_at: 2023-01-24T16:34:01Z
 url: https://github.com/astral-sh/ruff/issues/1894
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # TOML parse error: Invalid table header: Duplicate key `version`
@@ -146,14 +146,6 @@ Err(
 
 ---
 
-_Referenced in [toml-rs/toml#439](../../toml-rs/toml/issues/439.md) on 2023-01-15 13:32_
-
----
-
-_Referenced in [scikit-build/scikit-build-core#175](../../scikit-build/scikit-build-core/pulls/175.md) on 2023-01-20 01:25_
-
----
-
 _Comment by @henryiii on 2023-01-20 20:48_
 
 I'm not familiar with the Rust release process, will this be closed when https://github.com/toml-rs/toml/issues/439 is available in Ruff, so I can just watch this issue? :)
@@ -166,10 +158,6 @@ Yeah it should be! I'll try upgrading. It looks like they just cut a release.
 
 ---
 
-_Referenced in [astral-sh/ruff#2040](../../astral-sh/ruff/pulls/2040.md) on 2023-01-20 21:26_
-
----
-
 _Comment by @charliermarsh on 2023-01-20 21:26_
 
 Looks like #2040 should close this out.
@@ -177,10 +165,6 @@ Looks like #2040 should close this out.
 ---
 
 _Closed by @charliermarsh on 2023-01-20 22:20_
-
----
-
-_Referenced in [astral-sh/ruff#2058](../../astral-sh/ruff/pulls/2058.md) on 2023-01-21 12:49_
 
 ---
 
@@ -199,10 +183,6 @@ _Closed by @charliermarsh on 2023-01-21 12:54_
 ---
 
 _Reopened by @charliermarsh on 2023-01-21 12:55_
-
----
-
-_Referenced in [astral-sh/ruff#2116](../../astral-sh/ruff/pulls/2116.md) on 2023-01-24 00:18_
 
 ---
 

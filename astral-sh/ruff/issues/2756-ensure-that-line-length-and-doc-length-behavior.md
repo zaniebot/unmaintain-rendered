@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-11T04:06:29Z
 updated_at: 2023-05-16T13:45:53Z
 url: https://github.com/astral-sh/ruff/issues/2756
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Ensure that line-length and doc-length behavior is consistent with Flake8
@@ -23,15 +23,7 @@ See: https://github.com/charliermarsh/ruff/issues/1784#issuecomment-1426597334
 
 ---
 
-_Referenced in [astral-sh/ruff#1784](../../astral-sh/ruff/issues/1784.md) on 2023-02-11 04:17_
-
----
-
 _Label `bug` added by @charliermarsh on 2023-02-11 04:34_
-
----
-
-_Referenced in [astral-sh/ruff#3846](../../astral-sh/ruff/pulls/3846.md) on 2023-04-01 12:37_
 
 ---
 

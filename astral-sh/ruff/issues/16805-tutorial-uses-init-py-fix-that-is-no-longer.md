@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-17T14:22:47Z
 updated_at: 2025-03-18T03:45:13Z
 url: https://github.com/astral-sh/ruff/issues/16805
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Tutorial uses `__init__.py` fix that is no longer active by default
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2025-03-17 14:22_
 ---
 
 _Label `documentation` added by @charliermarsh on 2025-03-17 14:22_
-
----
-
-_Referenced in [astral-sh/ruff#16818](../../astral-sh/ruff/pulls/16818.md) on 2025-03-17 17:58_
 
 ---
 

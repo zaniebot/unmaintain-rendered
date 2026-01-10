@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-26T13:48:56Z
 updated_at: 2025-11-27T07:25:16Z
 url: https://github.com/astral-sh/ruff/issues/21640
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # Feature Request: Support formatting for `sphinx.ext.doctest` (`.. testcode::`) in docstrings
@@ -58,9 +58,5 @@ https://github.com/astral-sh/ruff/blob/7627d3879c26dd3e9510eea8a63239f08dae1cbe/
 ---
 
 _Label `formatter` added by @MichaReiser on 2025-11-27 07:25_
-
----
-
-_Referenced in [astral-sh/ruff#21665](../../astral-sh/ruff/pulls/21665.md) on 2025-11-27 16:54_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-01T12:25:26Z
 updated_at: 2025-04-28T08:31:37Z
 url: https://github.com/astral-sh/ruff/issues/17117
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Don’t flag “await outside async function” for notebooks
@@ -72,18 +72,10 @@ This is probably a duplicate of https://github.com/astral-sh/ruff/issues/8800
 
 ---
 
-_Referenced in [python-lsp/python-lsp-ruff#102](../../python-lsp/python-lsp-ruff/issues/102.md) on 2025-04-01 14:45_
-
----
-
 _Label `notebook` added by @AlexWaygood on 2025-04-02 09:25_
 
 ---
 
 _Closed by @MichaReiser on 2025-04-28 08:31_
-
----
-
-_Referenced in [astral-sh/ruff#8800](../../astral-sh/ruff/issues/8800.md) on 2025-04-29 17:35_
 
 ---

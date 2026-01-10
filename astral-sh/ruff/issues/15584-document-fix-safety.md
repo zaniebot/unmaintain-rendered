@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-19T17:38:21Z
 updated_at: 2025-09-11T13:53:23Z
 url: https://github.com/astral-sh/ruff/issues/15584
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Document fix safety
@@ -230,53 +230,9 @@ Please comment here on which rule you're going to tackle to avoid duplicate work
 
 ---
 
-_Referenced in [astral-sh/ruff#15790](../../astral-sh/ruff/pulls/15790.md) on 2025-01-28 17:29_
-
----
-
-_Referenced in [astral-sh/ruff#15814](../../astral-sh/ruff/issues/15814.md) on 2025-01-29 19:12_
-
----
-
-_Referenced in [astral-sh/ruff#15915](../../astral-sh/ruff/issues/15915.md) on 2025-02-03 19:58_
-
----
-
-_Referenced in [python/typeshed#13731](../../python/typeshed/pulls/13731.md) on 2025-03-31 18:00_
-
----
-
-_Referenced in [astral-sh/ruff#17292](../../astral-sh/ruff/issues/17292.md) on 2025-04-08 11:19_
-
----
-
 _Comment by @Kalmaegi on 2025-04-15 15:56_
 
 I'd like to give it a try, starting from the `unused_variable.rs`.
-
----
-
-_Referenced in [astral-sh/ruff#17410](../../astral-sh/ruff/pulls/17410.md) on 2025-04-15 15:59_
-
----
-
-_Referenced in [astral-sh/ruff#17440](../../astral-sh/ruff/pulls/17440.md) on 2025-04-17 02:30_
-
----
-
-_Referenced in [astral-sh/ruff#17441](../../astral-sh/ruff/pulls/17441.md) on 2025-04-17 02:37_
-
----
-
-_Referenced in [astral-sh/ruff#17443](../../astral-sh/ruff/pulls/17443.md) on 2025-04-17 08:23_
-
----
-
-_Referenced in [astral-sh/ruff#17444](../../astral-sh/ruff/pulls/17444.md) on 2025-04-17 08:37_
-
----
-
-_Referenced in [astral-sh/ruff#17480](../../astral-sh/ruff/pulls/17480.md) on 2025-04-19 15:05_
 
 ---
 
@@ -287,54 +243,6 @@ Hey,
 I have a small question. I was looking into `invalid_formatter_suppression_comments.rs`, and I saw that the fix is always unsafe. I tried to understand why and I came to this [comment](https://github.com/astral-sh/ruff/pull/9899#issue-2125918197) in the PR #9899, which say that the fix is always marked unsafe. But I don't get why, and I cannot find an example where this is unsafe :-( 
 
 Perhaps, because it can be that the comment has nothing to do with ruff and it had another purpose, or?
-
----
-
-_Referenced in [astral-sh/ruff#17482](../../astral-sh/ruff/pulls/17482.md) on 2025-04-19 16:23_
-
----
-
-_Referenced in [astral-sh/ruff#17483](../../astral-sh/ruff/pulls/17483.md) on 2025-04-19 16:37_
-
----
-
-_Referenced in [astral-sh/ruff#17484](../../astral-sh/ruff/pulls/17484.md) on 2025-04-19 19:34_
-
----
-
-_Referenced in [astral-sh/ruff#17485](../../astral-sh/ruff/pulls/17485.md) on 2025-04-19 19:46_
-
----
-
-_Referenced in [astral-sh/ruff#17490](../../astral-sh/ruff/pulls/17490.md) on 2025-04-20 08:00_
-
----
-
-_Referenced in [astral-sh/ruff#17491](../../astral-sh/ruff/pulls/17491.md) on 2025-04-20 08:37_
-
----
-
-_Referenced in [astral-sh/ruff#17493](../../astral-sh/ruff/pulls/17493.md) on 2025-04-20 11:42_
-
----
-
-_Referenced in [astral-sh/ruff#17496](../../astral-sh/ruff/pulls/17496.md) on 2025-04-20 12:51_
-
----
-
-_Referenced in [astral-sh/ruff#17497](../../astral-sh/ruff/pulls/17497.md) on 2025-04-20 14:55_
-
----
-
-_Referenced in [astral-sh/ruff#17498](../../astral-sh/ruff/pulls/17498.md) on 2025-04-20 15:15_
-
----
-
-_Referenced in [astral-sh/ruff#17499](../../astral-sh/ruff/pulls/17499.md) on 2025-04-20 15:41_
-
----
-
-_Referenced in [astral-sh/ruff#17502](../../astral-sh/ruff/pulls/17502.md) on 2025-04-20 21:23_
 
 ---
 
@@ -351,14 +259,6 @@ a) Remove the suppression because it isn't suppressing anything
 b) Move the suppression to a valid position
 
 
-
----
-
-_Referenced in [astral-sh/ruff#17652](../../astral-sh/ruff/pulls/17652.md) on 2025-04-27 09:14_
-
----
-
-_Referenced in [astral-sh/ruff#17653](../../astral-sh/ruff/pulls/17653.md) on 2025-04-27 09:46_
 
 ---
 
@@ -382,29 +282,9 @@ For instance, these are done:
 
 ---
 
-_Referenced in [astral-sh/ruff#17722](../../astral-sh/ruff/pulls/17722.md) on 2025-04-29 20:17_
-
----
-
-_Referenced in [astral-sh/ruff#17755](../../astral-sh/ruff/pulls/17755.md) on 2025-05-01 06:02_
-
----
-
-_Referenced in [astral-sh/ruff#17759](../../astral-sh/ruff/pulls/17759.md) on 2025-05-01 07:14_
-
----
-
-_Referenced in [astral-sh/ruff#17760](../../astral-sh/ruff/pulls/17760.md) on 2025-05-01 07:24_
-
----
-
 _Comment by @dylwil3 on 2025-05-02 10:35_
 
 @VascoSch92 / @Kalmaegi thank you both so much for the PRs! I've just updated the top post here to give a few tips for making these PRs quicker to review. For your current open PRs, would it be possible for you to follow that guide for each of your PR summaries and ping me from each PR once it's ready? Sorry for the extra homework, but I think it'll help move these along!
-
----
-
-_Referenced in [astral-sh/ruff#17802](../../astral-sh/ruff/pulls/17802.md) on 2025-05-02 22:41_
 
 ---
 
@@ -422,31 +302,11 @@ I'll work on pylint rules 🙋🏻‍♀️
 
 ---
 
-_Referenced in [astral-sh/ruff#17824](../../astral-sh/ruff/pulls/17824.md) on 2025-05-03 20:23_
-
----
-
-_Referenced in [astral-sh/ruff#17825](../../astral-sh/ruff/pulls/17825.md) on 2025-05-04 03:12_
-
----
-
-_Referenced in [astral-sh/ruff#17826](../../astral-sh/ruff/pulls/17826.md) on 2025-05-04 04:16_
-
----
-
-_Referenced in [astral-sh/ruff#17878](../../astral-sh/ruff/pulls/17878.md) on 2025-05-06 03:34_
-
----
-
 _Label `good first issue` removed by @dylwil3 on 2025-05-06 13:25_
 
 ---
 
 _Label `help wanted` removed by @dylwil3 on 2025-05-06 13:25_
-
----
-
-_Referenced in [astral-sh/ruff#17932](../../astral-sh/ruff/pulls/17932.md) on 2025-05-08 03:59_
 
 ---
 
@@ -465,22 +325,6 @@ I can work on the `flake8_simplify` rules:
 - [x] `crates/ruff_linter/src/rules/flake8_simplify/rules/ast_ifexp.rs` #18100 
 - [ ] `crates/ruff_linter/src/rules/flake8_simplify/rules/if_else_block_instead_of_if_exp.rs`
 
-
----
-
-_Referenced in [astral-sh/ruff#18086](../../astral-sh/ruff/pulls/18086.md) on 2025-05-14 06:42_
-
----
-
-_Referenced in [astral-sh/ruff#18099](../../astral-sh/ruff/pulls/18099.md) on 2025-05-14 17:26_
-
----
-
-_Referenced in [astral-sh/ruff#18100](../../astral-sh/ruff/pulls/18100.md) on 2025-05-14 17:39_
-
----
-
-_Referenced in [astral-sh/ruff#18114](../../astral-sh/ruff/pulls/18114.md) on 2025-05-15 06:53_
 
 ---
 
@@ -524,10 +368,6 @@ In this case, should I add a fix safety section too?
 
 ---
 
-_Referenced in [astral-sh/ruff#18208](../../astral-sh/ruff/pulls/18208.md) on 2025-05-19 21:16_
-
----
-
 _Comment by @VascoSch92 on 2025-05-21 06:38_
 
 ### Rule [SIM102](https://docs.astral.sh/ruff/rules/collapsible-if/)
@@ -547,14 +387,6 @@ The fix of the rule seems to be safe for the following reasons:
 
 
 **_Edit_**: @dylwil3 what do you think? :-) 
-
----
-
-_Referenced in [astral-sh/ruff#18289](../../astral-sh/ruff/issues/18289.md) on 2025-05-25 11:05_
-
----
-
-_Referenced in [astral-sh/ruff#18415](../../astral-sh/ruff/pulls/18415.md) on 2025-06-01 22:12_
 
 ---
 
@@ -674,66 +506,6 @@ flake8_return [function.rs](https://github.com/astral-sh/ruff/blob/main/crates/r
 
 ---
 
-_Referenced in [astral-sh/ruff#18800](../../astral-sh/ruff/pulls/18800.md) on 2025-06-19 19:27_
-
----
-
-_Referenced in [astral-sh/ruff#18802](../../astral-sh/ruff/pulls/18802.md) on 2025-06-19 19:59_
-
----
-
-_Referenced in [astral-sh/ruff#18831](../../astral-sh/ruff/pulls/18831.md) on 2025-06-20 18:56_
-
----
-
-_Referenced in [astral-sh/ruff#18837](../../astral-sh/ruff/pulls/18837.md) on 2025-06-20 22:10_
-
----
-
-_Referenced in [astral-sh/ruff#18838](../../astral-sh/ruff/pulls/18838.md) on 2025-06-20 22:24_
-
----
-
-_Referenced in [astral-sh/ruff#18840](../../astral-sh/ruff/pulls/18840.md) on 2025-06-20 23:18_
-
----
-
-_Referenced in [astral-sh/ruff#18841](../../astral-sh/ruff/pulls/18841.md) on 2025-06-20 23:26_
-
----
-
-_Referenced in [astral-sh/ruff#18842](../../astral-sh/ruff/pulls/18842.md) on 2025-06-20 23:58_
-
----
-
-_Referenced in [astral-sh/ruff#18853](../../astral-sh/ruff/pulls/18853.md) on 2025-06-21 19:56_
-
----
-
-_Referenced in [astral-sh/ruff#18940](../../astral-sh/ruff/pulls/18940.md) on 2025-06-25 18:26_
-
----
-
-_Referenced in [astral-sh/ruff#18945](../../astral-sh/ruff/issues/18945.md) on 2025-06-25 20:49_
-
----
-
-_Referenced in [astral-sh/ruff#18951](../../astral-sh/ruff/pulls/18951.md) on 2025-06-26 05:47_
-
----
-
-_Referenced in [astral-sh/ruff#19132](../../astral-sh/ruff/issues/19132.md) on 2025-07-03 22:45_
-
----
-
-_Referenced in [astral-sh/ruff#19714](../../astral-sh/ruff/issues/19714.md) on 2025-08-04 22:48_
-
----
-
-_Referenced in [astral-sh/ruff#19930](../../astral-sh/ruff/issues/19930.md) on 2025-08-15 17:08_
-
----
-
 _Comment by @VascoSch92 on 2025-08-30 12:29_
 
 Hey, 
@@ -746,10 +518,6 @@ Hey,
 _Comment by @MeGaGiGaGon on 2025-08-30 17:42_
 
 I just double checked, it should be fully up-to-date (the list in question is here https://github.com/astral-sh/ruff/issues/15584#issuecomment-2988951082 )
-
----
-
-_Referenced in [astral-sh/ruff#20227](../../astral-sh/ruff/pulls/20227.md) on 2025-09-04 12:14_
 
 ---
 

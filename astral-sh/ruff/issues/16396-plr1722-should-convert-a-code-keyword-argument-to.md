@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-02-26T14:19:12Z
 updated_at: 2025-03-03T14:20:59Z
 url: https://github.com/astral-sh/ruff/issues/16396
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # PLR1722 should convert a `code` keyword argument to a positional argument
@@ -90,10 +90,6 @@ Actually, I can give a try. It should be fast ;-)
 ---
 
 _Assigned to @VascoSch92 by @ntBre on 2025-02-26 16:37_
-
----
-
-_Referenced in [astral-sh/ruff#16424](../../astral-sh/ruff/pulls/16424.md) on 2025-02-27 21:50_
 
 ---
 

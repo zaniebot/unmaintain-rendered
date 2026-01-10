@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-12T11:45:42Z
 updated_at: 2024-03-24T10:50:01Z
 url: https://github.com/astral-sh/ruff/issues/10357
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # E402 false positive with cell magics in Jupyter notebooks
@@ -69,14 +69,6 @@ _Label `needs-decision` removed by @dhruvmanila on 2024-03-13 08:04_
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2024-03-13 15:26_
-
----
-
-_Referenced in [scverse/scanpy-tutorials#92](../../scverse/scanpy-tutorials/pulls/92.md) on 2024-03-22 11:09_
-
----
-
-_Referenced in [astral-sh/ruff#10545](../../astral-sh/ruff/pulls/10545.md) on 2024-03-24 10:02_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-26T09:23:32Z
 updated_at: 2023-05-30T11:52:53Z
 url: https://github.com/astral-sh/ruff/issues/4667
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # TCH002 false alarm when importing submodule with import..as
@@ -74,10 +74,6 @@ Popped up in https://github.com/Zac-HD/flake8-trio/pull/196#discussion_r12004148
 
 ---
 
-_Referenced in [python-trio/flake8-async#196](../../python-trio/flake8-async/pulls/196.md) on 2023-05-26 09:23_
-
----
-
 _Comment by @dhruvmanila on 2023-05-26 12:02_
 
 This seems to be similar to the problem faced in https://github.com/charliermarsh/ruff/issues/4655. I'm guessing the submodule import (`import libcst.matchers`) is increasing the usage count of `libcst` import, thus not flagging for your first example. But, in your second example, the aliased import is not increasing the usage.
@@ -112,10 +108,6 @@ Yeah, sure!
 
 ---
 
-_Referenced in [astral-sh/ruff#4685](../../astral-sh/ruff/pulls/4685.md) on 2023-05-27 19:27_
-
----
-
 _Closed by @charliermarsh on 2023-05-28 03:58_
 
 ---
@@ -123,9 +115,5 @@ _Closed by @charliermarsh on 2023-05-28 03:58_
 _Comment by @jakkdl on 2023-05-30 11:52_
 
 Thanks for the quick fix! :rocket: 
-
----
-
-_Referenced in [python-trio/flake8-async#202](../../python-trio/flake8-async/pulls/202.md) on 2024-02-15 10:08_
 
 ---

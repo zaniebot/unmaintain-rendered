@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-05T10:20:51Z
 updated_at: 2023-02-05T13:01:09Z
 url: https://github.com/astral-sh/ruff/issues/2576
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # `B007` causes infinite loop for variable suffixed with `_`
@@ -65,10 +65,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-02-05 12:50_
 ---
 
 _Label `bug` added by @charliermarsh on 2023-02-05 12:50_
-
----
-
-_Referenced in [astral-sh/ruff#2581](../../astral-sh/ruff/pulls/2581.md) on 2023-02-05 13:01_
 
 ---
 

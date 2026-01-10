@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-12-12T12:25:55Z
 updated_at: 2024-12-14T05:51:22Z
 url: https://github.com/astral-sh/ruff/issues/14934
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] mdtest should fail if you have a triple-backtick block that is unclosed
@@ -61,10 +61,6 @@ This seems trivial to fix. A PR should be ready by Saturday.
 ---
 
 _Assigned to @InSyncWithFoo by @AlexWaygood on 2024-12-12 14:37_
-
----
-
-_Referenced in [astral-sh/ruff#14965](../../astral-sh/ruff/pulls/14965.md) on 2024-12-14 00:21_
 
 ---
 

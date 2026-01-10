@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-23T13:20:26Z
 updated_at: 2024-09-10T17:25:40Z
 url: https://github.com/astral-sh/ruff/issues/13079
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # docstring-missing-returns (`DOC201`) reports on `__new__`
@@ -55,10 +55,6 @@ _Label `docstring` added by @MichaReiser on 2024-09-02 06:24_
 ---
 
 _Label `needs-decision` added by @MichaReiser on 2024-09-02 06:24_
-
----
-
-_Referenced in [astral-sh/ruff#13300](../../astral-sh/ruff/pulls/13300.md) on 2024-09-10 04:08_
 
 ---
 

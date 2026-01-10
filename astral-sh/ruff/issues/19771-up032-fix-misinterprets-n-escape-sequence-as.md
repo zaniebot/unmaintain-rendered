@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-08-05T19:51:37Z
 updated_at: 2025-12-16T21:33:40Z
 url: https://github.com/astral-sh/ruff/issues/19771
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # UP032 fix misinterprets `\N` escape sequence as interpolation
@@ -36,10 +36,6 @@ error: Fix introduced a syntax error. Reverting all changes.
 ### Version
 
 ruff 0.12.7 (c5ac99889 2025-07-29)
-
----
-
-_Referenced in [astral-sh/ruff#19774](../../astral-sh/ruff/pulls/19774.md) on 2025-08-05 22:16_
 
 ---
 
@@ -68,10 +64,6 @@ Go for it! I think it's pretty tricky, so don't feel any pressure to work on or 
 ---
 
 _Assigned to @phongddo by @ntBre on 2025-12-08 22:45_
-
----
-
-_Referenced in [astral-sh/ruff#21901](../../astral-sh/ruff/pulls/21901.md) on 2025-12-10 18:15_
 
 ---
 

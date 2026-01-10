@@ -1,0 +1,65 @@
+```yaml
+number: 7169
+title: Update identifier Unicode character validation to match Python spec
+type: issue
+state: closed
+author: zanieb
+labels:
+  - bug
+  - help wanted
+assignees: []
+created_at: 2023-09-05T16:55:29Z
+updated_at: 2023-09-07T07:08:44Z
+url: https://github.com/astral-sh/ruff/issues/7169
+synced_at: 2026-01-10T11:09:49Z
+```
+
+# Update identifier Unicode character validation to match Python spec
+
+---
+
+_Issue opened by @zanieb on 2023-09-05 16:55_
+
+Python supports some, but not all Unicode characters in identifiers. See https://docs.python.org/3/reference/lexical_analysis.html#identifiers and https://peps.python.org/pep-3131/
+
+However, Ruff is not correctly enforcing the subset of valid unicode characters e.g. in `is_identifier` 
+
+https://github.com/astral-sh/ruff/blob/1df7e9831b90e6bfc2ab4533e20fe33e4ed5b4b4/crates/ruff_python_stdlib/src/identifiers.rs#L3-L23
+
+This causes bugs such as:
+- https://github.com/astral-sh/ruff/issues/7156
+- https://github.com/astral-sh/ruff/issues/7157
+
+We need to add validation of the specific supported subset of characters.
+
+---
+
+_Label `bug` added by @zanieb on 2023-09-05 16:56_
+
+---
+
+_Label `help wanted` added by @zanieb on 2023-09-05 16:56_
+
+---
+
+_Comment by @MichaReiser on 2023-09-05 19:39_
+
+The relevant function in our lexer
+
+https://github.com/astral-sh/ruff/blob/4d49d5e8451277f8159a30b7da187626d3a75494/crates/ruff_python_parser/src/lexer.rs#L1182-L1187 
+
+---
+
+_Comment by @LaBatata101 on 2023-09-05 22:32_
+
+I can work on this one
+
+---
+
+_Assigned to @LaBatata101 by @zanieb on 2023-09-05 22:41_
+
+---
+
+_Closed by @MichaReiser on 2023-09-07 07:08_
+
+---

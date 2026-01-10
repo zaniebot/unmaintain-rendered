@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-28T17:33:51Z
 updated_at: 2025-07-28T15:17:47Z
 url: https://github.com/astral-sh/ruff/issues/19013
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Disallow suppressing CancelledError
@@ -43,10 +43,6 @@ Documentation could link to https://superfastpython.com/asyncio-task-cancellatio
 
 Possibly a separate rule could be to ensure that code which does suppress the exception also calls .uncancel():
 https://superfastpython.com/asyncio-cancel-task-cancellation/
-
----
-
-_Referenced in [wemake-services/wemake-python-styleguide#2835](../../wemake-services/wemake-python-styleguide/issues/2835.md) on 2025-06-28 17:40_
 
 ---
 

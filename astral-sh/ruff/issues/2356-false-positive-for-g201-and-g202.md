@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-01-30T17:08:42Z
 updated_at: 2023-01-30T21:32:02Z
 url: https://github.com/astral-sh/ruff/issues/2356
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # False positive for `G201` and `G202`?
@@ -152,10 +152,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-01-30 20:30_
 _Comment by @charliermarsh on 2023-01-30 20:31_
 
 I'm going to fix this quickly so that it can be included in today's release.
-
----
-
-_Referenced in [astral-sh/ruff#2364](../../astral-sh/ruff/pulls/2364.md) on 2023-01-30 21:13_
 
 ---
 

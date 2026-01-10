@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-05-28T13:08:01Z
 updated_at: 2024-07-26T14:36:36Z
 url: https://github.com/astral-sh/ruff/issues/11582
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Should `[lint.flake8-implicit-str-concat] allow-multiline = false` implicitly disable `ISC003` ?
@@ -61,15 +61,7 @@ _Label `accepted` added by @charliermarsh on 2024-05-28 21:01_
 
 ---
 
-_Referenced in [pypa/setuptools#4411](../../pypa/setuptools/pulls/4411.md) on 2024-06-05 16:45_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-26 14:03_
-
----
-
-_Referenced in [astral-sh/ruff#12532](../../astral-sh/ruff/pulls/12532.md) on 2024-07-26 14:27_
 
 ---
 

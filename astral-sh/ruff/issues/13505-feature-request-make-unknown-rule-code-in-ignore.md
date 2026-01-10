@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-24T15:30:47Z
 updated_at: 2024-11-19T16:09:43Z
 url: https://github.com/astral-sh/ruff/issues/13505
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Feature request: Make unknown rule code in "ignore" setting a warning, not an error
@@ -95,22 +95,6 @@ _Label `rule-selection` added by @zanieb on 2024-09-24 16:26_
 _Comment by @zanieb on 2024-09-24 16:26_
 
 This seems reasonable to me if @charliermarsh agrees.
-
----
-
-_Referenced in [astral-sh/ruff#14383](../../astral-sh/ruff/pulls/14383.md) on 2024-11-17 23:58_
-
----
-
-_Referenced in [astral-sh/ruff#14384](../../astral-sh/ruff/pulls/14384.md) on 2024-11-18 00:04_
-
----
-
-_Referenced in [astral-sh/ruff#14435](../../astral-sh/ruff/pulls/14435.md) on 2024-11-18 15:27_
-
----
-
-_Referenced in [astral-sh/ruff#14443](../../astral-sh/ruff/issues/14443.md) on 2024-11-18 20:10_
 
 ---
 

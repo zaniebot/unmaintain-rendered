@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-03-03T01:59:02Z
 updated_at: 2023-03-03T05:06:12Z
 url: https://github.com/astral-sh/ruff/issues/3318
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Autofix Error (TID252): autofixing relative imports on namespaced packages causes invalid code and ruff doesn't always know it is invalid
@@ -55,10 +55,6 @@ This indicates a bug in `ruff`. If you could open an issue at:
 
 ---
 
-_Referenced in [DisnakeDev/disnake#951](../../DisnakeDev/disnake/pulls/951.md) on 2023-03-03 03:40_
-
----
-
 _Comment by @charliermarsh on 2023-03-03 03:51_
 
 If I add:
@@ -96,10 +92,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-03-03 03:59_
 ---
 
 _Label `bug` added by @charliermarsh on 2023-03-03 03:59_
-
----
-
-_Referenced in [astral-sh/ruff#3319](../../astral-sh/ruff/pulls/3319.md) on 2023-03-03 03:59_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-08T05:10:35Z
 updated_at: 2024-08-08T11:18:04Z
 url: https://github.com/astral-sh/ruff/issues/12739
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Checking file with rule RUF031 cause panic (probably only in debug build)
@@ -189,10 +189,6 @@ That makes sense to me
 ---
 
 _Assigned to @dylwil3 by @MichaReiser on 2024-08-08 10:49_
-
----
-
-_Referenced in [astral-sh/ruff#12749](../../astral-sh/ruff/pulls/12749.md) on 2024-08-08 11:08_
 
 ---
 

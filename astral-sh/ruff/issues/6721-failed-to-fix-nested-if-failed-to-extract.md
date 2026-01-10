@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-21T09:20:24Z
 updated_at: 2023-10-01T08:21:42Z
 url: https://github.com/astral-sh/ruff/issues/6721
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Failed to fix nested if: Failed to extract statement from source
@@ -68,10 +68,6 @@ I am personally fine _not_ to fix errors that arise from invalid Python syntax.
 ---
 
 _Label `needs-decision` added by @charliermarsh on 2023-08-21 12:58_
-
----
-
-_Referenced in [astral-sh/ruff#6811](../../astral-sh/ruff/issues/6811.md) on 2023-08-23 13:32_
 
 ---
 

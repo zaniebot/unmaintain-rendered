@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-06T17:13:18Z
 updated_at: 2023-10-28T09:00:00Z
 url: https://github.com/astral-sh/ruff/issues/7839
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Support for validate-pyproject
@@ -57,9 +57,5 @@ _Label `configuration` added by @charliermarsh on 2023-10-08 14:41_
 _Comment by @baggiponte on 2023-10-28 09:00_
 
 +1 on this one! I reckon this might be a topic for a separate issue, but tox devs are also working on [pyproject-fmt](https://pyproject-fmt.readthedocs.io/en/latest/)
-
----
-
-_Referenced in [astral-sh/uv#15006](../../astral-sh/uv/issues/15006.md) on 2025-07-31 19:35_
 
 ---

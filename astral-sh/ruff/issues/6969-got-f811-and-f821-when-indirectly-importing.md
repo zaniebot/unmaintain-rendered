@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-29T07:52:59Z
 updated_at: 2025-07-30T08:26:20Z
 url: https://github.com/astral-sh/ruff/issues/6969
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Got F811 and F821 when indirectly importing Literal and overload
@@ -134,9 +134,5 @@ _Comment by @MichaReiser on 2025-07-30 08:26_
 @rj-xu I do appreciate that you took the time to find this issue but please open a new issue if you need help. It will make it easier for us to keep track where users still need help with (which is hard if people comment on issues that have been closed for a long time). 
 
 In the new issue, can you link to this issue for context, include a code snippet and your configuration? This should allow us to help you. Thank you
-
----
-
-_Referenced in [astral-sh/ruff#19632](../../astral-sh/ruff/issues/19632.md) on 2025-07-30 09:22_
 
 ---

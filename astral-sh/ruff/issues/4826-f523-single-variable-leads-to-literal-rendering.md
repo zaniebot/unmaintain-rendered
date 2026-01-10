@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-03T05:10:35Z
 updated_at: 2023-06-06T00:44:31Z
 url: https://github.com/astral-sh/ruff/issues/4826
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # F523: Single variable leads to literal rendering of newline
@@ -104,14 +104,6 @@ Actually, I don't think we can use LibCST for this. It doesn't include a format-
 
 ---
 
-_Referenced in [astral-sh/ruff#4883](../../astral-sh/ruff/pulls/4883.md) on 2023-06-05 21:38_
-
----
-
 _Closed by @charliermarsh on 2023-06-06 00:44_
-
----
-
-_Referenced in [astral-sh/ruff#4972](../../astral-sh/ruff/issues/4972.md) on 2023-06-09 22:04_
 
 ---

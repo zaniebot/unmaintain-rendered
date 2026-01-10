@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-17T22:11:52Z
 updated_at: 2025-05-20T06:22:07Z
 url: https://github.com/astral-sh/ruff/issues/18158
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Admonition at the top of `CONTRIBUTING.md` badly rendered by mkdocs
@@ -38,10 +38,6 @@ _Label `documentation` added by @AlexWaygood on 2025-05-17 22:12_
 ---
 
 _Renamed from "docs mistake" to "Admonition at the top of `CONTRIBUTING.md` badly rendered by mkdocs" by @AlexWaygood on 2025-05-17 22:13_
-
----
-
-_Referenced in [astral-sh/ruff#18163](../../astral-sh/ruff/pulls/18163.md) on 2025-05-18 15:55_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-26T03:22:16Z
 updated_at: 2024-06-27T11:42:41Z
 url: https://github.com/astral-sh/ruff/issues/12036
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Re-lexing should avoid line continuation in a comment
@@ -107,10 +107,6 @@ I literally woke up in the morning thinking about this lol. I think this could w
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2024-06-27 03:42_
-
----
-
-_Referenced in [astral-sh/ruff#12060](../../astral-sh/ruff/pulls/12060.md) on 2024-06-27 04:11_
 
 ---
 

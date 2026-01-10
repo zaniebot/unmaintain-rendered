@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-02T17:09:55Z
 updated_at: 2023-12-02T18:17:19Z
 url: https://github.com/astral-sh/ruff/issues/8969
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # `PLR1736` yields invalid suggestion and unsafe fix that changes semantics.
@@ -69,10 +69,6 @@ Thanks, will fix. Just confirming, this isn’t released yet, right?
 _Comment by @Skylion007 on 2023-12-02 17:34_
 
 Correct, and it's still a preview rule.
-
----
-
-_Referenced in [astral-sh/ruff#8970](../../astral-sh/ruff/pulls/8970.md) on 2023-12-02 18:12_
 
 ---
 

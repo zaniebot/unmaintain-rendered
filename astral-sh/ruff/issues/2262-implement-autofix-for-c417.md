@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-27T15:58:34Z
 updated_at: 2023-02-12T05:20:44Z
 url: https://github.com/astral-sh/ruff/issues/2262
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Implement autofix for C417
@@ -46,14 +46,6 @@ _Label `autofix` added by @charliermarsh on 2023-01-27 16:19_
 ---
 
 _Renamed from "Implement C417" to "Implement autofix for C417" by @spaceone on 2023-01-30 12:20_
-
----
-
-_Referenced in [astral-sh/ruff#2423](../../astral-sh/ruff/issues/2423.md) on 2023-01-31 22:46_
-
----
-
-_Referenced in [astral-sh/ruff#2693](../../astral-sh/ruff/pulls/2693.md) on 2023-02-09 19:09_
 
 ---
 

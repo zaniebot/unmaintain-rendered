@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-29T12:04:52Z
 updated_at: 2025-09-05T14:24:19Z
 url: https://github.com/astral-sh/ruff/issues/7710
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Consider removing PD901
@@ -33,10 +33,6 @@ I'm in favor of this 👍
 
 ---
 
-_Referenced in [astral-sh/ruff#9461](../../astral-sh/ruff/issues/9461.md) on 2024-01-11 01:22_
-
----
-
 _Added to milestone `v0.2.0` by @MichaReiser on 2024-01-19 14:21_
 
 ---
@@ -44,10 +40,6 @@ _Added to milestone `v0.2.0` by @MichaReiser on 2024-01-19 14:21_
 _Comment by @zanieb on 2024-01-30 01:24_
 
 @charliermarsh can you fill this issue in?
-
----
-
-_Referenced in [astral-sh/ruff#9680](../../astral-sh/ruff/pulls/9680.md) on 2024-01-30 19:18_
 
 ---
 
@@ -111,10 +103,6 @@ _Added to milestone `v0.11` by @MichaReiser on 2025-03-21 08:34_
 
 ---
 
-_Referenced in [astral-sh/ruff#18618](../../astral-sh/ruff/pulls/18618.md) on 2025-06-10 20:36_
-
----
-
 _Comment by @MichaReiser on 2025-06-13 06:45_
 
 We'll deprecate this rule in 0.12 and it's scheduled for removal in 0.13
@@ -126,10 +114,6 @@ _Removed from milestone `v0.12` by @MichaReiser on 2025-06-13 06:45_
 ---
 
 _Added to milestone `v0.13` by @MichaReiser on 2025-06-13 06:45_
-
----
-
-_Referenced in [astral-sh/ruff#19223](../../astral-sh/ruff/pulls/19223.md) on 2025-07-09 01:32_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-05T19:13:35Z
 updated_at: 2024-06-10T08:38:47Z
 url: https://github.com/astral-sh/ruff/issues/11759
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Formatter parenthesizes over-long starred expression in an assignment value which prodcues invalid syntax
@@ -187,10 +187,6 @@ Module(
 ---
 
 _Label `fuzzer` added by @zanieb on 2024-06-05 19:33_
-
----
-
-_Referenced in [psf/black#4376](../../psf/black/issues/4376.md) on 2024-06-06 06:17_
 
 ---
 

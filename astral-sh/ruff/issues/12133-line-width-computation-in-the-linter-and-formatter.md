@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-01T08:45:59Z
 updated_at: 2024-07-01T13:27:20Z
 url: https://github.com/astral-sh/ruff/issues/12133
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Line width computation in the linter and formatter
@@ -37,10 +37,6 @@ https://github.com/astral-sh/ruff/blob/eeb24b1a5a723680319ebffe9cd35bff11c1bd31/
 https://github.com/astral-sh/ruff/blob/eeb24b1a5a723680319ebffe9cd35bff11c1bd31/crates/ruff_formatter/src/printer/mod.rs#L1520-L1522
 
 
-
----
-
-_Referenced in [astral-sh/ruff#12135](../../astral-sh/ruff/pulls/12135.md) on 2024-07-01 11:30_
 
 ---
 

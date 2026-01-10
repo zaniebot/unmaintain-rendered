@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-16T19:29:32Z
 updated_at: 2024-02-01T19:35:04Z
 url: https://github.com/astral-sh/ruff/issues/7993
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Preview rule stabilizations for v0.2.0
@@ -23,10 +23,6 @@ New rules are now added in preview. This issue serves as a central discussion fo
 ---
 
 _Added to milestone `v0.2.0` by @zanieb on 2023-10-16 19:29_
-
----
-
-_Referenced in [astral-sh/ruff#8005](../../astral-sh/ruff/issues/8005.md) on 2023-10-17 13:55_
 
 ---
 
@@ -55,10 +51,6 @@ Do we want to add all the existing rules in preview here as a checklist?
 
 ---
 
-_Referenced in [astral-sh/ruff#8752](../../astral-sh/ruff/issues/8752.md) on 2023-11-18 06:42_
-
----
-
 _Comment by @charliermarsh on 2023-11-24 15:22_
 
 I'd love to drop some duplicate rules in the next minor, e.g., https://github.com/astral-sh/ruff/issues/8830.
@@ -77,10 +69,6 @@ We should also elevate `UP006` and `UP007` to safe in some cases.
 
 ---
 
-_Referenced in [astral-sh/ruff#8918](../../astral-sh/ruff/pulls/8918.md) on 2023-11-30 01:42_
-
----
-
 _Comment by @zanieb on 2023-11-30 01:58_
 
 > I'd love to drop some duplicate rules in the next minor, e.g., #8830.
@@ -92,14 +80,6 @@ Can we remove rules in preview? If not, maybe we should add a "Deprecated" rule 
 _Comment by @charliermarsh on 2023-12-05 21:28_
 
 I think we should also deprecate `PLR1706` (https://github.com/astral-sh/ruff/issues/9007).
-
----
-
-_Referenced in [astral-sh/ruff#9461](../../astral-sh/ruff/issues/9461.md) on 2024-01-11 01:17_
-
----
-
-_Referenced in [astral-sh/ruff#9680](../../astral-sh/ruff/pulls/9680.md) on 2024-01-30 19:18_
 
 ---
 

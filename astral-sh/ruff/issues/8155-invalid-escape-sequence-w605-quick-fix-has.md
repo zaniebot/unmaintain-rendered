@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-24T05:27:10Z
 updated_at: 2023-10-26T16:23:22Z
 url: https://github.com/astral-sh/ruff/issues/8155
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # `invalid-escape-sequence` (`W605`) quick fix has incorrect description
@@ -35,14 +35,6 @@ _Label `bug` added by @dhruvmanila on 2023-10-24 05:54_
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2023-10-24 05:54_
-
----
-
-_Referenced in [astral-sh/ruff#8156](../../astral-sh/ruff/pulls/8156.md) on 2023-10-24 06:04_
-
----
-
-_Referenced in [astral-sh/ruff#8255](../../astral-sh/ruff/pulls/8255.md) on 2023-10-26 16:14_
 
 ---
 

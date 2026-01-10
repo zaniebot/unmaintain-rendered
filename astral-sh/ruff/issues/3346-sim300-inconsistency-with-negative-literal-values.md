@@ -1,0 +1,70 @@
+```yaml
+number: 3346
+title: SIM300 inconsistency with negative literal values
+type: issue
+state: closed
+author: diceroll123
+labels:
+  - bug
+assignees: []
+created_at: 2023-03-04T21:01:35Z
+updated_at: 2023-03-04T21:30:35Z
+url: https://github.com/astral-sh/ruff/issues/3346
+synced_at: 2026-01-10T11:09:46Z
+```
+
+# SIM300 inconsistency with negative literal values
+
+---
+
+_Issue opened by @diceroll123 on 2023-03-04 21:01_
+
+_Ruff 0.0.254_
+
+`SIM300` is called `Yoda conditions`, which swaps the left and right hand expressions.
+
+When running `ruff check . --select=SIM300 --isolated` on the code below, all of the negative literals are ignored by this refactoring.
+
+```py
+import random
+blah = random.randint(-100, 100)
+
+def test() -> None:
+    assert 1 == blah
+    assert -1 == blah
+
+    assert 0b1 == blah
+    assert -0b1 == blah
+
+    assert 0o1 == blah
+    assert -0o1 == blah
+
+    assert 0x1 == blah
+    assert -0x1 == blah
+```
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-03-04 21:04_
+
+---
+
+_Comment by @charliermarsh on 2023-03-04 21:05_
+
+Oh good call. Those are probably treated as unary operation nodes on constants.
+
+---
+
+_Comment by @charliermarsh on 2023-03-04 21:10_
+
+`flake8-simplify` also excludes these, but it seems wrong.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-03-04 21:24_
+
+---
+
+_Closed by @charliermarsh on 2023-03-04 21:30_
+
+---

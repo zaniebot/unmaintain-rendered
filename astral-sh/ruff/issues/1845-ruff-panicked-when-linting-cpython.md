@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-13T05:51:24Z
 updated_at: 2023-01-14T13:03:43Z
 url: https://github.com/astral-sh/ruff/issues/1845
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # ruff panicked when linting cpython 
@@ -410,14 +410,6 @@ Can be reproduced with a simple code
 
 ---
 
-_Referenced in [RustPython/RustPython#4444](../../RustPython/RustPython/pulls/4444.md) on 2023-01-13 06:43_
-
----
-
-_Referenced in [astral-sh/ruff#1846](../../astral-sh/ruff/pulls/1846.md) on 2023-01-13 13:16_
-
----
-
 _Label `bug` added by @charliermarsh on 2023-01-14 04:20_
 
 ---
@@ -429,9 +421,5 @@ Hopefully closed by #1836.
 ---
 
 _Closed by @charliermarsh on 2023-01-14 13:03_
-
----
-
-_Referenced in [astral-sh/ruff#1928](../../astral-sh/ruff/pulls/1928.md) on 2023-01-17 12:44_
 
 ---

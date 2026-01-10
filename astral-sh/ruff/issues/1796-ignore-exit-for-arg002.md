@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-11T23:14:12Z
 updated_at: 2023-01-12T00:02:22Z
 url: https://github.com/astral-sh/ruff/issues/1796
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Ignore `__exit__` for ARG002
@@ -48,18 +48,10 @@ Perhaps we should omit all "magic" methods...?
 
 ---
 
-_Referenced in [astral-sh/ruff#1801](../../astral-sh/ruff/pulls/1801.md) on 2023-01-12 00:02_
-
----
-
 _Closed by @charliermarsh on 2023-01-12 00:02_
 
 ---
 
 _Closed by @charliermarsh on 2023-01-12 00:02_
-
----
-
-_Referenced in [astral-sh/ruff#21904](../../astral-sh/ruff/issues/21904.md) on 2025-12-10 20:18_
 
 ---

@@ -1,0 +1,70 @@
+```yaml
+number: 10925
+title: PLR6104 false positive and false fix for augmented assignment.
+type: issue
+state: closed
+author: LefterisJP
+labels: []
+assignees: []
+created_at: 2024-04-14T11:11:32Z
+updated_at: 2024-04-14T11:19:59Z
+url: https://github.com/astral-sh/ruff/issues/10925
+synced_at: 2026-01-10T11:09:53Z
+```
+
+# PLR6104 false positive and false fix for augmented assignment.
+
+---
+
+_Issue opened by @LefterisJP on 2024-04-14 11:11_
+
+### Problem
+
+ruff 0.3.7
+
+```python
+a = 'le'
+b = 'app'
+
+a = b + a
+print(a)
+```
+
+This prints `apple`.
+
+If you run ruff it will hit with `PLR6104 Use `+=` to perform an augmented assignment directly` for line 4.
+
+If you run the unsafe fix
+
+```python3
+a = 'le'
+b = 'app'
+
+a += b
+print(a)
+```
+
+You will see that it tries to add b to a though what the previous code was doing is prefix a with b. This will now print `leapp`.
+
+---
+
+_Comment by @AlexWaygood on 2024-04-14 11:17_
+
+Thanks! I believe this is already fixed on `main`, so shouldn't be an issue in the next release :-)
+
+Closing as a duplicate of #10911
+
+---
+
+_Closed by @AlexWaygood on 2024-04-14 11:17_
+
+---
+
+_Comment by @LefterisJP on 2024-04-14 11:19_
+
+> Closing as a duplicate of #10911
+
+Ah apologies Alex. I searched for PLR6104 but missed this one. Thanks for the quick response.
+
+
+---

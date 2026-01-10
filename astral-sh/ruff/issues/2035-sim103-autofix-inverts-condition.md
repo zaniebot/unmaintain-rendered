@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-01-20T16:57:20Z
 updated_at: 2023-01-20T18:17:21Z
 url: https://github.com/astral-sh/ruff/issues/2035
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # `SIM103` autofix inverts condition
@@ -72,10 +72,6 @@ _Label `bug` added by @charliermarsh on 2023-01-20 16:57_
 ---
 
 _Label `autofix` added by @charliermarsh on 2023-01-20 16:57_
-
----
-
-_Referenced in [astral-sh/ruff#2037](../../astral-sh/ruff/pulls/2037.md) on 2023-01-20 18:16_
 
 ---
 

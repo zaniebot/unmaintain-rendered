@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-12T19:15:05Z
 updated_at: 2024-08-13T08:50:04Z
 url: https://github.com/astral-sh/ruff/issues/12850
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Rule request: enforce best practices when mocking
@@ -47,9 +47,5 @@ _Label `plugin` added by @dhruvmanila on 2024-08-13 08:50_
 ---
 
 _Label `needs-decision` added by @dhruvmanila on 2024-08-13 08:50_
-
----
-
-_Referenced in [astral-sh/ruff#17352](../../astral-sh/ruff/issues/17352.md) on 2025-04-15 02:58_
 
 ---

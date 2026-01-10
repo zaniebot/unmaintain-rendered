@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-01T09:42:09Z
 updated_at: 2023-01-01T09:55:05Z
 url: https://github.com/astral-sh/ruff/issues/1527
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T12:05:30Z
 ```
 
 # E111 not being reported?
@@ -75,9 +75,5 @@ hey, that's clear, thanks!
 ---
 
 _Closed by @MarcoGorelli on 2023-01-01 09:55_
-
----
-
-_Referenced in [pandas-dev/pandas#50160](../../pandas-dev/pandas/pulls/50160.md) on 2023-01-03 10:56_
 
 ---

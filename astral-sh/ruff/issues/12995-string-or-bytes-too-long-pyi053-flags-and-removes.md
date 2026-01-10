@@ -1,0 +1,177 @@
+```yaml
+number: 12995
+title: "`string-or-bytes-too-long (PYI053)` flags and removes long strings in `Literal`, producing invalid type"
+type: issue
+state: closed
+author: Avasam
+labels:
+  - bug
+assignees: []
+created_at: 2024-08-19T17:40:00Z
+updated_at: 2024-12-06T00:48:56Z
+url: https://github.com/astral-sh/ruff/issues/12995
+synced_at: 2026-01-10T11:09:55Z
+```
+
+# `string-or-bytes-too-long (PYI053)` flags and removes long strings in `Literal`, producing invalid type
+
+---
+
+_Issue opened by @Avasam on 2024-08-19 17:40_
+
+In the example reproduction below, 
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  string-or-bytes-too-long PYI053
+  
+* A minimal code snippet that reproduces the bug.
+```py
+def foo(bar: typing.Literal["a", "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"]):...
+```
+becomes
+```py
+import typing
+
+def foo(bar: typing.Literal["a", ...]):...
+```
+
+Not only is this an invalid type form (https://github.com/microsoft/pyright/blob/main/docs/configuration.md#reportInvalidTypeForm) but even if autofixed to `Literal["a"]` that would fundamentally change the parameter's type.
+
+I assume this is an oversight as it's meant to replace long default values ~~and is not flagged by flake8-pyi~~ .
+
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+ruff check --isolated --select=PYI053
+
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+not relevant
+
+* The current Ruff version (`ruff --version`).
+ruff 0.6.1
+
+---
+
+_Renamed from "`string-or-bytes-too-long (PYI053)` flags and removes long strings in `Literal`, changing parameter type and producing invalid type" to "`string-or-bytes-too-long (PYI053)` flags and removes long strings in `Literal`, producing invalid type" by @Avasam on 2024-08-19 17:40_
+
+---
+
+_Label `bug` added by @AlexWaygood on 2024-08-19 17:46_
+
+---
+
+_Comment by @AlexWaygood on 2024-08-20 09:45_
+
+> is not flagged by flake8-pyi
+
+I can actually repro this bug with flake8-pyi as well on this snippet in a `.pyi` file:
+
+```py
+from typing import Literal
+
+x: Literal["fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooO"]
+```
+
+We disable the flake8-pyi rule at typeshed for our generated stubs; maybe that's what was hiding the bug? https://github.com/python/typeshed/blob/a7ff1be4394cef089dd62090a2e2ad10cc77cfe6/.flake8#L16
+
+---
+
+_Closed by @AlexWaygood on 2024-08-20 09:53_
+
+---
+
+_Reopened by @AlexWaygood on 2024-08-20 10:00_
+
+---
+
+_Comment by @AlexWaygood on 2024-08-20 10:04_
+
+I merged #13002, but then immediately afterwards realised that it doesn't deal properly with type aliases. We still get two false positives on this snippet, even after #13002:
+
+```py
+from typing import TypeAlias, Literal, Annotated
+
+x: TypeAlias = Literal["fooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooO"]
+y: TypeAlias = Annotated[int, "metadataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]
+```
+
+@dylwil3, don't suppose you'd be interested in a followup PR, would you? :-) The alternative approach I suggested in https://github.com/astral-sh/ruff/pull/13002#discussion_r1723034693 might work better here after all:
+- we'd want to add tracking in the semantic model for when we're entering `Annotated` slices, the same as we do when we're entering `Literal` slices
+- we'd want to skip PYI053 when we're inside any `Annotated` or `Literal` slice, not just when we're inside annotations.
+
+---
+
+_Comment by @dylwil3 on 2024-08-20 10:53_
+
+Sounds good I'll give it a try!
+
+---
+
+_Comment by @dylwil3 on 2024-08-20 11:10_
+
+@AlexWaygood  Can you not do
+
+```python
+def f(x: int) --> "AnnotationsForClassesWithVeryLongNamesInQuotesAsReturnTypes"
+```
+?
+
+---
+
+_Comment by @AlexWaygood on 2024-08-20 11:15_
+
+> @AlexWaygood Can you not do
+> 
+> ```python
+> def f(x: int) --> "AnnotationsForClassesWithVeryLongNamesInQuotesAsReturnTypes"
+> ```
+> 
+> ?
+
+Well, there's no reason to ever use quoted annotations in stubs, since forward references can be used even with `__future__` annotations enabled. We have another rule (`PYI020`) specifically for flagging _any_ quoted annotation in a stub... but I suppose if you _are_ going to use quoted annotations in stubs for some reason, and have `PYI020` switched off for some reason, then maybe it makes sense for this rule to ignore veryyyyyyyyyyyyyyyyyyyy long quoted annotations.
+
+In case it's not obvious, I changed my mind about this while writing this response out 😆 So it's definitely worth adding a comment about this to the code for the rule!
+
+---
+
+_Comment by @dylwil3 on 2024-08-20 13:16_
+
+Hmm... for some reason `in_typing_literal` has no effect - it doesn't trip for either the argument annotation or typevar. Maybe I've done something wrong. I'll try to investigate later today.
+
+---
+
+_Comment by @AlexWaygood on 2024-08-20 13:20_
+
+> Hmm... for some reason `in_typing_literal` has no effect - it doesn't trip for either the argument annotation or typevar. Maybe I've done something wrong. I'll try to investigate later today.
+
+That _is_ odd. I can't immediately see why that would be... don't worry too much about fixing it if you can't figure it out; feel free to ping me if you're stuck!
+
+---
+
+_Comment by @Avasam on 2024-08-20 14:47_
+
+ > We disable the flake8-pyi rule at typeshed for our generated stubs; maybe that's what was hiding the bug? 
+
+Yep, you're right ! That's exactly what happened.
+
+
+
+---
+
+_Comment by @dylwil3 on 2024-08-21 04:01_
+
+Sorry for the delay - I was derailed by my baby learning to crawl all of a sudden 🚀 🚀 🚀 
+
+> > Hmm... for some reason `in_typing_literal` has no effect - it doesn't trip for either the argument annotation or typevar. Maybe I've done something wrong. I'll try to investigate later today.
+> 
+> That _is_ odd. I can't immediately see why that would be... don't worry too much about fixing it if you can't figure it out; feel free to ping me if you're stuck!
+
+Mystery solved - I had an invalid .pyi file since I did not actually import `Literal` or `Annotated` 🤦 
+
+---
+
+_Assigned to @dylwil3 by @dylwil3 on 2024-12-05 21:27_
+
+---
+
+_Closed by @dylwil3 on 2024-12-06 00:48_
+
+---

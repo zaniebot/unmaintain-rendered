@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-12-05T15:37:27Z
 updated_at: 2023-04-20T03:33:14Z
 url: https://github.com/astral-sh/ruff/issues/1064
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # [feature-request] Allow --watch to automatically fix when combined with --fix
@@ -55,10 +55,6 @@ _Label `cli` added by @charliermarsh on 2022-12-31 18:16_
 ---
 
 _Label `good first issue` added by @charliermarsh on 2022-12-31 18:28_
-
----
-
-_Referenced in [astral-sh/ruff#4035](../../astral-sh/ruff/pulls/4035.md) on 2023-04-20 01:01_
 
 ---
 

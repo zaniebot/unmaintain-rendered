@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-21T23:08:10Z
 updated_at: 2025-03-24T05:26:01Z
 url: https://github.com/astral-sh/ruff/issues/2075
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # `INP001` failing even after adding `__init__.py` to the relevant folder
@@ -52,10 +52,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-01-21 23:24_
 
 ---
 
-_Referenced in [astral-sh/ruff#2077](../../astral-sh/ruff/pulls/2077.md) on 2023-01-21 23:29_
-
----
-
 _Closed by @charliermarsh on 2023-01-21 23:33_
 
 ---
@@ -67,10 +63,6 @@ _Comment by @charliermarsh on 2023-01-21 23:56_
 ---
 
 _Reopened by @charliermarsh on 2023-01-21 23:56_
-
----
-
-_Referenced in [astral-sh/ruff#2079](../../astral-sh/ruff/pulls/2079.md) on 2023-01-22 00:31_
 
 ---
 
@@ -90,17 +82,9 @@ Probably a regression, we made some changes to the cache recently.
 
 ---
 
-_Referenced in [astral-sh/ruff#5449](../../astral-sh/ruff/issues/5449.md) on 2023-06-30 02:18_
-
----
-
 _Comment by @charliermarsh on 2023-06-30 02:19_
 
 (Created a new issue: https://github.com/astral-sh/ruff/issues/5449.)
-
----
-
-_Referenced in [garland-culbreth/network-echos#5](../../garland-culbreth/network-echos/pulls/5.md) on 2024-06-11 03:42_
 
 ---
 

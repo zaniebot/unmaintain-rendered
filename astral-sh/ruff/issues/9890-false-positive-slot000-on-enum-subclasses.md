@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-08T06:12:35Z
 updated_at: 2024-04-18T01:15:53Z
 url: https://github.com/astral-sh/ruff/issues/9890
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # False positive `SLOT000` on Enum subclasses
@@ -48,10 +48,6 @@ We can fix this for references in the same file.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-04-18 00:52_
-
----
-
-_Referenced in [astral-sh/ruff#11006](../../astral-sh/ruff/pulls/11006.md) on 2024-04-18 01:02_
 
 ---
 

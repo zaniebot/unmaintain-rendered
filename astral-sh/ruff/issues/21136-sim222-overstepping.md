@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-30T11:46:03Z
 updated_at: 2025-11-10T13:27:33Z
 url: https://github.com/astral-sh/ruff/issues/21136
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # SIM222 overstepping
@@ -65,10 +65,6 @@ _Label `bug` added by @ntBre on 2025-10-30 13:34_
 ---
 
 _Label `rule` added by @ntBre on 2025-10-30 13:34_
-
----
-
-_Referenced in [astral-sh/ruff#21187](../../astral-sh/ruff/pulls/21187.md) on 2025-11-01 18:51_
 
 ---
 

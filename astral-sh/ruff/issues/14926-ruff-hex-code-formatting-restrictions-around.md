@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-11T21:22:05Z
 updated_at: 2024-12-12T07:06:12Z
 url: https://github.com/astral-sh/ruff/issues/14926
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [ruff] Hex code formatting restrictions around debug f-strings are too strict on preview
@@ -59,9 +59,5 @@ Thanks for reporting this and the nice write up. This is interesting. While this
 ---
 
 _Closed by @MichaReiser on 2024-12-12 07:06_
-
----
-
-_Referenced in [astral-sh/ruff#14929](../../astral-sh/ruff/pulls/14929.md) on 2024-12-12 09:28_
 
 ---

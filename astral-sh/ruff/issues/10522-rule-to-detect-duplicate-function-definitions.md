@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-22T09:26:41Z
 updated_at: 2024-09-23T22:19:32Z
 url: https://github.com/astral-sh/ruff/issues/10522
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Rule to detect duplicate function definitions.
@@ -105,10 +105,6 @@ This mean ruff *does not* implement `E0102` as it is implemented in `ruff 0.3.2`
 
 ---
 
-_Referenced in [astral-sh/ruff#970](../../astral-sh/ruff/issues/970.md) on 2024-03-23 09:47_
-
----
-
 _Comment by @ollz272 on 2024-03-23 13:18_
 
 I see why this isn't being picked up for us, we have private variables, which it doesn't work for
@@ -171,13 +167,5 @@ _Label `rule` added by @AlexWaygood on 2024-09-23 22:19_
 ---
 
 _Label `needs-decision` added by @AlexWaygood on 2024-09-23 22:19_
-
----
-
-_Referenced in [astral-sh/ruff#17724](../../astral-sh/ruff/issues/17724.md) on 2025-04-30 06:22_
-
----
-
-_Referenced in [astral-sh/ruff#18432](../../astral-sh/ruff/issues/18432.md) on 2025-06-02 15:53_
 
 ---

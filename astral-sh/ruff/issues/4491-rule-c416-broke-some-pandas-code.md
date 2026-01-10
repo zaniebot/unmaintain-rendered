@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-18T13:19:19Z
 updated_at: 2023-05-18T19:09:16Z
 url: https://github.com/astral-sh/ruff/issues/4491
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Rule C416 broke some pandas code
@@ -94,9 +94,5 @@ Interesting...
 > Unfortunately, in this case obj.keys returns a str, which is not callable.
 
 ref https://github.com/pandas-dev/pandas/issues/53287#issuecomment-1553294794
-
----
-
-_Referenced in [astral-sh/ruff#14909](../../astral-sh/ruff/pulls/14909.md) on 2024-12-19 20:41_
 
 ---

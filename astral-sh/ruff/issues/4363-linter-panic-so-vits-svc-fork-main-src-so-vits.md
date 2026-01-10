@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-11T00:12:23Z
 updated_at: 2023-05-11T02:43:29Z
 url: https://github.com/astral-sh/ruff/issues/4363
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # [Linter panic] so-vits-svc-fork-main\src\so_vits_svc_fork\modules\mel_processing.py
@@ -179,10 +179,6 @@ Backtrace:    0: std::backtrace_rs::backtrace::dbghelp::trace
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-05-11 02:23_
-
----
-
-_Referenced in [astral-sh/ruff#4364](../../astral-sh/ruff/pulls/4364.md) on 2023-05-11 02:23_
 
 ---
 

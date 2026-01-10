@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-19T08:19:38Z
 updated_at: 2023-06-06T00:48:55Z
 url: https://github.com/astral-sh/ruff/issues/4521
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Fix for false positive on F401 breaks valid code
@@ -157,10 +157,6 @@ Yeah that's true. Another option could be to iterate over all `Export` bindings 
 _Comment by @charliermarsh on 2023-05-24 03:43_
 
 I'm looking into this.
-
----
-
-_Referenced in [astral-sh/ruff#4885](../../astral-sh/ruff/pulls/4885.md) on 2023-06-06 00:38_
 
 ---
 

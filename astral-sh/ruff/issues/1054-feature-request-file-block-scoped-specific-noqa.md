@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-05T12:10:46Z
 updated_at: 2023-02-17T01:59:02Z
 url: https://github.com/astral-sh/ruff/issues/1054
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # [feature-request] File/block-scoped specific noqa directives
@@ -168,10 +168,6 @@ I'd like to support this soon. I'm still leaning towards doing on-off comments t
 
 ---
 
-_Referenced in [astral-sh/ruff#1289](../../astral-sh/ruff/issues/1289.md) on 2022-12-19 21:40_
-
----
-
 _Label `configuration` removed by @charliermarsh on 2022-12-31 18:16_
 
 ---
@@ -255,14 +251,6 @@ Working on file-scoped directives now.
 
 ---
 
-_Referenced in [astral-sh/ruff#2978](../../astral-sh/ruff/pulls/2978.md) on 2023-02-17 01:10_
-
----
-
 _Closed by @charliermarsh on 2023-02-17 01:59_
-
----
-
-_Referenced in [astral-sh/ruff#3711](../../astral-sh/ruff/issues/3711.md) on 2023-04-18 12:59_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-09T15:51:51Z
 updated_at: 2025-02-18T10:20:06Z
 url: https://github.com/astral-sh/ruff/issues/16053
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # PLC2801 fix ignores the expression’s syntactic context
@@ -194,17 +194,9 @@ _Comment by @MichaReiser on 2025-02-17 09:39_
 
 ---
 
-_Referenced in [astral-sh/ruff#16216](../../astral-sh/ruff/pulls/16216.md) on 2025-02-17 16:02_
-
----
-
 _Comment by @VascoSch92 on 2025-02-18 10:20_
 
 1. Thanks. I think I fixed it ;-) 
 2. The `Exception` are not equal/equivalent, e.g., for `print((not "x").__contains__("y"))` we have a `AttributeError: 'bool' object has no attribute '__contains__'`, while for the relative fix `print("y" in (not "x"))` we have a `TypeError: argument of type 'bool' is not iterable`. Should we just flag these kind of dunder calls without providing a fix or should we also try to fix them even if the relative exceptions are different?
-
----
-
-_Referenced in [astral-sh/ruff#18813](../../astral-sh/ruff/issues/18813.md) on 2025-06-20 05:49_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-02T18:46:46Z
 updated_at: 2024-11-12T20:36:09Z
 url: https://github.com/astral-sh/ruff/issues/13217
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Report DTZ violation on `datetime.datetime.max` and `min`
@@ -42,10 +42,6 @@ _Renamed from "Report DTZ005 on `datetime.datetime.max` and `min`" to "Report DT
 ---
 
 _Label `rule` added by @charliermarsh on 2024-09-03 00:49_
-
----
-
-_Referenced in [astral-sh/ruff#14288](../../astral-sh/ruff/pulls/14288.md) on 2024-11-12 00:06_
 
 ---
 

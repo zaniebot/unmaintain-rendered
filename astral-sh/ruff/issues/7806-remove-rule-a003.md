@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-04T10:18:46Z
 updated_at: 2024-01-11T17:59:42Z
 url: https://github.com/astral-sh/ruff/issues/7806
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Remove rule A003
@@ -133,10 +133,6 @@ _Label `bug` added by @charliermarsh on 2023-10-11 03:48_
 
 ---
 
-_Referenced in [astral-sh/ruff#9462](../../astral-sh/ruff/pulls/9462.md) on 2024-01-11 02:33_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-11 02:34_
 
 ---
@@ -152,9 +148,5 @@ _Closed by @charliermarsh on 2024-01-11 17:59_
 ---
 
 _Closed by @charliermarsh on 2024-01-11 17:59_
-
----
-
-_Referenced in [astral-sh/ruff#10433](../../astral-sh/ruff/issues/10433.md) on 2024-03-17 10:48_
 
 ---

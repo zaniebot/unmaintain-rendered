@@ -1,0 +1,89 @@
+```yaml
+number: 6650
+title: "Feature request: TCH003 - divide typing-only imports from typing module"
+type: issue
+state: closed
+author: tlambert03
+labels: []
+assignees: []
+created_at: 2023-08-17T12:45:40Z
+updated_at: 2023-08-17T13:05:29Z
+url: https://github.com/astral-sh/ruff/issues/6650
+synced_at: 2026-01-10T11:09:48Z
+```
+
+# Feature request: TCH003 - divide typing-only imports from typing module
+
+---
+
+_Issue opened by @tlambert03 on 2023-08-17 12:45_
+
+This may well be seen as too magical/special-cased, but here goes my pitch :)
+
+I *looove* the autofix features in `TCH`.  
+Like many of us, I develop for multiple versions of python, and also use auto-import in my IDE.  So, for example, if I use `typing.TypeGuard`, it will get auto-imported from `typing` and I end up with the following code:
+
+```python
+from __future__ import annotations
+from typing import Any, TypeGuard
+
+def is_a_thing(obj: Any) -> TypeGuard[object]:
+    ...
+```
+
+That's all fine and good, but then that breaks on earlier versions of python (where TypeGuard wasn't available) and I have to follow up with a new PR to prevent the import error either by importing from `typing_extensions` or moving the import to a TYPE_CHECKING block:
+
+```python
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING
+    from typing import Any, TypeGuard
+
+def is_a_thing(obj: Any) -> TypeGuard[object]:
+    ...
+```
+
+**the pitch**
+The request is to "autofix" example A to example B.
+
+I recognize that *splitting* imports like this (i.e. when you're already importing from a module like `typing`, perhaps even with some imports that you must have a runtime, like `cast` or `overload`) might be a fully new feature on top of what TCH003 does.  For example, if `cast` was used, this would need to be the final result:
+
+```python
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, cast  # cast stays up here
+
+if TYPE_CHECKING
+    from typing import Any, TypeGuard  # type-checking only types go down here
+
+def is_a_thing(obj: Any) -> TypeGuard[object]:
+    return cast(object, obj)
+```
+
+but for me at least, this would save quite a few follow up commits, and I think the `typing` module specifically is one where this case arises all the time.
+
+feel free to unceremoniously close this as "will-not-implement" if you think it's out of scope :)
+
+---
+
+_Comment by @tlambert03 on 2023-08-17 12:53_
+
+alternatively ...
+
+It occurs to me that what I'm requesting is just the inverse of many of the python-version-aware features in the `UP` module (a "`DOWN`" feature if you will).  Is it possible that something like this is already supported and I just don't have my config setup correctly?
+
+---
+
+_Comment by @tlambert03 on 2023-08-17 13:04_
+
+ah, actually... I guess this is a duplicate of https://github.com/astral-sh/ruff/issues/2302?
+
+(closing, cause I think it likely is)
+
+---
+
+_Closed by @tlambert03 on 2023-08-17 13:05_
+
+---

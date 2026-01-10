@@ -1,0 +1,107 @@
+```yaml
+number: 20096
+title: "UP045 doesn't trigger inside of `cast`"
+type: issue
+state: open
+author: ntjohnson1
+labels:
+  - bug
+  - rule
+assignees: []
+created_at: 2025-08-26T11:18:08Z
+updated_at: 2025-10-10T04:06:25Z
+url: https://github.com/astral-sh/ruff/issues/20096
+synced_at: 2026-01-10T11:09:59Z
+```
+
+# UP045 doesn't trigger inside of `cast`
+
+---
+
+_Issue opened by @ntjohnson1 on 2025-08-26 11:18_
+
+### Summary
+
+When running UP045 it doesn't seem to trigger on types within `cast` which when paired with TC006 leads to inconsistent representations.
+
+Versions
+```console
+$ ruff --version
+ruff 0.12.10
+$ python --version
+Python 3.11.13e
+```
+
+CLI Command
+```console
+$ ruff check --select TC006,UP045,I <file_with_contents_below>.py
+```
+
+Minimum reproducer
+```python
+from __future__ import annotations
+
+from typing import Any, Optional, cast
+
+
+def cast_example(input_item: Any) -> str | None:
+    """
+    Shows rule inconsistency.
+
+    Original implementation
+    def cast_example(input_item: Any) -> Optional[str]:
+        return cast(Optional[str], input_item)
+    """
+    return cast("Optional[str]", input_item)
+```
+
+---
+
+_Comment by @ntBre on 2025-08-26 13:45_
+
+Ah, what is your configured Python version? (`ruff check --show-settings | grep _version`)
+
+I can reproduce this with a target version of 3.9 but not with 3.10. UP045 fires as expected on 3.10 or later. But it also fires on 3.9 for a non-string annotation because `from __future__ import annotations` is present, so I'm guessing there may be a missing check for the `__future__` import in a string annotation.
+
+[playground](https://play.ruff.rs/00d947c6-6310-4039-b0bf-a9ae73dd0fe3)
+
+---
+
+_Label `bug` added by @ntBre on 2025-08-26 13:45_
+
+---
+
+_Label `rule` added by @ntBre on 2025-08-26 13:45_
+
+---
+
+_Comment by @ntBre on 2025-08-26 13:48_
+
+I double-checked other string annotations, and it does seem specific to `cast`:
+
+```py
+from __future__ import annotations
+
+from typing import Optional, cast
+
+
+x: Optional[str]          # UP045
+x: "Optional[str]"        # UP045
+cast("Optional[str]", x)  # no UP045
+```
+
+---
+
+_Comment by @ntjohnson1 on 2025-08-26 13:57_
+
+> Ah, what is your configured Python version? (ruff check --show-settings | grep _version)
+
+Yep we are targeting python 3.9. If this works for 3.10 then we'll get the fix for free in October once Python 3.9 hits EOL and we update our minimum python support.
+
+---
+
+_Comment by @dimaqq on 2025-10-10 04:06_
+
+3.9 EOL should be any day now.
+
+---

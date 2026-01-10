@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-28T16:57:41Z
 updated_at: 2025-01-30T13:11:59Z
 url: https://github.com/astral-sh/ruff/issues/15789
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # C413 fix is wrong when a newline appears between `sorted` and the opening parenthesis
@@ -97,10 +97,6 @@ _Assigned to @dylwil3 by @dylwil3 on 2025-01-29 17:28_
 _Comment by @dylwil3 on 2025-01-29 17:29_
 
 Thanks for this! This seems to keep cropping up... maybe worth adding a general edit for removing a function call so we don't have to rediscover this logic each time.
-
----
-
-_Referenced in [astral-sh/ruff#15825](../../astral-sh/ruff/pulls/15825.md) on 2025-01-30 05:09_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-16T11:45:53Z
 updated_at: 2023-11-16T15:49:41Z
 url: https://github.com/astral-sh/ruff/issues/8717
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # [FALSE POSITIVE] "S608 Possible SQL injection" when not applicable
@@ -45,9 +45,5 @@ _Label `bug` added by @zanieb on 2023-11-16 15:49_
 _Comment by @zanieb on 2023-11-16 15:49_
 
 Thanks for the report!
-
----
-
-_Referenced in [astral-sh/ruff#8723](../../astral-sh/ruff/pulls/8723.md) on 2023-11-16 15:49_
 
 ---

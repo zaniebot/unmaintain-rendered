@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-26T12:18:46Z
 updated_at: 2024-06-27T11:42:40Z
 url: https://github.com/astral-sh/ruff/issues/12046
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Panic when checking file with all rules(without fixing)
@@ -164,10 +164,6 @@ _Comment by @MichaReiser on 2024-06-26 12:27_
 ---
 
 _Assigned to @dhruvmanila by @MichaReiser on 2024-06-26 12:28_
-
----
-
-_Referenced in [astral-sh/ruff#12060](../../astral-sh/ruff/pulls/12060.md) on 2024-06-27 04:11_
 
 ---
 

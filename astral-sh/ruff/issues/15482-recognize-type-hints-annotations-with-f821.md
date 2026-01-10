@@ -1,0 +1,155 @@
+```yaml
+number: 15482
+title: "Recognize type hints/annotations with F821 `undefined-name`"
+type: issue
+state: closed
+author: wzyboy
+labels:
+  - question
+assignees: []
+created_at: 2025-01-14T23:22:37Z
+updated_at: 2025-01-15T04:58:24Z
+url: https://github.com/astral-sh/ruff/issues/15482
+synced_at: 2026-01-10T11:09:57Z
+```
+
+# Recognize type hints/annotations with F821 `undefined-name`
+
+---
+
+_Issue opened by @wzyboy on 2025-01-14 23:22_
+
+When writing modules for [SaltStack](https://github.com/saltstack/salt), dynamic variables such as [`__grains__`](https://docs.saltproject.io/en/latest/topics/development/modules/developing.html#dunder-dictionaries) are often used. These variables are not defined in the code but are injected at runtime by Salt's execution environment. For example:
+
+```python
+def my_custom_function():
+    os_family = __grains__["os_family"]
+    return {"os_family": os_family}
+```
+
+Here is a real-world example: [pacmanpkg.py](https://github.com/saltstack/salt/blob/9233e1cc3b6b072a61b445d285ba856fc642ef3b/salt/modules/pacmanpkg.py#L36)
+
+To make type checkers happy, type hints can be used:
+
+```python
+__grains__: dict
+
+def my_custom_function():
+    os_family = __grains__["os_family"]
+    return {"os_family": os_family}
+```
+
+I find this is enough to make [pyright](https://github.com/microsoft/pyright) happy, but Ruff still reports F821 `undefined-name`:
+
+```
+$ ruff check --select F821 foo.py
+foo.py:4:17: F821 Undefined name `__grains__`
+  |
+3 | def my_custom_function():
+4 |     os_family = __grains__["os_family"]
+  |                 ^^^^^^^^^^ F821
+5 |     return {"os_family": os_family}
+  |
+
+Found 1 error.
+```
+
+Is it possible to recognize type hints/annotations in Ruff?
+
+---
+
+_Comment by @InSyncWithFoo on 2025-01-15 00:10_
+
+The [`builtins`](https://docs.astral.sh/ruff/settings/#builtins) setting should help with this.
+
+
+---
+
+_Comment by @wzyboy on 2025-01-15 00:14_
+
+Thanks! Using `builtins` indeed looks better than disabling F821 altogether.
+
+However, it would still be even better if Ruff can regonize type hints like pyright does...
+
+---
+
+_Comment by @InSyncWithFoo on 2025-01-15 00:23_
+
+In that case, how about this?
+
+```py
+TYPE_CHECKING = False
+
+if TYPE_CHECKING:
+    __grains__: dict = ...
+
+os_family = __grains__["os_family"]  # fine
+```
+
+---
+
+_Comment by @wzyboy on 2025-01-15 00:32_
+
+```
+if TYPE_CHECKING:
+    __grains__: dict = ...
+```
+
+This triggers errors from other static checkers (e.g. pyright): `Type "EllipsisType" is not assignable to declared type "dict[Unknown, Unknown]"`
+
+If I simply use `__grains__ = ...` then there will be `__grains__["os_family"] ■ "__getitem__" method not defined on type "EllipsisType"` error.
+
+Your suggestion inspired me to try this:
+
+```
+if TYPE_CHECKING:
+    __grains__: dict = {}
+```
+
+This makes everyone happy, but it's a bit confusing to read.
+
+---
+
+_Comment by @InSyncWithFoo on 2025-01-15 00:36_
+
+`__grains__ = {}` works too. Alternatively:
+
+```py
+__grains__: dict = ...  # type: ignore
+__grains__ = cast(dict, ...)
+```
+
+
+---
+
+_Label `rule` added by @dylwil3 on 2025-01-15 00:37_
+
+---
+
+_Comment by @InSyncWithFoo on 2025-01-15 00:40_
+
+@dylwil3 I think this is more of a [question](https://github.com/astral-sh/ruff/labels/question).
+
+---
+
+_Label `question` added by @dylwil3 on 2025-01-15 01:31_
+
+---
+
+_Label `rule` removed by @dylwil3 on 2025-01-15 01:31_
+
+---
+
+_Comment by @dhruvmanila on 2025-01-15 04:58_
+
+> However, it would still be even better if Ruff can regonize type hints like pyright does...
+
+This would be resolved by the on-going red knot project which will recognize the type hints and will not complain about an undefined name in your scenario. For Ruff, I think it's unlikely that we expand the scope of this rule to look at type hints as (a) it'll diverge from the upstream flake8 rule and (b) the implementation will be fairly basic as Ruff cannot do multifile analysis.
+
+Considering the conversation above, I think that resolves your need and answers the question. Feel free to ask any other questions that you might have.
+
+---
+
+_Closed by @dhruvmanila on 2025-01-15 04:58_
+
+---

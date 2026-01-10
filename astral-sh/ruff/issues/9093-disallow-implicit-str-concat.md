@@ -3,21 +3,21 @@ number: 9093
 title: Disallow Implicit Str Concat
 type: issue
 state: closed
-author: ksdaftari
+author: delulu52
 labels:
   - needs-info
 assignees: []
 created_at: 2023-12-11T14:50:07Z
 updated_at: 2023-12-11T19:17:57Z
 url: https://github.com/astral-sh/ruff/issues/9093
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Disallow Implicit Str Concat
 
 ---
 
-_Issue opened by @ksdaftari on 2023-12-11 14:50_
+_Issue opened by @delulu52 on 2023-12-11 14:50_
 
 So would desire to disallow implicit str concat (single line and multi line). I know via https://github.com/astral-sh/ruff/issues/8549 talks about how to remove multi line. But wondering
 
@@ -38,7 +38,7 @@ _Label `waiting-on-author` added by @dhruvmanila on 2023-12-11 14:57_
 
 ---
 
-_Comment by @ksdaftari on 2023-12-11 17:00_
+_Comment by @delulu52 on 2023-12-11 17:00_
 
 sorry for lack of context. example below should help
 
@@ -152,12 +152,12 @@ For additional context, refer to the docs: https://docs.astral.sh/ruff/formatter
 
 ---
 
-_Comment by @ksdaftari on 2023-12-11 19:17_
+_Comment by @delulu52 on 2023-12-11 19:17_
 
 @charliermarsh that works, thanks for help on this. 
 
 ---
 
-_Closed by @ksdaftari on 2023-12-11 19:17_
+_Closed by @delulu52 on 2023-12-11 19:17_
 
 ---

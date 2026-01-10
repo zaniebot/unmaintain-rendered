@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-15T11:19:36Z
 updated_at: 2023-03-16T05:37:27Z
 url: https://github.com/astral-sh/ruff/issues/3539
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # `C901`: Add `max-complexity` value to message
@@ -38,10 +38,6 @@ Yeah makes sense. I feel like all of these would be clearer as `16 > 15`, rather
 ---
 
 _Label `good first issue` added by @charliermarsh on 2023-03-15 19:54_
-
----
-
-_Referenced in [astral-sh/ruff#3553](../../astral-sh/ruff/pulls/3553.md) on 2023-03-16 03:25_
 
 ---
 

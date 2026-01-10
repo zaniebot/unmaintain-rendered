@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-16T17:30:29Z
 updated_at: 2024-10-17T09:03:38Z
 url: https://github.com/astral-sh/ruff/issues/13779
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] Compare expression inference - Union
@@ -23,10 +23,6 @@ Part of #13618: infer types for expressions `x > y`, `x == y`, etc. where `x` an
 
 ---
 
-_Referenced in [astral-sh/ruff#13618](../../astral-sh/ruff/issues/13618.md) on 2024-10-16 17:30_
-
----
-
 _Renamed from "Union" to "[red-knot] Compare expression inference - Union" by @sharkdp on 2024-10-16 17:30_
 
 ---
@@ -36,10 +32,6 @@ _Label `red-knot` added by @sharkdp on 2024-10-16 17:30_
 ---
 
 _Assigned to @sharkdp by @sharkdp on 2024-10-16 17:38_
-
----
-
-_Referenced in [astral-sh/ruff#13781](../../astral-sh/ruff/pulls/13781.md) on 2024-10-16 18:40_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-13T20:57:43Z
 updated_at: 2025-01-10T07:19:35Z
 url: https://github.com/astral-sh/ruff/issues/7368
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter undocumented deviation: comment on function arguments forces wrapping
@@ -272,10 +272,6 @@ ruff  check --fix --select=RUF100 <path>
 
 ---
 
-_Referenced in [astral-sh/ruff#10440](../../astral-sh/ruff/issues/10440.md) on 2024-03-18 14:59_
-
----
-
 _Comment by @kurt-rhee on 2025-01-10 01:25_
 
 I find this interesting because adding a comment is the only way that I can figure out how to force ruff to allow me to put function arguments on separate lines.  Is there a better way to do something like that?
@@ -287,10 +283,6 @@ if __name__ == "__main__":
         inverter_name="string",  # comment
     )
 ```
-
----
-
-_Referenced in [astral-sh/ruff#15388](../../astral-sh/ruff/issues/15388.md) on 2025-01-10 01:27_
 
 ---
 

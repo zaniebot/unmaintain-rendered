@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-30T14:04:49Z
 updated_at: 2025-07-01T14:26:43Z
 url: https://github.com/astral-sh/ruff/issues/19047
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # FURB168 has false positives on empty tuples
@@ -75,10 +75,6 @@ _Comment by @MeGaGiGaGon on 2025-06-30 19:10_
 I think I found the source of the issue:
 https://github.com/astral-sh/ruff/blob/34052a1185392963c465737e9647f404abdfe8d5/crates/ruff_linter/src/rules/refurb/rules/isinstance_type_none.rs#L102-L104
 The `all` of an empty iterable is `true`, so `is_none` returns `true` on an empty tuple.
-
----
-
-_Referenced in [astral-sh/ruff#19058](../../astral-sh/ruff/pulls/19058.md) on 2025-06-30 23:48_
 
 ---
 

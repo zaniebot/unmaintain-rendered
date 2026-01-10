@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-03T15:58:12Z
 updated_at: 2023-09-05T12:19:35Z
 url: https://github.com/astral-sh/ruff/issues/7086
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Rules C402 cause autofix error
@@ -73,14 +73,6 @@ We end up writing:
 def merge(destination, *sources, **kwargs):
     return {k: vfor k,v in d.iteritems() if k in only_args}
 ```
-
----
-
-_Referenced in [astral-sh/ruff#7087](../../astral-sh/ruff/issues/7087.md) on 2023-09-03 16:37_
-
----
-
-_Referenced in [astral-sh/ruff#7152](../../astral-sh/ruff/pulls/7152.md) on 2023-09-05 12:09_
 
 ---
 

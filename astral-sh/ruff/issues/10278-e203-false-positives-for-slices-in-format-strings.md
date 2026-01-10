@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-07T18:23:23Z
 updated_at: 2024-03-07T22:09:35Z
 url: https://github.com/astral-sh/ruff/issues/10278
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # E203 false positives for slices in format strings
@@ -38,10 +38,6 @@ test.py:1:15: E203 [*] Whitespace before ':'
 ```
 
 The same slice on the second line which is outside of a format string does not trigger E203.
-
----
-
-_Referenced in [astral-sh/ruff#10280](../../astral-sh/ruff/pulls/10280.md) on 2024-03-07 18:26_
 
 ---
 

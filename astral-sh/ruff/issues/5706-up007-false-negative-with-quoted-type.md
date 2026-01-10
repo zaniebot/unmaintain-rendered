@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-12T10:15:00Z
 updated_at: 2023-07-13T11:34:06Z
 url: https://github.com/astral-sh/ruff/issues/5706
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # UP007 false negative with quoted type
@@ -120,10 +120,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-07-12 13:30_
 ---
 
 _Label `needs-decision` removed by @charliermarsh on 2023-07-12 13:31_
-
----
-
-_Referenced in [astral-sh/ruff#5725](../../astral-sh/ruff/pulls/5725.md) on 2023-07-13 04:11_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-14T16:01:41Z
 updated_at: 2025-03-14T17:15:04Z
 url: https://github.com/astral-sh/ruff/issues/16753
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # F841 unpacked vars from function call not reported as unused
@@ -46,10 +46,6 @@ Local variable `b2` is assigned to but never used (F841) [Ln 6, Col 9]
 ### Version
 
 v0.11.0 (playground)
-
----
-
-_Referenced in [astral-sh/ruff#16754](../../astral-sh/ruff/issues/16754.md) on 2025-03-14 16:09_
 
 ---
 

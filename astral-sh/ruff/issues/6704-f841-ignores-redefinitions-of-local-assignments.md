@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-20T14:06:45Z
 updated_at: 2024-11-18T08:15:20Z
 url: https://github.com/astral-sh/ruff/issues/6704
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # `F841` ignores redefinitions of local assignments
@@ -213,21 +213,5 @@ It makes it very difficult for us to find the definitions that the developer ove
 _Comment by @MichaReiser on 2024-11-18 08:15_
 
 I think Ruff should support this but it requires a branch sensitive analysis which Ruff doesn't support today
-
----
-
-_Referenced in [astral-sh/ruff#14355](../../astral-sh/ruff/issues/14355.md) on 2024-11-18 08:15_
-
----
-
-_Referenced in [astral-sh/ruff#16232](../../astral-sh/ruff/issues/16232.md) on 2025-02-18 22:18_
-
----
-
-_Referenced in [microsoft/pyright#10102](../../microsoft/pyright/issues/10102.md) on 2025-03-17 11:50_
-
----
-
-_Referenced in [astral-sh/ruff#18485](../../astral-sh/ruff/issues/18485.md) on 2025-06-05 21:39_
 
 ---

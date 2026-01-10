@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-15T16:53:18Z
 updated_at: 2025-12-01T21:57:52Z
 url: https://github.com/astral-sh/ruff/issues/21473
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # SIM222 and SIM223 conflate truthiness with non-emptiness
@@ -67,10 +67,6 @@ False
 ### Version
 
 ruff 0.14.5 (87dafb878 2025-11-13)
-
----
-
-_Referenced in [astral-sh/ruff#21479](../../astral-sh/ruff/pulls/21479.md) on 2025-11-16 17:26_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-25T13:59:13Z
 updated_at: 2023-01-25T17:36:51Z
 url: https://github.com/astral-sh/ruff/issues/2153
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # COM812 causes syntax error for Python 3.3
@@ -60,10 +60,6 @@ _Label `documentation` added by @charliermarsh on 2023-01-25 14:00_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-01-25 14:00_
-
----
-
-_Referenced in [astral-sh/ruff#2159](../../astral-sh/ruff/pulls/2159.md) on 2023-01-25 17:04_
 
 ---
 

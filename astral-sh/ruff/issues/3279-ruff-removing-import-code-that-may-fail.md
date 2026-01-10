@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-28T19:38:39Z
 updated_at: 2023-03-01T23:08:38Z
 url: https://github.com/astral-sh/ruff/issues/3279
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Ruff removing import code, that may fail
@@ -51,10 +51,6 @@ You should maybe use [`importlib.util.find_spec`](https://docs.python.org/3/libr
 
 ---
 
-_Referenced in [astral-sh/ruff#3288](../../astral-sh/ruff/pulls/3288.md) on 2023-03-01 04:25_
-
----
-
 _Comment by @qarmin on 2023-03-01 05:39_
 
 I found this when trying to add basic ruff support for Bottles app, in my project I only once ever used such code.
@@ -64,9 +60,5 @@ When looking at https://github.com/search?l=Python&p=1&q=ModuleNotFoundError&typ
 ---
 
 _Closed by @charliermarsh on 2023-03-01 23:08_
-
----
-
-_Referenced in [astral-sh/ruff#3378](../../astral-sh/ruff/issues/3378.md) on 2023-03-07 03:50_
 
 ---

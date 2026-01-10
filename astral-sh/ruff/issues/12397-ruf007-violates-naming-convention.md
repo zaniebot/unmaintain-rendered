@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-18T22:30:38Z
 updated_at: 2024-07-18T23:26:28Z
 url: https://github.com/astral-sh/ruff/issues/12397
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # RUF007 violates naming convention
@@ -77,10 +77,6 @@ If you're interested in updating, I'd happily merge a PR.
 _Comment by @dylwil3 on 2024-07-18 22:53_
 
 Sure - on it!
-
----
-
-_Referenced in [astral-sh/ruff#12399](../../astral-sh/ruff/pulls/12399.md) on 2024-07-18 23:22_
 
 ---
 

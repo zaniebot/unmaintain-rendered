@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-28T19:10:09Z
 updated_at: 2025-03-25T01:15:13Z
 url: https://github.com/astral-sh/ruff/issues/2310
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # D417 Argument descriptions only required if there is an "Args" section
@@ -226,18 +226,6 @@ _Label `docstring` added by @charliermarsh on 2023-01-30 22:55_
 
 ---
 
-_Referenced in [dmytrostriletskyi/threads-net#58](../../dmytrostriletskyi/threads-net/pulls/58.md) on 2023-07-13 15:14_
-
----
-
-_Referenced in [astral-sh/ruff#6614](../../astral-sh/ruff/issues/6614.md) on 2023-08-16 13:07_
-
----
-
-_Referenced in [pydev-guide/pyrepo-copier#18](../../pydev-guide/pyrepo-copier/issues/18.md) on 2023-10-27 14:22_
-
----
-
 _Comment by @wyardley on 2024-01-12 20:55_
 
 > The most helpful thing for me, being new to both ruff and pydocstyle, would be if it told me that I didn't even have a section called "Args".
@@ -264,14 +252,6 @@ This might need to be a new rule, like: you're missing a required section.
 _Comment by @adamjstewart on 2024-05-15 19:13_
 
 I would also be fine with a new rule for this, see #11435 which is related.
-
----
-
-_Referenced in [kornia/kornia#3083](../../kornia/kornia/issues/3083.md) on 2024-12-08 17:01_
-
----
-
-_Referenced in [kornia/kornia#3088](../../kornia/kornia/pulls/3088.md) on 2024-12-09 22:45_
 
 ---
 
@@ -302,13 +282,5 @@ _Comment by @PaleNeutron on 2025-03-25 01:14_
 Nowadays, openai's new agent SDK explicitly rely on docstring.  See  https://openai.github.io/openai-agents-python/tools/
 
 Make sure all docstring's format is correct is much more vital. We really need this feature.
-
----
-
-_Referenced in [rerun-io/opensource#1](../../rerun-io/opensource/issues/1.md) on 2025-08-14 13:31_
-
----
-
-_Referenced in [f-dangel/torch-jet#100](../../f-dangel/torch-jet/pulls/100.md) on 2025-10-23 06:43_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-16T22:59:14Z
 updated_at: 2025-12-24T02:53:19Z
 url: https://github.com/astral-sh/ruff/issues/10432
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Feature request: Option to use lowercase hex literals
@@ -172,25 +172,9 @@ style='black'
 
 ---
 
-_Referenced in [psf/black#4501](../../psf/black/issues/4501.md) on 2024-10-23 13:50_
-
----
-
-_Referenced in [psf/black#4522](../../psf/black/issues/4522.md) on 2024-12-04 07:22_
-
----
-
 _Comment by @hodunov on 2025-01-28 09:45_
 
 Any updates on this? It really makes sense.
-
----
-
-_Referenced in [txtx/txtx#257](../../txtx/txtx/pulls/257.md) on 2025-03-13 04:48_
-
----
-
-_Referenced in [astral-sh/ruff#16718](../../astral-sh/ruff/pulls/16718.md) on 2025-03-14 07:07_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-26T02:09:43Z
 updated_at: 2024-12-11T02:54:24Z
 url: https://github.com/astral-sh/ruff/issues/12520
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # DOC501 throwing errors when using Sphinx style docstrings
@@ -91,25 +91,5 @@ _Label `bug` removed by @charliermarsh on 2024-07-26 02:11_
 _Comment by @Eutropios on 2024-07-26 02:12_
 
 Ahhh, my mistake! Thanks for the quick response. 😄 
-
----
-
-_Referenced in [tox-dev/pipdeptree#397](../../tox-dev/pipdeptree/pulls/397.md) on 2024-07-29 20:14_
-
----
-
-_Referenced in [meltano/sdk#2590](../../meltano/sdk/pulls/2590.md) on 2024-08-05 23:40_
-
----
-
-_Referenced in [astral-sh/ruff#13286](../../astral-sh/ruff/pulls/13286.md) on 2024-09-11 20:10_
-
----
-
-_Referenced in [astral-sh/ruff#14609](../../astral-sh/ruff/issues/14609.md) on 2024-11-26 13:34_
-
----
-
-_Referenced in [tox-dev/tox-uv#210](../../tox-dev/tox-uv/pulls/210.md) on 2025-06-20 10:28_
 
 ---

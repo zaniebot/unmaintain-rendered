@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-01T19:25:18Z
 updated_at: 2024-11-18T02:30:07Z
 url: https://github.com/astral-sh/ruff/issues/12616
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # PIE790 fix can make non-docstrings into docstrings
@@ -61,10 +61,6 @@ This is just something theoretical I noticed while reading the rule description.
 ---
 
 _Label `fixes` added by @AlexWaygood on 2024-08-02 11:11_
-
----
-
-_Referenced in [astral-sh/ruff#14393](../../astral-sh/ruff/pulls/14393.md) on 2024-11-17 00:31_
 
 ---
 

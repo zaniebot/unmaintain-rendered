@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-06T12:49:44Z
 updated_at: 2024-09-22T11:00:46Z
 url: https://github.com/astral-sh/ruff/issues/13269
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Add UP rule: rewrite TypeVar defaults for Generator / AsyncGenerator
@@ -70,17 +70,17 @@ _Label `accepted` added by @AlexWaygood on 2024-09-07 12:35_
 
 ---
 
-_Comment by @iamlucasvieira on 2024-09-07 12:47_
+_Comment by @vieira127 on 2024-09-07 12:47_
 
 May I work on this one? 
 
 ---
 
-_Assigned to @iamlucasvieira by @MichaReiser on 2024-09-09 11:58_
+_Assigned to @vieira127 by @MichaReiser on 2024-09-09 11:58_
 
 ---
 
-_Comment by @iamlucasvieira on 2024-09-22 10:38_
+_Comment by @vieira127 on 2024-09-22 10:38_
 
 I think we already have this rule implemented: UP043
 

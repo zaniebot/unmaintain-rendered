@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-26T07:03:11Z
 updated_at: 2025-09-26T07:03:11Z
 url: https://github.com/astral-sh/ruff/issues/20590
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Consider using `Deprecated` and `Unnecessary` tags for more rules
@@ -24,17 +24,5 @@ With https://github.com/astral-sh/ruff/pull/20565 landed, it's now very easy for
 ---
 
 _Label `diagnostics` added by @MichaReiser on 2025-09-26 07:03_
-
----
-
-_Referenced in [astral-sh/ruff#20734](../../astral-sh/ruff/pulls/20734.md) on 2025-10-07 06:29_
-
----
-
-_Referenced in [astral-sh/ruff#20758](../../astral-sh/ruff/pulls/20758.md) on 2025-10-08 07:22_
-
----
-
-_Referenced in [astral-sh/ruff#20801](../../astral-sh/ruff/pulls/20801.md) on 2025-10-10 10:41_
 
 ---

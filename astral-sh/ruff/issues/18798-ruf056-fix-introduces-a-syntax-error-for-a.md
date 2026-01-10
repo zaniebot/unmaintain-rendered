@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-19T17:44:19Z
 updated_at: 2025-06-20T21:24:42Z
 url: https://github.com/astral-sh/ruff/issues/18798
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # RUF056 fix introduces a syntax error for a parenthesized value
@@ -37,10 +37,6 @@ error: Fix introduced a syntax error. Reverting all changes.
 ### Version
 
 ruff 0.12.0 (87f0feb21 2025-06-17)
-
----
-
-_Referenced in [astral-sh/ruff#18805](../../astral-sh/ruff/pulls/18805.md) on 2025-06-19 21:51_
 
 ---
 

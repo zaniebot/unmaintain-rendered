@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-01-02T22:09:50Z
 updated_at: 2023-11-28T06:00:39Z
 url: https://github.com/astral-sh/ruff/issues/1567
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Feature request: Add Length-Sort config to isort
@@ -38,10 +38,6 @@ _Label `isort` added by @charliermarsh on 2023-01-02 22:55_
 ---
 
 _Label `good first issue` added by @charliermarsh on 2023-01-04 16:02_
-
----
-
-_Referenced in [astral-sh/ruff#2082](../../astral-sh/ruff/pulls/2082.md) on 2023-01-22 05:45_
 
 ---
 
@@ -87,18 +83,6 @@ For `length-sort` and `length-sort-straight` my guess is that the latter is a su
 
 ---
 
-_Referenced in [astral-sh/ruff#6190](../../astral-sh/ruff/issues/6190.md) on 2023-07-31 09:46_
-
----
-
-_Referenced in [python-validators/validators#289](../../python-validators/validators/pulls/289.md) on 2023-08-17 16:39_
-
----
-
-_Referenced in [astral-sh/ruff#1904](../../astral-sh/ruff/issues/1904.md) on 2023-09-17 19:04_
-
----
-
 _Comment by @bluthej on 2023-09-25 17:01_
 
 Hey! I'm currently working on this one and I have a working implementation of the basic functionality. @suharnikov if you're still working on it as well I'll leave it for you of course :)
@@ -120,18 +104,6 @@ _Comment by @bluthej on 2023-09-25 19:13_
 @charliermarsh absolutely! That's no problem at all :)
 
 Then I'll start with the refactor and come back to this one when it's merged 😊
-
----
-
-_Referenced in [astral-sh/ruff#7665](../../astral-sh/ruff/pulls/7665.md) on 2023-09-26 08:05_
-
----
-
-_Referenced in [astral-sh/ruff#7738](../../astral-sh/ruff/issues/7738.md) on 2023-10-01 11:53_
-
----
-
-_Referenced in [astral-sh/ruff#7963](../../astral-sh/ruff/pulls/7963.md) on 2023-10-15 11:07_
 
 ---
 
@@ -233,10 +205,6 @@ I think you meant the `unicode_width::UnicodeWidthStr` trait for strings :)
 I switched to `.width()` and added some tests with non-ASCII characters.
 
 What about relative imports? Should we follow isort and count the dots in the length?
-
----
-
-_Referenced in [astral-sh/ruff#8841](../../astral-sh/ruff/pulls/8841.md) on 2023-11-26 17:47_
 
 ---
 

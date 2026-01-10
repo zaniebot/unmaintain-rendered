@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-20T16:51:02Z
 updated_at: 2025-12-17T22:37:02Z
 url: https://github.com/astral-sh/ruff/issues/13014
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Add a new rule to warn on implicitly-concatenated strings separated by a comment
@@ -53,22 +53,6 @@ Related https://github.com/astral-sh/ruff/issues/13031
 
 ---
 
-_Referenced in [astral-sh/ruff#13031](../../astral-sh/ruff/issues/13031.md) on 2024-08-21 12:27_
-
----
-
-_Referenced in [flake8-implicit-str-concat/flake8-implicit-str-concat#55](../../flake8-implicit-str-concat/flake8-implicit-str-concat/issues/55.md) on 2024-08-25 16:20_
-
----
-
-_Referenced in [astral-sh/ruff#16108](../../astral-sh/ruff/pulls/16108.md) on 2025-02-12 00:42_
-
----
-
-_Referenced in [astral-sh/ruff#20854](../../astral-sh/ruff/issues/20854.md) on 2025-10-15 22:10_
-
----
-
 _Comment by @MichaReiser on 2025-10-16 07:30_
 
 This has come up again in #20854. I wonder if there's an argument for an ISC rule or option that catches any implicit string concatenation within a set list, or a many-element tuple, instead of detecting in-between comments.
@@ -102,10 +86,6 @@ facts = (
 As parenthesis are often used for multi-line string concatenation, whereas multi-line containers typically used to hold multiple elements and if multi-line concatenation is desired in a multi-line container I think it would be worth explicitly putting it in parenthesis to highlight.
 
 But I do appreciate there is some subjective choices here, and I would rather have OPs example alerted on than nothing at all.
-
----
-
-_Referenced in [astral-sh/ruff#21972](../../astral-sh/ruff/pulls/21972.md) on 2025-12-14 03:22_
 
 ---
 

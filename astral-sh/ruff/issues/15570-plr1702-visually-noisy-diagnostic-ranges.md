@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-01-18T15:10:54Z
 updated_at: 2025-01-20T17:00:40Z
 url: https://github.com/astral-sh/ruff/issues/15570
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # PLR1702: Visually noisy diagnostic ranges
@@ -158,10 +158,6 @@ I think there's a small design question about how to handle this situation, and 
 ---
 
 _Label `needs-design` added by @dylwil3 on 2025-01-18 16:20_
-
----
-
-_Referenced in [astral-sh/ruff#15578](../../astral-sh/ruff/pulls/15578.md) on 2025-01-19 00:19_
 
 ---
 
@@ -332,9 +328,5 @@ if a:
 			...
 ```
 
-
----
-
-_Referenced in [astral-sh/ruff#14900](../../astral-sh/ruff/issues/14900.md) on 2025-11-22 18:11_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-05-01T20:11:15Z
 updated_at: 2023-05-02T01:07:52Z
 url: https://github.com/astral-sh/ruff/issues/4172
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # FBT003 and `pytest.param`
@@ -65,14 +65,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-05-02 01:00_
 
 ---
 
-_Referenced in [astral-sh/ruff#4176](../../astral-sh/ruff/pulls/4176.md) on 2023-05-02 01:01_
-
----
-
 _Closed by @charliermarsh on 2023-05-02 01:07_
-
----
-
-_Referenced in [astral-sh/ruff#10485](../../astral-sh/ruff/issues/10485.md) on 2024-03-20 14:38_
 
 ---

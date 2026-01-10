@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-07T20:45:36Z
 updated_at: 2023-06-07T21:56:05Z
 url: https://github.com/astral-sh/ruff/issues/4939
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # [bug] F401 false positive for imports inside functions
@@ -58,10 +58,6 @@ _Label `bug` added by @charliermarsh on 2023-06-07 20:57_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-06-07 21:20_
-
----
-
-_Referenced in [astral-sh/ruff#4942](../../astral-sh/ruff/pulls/4942.md) on 2023-06-07 21:48_
 
 ---
 

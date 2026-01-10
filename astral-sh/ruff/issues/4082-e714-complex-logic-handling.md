@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-24T16:20:04Z
 updated_at: 2023-04-25T17:37:57Z
 url: https://github.com/astral-sh/ruff/issues/4082
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # E714 Complex logic handling
@@ -35,10 +35,6 @@ but it is not straightforward to see what the fix should be or if it is a better
 
 ---
 
-_Referenced in [pytorch/pytorch#99785](../../pytorch/pytorch/pulls/99785.md) on 2023-04-24 16:20_
-
----
-
 _Renamed from "Complex logic handling with E714" to "E714 Complex logic handling" by @justinchuby on 2023-04-24 16:20_
 
 ---
@@ -51,10 +47,6 @@ if not (index.start == index.stop == index.step == None):
     pass
 ```
 I can pick it up.
-
----
-
-_Referenced in [astral-sh/ruff#4083](../../astral-sh/ruff/pulls/4083.md) on 2023-04-24 19:47_
 
 ---
 

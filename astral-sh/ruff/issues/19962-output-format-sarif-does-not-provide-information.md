@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-18T07:56:30Z
 updated_at: 2025-10-02T20:22:52Z
 url: https://github.com/astral-sh/ruff/issues/19962
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # `--output-format sarif` does not provide information on autofixes
@@ -41,10 +41,6 @@ _Label `cli` added by @MichaReiser on 2025-08-18 08:19_
 ---
 
 _Label `help wanted` added by @MichaReiser on 2025-08-18 08:19_
-
----
-
-_Referenced in [astral-sh/ruff#20300](../../astral-sh/ruff/pulls/20300.md) on 2025-09-08 03:29_
 
 ---
 

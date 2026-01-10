@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-12-07T12:02:15Z
 updated_at: 2022-12-07T15:38:07Z
 url: https://github.com/astral-sh/ruff/issues/1117
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:17Z
 ```
 
 # Undefined name `anext`
@@ -35,10 +35,6 @@ test.py:2:7: F821 Undefined name `anext`
 _Comment by @JonathanPlasse on 2022-12-07 12:14_
 
 Will fix.
-
----
-
-_Referenced in [astral-sh/ruff#1118](../../astral-sh/ruff/pulls/1118.md) on 2022-12-07 12:23_
 
 ---
 

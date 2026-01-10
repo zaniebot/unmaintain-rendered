@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-25T06:55:10Z
 updated_at: 2024-06-25T09:30:32Z
 url: https://github.com/astral-sh/ruff/issues/12023
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # E203: false positive in f-string using formatting
@@ -53,10 +53,6 @@ _Label `bug` added by @dhruvmanila on 2024-06-25 08:23_
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2024-06-25 08:23_
-
----
-
-_Referenced in [astral-sh/ruff#12024](../../astral-sh/ruff/pulls/12024.md) on 2024-06-25 08:48_
 
 ---
 

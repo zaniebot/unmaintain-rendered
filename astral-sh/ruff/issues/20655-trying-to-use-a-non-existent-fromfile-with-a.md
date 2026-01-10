@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-01T00:08:54Z
 updated_at: 2025-10-03T13:36:09Z
 url: https://github.com/astral-sh/ruff/issues/20655
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Trying to use a non-existent fromfile with a leading special character panics instead of giving nice error 
@@ -118,10 +118,6 @@ Note that `@` is indicative of a fromfile. Whatever you pass there gets read and
 
 ---
 
-_Referenced in [astral-sh/ty#1291](../../astral-sh/ty/issues/1291.md) on 2025-10-01 00:34_
-
----
-
 _Comment by @MeGaGiGaGon on 2025-10-01 00:34_
 
 Interesting, I wasn't aware that existed, so I guess you have to do `/@<file name>` instead. Is that anywhere in the docs?
@@ -149,10 +145,6 @@ i will take this one.
 ---
 
 _Assigned to @TaKO8Ki by @ntBre on 2025-10-01 12:38_
-
----
-
-_Referenced in [astral-sh/ruff#20691](../../astral-sh/ruff/pulls/20691.md) on 2025-10-03 12:30_
 
 ---
 

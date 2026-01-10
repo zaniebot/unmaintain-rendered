@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-17T12:35:35Z
 updated_at: 2025-07-31T19:17:28Z
 url: https://github.com/astral-sh/ruff/issues/16802
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [Infinite loop] I002 and UP035
@@ -133,18 +133,6 @@ this makes sense to me. If we do this, we could even say in the docs for `UP035`
 
 ---
 
-_Referenced in [astral-sh/ruff#18729](../../astral-sh/ruff/issues/18729.md) on 2025-06-17 17:48_
-
----
-
-_Referenced in [astral-sh/ruff#19413](../../astral-sh/ruff/pulls/19413.md) on 2025-07-28 18:46_
-
----
-
 _Closed by @ntBre on 2025-07-31 19:17_
-
----
-
-_Referenced in [astral-sh/ruff#21115](../../astral-sh/ruff/pulls/21115.md) on 2025-10-29 19:21_
 
 ---

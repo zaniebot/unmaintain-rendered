@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-03-19T15:36:04Z
 updated_at: 2025-08-07T21:30:56Z
 url: https://github.com/astral-sh/ruff/issues/3608
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Rewrite `os.environ.get` as `os.getenv`
@@ -132,9 +132,5 @@ And [`os.unsetenv()`](https://docs.python.org/3.13/library/os.html#os.unsetenv) 
 Note that updates to `os.environ` are automatically forwarded to [`os.environb`](https://docs.python.org/3.13/library/os.html#os.environb).
 
 IMO it makes sense to prefer `os.environ.get()` over `os.getenv()` to be consistent with the recommended way to modify the env vars. For example, one might incorrectly chose to use suboptimal `os.putenv()` just because they saw `os.getenv()` elsewhere in the same file, while if we used `os.environ.get()` they're more likely to default to the prefered `os.environ.put()`.
-
----
-
-_Referenced in [grpc/proposal#505](../../grpc/proposal/pulls/505.md) on 2025-08-12 19:02_
 
 ---

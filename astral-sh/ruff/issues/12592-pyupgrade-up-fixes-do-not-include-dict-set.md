@@ -1,0 +1,91 @@
+```yaml
+number: 12592
+title: "pyupgrade (`UP`) fixes do not include `dict`/`set` literal fixes"
+type: issue
+state: open
+author: stephenfin
+labels:
+  - documentation
+assignees: []
+created_at: 2024-07-31T10:47:48Z
+updated_at: 2024-07-31T12:47:17Z
+url: https://github.com/astral-sh/ruff/issues/12592
+synced_at: 2026-01-10T11:09:54Z
+```
+
+# pyupgrade (`UP`) fixes do not include `dict`/`set` literal fixes
+
+---
+
+_Issue opened by @stephenfin on 2024-07-31 10:47_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+I noticed that the pyupgrade fixes result in different output to pyupgrade itself. Namely, it doesn't apply replace the use of `dict()` and `set()` with the equivalent literals.
+
+```
+x = dict(a=1)
+y = dict((a, b) for a, b in ['a', '1'])
+a = set(['a', 'b'])
+b = set([x for x in ['a', 'b']])
+```
+
+`pyupgrade` identifies and replaces these:
+
+```
+❯ pyupgrade --py38-plus test.py 
+Rewriting test.py
+❯ cat test.py 
+x = dict(a=1)
+y = {a: b for a, b in ['a', '1']}
+a = {'a', 'b'}
+b = {x for x in ['a', 'b']}
+```
+
+`ruff` does not (at least not using just the `U` fix class):
+
+```
+❯ ruff check --select U --fix --unsafe-fixes test.py 
+All checks passed!
+```
+
+However, while I couldn't find anything confirming this (it's not mentioned in https://github.com/astral-sh/ruff/issues/827 and a search through other issues didn't highlight anything), it seems enabling another class of rules, the flake8-comprehensions (`C4`), resolves this.
+
+```
+❯ ruff check --select U,C4 --fix --unsafe-fixes test.py 
+Found 7 errors (7 fixed, 0 remaining).
+❯ cat test.py 
+x = {'a': 1}
+y = dict(['a', '1'])
+a = {'a', 'b'}
+b = {'a', 'b'}
+```
+
+I don't know if the documentation tooling allows this (https://docs.astral.sh/ruff/rules/ appears to be auto-generated) but it could be helpful to provide a pointer or note to this effect for someone looking to replace pyupgrade wholesale? Alternatively, maybe this issue is enough of a pointer and it can simply be closed straight off :smile:
+
+---
+
+_Renamed from "pyupgrade (`U`) fixes do not include `dict`/`set` literal fixes" to "pyupgrade (`UP`) fixes do not include `dict`/`set` literal fixes" by @stephenfin on 2024-07-31 10:53_
+
+---
+
+_Comment by @charliermarsh on 2024-07-31 12:47_
+
+👍 Yeah I think we just rolled these out under the `C4` category because the already existed there. I'm not sure where we could relay this information. We've talked about supporting rule aliases in the past, but it raises all kinds of tricky UX questions 🤔 
+
+---
+
+_Label `documentation` added by @charliermarsh on 2024-07-31 12:47_
+
+---

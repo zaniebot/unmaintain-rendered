@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-31T13:43:42Z
 updated_at: 2025-02-05T13:38:04Z
 url: https://github.com/astral-sh/ruff/issues/15852
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # C400 and C401 fixes fail when a comma follows the generator
@@ -82,14 +82,6 @@ _Assigned to @dylwil3 by @dylwil3 on 2025-02-03 16:51_
 
 ---
 
-_Referenced in [astral-sh/ruff#15929](../../astral-sh/ruff/pulls/15929.md) on 2025-02-04 11:31_
-
----
-
 _Closed by @dylwil3 on 2025-02-05 13:38_
-
----
-
-_Referenced in [astral-sh/ruff#16099](../../astral-sh/ruff/issues/16099.md) on 2025-02-11 15:02_
 
 ---

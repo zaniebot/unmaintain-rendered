@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-03-11T11:17:53Z
 updated_at: 2024-03-11T22:20:56Z
 url: https://github.com/astral-sh/ruff/issues/10335
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # C413 fix for reversed(sorted(..., reverse=...)) needs parentheses when key is a boolop to avoid changing semantics
@@ -42,10 +42,6 @@ ruff 0.3.2
 
 ---
 
-_Referenced in [Zac-HD/shed#105](../../Zac-HD/shed/pulls/105.md) on 2024-03-11 11:19_
-
----
-
 _Label `fixes` added by @AlexWaygood on 2024-03-11 11:19_
 
 ---
@@ -65,10 +61,6 @@ Thanks for the report! Your assessment looks right to me and this is notably not
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-11 20:08_
-
----
-
-_Referenced in [astral-sh/ruff#10346](../../astral-sh/ruff/pulls/10346.md) on 2024-03-11 21:52_
 
 ---
 

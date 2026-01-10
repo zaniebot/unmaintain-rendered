@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-08-29T18:20:07Z
 updated_at: 2023-09-02T11:45:41Z
 url: https://github.com/astral-sh/ruff/issues/6989
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Rules B009 cause autofix error
@@ -68,10 +68,6 @@ _Label `help wanted` added by @zanieb on 2023-08-29 18:44_
 ---
 
 _Label `accepted` added by @zanieb on 2023-08-29 18:44_
-
----
-
-_Referenced in [astral-sh/ruff#7057](../../astral-sh/ruff/pulls/7057.md) on 2023-09-02 03:47_
 
 ---
 

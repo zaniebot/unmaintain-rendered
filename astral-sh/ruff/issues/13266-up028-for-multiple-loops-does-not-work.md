@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-06T10:35:42Z
 updated_at: 2024-09-25T15:03:10Z
 url: https://github.com/astral-sh/ruff/issues/13266
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # UP028 for multiple loops does not work
@@ -59,10 +59,6 @@ Or add a warning about this behavior to the documentation
 ---
 
 _Label `bug` added by @zanieb on 2024-09-24 14:22_
-
----
-
-_Referenced in [astral-sh/ruff#13504](../../astral-sh/ruff/pulls/13504.md) on 2024-09-24 14:44_
 
 ---
 

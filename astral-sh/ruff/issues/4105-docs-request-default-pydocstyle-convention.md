@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-25T22:20:17Z
 updated_at: 2023-05-08T22:24:55Z
 url: https://github.com/astral-sh/ruff/issues/4105
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Docs request: default `pydocstyle` convention
@@ -59,10 +59,6 @@ The keyword is saying (non-default)
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-05-08 22:18_
-
----
-
-_Referenced in [astral-sh/ruff#4292](../../astral-sh/ruff/pulls/4292.md) on 2023-05-08 22:19_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-10T08:56:00Z
 updated_at: 2025-03-21T13:23:01Z
 url: https://github.com/astral-sh/ruff/issues/16071
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Unify `OperatorPrecedence` enums
@@ -36,10 +36,6 @@ Ideally, these would be two separate PRs
 ---
 
 _Label `internal` added by @MichaReiser on 2025-02-10 08:56_
-
----
-
-_Referenced in [astral-sh/ruff#15919](../../astral-sh/ruff/pulls/15919.md) on 2025-02-10 08:56_
 
 ---
 
@@ -116,10 +112,6 @@ A more complex example:
 
 ---
 
-_Referenced in [astral-sh/ruff#16162](../../astral-sh/ruff/pulls/16162.md) on 2025-02-14 14:26_
-
----
-
 _Comment by @junhsonjb on 2025-02-14 14:29_
 
 Just sent out a [PR](https://github.com/astral-sh/ruff/pull/16162). I wrote most of the code before @InSyncWithFoo's comment. It doesn't attempt to address the problems with parenthesizing yet but I think may still be a good step towards unifying the many definitions of `OperatorPrecedence` 🙂 
@@ -152,10 +144,6 @@ _Comment by @InSyncWithFoo on 2025-02-14 23:59_
 
 ---
 
-_Referenced in [astral-sh/ruff#16747](../../astral-sh/ruff/pulls/16747.md) on 2025-03-14 13:36_
-
----
-
 _Comment by @junhsonjb on 2025-03-14 13:40_
 
 Sorry about the delay here 🙂 This PR only makes the changes for `ruff_python_parser` -- I thought it might be a good idea to keep things simple and separate the changes for each crate
@@ -171,10 +159,6 @@ _Comment by @MichaReiser on 2025-03-14 13:58_
 _Comment by @junhsonjb on 2025-03-17 13:06_
 
 @MichaReiser Thanks! That sounds fine about the formatter. The linter's version of the enum is the one that was moved into `ruff_python_ast` to become the general `OperatorPrecedence`. This was done in the first PR for this issue, so I think it might be safe to close this issue for now
-
----
-
-_Referenced in [astral-sh/ruff#16844](../../astral-sh/ruff/pulls/16844.md) on 2025-03-19 13:19_
 
 ---
 

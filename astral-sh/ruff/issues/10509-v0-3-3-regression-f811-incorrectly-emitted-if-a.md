@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-21T12:00:04Z
 updated_at: 2024-03-21T16:22:51Z
 url: https://github.com/astral-sh/ruff/issues/10509
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # [v0.3.3 regression]: F811 incorrectly emitted if a symbol in a stub is re-exported and a symbol by the same name is defined in a different scope
@@ -45,14 +45,6 @@ _Assigned to @charliermarsh by @AlexWaygood on 2024-03-21 15:18_
 
 ---
 
-_Referenced in [astral-sh/ruff#10512](../../astral-sh/ruff/pulls/10512.md) on 2024-03-21 16:07_
-
----
-
 _Closed by @charliermarsh on 2024-03-21 16:22_
-
----
-
-_Referenced in [astral-sh/ruff#10564](../../astral-sh/ruff/pulls/10564.md) on 2024-03-25 10:18_
 
 ---

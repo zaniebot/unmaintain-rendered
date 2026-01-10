@@ -1,0 +1,190 @@
+```yaml
+number: 16472
+title: FURB116 has false positives and unsafe fixes
+type: issue
+state: closed
+author: dscorbett
+labels:
+  - bug
+  - fixes
+  - help wanted
+assignees: []
+created_at: 2025-03-03T14:26:34Z
+updated_at: 2025-05-12T20:08:13Z
+url: https://github.com/astral-sh/ruff/issues/16472
+synced_at: 2026-01-10T11:09:57Z
+```
+
+# FURB116 has false positives and unsafe fixes
+
+---
+
+_Issue opened by @dscorbett on 2025-03-03 14:26_
+
+### Summary
+
+The fix for [f-string-number-format (FURB116)](https://docs.astral.sh/ruff/rules/f-string-number-format/) only works on non-negative integers. If the argument isn’t an `int` or `bool` literal (or a variable that was set to one of those, or any other expression that Ruff can prove is a non-negative integer), the rule should be marked unsafe. The fix can also introduce a syntax error for certain complex expressions that the rule was probably not intended to handle.
+
+The fix changes behavior for negative integers.
+```console
+$ cat >furb116_1.py <<'# EOF'
+x = -1
+print(bin(x)[2:])
+# EOF
+
+$ python furb116_1.py
+b1
+
+$ ruff --isolated check --preview --select FURB116 furb116_1.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat furb116_1.py
+x = -1
+print(f"{x:b}")
+
+$ python furb116_1.py
+-1
+```
+
+FURB116 applies to all number literals, but `float` and `complex` literals are false positives which the rule should ignore.
+```console
+$ cat >furb116_2.py <<'# EOF'
+bin(1.0)[2:]
+# EOF
+
+$ python furb116_2.py 2>&1 | tail -n 1
+TypeError: 'float' object cannot be interpreted as an integer
+
+$ ruff --isolated check --preview --select FURB116 furb116_2.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ python furb116_2.py 2>&1 | tail -n 1
+ValueError: Unknown format code 'b' for object of type 'float'
+```
+
+In general, the fix should be marked unsafe, except when it can be proved to be safe. Otherwise, the fix changes behavior, sometimes by changing the error type as in the previous example, and sometimes by changing behavior in other ways.
+```console
+$ cat >furb116_3.py <<'# EOF'
+import datetime
+d = datetime.datetime.now(tz=datetime.UTC)
+print(bin(d)[2:])
+# EOF
+
+$ python furb116_3.py 2>&1 | tail -n 1
+TypeError: 'datetime.datetime' object cannot be interpreted as an integer
+
+$ ruff --isolated check --preview --select FURB116 furb116_3.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat furb116_3.py
+import datetime
+d = datetime.datetime.now(tz=datetime.UTC)
+print(f"{d:b}")
+
+$ python furb116_3.py
+b
+```
+
+The fix introduces a syntax error when the argument begins with a brace.
+```console
+$ cat >furb116_4.py <<'# EOF'
+print(bin({0: 1}[0].numerator)[2:])
+# EOF
+
+$ python furb116_4.py
+1
+
+$ ruff --isolated check --preview --select FURB116 furb116_4.py --diff 2>&1 | grep error:
+error: Fix introduced a syntax error. Reverting all changes.
+```
+
+The fix introduces a syntax error in Python 3.11 and earlier when the argument contains the same kind of quotation marks as the fix’s f-string.
+```console
+$ cat >furb116_5.py <<'# EOF'
+print(bin(len("xyz").numerator)[2:])
+# EOF
+
+$ python3.11 furb116_5.py
+11
+
+$ ruff --isolated check --target-version py311 --preview --select FURB116 furb116_5.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat furb116_5.py
+print(f"{len("xyz").numerator:b}")
+
+$ python3.11 furb116_5.py 2>&1 | tail -n 1
+SyntaxError: f-string: unmatched '('
+```
+
+The fix introduces a syntax error in Python 3.11 and earlier when the argument contains a backslash.
+```console
+$ cat >furb116_6.py <<'# EOF'
+print(bin(ord("\\").numerator)[2:])
+# EOF
+
+$ python3.11 furb116_6.py
+1011100
+
+$ ruff --isolated check --target-version py311 --preview --select FURB116 furb116_6.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat furb116_6.py
+print(f"{ord("\\").numerator:b}")
+
+$ python3.11 furb116_6.py 2>&1 | tail -n 1
+SyntaxError: unexpected character after line continuation character
+```
+
+The fix introduces a syntax error in Python 3.11 and earlier when the argument spans multiple lines.
+```console
+$ cat >furb116_7.py <<'# EOF'
+import sys
+print(hex(sys
+.maxunicode)[2:])
+# EOF
+
+$ python3.11 furb116_7.py
+10ffff
+
+$ ruff --isolated check --target-version py311 --preview --select FURB116 furb116_7.py --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat furb116_7.py
+import sys
+print(f"{sys
+.maxunicode:x}")
+
+$ python3.11 furb116_7.py 2>&1 | tail -n 1
+SyntaxError: unterminated string literal (detected at line 2)
+```
+
+### Version
+
+ruff 0.9.9 (091d0af2a 2025-02-28)
+
+---
+
+_Label `bug` added by @ntBre on 2025-03-03 15:46_
+
+---
+
+_Label `fixes` added by @ntBre on 2025-03-03 15:46_
+
+---
+
+_Label `help wanted` added by @ntBre on 2025-03-03 15:46_
+
+---
+
+_Closed by @MichaReiser on 2025-05-03 13:59_
+
+---
+
+_Reopened by @MichaReiser on 2025-05-03 13:59_
+
+---
+
+_Closed by @ntBre on 2025-05-12 20:08_
+
+---

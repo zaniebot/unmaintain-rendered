@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-30T14:47:31Z
 updated_at: 2023-03-30T16:19:55Z
 url: https://github.com/astral-sh/ruff/issues/3815
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # SIM101 false negatives with attr lookup
@@ -50,10 +50,6 @@ I think this is probably consistent with SIM101 as-is so not labeling a "bug" al
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-03-30 15:51_
-
----
-
-_Referenced in [astral-sh/ruff#3817](../../astral-sh/ruff/pulls/3817.md) on 2023-03-30 16:05_
 
 ---
 

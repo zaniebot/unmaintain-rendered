@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-11-07T14:55:47Z
 updated_at: 2022-11-22T02:22:57Z
 url: https://github.com/astral-sh/ruff/issues/640
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # Automatically remove redundant open modes
@@ -56,10 +56,6 @@ _Comment by @charliermarsh on 2022-11-19 18:52_
 
 ---
 
-_Referenced in [astral-sh/ruff#843](../../astral-sh/ruff/pulls/843.md) on 2022-11-21 00:09_
-
----
-
 _Comment by @charliermarsh on 2022-11-22 02:22_
 
 Solved by #640.
@@ -67,9 +63,5 @@ Solved by #640.
 ---
 
 _Closed by @charliermarsh on 2022-11-22 02:22_
-
----
-
-_Referenced in [astral-sh/ruff#906](../../astral-sh/ruff/pulls/906.md) on 2022-11-25 20:05_
 
 ---

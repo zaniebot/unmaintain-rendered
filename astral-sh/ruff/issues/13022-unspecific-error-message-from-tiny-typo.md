@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-21T05:59:58Z
 updated_at: 2024-08-21T10:06:17Z
 url: https://github.com/astral-sh/ruff/issues/13022
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Unspecific error message from tiny typo
@@ -96,10 +96,6 @@ ruff failed
   | ^^^^^^^^^^^^^^^^
 Unknown rule selector: `ME102`
 ```
-
----
-
-_Referenced in [astral-sh/ruff#13029](../../astral-sh/ruff/pulls/13029.md) on 2024-08-21 09:54_
 
 ---
 

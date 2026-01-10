@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-13T18:30:44Z
 updated_at: 2024-11-25T23:42:03Z
 url: https://github.com/astral-sh/ruff/issues/11862
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # False-positive for `N811` for full-caps, but non-constant imports
@@ -62,10 +62,6 @@ imho N811 should not be applied to single character "names", as naming conventio
 
 Maybe it would also be good to use no single character names for variables or classes, but that's another topic.
 
-
----
-
-_Referenced in [astral-sh/ruff#14584](../../astral-sh/ruff/pulls/14584.md) on 2024-11-25 15:01_
 
 ---
 

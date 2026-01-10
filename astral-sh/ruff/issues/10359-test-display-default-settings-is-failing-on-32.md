@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-12T14:20:53Z
 updated_at: 2024-03-12T19:59:39Z
 url: https://github.com/astral-sh/ruff/issues/10359
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Test display_default_settings is failing on 32 bits archs
@@ -90,18 +90,6 @@ _Label `testing` added by @zanieb on 2024-03-12 14:25_
 
 ---
 
-_Referenced in [astral-sh/ruff#10370](../../astral-sh/ruff/pulls/10370.md) on 2024-03-12 19:13_
-
----
-
 _Closed by @charliermarsh on 2024-03-12 19:59_
-
----
-
-_Referenced in [astral-sh/ruff#10470](../../astral-sh/ruff/issues/10470.md) on 2024-03-19 08:02_
-
----
-
-_Referenced in [astral-sh/ruff#13009](../../astral-sh/ruff/issues/13009.md) on 2024-08-20 17:37_
 
 ---

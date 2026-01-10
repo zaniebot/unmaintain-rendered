@@ -1,0 +1,116 @@
+```yaml
+number: 7440
+title: "Formatter incompatibility: ellipses are not inlined in `.py` files"
+type: issue
+state: closed
+author: charliermarsh
+labels:
+  - formatter
+  - preview
+assignees: []
+created_at: 2023-09-16T16:40:33Z
+updated_at: 2023-10-26T15:33:28Z
+url: https://github.com/astral-sh/ruff/issues/7440
+synced_at: 2026-01-10T11:09:49Z
+```
+
+# Formatter incompatibility: ellipses are not inlined in `.py` files
+
+---
+
+_Issue opened by @charliermarsh on 2023-09-16 16:40_
+
+Given:
+
+```python
+def f(): ...
+
+def f():
+    ...
+
+def f():
+    """Docstring"""
+    ...
+```
+
+Recent versions of Black format as:
+
+```python
+def f(): ...
+
+
+def f(): ...
+
+
+def f():
+    """Docstring"""
+    ...
+```
+
+While Ruff formats as:
+
+```python
+def f():
+    ...
+
+
+def f():
+    ...
+
+
+def f():
+    """Docstring"""
+    ...
+```
+
+This changed in Black 23.9.0 (https://github.com/psf/black/pull/3796).
+
+---
+
+_Label `formatter` added by @charliermarsh on 2023-09-16 16:40_
+
+---
+
+_Label `accepted` added by @charliermarsh on 2023-09-16 16:40_
+
+---
+
+_Comment by @charliermarsh on 2023-09-16 16:41_
+
+Ahh sorry, this in preview. I didn't realize Poetry was using preview style.
+
+---
+
+_Label `accepted` removed by @charliermarsh on 2023-09-16 16:41_
+
+---
+
+_Added to milestone `Formatter: Beta` by @charliermarsh on 2023-09-16 16:41_
+
+---
+
+_Comment by @charliermarsh on 2023-09-16 16:42_
+
+@MichaReiser - Do we close? Or is there a separate milestone or tag for these?
+
+---
+
+_Label `preview` added by @MichaReiser on 2023-09-16 16:43_
+
+---
+
+_Removed from milestone `Formatter: Beta` by @MichaReiser on 2023-09-18 13:30_
+
+---
+
+_Added to milestone `Formatter: Stable` by @MichaReiser on 2023-09-18 13:30_
+
+---
+
+_Assigned to @konstin by @konstin on 2023-10-20 10:43_
+
+---
+
+_Closed by @konstin on 2023-10-26 15:33_
+
+---

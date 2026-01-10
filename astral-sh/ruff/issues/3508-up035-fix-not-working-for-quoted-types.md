@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-14T11:37:30Z
 updated_at: 2023-03-22T16:45:54Z
 url: https://github.com/astral-sh/ruff/issues/3508
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # UP035 --fix not working for quoted types
@@ -123,10 +123,6 @@ Yes, this makes sense.
 
 ---
 
-_Referenced in [astral-sh/ruff#3555](../../astral-sh/ruff/issues/3555.md) on 2023-03-16 15:24_
-
----
-
 _Comment by @charliermarsh on 2023-03-18 04:07_
 
 Some of these are tricky (e.g., `quotedList: "Li" "st[str]" = []` is a valid annotation), but we should be able to fix the common cases.
@@ -134,10 +130,6 @@ Some of these are tricky (e.g., `quotedList: "Li" "st[str]" = []` is a valid ann
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-03-18 04:08_
-
----
-
-_Referenced in [astral-sh/ruff#3657](../../astral-sh/ruff/pulls/3657.md) on 2023-03-21 20:40_
 
 ---
 

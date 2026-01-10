@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-12T09:43:37Z
 updated_at: 2023-09-27T08:34:52Z
 url: https://github.com/astral-sh/ruff/issues/7299
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # PEP 701 linter changes
@@ -63,10 +63,6 @@ _Label `rule` removed by @dhruvmanila on 2023-09-12 10:07_
 ---
 
 _Label `linter` added by @dhruvmanila on 2023-09-12 10:07_
-
----
-
-_Referenced in [astral-sh/ruff#6502](../../astral-sh/ruff/issues/6502.md) on 2023-09-14 01:57_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-24T18:33:46Z
 updated_at: 2023-04-06T17:54:54Z
 url: https://github.com/astral-sh/ruff/issues/3716
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # [Linter panic] Panic when trying to fix code with arabic letters
@@ -78,10 +78,6 @@ Backtrace:    0: ruff_cli::panic::catch_unwind::{{closure}}
 ---
 
 _Label `bug` added by @charliermarsh on 2023-03-24 20:59_
-
----
-
-_Referenced in [astral-sh/ruff#3898](../../astral-sh/ruff/pulls/3898.md) on 2023-04-06 10:59_
 
 ---
 

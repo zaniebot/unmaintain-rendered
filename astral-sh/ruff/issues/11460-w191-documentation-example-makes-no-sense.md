@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-17T19:58:28Z
 updated_at: 2024-05-17T21:49:17Z
 url: https://github.com/astral-sh/ruff/issues/11460
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # W191 documentation example makes no sense
@@ -54,10 +54,6 @@ It does (correctly) use a tab in the actual rustdoc source. Perhaps it's being c
 ---
 
 _Label `documentation` added by @charliermarsh on 2024-05-17 21:20_
-
----
-
-_Referenced in [astral-sh/ruff#11462](../../astral-sh/ruff/pulls/11462.md) on 2024-05-17 21:28_
 
 ---
 

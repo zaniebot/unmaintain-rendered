@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-20T03:36:46Z
 updated_at: 2025-01-27T14:24:02Z
 url: https://github.com/astral-sh/ruff/issues/6697
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # new rule - detect when decorators are in the wrong order
@@ -160,10 +160,6 @@ also `property.setter`
 _Comment by @evanrittenhouse on 2023-08-26 04:53_
 
 @zanieb Thanks for the list - was hoping there were some docs somewhere, but off to REPL I go... 😄 
-
----
-
-_Referenced in [astral-sh/ruff#6965](../../astral-sh/ruff/pulls/6965.md) on 2023-08-29 03:25_
 
 ---
 

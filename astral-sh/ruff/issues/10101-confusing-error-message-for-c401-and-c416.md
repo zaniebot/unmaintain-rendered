@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-23T16:47:07Z
 updated_at: 2024-03-26T07:36:47Z
 url: https://github.com/astral-sh/ruff/issues/10101
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Confusing error message for C401 and C416
@@ -55,10 +55,6 @@ No fixes available (2 hidden fixes can be enabled with the `--unsafe-fixes` opti
 $ poetry run ruff --version
 ruff 0.2.2
 ```
-
----
-
-_Referenced in [astral-sh/ruff#10596](../../astral-sh/ruff/pulls/10596.md) on 2024-03-26 03:47_
 
 ---
 

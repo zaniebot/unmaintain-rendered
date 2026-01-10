@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-01T19:28:22Z
 updated_at: 2025-09-03T20:39:12Z
 url: https://github.com/astral-sh/ruff/issues/20198
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # C417 fix introduces a syntax error for `yield` in lambda expression
@@ -49,10 +49,6 @@ SyntaxError: 'yield' inside generator expression
 ### Version
 
 ruff 0.12.11 (c2bc15bc1 2025-08-28)
-
----
-
-_Referenced in [astral-sh/ruff#20201](../../astral-sh/ruff/pulls/20201.md) on 2025-09-02 01:18_
 
 ---
 

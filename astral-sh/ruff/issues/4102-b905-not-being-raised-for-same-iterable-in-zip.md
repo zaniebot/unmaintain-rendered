@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-04-25T21:28:52Z
 updated_at: 2023-12-11T23:29:52Z
 url: https://github.com/astral-sh/ruff/issues/4102
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # B905 not being raised for same iterable in `zip`
@@ -131,13 +131,5 @@ Alternatively, if you set a `requires-python` in your `pyproject.toml`, Ruff wil
 _Comment by @jaxwagner on 2023-12-11 23:29_
 
 thanks so much @charliermarsh! really appreciate it :) 
-
----
-
-_Referenced in [astral-sh/ruff#16541](../../astral-sh/ruff/issues/16541.md) on 2025-03-06 18:26_
-
----
-
-_Referenced in [astral-sh/ruff#17531](../../astral-sh/ruff/issues/17531.md) on 2025-04-21 22:13_
 
 ---

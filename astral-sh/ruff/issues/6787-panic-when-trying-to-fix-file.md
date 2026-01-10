@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-22T18:21:41Z
 updated_at: 2023-08-22T19:12:27Z
 url: https://github.com/astral-sh/ruff/issues/6787
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Panic when trying to fix file
@@ -179,10 +179,6 @@ _Label `bug` added by @charliermarsh on 2023-08-22 18:36_
 ---
 
 _Label `fuzzer` added by @charliermarsh on 2023-08-22 18:36_
-
----
-
-_Referenced in [astral-sh/ruff#6789](../../astral-sh/ruff/pulls/6789.md) on 2023-08-22 18:43_
 
 ---
 

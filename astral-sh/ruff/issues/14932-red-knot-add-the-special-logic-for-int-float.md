@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-12T11:11:21Z
 updated_at: 2025-02-14T20:24:12Z
 url: https://github.com/astral-sh/ruff/issues/14932
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Add the special logic for int/float/complex in annotations
@@ -163,10 +163,6 @@ Yeah, this is the main downside of the special case. If we had intersections you
 
 ---
 
-_Referenced in [astral-sh/ruff#9810](../../astral-sh/ruff/issues/9810.md) on 2025-01-08 10:35_
-
----
-
 _Added to milestone `Red Knot Q1 2025` by @carljm on 2025-01-09 18:59_
 
 ---
@@ -210,10 +206,6 @@ _Comment by @jorenham on 2025-01-15 20:02_
 And yes, my example is missing some `# type: ignore` comments in the protocol definition for it to validate. 
 
 The type-tests for it can be found [here](https://github.com/jorenham/optype/blob/master/tests/test_typing.py#L203-L273), and the implementation [here](https://github.com/jorenham/optype/blob/master/optype/typing.py#L73-L166).
-
----
-
-_Referenced in [astral-sh/ruff#16166](../../astral-sh/ruff/pulls/16166.md) on 2025-02-14 19:21_
 
 ---
 

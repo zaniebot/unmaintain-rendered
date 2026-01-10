@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-17T20:47:36Z
 updated_at: 2023-08-19T21:59:13Z
 url: https://github.com/astral-sh/ruff/issues/6662
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Please implement PIE808 (prefer-simple-range)
@@ -50,10 +50,6 @@ Go for it!
 ---
 
 _Assigned to @harupy by @charliermarsh on 2023-08-18 13:29_
-
----
-
-_Referenced in [astral-sh/ruff#6690](../../astral-sh/ruff/pulls/6690.md) on 2023-08-19 05:47_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-20T03:47:47Z
 updated_at: 2024-02-20T17:40:20Z
 url: https://github.com/astral-sh/ruff/issues/10056
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # ERA001: detect single-line code for try:, except:, etc.
@@ -50,10 +50,6 @@ Example [playground](https://play.ruff.rs/6d31dca7-7abc-4a8f-8f29-3c4547e29f73)
 # except Exception as e: print()
 # ^ doesn't work
 ```
-
----
-
-_Referenced in [astral-sh/ruff#10057](../../astral-sh/ruff/pulls/10057.md) on 2024-02-20 04:11_
 
 ---
 

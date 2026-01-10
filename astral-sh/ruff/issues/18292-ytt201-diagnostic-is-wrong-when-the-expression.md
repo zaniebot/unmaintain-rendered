@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-24T21:29:12Z
 updated_at: 2025-05-25T17:16:20Z
 url: https://github.com/astral-sh/ruff/issues/18292
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # YTT201 diagnostic is wrong when the expression uses `!=`
@@ -36,10 +36,6 @@ ytt201.py:2:1: YTT201 `sys.version_info[0] == 3` referenced (python4), use `>=`
 ### Version
 
 ruff 0.11.11 (0397682f1 2025-05-22)
-
----
-
-_Referenced in [astral-sh/ruff#18293](../../astral-sh/ruff/pulls/18293.md) on 2025-05-25 00:34_
 
 ---
 

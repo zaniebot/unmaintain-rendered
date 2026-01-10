@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-17T12:13:16Z
 updated_at: 2025-04-18T15:20:04Z
 url: https://github.com/astral-sh/ruff/issues/17447
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] Some pairs of types are no longer recognised as assignable to their union
@@ -126,14 +126,6 @@ Yeah I understand the issue and I'm on it, thanks!
 
 ---
 
-_Referenced in [astral-sh/ruff#17451](../../astral-sh/ruff/pulls/17451.md) on 2025-04-17 17:32_
-
----
-
 _Closed by @carljm on 2025-04-18 15:20_
-
----
-
-_Referenced in [astral-sh/ruff#17478](../../astral-sh/ruff/issues/17478.md) on 2025-04-20 10:45_
 
 ---

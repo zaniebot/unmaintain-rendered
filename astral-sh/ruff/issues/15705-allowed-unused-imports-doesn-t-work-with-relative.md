@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-24T00:57:42Z
 updated_at: 2025-08-29T12:25:47Z
 url: https://github.com/astral-sh/ruff/issues/15705
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # allowed-unused-imports doesn't work with relative imports
@@ -74,10 +74,6 @@ but we never prepend `self.module`. So I don't think we actually do. @charlierma
 
 ---
 
-_Referenced in [astral-sh/ruff#20115](../../astral-sh/ruff/pulls/20115.md) on 2025-08-27 17:36_
-
----
-
 _Comment by @TaKO8Ki on 2025-08-29 09:46_
 
 @ntBre I have confirmed that my PR #20115 does not solve this issue, so I will work on this.
@@ -85,9 +81,5 @@ _Comment by @TaKO8Ki on 2025-08-29 09:46_
 ---
 
 _Assigned to @TaKO8Ki by @ntBre on 2025-08-29 12:25_
-
----
-
-_Referenced in [mhammond/pywin32#2676](../../mhammond/pywin32/pulls/2676.md) on 2025-11-09 19:38_
 
 ---

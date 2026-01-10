@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-12T21:09:13Z
 updated_at: 2023-09-29T17:27:33Z
 url: https://github.com/astral-sh/ruff/issues/7320
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter undocumented deviation: remove parenthesis
@@ -131,10 +131,6 @@ The comment positioning deviation is expected because we ignore suppression comm
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-09-27 18:45_
-
----
-
-_Referenced in [astral-sh/ruff#7679](../../astral-sh/ruff/pulls/7679.md) on 2023-09-27 20:18_
 
 ---
 

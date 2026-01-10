@@ -1,0 +1,120 @@
+```yaml
+number: 7797
+title: "SIM101 fix reverses order of `or` condition"
+type: issue
+state: closed
+author: JelleZijlstra
+labels:
+  - bug
+assignees: []
+created_at: 2023-10-04T03:02:03Z
+updated_at: 2023-10-04T04:42:15Z
+url: https://github.com/astral-sh/ruff/issues/7797
+synced_at: 2026-01-10T11:09:50Z
+```
+
+# SIM101 fix reverses order of `or` condition
+
+---
+
+_Issue opened by @JelleZijlstra on 2023-10-04 03:02_
+
+```
+$ cat sim101.py
+assert (
+    job.only_on_instances is None
+    or isinstance(job.only_on_instances, list)
+    or isinstance(job.only_on_instances, set)
+)
+$ python -m ruff --select=SIM101 sim101.py 
+sim101.py:2:5: SIM101 [*] Multiple `isinstance` calls for expression, merge into a single call
+Found 1 error.
+[*] 1 potentially fixable with the --fix option.
+$ python -m ruff --select=SIM101 sim101.py  --fix --diff
+--- sim101.py
++++ sim101.py
+@@ -1,5 +1,3 @@
+ assert (
+-    job.only_on_instances is None
+-    or isinstance(job.only_on_instances, list)
+-    or isinstance(job.only_on_instances, set)
++    isinstance(job.only_on_instances, (list, set)) or job.only_on_instances is None
+ )
+
+Would fix 1 error.
+$ python -m ruff --version
+ruff 0.0.292
+```
+
+Notice that the original code checked `job.only_on_instances is None` first, and Ruff's change puts it second instead.
+
+It's harmless in this case, but in general this change could break working code that relies on short-circuit evaluation.
+
+---
+
+_Comment by @JelleZijlstra on 2023-10-04 03:03_
+
+I'll try to come up with a fix for this one.
+
+---
+
+_Comment by @charliermarsh on 2023-10-04 03:09_
+
+Oof yeah, looks like a bug. Thanks!
+
+---
+
+_Comment by @charliermarsh on 2023-10-04 03:10_
+
+This probably needs to be sensitive to order:
+
+```rust
+// Generate the combined `BoolOp`.
+let node = ast::ExprBoolOp {
+    op: BoolOp::Or,
+    values: iter::once(call)
+        .chain(
+            values
+                .iter()
+                .enumerate()
+                .filter(|(index, _)| !indices.contains(index))
+                .map(|(_, elt)| elt.clone()),
+        )
+        .collect(),
+    range: TextRange::default(),
+};
+```
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-10-04 03:10_
+
+---
+
+_Comment by @JelleZijlstra on 2023-10-04 03:12_
+
+Yes, I'm staring at that code now :)
+
+Here's a related bug I noticed when looking at the code:
+
+```
+ assert (
+-    isinstance(x, int)
+-    or x is None
+-    or isinstance(x, str)
++    isinstance(x, (int, str)) or x is None
+ )
+
+```
+
+If the two isinstance() calls are not adjacent among the members of the BoolOp, it isn't safe to combine them. I think in that case Ruff simply should not emit any error.
+
+---
+
+_Assigned to @JelleZijlstra by @charliermarsh on 2023-10-04 04:26_
+
+---
+
+_Closed by @charliermarsh on 2023-10-04 04:42_
+
+---

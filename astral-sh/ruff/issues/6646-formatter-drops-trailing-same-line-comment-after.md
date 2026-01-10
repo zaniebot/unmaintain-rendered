@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-08-17T10:40:01Z
 updated_at: 2023-08-18T15:34:56Z
 url: https://github.com/astral-sh/ruff/issues/6646
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Formatter: Drops trailing same line comment after `lambda :`
@@ -63,15 +63,7 @@ _Renamed from "Formatter: Ruff drops trailing same line comment after `lambda :`
 
 ---
 
-_Referenced in [astral-sh/ruff#6647](../../astral-sh/ruff/issues/6647.md) on 2023-08-17 10:43_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2023-08-18 03:33_
-
----
-
-_Referenced in [astral-sh/ruff#6669](../../astral-sh/ruff/pulls/6669.md) on 2023-08-18 04:36_
 
 ---
 

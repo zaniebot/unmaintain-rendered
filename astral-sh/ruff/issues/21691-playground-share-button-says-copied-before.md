@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-11-29T10:24:35Z
 updated_at: 2025-12-17T11:16:03Z
 url: https://github.com/astral-sh/ruff/issues/21691
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # playground: Share button says Copied! before actually copying, then fails if you tab away too fast
@@ -61,10 +61,6 @@ Hi @MichaReiser , I'd like to work on this issue.
 ---
 
 _Assigned to @mahiro72 by @MichaReiser on 2025-12-08 09:42_
-
----
-
-_Referenced in [astral-sh/ruff#21942](../../astral-sh/ruff/pulls/21942.md) on 2025-12-12 11:07_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-12-12T17:15:11Z
 updated_at: 2023-06-20T05:44:09Z
 url: https://github.com/astral-sh/ruff/issues/1218
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Support formatting jupyter notebooks
@@ -57,10 +57,6 @@ Found 3 error(s).
 ```
 
 (Would still like to have a first-party integration at some point.)
-
----
-
-_Referenced in [astral-sh/ruff#1417](../../astral-sh/ruff/pulls/1417.md) on 2022-12-28 02:23_
 
 ---
 
@@ -112,14 +108,6 @@ _Assigned to @dhruvmanila by @charliermarsh on 2023-05-17 03:08_
 
 ---
 
-_Referenced in [astral-sh/ruff#4665](../../astral-sh/ruff/pulls/4665.md) on 2023-05-26 08:33_
-
----
-
-_Referenced in [astral-sh/ruff#4727](../../astral-sh/ruff/issues/4727.md) on 2023-05-30 15:36_
-
----
-
 _Closed by @dhruvmanila on 2023-06-12 14:14_
 
 ---
@@ -140,18 +128,10 @@ What's the outstanding work here? Testing?
 
 ---
 
-_Referenced in [astral-sh/ruff#5028](../../astral-sh/ruff/pulls/5028.md) on 2023-06-12 15:59_
-
----
-
 _Comment by @dhruvmanila on 2023-06-12 16:06_
 
 * Roundtrip support
 * End-to-end testing support
-
----
-
-_Referenced in [astral-sh/ruff#5076](../../astral-sh/ruff/pulls/5076.md) on 2023-06-14 05:11_
 
 ---
 
@@ -162,13 +142,5 @@ Meta issue: #5188
 ---
 
 _Closed by @dhruvmanila on 2023-06-20 05:44_
-
----
-
-_Referenced in [astral-sh/ruff#5188](../../astral-sh/ruff/issues/5188.md) on 2023-07-26 02:00_
-
----
-
-_Referenced in [unit8co/darts#2340](../../unit8co/darts/pulls/2340.md) on 2024-04-18 07:52_
 
 ---

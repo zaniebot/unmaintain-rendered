@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-02-01T15:41:19Z
 updated_at: 2023-05-21T16:06:02Z
 url: https://github.com/astral-sh/ruff/issues/2443
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # [ruff --fix] (v0.0.239) When working with numpy arrays `mask == True` is not the same as `mask is True`
@@ -103,10 +103,6 @@ Not sure if it would make more sense to do the analysis at the AST level though,
 
 ---
 
-_Referenced in [bcgov/wps#2650](../../bcgov/wps/pulls/2650.md) on 2023-02-16 17:51_
-
----
-
 _Comment by @charliermarsh on 2023-03-14 17:58_
 
 We could consider ignoring these expressions inside of all `.where` calls, regardless of whether it's NumPy, SQLAlchemy, etc. We'd be trading off false negatives for false positives.
@@ -137,10 +133,6 @@ Our usage seems harder to detect as a special case since we construct the list o
 
 ---
 
-_Referenced in [PrefectHQ/prefect#9283](../../PrefectHQ/prefect/pulls/9283.md) on 2023-04-24 17:39_
-
----
-
 _Comment by @conbrad on 2023-04-24 18:44_
 
 > To share another real world example, I encountered this using ruff in a project that uses SQLAlchemy. Ruff fixed comparisons with `None` to use `is`/`is_not` instead of `==`/`!=` but this broke our SQLAlchemy filters. As a solution, I've switched to use of explicit `.is_` and `.is_not` SQLAlchemy operators when doing comparisons with `None` which seems like better practice anyway.
@@ -157,10 +149,6 @@ https://github.com/charliermarsh/ruff/issues/1852 has some previous discussion a
 
 ---
 
-_Referenced in [astral-sh/ruff#4356](../../astral-sh/ruff/issues/4356.md) on 2023-05-10 18:40_
-
----
-
 _Comment by @JonathanPlasse on 2023-05-21 09:11_
 
 Could be labeled `type-inference`
@@ -168,10 +156,6 @@ Could be labeled `type-inference`
 ---
 
 _Label `type-inference` added by @charliermarsh on 2023-05-21 13:28_
-
----
-
-_Referenced in [astral-sh/ruff#4560](../../astral-sh/ruff/issues/4560.md) on 2023-05-21 15:51_
 
 ---
 

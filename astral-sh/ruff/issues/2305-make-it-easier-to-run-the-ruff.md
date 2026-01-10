@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-28T17:41:44Z
 updated_at: 2023-01-28T19:53:20Z
 url: https://github.com/astral-sh/ruff/issues/2305
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Make it easier to run the ruff
@@ -30,10 +30,6 @@ Hmm, `ruff .` should already work. What happens when you run that command?
 ---
 
 _Label `question` added by @charliermarsh on 2023-01-28 17:45_
-
----
-
-_Referenced in [astral-sh/ruff#2307](../../astral-sh/ruff/pulls/2307.md) on 2023-01-28 18:23_
 
 ---
 

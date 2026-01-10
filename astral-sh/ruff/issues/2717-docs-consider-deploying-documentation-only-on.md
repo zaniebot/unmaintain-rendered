@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-10T16:03:09Z
 updated_at: 2023-02-11T03:14:51Z
 url: https://github.com/astral-sh/ruff/issues/2717
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # docs: consider deploying documentation only on tagged releases
@@ -69,14 +69,6 @@ This makes sense! The only downside is that the README and the docs will be out-
 
 ---
 
-_Referenced in [astral-sh/ruff#2755](../../astral-sh/ruff/pulls/2755.md) on 2023-02-11 03:14_
-
----
-
 _Closed by @charliermarsh on 2023-02-11 03:14_
-
----
-
-_Referenced in [astral-sh/ruff#2843](../../astral-sh/ruff/pulls/2843.md) on 2023-02-13 07:50_
 
 ---

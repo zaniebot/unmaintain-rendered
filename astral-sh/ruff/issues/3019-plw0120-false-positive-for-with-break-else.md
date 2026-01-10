@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-18T19:35:17Z
 updated_at: 2023-02-19T16:17:06Z
 url: https://github.com/astral-sh/ruff/issues/3019
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # PLW0120 false positive for/with/break/else
@@ -66,10 +66,6 @@ Thanks! Looks like a bug.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-19 15:17_
-
----
-
-_Referenced in [astral-sh/ruff#3032](../../astral-sh/ruff/pulls/3032.md) on 2023-02-19 15:40_
 
 ---
 

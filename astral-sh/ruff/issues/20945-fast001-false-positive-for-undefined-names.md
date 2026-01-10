@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-17T18:28:26Z
 updated_at: 2025-10-22T17:23:48Z
 url: https://github.com/astral-sh/ruff/issues/20945
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # `FAST001` false positive for undefined names
@@ -55,10 +55,6 @@ _Label `bug` added by @dylwil3 on 2025-10-17 18:28_
 ---
 
 _Label `rule` added by @dylwil3 on 2025-10-17 18:28_
-
----
-
-_Referenced in [astral-sh/ruff#20750](../../astral-sh/ruff/pulls/20750.md) on 2025-10-17 18:29_
 
 ---
 

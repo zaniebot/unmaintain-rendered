@@ -1,0 +1,210 @@
+```yaml
+number: 11504
+title: "[Question] Ruff server wraps line"
+type: issue
+state: closed
+author: qmmp123
+labels:
+  - server
+assignees: []
+created_at: 2024-05-23T03:32:59Z
+updated_at: 2024-05-23T05:00:06Z
+url: https://github.com/astral-sh/ruff/issues/11504
+synced_at: 2026-01-10T11:09:53Z
+```
+
+# [Question] Ruff server wraps line
+
+---
+
+_Issue opened by @qmmp123 on 2024-05-23 03:32_
+
+I'm using neovim with nvim-lspconfig. Ruff server wraps the line when it exceeds 88 chars but in pyproject.toml I've set `line-length` to 120. What can I do to avoid wrapping line?
+cmd - ruff server --preview
+pyproject.toml
+```toml
+[tool.ruff]
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "site-packages",
+    "venv",
+    "superset-frontend",
+    "superset-embedded-sdk",
+    "sqllab"
+]
+
+src = ["superset"]
+
+# Same as Black.
+line-length = 120
+indent-width = 4
+fix = false
+
+# Assume Python 3.8
+target-version = "py38"
+
+[tool.ruff.lint.pycodestyle]
+max-line-length = 120
+
+[tool.ruff.lint]
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
+select = ["E", "F"]
+ignore = []
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = []
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
+```
+
+ruff version 0.4.4
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+
+---
+
+_Label `server` added by @charliermarsh on 2024-05-23 03:33_
+
+---
+
+_Assigned to @snowsignal by @snowsignal on 2024-05-23 03:44_
+
+---
+
+_Comment by @snowsignal on 2024-05-23 04:01_
+
+Hi @qmmp123! Thank you for opening this issue.
+
+Could you clarify what you mean by "`ruff server` wraps the line"? Are you saying that the editor soft wraps the line once it reaches 88 characters? Or are you getting a `line too long` diagnostic once the line goes past 88 characters?
+
+Thanks again!
+
+---
+
+_Comment by @qmmp123 on 2024-05-23 04:03_
+
+Hi @snowsignal . Yeah. The editor soft wraps the line once it reaches 88 characters
+
+---
+
+_Comment by @snowsignal on 2024-05-23 04:29_
+
+@qmmp123 This sounds like a Neovim problem, not an issue with the language server. Does resizing the window to be wider change when the line soft-wraps?
+
+If not, what does your Neovim configuration look like?
+
+---
+
+_Comment by @qmmp123 on 2024-05-23 04:37_
+
+@snowsignal I don't know where is the problem, but enabling ruff in nvim-ispconfig causes this problem. That's why I've created issue in this repo.
+There are too many lines in my init.vim. I post only part where I'm enabling ruff
+```lua
+local lsp = require('lspconfig')
+lsp.clangd.setup{}
+lsp.rust_analyzer.setup{}
+lsp.cmake.setup{}
+lsp.gopls.setup{}
+lsp.pyright.setup{
+    settings = {
+        pyright = {
+          disableOrganizeImports = true,
+        },
+        python = {
+            analysis = {
+                ignore = { '*' },
+            },
+        },
+    },
+}
+lsp.ruff.setup{
+    cmd = {"ruff", "server", "--preview", "--verbose"}
+}
+lsp.tsserver.setup{}
+lsp.html.setup{}
+```
+
+---
+
+_Comment by @dhruvmanila on 2024-05-23 04:51_
+
+> The editor soft wraps the line once it reaches 88 characters
+
+If this happens while you're typing, you might want to checkout the value of `textwidth` and whether you've the `t` option enabled for `formatoptions`. Run this on the command-line in Neovim:
+
+```lua
+vim.print(vim.bo.textwidth)
+vim.print(vim.bo.formatoptions)
+```
+
+If `textwidth` is greater than 0 and you've `t` in `formatoptions`, the editor will auto-wrap the lines.
+
+@qmmp123 Can you try this and let us know?
+
+---
+
+_Comment by @qmmp123 on 2024-05-23 04:58_
+
+@dhruvmanila I'm sorry. My settings cause the problem. Thank you
+
+---
+
+_Closed by @qmmp123 on 2024-05-23 04:58_
+
+---
+
+_Comment by @dhruvmanila on 2024-05-23 05:00_
+
+No worries. Glad to hear it's sorted :)
+
+---

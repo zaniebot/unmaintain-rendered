@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-03-07T03:52:22Z
 updated_at: 2024-03-07T05:32:20Z
 url: https://github.com/astral-sh/ruff/issues/10264
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Update parser to have Notebook context
@@ -66,9 +66,5 @@ There might be more to it but it doesn't seem like the server raises any syntax 
  
 <img width="389" alt="Screenshot 2024-03-07 at 10 59 43" src="https://github.com/astral-sh/ruff/assets/67177269/c8ff02b8-243c-4497-a507-19071b2afc01">
 
-
----
-
-_Referenced in [astral-sh/ruff#10291](../../astral-sh/ruff/pulls/10291.md) on 2024-03-19 08:23_
 
 ---

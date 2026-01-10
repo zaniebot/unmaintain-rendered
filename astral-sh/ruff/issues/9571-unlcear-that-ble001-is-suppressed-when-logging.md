@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-18T09:41:05Z
 updated_at: 2024-01-19T16:58:33Z
 url: https://github.com/astral-sh/ruff/issues/9571
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Unlcear that BLE001 is suppressed when logging/raising error.
@@ -74,10 +74,6 @@ _Label `documentation` added by @charliermarsh on 2024-01-18 15:10_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-19 16:43_
-
----
-
-_Referenced in [astral-sh/ruff#9580](../../astral-sh/ruff/pulls/9580.md) on 2024-01-19 16:44_
 
 ---
 

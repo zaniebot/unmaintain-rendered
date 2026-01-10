@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-08-14T14:48:14Z
 updated_at: 2024-08-14T14:56:50Z
 url: https://github.com/astral-sh/ruff/issues/12893
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # DOC202 false positive with abstract methods
@@ -54,13 +54,5 @@ _Closed by @MichaReiser on 2024-08-14 14:53_
 _Comment by @RubenVanEldik on 2024-08-14 14:56_
 
 Sorry, I missed the PR that solved this issue, absolutely amazing work!! ❤️❤️❤️ 
-
----
-
-_Referenced in [astral-sh/ruff#12434](../../astral-sh/ruff/issues/12434.md) on 2024-08-14 14:57_
-
----
-
-_Referenced in [astral-sh/ruff#18935](../../astral-sh/ruff/issues/18935.md) on 2025-06-25 08:26_
 
 ---

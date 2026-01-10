@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-09T13:35:47Z
 updated_at: 2025-09-12T20:45:27Z
 url: https://github.com/astral-sh/ruff/issues/19842
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # [Infinite loop] I002 and UP026
@@ -112,10 +112,6 @@ I will work on this one.
 ---
 
 _Assigned to @TaKO8Ki by @ntBre on 2025-09-08 13:45_
-
----
-
-_Referenced in [astral-sh/ruff#20327](../../astral-sh/ruff/pulls/20327.md) on 2025-09-10 10:57_
 
 ---
 

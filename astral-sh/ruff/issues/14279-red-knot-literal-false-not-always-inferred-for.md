@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-11-11T13:41:12Z
 updated_at: 2024-11-20T01:32:44Z
 url: https://github.com/astral-sh/ruff/issues/14279
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] `Literal[False]` not always inferred for comparisons between tuple types with disjunct literal elements
@@ -60,10 +60,6 @@ _Label `red-knot` added by @AlexWaygood on 2024-11-11 13:41_
 
 ---
 
-_Referenced in [astral-sh/ruff#14244](../../astral-sh/ruff/pulls/14244.md) on 2024-11-11 13:50_
-
----
-
 _Comment by @cake-monotone on 2024-11-12 05:18_
 
 That makes sense! Additionally, we should handle tuples of different lengths.
@@ -91,10 +87,6 @@ Since there’s a possibility of an unsupported operation error here, a diagnost
 _Comment by @AlexWaygood on 2024-11-12 07:44_
 
 Yes, I think you're correct on both counts!
-
----
-
-_Referenced in [astral-sh/ruff#14422](../../astral-sh/ruff/pulls/14422.md) on 2024-11-18 03:25_
 
 ---
 

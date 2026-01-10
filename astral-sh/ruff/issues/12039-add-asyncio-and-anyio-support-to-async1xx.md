@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-26T08:02:50Z
 updated_at: 2024-07-10T07:43:13Z
 url: https://github.com/astral-sh/ruff/issues/12039
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Add `asyncio` and `anyio` support to `ASYNC1XX`
@@ -35,22 +35,6 @@ To also cover `anyio` and `asyncio` to match the upstream rule's behavior.
 ---
 
 _Label `rule` added by @MichaReiser on 2024-06-26 08:02_
-
----
-
-_Referenced in [astral-sh/ruff#12221](../../astral-sh/ruff/pulls/12221.md) on 2024-07-07 06:12_
-
----
-
-_Referenced in [astral-sh/ruff#12236](../../astral-sh/ruff/pulls/12236.md) on 2024-07-08 05:27_
-
----
-
-_Referenced in [astral-sh/ruff#12261](../../astral-sh/ruff/pulls/12261.md) on 2024-07-09 22:29_
-
----
-
-_Referenced in [astral-sh/ruff#12262](../../astral-sh/ruff/pulls/12262.md) on 2024-07-10 02:24_
 
 ---
 

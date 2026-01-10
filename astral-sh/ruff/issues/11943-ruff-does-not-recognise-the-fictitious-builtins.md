@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-19T20:25:06Z
 updated_at: 2024-06-19T21:25:46Z
 url: https://github.com/astral-sh/ruff/issues/11943
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Ruff does not recognise the fictitious `builtins.ellipsis` type from typeshed
@@ -107,9 +107,5 @@ elif not TYPE_CHECKING:
 ```
 
 In a type stub, the `@type_check_only` decorator can be added to the `ellipsis` class.
-
----
-
-_Referenced in [Unidata/netcdf4-python#1302](../../Unidata/netcdf4-python/pulls/1302.md) on 2024-06-24 23:15_
 
 ---

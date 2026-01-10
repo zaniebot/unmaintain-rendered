@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-29T16:05:25Z
 updated_at: 2022-12-29T18:32:08Z
 url: https://github.com/astral-sh/ruff/issues/1439
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T12:05:28Z
 ```
 
 # Subsequent runs with --diff give no result
@@ -65,10 +65,6 @@ _Label `bug` added by @charliermarsh on 2022-12-29 16:45_
 _Comment by @charliermarsh on 2022-12-29 16:46_
 
 For now you can run with -n to disable the cache. (It shouldn’t be noticeably slower unless you have an enormous codebase.)
-
----
-
-_Referenced in [astral-sh/ruff#1441](../../astral-sh/ruff/pulls/1441.md) on 2022-12-29 17:51_
 
 ---
 

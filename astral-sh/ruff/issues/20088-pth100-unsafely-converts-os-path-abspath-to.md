@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-25T19:08:56Z
 updated_at: 2025-08-26T18:59:14Z
 url: https://github.com/astral-sh/ruff/issues/20088
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # PTH100 unsafely converts `os.path.abspath` to `pathlib.Path.resolve`
@@ -79,10 +79,6 @@ _Label `fixes` added by @ntBre on 2025-08-26 12:43_
 ---
 
 _Label `preview` added by @ntBre on 2025-08-26 12:43_
-
----
-
-_Referenced in [astral-sh/ruff#20100](../../astral-sh/ruff/pulls/20100.md) on 2025-08-26 16:24_
 
 ---
 

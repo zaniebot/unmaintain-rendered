@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-25T13:25:40Z
 updated_at: 2025-04-09T08:57:48Z
 url: https://github.com/astral-sh/ruff/issues/4656
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # F401 unused import false negative
@@ -117,46 +117,10 @@ _Label `needs-decision` added by @charliermarsh on 2023-07-10 01:13_
 
 ---
 
-_Referenced in [ZeitOnline/vivi#626](../../ZeitOnline/vivi/pulls/626.md) on 2024-02-21 14:29_
-
----
-
-_Referenced in [astral-sh/ruff#10674](../../astral-sh/ruff/issues/10674.md) on 2024-03-30 23:12_
-
----
-
-_Referenced in [astral-sh/ruff#11448](../../astral-sh/ruff/issues/11448.md) on 2024-05-17 14:26_
-
----
-
-_Referenced in [astral-sh/ruff#13000](../../astral-sh/ruff/issues/13000.md) on 2024-08-20 03:11_
-
----
-
-_Referenced in [astral-sh/ruff#15057](../../astral-sh/ruff/issues/15057.md) on 2024-12-19 12:07_
-
----
-
-_Referenced in [astral-sh/ruff#17295](../../astral-sh/ruff/issues/17295.md) on 2025-04-08 13:42_
-
----
-
 _Comment by @pkulev on 2025-04-09 08:57_
 
 > On the other hand, per Anthony's linked note, if we have import a; import a.b, and then a.z.x is used, it seems like we can't actually treat import a.b as unused, since it could modify a.
 
 Oh, indeed. I think that if something happens on import time, like filling some global variables from other modules (handlers registration or some `__init_subclass__` registration magic) it must be visible, and `# noqa: import for side-effects` is a good indicator of such things. I would prefer throwing a bunch of noqa's for such rare cases, than considering it normal.
-
----
-
-_Referenced in [astral-sh/ruff#20115](../../astral-sh/ruff/pulls/20115.md) on 2025-08-27 17:36_
-
----
-
-_Referenced in [astral-sh/ruff#20120](../../astral-sh/ruff/issues/20120.md) on 2025-08-28 01:54_
-
----
-
-_Referenced in [astral-sh/ruff#20200](../../astral-sh/ruff/pulls/20200.md) on 2025-09-12 19:04_
 
 ---

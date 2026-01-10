@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-10T16:51:09Z
 updated_at: 2025-02-11T07:40:58Z
 url: https://github.com/astral-sh/ruff/issues/16082
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # UP036 doesn't handle three digit version numbers correctly
@@ -37,10 +37,6 @@ _Label `bug` added by @AlexWaygood on 2025-02-10 17:13_
 ---
 
 _Label `rule` added by @AlexWaygood on 2025-02-10 17:14_
-
----
-
-_Referenced in [astral-sh/ruff#16091](../../astral-sh/ruff/pulls/16091.md) on 2025-02-11 01:46_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-16T22:13:13Z
 updated_at: 2023-11-16T23:15:52Z
 url: https://github.com/astral-sh/ruff/issues/8728
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Place graphlib imports in the top group?
@@ -191,9 +191,5 @@ Thanks, that makes sense.
 ---
 
 _Closed by @gerhard4 on 2023-11-16 23:15_
-
----
-
-_Referenced in [lablup/backend.ai#1813](../../lablup/backend.ai/pulls/1813.md) on 2023-12-29 02:46_
 
 ---

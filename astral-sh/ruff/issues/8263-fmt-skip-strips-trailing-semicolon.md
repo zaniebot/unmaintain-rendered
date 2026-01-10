@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-26T21:06:54Z
 updated_at: 2023-10-30T00:07:16Z
 url: https://github.com/astral-sh/ruff/issues/8263
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # `# fmt: skip` strips trailing semicolon
@@ -40,10 +40,6 @@ _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-10-26 23:26_
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2023-10-27 02:55_
-
----
-
-_Referenced in [astral-sh/ruff#8273](../../astral-sh/ruff/pulls/8273.md) on 2023-10-27 08:36_
 
 ---
 

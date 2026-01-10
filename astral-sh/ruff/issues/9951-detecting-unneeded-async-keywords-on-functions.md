@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-12T15:06:17Z
 updated_at: 2024-04-16T17:32:30Z
 url: https://github.com/astral-sh/ruff/issues/9951
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Detecting unneeded `async` keywords on functions
@@ -78,10 +78,6 @@ _Label `rule` added by @zanieb on 2024-02-12 19:23_
 
 ---
 
-_Referenced in [astral-sh/ruff#9833](../../astral-sh/ruff/issues/9833.md) on 2024-02-12 19:30_
-
----
-
 _Renamed from "Detected unneeded `async` keywords on functions" to "Detecting unneeded `async` keywords on functions" by @Greesb on 2024-02-12 20:45_
 
 ---
@@ -89,14 +85,6 @@ _Renamed from "Detected unneeded `async` keywords on functions" to "Detecting un
 _Comment by @plredmond on 2024-02-12 22:43_
 
 In progress implementation: https://github.com/astral-sh/ruff/compare/main...plredmond:ruff:issue9951-spurious_async
-
----
-
-_Referenced in [astral-sh/ruff#9966](../../astral-sh/ruff/pulls/9966.md) on 2024-02-13 00:00_
-
----
-
-_Referenced in [astral-sh/ruff#10980](../../astral-sh/ruff/issues/10980.md) on 2024-04-16 17:29_
 
 ---
 

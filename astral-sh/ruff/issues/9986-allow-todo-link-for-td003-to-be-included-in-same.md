@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-14T15:04:50Z
 updated_at: 2024-02-14T18:07:17Z
 url: https://github.com/astral-sh/ruff/issues/9986
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Allow TODO Link for TD003 to be included in same line
@@ -54,9 +54,5 @@ Merging this with https://github.com/astral-sh/ruff/issues/8061
 ---
 
 _Closed by @dhruvmanila on 2024-02-14 18:07_
-
----
-
-_Referenced in [astral-sh/ruff#16519](../../astral-sh/ruff/issues/16519.md) on 2025-03-06 14:18_
 
 ---

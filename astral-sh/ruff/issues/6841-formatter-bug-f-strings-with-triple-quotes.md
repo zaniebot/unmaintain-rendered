@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-24T06:57:18Z
 updated_at: 2023-10-11T11:30:37Z
 url: https://github.com/astral-sh/ruff/issues/6841
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # formatter bug: f-strings with triple quotes
@@ -51,10 +51,6 @@ _Comment by @davidszotten on 2023-09-16 07:32_
 
 it's been a while now (blocked on https://github.com/astral-sh/ruff/pull/6365 for a few weeks)
 but iirc i made this slightly better in my "proper f-string formatting" poc https://github.com/davidszotten/ruff/pull/1/files#diff-9ae227f70699315433485961eb6bbeb9a45487857fbfebe473e926e71bc194f5R46
-
----
-
-_Referenced in [astral-sh/ruff#7826](../../astral-sh/ruff/pulls/7826.md) on 2023-10-05 13:16_
 
 ---
 

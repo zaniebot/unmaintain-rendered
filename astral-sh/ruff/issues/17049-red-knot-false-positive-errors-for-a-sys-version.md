@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-28T19:50:56Z
 updated_at: 2025-05-07T15:20:58Z
 url: https://github.com/astral-sh/ruff/issues/17049
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] False-positive errors for a `sys.version_info`-guarded import
@@ -94,13 +94,5 @@ if 42 and sys.version_info >= (3, 11):
 ---
 
 _Closed by @AlexWaygood on 2025-03-28 20:08_
-
----
-
-_Referenced in [astral-sh/ruff#15797](../../astral-sh/ruff/issues/15797.md) on 2025-03-28 20:12_
-
----
-
-_Referenced in [astral-sh/ruff#17336](../../astral-sh/ruff/pulls/17336.md) on 2025-04-10 15:51_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-31T14:08:15Z
 updated_at: 2023-08-31T20:45:27Z
 url: https://github.com/astral-sh/ruff/issues/7021
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # PYI010: replace func stub's docstrings with '...' even if there already is one.
@@ -96,10 +96,6 @@ Do you want me to report the infinite loop? I think it might be due to PYI010 re
 _Comment by @charliermarsh on 2023-08-31 14:48_
 
 No thanks, this issue is sufficient. I need to look into the relationship between a few related rules here. (We also may need to remove the autofix here, it seems like it's going to be wrong most of the time.)
-
----
-
-_Referenced in [astral-sh/ruff#7024](../../astral-sh/ruff/pulls/7024.md) on 2023-08-31 15:14_
 
 ---
 

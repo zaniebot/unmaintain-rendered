@@ -1,0 +1,46 @@
+```yaml
+number: 5208
+title: Renable black compatibility test
+type: issue
+state: closed
+author: Thomasdezeeuw
+labels:
+  - internal
+assignees: []
+created_at: 2023-06-20T15:12:11Z
+updated_at: 2023-11-03T03:09:52Z
+url: https://github.com/astral-sh/ruff/issues/5208
+synced_at: 2026-01-10T11:09:47Z
+```
+
+# Renable black compatibility test
+
+---
+
+_Issue opened by @Thomasdezeeuw on 2023-06-20 15:12_
+
+This was disabled in https://github.com/astral-sh/ruff/pull/5120 as it wasn't really running for a while. The test itself will likely need to be moved the `ruff` crate as that is where the resource live now.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-06-20 15:34_
+
+---
+
+_Label `internal` added by @charliermarsh on 2023-06-20 20:54_
+
+---
+
+_Comment by @charliermarsh on 2023-11-03 03:09_
+
+We ended up removing this so marking it as a non-goal to re-enable.
+
+---
+
+_Unassigned @charliermarsh by @charliermarsh on 2023-11-03 03:09_
+
+---
+
+_Closed by @charliermarsh on 2023-11-03 03:09_
+
+---

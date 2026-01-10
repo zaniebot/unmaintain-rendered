@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-22T02:35:28Z
 updated_at: 2023-06-22T21:21:10Z
 url: https://github.com/astral-sh/ruff/issues/5281
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # F541 deletes fstring w/o adding additional whitespace
@@ -90,10 +90,6 @@ indeed!
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-06-22 20:47_
-
----
-
-_Referenced in [astral-sh/ruff#5319](../../astral-sh/ruff/pulls/5319.md) on 2023-06-22 20:57_
 
 ---
 

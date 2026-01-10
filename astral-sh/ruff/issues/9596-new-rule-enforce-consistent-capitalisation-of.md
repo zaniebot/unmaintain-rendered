@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-21T09:55:24Z
 updated_at: 2025-01-23T03:27:36Z
 url: https://github.com/astral-sh/ruff/issues/9596
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # new rule: enforce consistent capitalisation of `noqa` statements
@@ -37,10 +37,6 @@ _Label `rule` added by @charliermarsh on 2024-01-21 18:07_
 _Comment by @danieleades on 2024-01-30 14:29_
 
 @charliermarsh i'd be happy to take a run at implementing this, but i'd need some pointers. I had a quick look at the repo structure and the docs, but it wasn't immediately clear to me. Are there any similarly-implemented rules i should use as an example?
-
----
-
-_Referenced in [astral-sh/ruff#9713](../../astral-sh/ruff/pulls/9713.md) on 2024-01-30 19:00_
 
 ---
 

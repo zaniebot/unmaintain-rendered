@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-03T05:34:28Z
 updated_at: 2023-06-22T21:21:11Z
 url: https://github.com/astral-sh/ruff/issues/4827
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # F541: Invalid replacement with string concatenation
@@ -121,19 +121,7 @@ _Label `bug` added by @charliermarsh on 2023-06-04 02:06_
 
 ---
 
-_Referenced in [astral-sh/ruff#4972](../../astral-sh/ruff/issues/4972.md) on 2023-06-08 19:55_
-
----
-
-_Referenced in [astral-sh/ruff#5281](../../astral-sh/ruff/issues/5281.md) on 2023-06-22 02:37_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2023-06-22 20:47_
-
----
-
-_Referenced in [astral-sh/ruff#5319](../../astral-sh/ruff/pulls/5319.md) on 2023-06-22 20:57_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-25T03:25:23Z
 updated_at: 2025-01-14T07:40:01Z
 url: https://github.com/astral-sh/ruff/issues/10115
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # `banned-api` (`TID251`) - support specifying quick fixes
@@ -106,9 +106,5 @@ I'm not suggesting that all usages must have fixes. I'm only asking that we thin
 * How do we ensure that adding support for more fixes will be possible in the future without requiring a breaking change?
 * Extra points: Do we need a way for an extending configuration to remove a fix? 
 
-
----
-
-_Referenced in [astral-sh/ruff#16709](../../astral-sh/ruff/issues/16709.md) on 2025-03-13 14:57_
 
 ---

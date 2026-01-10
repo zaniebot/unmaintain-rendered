@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-03T00:15:59Z
 updated_at: 2024-07-03T12:36:47Z
 url: https://github.com/astral-sh/ruff/issues/12158
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # ruff has some cache bug that causes crashes
@@ -147,14 +147,6 @@ cc @BurntSushi is this.. intentional?
 
 ---
 
-_Referenced in [astral-sh/ruff#12159](../../astral-sh/ruff/pulls/12159.md) on 2024-07-03 00:40_
-
----
-
-_Referenced in [rust-lang/rust#127254](../../rust-lang/rust/issues/127254.md) on 2024-07-03 01:09_
-
----
-
 _Comment by @MichaReiser on 2024-07-03 06:25_
 
 Uh that's nasty, but technically the `Hash` implementation of rustc is correct because the only contract of `Hash` is 
@@ -172,9 +164,5 @@ _Closed by @zanieb on 2024-07-03 12:36_
 ---
 
 _Closed by @zanieb on 2024-07-03 12:36_
-
----
-
-_Referenced in [astral-sh/ruff#10722](../../astral-sh/ruff/issues/10722.md) on 2024-09-26 06:31_
 
 ---

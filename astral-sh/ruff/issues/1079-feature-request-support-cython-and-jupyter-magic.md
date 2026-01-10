@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-05T21:30:17Z
 updated_at: 2024-03-06T16:22:27Z
 url: https://github.com/astral-sh/ruff/issues/1079
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Feature request: support Cython and Jupyter magic?
@@ -79,10 +79,6 @@ Super cool :)
 
 ---
 
-_Referenced in [astral-sh/ruff#1417](../../astral-sh/ruff/pulls/1417.md) on 2022-12-28 02:23_
-
----
-
 _Label `enhancement` removed by @charliermarsh on 2022-12-31 18:16_
 
 ---
@@ -104,18 +100,6 @@ _Comment by @vyasr on 2023-07-14 18:47_
 This might also be a strong argument for #283, though, and in particular supporting Python plugins alongside Rust plugins. Cython is a prime example of a case where the ruff developers may not have the expertise or interest in maintaining their own solution, but could happily delegate to a plugin author who doesn't have Rust experience but is willing to write one in Python.
 
 Great work on ruff, by the way! Definitely a fan of ruff.
-
----
-
-_Referenced in [commaai/openpilot#29335](../../commaai/openpilot/issues/29335.md) on 2023-08-11 20:15_
-
----
-
-_Referenced in [astral-sh/ruff#8094](../../astral-sh/ruff/issues/8094.md) on 2023-10-20 15:31_
-
----
-
-_Referenced in [rapidsai/cudf#14882](../../rapidsai/cudf/issues/14882.md) on 2024-01-25 19:49_
 
 ---
 
@@ -145,10 +129,6 @@ Cython is a superset of Python. So at minimum it would require a different parse
 
 ---
 
-_Referenced in [astral-sh/ruff#10250](../../astral-sh/ruff/issues/10250.md) on 2024-03-06 16:22_
-
----
-
 _Comment by @MichaReiser on 2024-03-06 16:22_
 
 Done, https://github.com/astral-sh/ruff/issues/10250
@@ -156,9 +136,5 @@ Done, https://github.com/astral-sh/ruff/issues/10250
 ---
 
 _Closed by @MichaReiser on 2024-03-06 16:22_
-
----
-
-_Referenced in [rapidsai/build-planning#130](../../rapidsai/build-planning/issues/130.md) on 2024-12-30 20:45_
 
 ---

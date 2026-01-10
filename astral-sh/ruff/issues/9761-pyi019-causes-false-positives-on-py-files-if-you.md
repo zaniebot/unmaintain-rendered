@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-01T19:07:49Z
 updated_at: 2025-04-28T18:57:38Z
 url: https://github.com/astral-sh/ruff/issues/9761
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # PYI019 causes false positives on `.py` files if you support Python <=3.10
@@ -53,22 +53,6 @@ _Label `rule` added by @AlexWaygood on 2024-02-01 19:07_
 
 ---
 
-_Referenced in [astral-sh/ruff#14183](../../astral-sh/ruff/issues/14183.md) on 2024-11-08 00:48_
-
----
-
-_Referenced in [astral-sh/ruff#14184](../../astral-sh/ruff/issues/14184.md) on 2024-11-08 00:59_
-
----
-
-_Referenced in [astral-sh/ruff#14217](../../astral-sh/ruff/pulls/14217.md) on 2024-11-09 11:10_
-
----
-
-_Referenced in [astral-sh/ruff#14230](../../astral-sh/ruff/pulls/14230.md) on 2024-11-09 17:49_
-
----
-
 _Comment by @Bibo-Joshi on 2025-04-08 18:19_
 
 Hi. I'd like to bump this issue again.
@@ -105,10 +89,6 @@ Found 1 error.
 
 Am I missing something or is this indeed a regression?
 Looking forward to feedback :)
-
----
-
-_Referenced in [python-telegram-bot/python-telegram-bot#4748](../../python-telegram-bot/python-telegram-bot/pulls/4748.md) on 2025-04-08 18:21_
 
 ---
 
@@ -257,26 +237,10 @@ A good first step would be to at least make the fix unsafe for `py` files when t
 
 ---
 
-_Referenced in [scikit-hep/boost-histogram#996](../../scikit-hep/boost-histogram/pulls/996.md) on 2025-04-10 16:30_
-
----
-
-_Referenced in [astral-sh/ruff#17340](../../astral-sh/ruff/pulls/17340.md) on 2025-04-10 18:18_
-
----
-
 _Assigned to @ntBre by @ntBre on 2025-04-10 20:05_
 
 ---
 
-_Referenced in [astral-sh/ruff#17611](../../astral-sh/ruff/pulls/17611.md) on 2025-04-24 15:31_
-
----
-
 _Closed by @ntBre on 2025-04-28 18:57_
-
----
-
-_Referenced in [astral-sh/ruff#17821](../../astral-sh/ruff/issues/17821.md) on 2025-05-03 18:37_
 
 ---

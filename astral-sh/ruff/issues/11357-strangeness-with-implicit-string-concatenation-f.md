@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-10T03:15:48Z
 updated_at: 2024-05-10T14:48:07Z
 url: https://github.com/astral-sh/ruff/issues/11357
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Strangeness with implicit string concatenation, f-strings, and rules F541, RUF027
@@ -215,9 +215,5 @@ No worries, thanks for confirming!
 > Ah ok, I didn't realize F541 was expected behavior.:+1:. I plan on making a PR to update the docs [docs.astral.sh/ruff/rules/f-string-missing-placeholders](https://docs.astral.sh/ruff/rules/f-string-missing-placeholders/) to include something like your comment. Perhaps:
 
 Yeah, I think that would be useful
-
----
-
-_Referenced in [astral-sh/ruff#11362](../../astral-sh/ruff/pulls/11362.md) on 2024-05-10 15:00_
 
 ---

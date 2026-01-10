@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-19T19:29:21Z
 updated_at: 2025-05-20T08:53:20Z
 url: https://github.com/astral-sh/ruff/issues/1292
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # how to put .ruff_cache in $XDG_CACHE_HOME/ruff
@@ -127,29 +127,13 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-12-21 19:07_
 
 ---
 
-_Referenced in [astral-sh/ruff#1312](../../astral-sh/ruff/pulls/1312.md) on 2022-12-21 19:19_
-
----
-
 _Closed by @charliermarsh on 2022-12-21 19:24_
-
----
-
-_Referenced in [astral-sh/ruff#1313](../../astral-sh/ruff/issues/1313.md) on 2022-12-21 19:24_
 
 ---
 
 _Comment by @charliermarsh on 2022-12-21 19:24_
 
 Okay, `RUFF_CACHE_DIR` will go out in a sec. (The other improvements I'm tracking in #1313.)
-
----
-
-_Referenced in [jond01/xil#87](../../jond01/xil/issues/87.md) on 2023-05-02 21:40_
-
----
-
-_Referenced in [astral-sh/ruff#5122](../../astral-sh/ruff/pulls/5122.md) on 2023-06-15 14:31_
 
 ---
 

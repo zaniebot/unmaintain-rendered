@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-19T05:21:54Z
 updated_at: 2025-09-24T21:27:01Z
 url: https://github.com/astral-sh/ruff/issues/19982
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Fix for `PIE790` and `PYI021` introduces a syntax error
@@ -812,10 +812,6 @@ _Label `bug` added by @ntBre on 2025-08-19 14:28_
 ---
 
 _Renamed from "Fix introduced a syntax error" to "Fix for `PIE790` and `PYI021` introduces a syntax error" by @ntBre on 2025-08-19 14:31_
-
----
-
-_Referenced in [astral-sh/ruff#20010](../../astral-sh/ruff/pulls/20010.md) on 2025-08-20 20:17_
 
 ---
 

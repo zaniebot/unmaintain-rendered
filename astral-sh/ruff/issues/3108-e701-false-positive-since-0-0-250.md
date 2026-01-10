@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-21T23:41:42Z
 updated_at: 2023-02-22T15:44:48Z
 url: https://github.com/astral-sh/ruff/issues/3108
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # E701: false positive since 0.0.250
@@ -60,10 +60,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-02-21 23:45_
 _Comment by @charliermarsh on 2023-02-22 00:02_
 
 Would be solved by https://github.com/RustPython/RustPython/pull/4542 plus a minor change in here.
-
----
-
-_Referenced in [astral-sh/ruff#3129](../../astral-sh/ruff/pulls/3129.md) on 2023-02-22 15:39_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-20T10:04:49Z
 updated_at: 2023-08-01T06:26:32Z
 url: https://github.com/astral-sh/ruff/issues/5913
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Formatter: F-Strings (`FormattedValue` and `JoinedStr`)
@@ -20,10 +20,6 @@ synced_at: 2026-01-10T01:56:48Z
 _Issue opened by @MichaReiser on 2023-07-20 10:04_
 
 Format fstring expressions. 
-
----
-
-_Referenced in [astral-sh/ruff#4798](../../astral-sh/ruff/issues/4798.md) on 2023-07-20 10:04_
 
 ---
 
@@ -45,23 +41,11 @@ will push a wip pr i think so you can check i'm on the right track
 
 ---
 
-_Referenced in [astral-sh/ruff#5932](../../astral-sh/ruff/pulls/5932.md) on 2023-07-20 22:24_
-
----
-
 _Assigned to @davidszotten by @MichaReiser on 2023-07-21 05:09_
 
 ---
 
-_Referenced in [astral-sh/ruff#6069](../../astral-sh/ruff/issues/6069.md) on 2023-07-25 11:22_
-
----
-
 _Added to milestone `Formatter: Alpha` by @MichaReiser on 2023-07-31 16:08_
-
----
-
-_Referenced in [astral-sh/ruff#6203](../../astral-sh/ruff/issues/6203.md) on 2023-07-31 16:57_
 
 ---
 

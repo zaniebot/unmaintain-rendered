@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-15T14:27:48Z
 updated_at: 2025-02-03T07:35:33Z
 url: https://github.com/astral-sh/ruff/issues/15501
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [red-knot]: `--error-on-warning=<bool>`
@@ -35,10 +35,6 @@ _Label `help wanted` added by @MichaReiser on 2025-01-23 15:01_
 ---
 
 _Added to milestone `Red Knot Q1 2025` by @MichaReiser on 2025-01-23 15:02_
-
----
-
-_Referenced in [astral-sh/ruff#15746](../../astral-sh/ruff/pulls/15746.md) on 2025-01-26 00:49_
 
 ---
 

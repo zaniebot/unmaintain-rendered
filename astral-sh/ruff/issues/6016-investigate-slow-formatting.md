@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-23T13:06:25Z
 updated_at: 2023-09-08T08:18:37Z
 url: https://github.com/astral-sh/ruff/issues/6016
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Investigate slow formatting
@@ -123,10 +123,6 @@ I updated the table with the original and formatted file size. I'm not too conce
 ---
 
 _Added to milestone `Formatter: Beta` by @MichaReiser on 2023-07-31 16:25_
-
----
-
-_Referenced in [astral-sh/ruff#6203](../../astral-sh/ruff/issues/6203.md) on 2023-07-31 17:25_
 
 ---
 

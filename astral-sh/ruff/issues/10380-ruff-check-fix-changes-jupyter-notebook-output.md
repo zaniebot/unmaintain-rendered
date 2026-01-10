@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-13T10:39:18Z
 updated_at: 2024-03-21T02:38:13Z
 url: https://github.com/astral-sh/ruff/issues/10380
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # ruff check --fix changes Jupyter notebook output data
@@ -142,9 +142,5 @@ Hi @dhruvmanila , and thanks for looking into this. Is this something that can/w
 _Comment by @dhruvmanila on 2024-03-21 02:38_
 
 I'm not sure. I need to look at it in a bit more detail. I plan to do so this week.
-
----
-
-_Referenced in [astral-sh/ruff#18160](../../astral-sh/ruff/issues/18160.md) on 2025-05-18 12:40_
 
 ---

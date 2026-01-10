@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-29T19:28:08Z
 updated_at: 2023-10-01T14:53:56Z
 url: https://github.com/astral-sh/ruff/issues/7718
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Rule RUF017 cause panic
@@ -150,10 +150,6 @@ _Label `fuzzer` added by @charliermarsh on 2023-09-29 19:43_
 
 ---
 
-_Referenced in [astral-sh/ruff#7719](../../astral-sh/ruff/pulls/7719.md) on 2023-09-29 19:54_
-
----
-
 _Closed by @charliermarsh on 2023-09-29 20:04_
 
 ---
@@ -178,10 +174,6 @@ _Reopened by @charliermarsh on 2023-10-01 14:32_
 _Comment by @charliermarsh on 2023-10-01 14:36_
 
 (This requires that the statement is at the start of the file.)
-
----
-
-_Referenced in [astral-sh/ruff#7739](../../astral-sh/ruff/pulls/7739.md) on 2023-10-01 14:44_
 
 ---
 

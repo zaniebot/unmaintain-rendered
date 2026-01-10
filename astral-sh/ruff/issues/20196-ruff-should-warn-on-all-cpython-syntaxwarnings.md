@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-01T15:27:29Z
 updated_at: 2025-09-02T13:49:37Z
 url: https://github.com/astral-sh/ruff/issues/20196
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Ruff should warn on all CPython SyntaxWarnings
@@ -61,9 +61,5 @@ _Label `needs-decision` removed by @ntBre on 2025-09-02 13:49_
 ---
 
 _Label `needs-design` added by @ntBre on 2025-09-02 13:49_
-
----
-
-_Referenced in [astral-sh/ruff#20681](../../astral-sh/ruff/pulls/20681.md) on 2025-10-03 12:48_
 
 ---

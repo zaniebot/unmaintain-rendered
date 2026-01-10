@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-11-22T19:04:27Z
 updated_at: 2025-01-28T21:26:26Z
 url: https://github.com/astral-sh/ruff/issues/14537
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Request: More autofixes for `redundant-none-literal`/`PYI061`
@@ -66,10 +66,6 @@ class Axes(_AxesBase):
 
 * The current Ruff version (`ruff --version`).
 ruff 0.8.0
-
----
-
-_Referenced in [microsoft/python-type-stubs#340](../../microsoft/python-type-stubs/pulls/340.md) on 2024-11-22 19:06_
 
 ---
 
@@ -130,10 +126,6 @@ PYI061 `Literal[None, ...]` can be replaced with `Literal[...] | None`
   |
   = help: Replace with `Literal[...] | None`
 ```
-
----
-
-_Referenced in [astral-sh/ruff#14872](../../astral-sh/ruff/pulls/14872.md) on 2024-12-09 13:51_
 
 ---
 

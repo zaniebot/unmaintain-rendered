@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-11T21:45:46Z
 updated_at: 2025-07-16T16:57:33Z
 url: https://github.com/astral-sh/ruff/issues/19294
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # [`pylint`] False negative on indirect `pathlib.Path`s (`PLW1514`)
@@ -43,15 +43,7 @@ ruff 0.12.3 (5bc81f26c 2025-07-11) + playground
 
 ---
 
-_Referenced in [astral-sh/ruff#19304](../../astral-sh/ruff/pulls/19304.md) on 2025-07-13 06:22_
-
----
-
 _Label `rule` added by @MichaReiser on 2025-07-14 09:18_
-
----
-
-_Referenced in [astral-sh/ruff#19329](../../astral-sh/ruff/issues/19329.md) on 2025-07-14 16:45_
 
 ---
 

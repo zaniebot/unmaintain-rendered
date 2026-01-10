@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-20T00:08:05Z
 updated_at: 2023-11-20T12:35:38Z
 url: https://github.com/astral-sh/ruff/issues/8773
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # False positive: non-lowercase-variable-in-function (N806) for a type alias
@@ -43,10 +43,6 @@ Thanks!
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-11-20 12:18_
-
----
-
-_Referenced in [astral-sh/ruff#8785](../../astral-sh/ruff/pulls/8785.md) on 2023-11-20 12:24_
 
 ---
 

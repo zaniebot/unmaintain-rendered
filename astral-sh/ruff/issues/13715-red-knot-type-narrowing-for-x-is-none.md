@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-11T07:52:55Z
 updated_at: 2024-10-15T12:49:38Z
 url: https://github.com/astral-sh/ruff/issues/13715
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] Type narrowing for `x is None`
@@ -20,10 +20,6 @@ synced_at: 2026-01-10T01:56:54Z
 _Issue opened by @MichaReiser on 2024-10-11 07:52_
 
 _No description provided._
-
----
-
-_Referenced in [astral-sh/ruff#13694](../../astral-sh/ruff/issues/13694.md) on 2024-10-11 07:52_
 
 ---
 
@@ -44,10 +40,6 @@ _Assigned to @sharkdp by @sharkdp on 2024-10-14 21:01_
 ---
 
 _Unassigned @MichaReiser by @sharkdp on 2024-10-14 21:01_
-
----
-
-_Referenced in [astral-sh/ruff#13758](../../astral-sh/ruff/pulls/13758.md) on 2024-10-15 08:42_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-04T13:48:24Z
 updated_at: 2025-07-07T13:43:36Z
 url: https://github.com/astral-sh/ruff/issues/19144
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # UP007 and UP045: typeshed considers some functions to be classes
@@ -205,9 +205,5 @@ _Label `rule` added by @MichaReiser on 2025-07-07 13:43_
 ---
 
 _Label `needs-decision` added by @MichaReiser on 2025-07-07 13:43_
-
----
-
-_Referenced in [astral-sh/ruff#20883](../../astral-sh/ruff/issues/20883.md) on 2025-10-16 13:50_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-02-03T13:50:20Z
 updated_at: 2023-02-12T02:51:51Z
 url: https://github.com/astral-sh/ruff/issues/2540
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # How can auto-completion be set up for Ruff?
@@ -70,10 +70,6 @@ PR welcome if anyone wants to draft it :joy: Otherwise I'll get to it later.
 _Comment by @JonathanPlasse on 2023-02-03 18:31_
 
 I can work on it.
-
----
-
-_Referenced in [astral-sh/ruff#2791](../../astral-sh/ruff/pulls/2791.md) on 2023-02-12 02:49_
 
 ---
 

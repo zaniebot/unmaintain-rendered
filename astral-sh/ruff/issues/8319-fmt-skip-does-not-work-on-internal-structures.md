@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-29T03:53:14Z
 updated_at: 2024-02-13T15:35:29Z
 url: https://github.com/astral-sh/ruff/issues/8319
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # `fmt: skip` does not work on internal structures
@@ -153,10 +153,6 @@ will be render like this if line-length exceeds :
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2024-02-13 11:43_
-
----
-
-_Referenced in [astral-sh/ruff#9973](../../astral-sh/ruff/pulls/9973.md) on 2024-02-13 11:51_
 
 ---
 

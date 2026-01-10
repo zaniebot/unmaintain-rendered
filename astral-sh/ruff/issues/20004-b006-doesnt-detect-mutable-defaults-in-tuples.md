@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-20T13:56:37Z
 updated_at: 2025-10-03T14:29:37Z
 url: https://github.com/astral-sh/ruff/issues/20004
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # B006 doesn’t detect mutable defaults in tuples, generators, and assignment expressions
@@ -110,14 +110,6 @@ I'm also happy with detecting the issue and not offering a fix if it's too compl
 
 ---
 
-_Referenced in [astral-sh/ruff#20024](../../astral-sh/ruff/pulls/20024.md) on 2025-08-21 16:57_
-
----
-
 _Closed by @dylwil3 on 2025-10-03 14:29_
-
----
-
-_Referenced in [astral-sh/ruff#20851](../../astral-sh/ruff/issues/20851.md) on 2025-10-13 20:38_
 
 ---

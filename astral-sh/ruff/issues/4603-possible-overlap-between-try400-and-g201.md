@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-23T14:05:51Z
 updated_at: 2023-06-02T04:59:46Z
 url: https://github.com/astral-sh/ruff/issues/4603
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Possible overlap between TRY400 and G201
@@ -92,10 +92,6 @@ _Label `question` added by @charliermarsh on 2023-05-24 02:07_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-06-02 04:30_
-
----
-
-_Referenced in [astral-sh/ruff#4797](../../astral-sh/ruff/pulls/4797.md) on 2023-06-02 04:51_
 
 ---
 

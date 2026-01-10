@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-25T11:41:12Z
 updated_at: 2024-10-28T01:02:47Z
 url: https://github.com/astral-sh/ruff/issues/13924
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 #  False positive TCH003 for singledispatchmethod
@@ -108,10 +108,6 @@ NameError: name 'MutableMapping' is not defined
 ---
 
 _Label `bug` added by @MichaReiser on 2024-10-26 16:02_
-
----
-
-_Referenced in [astral-sh/ruff#13941](../../astral-sh/ruff/pulls/13941.md) on 2024-10-27 08:49_
 
 ---
 

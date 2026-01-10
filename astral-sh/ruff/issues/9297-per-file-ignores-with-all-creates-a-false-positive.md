@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-28T04:07:44Z
 updated_at: 2023-12-28T14:15:24Z
 url: https://github.com/astral-sh/ruff/issues/9297
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # `per-file-ignores` with ALL creates a false positive
@@ -77,10 +77,6 @@ _Comment by @tooruu on 2023-12-28 13:15_
 > ```
 
 Didn't realize it was under lint namespace! Thank you.
-
----
-
-_Referenced in [astral-sh/ruff#9300](../../astral-sh/ruff/pulls/9300.md) on 2023-12-28 14:05_
 
 ---
 

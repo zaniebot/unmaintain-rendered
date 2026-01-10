@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-11-17T02:20:59Z
 updated_at: 2025-11-20T18:00:56Z
 url: https://github.com/astral-sh/ruff/issues/21494
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # `F821`: Declared only variables
@@ -112,10 +112,6 @@ _Comment by @ntBre on 2025-11-19 18:25_
 @Ruchir28, from a very quick look, that seems like a reasonable place to mark the binding as resolved. Do other things break when you do that?
 
 I'm also curious about the `BindingKind::Nonlocal` branch in `resolve_load`. It seems like `x` should possibly be marked as resolved after the `nonlocal` statement in `setter`, but I might be misunderstanding without playing with the code.
-
----
-
-_Referenced in [astral-sh/ruff#21540](../../astral-sh/ruff/pulls/21540.md) on 2025-11-20 15:49_
 
 ---
 

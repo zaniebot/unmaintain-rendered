@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-07T11:22:10Z
 updated_at: 2025-02-24T03:59:10Z
 url: https://github.com/astral-sh/uv/issues/7967
-synced_at: 2026-01-10T01:57:18Z
+synced_at: 2026-01-10T11:10:19Z
 ```
 
 # Indirect Dependency Authentication Issue
@@ -176,7 +176,7 @@ _Comment by @alfman99 on 2025-02-06 11:50_
 
 > To clarify, `repo-a` has an access token hard-coded in the `pyproject.toml`?
 
-Sorry for late reply, just saw it. Yes, `repo-a` has a token hard-coded in the `pyproject.toml`, just like in the example (you can download it through here: `https://demo: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@github.com/alfman99/private-repo-a.git`. If there is anything else let me know.
+Sorry for late reply, just saw it. Yes, `repo-a` has a token hard-coded in the `pyproject.toml`, just like in the example (you can download it through here: `https://demo:[REDACTED]@github.com/alfman99/private-repo-a.git`. If there is anything else let me know.
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-27T03:41:23Z
 updated_at: 2023-01-28T15:34:15Z
 url: https://github.com/astral-sh/ruff/issues/1398
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Publish README via mdBook
@@ -47,14 +47,6 @@ Woo, that is amazing. But I worry that as more and more instructions are added t
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2022-12-30 21:04_
-
----
-
-_Referenced in [astral-sh/ruff#1467](../../astral-sh/ruff/issues/1467.md) on 2022-12-31 18:23_
-
----
-
-_Referenced in [astral-sh/ruff#2244](../../astral-sh/ruff/pulls/2244.md) on 2023-01-27 07:46_
 
 ---
 

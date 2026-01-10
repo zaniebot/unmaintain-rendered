@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-12-28T06:48:40Z
 updated_at: 2025-04-26T12:35:44Z
 url: https://github.com/astral-sh/ruff/issues/9298
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # F401: Ruff Incorrectly Flags Quoted Class used as Generic Parameter as Unused
@@ -127,10 +127,6 @@ I read suggestions above and I think the "store all **unused** imports in settin
 
 ---
 
-_Referenced in [astral-sh/ruff#10676](../../astral-sh/ruff/issues/10676.md) on 2024-03-30 23:39_
-
----
-
 _Renamed from "Ruff Incorrectly Flags Quoted Class used as Generic Parameter as Unused" to "F401: Ruff Incorrectly Flags Quoted Class used as Generic Parameter as Unused" by @AlexWaygood on 2024-03-30 23:46_
 
 ---
@@ -169,40 +165,12 @@ Alternatively, this may be introduced as some kind of "soft name" that may be ab
 
 ---
 
-_Referenced in [astral-sh/ruff#13181](../../astral-sh/ruff/issues/13181.md) on 2024-09-01 18:24_
-
----
-
-_Referenced in [astral-sh/ruff#15560](../../astral-sh/ruff/issues/15560.md) on 2025-01-17 22:17_
-
----
-
-_Referenced in [astral-sh/ruff#15860](../../astral-sh/ruff/issues/15860.md) on 2025-02-01 17:05_
-
----
-
-_Referenced in [astral-sh/ruff#12780](../../astral-sh/ruff/issues/12780.md) on 2025-02-01 17:06_
-
----
-
 _Label `type-inference` added by @AlexWaygood on 2025-02-01 17:07_
-
----
-
-_Referenced in [astral-sh/ruff#17455](../../astral-sh/ruff/issues/17455.md) on 2025-04-26 12:16_
 
 ---
 
 _Comment by @pekkaklarck on 2025-04-26 12:35_
 
 I encountered this with our project as well. Using `extend-generics` fixed it, but, as commented above, feels like a hack. Considering the amount of duplicates and a similar problem with TypeAlias (#17455), I believe it would be good to have some kind of a fix for this even though it wouldn't be perfect.
-
----
-
-_Referenced in [aiidateam/aiida-core#6704](../../aiidateam/aiida-core/pulls/6704.md) on 2025-05-06 02:27_
-
----
-
-_Referenced in [aiidateam/aiida-core#7019](../../aiidateam/aiida-core/pulls/7019.md) on 2025-09-25 17:06_
 
 ---

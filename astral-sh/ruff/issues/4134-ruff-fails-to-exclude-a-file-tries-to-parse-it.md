@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-27T15:22:13Z
 updated_at: 2023-04-28T10:01:04Z
 url: https://github.com/astral-sh/ruff/issues/4134
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Ruff fails to exclude a file, tries to parse it, and bails
@@ -32,10 +32,6 @@ invalid key
 ```
 
 Ruff shouldn’t try to parse that TOML file, I’m excluding it!
-
----
-
-_Referenced in [scverse/cookiecutter-scverse#168](../../scverse/cookiecutter-scverse/pulls/168.md) on 2023-04-27 15:23_
 
 ---
 

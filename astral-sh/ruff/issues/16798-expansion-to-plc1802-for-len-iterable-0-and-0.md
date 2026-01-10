@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-17T11:07:23Z
 updated_at: 2025-03-17T16:01:36Z
 url: https://github.com/astral-sh/ruff/issues/16798
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Expansion to PLC1802 for `len(iterable) == 0` and `>0`
@@ -142,13 +142,5 @@ _Comment by @DaniBodor on 2025-03-17 16:01_
 I see your point about objects that have a defined `__bool__` that is different from the `__len__` result. My gut feeling is that that is in itself problematic, as that really shouldn't be the case.
 
 As you mention, this is not so much an issue regarding my suggestion, as it is an issue regarding the rule itself, even in the current implementation. A lengthy-Falsey (or nonlengthy-Truey) object would already lead to a different outcome after the ruff fix. Given this consideration, it may not be ideal that PLC1802 is a safe fix, as this could lead to breaking changes in the case described.
-
----
-
-_Referenced in [pylint-dev/pylint#10281](../../pylint-dev/pylint/issues/10281.md) on 2025-03-17 16:12_
-
----
-
-_Referenced in [labcc/pylint#8](../../labcc/pylint/issues/8.md) on 2025-04-04 22:06_
 
 ---

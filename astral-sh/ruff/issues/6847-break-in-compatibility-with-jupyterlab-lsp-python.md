@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-24T09:22:01Z
 updated_at: 2023-11-27T16:02:54Z
 url: https://github.com/astral-sh/ruff/issues/6847
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Break in compatibility with jupyterlab-lsp + python-lsp-ruff since 0.0.285
@@ -106,10 +106,6 @@ Agree that 1. would be preferable. 2. is fine with me if we hide it from the CLI
 
 ---
 
-_Referenced in [astral-sh/ruff#7835](../../astral-sh/ruff/pulls/7835.md) on 2023-10-06 10:00_
-
----
-
 _Comment by @felix-cw on 2023-10-06 10:05_
 
 Thanks everyone! I thought that it might be too complicated to get python-lsp-ruff/jupyterlab-lsp to use linters that work on notebooks directly, so I made a PR implementing the `--parser` option.  Thanks for the opportunity to contribute to such a useful and amazing project!
@@ -160,10 +156,6 @@ I kind of like that API
 
 ---
 
-_Referenced in [jupyter-lsp/jupyterlab-lsp#1003](../../jupyter-lsp/jupyterlab-lsp/issues/1003.md) on 2023-10-20 22:28_
-
----
-
 _Comment by @krassowski on 2023-10-20 23:08_
 
 Hi, some context from `jupyter-lsp` side:
@@ -200,10 +192,6 @@ _Comment by @felix-cw on 2023-10-26 12:55_
 
 I've had a go at implementing this idea as a hidden flag.  Is it OK if I raise a PR for it and close the previous PR?
 
-
----
-
-_Referenced in [astral-sh/ruff-lsp#264](../../astral-sh/ruff-lsp/pulls/264.md) on 2023-10-27 02:06_
 
 ---
 
@@ -294,10 +282,6 @@ I think you do not need to worry about how jupyterlab-lsp handles mapping betwee
 
 ---
 
-_Referenced in [astral-sh/ruff#8373](../../astral-sh/ruff/pulls/8373.md) on 2023-10-31 10:46_
-
----
-
 _Label `needs-decision` removed by @dhruvmanila on 2023-11-08 02:33_
 
 ---
@@ -315,10 +299,6 @@ _Comment by @felix-cw on 2023-11-08 10:31_
 Thanks for merging my pull request!
 
 I think we need to add `--extension ipynb:python` to the call to ruff that `python-lsp-ruff` makes.  I'm not sure about the side effects of this, when it is used outside of `jupyterlab-lsp` though, so it might need to be behind a config option. I'll reach out to the projects.
-
----
-
-_Referenced in [python-lsp/python-lsp-ruff#59](../../python-lsp/python-lsp-ruff/pulls/59.md) on 2023-11-10 10:59_
 
 ---
 

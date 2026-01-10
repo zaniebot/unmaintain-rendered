@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-12-16T20:49:00Z
 updated_at: 2025-12-16T22:13:57Z
 url: https://github.com/astral-sh/ruff/issues/22013
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # Rule idea: flag literal attributes in monkeypatching/mocking APIs
@@ -70,10 +70,6 @@ That'll behave the same as above, _but_ will ensure that refactors/mechanical re
 ## Other references
 
 xref https://github.com/astral-sh/ruff/issues/12850 for another (but I think unrelated) mocking/monkeypatching feature request.
-
----
-
-_Referenced in [astral-sh/pyx#2665](../../astral-sh/pyx/pulls/2665.md) on 2025-12-16 20:49_
 
 ---
 

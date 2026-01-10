@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-29T12:23:04Z
 updated_at: 2023-09-02T08:23:14Z
 url: https://github.com/astral-sh/ruff/issues/6974
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter: `%` formatting in dictionary keys
@@ -97,10 +97,6 @@ Closing because Ruff's formatting is more readable and implementing Black's beha
 ---
 
 _Closed by @MichaReiser on 2023-08-29 12:24_
-
----
-
-_Referenced in [astral-sh/ruff#6069](../../astral-sh/ruff/issues/6069.md) on 2023-08-29 12:26_
 
 ---
 

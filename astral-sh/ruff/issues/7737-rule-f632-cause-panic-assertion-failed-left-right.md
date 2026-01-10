@@ -1,0 +1,180 @@
+```yaml
+number: 7737
+title: "Rule F632 cause panic `assertion failed: (left == right)`"
+type: issue
+state: closed
+author: qarmin
+labels:
+  - bug
+  - fuzzer
+assignees: []
+created_at: 2023-10-01T07:50:57Z
+updated_at: 2023-10-01T14:57:42Z
+url: https://github.com/astral-sh/ruff/issues/7737
+synced_at: 2026-01-10T11:09:50Z
+```
+
+# Rule F632 cause panic `assertion failed: (left == right)`
+
+---
+
+_Issue opened by @qarmin on 2023-10-01 07:50_
+
+
+Ruff 0.0.291 (latest changes from main branch)
+```
+ruff  *.py --select F632 --no-cache --fix --preview
+```
+
+file content:
+```
+class GPUMonitor(Monitor):
+            if values[1is not None ] is not '-':
+                processes.append({'pid': values[1], 'owner': self.check_process_owner(client, values[1])})
+```
+
+error
+```
+
+error: Panicked while linting /home/rafal/test/tmp_folder/F_NAME_355815163261094373.py: This indicates a bug in Ruff. If you could open an issue at:
+
+    https://github.com/astral-sh/ruff/issues/new?title=%5BLinter%20panic%5D
+
+...with the relevant file contents, the `pyproject.toml` settings, and the following stack trace, we'd be very appreciative!
+
+panicked at 'assertion failed: `(left == right)`
+  left: `NotEq`,
+ right: `IsNot`', crates/ruff_linter/src/rules/pyflakes/rules/invalid_literal_comparisons.rs:95:21
+Backtrace:    0: ruff_cli::panic::catch_unwind::{{closure}}
+             at /home/rafal/test/ruff/crates/ruff_cli/src/panic.rs:31:25
+   1: <alloc::boxed::Box<F,A> as core::ops::function::Fn<Args>>::call
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/alloc/src/boxed.rs:2007:9
+   2: std::panicking::rust_panic_with_hook
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/std/src/panicking.rs:709:13
+   3: std::panicking::begin_panic_handler::{{closure}}
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/std/src/panicking.rs:597:13
+   4: std::sys_common::backtrace::__rust_end_short_backtrace
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/std/src/sys_common/backtrace.rs:151:18
+   5: rust_begin_unwind
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/std/src/panicking.rs:593:5
+   6: core::panicking::panic_fmt
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/core/src/panicking.rs:67:14
+   7: core::panicking::assert_failed_inner
+   8: core::panicking::assert_failed
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/core/src/panicking.rs:229:5
+   9: ruff_linter::rules::pyflakes::rules::invalid_literal_comparisons::invalid_literal_comparison
+             at /home/rafal/test/ruff/crates/ruff_linter/src/rules/pyflakes/rules/invalid_literal_comparisons.rs:95:21
+  10: ruff_linter::checkers::ast::analyze::expression::expression
+             at /home/rafal/test/ruff/crates/ruff_linter/src/checkers/ast/analyze/expression.rs:1181:17
+  11: <ruff_linter::checkers::ast::Checker as ruff_python_ast::visitor::Visitor>::visit_expr
+             at /home/rafal/test/ruff/crates/ruff_linter/src/checkers/ast/mod.rs:1225:9
+  12: ruff_linter::checkers::ast::Checker::visit_boolean_test
+             at /home/rafal/test/ruff/crates/ruff_linter/src/checkers/ast/mod.rs:1502:9
+  13: <ruff_linter::checkers::ast::Checker as ruff_python_ast::visitor::Visitor>::visit_stmt
+             at /home/rafal/test/ruff/crates/ruff_linter/src/checkers/ast/mod.rs:716:17
+  14: <ruff_linter::checkers::ast::Checker as ruff_python_ast::visitor::Visitor>::visit_body
+             at /home/rafal/test/ruff/crates/ruff_linter/src/checkers/ast/mod.rs:1362:13
+  15: <ruff_linter::checkers::ast::Checker as ruff_python_ast::visitor::Visitor>::visit_stmt
+             at /home/rafal/test/ruff/crates/ruff_linter/src/checkers/ast/mod.rs:576:17
+  16: <ruff_linter::checkers::ast::Checker as ruff_python_ast::visitor::Visitor>::visit_body
+             at /home/rafal/test/ruff/crates/ruff_linter/src/checkers/ast/mod.rs:1362:13
+  17: ruff_linter::checkers::ast::check_ast
+             at /home/rafal/test/ruff/crates/ruff_linter/src/checkers/ast/mod.rs:1976:5
+  18: ruff_linter::linter::check_path
+             at /home/rafal/test/ruff/crates/ruff_linter/src/linter.rs:152:40
+  19: ruff_linter::linter::lint_fix
+             at /home/rafal/test/ruff/crates/ruff_linter/src/linter.rs:461:22
+  20: ruff_cli::diagnostics::lint_path
+             at /home/rafal/test/ruff/crates/ruff_cli/src/diagnostics.rs:228:14
+  21: ruff_cli::commands::check::lint_path::{{closure}}
+             at /home/rafal/test/ruff/crates/ruff_cli/src/commands/check.rs:204:9
+  22: std::panicking::try::do_call
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/std/src/panicking.rs:500:40
+  23: std::panicking::try
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/std/src/panicking.rs:464:19
+  24: std::panic::catch_unwind
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/std/src/panic.rs:142:14
+  25: ruff_cli::panic::catch_unwind
+             at /home/rafal/test/ruff/crates/ruff_cli/src/panic.rs:40:18
+  26: ruff_cli::commands::check::lint_path
+             at /home/rafal/test/ruff/crates/ruff_cli/src/commands/check.rs:203:18
+  27: ruff_cli::commands::check::check::{{closure}}
+             at /home/rafal/test/ruff/crates/ruff_cli/src/commands/check.rs:122:21
+  28: core::ops::function::impls::<impl core::ops::function::FnMut<A> for &F>::call_mut
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/core/src/ops/function.rs:272:13
+  29: core::iter::adapters::map::map_fold::{{closure}}
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/core/src/iter/adapters/map.rs:84:28
+  30: <core::slice::iter::Iter<T> as core::iter::traits::iterator::Iterator>::fold
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/core/src/slice/iter/macros.rs:215:27
+  31: <core::iter::adapters::map::Map<I,F> as core::iter::traits::iterator::Iterator>::fold
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/core/src/iter/adapters/map.rs:124:9
+  32: <rayon::iter::reduce::ReduceFolder<R,T> as rayon::iter::plumbing::Folder<T>>::consume_iter
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/reduce.rs:105:19
+  33: <rayon::iter::map::MapFolder<C,F> as rayon::iter::plumbing::Folder<T>>::consume_iter
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/map.rs:248:21
+  34: rayon::iter::plumbing::Producer::fold_with
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/plumbing/mod.rs:110:9
+  35: rayon::iter::plumbing::bridge_producer_consumer::helper
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/plumbing/mod.rs:438:13
+  36: rayon::iter::plumbing::bridge_producer_consumer
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/plumbing/mod.rs:397:12
+  37: <rayon::iter::plumbing::bridge::Callback<C> as rayon::iter::plumbing::ProducerCallback<I>>::callback
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/plumbing/mod.rs:373:13
+  38: <rayon::slice::Iter<T> as rayon::iter::IndexedParallelIterator>::with_producer
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/slice/mod.rs:732:9
+  39: rayon::iter::plumbing::bridge
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/plumbing/mod.rs:357:12
+  40: <rayon::slice::Iter<T> as rayon::iter::ParallelIterator>::drive_unindexed
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/slice/mod.rs:708:9
+  41: <rayon::iter::map::Map<I,F> as rayon::iter::ParallelIterator>::drive_unindexed
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/map.rs:49:9
+  42: rayon::iter::reduce::reduce
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/reduce.rs:15:5
+  43: rayon::iter::ParallelIterator::reduce
+             at /home/rafal/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rayon-1.8.0/src/iter/mod.rs:991:9
+  44: ruff_cli::commands::check::check
+             at /home/rafal/test/ruff/crates/ruff_cli/src/commands/check.rs:173:10
+  45: ruff_cli::check
+             at /home/rafal/test/ruff/crates/ruff_cli/src/lib.rs:372:13
+  46: ruff_cli::run
+             at /home/rafal/test/ruff/crates/ruff_cli/src/lib.rs:163:33
+  47: ruff::main
+             at /home/rafal/test/ruff/crates/ruff_cli/src/bin/ruff.rs:49:11
+  48: core::ops::function::FnOnce::call_once
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/core/src/ops/function.rs:250:5
+  49: std::sys_common::backtrace::__rust_begin_short_backtrace
+             at /rustc/d5c2e9c342b358556da91d61ed4133f6f50fc0c3/library/std/src/sys_common/backtrace.rs:135:18
+  50: main
+  51: __libc_start_call_main
+             at ./csu/../sysdeps/nptl/libc_start_call_main.h:58:16
+  52: __libc_start_main_impl
+             at ./csu/../csu/libc-start.c:360:3
+  53: _start
+
+
+```
+[python_compressed.zip](https://github.com/astral-sh/ruff/files/12776650/python_compressed.zip)
+
+
+
+---
+
+_Renamed from "Rule F632 cause panic `assertion failed: `(left == right)`" to "Rule F632 cause panic `assertion failed: (left == right)`" by @qarmin on 2023-10-01 07:51_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-10-01 14:48_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-10-01 14:48_
+
+---
+
+_Label `fuzzer` added by @charliermarsh on 2023-10-01 14:48_
+
+---
+
+_Closed by @charliermarsh on 2023-10-01 14:57_
+
+---

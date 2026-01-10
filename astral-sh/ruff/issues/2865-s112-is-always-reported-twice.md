@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-13T15:49:50Z
 updated_at: 2023-02-15T17:08:36Z
 url: https://github.com/astral-sh/ruff/issues/2865
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # S112 is always reported twice
@@ -67,10 +67,6 @@ Ooh funny. Yeah maybe.
 _Comment by @charliermarsh on 2023-02-13 18:21_
 
 We should probably just deduplicate.
-
----
-
-_Referenced in [astral-sh/ruff#2931](../../astral-sh/ruff/pulls/2931.md) on 2023-02-15 16:53_
 
 ---
 

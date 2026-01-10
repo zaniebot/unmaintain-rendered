@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-11T18:40:21Z
 updated_at: 2025-11-17T20:52:26Z
 url: https://github.com/astral-sh/ruff/issues/21389
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # RUF012 warns on variable re-assignment within top level of class body
@@ -125,10 +125,6 @@ _Label `question` removed by @ntBre on 2025-11-13 15:42_
 ---
 
 _Label `rule` added by @ntBre on 2025-11-13 15:42_
-
----
-
-_Referenced in [astral-sh/ruff#21478](../../astral-sh/ruff/pulls/21478.md) on 2025-11-16 15:28_
 
 ---
 

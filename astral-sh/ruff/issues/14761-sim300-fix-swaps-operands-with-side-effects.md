@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-03T18:43:24Z
 updated_at: 2024-12-30T10:41:35Z
 url: https://github.com/astral-sh/ruff/issues/14761
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # SIM300 fix swaps operands with side effects
@@ -87,10 +87,6 @@ _Label `fixes` added by @dylwil3 on 2024-12-04 02:12_
 _Comment by @charliermarsh on 2024-12-06 02:55_
 
 This is so ridiculous but you are of course right lol.
-
----
-
-_Referenced in [astral-sh/ruff#15164](../../astral-sh/ruff/pulls/15164.md) on 2024-12-28 03:25_
 
 ---
 

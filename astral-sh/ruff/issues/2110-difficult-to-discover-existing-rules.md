@@ -1,0 +1,89 @@
+```yaml
+number: 2110
+title: Difficult to discover existing rules
+type: issue
+state: closed
+author: brianmego
+labels:
+  - documentation
+assignees: []
+created_at: 2023-01-23T17:21:43Z
+updated_at: 2023-01-27T03:42:05Z
+url: https://github.com/astral-sh/ruff/issues/2110
+synced_at: 2026-01-10T11:09:45Z
+```
+
+# Difficult to discover existing rules
+
+---
+
+_Issue opened by @brianmego on 2023-01-23 17:21_
+
+First off, thank you so much for building and maintaining this repo. My team and I discovered it last week and got so excited we independently went home and started contributing the same feature to it over the weekend. We also ran into the same stumbling block, which seemed worth reporting.
+
+In particular, we wanted to ensure ruff could run pylint rule W0102. Turns out this is already implemented (as B006), but we both missed it and burned a few hours reimplementing it before realizing it. Here's the steps we took that led to that unfortunate miss:
+
+1. We grepped the codebase for 0102 and 'default-value' and did not find anything. 
+2. We searched the issues for the same and discovered https://github.com/charliermarsh/ruff/issues/970, which stated it was already implemented, but as we couldn't find where, we both assumed it was a misprint.
+3. We cloned the repo and went through the CONTRIBUTING.md to add the new feature (super well put together. Thanks!)
+4. We both named our new rule PLW0102, and tested it with `--select=PLW0102`, which worked great.
+5. We both tried to test it without the specific select rule, and it wasn't running. This led to the discovery that not all rules are on by default, which makes sense. And then, on running `--select=ALL`, noticed that lo and behold, both PLW0102 _and_ B006 were matching our test line.
+
+Neither of us regret the time we spent learning the codebase and are only excited to contribute in other ways, but perhaps there's something that could be done to avoid the above steps for the next contributor.
+
+Some ideas (B006 used as example, but would affect all rules)
+- A mapping file that states B006 a.k.a. pylint W0102
+- The current Comment of `///B006` in the rule definition could instead be `///B006 (pylint W0102)`
+- Updating the pylint issue above to keep track of the mapping.
+- Updating the `define_violation` macro to optionally take aliases for a rule.
+
+This is just a start to the discussion. if you are interested in any of these in particular, we would love to help make it a reality.
+
+---
+
+_Comment by @charliermarsh on 2023-01-23 17:27_
+
+Gah, I'm so sorry that you burned time on this!
+
+This is definitely a problem and, as you note, it's not confined to W0102. We're getting close to enabling rule aliases -- so, e.g., we would map both `PLW0102` and `B006` to the same underlying rule, and users could select either of them (similar to what you suggest with that last bullet). There are a few details to figure out, like what happens if you enable both rules... but we've done a bunch of internal refactors to make it possible (\cc @not-my-profile).
+
+In the meantime, though, I think a minimally responsible thing to do would be to amend the Pylint issues to make this mapping clear (again, as you suggest!). There are a bunch of other rules that are checked off in that issue that are actually implemented as non-`PL` rules. (In general, the project is more closely aligned with Flake8 and its plugins than Pylint, so if a rule exists in Pylint and elsewhere, we tend to use the Flake8 code and terminology.)
+
+I will try to get to that today, but lets use this issue to track updating that _other_ issue.
+
+
+---
+
+_Label `documentation` added by @charliermarsh on 2023-01-23 17:27_
+
+---
+
+_Comment by @not-my-profile on 2023-01-23 17:29_
+
+Thanks for bringing this up. We are well aware that a many to many mapping between codes and rules is currently really lacking and I have been working on getting that implemented ... it's very much my current top priority in ruff.
+
+I already have a concrete idea on how to implement that ... I think the only refactor that's still blocking the implementation is #2103, after that has been merged I'll work on the PR to implement the many to many mapping :)
+
+---
+
+_Comment by @charliermarsh on 2023-01-26 04:27_
+
+(As a follow-up: it took me a few days, but I went through and mapped all the checked-off rules in #970 to their Ruff equivalents.)
+
+---
+
+_Comment by @brianmego on 2023-01-27 03:38_
+
+Rock on. I think in line with your previous intent, we can close this one. Thanks for making it clearer and look forward to contributing in the future!
+
+---
+
+_Closed by @brianmego on 2023-01-27 03:38_
+
+---
+
+_Comment by @charliermarsh on 2023-01-27 03:42_
+
+Awesome! 🎸 🎸 🎸 
+
+---

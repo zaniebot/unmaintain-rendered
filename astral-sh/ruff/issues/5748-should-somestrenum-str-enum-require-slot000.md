@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-13T19:42:12Z
 updated_at: 2023-08-11T13:58:07Z
 url: https://github.com/astral-sh/ruff/issues/5748
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Should `SomeStrEnum(str, Enum)` require `SLOT000`?
@@ -76,10 +76,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-07-13 19:54_
 
 ---
 
-_Referenced in [astral-sh/ruff#5749](../../astral-sh/ruff/pulls/5749.md) on 2023-07-13 20:04_
-
----
-
 _Closed by @charliermarsh on 2023-07-13 20:12_
 
 ---
@@ -109,9 +105,5 @@ _Comment by @sujuka99 on 2023-08-11 13:58_
 > Yeah, we don't trace across base classes right now. You'd need to add `Enum` as a parent class to have it detected properly.
 
 Thanks for the quick answer :)
-
----
-
-_Referenced in [astral-sh/ruff#9890](../../astral-sh/ruff/issues/9890.md) on 2024-02-08 06:12_
 
 ---

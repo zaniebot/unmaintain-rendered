@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-24T08:45:48Z
 updated_at: 2023-04-30T18:39:47Z
 url: https://github.com/astral-sh/ruff/issues/4076
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # F811 false positive in match statement
@@ -101,10 +101,6 @@ I can pick it up.
 ---
 
 _Label `bug` added by @charliermarsh on 2023-04-25 00:13_
-
----
-
-_Referenced in [astral-sh/ruff#4161](../../astral-sh/ruff/pulls/4161.md) on 2023-04-30 13:08_
 
 ---
 

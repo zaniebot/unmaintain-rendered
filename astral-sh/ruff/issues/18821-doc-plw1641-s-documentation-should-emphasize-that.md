@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-20T10:02:36Z
 updated_at: 2025-11-23T16:21:05Z
 url: https://github.com/astral-sh/ruff/issues/18821
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # DOC: `PLW1641`'s documentation should emphasize that implementing `__hash__` for mutable objects is unsound
@@ -29,10 +29,6 @@ The "Why is this bad" reads
 Meanwhile, [`set` is documented as a container for *immutable* objects](https://docs.python.org/3/reference/datamodel.html#set-types).
 Indeed, a hash should never change throughout the lifetime of an object, so it is not sound to support hashing for objects that are intended to be mutable.
 I would expect the rule's documentation to emphasize this important limitation.
-
----
-
-_Referenced in [astropy/astropy#18284](../../astropy/astropy/issues/18284.md) on 2025-06-20 10:03_
 
 ---
 
@@ -95,10 +91,6 @@ The difficulty is that I am not aware of an unambiguous way for a linter to dete
 For instance, if one reimplemented `set` in pure python, one would need to leave `__hash__` unset (or set explicitely to `None`, which creates other linting problems if actually attempted.) But because `set` has an `__eq__`, this rule would be innappropriately triggered.
 
 So the OP is correct, but this goes beyond a documentation problem.
-
----
-
-_Referenced in [astral-sh/ruff#20821](../../astral-sh/ruff/issues/20821.md) on 2025-10-13 13:05_
 
 ---
 

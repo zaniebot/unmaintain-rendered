@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-12-10T09:37:16Z
 updated_at: 2026-01-05T21:11:04Z
 url: https://github.com/astral-sh/ruff/issues/21891
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # PERF401 extend suggestion has false negatives and makes code slower
@@ -121,10 +121,6 @@ Anyway, the first case does look like a false negative too.
 ---
 
 _Label `rule` added by @ntBre on 2025-12-10 16:21_
-
----
-
-_Referenced in [astral-sh/ruff#21890](../../astral-sh/ruff/issues/21890.md) on 2025-12-10 21:04_
 
 ---
 

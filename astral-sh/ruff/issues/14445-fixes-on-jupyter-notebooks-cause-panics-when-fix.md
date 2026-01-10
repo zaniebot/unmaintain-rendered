@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-19T00:45:11Z
 updated_at: 2024-12-03T04:52:21Z
 url: https://github.com/astral-sh/ruff/issues/14445
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Fixes on Jupyter notebooks cause panics when fix replaces/deletes multiple cells
@@ -189,13 +189,5 @@ Is there a use for `SourceMap` instances that don't maintain this invariant of e
 Finally - it's unclear to me how this relates to supporting other languages. Could you say more about that?
 
 Apologies for my confusion!
-
----
-
-_Referenced in [astral-sh/ruff#20036](../../astral-sh/ruff/pulls/20036.md) on 2025-08-22 05:02_
-
----
-
-_Referenced in [astral-sh/ruff#20789](../../astral-sh/ruff/issues/20789.md) on 2025-10-10 19:38_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-22T20:52:46Z
 updated_at: 2022-12-26T12:03:14Z
 url: https://github.com/astral-sh/ruff/issues/1340
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:26Z
 ```
 
 # UTF8 files with BOM produce E999 "unexpected token"
@@ -42,10 +42,6 @@ Yeah definitely a bug!
 _Comment by @squiddy on 2022-12-23 19:27_
 
 I've raised https://github.com/RustPython/RustPython/issues/4353 for this.
-
----
-
-_Referenced in [astral-sh/ruff#1379](../../astral-sh/ruff/pulls/1379.md) on 2022-12-26 07:13_
 
 ---
 

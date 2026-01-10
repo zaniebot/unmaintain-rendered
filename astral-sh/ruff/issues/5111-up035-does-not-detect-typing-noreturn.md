@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-06-15T04:07:52Z
 updated_at: 2023-06-16T00:51:18Z
 url: https://github.com/astral-sh/ruff/issues/5111
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # `UP035` does not detect `typing.NoReturn`
@@ -43,10 +43,6 @@ _Label `help wanted` added by @charliermarsh on 2023-06-15 13:46_
 ---
 
 _Label `good first issue` added by @charliermarsh on 2023-06-15 13:47_
-
----
-
-_Referenced in [astral-sh/ruff#5126](../../astral-sh/ruff/pulls/5126.md) on 2023-06-15 19:04_
 
 ---
 
@@ -121,13 +117,5 @@ but i guess it comes down to personal preference, so perhaps a new rule could be
 ---
 
 _Renamed from "`UP035` does not detect `typing.NoReturn` and `typing.Union`" to "`UP035` does not detect `typing.NoReturn`" by @DetachHead on 2023-06-16 00:51_
-
----
-
-_Referenced in [astral-sh/ruff#5241](../../astral-sh/ruff/issues/5241.md) on 2023-06-21 06:07_
-
----
-
-_Referenced in [DetachHead/basedpyright#356](../../DetachHead/basedpyright/issues/356.md) on 2024-07-12 02:38_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-05T06:55:41Z
 updated_at: 2024-02-05T16:24:52Z
 url: https://github.com/astral-sh/ruff/issues/9823
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Segmentation fault: 11 with ruff 0.2.0
@@ -122,10 +122,6 @@ _Label `bug` added by @MichaReiser on 2024-02-05 15:14_
 ---
 
 _Label `cli` added by @MichaReiser on 2024-02-05 15:14_
-
----
-
-_Referenced in [astral-sh/ruff#9834](../../astral-sh/ruff/pulls/9834.md) on 2024-02-05 15:53_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-07T18:24:19Z
 updated_at: 2024-03-08T00:51:55Z
 url: https://github.com/astral-sh/ruff/issues/10279
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Add support for string type hint in typing.Annotated
@@ -44,10 +44,6 @@ _Label `bug` added by @charliermarsh on 2024-03-07 22:01_
 _Comment by @charliermarsh on 2024-03-07 22:11_
 
 This looks like a bug, probably just an oversight...
-
----
-
-_Referenced in [astral-sh/ruff#10285](../../astral-sh/ruff/pulls/10285.md) on 2024-03-08 00:36_
 
 ---
 

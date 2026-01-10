@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-21T02:24:11Z
 updated_at: 2023-06-12T14:14:18Z
 url: https://github.com/astral-sh/ruff/issues/4556
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Panic when Jupyter notebook contains only a single empty code cell
@@ -125,10 +125,6 @@ cargo run --all-features --bin ruff -- check --no-cache --isolated --select=D100
 _Comment by @MichaReiser on 2023-05-23 06:07_
 
 Ah I see. Thanks. So this is an issue with the `JupyterIndex` for empty files.
-
----
-
-_Referenced in [astral-sh/ruff#4665](../../astral-sh/ruff/pulls/4665.md) on 2023-06-09 12:54_
 
 ---
 

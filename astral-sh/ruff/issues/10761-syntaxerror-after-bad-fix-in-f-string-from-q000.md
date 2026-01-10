@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-03T19:23:41Z
 updated_at: 2024-04-04T03:38:50Z
 url: https://github.com/astral-sh/ruff/issues/10761
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # SyntaxError after bad fix in f-string from Q000 flake8 bad-quotes-inline-string
@@ -81,10 +81,6 @@ _Assigned to @dhruvmanila by @dhruvmanila on 2024-04-04 02:45_
 _Comment by @dhruvmanila on 2024-04-04 02:47_
 
 Oops, sorry. I think I have a permanent fix for this.
-
----
-
-_Referenced in [astral-sh/ruff#10766](../../astral-sh/ruff/pulls/10766.md) on 2024-04-04 02:53_
 
 ---
 

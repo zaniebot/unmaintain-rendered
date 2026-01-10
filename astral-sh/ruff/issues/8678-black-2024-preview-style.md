@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-14T17:03:38Z
 updated_at: 2024-04-12T14:53:56Z
 url: https://github.com/astral-sh/ruff/issues/8678
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # 🏖️  Black 2024 Preview Style
@@ -470,31 +470,11 @@ _Label `formatter` added by @konstin on 2023-11-14 17:03_
 
 ---
 
-_Referenced in [psf/black#3989](../../psf/black/issues/3989.md) on 2023-11-14 17:04_
-
----
-
-_Referenced in [astral-sh/ruff#6935](../../astral-sh/ruff/issues/6935.md) on 2023-11-14 17:11_
-
----
-
-_Referenced in [astral-sh/ruff#8566](../../astral-sh/ruff/issues/8566.md) on 2023-11-15 12:39_
-
----
-
 _Label `preview` added by @MichaReiser on 2023-11-27 01:56_
 
 ---
 
-_Referenced in [astral-sh/ruff#8588](../../astral-sh/ruff/issues/8588.md) on 2023-11-27 11:25_
-
----
-
 _Renamed from "Implement the planned 2024 black stable style" to "Black 2024 Preview Style" by @MichaReiser on 2023-11-28 06:53_
-
----
-
-_Referenced in [psf/black#4042](../../psf/black/issues/4042.md) on 2023-11-28 08:58_
 
 ---
 
@@ -506,22 +486,6 @@ _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-11-29 00:37_
 
 ---
 
-_Referenced in [lablup/backend.ai#1771](../../lablup/backend.ai/pulls/1771.md) on 2023-12-08 12:08_
-
----
-
-_Referenced in [astral-sh/ruff#9241](../../astral-sh/ruff/issues/9241.md) on 2023-12-22 06:00_
-
----
-
-_Referenced in [astral-sh/ruff#9280](../../astral-sh/ruff/pulls/9280.md) on 2023-12-26 04:01_
-
----
-
-_Referenced in [astral-sh/ruff#9639](../../astral-sh/ruff/pulls/9639.md) on 2024-01-25 11:46_
-
----
-
 _Removed from milestone `Formatter: Stable` by @MichaReiser on 2024-02-14 16:30_
 
 ---
@@ -530,26 +494,10 @@ _Added to milestone `v0.4` by @MichaReiser on 2024-02-14 16:30_
 
 ---
 
-_Referenced in [astral-sh/ruff#5822](../../astral-sh/ruff/issues/5822.md) on 2024-02-16 21:20_
-
----
-
-_Referenced in [astral-sh/ruff#10026](../../astral-sh/ruff/issues/10026.md) on 2024-02-18 17:10_
-
----
-
 _Closed by @MichaReiser on 2024-02-29 17:54_
 
 ---
 
 _Removed from milestone `v0.4.0` by @charliermarsh on 2024-04-12 14:53_
-
----
-
-_Referenced in [astral-sh/ruff#11254](../../astral-sh/ruff/issues/11254.md) on 2024-05-03 00:34_
-
----
-
-_Referenced in [astral-sh/ruff#9745](../../astral-sh/ruff/issues/9745.md) on 2025-02-17 11:17_
 
 ---

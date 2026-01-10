@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-14T11:11:43Z
 updated_at: 2024-01-19T19:44:44Z
 url: https://github.com/astral-sh/ruff/issues/7959
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Excluding a folder containing braces in its name fails
@@ -152,27 +152,11 @@ _Closed by @LKajan on 2023-10-17 11:37_
 
 ---
 
-_Referenced in [astral-sh/ruff#9381](../../astral-sh/ruff/issues/9381.md) on 2024-01-04 16:31_
-
----
-
 _Comment by @reinout on 2024-01-19 19:44_
 
 I had a hard time getting the `{{` to be accepted by the `[tool.ruff]` section in my `pyproject.toml`.
 
 - I worked around the `{{` problem by using `exclude = ["*cookiecutter.project_name*"]`, as asterixes match the curly braces just fine.
 - The errors I got, despite the exclude, were about `{{cookiecutter.project_name}}/pyproject.toml`, which is a special case for which I opened an issue: #9585 
-
----
-
-_Referenced in [astral-sh/ruff#9585](../../astral-sh/ruff/issues/9585.md) on 2024-05-08 11:52_
-
----
-
-_Referenced in [tox-dev/toml-fmt#22](../../tox-dev/toml-fmt/issues/22.md) on 2024-12-31 11:23_
-
----
-
-_Referenced in [astral-sh/ruff#16407](../../astral-sh/ruff/pulls/16407.md) on 2025-02-26 22:17_
 
 ---

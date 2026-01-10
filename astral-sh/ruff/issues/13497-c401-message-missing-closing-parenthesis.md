@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-24T12:22:05Z
 updated_at: 2024-09-24T12:55:34Z
 url: https://github.com/astral-sh/ruff/issues/13497
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # C401 message missing closing parenthesis
@@ -32,10 +32,6 @@ If you're filing a bug report, please consider including the following informati
 * The current Ruff version (`ruff --version`).
 -->
 Can be seen in https://docs.astral.sh/ruff/rules/#flake8-comprehensions-c4 , the C401 message says `Unnecessary generator (rewrite using set()` compared to C400 above it which correctly has the closing parenthesis - `Unnecessary generator (rewrite using list())`
-
----
-
-_Referenced in [astral-sh/ruff#13498](../../astral-sh/ruff/pulls/13498.md) on 2024-09-24 12:25_
 
 ---
 

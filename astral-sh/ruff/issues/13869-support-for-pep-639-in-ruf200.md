@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-21T20:31:09Z
 updated_at: 2024-11-18T17:20:17Z
 url: https://github.com/astral-sh/ruff/issues/13869
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Support for PEP 639 in RUF200
@@ -60,10 +60,6 @@ The `pyproject-toml` crate has an outdated version of the PEP, we need to fix th
 
 ---
 
-_Referenced in [astral-sh/ruff#13902](../../astral-sh/ruff/pulls/13902.md) on 2024-10-24 09:26_
-
----
-
 _Label `help wanted` removed by @konstin on 2024-10-24 09:28_
 
 ---
@@ -75,9 +71,5 @@ This has been merged into the `ruff-0.8` branch; it will land in the next releas
 ---
 
 _Closed by @AlexWaygood on 2024-11-18 17:20_
-
----
-
-_Referenced in [aeecleclair/Hyperion#700](../../aeecleclair/Hyperion/pulls/700.md) on 2025-05-02 22:17_
 
 ---

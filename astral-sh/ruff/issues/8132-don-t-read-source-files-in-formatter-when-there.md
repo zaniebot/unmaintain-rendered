@@ -1,0 +1,36 @@
+```yaml
+number: 8132
+title: "Don't read source files in formatter when there is a cache hit"
+type: issue
+state: closed
+author: konstin
+labels:
+  - formatter
+assignees: []
+created_at: 2023-10-23T09:40:08Z
+updated_at: 2023-10-25T08:24:51Z
+url: https://github.com/astral-sh/ruff/issues/8132
+synced_at: 2026-01-10T11:09:50Z
+```
+
+# Don't read source files in formatter when there is a cache hit
+
+---
+
+_Issue opened by @konstin on 2023-10-23 09:40_
+
+Currently, we always read source files in formatter even when we hit the cache. With a hacky change, not reading source files is 10% faster with a hot cache. The task is to refactor the formatter result types so that we don't read the source files if we hit the cache and don't need them.
+
+---
+
+_Label `formatter` added by @konstin on 2023-10-23 09:40_
+
+---
+
+_Closed by @MichaReiser on 2023-10-23 11:29_
+
+---
+
+_Added to milestone `Formatter: Beta` by @MichaReiser on 2023-10-25 08:24_
+
+---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-29T01:22:04Z
 updated_at: 2023-12-22T03:41:06Z
 url: https://github.com/astral-sh/ruff/issues/8890
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Formatter: `improved_async_statements_handling` preview style
@@ -95,10 +95,6 @@ async def func():
 
 ---
 
-_Referenced in [astral-sh/ruff#8678](../../astral-sh/ruff/issues/8678.md) on 2023-11-29 01:22_
-
----
-
 _Label `formatter` added by @MichaReiser on 2023-11-29 01:23_
 
 ---
@@ -116,10 +112,6 @@ _Renamed from "`improved_async_statements_handling`same as `wrap_multiple_contex
 ---
 
 _Renamed from "Formatter: `improved_async_statements_handling`preview style" to "Formatter: `improved_async_statements_handling` preview style" by @MichaReiser on 2023-11-29 01:24_
-
----
-
-_Referenced in [astral-sh/ruff#9222](../../astral-sh/ruff/pulls/9222.md) on 2023-12-21 03:52_
 
 ---
 

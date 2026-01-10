@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-29T23:50:36Z
 updated_at: 2025-09-30T06:04:11Z
 url: https://github.com/astral-sh/ruff/issues/20641
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Formatter breaks Google Colab `@param` forms in ipynb
@@ -65,10 +65,6 @@ While this works, it requires manually adding these comments around every `@para
 ---
 
 _Renamed from "### Formatter breaks Google Colab `@param` forms in ipynb" to "Formatter breaks Google Colab `@param` forms in ipynb" by @holtskinner on 2025-09-29 23:50_
-
----
-
-_Referenced in [GoogleCloudPlatform/generative-ai#2367](../../GoogleCloudPlatform/generative-ai/pulls/2367.md) on 2025-09-29 23:57_
 
 ---
 

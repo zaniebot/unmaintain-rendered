@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-13T14:16:12Z
 updated_at: 2023-01-26T17:59:28Z
 url: https://github.com/astral-sh/ruff/issues/1850
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Support flake8-logging-format ?
@@ -24,10 +24,6 @@ Hi, thanks a lot for making ruff, I'm amazed by the quality and performances of 
 [`flake8-logging-format`](https://pypi.org/project/flake8-logging-format) isn't crucial to my workflow, but it's the only flake8 plugin I use that isn't supported yet *and* doesn't have an open ticket to follow already so I figured I'd open one for reference.
 
 Keep it up !
-
----
-
-_Referenced in [yt-project/yt#4203](../../yt-project/yt/issues/4203.md) on 2023-01-13 14:16_
 
 ---
 
@@ -50,14 +46,6 @@ I'm working on some of these. For tracking:
 - [x] `G201`: Logging statements should not use `error(..., exc_info=True)` (use `exception(...)` instead)
 - [x] `G202`: Logging statements should not use redundant `exc_info=True` in `exception`
 
-
----
-
-_Referenced in [astral-sh/ruff#2150](../../astral-sh/ruff/pulls/2150.md) on 2023-01-25 08:33_
-
----
-
-_Referenced in [astral-sh/ruff#2160](../../astral-sh/ruff/issues/2160.md) on 2023-01-25 17:06_
 
 ---
 

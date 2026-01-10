@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-12T17:12:09Z
 updated_at: 2022-12-15T01:22:41Z
 url: https://github.com/astral-sh/ruff/issues/1216
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:23Z
 ```
 
 # Make (e.g.) `--extend-ignore` always-extensive
@@ -28,10 +28,6 @@ _Label `configuration` added by @charliermarsh on 2022-12-12 17:12_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2022-12-15 00:36_
-
----
-
-_Referenced in [astral-sh/ruff#1245](../../astral-sh/ruff/pulls/1245.md) on 2022-12-15 01:12_
 
 ---
 

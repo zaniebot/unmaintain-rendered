@@ -1,0 +1,101 @@
+```yaml
+number: 14656
+title: "Circular recommendations: PLC0206, PERF102, SIM118"
+type: issue
+state: closed
+author: njsaunders
+labels:
+  - question
+assignees: []
+created_at: 2024-11-28T14:01:31Z
+updated_at: 2024-11-28T14:53:29Z
+url: https://github.com/astral-sh/ruff/issues/14656
+synced_at: 2026-01-10T11:09:56Z
+```
+
+# Circular recommendations: PLC0206, PERF102, SIM118
+
+---
+
+_Issue opened by @njsaunders on 2024-11-28 14:01_
+
+I have the following code:
+
+```
+    for audit in perf_audits:
+        max_audit_points = perf_audits[audit]
+```
+
+This raises PLC0206:
+
+```
+helpers/lighthouse.py:246:5: PLC0206 Extracting value from dictionary without calling `.items()`
+    |
+244 |       points_lost = {}
+245 |
+246 |       for audit in perf_audits:
+    |  _____^
+247 | |         max_audit_points = perf_audits[audit]
+248 | |         acheived_audit_points = lighthouse_json["audits"][audit]["score"] * max_audit_points
+249 | |         lost_audit_points = max_audit_points - acheived_audit_points
+250 | |         points_lost[humanise_category(audit)] = round(lost_audit_points)
+    | |________________________________________________________________________^ PLC0206
+```
+
+But if I correct it as recommended I get
+
+```
+helpers/lighthouse.py:246:31: PERF102 When using only the keys of a dict use the `keys()` method
+    |
+244 |     points_lost = {}
+245 |
+246 |     for audit, audit_score in perf_audits.items():
+    |                               ^^^^^^^^^^^^^^^^^ PERF102
+247 |         max_audit_points = perf_audits[audit]
+248 |         acheived_audit_points = lighthouse_json["audits"][audit]["score"] * max_audit_points
+    |
+    = help: Replace `.items()` with `.keys()`
+```
+
+And if i do that:
+```
+helpers/lighthouse.py:246:9: SIM118 [*] Use `key in dict` instead of `key in dict.keys()`
+    |
+244 |     points_lost = {}
+245 |
+246 |     for audit in perf_audits.keys():
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ SIM118
+247 |         max_audit_points = perf_audits[audit]
+248 |         acheived_audit_points = lighthouse_json["audits"][audit]["score"] * max_audit_points
+    |
+    = help: Remove `.keys()`
+```
+
+.... It tells me to turn it back to what I had in the beginning, so I can't win?
+
+---
+
+_Comment by @dylwil3 on 2024-11-28 14:10_
+
+I think PLC0206 is suggesting that you replace the dictionary lookup with the use of the value as well. What happens if you do this in the first edit?
+
+```python
+for audit, audit_score in perf_audits.items():
+        max_audit_points = audit_score
+```
+
+---
+
+_Label `question` added by @AlexWaygood on 2024-11-28 14:50_
+
+---
+
+_Comment by @njsaunders on 2024-11-28 14:53_
+
+Aaaaah I understand - Yes thats got it - Thank you!
+
+---
+
+_Closed by @njsaunders on 2024-11-28 14:53_
+
+---

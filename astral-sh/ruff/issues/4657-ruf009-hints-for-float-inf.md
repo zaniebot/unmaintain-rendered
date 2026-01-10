@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-25T13:48:44Z
 updated_at: 2023-05-26T19:18:53Z
 url: https://github.com/astral-sh/ruff/issues/4657
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # RUF009 hints for float('-inf')
@@ -112,10 +112,6 @@ I'll add `int`, `float`, `complex`.
 
 Unsure if that counts for this purpose as well.
 
-
----
-
-_Referenced in [astral-sh/ruff#4660](../../astral-sh/ruff/pulls/4660.md) on 2023-05-25 16:46_
 
 ---
 

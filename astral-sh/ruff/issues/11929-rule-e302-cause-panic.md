@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-06-18T18:39:30Z
 updated_at: 2024-06-19T11:57:21Z
 url: https://github.com/astral-sh/ruff/issues/11929
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Rule E302 cause panic
@@ -168,19 +168,11 @@ Oh nice find, this is a sneaky bug. Thanks for reporting!
 
 ---
 
-_Referenced in [astral-sh/ruff#11933](../../astral-sh/ruff/pulls/11933.md) on 2024-06-19 02:52_
-
----
-
 _Closed by @dhruvmanila on 2024-06-19 06:44_
 
 ---
 
 _Closed by @dhruvmanila on 2024-06-19 06:44_
-
----
-
-_Referenced in [astral-sh/ruff#11938](../../astral-sh/ruff/issues/11938.md) on 2024-06-19 11:19_
 
 ---
 

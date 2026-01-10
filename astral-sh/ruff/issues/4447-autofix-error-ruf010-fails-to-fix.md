@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-05-16T08:34:43Z
 updated_at: 2023-05-16T12:23:43Z
 url: https://github.com/astral-sh/ruff/issues/4447
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # [Autofix error]: `RUF010` fails to fix
@@ -226,9 +226,5 @@ Thanks! Will close this!
 ---
 
 _Closed by @Saransh-cpp on 2023-05-16 12:23_
-
----
-
-_Referenced in [Flexget/Flexget#3769](../../Flexget/Flexget/pulls/3769.md) on 2023-05-16 15:13_
 
 ---

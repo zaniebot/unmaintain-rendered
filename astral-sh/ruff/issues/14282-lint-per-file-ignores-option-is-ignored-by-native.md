@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-11T14:45:50Z
 updated_at: 2024-11-15T08:15:01Z
 url: https://github.com/astral-sh/ruff/issues/14282
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # `lint.per-file-ignores` option is ignored by native server in `ruff.toml`
@@ -297,10 +297,6 @@ Thankfully, adding the `..` does work on both calls (VSCode extension and ruff).
 ---
 
 _Label `bug` added by @MichaReiser on 2024-11-14 15:51_
-
----
-
-_Referenced in [astral-sh/ruff#14352](../../astral-sh/ruff/pulls/14352.md) on 2024-11-15 05:12_
 
 ---
 

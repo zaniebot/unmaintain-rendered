@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-17T15:09:37Z
 updated_at: 2025-03-17T21:33:34Z
 url: https://github.com/astral-sh/ruff/issues/16811
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # inconsistent behavior regarding asyncio-dangling-task (RUF006)
@@ -118,9 +118,5 @@ ruff could currently handle specific cases like `set` if we can resolve its type
 _Comment by @amirsoroush on 2025-03-17 21:33_
 
 @ntBre oops my bad. Yes I got you.
-
----
-
-_Referenced in [astral-sh/ruff#20421](../../astral-sh/ruff/issues/20421.md) on 2025-09-16 08:58_
 
 ---

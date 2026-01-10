@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-25T16:33:33Z
 updated_at: 2024-11-08T03:41:08Z
 url: https://github.com/astral-sh/ruff/issues/13930
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # False Positive F811 Redfinition on class member if global variable with same name is unused.
@@ -57,10 +57,6 @@ _Renamed from "False Positive F811 Redfinition on class member" to "False Positi
 ---
 
 _Label `bug` added by @MichaReiser on 2024-10-26 08:09_
-
----
-
-_Referenced in [astral-sh/ruff#13936](../../astral-sh/ruff/pulls/13936.md) on 2024-10-26 09:03_
 
 ---
 

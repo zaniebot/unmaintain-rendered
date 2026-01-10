@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-27T17:21:19Z
 updated_at: 2025-02-06T15:14:12Z
 url: https://github.com/astral-sh/ruff/issues/3759
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # [Feature] Add isort option for lines-before-import
@@ -26,18 +26,6 @@ https://pycqa.github.io/isort/docs/configuration/options#lines-before-imports
 ---
 
 _Label `isort` added by @charliermarsh on 2023-03-27 17:26_
-
----
-
-_Referenced in [astral-sh/ruff#6190](../../astral-sh/ruff/issues/6190.md) on 2023-07-31 09:46_
-
----
-
-_Referenced in [astral-sh/ruff#6281](../../astral-sh/ruff/issues/6281.md) on 2023-08-14 20:22_
-
----
-
-_Referenced in [astral-sh/ruff#7026](../../astral-sh/ruff/issues/7026.md) on 2023-09-06 02:52_
 
 ---
 

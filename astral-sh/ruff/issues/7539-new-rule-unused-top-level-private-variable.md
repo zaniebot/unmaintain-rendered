@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-20T11:08:30Z
 updated_at: 2023-10-27T07:51:28Z
 url: https://github.com/astral-sh/ruff/issues/7539
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # new rule - unused top level private variable
@@ -60,9 +60,5 @@ def foo(_bar: int): # no error, local scope so it's intentionally unused
     _baz: int # no error, local scope
     qux: int # error: unused (already handled by F842)
 ```
-
----
-
-_Referenced in [astral-sh/ruff#10503](../../astral-sh/ruff/issues/10503.md) on 2024-03-21 04:33_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-08-12T18:18:49Z
 updated_at: 2024-01-29T05:18:14Z
 url: https://github.com/astral-sh/ruff/issues/6525
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # COM812 Appears to Still Not Quite Be Right
@@ -111,10 +111,6 @@ Although black states, "Black makes code review faster by producing the smallest
 _Comment by @charliermarsh on 2023-11-01 17:33_
 
 @steve-mavens - Our documentation on rules that conflict with Ruff's formatter should be accurate for Black too: https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
-
----
-
-_Referenced in [astral-sh/ruff#8555](../../astral-sh/ruff/issues/8555.md) on 2023-11-08 11:04_
 
 ---
 

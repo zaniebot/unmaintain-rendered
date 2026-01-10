@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-27T22:14:54Z
 updated_at: 2022-11-28T02:37:35Z
 url: https://github.com/astral-sh/ruff/issues/927
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # Add Homebrew installation to `README.md`
@@ -28,10 +28,6 @@ _Label `documentation` added by @charliermarsh on 2022-11-27 22:14_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2022-11-27 22:18_
-
----
-
-_Referenced in [astral-sh/ruff#930](../../astral-sh/ruff/pulls/930.md) on 2022-11-28 02:37_
 
 ---
 

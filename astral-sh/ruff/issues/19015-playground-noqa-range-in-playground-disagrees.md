@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-06-28T18:15:19Z
 updated_at: 2025-09-17T07:29:41Z
 url: https://github.com/astral-sh/ruff/issues/19015
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # [playground] noqa range in playground disagrees with CLI and server for multiline strings
@@ -58,10 +58,6 @@ I will take this one.
 ---
 
 _Assigned to @TaKO8Ki by @ntBre on 2025-09-16 19:54_
-
----
-
-_Referenced in [astral-sh/ruff#20442](../../astral-sh/ruff/pulls/20442.md) on 2025-09-16 20:12_
 
 ---
 

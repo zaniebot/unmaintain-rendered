@@ -1,0 +1,183 @@
+```yaml
+number: 7635
+title: Autofix S101
+type: issue
+state: open
+author: kunaltyagi
+labels:
+  - fixes
+  - needs-decision
+assignees: []
+created_at: 2023-09-25T06:12:33Z
+updated_at: 2025-03-28T20:22:25Z
+url: https://github.com/astral-sh/ruff/issues/7635
+synced_at: 2026-01-10T11:09:49Z
+```
+
+# Autofix S101
+
+---
+
+_Issue opened by @kunaltyagi on 2023-09-25 06:12_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+code: `assert x != 0`
+ruff: 0.0.291
+command: `ruff check --fix --fixable S101 .`
+error: `S101 Use of `assert` detected`
+
+This is an easy fix to substitute in the code specially when opted-in by the developer (if not automatically)
+
+---
+
+_Label `waiting-on-author` added by @charliermarsh on 2023-09-26 15:22_
+
+---
+
+_Comment by @charliermarsh on 2023-09-26 15:22_
+
+What would you suggest as the correct fix?
+
+---
+
+_Comment by @kunaltyagi on 2023-09-26 15:57_
+
+If the assert doesn't have a message, a generic message can be used alongside the assert condition. Eg: for `assert x != y`
+```py
+if x == y:
+  msg = f"Expected: 'x != y', found: x = {x}, y = {y}"
+  raise ValueError(msg)
+```
+
+If there's a message accompanying the assert, eg: `assert x != y, "some message"`
+```py
+if x == y:
+  msg = "some message"
+  raise ValueError(msg)
+```
+
+This is what I've observed people replace their code with when faced with this error. The most often item people might want to change is the error type but this default would more than suffice the 80-20 rule
+
+---
+
+_Comment by @dimbleby on 2023-09-30 10:26_
+
+`AssertionError` would seem the more natural substitution, as already done when auto-fixing `B011`.
+
+---
+
+_Comment by @kunaltyagi on 2023-10-01 04:14_
+
+Sure, that does make more sense
+
+---
+
+_Label `waiting-on-author` removed by @dhruvmanila on 2023-10-04 04:59_
+
+---
+
+_Label `needs-decision` added by @dhruvmanila on 2023-10-04 04:59_
+
+---
+
+_Label `autofix` added by @dhruvmanila on 2023-10-04 04:59_
+
+---
+
+_Comment by @cosmojg on 2023-10-04 19:48_
+
+If this is implemented, might it wreak havoc on tests?
+
+---
+
+_Comment by @kunaltyagi on 2023-10-05 01:46_
+
+I don't think so. Asserts in tests are ignored in the projects I've used ruff with
+
+---
+
+_Comment by @cosmojg on 2023-10-05 17:55_
+
+Huh, weird! I had to go out of my way to explicitly declare the following in my `pyproject.toml`
+
+```
+[tool.ruff.per-file-ignores]
+"*test_*.py" = ["S101"]
+```
+
+Without that, I get loads of errors about the use of "assert" in tests.
+
+---
+
+_Comment by @charliermarsh on 2023-10-05 17:56_
+
+We don't disable any specific rules in tests by default, so something like what you have there @cosmojg is expected and correct.
+
+---
+
+_Comment by @cosmojg on 2023-10-05 18:47_
+
+Ah, got it, thanks for the clarification! That makes sense.
+
+It's an interesting philosophical question whether tests are part of the language itself or merely a product thereof. Regardless, it seems that [`bandit`](https://bandit.readthedocs.io/en/latest/plugins/b101_assert_used.html) maintains the same behavior upstream so the point is moot. I suppose some users might prefix scripts with "test" to mean that they are tests in some other sense. Also, the Python interpreter itself doesn't differentiate even though the standard library does (see: [`unittest`](https://docs.python.org/3/library/unittest.html#test-discovery)), and at the end of the day, explicit behavior generally causes fewer problems than implicit behavior.
+
+All of that said, I agree that autofixing with an `AssertionError` exception is the way to go!
+
+---
+
+_Comment by @kunaltyagi on 2023-10-06 00:24_
+
+@cosmojg I found that I was wrong in my guess and all the projects (I work(ed) on) all had the following common items:
+```toml
+[tool.ruff.per-file-ignores]
+# Tests can use magic values, assertions, and relative imports
+"tests/**/*" = ["PLR2004", "S101", "TID252"]
+```
+
+---
+
+_Comment by @kunaltyagi on 2023-12-08 04:41_
+
+Has there been any progress on this?
+
+---
+
+_Comment by @collinanderson on 2025-03-28 20:22_
+
+I agree that this should be a pretty straightforward autofix:
+
+```
+assert {condition}, {message}
+```
+
+should become:
+
+```
+if not ({condition}):
+  raise AssertionError({message})
+```
+
+If no `{message}` then just:
+
+```
+if not ({condition}):
+  raise AssertionError
+```
+
+(Other rules can then fix it further, like if `not x in y` -> `x not in y`, or `{message}` getting assigned to a variable first, etc.)
+
+I'd suggest starting out as an unsafe-fix in case `pyright` users are blindly fixing all possible issues, and not already using `per-file-ignores` to ignore `S101` on tests.
+
+It could later be made a safe fix after some time for feedback of the unsafe fix.
+
+---

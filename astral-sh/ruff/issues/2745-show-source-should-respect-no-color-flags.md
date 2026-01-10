@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-02-10T21:48:45Z
 updated_at: 2023-02-10T22:27:42Z
 url: https://github.com/astral-sh/ruff/issues/2745
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # `--show-source` should respect `NO_COLOR` flags
@@ -39,10 +39,6 @@ _Label `bug` added by @charliermarsh on 2023-02-10 21:48_
 ---
 
 _Label `cli` added by @charliermarsh on 2023-02-10 21:48_
-
----
-
-_Referenced in [astral-sh/ruff#2750](../../astral-sh/ruff/pulls/2750.md) on 2023-02-10 22:24_
 
 ---
 

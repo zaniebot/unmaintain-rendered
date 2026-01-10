@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-02T12:55:43Z
 updated_at: 2023-06-20T16:51:56Z
 url: https://github.com/astral-sh/ruff/issues/995
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Add --log-format and --log-path
@@ -75,10 +75,6 @@ _Label `configuration` removed by @charliermarsh on 2022-12-31 18:11_
 ---
 
 _Label `cli` added by @charliermarsh on 2022-12-31 18:11_
-
----
-
-_Referenced in [astral-sh/ruff#4754](../../astral-sh/ruff/issues/4754.md) on 2023-05-31 19:01_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-10T21:12:46Z
 updated_at: 2025-06-13T06:45:31Z
 url: https://github.com/astral-sh/ruff/issues/13707
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Rule S320 should be removed
@@ -93,10 +93,6 @@ The change protects from a file inclusion attack, but not from quadratic blowup.
 
 ---
 
-_Referenced in [PyCQA/bandit#767](../../PyCQA/bandit/issues/767.md) on 2024-12-19 00:46_
-
----
-
 _Comment by @JeremyVriens on 2025-02-07 09:27_
 
 Bandit removed both S410 and S320 from their blacklist since Bandit 1.8.1 (source: https://github.com/PyCQA/bandit/releases/tag/1.8.1). 
@@ -116,10 +112,6 @@ The documentation was changed on a pre-release version. Alas, it seems that defu
 
 - https://pypi.org/project/defusedxml/0.7.1/#defusedxml-lxml
 - https://pypi.org/project/defusedxml/0.8.0rc2/#defusedxml-lxml
-
----
-
-_Referenced in [astral-sh/ruff#16680](../../astral-sh/ruff/pulls/16680.md) on 2025-03-12 14:52_
 
 ---
 
@@ -166,10 +158,6 @@ which reports it as deprecated, as expected. When I run this on the example from
 _Comment by @domWalters on 2025-05-05 19:56_
 
 My apologies, I got confused as my `ruff` LSP was recommending to remove the `# noqa: S320` comments.
-
----
-
-_Referenced in [astral-sh/ruff#18617](../../astral-sh/ruff/pulls/18617.md) on 2025-06-10 20:25_
 
 ---
 

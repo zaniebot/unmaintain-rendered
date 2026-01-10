@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-03T21:39:53Z
 updated_at: 2025-06-04T05:12:17Z
 url: https://github.com/astral-sh/ruff/issues/18449
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Block fixes on a repo with uncommitted files?
@@ -41,9 +41,5 @@ _Label `cli` added by @MichaReiser on 2025-06-04 05:12_
 ---
 
 _Label `wish` added by @MichaReiser on 2025-06-04 05:12_
-
----
-
-_Referenced in [etiennebacher/jarl#23](../../etiennebacher/jarl/issues/23.md) on 2025-06-04 07:01_
 
 ---

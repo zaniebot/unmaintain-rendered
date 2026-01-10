@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-26T22:45:06Z
 updated_at: 2024-08-23T11:09:02Z
 url: https://github.com/astral-sh/ruff/issues/8265
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Consider requiring a uniform quote style for implicit string concatenations
@@ -30,10 +30,6 @@ We explicitly avoid this in our flake8-quotes rule (https://github.com/astral-sh
 ---
 
 _Label `formatter` added by @charliermarsh on 2023-10-26 22:45_
-
----
-
-_Referenced in [pydantic/pydantic#7930](../../pydantic/pydantic/pulls/7930.md) on 2023-10-26 22:45_
 
 ---
 

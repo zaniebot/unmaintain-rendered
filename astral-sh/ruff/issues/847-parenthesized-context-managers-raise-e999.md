@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-21T09:33:48Z
 updated_at: 2022-12-08T18:39:08Z
 url: https://github.com/astral-sh/ruff/issues/847
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:14Z
 ```
 
 # Parenthesized context managers raise E999
@@ -82,9 +82,5 @@ Marking as a duplicate of #54.
 ---
 
 _Closed by @charliermarsh on 2022-12-08 18:39_
-
----
-
-_Referenced in [astral-sh/ruff#1228](../../astral-sh/ruff/pulls/1228.md) on 2022-12-13 15:08_
 
 ---

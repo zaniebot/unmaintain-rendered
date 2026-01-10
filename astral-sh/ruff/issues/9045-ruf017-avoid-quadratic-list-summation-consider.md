@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-07T11:16:59Z
 updated_at: 2024-08-15T23:09:10Z
 url: https://github.com/astral-sh/ruff/issues/9045
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # RUF017 Avoid quadratic list summation: consider itertools.chain.from_iterable
@@ -113,10 +113,6 @@ Here's some more benchmarking from when we added this: https://github.com/astral
 _Comment by @Skylion007 on 2023-12-22 15:34_
 
 This would be covered under a REFURB/FURB ([FURB179](https://github.com/dosisod/refurb/blob/master/refurb/checks/itertools/use_chain_from_iterable.py)) rule when we choose to implement it. https://github.com/astral-sh/ruff/issues/1348
-
----
-
-_Referenced in [astral-sh/ruff#10088](../../astral-sh/ruff/issues/10088.md) on 2024-02-22 23:58_
 
 ---
 

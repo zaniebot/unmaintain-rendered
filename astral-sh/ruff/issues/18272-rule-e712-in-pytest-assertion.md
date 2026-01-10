@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-23T09:05:01Z
 updated_at: 2025-05-28T07:06:40Z
 url: https://github.com/astral-sh/ruff/issues/18272
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Rule E712 in pytest assertion
@@ -75,10 +75,6 @@ _Comment by @CodeMan62 on 2025-05-25 03:16_
 
 taking this issue and propose a fix asap 
 
-
----
-
-_Referenced in [astral-sh/ruff#18328](../../astral-sh/ruff/pulls/18328.md) on 2025-05-26 20:18_
 
 ---
 

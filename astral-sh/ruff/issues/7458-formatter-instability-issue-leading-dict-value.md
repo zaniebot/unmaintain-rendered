@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-17T14:56:41Z
 updated_at: 2023-09-19T19:17:23Z
 url: https://github.com/astral-sh/ruff/issues/7458
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter instability issue: Leading dict value comment becomes trailing key comment
@@ -74,10 +74,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-09-17 15:13_
 _Comment by @charliermarsh on 2023-09-17 15:13_
 
 Happy to take this one, I've worked on similar issues.
-
----
-
-_Referenced in [astral-sh/ruff#7495](../../astral-sh/ruff/pulls/7495.md) on 2023-09-18 16:24_
 
 ---
 

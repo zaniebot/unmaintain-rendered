@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-20T12:46:10Z
 updated_at: 2024-02-22T17:44:24Z
 url: https://github.com/astral-sh/ruff/issues/10061
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # CPY001: recognize copyright unicode symbol
@@ -57,10 +57,6 @@ _Label `bug` added by @charliermarsh on 2024-02-20 16:27_
 _Comment by @charliermarsh on 2024-02-20 16:27_
 
 Makes sense - thanks!
-
----
-
-_Referenced in [astral-sh/ruff#10065](../../astral-sh/ruff/pulls/10065.md) on 2024-02-20 16:39_
 
 ---
 

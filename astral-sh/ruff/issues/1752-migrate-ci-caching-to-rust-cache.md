@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-09T20:35:12Z
 updated_at: 2023-01-09T20:35:33Z
 url: https://github.com/astral-sh/ruff/issues/1752
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Migrate CI caching to `rust-cache`
@@ -19,10 +19,6 @@ synced_at: 2026-01-10T01:56:45Z
 _Issue opened by @charliermarsh on 2023-01-09 20:35_
 
 Part of #1743.
-
----
-
-_Referenced in [astral-sh/ruff#1750](../../astral-sh/ruff/pulls/1750.md) on 2023-01-09 20:35_
 
 ---
 

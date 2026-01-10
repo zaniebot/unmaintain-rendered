@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-04T13:29:12Z
 updated_at: 2025-04-10T09:21:42Z
 url: https://github.com/astral-sh/ruff/issues/17205
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] Add (optional) inlay type hints
@@ -28,10 +28,6 @@ _Label `red-knot` added by @AlexWaygood on 2025-04-04 13:36_
 ---
 
 _Added to milestone `Red Knot GA` by @MichaReiser on 2025-04-04 13:43_
-
----
-
-_Referenced in [astral-sh/ruff#17214](../../astral-sh/ruff/pulls/17214.md) on 2025-04-04 21:49_
 
 ---
 

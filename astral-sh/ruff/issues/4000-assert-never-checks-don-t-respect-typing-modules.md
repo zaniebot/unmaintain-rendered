@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-17T19:38:33Z
 updated_at: 2023-04-17T20:25:46Z
 url: https://github.com/astral-sh/ruff/issues/4000
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # `assert_never` checks don't respect `typing-modules`
@@ -33,10 +33,6 @@ _Label `bug` added by @charliermarsh on 2023-04-17 19:38_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-04-17 20:17_
-
----
-
-_Referenced in [astral-sh/ruff#4001](../../astral-sh/ruff/pulls/4001.md) on 2023-04-17 20:19_
 
 ---
 

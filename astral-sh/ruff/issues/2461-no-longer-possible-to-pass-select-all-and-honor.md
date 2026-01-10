@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-02-02T01:20:28Z
 updated_at: 2023-02-02T13:45:08Z
 url: https://github.com/astral-sh/ruff/issues/2461
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # No longer possible to pass --select=ALL and honor pyproject.toml's tool.ruff.ignore
@@ -127,10 +127,6 @@ _Comment by @charliermarsh on 2023-02-02 01:49_
 
 I'll also \cc @not-my-profile who helped drive this recent change, in case they have input on the best way to do this.
 
-
----
-
-_Referenced in [astral-sh/ruff#2467](../../astral-sh/ruff/pulls/2467.md) on 2023-02-02 04:33_
 
 ---
 

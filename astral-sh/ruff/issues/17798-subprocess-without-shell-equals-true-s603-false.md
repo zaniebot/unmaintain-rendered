@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-02T19:56:42Z
 updated_at: 2025-05-05T14:50:45Z
 url: https://github.com/astral-sh/ruff/issues/17798
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # `subprocess-without-shell-equals-true (S603)` false-positives on tuples
@@ -60,10 +60,6 @@ _Comment by @Avasam on 2025-05-02 20:50_
 
 I updated the description to point more precisely at where to look at in the screenshot.
 But anyway that's why an MRE was provided (screenshots tend to make it hard to replicate)
-
----
-
-_Referenced in [astral-sh/ruff#17801](../../astral-sh/ruff/pulls/17801.md) on 2025-05-02 22:29_
 
 ---
 

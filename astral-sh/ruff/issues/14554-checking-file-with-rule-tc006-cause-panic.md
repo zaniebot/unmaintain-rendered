@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-23T06:41:28Z
 updated_at: 2024-11-27T17:58:49Z
 url: https://github.com/astral-sh/ruff/issues/14554
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Checking file with rule TC006 cause panic
@@ -182,14 +182,6 @@ I'm guessing this is the same problem as #14538, since it uses the same function
 ---
 
 _Label `bug` added by @AlexWaygood on 2024-11-23 10:06_
-
----
-
-_Referenced in [astral-sh/ruff#14614](../../astral-sh/ruff/pulls/14614.md) on 2024-11-26 16:19_
-
----
-
-_Referenced in [astral-sh/ruff#14634](../../astral-sh/ruff/pulls/14634.md) on 2024-11-27 13:48_
 
 ---
 

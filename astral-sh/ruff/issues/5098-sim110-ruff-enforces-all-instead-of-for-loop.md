@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-06-14T19:29:35Z
 updated_at: 2023-06-15T19:42:15Z
 url: https://github.com/astral-sh/ruff/issues/5098
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # [SIM110] Ruff enforces `all` instead of for loop inside async function.
@@ -65,10 +65,6 @@ _Label `good first issue` added by @charliermarsh on 2023-06-14 19:36_
 ---
 
 _Label `help wanted` added by @charliermarsh on 2023-06-14 19:36_
-
----
-
-_Referenced in [astral-sh/ruff#5101](../../astral-sh/ruff/pulls/5101.md) on 2023-06-14 21:03_
 
 ---
 

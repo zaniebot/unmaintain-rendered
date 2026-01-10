@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-07T15:57:31Z
 updated_at: 2025-02-08T15:44:05Z
 url: https://github.com/astral-sh/ruff/issues/16024
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # UP049 fix introduces syntax errors when renaming type parameters and behaves inconsistently in `typing.cast`
@@ -105,10 +105,6 @@ _Assigned to @InSyncWithFoo by @ntBre on 2025-02-07 18:23_
 
 ---
 
-_Referenced in [astral-sh/ruff#16032](../../astral-sh/ruff/pulls/16032.md) on 2025-02-08 00:29_
-
----
-
 _Comment by @AlexWaygood on 2025-02-08 11:28_
 
 Following #16032, all problems have been fixed except this one:
@@ -127,10 +123,6 @@ Following #16032, all problems have been fixed except this one:
 > SyntaxError: duplicate type parameter 'T'
 
 This is because we're applying both fixes as part of the same "apply fixes" loop in Ruff. I think I know how to fix this.
-
----
-
-_Referenced in [astral-sh/ruff#16038](../../astral-sh/ruff/pulls/16038.md) on 2025-02-08 12:05_
 
 ---
 

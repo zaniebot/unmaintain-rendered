@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-02T23:02:54Z
 updated_at: 2022-12-16T05:26:50Z
 url: https://github.com/astral-sh/ruff/issues/552
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:21Z
 ```
 
 # Remove extend-select and extend-ignore from pyproject.toml
@@ -51,14 +51,6 @@ extend-select = ["D1"]
 files = ["**/tests/**", "**/test_*.py"]
 extend-ignore = ["T", "S101"]
 ```
-
----
-
-_Referenced in [astral-sh/ruff#1108](../../astral-sh/ruff/issues/1108.md) on 2022-12-06 14:40_
-
----
-
-_Referenced in [astral-sh/ruff#1219](../../astral-sh/ruff/pulls/1219.md) on 2022-12-12 20:52_
 
 ---
 

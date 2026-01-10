@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-22T18:55:01Z
 updated_at: 2024-06-25T13:52:02Z
 url: https://github.com/astral-sh/ruff/issues/8122
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # `repeated-isinstance-calls` is a duplicate rule of `duplicate-isinstance-call`
@@ -55,10 +55,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-10-23 03:56_
 ---
 
 _Label `rule` added by @charliermarsh on 2023-10-23 03:56_
-
----
-
-_Referenced in [astral-sh/ruff#8603](../../astral-sh/ruff/issues/8603.md) on 2023-11-10 15:09_
 
 ---
 
@@ -117,9 +113,5 @@ Resolved in #12021
 ---
 
 _Closed by @dhruvmanila on 2024-06-25 13:52_
-
----
-
-_Referenced in [astral-sh/ruff#12005](../../astral-sh/ruff/pulls/12005.md) on 2024-06-26 08:52_
 
 ---

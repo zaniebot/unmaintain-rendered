@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-16T21:02:58Z
 updated_at: 2025-12-04T18:14:29Z
 url: https://github.com/astral-sh/ruff/issues/12352
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Feature: Extend ruff configuration from external file
@@ -138,35 +138,7 @@ I see what looks like static typing efforts in Ruff (that red-knot thing?). Sure
 
 ---
 
-_Referenced in [astral-sh/ruff#10622](../../astral-sh/ruff/issues/10622.md) on 2024-08-19 05:58_
-
----
-
 _Label `configuration` added by @MichaReiser on 2024-09-04 15:11_
-
----
-
-_Referenced in [astral-sh/ruff#13245](../../astral-sh/ruff/issues/13245.md) on 2024-09-04 15:11_
-
----
-
-_Referenced in [astral-sh/ruff#13505](../../astral-sh/ruff/issues/13505.md) on 2024-09-24 15:30_
-
----
-
-_Referenced in [astral-sh/ruff#11415](../../astral-sh/ruff/issues/11415.md) on 2024-10-11 01:42_
-
----
-
-_Referenced in [astral-sh/ruff#13433](../../astral-sh/ruff/issues/13433.md) on 2024-10-11 01:49_
-
----
-
-_Referenced in [astral-sh/ruff#14443](../../astral-sh/ruff/issues/14443.md) on 2024-11-18 20:10_
-
----
-
-_Referenced in [astral-sh/ruff#8470](../../astral-sh/ruff/issues/8470.md) on 2024-12-27 01:35_
 
 ---
 
@@ -325,10 +297,6 @@ Both should be supported. If not, please open a new issue as this is slightly di
 
 ---
 
-_Referenced in [astral-sh/ruff#18701](../../astral-sh/ruff/issues/18701.md) on 2025-06-16 07:19_
-
----
-
 _Comment by @silverwind on 2025-06-27 12:26_
 
 > Both should be supported. If not, please open a new issue as this is slightly different from what the issue author is asking for.
@@ -357,10 +325,6 @@ Then in every repo:
     ```
 
 Is that correct? I see in the docs that `User home directory and environment variables will be expanded.`, is there a way to use these for a less brittle path?
-
----
-
-_Referenced in [astral-sh/ruff#18983](../../astral-sh/ruff/issues/18983.md) on 2025-08-10 19:27_
 
 ---
 
@@ -499,10 +463,6 @@ extend = "node_modules/ruff-config-silverwind/ruff.toml"
 
 ---
 
-_Referenced in [astral-sh/uv#15800](../../astral-sh/uv/issues/15800.md) on 2025-09-12 02:27_
-
----
-
 _Comment by @Avasam on 2025-09-13 01:48_
 
 > 2. Add to my `pyproject.toml`
@@ -539,10 +499,6 @@ _Comment by @PhilippAIO on 2025-09-19 16:21_
 > extend = { package = "my-ruff-config", path = "ruff.toml" }
 > 
 I just want to mention, that the mentioned design suggestion of @silverwind looks great to me. The pure filepath-logic of extend has many downsides when you want to use a shared ruff configuration between multiple projects and multiple developers with diverging (venv) paths / systems.
-
----
-
-_Referenced in [posit-dev/air#411](../../posit-dev/air/issues/411.md) on 2025-10-06 11:12_
 
 ---
 

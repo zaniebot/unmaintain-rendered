@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-08-18T20:07:23Z
 updated_at: 2023-08-18T20:26:45Z
 url: https://github.com/astral-sh/ruff/issues/6684
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Question about SIM201
@@ -65,9 +65,5 @@ Got it, thanks!
 ---
 
 _Closed by @nth10sd on 2023-08-18 20:26_
-
----
-
-_Referenced in [astral-sh/ruff#9106](../../astral-sh/ruff/issues/9106.md) on 2023-12-12 11:12_
 
 ---

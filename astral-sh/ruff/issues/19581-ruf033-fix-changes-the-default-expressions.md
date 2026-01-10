@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-28T02:00:58Z
 updated_at: 2025-08-27T19:15:45Z
 url: https://github.com/astral-sh/ruff/issues/19581
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # RUF033 fix changes the default expression’s indentation
@@ -118,10 +118,6 @@ _Label `fixes` added by @MichaReiser on 2025-07-28 09:43_
 _Comment by @dscorbett on 2025-07-28 12:05_
 
 Replacing the rule’s use of `textwrap::indent` with something that only indents the first line, not all the lines, should fix both the correctness issue and the style issue.
-
----
-
-_Referenced in [astral-sh/ruff#19647](../../astral-sh/ruff/pulls/19647.md) on 2025-07-30 19:50_
 
 ---
 

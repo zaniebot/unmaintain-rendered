@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-03T00:17:49Z
 updated_at: 2023-01-03T00:54:56Z
 url: https://github.com/astral-sh/ruff/issues/1575
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T12:05:31Z
 ```
 
 # fix failed to converge within 100 iterations, ruff-0.0.206
@@ -197,14 +197,6 @@ On it now :)
 
 ---
 
-_Referenced in [astral-sh/ruff#1576](../../astral-sh/ruff/pulls/1576.md) on 2023-01-03 00:54_
-
----
-
 _Closed by @charliermarsh on 2023-01-03 00:54_
-
----
-
-_Referenced in [astral-sh/ruff#2289](../../astral-sh/ruff/pulls/2289.md) on 2023-01-28 03:54_
 
 ---

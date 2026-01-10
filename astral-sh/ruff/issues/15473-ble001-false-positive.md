@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-14T11:12:00Z
 updated_at: 2025-08-22T17:38:47Z
 url: https://github.com/astral-sh/ruff/issues/15473
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # BLE001 false positive
@@ -66,10 +66,6 @@ class MatterConfigFlow(ConfigFlow):
 ```
 
 This is found in https://github.com/home-assistant/core/blob/0dc90972d893276a09aed4ede6304c7e98c93462/homeassistant/components/matter/config_flow.py#L219-L229
-
----
-
-_Referenced in [home-assistant/core#135584](../../home-assistant/core/pulls/135584.md) on 2025-01-14 11:13_
 
 ---
 
@@ -200,18 +196,6 @@ if tail.starts_with("log")
          { 
 ```
 and we call `.exception` on that, that sounds fairly specific, but also keep in mind that I mainly work on one codebase. So if you think that this will cause problems, then feel free to disregard my comment :)
-
----
-
-_Referenced in [home-assistant/core#134223](../../home-assistant/core/pulls/134223.md) on 2025-02-16 12:24_
-
----
-
-_Referenced in [astral-sh/ruff#17898](../../astral-sh/ruff/issues/17898.md) on 2025-05-07 06:31_
-
----
-
-_Referenced in [astral-sh/ruff#18253](../../astral-sh/ruff/issues/18253.md) on 2025-05-22 12:40_
 
 ---
 

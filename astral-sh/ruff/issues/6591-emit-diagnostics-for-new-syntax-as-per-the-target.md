@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-15T06:42:56Z
 updated_at: 2025-03-18T15:13:27Z
 url: https://github.com/astral-sh/ruff/issues/6591
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Emit diagnostics for new syntax as per the target Python version
@@ -79,10 +79,6 @@ _Label `good first issue` removed by @dhruvmanila on 2023-08-15 08:21_
 
 ---
 
-_Referenced in [astral-sh/ruff#8408](../../astral-sh/ruff/issues/8408.md) on 2023-11-02 04:17_
-
----
-
 _Comment by @td-anne on 2023-12-07 09:52_
 
 There might be other new syntax worth addressing:
@@ -102,19 +98,11 @@ Some of these might be closer to functional changes than syntax and hard to dete
 
 ---
 
-_Referenced in [astral-sh/ruff#10163](../../astral-sh/ruff/issues/10163.md) on 2024-02-29 08:26_
-
----
-
 _Comment by @s-cork on 2024-04-11 00:11_
 
 > - [ ] 3.8 Walrus operator (if there's interest in supporting pre-3.8)
 
 Just to say we have a use case for targeting 3.7. Thanks for the great work on this!
-
----
-
-_Referenced in [astral-sh/ruff#11056](../../astral-sh/ruff/issues/11056.md) on 2024-04-20 13:38_
 
 ---
 
@@ -125,14 +113,6 @@ So far, most new syntaxes were not "auto-applied" during formatting, but PEP-701
 ---
 
 _Label `parser` added by @dhruvmanila on 2024-04-29 10:02_
-
----
-
-_Referenced in [astral-sh/ruff#11221](../../astral-sh/ruff/issues/11221.md) on 2024-04-30 22:06_
-
----
-
-_Referenced in [astral-sh/ruff#11583](../../astral-sh/ruff/issues/11583.md) on 2024-05-28 16:05_
 
 ---
 
@@ -235,41 +215,9 @@ If you have the right target version in your config file, I can't _personally_ s
 
 ---
 
-_Referenced in [astral-sh/ruff#11901](../../astral-sh/ruff/pulls/11901.md) on 2024-06-24 09:21_
-
----
-
-_Referenced in [astral-sh/ruff#12114](../../astral-sh/ruff/issues/12114.md) on 2024-07-01 04:20_
-
----
-
-_Referenced in [lablup/backend.ai#2053](../../lablup/backend.ai/pulls/2053.md) on 2024-08-03 10:25_
-
----
-
 _Comment by @achimnol on 2024-08-03 10:25_
 
 Any updates on this? We are still holding back the ruff version due to the f-string backporting issue.
-
----
-
-_Referenced in [astral-sh/ruff#13153](../../astral-sh/ruff/issues/13153.md) on 2024-08-29 18:10_
-
----
-
-_Referenced in [lablup/backend.ai#2826](../../lablup/backend.ai/pulls/2826.md) on 2024-09-10 06:48_
-
----
-
-_Referenced in [astral-sh/ruff#13322](../../astral-sh/ruff/issues/13322.md) on 2024-09-11 02:39_
-
----
-
-_Referenced in [astral-sh/ruff#13371](../../astral-sh/ruff/issues/13371.md) on 2024-10-01 13:33_
-
----
-
-_Referenced in [astral-sh/ruff#14625](../../astral-sh/ruff/pulls/14625.md) on 2024-11-27 05:50_
 
 ---
 
@@ -291,43 +239,7 @@ _Label `help wanted` removed by @AlexWaygood on 2025-01-15 19:11_
 
 ---
 
-_Referenced in [lazyscribe/lazyscribe#85](../../lazyscribe/lazyscribe/issues/85.md) on 2025-02-05 22:06_
-
----
-
 _Assigned to @ntBre by @ntBre on 2025-02-05 22:08_
-
----
-
-_Referenced in [astral-sh/ruff#16383](../../astral-sh/ruff/pulls/16383.md) on 2025-02-25 20:31_
-
----
-
-_Referenced in [astral-sh/ruff#16386](../../astral-sh/ruff/pulls/16386.md) on 2025-02-26 00:46_
-
----
-
-_Referenced in [astral-sh/ruff#16404](../../astral-sh/ruff/pulls/16404.md) on 2025-02-26 19:20_
-
----
-
-_Referenced in [astral-sh/ruff#16479](../../astral-sh/ruff/pulls/16479.md) on 2025-03-03 23:50_
-
----
-
-_Referenced in [astral-sh/ruff#16485](../../astral-sh/ruff/pulls/16485.md) on 2025-03-05 14:34_
-
----
-
-_Referenced in [astral-sh/ruff#16520](../../astral-sh/ruff/issues/16520.md) on 2025-03-05 21:21_
-
----
-
-_Referenced in [astral-sh/ruff#11934](../../astral-sh/ruff/issues/11934.md) on 2025-03-05 21:23_
-
----
-
-_Referenced in [astral-sh/ruff#16560](../../astral-sh/ruff/issues/16560.md) on 2025-03-07 21:05_
 
 ---
 
@@ -338,13 +250,5 @@ _Comment by @ntBre on 2025-03-18 15:13_
 ---
 
 _Closed by @ntBre on 2025-03-18 15:13_
-
----
-
-_Referenced in [astral-sh/ruff#18381](../../astral-sh/ruff/issues/18381.md) on 2025-05-30 02:40_
-
----
-
-_Referenced in [python/mypy#19916](../../python/mypy/issues/19916.md) on 2025-10-11 14:43_
 
 ---

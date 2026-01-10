@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-23T14:57:52Z
 updated_at: 2025-09-25T16:25:13Z
 url: https://github.com/astral-sh/ruff/issues/20536
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Ruff Import ordering not respecting case-insensitivity compared to flake8 `import-order-style`
@@ -160,10 +160,6 @@ _Comment by @SkylerWittman on 2025-09-24 02:00_
 
 If you don't mind that would be swell @ntBre.
 Cheers
-
----
-
-_Referenced in [astral-sh/ruff#20559](../../astral-sh/ruff/pulls/20559.md) on 2025-09-24 19:48_
 
 ---
 

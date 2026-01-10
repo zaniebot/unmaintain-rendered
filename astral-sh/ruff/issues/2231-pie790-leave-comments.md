@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-26T21:54:30Z
 updated_at: 2023-01-26T22:29:14Z
 url: https://github.com/astral-sh/ruff/issues/2231
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # PIE790: leave comments?
@@ -27,10 +27,6 @@ _Issue opened by @spaceone on 2023-01-26 21:54_
 
 The comment is more like an instruction for implementors. Well, this has not high quality.
 But maybe it would be good to just leave the comment??
-
----
-
-_Referenced in [astral-sh/ruff#2235](../../astral-sh/ruff/pulls/2235.md) on 2023-01-26 22:09_
 
 ---
 

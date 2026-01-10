@@ -13,7 +13,7 @@ assignees: []
 created_at: 2023-05-24T07:07:36Z
 updated_at: 2025-01-22T16:40:06Z
 url: https://github.com/astral-sh/ruff/issues/4617
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # (🎁) Convert code to utilize pep 695
@@ -66,10 +66,6 @@ _Label `rule` added by @charliermarsh on 2023-05-24 13:01_
 
 ---
 
-_Referenced in [astral-sh/ruff#6289](../../astral-sh/ruff/pulls/6289.md) on 2023-08-02 23:46_
-
----
-
 _Label `accepted` added by @zanieb on 2023-08-02 23:47_
 
 ---
@@ -81,10 +77,6 @@ _Label `help wanted` added by @zanieb on 2023-08-02 23:47_
 _Comment by @zanieb on 2023-08-02 23:48_
 
 This is ready to be worked on! I've started in #6289 but there is much more to do :)
-
----
-
-_Referenced in [astral-sh/ruff#6314](../../astral-sh/ruff/pulls/6314.md) on 2023-08-03 18:36_
 
 ---
 
@@ -151,19 +143,7 @@ So I think we can safely ignore the variance of a type var used in a type alias.
 
 ---
 
-_Referenced in [astral-sh/ruff#6749](../../astral-sh/ruff/pulls/6749.md) on 2023-08-22 00:40_
-
----
-
 _Label `python312` added by @zanieb on 2023-08-24 20:02_
-
----
-
-_Referenced in [astral-sh/ruff#10628](../../astral-sh/ruff/issues/10628.md) on 2024-03-28 12:24_
-
----
-
-_Referenced in [astral-sh/ruff#12542](../../astral-sh/ruff/issues/12542.md) on 2024-07-27 09:04_
 
 ---
 
@@ -196,14 +176,6 @@ _Assigned to @ntBre by @ntBre on 2025-01-16 17:47_
 ---
 
 _Unassigned @AlexWaygood by @ntBre on 2025-01-16 17:48_
-
----
-
-_Referenced in [astral-sh/ruff#15565](../../astral-sh/ruff/pulls/15565.md) on 2025-01-18 04:17_
-
----
-
-_Referenced in [astral-sh/ruff#15642](../../astral-sh/ruff/issues/15642.md) on 2025-01-21 13:58_
 
 ---
 

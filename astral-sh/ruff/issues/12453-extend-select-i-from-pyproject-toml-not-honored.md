@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-22T13:37:39Z
 updated_at: 2024-07-22T15:03:22Z
 url: https://github.com/astral-sh/ruff/issues/12453
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # `extend-select = ["I"]` from pyproject.toml not honored for tests in very specific circumstances
@@ -198,10 +198,6 @@ Yeah this is a legitimate bug / footgun, I believe it's covered here: https://gi
 
 ---
 
-_Referenced in [astral-sh/ruff#12454](../../astral-sh/ruff/issues/12454.md) on 2024-07-22 14:41_
-
----
-
 _Comment by @charliermarsh on 2024-07-22 14:41_
 
 I'm going to close out in favor of those other issues (e.g., https://github.com/astral-sh/ruff/issues/12454), thanks for taking the time to dig into this and for your thoughts.
@@ -215,9 +211,5 @@ _Closed by @charliermarsh on 2024-07-22 14:41_
 _Comment by @jamesharr on 2024-07-22 15:03_
 
 Thank you for taking the time to interact & help me understand, I appreciate the project's helpfulness
-
----
-
-_Referenced in [astral-sh/ruff#12848](../../astral-sh/ruff/pulls/12848.md) on 2024-08-12 17:41_
 
 ---

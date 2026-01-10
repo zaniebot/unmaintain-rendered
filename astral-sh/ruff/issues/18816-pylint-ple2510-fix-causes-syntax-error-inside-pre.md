@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-06-20T06:44:46Z
 updated_at: 2025-06-22T08:11:13Z
 url: https://github.com/astral-sh/ruff/issues/18816
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [`Pylint`] `PLE2510` fix causes syntax error inside pre-3.12 f-strings
@@ -63,10 +63,6 @@ This also applies to `PLE2512`, `PLE2513`, and `PLE2515` [playground](https://pl
 ### Version
 
 ruff 0.12.0 (87f0feb 2025-06-17) + playground
-
----
-
-_Referenced in [astral-sh/ruff#18817](../../astral-sh/ruff/issues/18817.md) on 2025-06-20 06:54_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-04-20T15:56:05Z
 updated_at: 2023-07-10T01:16:03Z
 url: https://github.com/astral-sh/ruff/issues/4048
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # support isort `use_parentheses` config
@@ -107,9 +107,5 @@ _Label `question` removed by @charliermarsh on 2023-07-10 01:16_
 ---
 
 _Label `needs-decision` added by @charliermarsh on 2023-07-10 01:16_
-
----
-
-_Referenced in [astral-sh/ruff#11290](../../astral-sh/ruff/issues/11290.md) on 2024-05-05 13:41_
 
 ---

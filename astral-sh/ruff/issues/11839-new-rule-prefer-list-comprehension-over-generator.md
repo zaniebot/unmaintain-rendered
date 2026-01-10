@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-11T17:32:40Z
 updated_at: 2025-07-12T13:01:03Z
 url: https://github.com/astral-sh/ruff/issues/11839
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # New Rule: Prefer list comprehension over generator comprehensions to create tuples
@@ -158,18 +158,6 @@ test_unpack_generator_comprehension 1.0730282659999375
 _Comment by @ivanychev on 2024-06-26 00:54_
 
 I think tuple-from-list comprehension approach will lead to to 2x higher peak memory consumption, won't it?
-
----
-
-_Referenced in [astral-sh/ruff#12754](../../astral-sh/ruff/issues/12754.md) on 2024-08-12 05:33_
-
----
-
-_Referenced in [astral-sh/ruff#12912](../../astral-sh/ruff/issues/12912.md) on 2024-08-17 23:58_
-
----
-
-_Referenced in [pypa/setuptools#4386](../../pypa/setuptools/pulls/4386.md) on 2024-12-31 00:04_
 
 ---
 

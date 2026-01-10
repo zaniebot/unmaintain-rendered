@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-03-21T15:16:25Z
 updated_at: 2023-03-21T15:32:33Z
 url: https://github.com/astral-sh/ruff/issues/3647
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # [Infinite loop] Infinite loop related to noqa
@@ -54,10 +54,6 @@ Found 107 errors (100 fixed, 7 remaining).
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-03-21 15:24_
-
----
-
-_Referenced in [astral-sh/ruff#3650](../../astral-sh/ruff/pulls/3650.md) on 2023-03-21 15:25_
 
 ---
 

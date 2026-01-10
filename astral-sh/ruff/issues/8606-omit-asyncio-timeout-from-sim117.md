@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-10T18:08:37Z
 updated_at: 2023-11-21T11:53:43Z
 url: https://github.com/astral-sh/ruff/issues/8606
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Omit `asyncio.timeout` from `SIM117`
@@ -85,10 +85,6 @@ Locks crossed my mind as a possible further candidate for "more explicit scoping
 _Comment by @charliermarsh on 2023-11-12 18:01_
 
 Awesome, just ask here or in Discord if you have any questions.
-
----
-
-_Referenced in [astral-sh/ruff#8801](../../astral-sh/ruff/pulls/8801.md) on 2023-11-21 06:05_
 
 ---
 

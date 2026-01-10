@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-30T12:37:21Z
 updated_at: 2023-01-30T12:44:21Z
 url: https://github.com/astral-sh/ruff/issues/2351
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Respect trailing comments when avoiding autofixes
@@ -34,10 +34,6 @@ _Originally posted by @spaceone in https://github.com/charliermarsh/ruff/issues/
 ---
 
 _Label `bug` added by @charliermarsh on 2023-01-30 12:37_
-
----
-
-_Referenced in [astral-sh/ruff#2352](../../astral-sh/ruff/pulls/2352.md) on 2023-01-30 12:43_
 
 ---
 

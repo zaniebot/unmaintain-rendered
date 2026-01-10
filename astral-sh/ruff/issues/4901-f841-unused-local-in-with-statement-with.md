@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-06T09:56:03Z
 updated_at: 2023-06-06T20:15:23Z
 url: https://github.com/astral-sh/ruff/issues/4901
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # F841: unused local in 'with' statement with parethesised value does not converge
@@ -41,14 +41,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-06-06 14:42_
 
 ---
 
-_Referenced in [astral-sh/ruff#4906](../../astral-sh/ruff/pulls/4906.md) on 2023-06-06 20:06_
-
----
-
 _Closed by @charliermarsh on 2023-06-06 20:15_
-
----
-
-_Referenced in [astral-sh/ruff#4972](../../astral-sh/ruff/issues/4972.md) on 2023-06-09 22:04_
 
 ---

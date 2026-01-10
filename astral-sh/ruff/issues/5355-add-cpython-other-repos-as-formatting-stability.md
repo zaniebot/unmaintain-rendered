@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-25T11:27:58Z
 updated_at: 2023-07-25T09:50:14Z
 url: https://github.com/astral-sh/ruff/issues/5355
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Add cpython & other repos as formatting stability check to CI
@@ -32,10 +32,6 @@ _Label `formatter` added by @konstin on 2023-06-25 11:28_
 ---
 
 _Renamed from "Add cpython formatting stability check to CI" to "Add cpython & other repos as formatting stability check to CI" by @konstin on 2023-07-10 19:25_
-
----
-
-_Referenced in [astral-sh/ruff#5656](../../astral-sh/ruff/pulls/5656.md) on 2023-07-10 19:25_
 
 ---
 

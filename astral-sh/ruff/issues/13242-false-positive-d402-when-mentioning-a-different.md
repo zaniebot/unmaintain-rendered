@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-04T12:55:46Z
 updated_at: 2024-09-18T04:01:39Z
 url: https://github.com/astral-sh/ruff/issues/13242
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # False positive D402 when mentioning a different function that has the function name as suffix
@@ -58,10 +58,6 @@ _Renamed from "False positive D402 when mentioning a different function that has
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-09-18 03:47_
-
----
-
-_Referenced in [astral-sh/ruff#13388](../../astral-sh/ruff/pulls/13388.md) on 2024-09-18 03:50_
 
 ---
 

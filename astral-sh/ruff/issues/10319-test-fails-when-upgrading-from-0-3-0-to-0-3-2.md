@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-10T08:04:17Z
 updated_at: 2024-03-12T21:11:19Z
 url: https://github.com/astral-sh/ruff/issues/10319
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Test fails when upgrading from 0.3.0 to 0.3.2
@@ -123,10 +123,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-03-12 19:29_
 _Comment by @charliermarsh on 2024-03-12 19:30_
 
 It's a bit of a shame because it doesn't really test the same thing. We _could_ regress size there and not notice it.
-
----
-
-_Referenced in [astral-sh/ruff#10371](../../astral-sh/ruff/pulls/10371.md) on 2024-03-12 19:37_
 
 ---
 

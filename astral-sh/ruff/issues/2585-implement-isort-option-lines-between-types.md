@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-05T18:01:28Z
 updated_at: 2023-02-11T17:17:38Z
 url: https://github.com/astral-sh/ruff/issues/2585
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Implement isort option lines_between_types
@@ -31,10 +31,6 @@ _Label `isort` added by @charliermarsh on 2023-02-05 20:02_
 _Comment by @henryiii on 2023-02-09 13:21_
 
 I'm not all that fond of setting it, but it's used in pypa/build, along with other projects from Felipe (meson-python, pyproject-metadata, etc).
-
----
-
-_Referenced in [astral-sh/ruff#2762](../../astral-sh/ruff/pulls/2762.md) on 2023-02-11 11:26_
 
 ---
 

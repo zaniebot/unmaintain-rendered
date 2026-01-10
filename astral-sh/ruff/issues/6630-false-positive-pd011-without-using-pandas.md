@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-08-16T20:26:00Z
 updated_at: 2023-08-16T21:13:35Z
 url: https://github.com/astral-sh/ruff/issues/6630
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # False-positive PD011 without using pandas
@@ -50,10 +50,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-08-16 20:47_
 _Comment by @charliermarsh on 2023-08-16 20:48_
 
 We can't avoid these in general, but we can definitely avoid flagging them on `self` and `cls`.
-
----
-
-_Referenced in [astral-sh/ruff#6631](../../astral-sh/ruff/pulls/6631.md) on 2023-08-16 20:56_
 
 ---
 

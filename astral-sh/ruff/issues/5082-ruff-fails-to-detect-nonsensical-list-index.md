@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-06-14T13:33:36Z
 updated_at: 2023-07-12T05:23:08Z
 url: https://github.com/astral-sh/ruff/issues/5082
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Ruff fails to detect nonsensical list index
@@ -91,10 +91,6 @@ _Label `help wanted` added by @charliermarsh on 2023-06-22 20:10_
 ---
 
 _Assigned to @zanieb by @zanieb on 2023-07-07 18:39_
-
----
-
-_Referenced in [astral-sh/ruff#5602](../../astral-sh/ruff/pulls/5602.md) on 2023-07-07 22:21_
 
 ---
 

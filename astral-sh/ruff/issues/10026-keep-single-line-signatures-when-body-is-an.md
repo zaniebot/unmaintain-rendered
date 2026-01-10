@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-18T13:39:16Z
 updated_at: 2024-02-18T17:10:18Z
 url: https://github.com/astral-sh/ruff/issues/10026
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Keep single-line signatures when body is an Ellipsis (`...`) in `.py` files
@@ -95,10 +95,6 @@ Thanks!
 
 ---
 
-_Referenced in [pydata/xarray#8761](../../pydata/xarray/pulls/8761.md) on 2024-02-18 13:40_
-
----
-
 _Comment by @MichaReiser on 2024-02-18 15:50_
 
 Thanks for the excellent writeup! We've implemented your desired behavior but it's currently only applied when you format your code with `--preview` mode enabled as you can see here https://play.ruff.rs/6cc50dba-b5ae-4dea-9f58-14b179932e65. 
@@ -170,9 +166,5 @@ I'll close this issue. You can follow https://github.com/astral-sh/ruff/issues/8
 ---
 
 _Closed by @MichaReiser on 2024-02-18 17:10_
-
----
-
-_Referenced in [astral-sh/ruff#11676](../../astral-sh/ruff/issues/11676.md) on 2024-06-01 08:44_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-22T14:41:22Z
 updated_at: 2024-08-14T16:08:53Z
 url: https://github.com/astral-sh/ruff/issues/12454
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Add `"src"` to `src` default
@@ -35,10 +35,6 @@ _Label `isort` added by @charliermarsh on 2024-07-22 14:41_
 ---
 
 _Added to milestone `v0.6` by @charliermarsh on 2024-07-22 14:41_
-
----
-
-_Referenced in [astral-sh/ruff#12453](../../astral-sh/ruff/issues/12453.md) on 2024-07-22 14:41_
 
 ---
 
@@ -69,10 +65,6 @@ _Unassigned @MichaReiser by @charliermarsh on 2024-08-12 14:34_
 _Comment by @charliermarsh on 2024-08-12 15:42_
 
 I'll do it today.
-
----
-
-_Referenced in [astral-sh/ruff#12848](../../astral-sh/ruff/pulls/12848.md) on 2024-08-12 17:36_
 
 ---
 

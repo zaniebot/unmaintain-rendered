@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-18T03:14:26Z
 updated_at: 2024-12-09T14:59:13Z
 url: https://github.com/astral-sh/ruff/issues/14421
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Issue with new `PYI034` autofix when first param is annotated
@@ -149,10 +149,6 @@ reveal_type(c.map(lambda _: ''))  # Container[Any]
 # After
 reveal_type(c.map(lambda _: ''))  # Container[int]
 ```
-
----
-
-_Referenced in [astral-sh/ruff#14801](../../astral-sh/ruff/pulls/14801.md) on 2024-12-06 00:13_
 
 ---
 

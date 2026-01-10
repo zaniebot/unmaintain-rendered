@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-15T16:54:23Z
 updated_at: 2024-07-16T14:49:27Z
 url: https://github.com/astral-sh/ruff/issues/12339
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # PLR1704 triggers for list comprehension variable
@@ -59,10 +59,6 @@ Agreed -- that looks like a bug.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-16 14:03_
-
----
-
-_Referenced in [astral-sh/ruff#12346](../../astral-sh/ruff/pulls/12346.md) on 2024-07-16 14:43_
 
 ---
 

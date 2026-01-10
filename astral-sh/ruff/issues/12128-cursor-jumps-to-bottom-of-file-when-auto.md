@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-01T01:59:52Z
 updated_at: 2024-07-04T03:54:08Z
 url: https://github.com/astral-sh/ruff/issues/12128
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Cursor jumps to bottom of file when auto-formatting on save
@@ -178,10 +178,6 @@ The returned `TextEdit` replacement range is different for the same formatting b
     }
 ]
 ```
-
----
-
-_Referenced in [astral-sh/ruff#12171](../../astral-sh/ruff/pulls/12171.md) on 2024-07-03 15:33_
 
 ---
 

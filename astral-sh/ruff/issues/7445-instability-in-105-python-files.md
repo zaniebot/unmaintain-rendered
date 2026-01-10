@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-16T19:40:00Z
 updated_at: 2023-09-17T15:18:29Z
 url: https://github.com/astral-sh/ruff/issues/7445
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Instability in 105 python files
@@ -64,30 +64,6 @@ _Comment by @MichaReiser on 2023-09-16 19:59_
 Only 105 files 🫣
 
 Thank you
-
----
-
-_Referenced in [astral-sh/ruff#7456](../../astral-sh/ruff/pulls/7456.md) on 2023-09-17 14:28_
-
----
-
-_Referenced in [astral-sh/ruff#7457](../../astral-sh/ruff/issues/7457.md) on 2023-09-17 14:53_
-
----
-
-_Referenced in [astral-sh/ruff#7458](../../astral-sh/ruff/issues/7458.md) on 2023-09-17 14:57_
-
----
-
-_Referenced in [astral-sh/ruff#7460](../../astral-sh/ruff/issues/7460.md) on 2023-09-17 15:00_
-
----
-
-_Referenced in [astral-sh/ruff#7462](../../astral-sh/ruff/issues/7462.md) on 2023-09-17 15:05_
-
----
-
-_Referenced in [astral-sh/ruff#7463](../../astral-sh/ruff/issues/7463.md) on 2023-09-17 15:07_
 
 ---
 

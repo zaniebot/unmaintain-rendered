@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-07-25T18:58:08Z
 updated_at: 2024-09-04T06:23:44Z
 url: https://github.com/astral-sh/ruff/issues/12516
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Complain about redundant ternaries?
@@ -55,7 +55,7 @@ I'm interested in working on this, but I'll be away for a week. If this issue is
 
 ---
 
-_Comment by @iamlucasvieira on 2024-09-01 14:56_
+_Comment by @vieira127 on 2024-09-01 14:56_
 
 Hey @njhearp, have you started working on this? If not, I’d love to take it. Let me know!
 
@@ -67,11 +67,7 @@ Hey @iamlucasvieira, you can take the issue. I tried working on the issue, but h
 
 ---
 
-_Assigned to @iamlucasvieira by @MichaReiser on 2024-09-02 08:30_
-
----
-
-_Referenced in [astral-sh/ruff#13218](../../astral-sh/ruff/pulls/13218.md) on 2024-09-02 21:16_
+_Assigned to @vieira127 by @MichaReiser on 2024-09-02 08:30_
 
 ---
 

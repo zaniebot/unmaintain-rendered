@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-10T21:54:26Z
 updated_at: 2024-02-25T09:17:40Z
 url: https://github.com/astral-sh/ruff/issues/9926
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Discrepancy between `format` and `check` for a long string literal
@@ -224,9 +224,5 @@ _Comment by @MichaReiser on 2024-02-25 09:17_
 > Anything we can do to help there?
 
 Not yet, because we haven't started yet. But we plan to pick this up soon (I think @AlexWaygood would be the perfect person to do it) and your feedback on the categorization would be extremely valuable. 
-
----
-
-_Referenced in [digitalfabrik/integreat-cms#2758](../../digitalfabrik/integreat-cms/pulls/2758.md) on 2024-05-06 21:55_
 
 ---

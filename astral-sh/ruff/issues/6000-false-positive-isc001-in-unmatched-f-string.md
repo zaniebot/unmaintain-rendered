@@ -1,0 +1,42 @@
+```yaml
+number: 6000
+title: False positive ISC001 in unmatched f-string
+type: issue
+state: closed
+author: janosh
+labels:
+  - wontfix
+assignees: []
+created_at: 2023-07-23T01:42:02Z
+updated_at: 2023-07-23T03:13:12Z
+url: https://github.com/astral-sh/ruff/issues/6000
+synced_at: 2026-01-10T11:09:48Z
+```
+
+# False positive ISC001 in unmatched f-string
+
+---
+
+_Issue opened by @janosh on 2023-07-23 01:42_
+
+Never mind that this thing raises a SyntaxError, it also triggers [ISC001](https://beta.ruff.rs/docs/rules/single-line-implicit-string-concatenation).
+
+```py
+f"{({None: ""}).get(key, key)}"
+```
+
+---
+
+_Comment by @charliermarsh on 2023-07-23 03:13_
+
+I think this is okay given that it's not syntactically valid. It's getting parsed as `f"{({None: "`, followed by `"}).get(key, key)}"` which would indeed by an implicit concatenation and is a reasonable tokenization. Happy to reconsider if you have a syntactically valid example that's causing trouble in the wild.
+
+---
+
+_Closed by @charliermarsh on 2023-07-23 03:13_
+
+---
+
+_Label `wontfix` added by @charliermarsh on 2023-07-23 03:13_
+
+---

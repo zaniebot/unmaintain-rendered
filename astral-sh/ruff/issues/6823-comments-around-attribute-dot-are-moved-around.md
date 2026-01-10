@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-23T18:57:34Z
 updated_at: 2023-09-02T08:22:52Z
 url: https://github.com/astral-sh/ruff/issues/6823
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Comments around attribute dot are moved around incorrectly
@@ -73,10 +73,6 @@ Prettier's handling also reorders the comments though, that strikes me as odd.
 _Comment by @charliermarsh on 2023-08-23 20:32_
 
 You might be mistaking `bar` and `baz` in that example -- I don't think they convert between own-line and end-of-line, unless I'm misreading.
-
----
-
-_Referenced in [astral-sh/ruff#6825](../../astral-sh/ruff/pulls/6825.md) on 2023-08-23 20:57_
 
 ---
 

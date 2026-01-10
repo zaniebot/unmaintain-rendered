@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-03T17:30:32Z
 updated_at: 2024-02-04T12:29:27Z
 url: https://github.com/astral-sh/ruff/issues/9809
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Misunderstood skip-magic-trailing-comma
@@ -138,9 +138,5 @@ _Comment by @korolkevich on 2024-02-04 12:29_
 ---
 
 _Closed by @korolkevich on 2024-02-04 12:29_
-
----
-
-_Referenced in [nvaccess/nvda#16804](../../nvaccess/nvda/pulls/16804.md) on 2024-07-03 06:54_
 
 ---

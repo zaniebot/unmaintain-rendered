@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-29T22:42:18Z
 updated_at: 2023-04-04T12:45:31Z
 url: https://github.com/astral-sh/ruff/issues/3801
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # False positive for `B031` in mutually exclusive branches
@@ -83,14 +83,6 @@ _Renamed from "False positive B031" to "False positive for `B031` in mutually ex
 
 ---
 
-_Referenced in [astral-sh/ruff#3829](../../astral-sh/ruff/issues/3829.md) on 2023-03-31 16:22_
-
----
-
-_Referenced in [astral-sh/ruff#3844](../../astral-sh/ruff/pulls/3844.md) on 2023-04-01 05:03_
-
----
-
 _Closed by @charliermarsh on 2023-04-04 02:33_
 
 ---
@@ -100,9 +92,5 @@ _Comment by @AA-Turner on 2023-04-04 12:45_
 Thank you @dhruvmanila @charliermarsh!
 
 A
-
----
-
-_Referenced in [astral-sh/ruff#4050](../../astral-sh/ruff/issues/4050.md) on 2023-04-20 17:58_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-09T02:10:28Z
 updated_at: 2023-10-06T19:56:41Z
 url: https://github.com/astral-sh/ruff/issues/6434
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Confine PEP 695 type annotation rewrites (`UP040`) to non-runtime contexts
@@ -34,10 +34,6 @@ _Comment by @charliermarsh on 2023-08-09 02:10_
 ---
 
 _Label `rule` added by @charliermarsh on 2023-08-09 02:10_
-
----
-
-_Referenced in [astral-sh/ruff#6289](../../astral-sh/ruff/pulls/6289.md) on 2023-08-09 02:10_
 
 ---
 
@@ -92,14 +88,6 @@ It may be enough to categorize this as a "Suggested" fix.
 ---
 
 _Label `python312` added by @zanieb on 2023-08-24 20:02_
-
----
-
-_Referenced in [astral-sh/ruff#7769](../../astral-sh/ruff/pulls/7769.md) on 2023-10-03 17:37_
-
----
-
-_Referenced in [astral-sh/ruff#7836](../../astral-sh/ruff/pulls/7836.md) on 2023-10-06 15:54_
 
 ---
 

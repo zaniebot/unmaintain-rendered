@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-31T21:31:36Z
 updated_at: 2024-11-03T02:48:49Z
 url: https://github.com/astral-sh/ruff/issues/14026
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Ignore `mutable-argument-default (B006)` in `.pyi` stubs
@@ -66,10 +66,6 @@ _Renamed from "`mutable-argument-default (B006)` in `.pyi` stubs" to "Ignore `mu
 ---
 
 _Label `rule` added by @dhruvmanila on 2024-11-01 04:46_
-
----
-
-_Referenced in [astral-sh/ruff#14058](../../astral-sh/ruff/pulls/14058.md) on 2024-11-02 22:09_
 
 ---
 

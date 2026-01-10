@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-01T14:01:33Z
 updated_at: 2023-11-07T16:33:42Z
 url: https://github.com/astral-sh/ruff/issues/8404
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Usage of extend-unsafe-fixes = ["ALL"] option
@@ -62,10 +62,6 @@ _Label `configuration` added by @zanieb on 2023-11-01 16:36_
 ---
 
 _Assigned to @zanieb by @zanieb on 2023-11-01 16:36_
-
----
-
-_Referenced in [astral-sh/ruff#8444](../../astral-sh/ruff/pulls/8444.md) on 2023-11-02 10:30_
 
 ---
 

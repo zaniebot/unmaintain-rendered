@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-21T07:46:06Z
 updated_at: 2024-10-09T04:45:36Z
 url: https://github.com/astral-sh/ruff/issues/13025
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Check whether `import`s are at top of notebook
@@ -28,10 +28,6 @@ Would it be an idea to either introduce:
 2. a new `E403` rule that is specifically for notebooks that works **at notebook level**? This is a variant of what @dhruvmanila suggested in https://github.com/astral-sh/ruff/pull/8872#issue-2015007451.
 
 I would suggest 1., to avoid potential rule code clashes (e.g. #2194).
-
----
-
-_Referenced in [ComPWA/compwa.github.io#270](../../ComPWA/compwa.github.io/pulls/270.md) on 2024-08-21 07:46_
 
 ---
 

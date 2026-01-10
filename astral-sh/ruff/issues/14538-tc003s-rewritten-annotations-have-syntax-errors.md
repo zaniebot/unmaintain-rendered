@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-11-22T19:12:27Z
 updated_at: 2024-11-27T17:58:49Z
 url: https://github.com/astral-sh/ruff/issues/14538
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # TC003’s rewritten annotations have syntax errors and type-checking problems
@@ -87,10 +87,6 @@ _Label `fixes` added by @AlexWaygood on 2024-11-22 21:54_
 ---
 
 _Label `help wanted` added by @AlexWaygood on 2024-11-22 21:54_
-
----
-
-_Referenced in [astral-sh/ruff#14554](../../astral-sh/ruff/issues/14554.md) on 2024-11-23 07:28_
 
 ---
 
@@ -202,14 +198,6 @@ _Comment by @Daverball on 2024-11-26 11:00_
 Actually, one common hook at the start of `unparse_expr` that can skip further traversal similar to `SourceOrderVisitor::enter_node` may be viable as well and would be a lot more flexible, although it would mean that we would potentially do the work of figuring out what kind of node we're visiting twice.
 
 Edit: Looks like this doesn't quite work either, since we would also need a post-traversal hook, so we can pop the current annotation state off the stack. But those two hooks together should be able to do a lot of different things.
-
----
-
-_Referenced in [astral-sh/ruff#14614](../../astral-sh/ruff/pulls/14614.md) on 2024-11-26 16:19_
-
----
-
-_Referenced in [astral-sh/ruff#14634](../../astral-sh/ruff/pulls/14634.md) on 2024-11-27 13:48_
 
 ---
 

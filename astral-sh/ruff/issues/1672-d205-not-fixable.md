@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-06T01:19:47Z
 updated_at: 2023-01-06T10:30:51Z
 url: https://github.com/astral-sh/ruff/issues/1672
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # D205 not fixable
@@ -894,10 +894,6 @@ _Label `question` added by @charliermarsh on 2023-01-06 01:24_
 _Comment by @not-my-profile on 2023-01-06 04:02_
 
 I think we should document whether autofixes always work or only sometimes work and in that case document when the autofix isn't available ... I added that as a bullet point to #1467.
-
----
-
-_Referenced in [astral-sh/ruff#1682](../../astral-sh/ruff/pulls/1682.md) on 2023-01-06 04:19_
 
 ---
 

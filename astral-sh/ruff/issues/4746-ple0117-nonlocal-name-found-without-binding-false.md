@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-31T08:04:51Z
 updated_at: 2023-06-06T18:49:38Z
 url: https://github.com/astral-sh/ruff/issues/4746
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # PLE0117 - nonlocal name found without binding - false possitive
@@ -45,14 +45,6 @@ _Label `bug` added by @charliermarsh on 2023-05-31 15:13_
 _Comment by @charliermarsh on 2023-05-31 15:13_
 
 Agreed.
-
----
-
-_Referenced in [astral-sh/ruff-lsp#128](../../astral-sh/ruff-lsp/issues/128.md) on 2023-06-05 05:13_
-
----
-
-_Referenced in [astral-sh/ruff#4888](../../astral-sh/ruff/pulls/4888.md) on 2023-06-06 01:29_
 
 ---
 

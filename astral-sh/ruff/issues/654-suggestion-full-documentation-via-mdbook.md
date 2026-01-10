@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-08T04:21:08Z
 updated_at: 2023-02-08T01:13:06Z
 url: https://github.com/astral-sh/ruff/issues/654
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # Suggestion: Full documentation via mdbook
@@ -47,10 +47,6 @@ Sounds great! I'll get something going
 ---
 
 _Label `documentation` added by @charliermarsh on 2022-11-08 21:15_
-
----
-
-_Referenced in [astral-sh/ruff#1467](../../astral-sh/ruff/issues/1467.md) on 2022-12-31 18:23_
 
 ---
 

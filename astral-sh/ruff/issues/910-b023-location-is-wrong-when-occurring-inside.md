@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-26T12:53:16Z
 updated_at: 2022-11-26T15:31:24Z
 url: https://github.com/astral-sh/ruff/issues/910
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # B023 location is wrong when occurring inside format string 
@@ -52,10 +52,6 @@ _Label `bug` added by @charliermarsh on 2022-11-26 15:06_
 _Comment by @charliermarsh on 2022-11-26 15:06_
 
 (Thanks for filing, will fix.)
-
----
-
-_Referenced in [astral-sh/ruff#914](../../astral-sh/ruff/pulls/914.md) on 2022-11-26 15:31_
 
 ---
 

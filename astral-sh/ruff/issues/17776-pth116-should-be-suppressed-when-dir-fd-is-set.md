@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-05-01T19:04:10Z
 updated_at: 2025-05-12T20:11:57Z
 url: https://github.com/astral-sh/ruff/issues/17776
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # PTH116 should be suppressed when `dir_fd` is set
@@ -73,10 +73,6 @@ I can take this one
 ---
 
 _Assigned to @LaBatata101 by @ntBre on 2025-05-07 21:47_
-
----
-
-_Referenced in [astral-sh/ruff#17968](../../astral-sh/ruff/pulls/17968.md) on 2025-05-08 21:32_
 
 ---
 

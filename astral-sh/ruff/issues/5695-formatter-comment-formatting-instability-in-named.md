@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-11T20:09:27Z
 updated_at: 2023-08-18T03:10:47Z
 url: https://github.com/astral-sh/ruff/issues/5695
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # formatter: comment formatting instability in named expr (and dict, others)
@@ -81,10 +81,6 @@ yes sorry for being unclear. wasn't suggesting switching out the `space`, only t
 
 ---
 
-_Referenced in [astral-sh/ruff#5705](../../astral-sh/ruff/pulls/5705.md) on 2023-07-12 08:50_
-
----
-
 _Renamed from "formatter: bug in named expr (and dict, others)" to "formatter: comment formatting instability in named expr (and dict, others)" by @konstin on 2023-07-16 18:14_
 
 ---
@@ -100,10 +96,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-08-16 22:00_
 _Comment by @charliermarsh on 2023-08-16 22:01_
 
 I'll take this one. There are similarities to `with... as...` so I'll wait for that to be approved before pushing anything.
-
----
-
-_Referenced in [astral-sh/ruff#6634](../../astral-sh/ruff/pulls/6634.md) on 2023-08-16 22:24_
 
 ---
 

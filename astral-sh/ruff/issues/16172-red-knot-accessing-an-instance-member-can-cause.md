@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-14T22:56:20Z
 updated_at: 2025-02-20T17:46:46Z
 url: https://github.com/astral-sh/ruff/issues/16172
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [red-knot] accessing an instance member can cause cross-module AST dependency
@@ -34,26 +34,6 @@ _Label `red-knot` added by @carljm on 2025-02-14 22:56_
 ---
 
 _Added to milestone `Red Knot Q1 2025` by @carljm on 2025-02-14 22:56_
-
----
-
-_Referenced in [astral-sh/ruff#16036](../../astral-sh/ruff/pulls/16036.md) on 2025-02-14 22:57_
-
----
-
-_Referenced in [astral-sh/ruff#16265](../../astral-sh/ruff/pulls/16265.md) on 2025-02-19 21:03_
-
----
-
-_Referenced in [astral-sh/ruff#16121](../../astral-sh/ruff/pulls/16121.md) on 2025-02-20 07:24_
-
----
-
-_Referenced in [astral-sh/ruff#16268](../../astral-sh/ruff/pulls/16268.md) on 2025-02-20 11:36_
-
----
-
-_Referenced in [astral-sh/ruff#16275](../../astral-sh/ruff/pulls/16275.md) on 2025-02-20 13:55_
 
 ---
 

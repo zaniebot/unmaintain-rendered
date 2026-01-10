@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-17T11:28:51Z
 updated_at: 2025-01-17T11:50:00Z
 url: https://github.com/astral-sh/ruff/issues/15548
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # flake8-bugbear B903 suggestion : Do not raise error if keyword argument is present and target-python version is less or equals than 3.9
@@ -55,10 +55,6 @@ This makes sense to me and a PR would be great!
 ---
 
 _Label `rule` added by @MichaReiser on 2025-01-17 11:39_
-
----
-
-_Referenced in [astral-sh/ruff#15549](../../astral-sh/ruff/pulls/15549.md) on 2025-01-17 11:40_
 
 ---
 

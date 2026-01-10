@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-31T21:16:48Z
 updated_at: 2024-10-23T07:15:21Z
 url: https://github.com/astral-sh/ruff/issues/2417
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Implement `flake8-assertive`
@@ -74,10 +74,6 @@ _Comment by @charliermarsh on 2023-04-03 03:11_
 
 ---
 
-_Referenced in [wagtail/wagtail#10324](../../wagtail/wagtail/pulls/10324.md) on 2023-04-12 11:45_
-
----
-
 _Comment by @tylerlaprade on 2023-07-25 06:48_
 
 @leiserfg, if you're still looking for similar improvements to make, I would love it if `assertAlmostEquals` and `assertDictEqual` could be auto-fixed 😃 
@@ -118,10 +114,6 @@ For the assertAlmostEqual we need similar transformations because besides compar
 
 ---
 
-_Referenced in [astral-sh/ruff#12851](../../astral-sh/ruff/issues/12851.md) on 2024-08-13 08:09_
-
----
-
 _Comment by @jaap3 on 2024-10-21 14:57_
 
 Just today I found myself asking for changes covered by flake8-assertive on a pull request (specifically `A504`, adding a `msg` to `assertTrue`/`assertFalse`). We used to have that plugin enabled, and didn't realise ruff doesn't implement it. In the mean time a bunch of violations have crept in. Would love to see at least `A504` implemented.
@@ -143,13 +135,5 @@ Also, @jaap3, [`PT009`](https://docs.astral.sh/ruff/rules/pytest-unittest-assert
 _Comment by @jaap3 on 2024-10-23 07:15_
 
 @tylerlaprade We use the stdlib unittest library and runner (well, Django's wrappers) so I've not enabled these pytest rules. I don't think they are fully equivalent since we do want to use the `assert*` methods provided by `unittest`.
-
----
-
-_Referenced in [Azure/azure-cli#30406](../../Azure/azure-cli/pulls/30406.md) on 2024-12-14 09:27_
-
----
-
-_Referenced in [leukeleu/django-hidp#279](../../leukeleu/django-hidp/pulls/279.md) on 2025-01-30 09:46_
 
 ---

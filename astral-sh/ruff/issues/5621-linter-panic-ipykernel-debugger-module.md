@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-08T17:51:06Z
 updated_at: 2023-07-08T19:05:45Z
 url: https://github.com/astral-sh/ruff/issues/5621
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # [Linter panic] IPykernel Debugger Module
@@ -183,10 +183,6 @@ If you need an immediate workaround, you can remove the `# isort: skip` comments
 _Comment by @blink1073 on 2023-07-08 18:14_
 
 We're fine to ignore the warning for now, thanks!
-
----
-
-_Referenced in [astral-sh/ruff#5623](../../astral-sh/ruff/pulls/5623.md) on 2023-07-08 18:55_
 
 ---
 

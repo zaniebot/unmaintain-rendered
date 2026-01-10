@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-06-21T08:42:14Z
 updated_at: 2025-03-04T11:59:50Z
 url: https://github.com/astral-sh/ruff/issues/5243
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # RUF012 triggers many false positives (are they really? they are correct) in some projects
@@ -57,10 +57,6 @@ EDIT: Actually, it is a separated code already 🤦🏽
 
 
 In any case, feel free to close if this is just what it is! Ignoring the rule is easy for these kind of projects.
-
----
-
-_Referenced in [astral-sh/ruff#5244](../../astral-sh/ruff/issues/5244.md) on 2023-06-21 08:46_
 
 ---
 
@@ -177,18 +173,6 @@ This triggers `RUF012` on the subclass, where I would have expected this to pass
 
 ---
 
-_Referenced in [astral-sh/ruff#5272](../../astral-sh/ruff/issues/5272.md) on 2023-06-21 23:46_
-
----
-
-_Referenced in [astral-sh/ruff#5274](../../astral-sh/ruff/pulls/5274.md) on 2023-06-21 23:54_
-
----
-
-_Referenced in [astral-sh/ruff#5275](../../astral-sh/ruff/pulls/5275.md) on 2023-06-22 00:24_
-
----
-
 _Comment by @kpfleming on 2023-06-24 11:09_
 
 I've just had this fire on an Ansible plugin module which does not have any type annotations. For now I'll disable RUF012 and hope that #5275 resolves it.
@@ -229,19 +213,11 @@ _Label `needs-decision` added by @charliermarsh on 2023-07-10 01:10_
 
 ---
 
-_Referenced in [pelican-plugins/mau-reader#30](../../pelican-plugins/mau-reader/pulls/30.md) on 2023-09-11 06:07_
-
----
-
 _Comment by @flaeppe on 2023-09-28 09:37_
 
 > [...] In the Django case, should we not be flagging those attributes at all, or should we not be suggesting typing.ClassVar (and instead suggest something else, like using immutable data structures)? [...]
 
 In the Django and its (database) model case it's not valid, as there's class descriptors doing a bit of magic there. As such the `ClassVar` is only valid for 1 case, when there's no instance of a `Model`. Though if you have a `Model` _instance_, the attribute contains the python value of what's stored in a database.
-
----
-
-_Referenced in [svthalia/concrexit#3405](../../svthalia/concrexit/pulls/3405.md) on 2023-09-29 18:06_
 
 ---
 
@@ -339,10 +315,6 @@ _Comment by @charliermarsh on 2023-12-18 15:47_
 
 ---
 
-_Referenced in [astral-sh/ruff#9187](../../astral-sh/ruff/pulls/9187.md) on 2023-12-18 16:06_
-
----
-
 _Comment by @ITProKyle on 2023-12-18 16:16_
 
 Every usage I have are in different file and even different python packages all together so it sounds like a combination of both detection and a config setting would be needed in my case.
@@ -352,14 +324,6 @@ Every usage I have are in different file and even different python packages all 
 _Comment by @charliermarsh on 2023-12-18 16:39_
 
 It would be nice if we could somehow reuse an existing setting here. It's not quite identical to `runtime-evaluated-base-classes` though 🤔 
-
----
-
-_Referenced in [nautobot/nautobot#5039](../../nautobot/nautobot/pulls/5039.md) on 2024-01-02 22:02_
-
----
-
-_Referenced in [johnthagen/python-blueprint#204](../../johnthagen/python-blueprint/pulls/204.md) on 2024-01-07 13:19_
 
 ---
 
@@ -453,22 +417,6 @@ No, it's not bad but just a limitation of Ruff which will be resolved with the o
 
 ---
 
-_Referenced in [jschneier/django-storages#1417](../../jschneier/django-storages/pulls/1417.md) on 2024-07-05 20:30_
-
----
-
-_Referenced in [python/mypy#17666](../../python/mypy/issues/17666.md) on 2024-08-13 14:56_
-
----
-
-_Referenced in [astral-sh/ruff#12877](../../astral-sh/ruff/issues/12877.md) on 2024-08-14 05:39_
-
----
-
-_Referenced in [astral-sh/ruff#14349](../../astral-sh/ruff/pulls/14349.md) on 2024-11-18 08:10_
-
----
-
 _Comment by @beauxq on 2025-01-10 16:02_
 
 > Yes, but is it bad to use `alias`, respectively, own _type definitions_ to avoid code redundancy?
@@ -538,10 +486,6 @@ class CustomField(Field[Any, Any]):
 
 ---
 
-_Referenced in [astral-sh/ruff#16360](../../astral-sh/ruff/issues/16360.md) on 2025-02-25 12:04_
-
----
-
 _Comment by @zyv on 2025-03-04 06:44_
 
 Could `django.contrib.admin.ModelAdmin` please be added to the base class exception list? For example, `radio_fields` is expected to be a dictionary... thanks!
@@ -552,10 +496,6 @@ Migrations have already been mentioned, but it's so problematic that I had to ad
 [tool.ruff.lint.per-file-ignores]
 "**/migrations/**.py" = ["RUF012"]
 ```
-
----
-
-_Referenced in [typeddjango/django-stubs#2524](../../typeddjango/django-stubs/pulls/2524.md) on 2025-03-04 07:30_
 
 ---
 
@@ -579,9 +519,5 @@ class C(B):
 So you might have to put `ClassVar` in thousands of subclasses, when it should be sufficient to just put it in one place.
 
 What `RUF012` is trying to do, can't be done well without a type-checker.
-
----
-
-_Referenced in [typeddjango/django-stubs#2530](../../typeddjango/django-stubs/pulls/2530.md) on 2025-03-05 06:33_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-23T19:33:02Z
 updated_at: 2023-09-24T02:08:46Z
 url: https://github.com/astral-sh/ruff/issues/7623
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Panic when formatting file `assertion failed: matches!(paren.kind(), SimpleTokenKind :: LParen | SimpleTokenKind :: LBrace |\n    SimpleTokenKind :: LBracket)',`
@@ -220,10 +220,6 @@ _Added to milestone `Formatter: Beta` by @charliermarsh on 2023-09-23 19:33_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-09-23 22:57_
-
----
-
-_Referenced in [astral-sh/ruff#7627](../../astral-sh/ruff/pulls/7627.md) on 2023-09-24 01:57_
 
 ---
 

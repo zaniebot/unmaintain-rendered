@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-18T16:42:45Z
 updated_at: 2024-03-12T14:41:04Z
 url: https://github.com/astral-sh/ruff/issues/8756
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Bug in PIE790 in Ruff v0.1.6 (`...` is meaningful in protocol methods and should not be removed)
@@ -57,10 +57,6 @@ Ah, I didn't think of it this way! Yeah, it's possible Pyright is in the (heh) w
 
 ---
 
-_Referenced in [microsoft/pyright#6487](../../microsoft/pyright/issues/6487.md) on 2023-11-18 17:09_
-
----
-
 _Comment by @erictraut on 2023-11-18 17:21_
 
 I'm the author of pyright, and I can say that this isn't a bug in pyright. Ruff's formatter should not remove the ellipsis in this case because it has significant meaning.
@@ -68,10 +64,6 @@ I'm the author of pyright, and I can say that this isn't a bug in pyright. Ruff'
 A protocol class is allowed to provide a default implementation for a method, in which case all subclasses of that protocol inherit that implementation. If the implementation of a method does not include a `...` as its implementation, pyright assumes it's a default implementation and type checks it accordingly.
 
 I'll note that `black` doesn't remove the ellipsis in this case, so I consider this a bug in ruff's formatter.
-
----
-
-_Referenced in [microsoft/pylance-release#5127](../../microsoft/pylance-release/issues/5127.md) on 2023-11-18 17:23_
 
 ---
 
@@ -160,19 +152,7 @@ I can take this one since it's my regression :)
 
 ---
 
-_Referenced in [astral-sh/ruff#8769](../../astral-sh/ruff/pulls/8769.md) on 2023-11-19 14:50_
-
----
-
 _Closed by @charliermarsh on 2023-11-19 15:05_
-
----
-
-_Referenced in [astral-sh/ruff#9840](../../astral-sh/ruff/issues/9840.md) on 2024-02-05 18:50_
-
----
-
-_Referenced in [astral-sh/ruff#10358](../../astral-sh/ruff/issues/10358.md) on 2024-03-12 14:23_
 
 ---
 
@@ -181,17 +161,5 @@ _Comment by @rsokl on 2024-03-12 14:41_
 > Does this apply anywhere outside of Protocol methods?
 
 This also applies for stubs defined inside `if TYPE_CHECKING` clauses. See https://github.com/astral-sh/ruff/issues/10358
-
----
-
-_Referenced in [astral-sh/ruff#10538](../../astral-sh/ruff/issues/10538.md) on 2024-03-25 14:20_
-
----
-
-_Referenced in [pypa/setuptools#4192](../../pypa/setuptools/pulls/4192.md) on 2024-08-21 14:59_
-
----
-
-_Referenced in [pylint-dev/pylint#9319](../../pylint-dev/pylint/issues/9319.md) on 2024-10-27 20:56_
 
 ---

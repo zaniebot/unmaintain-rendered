@@ -1,0 +1,59 @@
+```yaml
+number: 948
+title: "feat: Alternative Text Output Format(s)"
+type: issue
+state: closed
+author: hay-kot
+labels:
+  - configuration
+assignees: []
+created_at: 2022-11-28T22:21:14Z
+updated_at: 2022-11-29T23:45:17Z
+url: https://github.com/astral-sh/ruff/issues/948
+synced_at: 2026-01-10T12:09:58Z
+```
+
+# feat: Alternative Text Output Format(s)
+
+---
+
+_Issue opened by @hay-kot on 2022-11-28 22:21_
+
+I would like to group the errors in ruff by file and output them in a more structured format Similar to the image below where issues are grouped by file and then displayed in a table like view below the file name. 
+
+**Example**
+
+<img width="790" alt="CleanShot 2022-11-28 at 13 15 02@2x" src="https://user-images.githubusercontent.com/64056131/204392314-3fa8408a-bbfe-448a-8d18-e91fed97390b.png">
+
+
+Obviously this is mostly a personal preference, but I find that much easier to read than the current output. 
+
+I could see this being implement in a two different ways.
+
+1. Add an additional option to `--format` flag that displays an output like above. This is likely the easiest option
+2. Accept a template of some kind in either the config file or as a parameter to --format.  Perhaps with a template engine like [tera](https://github.com/Keats/tera). This is the most flexible, but difficult and would add additional dependencies
+
+I'm happy to work on a PR for this if it's a feature you're interest in including in ruff. 
+
+Thanks for all your work on this! 
+
+---
+
+_Comment by @charliermarsh on 2022-11-29 01:05_
+
+Yeah I'd be happy to support this. It's a bit more ESLint-like. I think a separate format option would be a reasonable place to start -- I don't feel the need to support extensive templating right now. Maybe like `--format grouped`? But we can workshop the name later.
+
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2022-11-29 01:05_
+
+---
+
+_Label `configuration` added by @charliermarsh on 2022-11-29 01:05_
+
+---
+
+_Closed by @charliermarsh on 2022-11-29 23:45_
+
+---

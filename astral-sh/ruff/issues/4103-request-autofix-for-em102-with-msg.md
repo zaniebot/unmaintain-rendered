@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-25T21:44:32Z
 updated_at: 2023-04-27T18:53:28Z
 url: https://github.com/astral-sh/ruff/issues/4103
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Request: autofix for EM102 with `msg`
@@ -87,10 +87,6 @@ Rock on, thanks @dhruvmanila! (Know I owe you some responses in other PRs too.)
 ---
 
 _Assigned to @dhruvmanila by @MichaReiser on 2023-04-26 18:09_
-
----
-
-_Referenced in [astral-sh/ruff#4123](../../astral-sh/ruff/pulls/4123.md) on 2023-04-26 19:32_
 
 ---
 

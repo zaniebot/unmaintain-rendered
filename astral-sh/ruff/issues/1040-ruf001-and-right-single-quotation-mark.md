@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-04T18:07:46Z
 updated_at: 2023-11-12T16:39:53Z
 url: https://github.com/astral-sh/ruff/issues/1040
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # RUF001 and RIGHT SINGLE QUOTATION MARK
@@ -80,10 +80,6 @@ Should it be added to the cli?
 _Comment by @charliermarsh on 2022-12-04 19:03_
 
 I don't think so, no.
-
----
-
-_Referenced in [astral-sh/ruff#1059](../../astral-sh/ruff/pulls/1059.md) on 2022-12-05 13:47_
 
 ---
 

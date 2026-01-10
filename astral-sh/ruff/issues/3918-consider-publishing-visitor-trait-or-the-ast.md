@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-04-08T08:37:55Z
 updated_at: 2023-05-08T22:24:58Z
 url: https://github.com/astral-sh/ruff/issues/3918
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Consider publishing visitor trait, or the ast crate as a whole
@@ -33,10 +33,6 @@ Does the trait exist in some form in a published crate somewhere, and if not, wo
 _Comment by @not-my-profile on 2023-04-08 19:00_
 
 I think it would make sense to upstream the trait in question to RustPython.
-
----
-
-_Referenced in [RustPython/RustPython#4894](../../RustPython/RustPython/issues/4894.md) on 2023-04-20 14:32_
 
 ---
 

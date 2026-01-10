@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-14T16:16:16Z
 updated_at: 2023-12-15T14:45:32Z
 url: https://github.com/astral-sh/ruff/issues/9130
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # No way to exclude folders from first-party detection for import sorting?
@@ -164,13 +164,5 @@ However if I have lots of scripts, I don't really want to maintain a list here.
 I could do `src = [".", "scripts/**"]` here, but there was still some `.mypy_cache/` directories within `scripts/` causing the same problem.
 
 My real question is, how can I run Ruff on the entire repo, with it correctly identifying imports within self-contained directories, without specifying them all manually?
-
----
-
-_Referenced in [astral-sh/ruff#10266](../../astral-sh/ruff/issues/10266.md) on 2024-03-07 06:25_
-
----
-
-_Referenced in [astral-sh/ruff#14497](../../astral-sh/ruff/issues/14497.md) on 2024-11-20 20:08_
 
 ---

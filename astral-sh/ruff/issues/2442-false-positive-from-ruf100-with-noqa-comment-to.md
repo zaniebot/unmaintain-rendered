@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-01T15:24:51Z
 updated_at: 2023-02-01T22:04:59Z
 url: https://github.com/astral-sh/ruff/issues/2442
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # False positive from RUF100 with noqa comment to suppress SIM108
@@ -91,10 +91,6 @@ But I'll try to fix this today. It affects more than this check, since we have t
 
 ---
 
-_Referenced in [astral-sh/ruff#2450](../../astral-sh/ruff/pulls/2450.md) on 2023-02-01 17:49_
-
----
-
 _Closed by @charliermarsh on 2023-02-01 17:56_
 
 ---
@@ -102,9 +98,5 @@ _Closed by @charliermarsh on 2023-02-01 17:56_
 _Comment by @henribru on 2023-02-01 22:04_
 
 Thanks for the quick response as always!
-
----
-
-_Referenced in [astral-sh/ruff#2621](../../astral-sh/ruff/issues/2621.md) on 2023-02-08 21:18_
 
 ---

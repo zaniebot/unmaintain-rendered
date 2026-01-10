@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-31T22:12:57Z
 updated_at: 2024-09-03T21:18:07Z
 url: https://github.com/astral-sh/ruff/issues/11663
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # [red-knot] name resolution for non-local variables
@@ -41,10 +41,6 @@ _Renamed from "[red-knot] proper name resolution" to "[red-knot] name resolution
 ---
 
 _Renamed from "[red-knot] name resolution for free variables" to "[red-knot] name resolution for non-local variables" by @carljm on 2024-08-05 17:36_
-
----
-
-_Referenced in [astral-sh/ruff#11662](../../astral-sh/ruff/issues/11662.md) on 2024-08-05 17:37_
 
 ---
 
@@ -99,10 +95,6 @@ Oh, awesome!! Also, hello, it's been a while, good to see you around :)
 _Comment by @alex on 2024-08-27 23:20_
 
 You too!
-
----
-
-_Referenced in [astral-sh/ruff#13177](../../astral-sh/ruff/pulls/13177.md) on 2024-08-31 00:31_
 
 ---
 

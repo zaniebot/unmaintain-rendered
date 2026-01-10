@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-12-21T00:47:18Z
 updated_at: 2022-12-21T01:34:25Z
 url: https://github.com/astral-sh/ruff/issues/1307
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:25Z
 ```
 
 # ruff and black get into a fight over imports?
@@ -93,9 +93,5 @@ Woah, that's awesome! Thanks tons for trying it out. (I'm glad `flake8-to-ruff` 
 _Comment by @alex on 2022-12-21 01:34_
 
 It was a big time saver. The two bits i had to manually translate were the line-lengths, and `application-import-names` (which is from `flake8-import-order`).
-
----
-
-_Referenced in [astral-sh/ruff#1311](../../astral-sh/ruff/issues/1311.md) on 2022-12-21 18:56_
 
 ---

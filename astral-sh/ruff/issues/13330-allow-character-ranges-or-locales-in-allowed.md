@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-09-12T01:32:08Z
 updated_at: 2024-09-12T19:33:40Z
 url: https://github.com/astral-sh/ruff/issues/13330
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Allow character ranges or locales in `allowed-confusables` for RUF001, RUF002, & RUF003
@@ -36,10 +36,6 @@ Many thanks!
 
 ---
 
-_Referenced in [PlasmaPy/PlasmaPy#2854](../../PlasmaPy/PlasmaPy/pulls/2854.md) on 2024-09-12 01:45_
-
----
-
 _Comment by @MichaReiser on 2024-09-12 18:42_
 
 That does sound annoying. I just looked through VS code's confusable code and it seems to have some concept for locale confusables. That's why I'm not sure if allowing character ranges is the right solution. Maybe a better approach is to allow configuring the locale(s) and if mathematical operators should be allowed. 
@@ -55,13 +51,5 @@ _Comment by @namurphy on 2024-09-12 19:32_
 > That does sound annoying. I just looked through VS code's confusable code and it seems to have some concept for locale confusables. That's why I'm not sure if allowing character ranges is the right solution. Maybe a better approach is to allow configuring the locale(s) and if mathematical operators should be allowed.
 
 Very interesting! I hadn't thought of that!  Defining locales (and being able to specify more than one) would make it even easier to configure allowed confusables.  I updated the title to include that possibility. 
-
----
-
-_Referenced in [astral-sh/ruff#14403](../../astral-sh/ruff/pulls/14403.md) on 2024-11-18 08:47_
-
----
-
-_Referenced in [astral-sh/ruff#15056](../../astral-sh/ruff/issues/15056.md) on 2024-12-23 08:26_
 
 ---

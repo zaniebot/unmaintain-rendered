@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-15T13:50:13Z
 updated_at: 2025-10-28T16:59:22Z
 url: https://github.com/astral-sh/ruff/issues/20891
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # [Infinite loop] F401, I002, and PYI025
@@ -62,9 +62,5 @@ I will take this one.
 ---
 
 _Assigned to @TaKO8Ki by @ntBre on 2025-10-28 16:59_
-
----
-
-_Referenced in [astral-sh/ruff#21115](../../astral-sh/ruff/pulls/21115.md) on 2025-10-28 22:11_
 
 ---

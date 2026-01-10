@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-19T20:27:58Z
 updated_at: 2023-11-28T18:54:34Z
 url: https://github.com/astral-sh/ruff/issues/8075
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Determine how to convey the availablity of preview-only fixes
@@ -29,10 +29,6 @@ _Label `documentation` added by @zanieb on 2023-10-19 20:28_
 ---
 
 _Label `preview` added by @zanieb on 2023-10-19 20:28_
-
----
-
-_Referenced in [astral-sh/ruff#8073](../../astral-sh/ruff/pulls/8073.md) on 2023-10-19 20:33_
 
 ---
 
@@ -60,9 +56,5 @@ Other suggestions may include ⁉, 🚦, or just annotating the autofix with `*`
 ![image](https://github.com/astral-sh/ruff/assets/1350584/b07547c7-781f-4a32-b491-99cf37e475d2)
 
 
-
----
-
-_Referenced in [astral-sh/ruff#8482](../../astral-sh/ruff/issues/8482.md) on 2023-11-04 19:55_
 
 ---

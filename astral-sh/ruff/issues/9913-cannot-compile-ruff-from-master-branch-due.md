@@ -1,0 +1,58 @@
+```yaml
+number: 9913
+title: "Cannot compile ruff from master branch - due yanking pyproject-toml 0.8.2 - https://crates.io/crates/pyproject-toml/versions "
+type: issue
+state: closed
+author: qarmin
+labels:
+  - internal
+assignees: []
+created_at: 2024-02-09T16:24:37Z
+updated_at: 2024-02-09T20:38:35Z
+url: https://github.com/astral-sh/ruff/issues/9913
+synced_at: 2026-01-10T11:09:52Z
+```
+
+# Cannot compile ruff from master branch - due yanking pyproject-toml 0.8.2 - https://crates.io/crates/pyproject-toml/versions 
+
+---
+
+_Issue opened by @qarmin on 2024-02-09 16:24_
+
+https://github.com/astral-sh/ruff/commit/52ebfc971825021a903622fab7e41e3e7c22e903
+
+
+```
+Run git clone https://github.com/astral-sh/ruff.git ruff
+Cloning into 'ruff'...
+  Installing ruff v0.2.1 (/home/runner/work/Automated-Fuzzer/Automated-Fuzzer/ruff/crates/ruff)
+    Updating crates.io index
+error: failed to compile `ruff v0.2.1 (/home/runner/work/Automated-Fuzzer/Automated-Fuzzer/ruff/crates/ruff)`, intermediate artifacts can be found at `/home/runner/work/Automated-Fuzzer/Automated-Fuzzer/ruff/target`.
+To reuse those artifacts with a future compilation, set the environment variable `CARGO_TARGET_DIR` to that path.
+Caused by:
+  failed to select a version for the requirement `pyproject-toml = "^0.8.2"`
+  candidate versions found which didn't match: 0.9.0, 0.8.1, 0.8.0, ...
+  location searched: crates.io index
+  required by package `ruff_linter v0.2.1 (/home/runner/work/Automated-Fuzzer/Automated-Fuzzer/ruff/crates/ruff_linter)`
+      ... which satisfies path dependency `ruff_linter` of package `ruff v0.2.1 (/home/runner/work/Automated-Fuzzer/Automated-Fuzzer/ruff/crates/ruff)`
+  perhaps a crate was updated and forgotten to be re-vendored?
+Error: Process completed with exit code 101.
+```
+
+Error also visible in ruff CI - https://github.com/astral-sh/ruff/actions/runs/7845053345/job/21408672235
+
+https://crates.io/crates/pyproject-toml/versions
+
+---
+
+_Renamed from "Cannot compile ruff from master branch" to "Cannot compile ruff from master branch - due yanking pyproject-toml 0.8.2 - https://crates.io/crates/pyproject-toml/versions " by @qarmin on 2024-02-09 16:25_
+
+---
+
+_Label `internal` added by @MichaReiser on 2024-02-09 20:32_
+
+---
+
+_Closed by @MichaReiser on 2024-02-09 20:38_
+
+---

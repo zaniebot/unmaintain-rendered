@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-03-20T16:47:25Z
 updated_at: 2023-03-22T18:00:02Z
 url: https://github.com/astral-sh/ruff/issues/3630
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # isort: bad interaction between `force-sort-within-sections` and `force-to-top`
@@ -74,10 +74,6 @@ _Label `bug` added by @charliermarsh on 2023-03-20 19:02_
 ---
 
 _Label `isort` added by @charliermarsh on 2023-03-20 19:02_
-
----
-
-_Referenced in [astral-sh/ruff#3645](../../astral-sh/ruff/pulls/3645.md) on 2023-03-21 11:00_
 
 ---
 

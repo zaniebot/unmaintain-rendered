@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-23T17:24:53Z
 updated_at: 2023-07-24T02:23:24Z
 url: https://github.com/astral-sh/ruff/issues/6017
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Metaclass methods incorrectly identified as classmethods
@@ -148,13 +148,5 @@ Looks like it is indeed special casing exactly "type" or "abc.ABCMeta" as the di
 ---
 
 _Label `needs-decision` added by @charliermarsh on 2023-07-24 02:23_
-
----
-
-_Referenced in [astral-sh/ruff#15143](../../astral-sh/ruff/issues/15143.md) on 2024-12-26 09:19_
-
----
-
-_Referenced in [astral-sh/ruff#13698](../../astral-sh/ruff/issues/13698.md) on 2024-12-26 09:20_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-09-05T14:41:52Z
 updated_at: 2023-09-05T16:10:58Z
 url: https://github.com/astral-sh/ruff/issues/7155
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Rule B006 cause autofix error
@@ -69,10 +69,6 @@ def readLinkagesByLineFile(linkages_file,
 
 due to logic at https://github.com/astral-sh/ruff/blob/37d244d17833de852d7c7f34fdb65f90fed79878/crates/ruff/src/rules/flake8_bugbear/rules/mutable_argument_default.rs#L178-L184
 
-
----
-
-_Referenced in [astral-sh/ruff#7160](../../astral-sh/ruff/pulls/7160.md) on 2023-09-05 15:01_
 
 ---
 

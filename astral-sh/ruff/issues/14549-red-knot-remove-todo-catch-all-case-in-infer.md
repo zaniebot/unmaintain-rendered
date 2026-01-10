@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-22T23:34:53Z
 updated_at: 2025-01-06T18:50:21Z
 url: https://github.com/astral-sh/ruff/issues/14549
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] remove TODO catch-all case in `infer_binary_expression`
@@ -36,10 +36,6 @@ _Assigned to @dcreager by @dcreager on 2024-12-19 02:11_
 ---
 
 _Unassigned @carljm by @dcreager on 2024-12-19 02:11_
-
----
-
-_Referenced in [astral-sh/ruff#15161](../../astral-sh/ruff/pulls/15161.md) on 2024-12-27 15:54_
 
 ---
 

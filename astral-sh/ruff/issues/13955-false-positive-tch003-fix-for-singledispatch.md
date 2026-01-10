@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-28T02:58:50Z
 updated_at: 2024-10-29T00:33:29Z
 url: https://github.com/astral-sh/ruff/issues/13955
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # False positive TCH003 fix for singledispatch functions with type annotations (redux)
@@ -122,10 +122,6 @@ _Label `needs-mre` removed by @dhruvmanila on 2024-10-28 04:52_
 ---
 
 _Label `bug` added by @dhruvmanila on 2024-10-28 04:52_
-
----
-
-_Referenced in [astral-sh/ruff#13957](../../astral-sh/ruff/pulls/13957.md) on 2024-10-28 05:12_
 
 ---
 

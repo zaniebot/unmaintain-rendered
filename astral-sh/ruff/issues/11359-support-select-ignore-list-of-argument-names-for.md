@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-10T08:57:57Z
 updated_at: 2024-05-20T00:56:03Z
 url: https://github.com/astral-sh/ruff/issues/11359
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Support select/ignore list of argument names for `ARG` rules
@@ -62,9 +62,5 @@ Thanks in advance by the way, Ruff is amazing!
 _Comment by @charliermarsh on 2024-05-20 00:56_
 
 Thanks! We do support `ignore-variadic-names`, and then we do most of those things by default (we ignore overloads, overrides, abstract methods, dunders, and stubs). @liiight are you looking to ignore a specific name / pattern here? Just wondering if adding a setting to allow certain unused names or patterns would solve your problem.
-
----
-
-_Referenced in [wafer-space/platform.wafer.space#43](../../wafer-space/platform.wafer.space/pulls/43.md) on 2025-11-27 01:57_
 
 ---

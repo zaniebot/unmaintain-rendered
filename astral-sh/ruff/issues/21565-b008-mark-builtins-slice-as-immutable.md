@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-21T17:49:27Z
 updated_at: 2025-12-08T19:00:44Z
 url: https://github.com/astral-sh/ruff/issues/21565
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # B008: mark builtins.slice() as immutable
@@ -58,10 +58,6 @@ _Label `rule` removed by @ntBre on 2025-11-21 21:15_
 ---
 
 _Label `bug` added by @ntBre on 2025-11-21 21:15_
-
----
-
-_Referenced in [astral-sh/ruff#21823](../../astral-sh/ruff/pulls/21823.md) on 2025-12-06 13:06_
 
 ---
 

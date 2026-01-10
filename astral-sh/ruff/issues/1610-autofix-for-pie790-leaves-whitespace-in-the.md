@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-04T01:05:59Z
 updated_at: 2023-01-04T01:45:00Z
 url: https://github.com/astral-sh/ruff/issues/1610
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T12:05:31Z
 ```
 
 # Autofix for `PIE790` leaves whitespace in the affected line
@@ -77,10 +77,6 @@ I think if that code went through `autofix/helpers.rs#delete_stmt`, it would do 
 ---
 
 _Renamed from "Autofix for `PIE790` leaves whitespaces in the affected line" to "Autofix for `PIE790` leaves whitespace in the affected line" by @edgarrmondragon on 2023-01-04 01:32_
-
----
-
-_Referenced in [astral-sh/ruff#1612](../../astral-sh/ruff/pulls/1612.md) on 2023-01-04 01:41_
 
 ---
 

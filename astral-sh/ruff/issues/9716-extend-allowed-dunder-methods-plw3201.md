@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-30T19:51:01Z
 updated_at: 2024-01-30T20:48:11Z
 url: https://github.com/astral-sh/ruff/issues/9716
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Extend allowed dunder methods (PLW3201)
@@ -73,10 +73,6 @@ How should we research and collect them? What criteria should we have?
 
 ---
 
-_Referenced in [astral-sh/ruff#9706](../../astral-sh/ruff/pulls/9706.md) on 2024-01-30 19:51_
-
----
-
 _Comment by @johnslavik on 2024-01-30 19:55_
 
 Current list of known dunder methods:
@@ -105,9 +101,5 @@ _Label `rule` added by @AlexWaygood on 2024-01-30 20:42_
 ---
 
 _Renamed from "Extend allowed dunder methods" to "Extend allowed dunder methods (PLW3201)" by @AlexWaygood on 2024-01-30 20:48_
-
----
-
-_Referenced in [astral-sh/ruff#15624](../../astral-sh/ruff/issues/15624.md) on 2025-01-20 23:04_
 
 ---

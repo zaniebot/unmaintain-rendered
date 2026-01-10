@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-12T07:00:42Z
 updated_at: 2024-01-12T19:33:46Z
 url: https://github.com/astral-sh/ruff/issues/9487
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # False positives in 0.1.12 with RUF011
@@ -101,10 +101,6 @@ Oops, thanks -- will fix!
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-12 16:25_
-
----
-
-_Referenced in [astral-sh/ruff#9494](../../astral-sh/ruff/pulls/9494.md) on 2024-01-12 18:20_
 
 ---
 

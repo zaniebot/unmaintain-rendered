@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-03-08T12:09:55Z
 updated_at: 2025-03-09T17:40:10Z
 url: https://github.com/astral-sh/ruff/issues/16566
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Daily property test run failed on Sat Mar 08 2025
@@ -49,10 +49,6 @@ thread 'types::property_tests::stable::all_fully_static_type_pairs_are_subtype_o
 Expected a (possibly unbound) type, not an unbound symbol
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ```
-
----
-
-_Referenced in [astral-sh/ruff#16574](../../astral-sh/ruff/pulls/16574.md) on 2025-03-09 10:35_
 
 ---
 

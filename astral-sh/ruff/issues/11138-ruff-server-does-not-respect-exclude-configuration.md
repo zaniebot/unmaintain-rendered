@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-25T02:02:23Z
 updated_at: 2024-05-22T03:14:19Z
 url: https://github.com/astral-sh/ruff/issues/11138
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # `ruff server` does not respect `exclude` configuration
@@ -39,10 +39,6 @@ _Label `configuration` added by @snowsignal on 2024-04-25 02:02_
 _Comment by @hoxbro on 2024-04-28 13:03_
 
 I also see a problem with `[tool.ruff.lint.per-file-ignores]` not being respected. 
-
----
-
-_Referenced in [astral-sh/ruff#11185](../../astral-sh/ruff/issues/11185.md) on 2024-04-28 13:07_
 
 ---
 

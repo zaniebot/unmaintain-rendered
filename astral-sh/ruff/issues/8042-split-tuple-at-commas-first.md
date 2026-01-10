@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-18T10:06:34Z
 updated_at: 2023-10-30T00:25:46Z
 url: https://github.com/astral-sh/ruff/issues/8042
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Split tuple at commas first
@@ -75,10 +75,6 @@ This works as expected when the tuple is parenthesized in the source. We may nee
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2023-10-24 10:16_
-
----
-
-_Referenced in [astral-sh/ruff#8280](../../astral-sh/ruff/pulls/8280.md) on 2023-10-27 10:58_
 
 ---
 

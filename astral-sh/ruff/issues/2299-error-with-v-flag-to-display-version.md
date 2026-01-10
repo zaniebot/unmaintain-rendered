@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-28T15:33:51Z
 updated_at: 2023-01-28T15:47:49Z
 url: https://github.com/astral-sh/ruff/issues/2299
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Error with -V flag to display version
@@ -50,10 +50,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-01-28 15:42_
 _Comment by @charliermarsh on 2023-01-28 15:42_
 
 I got it.
-
----
-
-_Referenced in [astral-sh/ruff#2301](../../astral-sh/ruff/pulls/2301.md) on 2023-01-28 15:43_
 
 ---
 

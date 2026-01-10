@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-06-21T01:31:17Z
 updated_at: 2025-07-28T14:53:05Z
 url: https://github.com/astral-sh/ruff/issues/18844
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # COM812 and COM819 do not support type parameter lists
@@ -78,10 +78,6 @@ _Label `rule` added by @MichaReiser on 2025-06-23 06:52_
 ---
 
 _Label `help wanted` added by @MichaReiser on 2025-06-23 06:52_
-
----
-
-_Referenced in [astral-sh/ruff#19390](../../astral-sh/ruff/pulls/19390.md) on 2025-07-16 22:42_
 
 ---
 

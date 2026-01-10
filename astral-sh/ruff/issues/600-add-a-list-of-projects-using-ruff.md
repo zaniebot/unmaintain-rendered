@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-05T14:45:22Z
 updated_at: 2022-11-05T20:03:11Z
 url: https://github.com/astral-sh/ruff/issues/600
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # Add a list of projects using Ruff
@@ -31,7 +31,7 @@ _Referenced in [astral-sh/ruff#608](../../astral-sh/ruff/pulls/608.md) on 2022-1
 
 ---
 
-_Closed by @charliermarsh on 2022-11-05 20:03_
+_Closed by @charliermarsh in #608 on 2022-11-05 20:03_
 
 ---
 

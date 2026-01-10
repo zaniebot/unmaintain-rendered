@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-30T03:25:06Z
 updated_at: 2022-12-30T03:39:52Z
 url: https://github.com/astral-sh/ruff/issues/1462
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T12:05:29Z
 ```
 
 # pre-commit doesn't seem to pickup pyproject.toml setting for line-length
@@ -86,9 +86,5 @@ _Closed by @carlthome on 2022-12-30 03:28_
 _Comment by @charliermarsh on 2022-12-30 03:39_
 
 Lol it got past me too! :)
-
----
-
-_Referenced in [astral-sh/ruff#2899](../../astral-sh/ruff/issues/2899.md) on 2023-02-14 20:03_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-20T01:16:29Z
 updated_at: 2023-04-20T19:45:49Z
 url: https://github.com/astral-sh/ruff/issues/4036
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # (🐞) False positive / bad fix for PYI015 with typealias in stub file
@@ -50,10 +50,6 @@ I think this is a false positive, flake8-pyi doesn't flag it.
 ---
 
 _Label `bug` added by @charliermarsh on 2023-04-20 03:33_
-
----
-
-_Referenced in [astral-sh/ruff#4043](../../astral-sh/ruff/pulls/4043.md) on 2023-04-20 11:35_
 
 ---
 

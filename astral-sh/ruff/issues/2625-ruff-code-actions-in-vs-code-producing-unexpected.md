@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-07T15:25:24Z
 updated_at: 2023-02-09T16:57:32Z
 url: https://github.com/astral-sh/ruff/issues/2625
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Ruff code actions in VS Code producing unexpected output
@@ -90,10 +90,6 @@ Thanks for filing! The problem is the double `pass` statement, right? The remova
 _Comment by @JRyanHall94 on 2023-02-07 15:49_
 
 Yes, absolutely 👍 
-
----
-
-_Referenced in [astral-sh/ruff-vscode#128](../../astral-sh/ruff-vscode/issues/128.md) on 2023-02-08 15:41_
 
 ---
 

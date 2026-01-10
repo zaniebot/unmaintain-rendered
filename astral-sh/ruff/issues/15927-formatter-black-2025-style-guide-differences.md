@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-04T11:25:21Z
 updated_at: 2025-09-17T09:29:59Z
 url: https://github.com/astral-sh/ruff/issues/15927
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [formatter]: Black 2025 style guide differences
@@ -40,10 +40,6 @@ _Label `style` added by @MichaReiser on 2025-02-04 11:25_
 
 ---
 
-_Referenced in [ansible/vscode-ansible#1812](../../ansible/vscode-ansible/pulls/1812.md) on 2025-02-06 19:36_
-
----
-
 _Comment by @laymonage on 2025-09-17 09:27_
 
 Is now the right time to revisit this? Really looking forward to https://github.com/astral-sh/ruff/issues/9745 😄 
@@ -53,9 +49,5 @@ Is now the right time to revisit this? Really looking forward to https://github.
 _Comment by @MichaReiser on 2025-09-17 09:29_
 
 @dylwil3 and I just chatted yesterday that we should start outlining our plans for the 2026 style guide. So yes, now is the time ;)
-
----
-
-_Referenced in [astral-sh/ruff#20482](../../astral-sh/ruff/issues/20482.md) on 2025-09-20 11:12_
 
 ---

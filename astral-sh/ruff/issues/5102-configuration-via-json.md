@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-06-14T21:58:35Z
 updated_at: 2023-07-10T08:29:04Z
 url: https://github.com/astral-sh/ruff/issues/5102
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Configuration via JSON
@@ -219,13 +219,5 @@ I, unfortunately, can't suggest a better solution for the time being other than 
 ---
 
 _Closed by @MichaReiser on 2023-07-10 08:29_
-
----
-
-_Referenced in [astral-sh/ruff#3694](../../astral-sh/ruff/issues/3694.md) on 2023-07-10 08:30_
-
----
-
-_Referenced in [astral-sh/ruff#6553](../../astral-sh/ruff/issues/6553.md) on 2023-08-14 17:41_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-01T18:05:47Z
 updated_at: 2024-04-08T06:36:05Z
 url: https://github.com/astral-sh/ruff/issues/10721
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # False positive with PLE4703 and immediate return / break
@@ -93,9 +93,5 @@ Sorry, actually I don't think I can implement this one by myself. Is there some 
 _Comment by @MichaReiser on 2024-04-08 06:36_
 
 No, there's not. That's what I meant by my comment. We probably want to wait for a more complete control flow analysis or decided to only support a very small subset of control flow patterns for now.
-
----
-
-_Referenced in [astral-sh/ruff#11695](../../astral-sh/ruff/issues/11695.md) on 2024-08-12 14:32_
 
 ---

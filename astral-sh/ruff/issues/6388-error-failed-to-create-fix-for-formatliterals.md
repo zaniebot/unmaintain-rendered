@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-07T13:12:12Z
 updated_at: 2023-08-07T19:13:23Z
 url: https://github.com/astral-sh/ruff/issues/6388
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # error: Failed to create fix for FormatLiterals: Failed to extract argument at: 1
@@ -64,10 +64,6 @@ _Label `bug` added by @charliermarsh on 2023-08-07 13:25_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-08-07 13:25_
-
----
-
-_Referenced in [astral-sh/ruff#6401](../../astral-sh/ruff/pulls/6401.md) on 2023-08-07 18:53_
 
 ---
 

@@ -1,0 +1,48 @@
+```yaml
+number: 8561
+title: should the docs for pre-commit point to the latest ruff?
+type: issue
+state: closed
+author: raybellwaves
+labels:
+  - documentation
+assignees: []
+created_at: 2023-11-08T14:20:24Z
+updated_at: 2023-11-08T14:56:55Z
+url: https://github.com/astral-sh/ruff/issues/8561
+synced_at: 2026-01-10T11:09:50Z
+```
+
+# should the docs for pre-commit point to the latest ruff?
+
+---
+
+_Issue opened by @raybellwaves on 2023-11-08 14:20_
+
+https://docs.astral.sh/ruff/integrations/#pre-commit (https://github.com/astral-sh/ruff/blob/main/docs/integrations.md#pre-commit) currently lists v0.0.291 as the ruff version the latest version is v0.1.4.
+
+It would be good to have the latest version listed so users can copy-paste it and get the latest and greatest ruff features.
+
+I imagine this could be fixed with a bot once new versions are released
+
+---
+
+_Comment by @T-256 on 2023-11-08 14:28_
+
+fixed in https://github.com/astral-sh/ruff/pull/8545
+
+---
+
+_Closed by @raybellwaves on 2023-11-08 14:29_
+
+---
+
+_Label `documentation` added by @charliermarsh on 2023-11-08 14:54_
+
+---
+
+_Comment by @charliermarsh on 2023-11-08 14:55_
+
+Thanks @raybellwaves, sorry about that.
+
+---

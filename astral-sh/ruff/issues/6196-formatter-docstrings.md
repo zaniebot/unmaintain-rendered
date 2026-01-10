@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-31T13:16:30Z
 updated_at: 2023-08-14T12:29:00Z
 url: https://github.com/astral-sh/ruff/issues/6196
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Formatter: Docstrings
@@ -25,19 +25,11 @@ _Issue opened by @MichaReiser on 2023-07-31 13:16_
 
 ---
 
-_Referenced in [astral-sh/ruff#4798](../../astral-sh/ruff/issues/4798.md) on 2023-07-31 13:16_
-
----
-
 _Added to milestone `Formatter: Alpha` by @MichaReiser on 2023-07-31 16:03_
 
 ---
 
 _Label `formatter` added by @MichaReiser on 2023-07-31 16:16_
-
----
-
-_Referenced in [astral-sh/ruff#6203](../../astral-sh/ruff/issues/6203.md) on 2023-07-31 17:01_
 
 ---
 
@@ -50,10 +42,6 @@ _Assigned to @konstin by @konstin on 2023-08-03 13:41_
 ---
 
 _Unassigned @charliermarsh by @konstin on 2023-08-03 13:41_
-
----
-
-_Referenced in [astral-sh/ruff#6452](../../astral-sh/ruff/pulls/6452.md) on 2023-08-09 17:34_
 
 ---
 

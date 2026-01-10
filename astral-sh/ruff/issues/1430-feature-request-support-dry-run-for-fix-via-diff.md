@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-28T21:18:58Z
 updated_at: 2022-12-29T00:46:46Z
 url: https://github.com/astral-sh/ruff/issues/1430
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T12:05:28Z
 ```
 
 # [feature-request] Support dry run for --fix via --diff flag
@@ -93,10 +93,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-12-28 23:26_
 
 ---
 
-_Referenced in [astral-sh/ruff#1431](../../astral-sh/ruff/pulls/1431.md) on 2022-12-29 00:08_
-
----
-
 _Closed by @charliermarsh on 2022-12-29 00:21_
 
 ---
@@ -113,9 +109,5 @@ Haha :) It's a good idea! You're welcome!
 
 This'll go out in the next release, later tonight. Would love to hear if it works for you (or doesn't!).
 
-
----
-
-_Referenced in [astral-sh/ruff#1439](../../astral-sh/ruff/issues/1439.md) on 2022-12-29 16:07_
 
 ---

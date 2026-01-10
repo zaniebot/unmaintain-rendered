@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-09T19:01:26Z
 updated_at: 2023-05-18T14:33:35Z
 url: https://github.com/astral-sh/ruff/issues/4324
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # [Autofix error] RUF005 autofix fails inside f-string: `f"{a() + ['b']}"`
@@ -77,14 +77,6 @@ One note to add here is that most of these will valid syntax with [PEP 701](http
 
 ---
 
-_Referenced in [astral-sh/ruff#4487](../../astral-sh/ruff/pulls/4487.md) on 2023-05-18 03:27_
-
----
-
 _Closed by @charliermarsh on 2023-05-18 14:33_
-
----
-
-_Referenced in [astral-sh/ruff#4488](../../astral-sh/ruff/pulls/4488.md) on 2023-05-19 12:52_
 
 ---

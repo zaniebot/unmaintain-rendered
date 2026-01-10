@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-06T17:07:59Z
 updated_at: 2025-06-06T17:10:10Z
 url: https://github.com/astral-sh/ruff/issues/18504
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [`pyflakes`] Skip `__init__.py` in `undefined-export` (`F822`) if `__getattr__` is overriden at the module level?
@@ -37,9 +37,5 @@ _Label `preview` added by @dylwil3 on 2025-06-06 17:08_
 ---
 
 _Renamed from "[`pyflakes`] Skip `__init__.py` if `__getattr__` is overriden at the module level?" to "[`pyflakes`] Skip `__init__.py` in `undefined-export` (`F822`) if `__getattr__` is overriden at the module level?" by @dylwil3 on 2025-06-06 17:10_
-
----
-
-_Referenced in [astral-sh/ruff#18686](../../astral-sh/ruff/issues/18686.md) on 2025-06-15 17:12_
 
 ---

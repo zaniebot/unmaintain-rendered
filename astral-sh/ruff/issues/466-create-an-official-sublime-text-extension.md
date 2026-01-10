@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-10-25T16:54:02Z
 updated_at: 2022-12-17T21:23:20Z
 url: https://github.com/astral-sh/ruff/issues/466
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:20Z
 ```
 
 # Create an official Sublime Text extension
@@ -49,10 +49,6 @@ People at [sublimelsp community](https://github.com/sublimelsp) may even be inte
 _Comment by @lambdaq on 2022-12-07 10:10_
 
 This is good idea. I am trying to config Ruff with SublimeLinter but didn't go anywhere.
-
----
-
-_Referenced in [astral-sh/ruff#1271](../../astral-sh/ruff/pulls/1271.md) on 2022-12-17 21:22_
 
 ---
 

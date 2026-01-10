@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-15T22:02:30Z
 updated_at: 2024-09-20T08:22:03Z
 url: https://github.com/astral-sh/ruff/issues/8704
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Add rule to encourage using type aliases (generalize PYI026)
@@ -129,9 +129,5 @@ Overall I'm not opposed to this, but I think we need a precise proposal for how 
 ---
 
 _Label `needs-design` added by @MichaReiser on 2024-09-20 08:22_
-
----
-
-_Referenced in [astral-sh/ruff#16701](../../astral-sh/ruff/issues/16701.md) on 2025-03-13 11:12_
 
 ---

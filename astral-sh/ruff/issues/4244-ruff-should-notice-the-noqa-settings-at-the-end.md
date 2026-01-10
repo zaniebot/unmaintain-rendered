@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-05T11:37:13Z
 updated_at: 2025-11-10T10:24:48Z
 url: https://github.com/astral-sh/ruff/issues/4244
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Ruff should notice the noqa settings at the end of wrapped function definitions
@@ -72,10 +72,6 @@ _Comment by @charliermarsh on 2023-05-16 00:20_
 > ...basically no way to disable them in a single place.
 
 Do you mind providing an example of what you mean here? There are errors that you're unable to suppress?
-
----
-
-_Referenced in [astral-sh/ruff#7006](../../astral-sh/ruff/issues/7006.md) on 2023-08-31 09:38_
 
 ---
 

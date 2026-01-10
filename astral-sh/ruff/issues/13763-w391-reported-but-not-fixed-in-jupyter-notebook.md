@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-15T14:44:58Z
 updated_at: 2025-01-09T16:50:42Z
 url: https://github.com/astral-sh/ruff/issues/13763
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # W391 reported but not fixed in Jupyter notebook
@@ -113,10 +113,6 @@ Yeah, I think we should limit this rule to individual cells and not for the conc
 _Comment by @dhruvmanila on 2024-10-16 05:59_
 
 The challenge here is that the rule looks at the tokens, so we'd need to basically run the `too_many_newlines_at_end_of_file` function for the tokens corresponding to each cell. I think that can be done by using the `CellOffsets`. We'd need to keep an iterator of cell offsets and loop over all the tokens of the file in reverse order and reset some state to indicate that we're at the end of the cell. This would be similar to what's being done for blank line rules by the `LinePreprocessor`.
-
----
-
-_Referenced in [astral-sh/ruff#15308](../../astral-sh/ruff/pulls/15308.md) on 2025-01-06 23:21_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-24T07:25:40Z
 updated_at: 2025-12-17T21:59:14Z
 url: https://github.com/astral-sh/ruff/issues/3711
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # [feature request] Support ignore block of code with noqa
@@ -134,18 +134,6 @@ FYI - duplicate of #1289
 
 ---
 
-_Referenced in [astral-sh/ruff#1289](../../astral-sh/ruff/issues/1289.md) on 2023-05-13 13:05_
-
----
-
-_Referenced in [astral-sh/ruff#3868](../../astral-sh/ruff/issues/3868.md) on 2023-08-30 18:44_
-
----
-
-_Referenced in [astral-sh/ruff#6782](../../astral-sh/ruff/pulls/6782.md) on 2023-08-31 06:42_
-
----
-
 _Comment by @adam-grant-hendry on 2023-08-31 14:28_
 
 @woile Thanks for opening this issue!
@@ -172,10 +160,6 @@ Without knowing the internals, I imagine the former would require reparsing the 
 - I’m slowly seeing several different feature requests for suppression in different scopes (global level, function level, etc.).
 
 Rather than rewrite the source for every kind of scope feature request, this would be done in one change and would likely cover 99% of use cases for most users.
-
----
-
-_Referenced in [astral-sh/ruff#9646](../../astral-sh/ruff/issues/9646.md) on 2024-01-26 16:39_
 
 ---
 
@@ -293,17 +277,9 @@ And since we have already `# ruff: noqa ...` to do it file level I would warn ab
 
 ---
 
-_Referenced in [pylint-dev/pylint#9593](../../pylint-dev/pylint/pulls/9593.md) on 2024-05-06 09:41_
-
----
-
 _Comment by @Pierre-Sassoulas on 2024-05-08 13:13_
 
 I think there's a performance aspect to consider. In pylint the fine grained message control sometime prevented us from bypassing costly processing because checking if a message is disabled or not (on a directory, file, scope, line, node, or token) is costly in itself. 
-
----
-
-_Referenced in [pymc-labs/pymc-marketing#431](../../pymc-labs/pymc-marketing/pulls/431.md) on 2024-05-27 00:35_
 
 ---
 
@@ -323,14 +299,6 @@ _Comment by @kaddkaka on 2024-05-28 16:59_
 > A line of code causes one error for mypy and one for bandit. Both support inline-comments for ignoring it, but they don't support ignoring code blocks. I can only ignore the error for one of them and have to ignore the whole file for another (not nice). If I used Ruff (with this feature) as a replacement for Bandit, I could ignore the block of code (1 line) and also add the inline ignore comment for mypy. So it would improve compatibility with mypy (they also have an [ongoing thread](https://github.com/python/mypy/issues/6948) about implementing this) and other linters without this feature.
 
 Why not just put two inline comments on the same line? 
-
----
-
-_Referenced in [pylint-dev/pylint#9738](../../pylint-dev/pylint/issues/9738.md) on 2024-06-20 07:05_
-
----
-
-_Referenced in [astral-sh/ruff#12377](../../astral-sh/ruff/issues/12377.md) on 2024-07-18 12:09_
 
 ---
 
@@ -477,33 +445,9 @@ IMO, I'd:
 
 ---
 
-_Referenced in [astral-sh/ruff#16766](../../astral-sh/ruff/issues/16766.md) on 2025-03-17 08:18_
-
----
-
-_Referenced in [astral-sh/ruff#17198](../../astral-sh/ruff/issues/17198.md) on 2025-04-04 11:34_
-
----
-
-_Referenced in [frappe/frappe#31933](../../frappe/frappe/pulls/31933.md) on 2025-04-14 11:52_
-
----
-
-_Referenced in [astral-sh/ruff#17423](../../astral-sh/ruff/issues/17423.md) on 2025-04-16 13:54_
-
----
-
-_Referenced in [hypothesis/h#9539](../../hypothesis/h/pulls/9539.md) on 2025-05-05 17:05_
-
----
-
 _Comment by @alexchandel on 2025-05-19 15:11_
 
 Is there a workaround for this?  I sometimes have to disable a lint for a region of code.
-
----
-
-_Referenced in [astral-sh/ruff#18364](../../astral-sh/ruff/issues/18364.md) on 2025-05-29 09:54_
 
 ---
 
@@ -530,14 +474,6 @@ _Assigned to @amyreese by @amyreese on 2025-10-07 00:08_
 
 ---
 
-_Referenced in [astral-sh/ruff#21423](../../astral-sh/ruff/issues/21423.md) on 2025-11-16 11:41_
-
----
-
-_Referenced in [opendp/tumult-core#51](../../opendp/tumult-core/pulls/51.md) on 2025-11-16 20:42_
-
----
-
 _Comment by @maltevesper on 2025-11-19 12:38_
 
 I have not read the entire discussion, but have not found it in the checklist in the issue.
@@ -549,30 +485,6 @@ https://github.com/astral-sh/ruff/issues/3711#issuecomment-1487991823
 If you have implemented scopes, the answer to your previous comment about how to handle an `off` without a following `on`, on the implementation side might be simply create implicit per-file scopes. Moreover, if you disable multiple lints for a block of code, you do not have to repeat yourself. Rather than typing out the lint numbers in an off comment and a subsequent on comment you simply pop the scope.
 
 
-
----
-
-_Referenced in [etiennebacher/jarl#218](../../etiennebacher/jarl/issues/218.md) on 2025-11-29 11:15_
-
----
-
-_Referenced in [astral-sh/ruff#21623](../../astral-sh/ruff/pulls/21623.md) on 2025-12-02 23:43_
-
----
-
-_Referenced in [astral-sh/ruff#21441](../../astral-sh/ruff/pulls/21441.md) on 2025-12-02 23:44_
-
----
-
-_Referenced in [astral-sh/ruff#21783](../../astral-sh/ruff/pulls/21783.md) on 2025-12-04 02:21_
-
----
-
-_Referenced in [astral-sh/ruff#21884](../../astral-sh/ruff/pulls/21884.md) on 2025-12-10 02:45_
-
----
-
-_Referenced in [astral-sh/ruff#21908](../../astral-sh/ruff/pulls/21908.md) on 2025-12-10 23:21_
 
 ---
 
@@ -882,10 +794,6 @@ The new suppression system is already implemented and available when running Ruf
 
 ---
 
-_Referenced in [astral-sh/ruff#22038](../../astral-sh/ruff/pulls/22038.md) on 2025-12-17 20:04_
-
----
-
 _Comment by @amyreese on 2025-12-17 21:59_
 
 
@@ -901,9 +809,5 @@ _Comment by @amyreese on 2025-12-17 21:59_
 > ```
 
 That is currently being added in #21908 
-
----
-
-_Referenced in [astral-sh/ruff#22099](../../astral-sh/ruff/pulls/22099.md) on 2025-12-19 21:59_
 
 ---

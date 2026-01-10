@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-28T05:40:06Z
 updated_at: 2024-06-03T11:31:42Z
 url: https://github.com/astral-sh/ruff/issues/11577
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Ignore D412 (`blank-lines-between-header-and-content`)  if a reStructuredText directive follows a section header
@@ -114,10 +114,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-05-30 04:03_
 
 ---
 
-_Referenced in [astral-sh/ruff#11609](../../astral-sh/ruff/pulls/11609.md) on 2024-05-30 04:19_
-
----
-
 _Comment by @dhruvmanila on 2024-06-03 11:31_
 
 I think this is resolved by #11609, @charliermarsh feel free to re-open if it's not complete.
@@ -125,9 +121,5 @@ I think this is resolved by #11609, @charliermarsh feel free to re-open if it's 
 ---
 
 _Closed by @dhruvmanila on 2024-06-03 11:31_
-
----
-
-_Referenced in [pytest-dev/pytest#12449](../../pytest-dev/pytest/pulls/12449.md) on 2024-06-11 07:39_
 
 ---

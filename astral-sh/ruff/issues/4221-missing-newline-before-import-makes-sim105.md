@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-04T10:41:37Z
 updated_at: 2023-05-04T11:54:45Z
 url: https://github.com/astral-sh/ruff/issues/4221
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Missing newline before import makes SIM105 produce invalid autofix
@@ -51,10 +51,6 @@ I originally found this when testing bokeh in [this file](https://github.com/bok
 ---
 
 _Label `bug` added by @konstin on 2023-05-04 10:41_
-
----
-
-_Referenced in [astral-sh/ruff#4220](../../astral-sh/ruff/pulls/4220.md) on 2023-05-04 10:48_
 
 ---
 

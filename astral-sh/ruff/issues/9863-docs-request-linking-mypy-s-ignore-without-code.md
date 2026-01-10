@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-06T20:32:13Z
 updated_at: 2024-02-07T21:30:52Z
 url: https://github.com/astral-sh/ruff/issues/9863
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Docs request: linking `mypy`'s `ignore-without-code` in `PGH003`
@@ -37,10 +37,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-02-07 21:08_
 ---
 
 _Label `documentation` added by @charliermarsh on 2024-02-07 21:08_
-
----
-
-_Referenced in [astral-sh/ruff#9879](../../astral-sh/ruff/pulls/9879.md) on 2024-02-07 21:12_
 
 ---
 

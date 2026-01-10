@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-04-11T12:58:00Z
 updated_at: 2024-04-11T14:56:32Z
 url: https://github.com/astral-sh/ruff/issues/10878
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # `exclude` under `[tool.ruff.lint]` does not exclude directory
@@ -136,9 +136,5 @@ We're tracking this bug in https://github.com/astral-sh/ruff/issues/8267
 ---
 
 _Closed by @MichaReiser on 2024-04-11 14:56_
-
----
-
-_Referenced in [brainglobe/brainglobe-atlasapi#584](../../brainglobe/brainglobe-atlasapi/pulls/584.md) on 2025-07-31 09:55_
 
 ---

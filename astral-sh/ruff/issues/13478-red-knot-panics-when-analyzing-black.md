@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-23T07:49:18Z
 updated_at: 2024-11-13T15:06:22Z
 url: https://github.com/astral-sh/ruff/issues/13478
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Red Knot panics when analyzing black
@@ -640,10 +640,6 @@ _Label `bug` added by @MichaReiser on 2024-09-23 07:49_
 ---
 
 _Label `red-knot` added by @MichaReiser on 2024-09-23 07:49_
-
----
-
-_Referenced in [astral-sh/ruff#14091](../../astral-sh/ruff/pulls/14091.md) on 2024-11-04 13:12_
 
 ---
 

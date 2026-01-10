@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-23T17:18:10Z
 updated_at: 2025-05-07T15:22:01Z
 url: https://github.com/astral-sh/ruff/issues/15697
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [red-knot] add ecosystem check
@@ -78,10 +78,6 @@ While selecting some projects from mypy_primer, I noted down some issues that ap
 * [ ] `lint:unused-ignore-comment` => Some of these could be a signal for false negatives? Others could just be an indication that we might need a feature to silence those unused *generic* `# type: ignore` comments
 * [ ] `lint:unresolved-attribute` because we don't understand `super` => https://github.com/astral-sh/ruff/issues/16615
 * [ ] Missing understanding of `@property` => https://github.com/astral-sh/ruff/issues/16616
-
----
-
-_Referenced in [astral-sh/ruff#16749](../../astral-sh/ruff/pulls/16749.md) on 2025-03-14 15:01_
 
 ---
 

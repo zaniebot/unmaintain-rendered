@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-13T13:30:22Z
 updated_at: 2024-09-05T15:28:11Z
 url: https://github.com/astral-sh/ruff/issues/12861
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Rule request: abstractmethod appears on normal class
@@ -91,13 +91,5 @@ _Comment by @opk12 on 2024-09-05 15:28_
 
 in fact the @[abc.abstractmethod](https://docs.python.org/3/library/abc.html#abc.abstractmethod) docs says
 > Using this decorator requires that the class’s metaclass is [ABCMeta](https://docs.python.org/3/library/abc.html#abc.ABCMeta) or is derived from it.
-
----
-
-_Referenced in [astral-sh/ruff#14688](../../astral-sh/ruff/pulls/14688.md) on 2024-11-30 07:29_
-
----
-
-_Referenced in [astral-sh/ruff#17636](../../astral-sh/ruff/issues/17636.md) on 2025-04-28 07:38_
 
 ---

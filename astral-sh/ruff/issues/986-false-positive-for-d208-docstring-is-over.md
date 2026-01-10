@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-01T18:37:37Z
 updated_at: 2022-12-02T01:15:45Z
 url: https://github.com/astral-sh/ruff/issues/986
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # False-positive for D208 "Docstring is over-indented" for code sample at the end of module docstring
@@ -63,10 +63,6 @@ I think this can comfortably be considered a bug because it deviates from the `p
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2022-12-01 21:14_
-
----
-
-_Referenced in [astral-sh/ruff#991](../../astral-sh/ruff/pulls/991.md) on 2022-12-02 00:54_
 
 ---
 

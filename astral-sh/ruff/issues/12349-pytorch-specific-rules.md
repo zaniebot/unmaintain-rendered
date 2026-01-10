@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-16T16:42:54Z
 updated_at: 2025-06-16T17:18:48Z
 url: https://github.com/astral-sh/ruff/issues/12349
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # PyTorch-specific rules
@@ -77,9 +77,5 @@ Rule: detect usage of `x * x.log()` (entropy), advise users to use special funct
 _Comment by @isaaccorley on 2025-06-16 17:18_
 
 bump -- would also love to use this with ruff!
-
----
-
-_Referenced in [torchgeo/torchgeo#2839](../../torchgeo/torchgeo/issues/2839.md) on 2025-06-18 12:33_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-03T05:08:19Z
 updated_at: 2023-09-04T08:44:30Z
 url: https://github.com/astral-sh/ruff/issues/7068
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # `unused-variable` (`N806`) false positive on non-global type aliases
@@ -40,10 +40,6 @@ We can probably only support avoiding this when marked as `Bar: TypeAlias` (whic
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-09-03 22:52_
-
----
-
-_Referenced in [astral-sh/ruff#7119](../../astral-sh/ruff/pulls/7119.md) on 2023-09-03 22:54_
 
 ---
 

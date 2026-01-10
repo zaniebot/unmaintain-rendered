@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-12-07T13:16:51Z
 updated_at: 2022-12-07T15:55:47Z
 url: https://github.com/astral-sh/ruff/issues/1119
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:17Z
 ```
 
 # [Question] Re-raising errors and BLE001
@@ -55,10 +55,6 @@ Based on PyCQA/flake8-bugbear#174, we would forbid `BaseException` no matter wha
 
 ---
 
-_Referenced in [astral-sh/ruff#1124](../../astral-sh/ruff/pulls/1124.md) on 2022-12-07 15:36_
-
----
-
 _Comment by @charliermarsh on 2022-12-07 15:36_
 
 I ended up implementing it here: https://github.com/charliermarsh/ruff/pull/1124. It only detects the simple case of a `raise` in the immediate exception handler body. We could improve it, but seems complex and not sure how common that is.
@@ -80,21 +76,5 @@ We could use the same approach.
 _Comment by @charliermarsh on 2022-12-07 15:55_
 
 Yeah I just didn't feel it was worth the complexity vs. the common case right now vs. some other things I need to get done. You're very welcome to work on it if you'd like, @JonathanPlasse!
-
----
-
-_Referenced in [astral-sh/ruff#2360](../../astral-sh/ruff/issues/2360.md) on 2023-01-30 19:09_
-
----
-
-_Referenced in [astral-sh/ruff#970](../../astral-sh/ruff/issues/970.md) on 2024-02-21 14:41_
-
----
-
-_Referenced in [astral-sh/ruff#11289](../../astral-sh/ruff/issues/11289.md) on 2024-05-05 11:33_
-
----
-
-_Referenced in [astral-sh/ruff#17827](../../astral-sh/ruff/issues/17827.md) on 2025-05-05 17:48_
 
 ---

@@ -1,0 +1,54 @@
+```yaml
+number: 9281
+title: FURB152 should look at additional digits to reduce false positives
+type: issue
+state: closed
+author: hauntsaninja
+labels:
+  - bug
+assignees: []
+created_at: 2023-12-26T07:10:39Z
+updated_at: 2023-12-27T14:45:39Z
+url: https://github.com/astral-sh/ruff/issues/9281
+synced_at: 2026-01-10T11:09:51Z
+```
+
+# FURB152 should look at additional digits to reduce false positives
+
+---
+
+_Issue opened by @hauntsaninja on 2023-12-26 07:10_
+
+For example, it'll trigger on the following program
+```
+x = 2.7139914879495697
+```
+I think the rule should avoid erroring if there are additional decimal digits that do not match, so:
+```
+bad1 = 2.7182
+bad2 = 2.7183
+good1 = 2.71824
+good2 = 2.71820001
+```
+
+---
+
+_Comment by @charliermarsh on 2023-12-26 21:54_
+
+Trying to figure out what the best approach is here. I may need to look at what other tools do. E.g., what if the user rounds at some decimal point?
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-12-26 21:54_
+
+---
+
+_Comment by @hauntsaninja on 2023-12-27 03:19_
+
+Thanks! Issue description mentions how I think rounding should be done; I opened a PR for this at https://github.com/astral-sh/ruff/pull/9290
+
+---
+
+_Closed by @charliermarsh on 2023-12-27 14:45_
+
+---

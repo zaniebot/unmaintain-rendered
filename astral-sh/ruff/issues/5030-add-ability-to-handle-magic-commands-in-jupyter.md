@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-12T16:17:25Z
 updated_at: 2023-08-09T04:58:53Z
 url: https://github.com/astral-sh/ruff/issues/5030
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Add ability to handle magic commands in Jupyter notebook
@@ -42,19 +42,7 @@ Jupytext has a simpler implementation although lots of regex: https://github.com
 
 ---
 
-_Referenced in [astral-sh/ruff#5188](../../astral-sh/ruff/issues/5188.md) on 2023-06-19 18:30_
-
----
-
 _Assigned to @dhruvmanila by @dhruvmanila on 2023-06-26 16:11_
-
----
-
-_Referenced in [astral-sh/ruff#1079](../../astral-sh/ruff/issues/1079.md) on 2023-06-27 12:11_
-
----
-
-_Referenced in [astral-sh/ruff#5552](../../astral-sh/ruff/pulls/5552.md) on 2023-07-06 05:05_
 
 ---
 
@@ -92,18 +80,6 @@ The solution which we've implemented is to integrate it in the parser directly. 
 
 ---
 
-_Referenced in [astral-sh/ruff#6272](../../astral-sh/ruff/pulls/6272.md) on 2023-08-02 12:30_
-
----
-
-_Referenced in [astral-sh/ruff#6358](../../astral-sh/ruff/pulls/6358.md) on 2023-08-05 02:06_
-
----
-
 _Closed by @dhruvmanila on 2023-08-09 04:58_
-
----
-
-_Referenced in [dsa-ou/algoesup#56](../../dsa-ou/algoesup/issues/56.md) on 2025-03-16 13:07_
 
 ---

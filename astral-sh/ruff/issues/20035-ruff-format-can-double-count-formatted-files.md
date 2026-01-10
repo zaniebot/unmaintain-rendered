@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-21T23:01:52Z
 updated_at: 2025-09-19T18:40:24Z
 url: https://github.com/astral-sh/ruff/issues/20035
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # `ruff format` can double count formatted files
@@ -77,17 +77,9 @@ It's unclear if we should dedup the actual formatting or dedup the counts.
 
 ---
 
-_Referenced in [astral-sh/uv#15438](../../astral-sh/uv/pulls/15438.md) on 2025-08-21 23:05_
-
----
-
 _Comment by @MichaReiser on 2025-08-22 06:10_
 
 We should deduplicate the files because that fixes #19395 too. 
-
----
-
-_Referenced in [astral-sh/ruff#20105](../../astral-sh/ruff/pulls/20105.md) on 2025-08-26 19:42_
 
 ---
 

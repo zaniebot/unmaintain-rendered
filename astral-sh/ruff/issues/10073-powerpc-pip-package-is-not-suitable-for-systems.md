@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-21T18:48:05Z
 updated_at: 2024-02-23T07:32:23Z
 url: https://github.com/astral-sh/ruff/issues/10073
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # PowerPC pip package is not suitable for systems with 64 KiB pages
@@ -78,18 +78,6 @@ maturin doesn't support this atm, but it should be passed through if you set it 
 
 ---
 
-_Referenced in [astral-sh/ruff#10080](../../astral-sh/ruff/pulls/10080.md) on 2024-02-22 13:35_
-
----
-
 _Closed by @MichaReiser on 2024-02-23 07:32_
-
----
-
-_Referenced in [astral-sh/uv#6528](../../astral-sh/uv/issues/6528.md) on 2024-09-11 11:16_
-
----
-
-_Referenced in [astral-sh/ruff#13506](../../astral-sh/ruff/issues/13506.md) on 2024-09-24 16:22_
 
 ---

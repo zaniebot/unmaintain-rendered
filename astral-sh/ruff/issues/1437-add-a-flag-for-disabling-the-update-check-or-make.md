@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-29T09:23:01Z
 updated_at: 2022-12-30T09:16:50Z
 url: https://github.com/astral-sh/ruff/issues/1437
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T12:05:28Z
 ```
 
 # Add a flag for disabling the update check or make it opt-in
@@ -66,10 +66,6 @@ _Comment by @charliermarsh on 2022-12-29 16:48_
 ---
 
 _Label `configuration` added by @charliermarsh on 2022-12-29 16:48_
-
----
-
-_Referenced in [astral-sh/ruff#1445](../../astral-sh/ruff/pulls/1445.md) on 2022-12-29 18:06_
 
 ---
 

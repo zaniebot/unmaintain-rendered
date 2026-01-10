@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-11T15:21:28Z
 updated_at: 2024-11-14T21:39:39Z
 url: https://github.com/astral-sh/ruff/issues/14283
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [Infinite loop] PLC0414 conflicts with I002 if a useless alias is required
@@ -98,10 +98,6 @@ _Label `help wanted` added by @AlexWaygood on 2024-11-11 15:47_
 
 ---
 
-_Referenced in [astral-sh/ruff#14287](../../astral-sh/ruff/pulls/14287.md) on 2024-11-11 22:29_
-
----
-
 _Comment by @dylwil3 on 2024-11-11 22:31_
 
 Thanks for this!
@@ -121,9 +117,5 @@ _Closed by @dylwil3 on 2024-11-14 21:39_
 ---
 
 _Closed by @dylwil3 on 2024-11-14 21:39_
-
----
-
-_Referenced in [astral-sh/ruff#18365](../../astral-sh/ruff/issues/18365.md) on 2025-05-29 10:14_
 
 ---

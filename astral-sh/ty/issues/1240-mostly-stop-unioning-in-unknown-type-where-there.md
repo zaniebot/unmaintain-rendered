@@ -8,9 +8,9 @@ labels:
   - type-inference
 assignees: []
 created_at: 2025-09-23T02:28:53Z
-updated_at: 2026-01-09T17:45:02Z
+updated_at: 2026-01-10T09:04:56Z
 url: https://github.com/astral-sh/ty/issues/1240
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-10T11:36:18Z
 ```
 
 # (mostly) stop unioning in `Unknown` type where there is no type annotation
@@ -155,5 +155,23 @@ If there are users reading this who are concerned about this change, or feel tha
 ---
 
 _Renamed from "add an option to disable `Unknown` type from from being added where there is no type annotation" to "(mostly) stop unioning in `Unknown` type where there is no type annotation" by @carljm on 2026-01-09 17:45_
+
+---
+
+_Comment by @KotlinIsland on 2026-01-10 05:04_
+
+@carljm this sounds really perfect. I'm really glad to see that the decision makers here have the right direction 
+
+---
+
+_Comment by @AndBoyS on 2026-01-10 09:04_
+
+> Even prior to implementing [#1473](https://github.com/astral-sh/ty/issues/1473), we now plan to remove the union-with-Unknown behavior in almost all cases (and not even keep an option to enable it broadly). For now we will still have `list[Unknown]` for `mylist = []`, but that will be fixed by [#1473](https://github.com/astral-sh/ty/issues/1473). But `mylist = [1, 2, 3]` will be inferred as `list[int]` (not `list[Unknown | int]`) and an `x = 1` attribute will be inferred as an attribute of type `int` (not `Unknown | int`).
+> 
+> The one case where we plan to keep the union-with-Unknown is for singleton types (most notably `None`). In effect this will be another form of literal-promotion, where we "promote" `None` to `Unknown | None`, because it's very unlikely that you want an instance attribute whose value can only ever be `None`, or a list that can only ever contain `None`. (If you do want that, of course it is still possible via explicit annotation.) We will have an opt-in diagnostic to warn in the cases where this promotion occurs, for those users who want to ensure they don't ever get this `Unknown` inserted.
+> 
+> If there are users reading this who are concerned about this change, or feel that you have use cases that will be negatively affected, please reach out so we can discuss your use case!
+
+It will still be nice to have as an opt-in option for untyped code, since it will be a source of some false positives (from my experience, it will usually come from list of custom objects, like [CustomClass1(), CustomClass2(), ...])
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-02T11:06:59Z
 updated_at: 2024-10-03T12:06:16Z
 url: https://github.com/astral-sh/ruff/issues/13602
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # `UP043` only applies to `typing.Generator`, not `collections.abc.Generator`
@@ -63,10 +63,6 @@ _Assigned to @cake-monotone by @AlexWaygood on 2024-10-02 13:59_
 ---
 
 _Label `bug` added by @AlexWaygood on 2024-10-02 13:59_
-
----
-
-_Referenced in [astral-sh/ruff#13611](../../astral-sh/ruff/pulls/13611.md) on 2024-10-03 11:59_
 
 ---
 

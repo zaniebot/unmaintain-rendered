@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-20T07:43:01Z
 updated_at: 2024-01-02T18:54:13Z
 url: https://github.com/astral-sh/ruff/issues/5907
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # incorrect ranges for constants in joined strings?
@@ -93,10 +93,6 @@ https://github.com/astral-sh/RustPython-Parser/blob/2d1f69cbb9e331bd7b29253e7f10
 
 ---
 
-_Referenced in [astral-sh/ruff#5913](../../astral-sh/ruff/issues/5913.md) on 2023-07-20 10:05_
-
----
-
 _Comment by @MichaReiser on 2023-07-20 15:27_
 
 @davidszotten are you interested in implementing the necessary changes in our parser or would you prefer if I or konsti tackle this?
@@ -110,10 +106,6 @@ _Label `help wanted` added by @MichaReiser on 2023-07-20 15:28_
 _Comment by @davidszotten on 2023-07-20 16:15_
 
 i started having a look but i'll admit i'm struggling a bit. i guess i need to first fix the ranges e.g. in https://github.com/astral-sh/RustPython-Parser/blob/2d1f69cbb9e331bd7b29253e7f101b47d92bcbff/parser/src/string.rs#L480 and then extract/track those to use in `take_current`?
-
----
-
-_Referenced in [astral-sh/RustPython-Parser#33](../../astral-sh/RustPython-Parser/pulls/33.md) on 2023-07-20 19:48_
 
 ---
 
@@ -153,10 +145,6 @@ _Comment by @davidszotten on 2023-07-21 10:20_
 > [astral-sh/RustPython-Parser#33](https://github.com/astral-sh/RustPython-Parser/pull/33)
 
 sorry for not explicitly posting it, thought the back references github add were enough. will be more explicit in the future
-
----
-
-_Referenced in [astral-sh/ruff#5976](../../astral-sh/ruff/issues/5976.md) on 2023-07-22 12:47_
 
 ---
 

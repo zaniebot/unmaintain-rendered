@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-12-02T05:17:46Z
 updated_at: 2023-05-11T17:43:53Z
 url: https://github.com/astral-sh/ruff/issues/993
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # D101 does not consider __all__
@@ -49,10 +49,6 @@ _Label `docstring` added by @charliermarsh on 2022-12-31 18:17_
 
 ---
 
-_Referenced in [astral-sh/ruff#4209](../../astral-sh/ruff/issues/4209.md) on 2023-05-04 02:46_
-
----
-
 _Comment by @henryborchers on 2023-05-04 14:56_
 
 "Publicity" is the case for all in the D1xx group, not just D101. If there is an `__all__` in the module, only the items listed as part of it should receive these checks.  [See here for details.](https://www.pydocstyle.org/en/2.1.1/error_codes.html#publicity)
@@ -73,10 +69,6 @@ I'm working on this, but it requires some refactoring, since we can no longer tr
 _Comment by @henryborchers on 2023-05-08 14:30_
 
 @charliermarsh  BTW, I heard you on Talk Python. We need more people like you.
-
----
-
-_Referenced in [astral-sh/ruff#4357](../../astral-sh/ruff/pulls/4357.md) on 2023-05-10 19:10_
 
 ---
 

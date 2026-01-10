@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-31T12:40:00Z
 updated_at: 2025-01-31T14:19:37Z
 url: https://github.com/astral-sh/ruff/issues/15849
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Panic in `PYI019` autofix
@@ -54,10 +54,6 @@ _Assigned to @AlexWaygood by @AlexWaygood on 2025-01-31 12:40_
 
 ---
 
-_Referenced in [astral-sh/ruff#15821](../../astral-sh/ruff/pulls/15821.md) on 2025-01-31 12:41_
-
----
-
 _Comment by @AlexWaygood on 2025-01-31 13:05_
 
 This also triggers a panic at the same location in the Rust code:
@@ -70,10 +66,6 @@ class F:
 Because there's another `map_subscript` call here, which is also incorrect:
 
 https://github.com/astral-sh/ruff/blob/59be5f5278d78e42a46b9e7c9306a93a3892ab29/crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs#L217-L222
-
----
-
-_Referenced in [astral-sh/ruff#15851](../../astral-sh/ruff/pulls/15851.md) on 2025-01-31 13:34_
 
 ---
 

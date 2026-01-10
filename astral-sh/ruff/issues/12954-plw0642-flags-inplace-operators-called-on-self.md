@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-08-17T15:33:23Z
 updated_at: 2024-08-18T15:31:10Z
 url: https://github.com/astral-sh/ruff/issues/12954
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # PLW0642 flags inplace operators called on self
@@ -86,10 +86,6 @@ _Label `accepted` added by @AlexWaygood on 2024-08-17 17:21_
 ---
 
 _Label `help wanted` added by @AlexWaygood on 2024-08-17 17:22_
-
----
-
-_Referenced in [astral-sh/ruff#12957](../../astral-sh/ruff/pulls/12957.md) on 2024-08-17 20:08_
 
 ---
 

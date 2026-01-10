@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-17T23:25:57Z
 updated_at: 2025-04-26T15:13:49Z
 url: https://github.com/astral-sh/ruff/issues/17455
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # F401 false positive for forward references in TypeAliases
@@ -72,10 +72,6 @@ This seems to be similar to #9298.
 
 ---
 
-_Referenced in [astral-sh/ruff#9298](../../astral-sh/ruff/issues/9298.md) on 2025-04-26 12:35_
-
----
-
 _Comment by @Daverball on 2025-04-26 15:13_
 
 @pekkaklarck It's not really related to the other issue. The other issue is mostly about lack of type inference and multi-file analysis, so ruff doesn't know which subscripts are generics and which ones aren't. There isn't really a better solution to this than what we currently have, because if you start treating more things as generic subscripts instead of regular subscripts, you will instead start getting false positives for `undefined-name` (`F821`) and other rules that rely on the string being correctly interpreted as a string, rather than a forward reference.
@@ -87,9 +83,5 @@ But once we have determined that this is indeed a type alias, it is already too 
 So the best we can do is do, is to do the same thing we do for `from __future__ import annotations` and do a speculative lookup of the annotation to see whether or not it resolves to `{typing module}.TypeAlias`, which would require us to parse all forward references in `AnnAssign.annotation` eagerly, rather than lazily. You can still get the wrong result that way by moving the import of `TypeAlias` below its use, but that's a highly unorthodox use-case, so likely not a problem many people will encounter.
 
 We may be able to get away with something simpler, like trying to interpret the annotation as a dotted name. If the text isn't a dotted name we know it can't resolve to `{typing module}.TypeAlias` and if the dotted name doesn't resolve to `{typing module}.TypeAlias` we know that it's very unlikely that it will ever resolve to it, even after we analyze the rest of the module. But doing that might be more expensive than eagerly parsing the annotation and doing the standard name matching lookup, since we need to eventually parse it anyways.
-
----
-
-_Referenced in [cocotb/cocotb#4745](../../cocotb/cocotb/pulls/4745.md) on 2025-06-11 17:09_
 
 ---

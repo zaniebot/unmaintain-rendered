@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-24T12:19:31Z
 updated_at: 2024-03-06T17:54:31Z
 url: https://github.com/astral-sh/ruff/issues/8164
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Improve message for 'true-false-comparison' (E712)
@@ -194,18 +194,10 @@ _Label `good first issue` added by @zanieb on 2023-11-08 17:14_
 
 ---
 
-_Referenced in [astral-sh/ruff#8613](../../astral-sh/ruff/pulls/8613.md) on 2023-11-11 09:30_
-
----
-
 _Assigned to @tjkuson by @charliermarsh on 2023-11-25 17:50_
 
 ---
 
 _Closed by @AlexWaygood on 2024-03-06 17:54_
-
----
-
-_Referenced in [astral-sh/ruff#4560](../../astral-sh/ruff/issues/4560.md) on 2024-08-02 12:07_
 
 ---

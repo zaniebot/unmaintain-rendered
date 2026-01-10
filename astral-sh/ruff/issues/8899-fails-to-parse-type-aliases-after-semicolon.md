@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-29T05:44:30Z
 updated_at: 2023-11-30T19:15:21Z
 url: https://github.com/astral-sh/ruff/issues/8899
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Fails to parse type aliases after semicolon
@@ -65,10 +65,6 @@ _Unassigned @zanieb by @charliermarsh on 2023-11-30 00:53_
 _Comment by @charliermarsh on 2023-11-30 00:54_
 
 (Coordinated with @zanieb, I'm gonna take this and the related parser error.)
-
----
-
-_Referenced in [astral-sh/ruff#8916](../../astral-sh/ruff/pulls/8916.md) on 2023-11-30 00:55_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-20T10:33:16Z
 updated_at: 2024-08-20T11:00:50Z
 url: https://github.com/astral-sh/ruff/issues/13006
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # add `--show-files` for `ruff format`
@@ -48,9 +48,5 @@ _Label `cli` added by @MichaReiser on 2024-08-20 11:00_
 ---
 
 _Label `wish` added by @MichaReiser on 2024-08-20 11:00_
-
----
-
-_Referenced in [astral-sh/ruff#13027](../../astral-sh/ruff/issues/13027.md) on 2024-08-21 09:19_
 
 ---

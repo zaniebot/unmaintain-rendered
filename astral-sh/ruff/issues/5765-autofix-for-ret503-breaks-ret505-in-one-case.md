@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-14T19:15:28Z
 updated_at: 2024-08-14T07:47:47Z
 url: https://github.com/astral-sh/ruff/issues/5765
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Autofix for RET503 breaks RET505 (in one case)
@@ -130,10 +130,6 @@ It's not a big deal for me since I don't mind skipping this cosmetic check, but 
 _Comment by @JonathanPlasse on 2024-04-21 14:24_
 
 Should `RET503` be simplified to only add `return None` at the end of the function?
-
----
-
-_Referenced in [astral-sh/ruff#11074](../../astral-sh/ruff/pulls/11074.md) on 2024-04-21 16:27_
 
 ---
 

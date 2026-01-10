@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-07T18:42:31Z
 updated_at: 2023-02-07T20:18:54Z
 url: https://github.com/astral-sh/ruff/issues/2631
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # SIM108: autofix crashes due to introduced syntax error
@@ -72,10 +72,6 @@ $ ruff --select SIM108 --fix --diff foo.py
 _Comment by @charliermarsh on 2023-02-07 20:16_
 
 Disabling for now, for yield and awaits. Need to fix the underlying bug.
-
----
-
-_Referenced in [astral-sh/ruff#2637](../../astral-sh/ruff/pulls/2637.md) on 2023-02-07 20:17_
 
 ---
 

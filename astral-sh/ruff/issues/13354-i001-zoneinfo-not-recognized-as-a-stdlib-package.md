@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-14T21:14:16Z
 updated_at: 2024-09-15T00:54:54Z
 url: https://github.com/astral-sh/ruff/issues/13354
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # I001: `zoneinfo` not recognized as a stdlib package for PEP-8 compliant import formatting.
@@ -55,10 +55,6 @@ import zoneinfo
 ```
 
 Based on rule `I001 [*] Import block is un-sorted or un-formatted`.
-
----
-
-_Referenced in [python-telegram-bot/python-telegram-bot#4326](../../python-telegram-bot/python-telegram-bot/pulls/4326.md) on 2024-09-14 21:15_
 
 ---
 
@@ -132,13 +128,5 @@ Don't ask me on this one lol 🤷 thanks for the help anyway! :)
 ---
 
 _Closed by @gtkacz on 2024-09-15 00:54_
-
----
-
-_Referenced in [astral-sh/ruff#13446](../../astral-sh/ruff/issues/13446.md) on 2024-09-22 05:07_
-
----
-
-_Referenced in [astral-sh/ruff#10457](../../astral-sh/ruff/issues/10457.md) on 2024-09-22 05:32_
 
 ---

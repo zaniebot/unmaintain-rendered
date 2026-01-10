@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-01T01:57:52Z
 updated_at: 2024-03-02T04:03:01Z
 url: https://github.com/astral-sh/ruff/issues/10177
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # [T10]: Feature Request: Add checks for debugpy and ptvsd imports
@@ -35,10 +35,6 @@ Sounds reasonable to me.
 ---
 
 _Label `good first issue` added by @charliermarsh on 2024-03-01 03:44_
-
----
-
-_Referenced in [astral-sh/ruff#10194](../../astral-sh/ruff/pulls/10194.md) on 2024-03-02 02:33_
 
 ---
 

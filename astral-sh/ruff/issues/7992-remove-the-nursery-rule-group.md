@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-16T19:09:54Z
 updated_at: 2024-02-01T19:35:08Z
 url: https://github.com/astral-sh/ruff/issues/7992
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Remove the "nursery" rule group
@@ -38,19 +38,7 @@ We may want to keep `RuleSelector::Nursery` in order to throw a nicer error mess
 
 ---
 
-_Referenced in [astral-sh/ruff#9461](../../astral-sh/ruff/issues/9461.md) on 2024-01-11 01:20_
-
----
-
 _Assigned to @zanieb by @zanieb on 2024-01-29 17:55_
-
----
-
-_Referenced in [astral-sh/ruff#9682](../../astral-sh/ruff/pulls/9682.md) on 2024-01-29 18:26_
-
----
-
-_Referenced in [astral-sh/ruff#9683](../../astral-sh/ruff/pulls/9683.md) on 2024-01-29 19:08_
 
 ---
 
@@ -70,18 +58,6 @@ _Added to milestone `v0.3.0` by @zanieb on 2024-01-29 21:35_
 
 ---
 
-_Referenced in [astral-sh/ruff#9680](../../astral-sh/ruff/pulls/9680.md) on 2024-01-30 19:18_
-
----
-
 _Closed by @zanieb on 2024-02-01 19:35_
-
----
-
-_Referenced in [astral-sh/ruff#10172](../../astral-sh/ruff/pulls/10172.md) on 2024-02-29 14:29_
-
----
-
-_Referenced in [astral-sh/ruff#12005](../../astral-sh/ruff/pulls/12005.md) on 2024-06-26 08:48_
 
 ---

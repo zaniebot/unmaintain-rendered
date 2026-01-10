@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-22T19:02:29Z
 updated_at: 2025-08-28T20:58:40Z
 url: https://github.com/astral-sh/ruff/issues/20050
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # RUF037 false negative on `deque(f"{""}")`
@@ -52,10 +52,6 @@ _Label `help wanted` removed by @dylwil3 on 2025-08-22 20:28_
 ---
 
 _Label `good first issue` added by @dylwil3 on 2025-08-22 20:28_
-
----
-
-_Referenced in [astral-sh/ruff#20109](../../astral-sh/ruff/pulls/20109.md) on 2025-08-27 03:04_
 
 ---
 

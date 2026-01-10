@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-30T07:22:12Z
 updated_at: 2024-12-30T08:24:42Z
 url: https://github.com/astral-sh/ruff/issues/15198
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [PROPOSAL] live (graph) analysis
@@ -40,10 +40,6 @@ like a list of impacted files, whether cyclic dependencies will be introduced, e
 is configured with data/config files in its `include-dependencies`, this could show how much might change if
 a seemingly simple JSON is edited. Depending on how useful this could be made, it could end up being 
 something that's constantly running on the side and offering information and possibly aid.
-
----
-
-_Referenced in [astral-sh/ruff#15178](../../astral-sh/ruff/pulls/15178.md) on 2024-12-30 07:22_
 
 ---
 

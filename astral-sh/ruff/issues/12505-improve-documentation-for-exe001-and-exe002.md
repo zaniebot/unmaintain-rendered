@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-25T08:33:49Z
 updated_at: 2024-07-28T20:23:01Z
 url: https://github.com/astral-sh/ruff/issues/12505
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Improve documentation for EXE001 and EXE002
@@ -37,10 +37,6 @@ _Label `help wanted` added by @MichaReiser on 2024-07-26 06:43_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-28 20:01_
-
----
-
-_Referenced in [astral-sh/ruff#12547](../../astral-sh/ruff/pulls/12547.md) on 2024-07-28 20:01_
 
 ---
 

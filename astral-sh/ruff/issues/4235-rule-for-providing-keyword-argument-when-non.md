@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-05T04:46:04Z
 updated_at: 2023-07-10T01:29:31Z
 url: https://github.com/astral-sh/ruff/issues/4235
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # (🎁) Rule for providing keyword argument when non-meaningful literal is passed as positional argument
@@ -56,9 +56,5 @@ Reminiscent of the `flake8-boolean-trap` rules.
 ---
 
 _Label `needs-decision` added by @charliermarsh on 2023-07-10 01:29_
-
----
-
-_Referenced in [astral-sh/ruff#8382](../../astral-sh/ruff/issues/8382.md) on 2024-02-06 12:08_
 
 ---

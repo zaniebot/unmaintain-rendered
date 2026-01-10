@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-16T10:09:09Z
 updated_at: 2024-12-17T10:13:10Z
 url: https://github.com/astral-sh/ruff/issues/15017
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Rule idea: warn about unsafe usage of `$` in regular expressions
@@ -52,10 +52,6 @@ _Label `rule` added by @AlexWaygood on 2024-12-16 14:45_
 ---
 
 _Label `needs-decision` added by @AlexWaygood on 2024-12-16 14:47_
-
----
-
-_Referenced in [astral-sh/ruff#14738](../../astral-sh/ruff/issues/14738.md) on 2024-12-16 21:14_
 
 ---
 

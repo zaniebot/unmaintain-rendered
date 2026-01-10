@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-29T09:47:48Z
 updated_at: 2024-05-30T07:49:39Z
 url: https://github.com/astral-sh/ruff/issues/11597
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # error from version 4.3 on Windows 7
@@ -61,10 +61,6 @@ Yeah, that seems reasonable and I should probably have waited with this change u
 ---
 
 _Label `documentation` added by @MichaReiser on 2024-05-30 07:28_
-
----
-
-_Referenced in [astral-sh/ruff#11613](../../astral-sh/ruff/pulls/11613.md) on 2024-05-30 07:31_
 
 ---
 

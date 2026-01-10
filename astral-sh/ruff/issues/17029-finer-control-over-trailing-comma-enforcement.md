@@ -1,0 +1,55 @@
+```yaml
+number: 17029
+title: Finer control over trailing comma enforcement
+type: issue
+state: open
+author: Hawk777
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-03-28T03:01:30Z
+updated_at: 2025-03-29T05:27:29Z
+url: https://github.com/astral-sh/ruff/issues/17029
+synced_at: 2026-01-10T11:09:58Z
+```
+
+# Finer control over trailing comma enforcement
+
+---
+
+_Issue opened by @Hawk777 on 2025-03-28 03:01_
+
+### Summary
+
+Some people are very happy with enforcing trailing commas in multiline collection literals and function definitions, but would prefer not to enforce trailing commas in multiline function *calls*. Their rationale is that the trailing comma both shrinks the diff if additional items are added and also implies to the reader that more items could be added; while this is true for collection literals (in which more collection elements can be added) and function definitions (in which more formal parameters can be added), it is in most cases *not* true in function calls (other than in the somewhat rarer case of parameters with default values). It would be nice if we could enable enforcement of trailing commas for only some categories of multiline structures without enforcing them for all such structures.
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-03-28 15:39_
+
+---
+
+_Label `needs-decision` added by @MichaReiser on 2025-03-28 15:39_
+
+---
+
+_Comment by @MichaReiser on 2025-03-28 15:46_
+
+We intentionally haven't focused on the stylistic lint rules recently because we encourage users to use the formatter instead. That's why I don't think we'll change this in the near future but it does sound reasonable to me. 
+
+However, I don't want a setting that allows toggling trailing commas for every node that allows trailing comma. Instead, it would be an option that groups nodes and allows enabling, disabling for entire groups.
+
+---
+
+_Comment by @Hawk777 on 2025-03-29 05:27_
+
+> We intentionally haven't focused on the stylistic lint rules recently because we encourage users to use the formatter instead. That's why I don't think we'll change this in the near future but it does sound reasonable to me.
+
+That sounds nice to me. Unfortunately, given that the Ruff formatter is highly opinionated and not very configurable: let me know when you’ve convinced everyone else on the planet to like your choice of format 😆 ! If I’m working on a project with other contributors, it’s not my choice to use it.
+
+> However, I don't want a setting that allows toggling trailing commas for every node that allows trailing comma. Instead, it would be an option that groups nodes and allows enabling, disabling for entire groups.
+
+For my purposes, I would be happy with just three coarse groups: (1) collection literals, (2) function definitions, and (3) function calls. These seem qualitatively different such that people could reasonably want or not want trailing commas in each group separately. I can’t think off-hand of other places where comma-separated lists of things appear, but if there are, and they don’t fit into these categories, those might form one or two more groups.
+
+---

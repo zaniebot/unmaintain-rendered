@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-01T11:41:16Z
 updated_at: 2024-12-02T13:28:28Z
 url: https://github.com/astral-sh/ruff/issues/14698
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # regression: ruff deletes imports; successive checks fail due to missing import
@@ -347,14 +347,6 @@ We should probably revert this change and redo the implementation
 
 ---
 
-_Referenced in [astral-sh/ruff#14726](../../astral-sh/ruff/pulls/14726.md) on 2024-12-02 12:19_
-
----
-
-_Referenced in [astral-sh/ruff#13824](../../astral-sh/ruff/issues/13824.md) on 2024-12-02 12:20_
-
----
-
 _Comment by @Daverball on 2024-12-02 13:15_
 
 Edit: For some reason Eli's comment is rendered at the bottom of this issue for me, so I apologize if this confusion had already been cleared up in the meantime.
@@ -368,9 +360,5 @@ You generally probably wouldn't want ruff to destroy an explicit reference, just
 ---
 
 _Closed by @MichaReiser on 2024-12-02 13:28_
-
----
-
-_Referenced in [astral-sh/ruff#15215](../../astral-sh/ruff/pulls/15215.md) on 2025-01-02 00:12_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-03T09:57:16Z
 updated_at: 2023-06-12T23:28:59Z
 url: https://github.com/astral-sh/ruff/issues/4829
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Autofix ISC001 (single-line-implicit-string-concatenation)
@@ -36,10 +36,6 @@ Totally agree, autofix could make it easier to fix this kind of code
 _Comment by @tkukushkin on 2023-06-04 11:42_
 
 Trying to write autofixer by myself
-
----
-
-_Referenced in [astral-sh/ruff#4853](../../astral-sh/ruff/pulls/4853.md) on 2023-06-04 19:40_
 
 ---
 

@@ -1,0 +1,155 @@
+```yaml
+number: 20120
+title: F401 false positive on submodule imports
+type: issue
+state: open
+author: gcbrownthrive
+labels:
+  - bug
+assignees: []
+created_at: 2025-08-27T21:44:33Z
+updated_at: 2025-09-16T19:42:00Z
+url: https://github.com/astral-sh/ruff/issues/20120
+synced_at: 2026-01-10T11:09:59Z
+```
+
+# F401 false positive on submodule imports
+
+---
+
+_Issue opened by @gcbrownthrive on 2025-08-27 21:44_
+
+### Summary
+
+It's well known that importing python modules doesn't necessarily import the submodules. It appears that F401 doesn't take into account some of the edge cases due to this behavior.
+
+In the example below, `snowflake.connector` does NOT import `snowflake.connector.pandas_tools`, so line 2 is necessary. But `F401` assumes that line 2 is unused because it thinks the function is already accessible due to line 1.
+
+This is reproducible with the 3 lines shown in the screenshot, and the command `ruff test.py`.
+
+<img width="743" height="210" alt="Image" src="https://github.com/user-attachments/assets/221d7840-4d1a-4766-9beb-2317475a8733" /> 
+
+### Version
+
+ruff 0.12.10
+
+---
+
+_Comment by @ntBre on 2025-08-28 01:54_
+
+Submodule imports are definitely a bit touchy, see https://github.com/astral-sh/ruff/issues/4656 as one other example, but I think a better solution here is either:
+
+```py
+from snowflake.connector.pandas_tools import write_pandas
+
+write_pandas()
+```
+
+or
+
+```py
+import snowflake.connector.pandas_tools
+
+snowflake.connector.pandas_tools.write_pandas()
+```
+
+both of which will avoid F401, so I think the diagnostic isn't exactly wrong, although the suggestion to remove the import certainly is misleading. You can also see this in a case like this:
+
+```py
+from snowflake.connector.pandas_tools import write_pandas  # F401
+
+snowflake.connector.pandas_tools.write_pandas()
+```
+
+without the first import. Ruff is trying to tell you that the `from`-style import is unnecessary, I think.
+
+Here are these examples in the [playground](https://play.ruff.rs/a9e0f618-e210-45e7-afb2-ec5415430a1f). I wrapped each one in a function just to make sure they don't interfere with each other.
+
+---
+
+_Label `question` added by @ntBre on 2025-08-28 01:54_
+
+---
+
+_Comment by @gcbrownthrive on 2025-08-29 19:40_
+
+I think I see why this is complicated, but I'd say that its suggestion is definitely wrong. If I removed the import it's telling me to, the code would not run. If I ran `ruff check --fix test.py`, the code would not run. According to the docs (https://docs.astral.sh/ruff/rules/unused-import/), "Fixes to remove unused imports are safe". But this is unsafe behavior, so either the docs need to be updated or this behavior should be fixed.
+
+---
+
+_Comment by @ntBre on 2025-08-29 22:02_
+
+Oh you're right, I didn't realize this was a safe fix. That's definitely not good.
+
+---
+
+_Label `question` removed by @ntBre on 2025-08-29 22:02_
+
+---
+
+_Label `bug` added by @ntBre on 2025-08-29 22:02_
+
+---
+
+_Comment by @MichaReiser on 2025-09-15 14:41_
+
+CC: @dylwil3 it might be interesting to see if your changes fix this.
+
+---
+
+_Comment by @dylwil3 on 2025-09-15 15:09_
+
+> CC: [@dylwil3](https://github.com/dylwil3) it might be interesting to see if your changes fix this.
+
+It does not, unfortunately. As I mention in the PR summary, the change is the least ambitious possible 😄 
+
+I think this situation would be pretty difficult for F401 to detect since it relies on very subtle behavior of the Python import system. For example, notice that
+
+```python
+from a.b import foo
+
+a.b.foo()
+```
+
+fails with a name error because the symbol `a` is not bound. The code snippet in the OP is pretty misleading because it could equally well be written in any of the following ways and still run:
+
+```python
+import snowflake.connector
+from snowflake.connector.pandas_tools import something_completely_different_from_that_module
+
+snowflake.connector.pandas_tools.write_pandas()
+```
+
+```python
+import snowflake.connector
+from snowflake.connector import pandas_tools
+
+snowflake.connector.pandas_tools.write_pandas()
+```
+
+```python
+import snowflake.connector
+from snowflake.connector import pandas_tools as foo
+
+snowflake.connector.pandas_tools.write_pandas()
+```
+
+I don't even really know where that behavior is documented / whether it's part of the _specification_ or if it's an artifact of the implementation of from imports - which caches submodule imports as valid members of the top-level module, even if they are aliased. I don't think we model this behavior at all? I don't have an immediately helpful suggestion for how to proceed... but I'll try to think about it.
+
+
+---
+
+_Comment by @danparizher on 2025-09-16 19:42_
+
+> I don't even really know where that behavior is documented / whether it's part of the _specification_ or if it's an artifact of the implementation of from imports - which caches submodule imports as valid members of the top-level module, even if they are aliased. I don't think we model this behavior at all? I don't have an immediately helpful suggestion for how to proceed... but I'll try to think about it.
+
+I did some digging and found that it’s documented (and specified) that importing a submodule binds it as an attribute of its parent package. The import statement reference notes that for forms like `import package.submodule`, only `package` is bound in the local namespace, and `submodule` is accessed as an attribute of `package`—which implies the binding on the parent object.
+
+So, the behavior described isn’t merely an implementation artifact; it’s part of the language’s specified import semantics.
+
+https://docs.python.org/3/tutorial/modules.html#packages
+https://docs.python.org/3/library/importlib.html#importlib.import_module
+
+When it comes to implementing a fix, my idea of a conservative approach could be to detect the pattern where we have both `import package` and `from package.submodule import ...` alongside qualified usage like `package.submodule.*`. In these cases, instead of suggesting removal of the submodule import, we could either suppress the F401 autofix entirely or suggest a safe rewrite like `import package.submodule` to maintain the qualified access pattern. This would keep the "Fixes to remove unused imports are safe" guarantee accurate while avoiding the complex task of modeling Python's import-time attribute binding behavior.
+
+---

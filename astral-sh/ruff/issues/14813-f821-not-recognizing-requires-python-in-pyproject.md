@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-06T11:50:00Z
 updated_at: 2025-03-14T08:59:14Z
 url: https://github.com/astral-sh/ruff/issues/14813
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # F821 not recognizing `requires-python` in `pyproject.toml`
@@ -131,10 +131,6 @@ _Added to milestone `v0.10` by @MichaReiser on 2025-02-11 21:51_
 
 ---
 
-_Referenced in [astral-sh/ruff#16180](../../astral-sh/ruff/issues/16180.md) on 2025-02-16 10:28_
-
----
-
 _Comment by @MichaReiser on 2025-02-16 10:33_
 
 This has just come up again and seems to -- understandably -- be very confusing to users. This, unfortunately will be a breaking change and implementing it under preview is difficult because it happens during configuration loading (we don't know yet if the user has preview enabled). 
@@ -187,14 +183,6 @@ That's a great call. We have to be careful that the change upholds the constrain
 
 2. This case is less clear to me but I think we should ignore the `pyproject.toml` in this case as well (because there's an ancestor `ruff.toml`). I could see this to be a common setup in mono repositories where you have multiple sub-projects but you want to have a single shared ruff configuration. Although, maybe this isn't that "clever" because it means that you have to list all project directories in the `src` setting or ruff won't resolve the first party imports correctly. But an example of this is airflow. They use a root [pyrpoject.toml](https://github.com/apache/airflow/blob/main/pyproject.toml) but also have multiple sub-projects (providers) where each has their own [pyproject.toml](https://github.com/apache/airflow/blob/e3aabea4c2d46599291e4dbcaad8efa83fd8a780/providers/microsoft/psrp/pyproject.toml#L4). We should make sure not to break this setup. 
 
-
----
-
-_Referenced in [astral-sh/ruff#16319](../../astral-sh/ruff/pulls/16319.md) on 2025-02-22 19:14_
-
----
-
-_Referenced in [astral-sh/ruff#16662](../../astral-sh/ruff/issues/16662.md) on 2025-03-12 05:11_
 
 ---
 

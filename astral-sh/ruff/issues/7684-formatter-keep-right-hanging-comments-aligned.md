@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-27T23:50:36Z
 updated_at: 2025-06-28T01:17:46Z
 url: https://github.com/astral-sh/ruff/issues/7684
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Formatter: Keep right-hanging comments aligned
@@ -158,10 +158,6 @@ Straw man proposal:
 * `comment-column = +2` - a relative setting, i.e. the current black/ruff default
 * `comment-column = false` - preserve existing whitespace, i.e. the `blue` behavior
 
-
----
-
-_Referenced in [grantjenks/blue#77](../../grantjenks/blue/issues/77.md) on 2023-10-07 18:36_
 
 ---
 
@@ -444,10 +440,6 @@ coefficients = [
 ]
 ```
 Am I correct reading through the issue that there is no way to add some type of exclusion to prevent inline comments from being excluded from formatting?
-
----
-
-_Referenced in [falconry/falcon#2218](../../falconry/falcon/issues/2218.md) on 2024-03-23 20:55_
 
 ---
 

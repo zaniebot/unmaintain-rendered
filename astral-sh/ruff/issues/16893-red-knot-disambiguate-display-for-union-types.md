@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-21T11:04:54Z
 updated_at: 2025-03-22T12:08:52Z
 url: https://github.com/astral-sh/ruff/issues/16893
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] Disambiguate display for union types
@@ -71,14 +71,6 @@ _Comment by @MatthewMckee4 on 2025-03-22 00:28_
 Or maybe just add if its not the last element?
 
 *Pyright always adds "()" to callable in union
-
----
-
-_Referenced in [astral-sh/ruff#16907](../../astral-sh/ruff/pulls/16907.md) on 2025-03-22 00:34_
-
----
-
-_Referenced in [astral-sh/ruff#16912](../../astral-sh/ruff/issues/16912.md) on 2025-03-22 12:08_
 
 ---
 

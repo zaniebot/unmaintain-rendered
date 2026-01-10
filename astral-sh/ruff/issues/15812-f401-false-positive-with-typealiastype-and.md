@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-29T16:14:17Z
 updated_at: 2025-01-30T23:06:39Z
 url: https://github.com/astral-sh/ruff/issues/15812
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # `F401` false positive with `TypeAliasType` and forward annotation
@@ -120,10 +120,6 @@ _Assigned to @ntBre by @ntBre on 2025-01-29 21:11_
 
 ---
 
-_Referenced in [astral-sh/ruff#15829](../../astral-sh/ruff/pulls/15829.md) on 2025-01-30 15:17_
-
----
-
 _Label `question` removed by @AlexWaygood on 2025-01-30 15:23_
 
 ---
@@ -137,9 +133,5 @@ _Closed by @ntBre on 2025-01-30 23:06_
 ---
 
 _Closed by @ntBre on 2025-01-30 23:06_
-
----
-
-_Referenced in [astral-sh/ruff#15860](../../astral-sh/ruff/issues/15860.md) on 2025-01-31 22:16_
 
 ---

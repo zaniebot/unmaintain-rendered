@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-04T06:04:37Z
 updated_at: 2023-09-06T16:03:34Z
 url: https://github.com/astral-sh/ruff/issues/7123
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Rules SIM105 cause autofix error
@@ -76,10 +76,6 @@ def write_models(directory, Models):
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-09-06 12:59_
-
----
-
-_Referenced in [astral-sh/ruff#7191](../../astral-sh/ruff/pulls/7191.md) on 2023-09-06 13:27_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-01T17:22:18Z
 updated_at: 2023-06-01T19:53:51Z
 url: https://github.com/astral-sh/ruff/issues/4790
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # F401 false positive in try except ImportError
@@ -68,10 +68,6 @@ Guessing it’s related to the del but I’ll have to test.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-06-01 19:42_
-
----
-
-_Referenced in [astral-sh/ruff#4793](../../astral-sh/ruff/pulls/4793.md) on 2023-06-01 19:45_
 
 ---
 

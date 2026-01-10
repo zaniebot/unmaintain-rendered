@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-28T11:31:07Z
 updated_at: 2025-02-28T16:29:51Z
 url: https://github.com/astral-sh/ruff/issues/16438
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # SIM115 should exempt `unittest.TestCase.enterContext()` and `enterClassContext()`
@@ -51,10 +51,6 @@ Found 1 error.
 ### Version
 
 0.9.7
-
----
-
-_Referenced in [astral-sh/ruff#16439](../../astral-sh/ruff/pulls/16439.md) on 2025-02-28 11:59_
 
 ---
 

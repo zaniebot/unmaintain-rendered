@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-28T18:32:31Z
 updated_at: 2022-11-29T15:32:02Z
 url: https://github.com/astral-sh/ruff/issues/944
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # Support for Eradicate
@@ -50,10 +50,6 @@ I'm gonna give this a try now.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2022-11-28 21:19_
-
----
-
-_Referenced in [astral-sh/ruff#947](../../astral-sh/ruff/pulls/947.md) on 2022-11-28 22:10_
 
 ---
 

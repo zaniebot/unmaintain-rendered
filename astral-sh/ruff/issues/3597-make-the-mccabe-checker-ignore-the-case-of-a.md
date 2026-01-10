@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-03-18T11:04:13Z
 updated_at: 2024-10-19T08:55:25Z
 url: https://github.com/astral-sh/ruff/issues/3597
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Make the mccabe checker ignore the case of a single top-level elif chain or match statement
@@ -75,10 +75,6 @@ Sorry, I haven't had much time to spend on this. I might get to it at some point
 ---
 
 _Unassigned @antonagestam by @charliermarsh on 2023-04-04 16:45_
-
----
-
-_Referenced in [pymodbus-dev/pymodbus#1477](../../pymodbus-dev/pymodbus/issues/1477.md) on 2023-04-24 14:36_
 
 ---
 

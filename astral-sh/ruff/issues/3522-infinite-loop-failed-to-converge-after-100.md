@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-14T20:24:56Z
 updated_at: 2023-03-19T18:29:15Z
 url: https://github.com/astral-sh/ruff/issues/3522
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # [Infinite Loop] Failed to converge after 100 iterations.
@@ -87,10 +87,6 @@ Thank you :heart:
 ---
 
 _Assigned to @vlindhol by @charliermarsh on 2023-03-19 15:52_
-
----
-
-_Referenced in [astral-sh/ruff#3609](../../astral-sh/ruff/pulls/3609.md) on 2023-03-19 15:57_
 
 ---
 

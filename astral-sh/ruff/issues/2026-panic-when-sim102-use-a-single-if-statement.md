@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-20T12:52:42Z
 updated_at: 2023-01-20T14:08:06Z
 url: https://github.com/astral-sh/ruff/issues/2026
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # [Panic] when SIM102 Use a single `if` statement instead of nested `if` statements
@@ -99,14 +99,6 @@ _Label `bug` added by @charliermarsh on 2023-01-20 13:12_
 
 ---
 
-_Referenced in [astral-sh/ruff#2028](../../astral-sh/ruff/pulls/2028.md) on 2023-01-20 13:36_
-
----
-
 _Closed by @charliermarsh on 2023-01-20 14:08_
-
----
-
-_Referenced in [astral-sh/ruff#2033](../../astral-sh/ruff/pulls/2033.md) on 2023-01-20 16:36_
 
 ---

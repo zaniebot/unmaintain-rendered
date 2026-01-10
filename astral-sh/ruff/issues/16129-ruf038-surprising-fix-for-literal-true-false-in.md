@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-12T23:17:31Z
 updated_at: 2025-02-16T15:01:50Z
 url: https://github.com/astral-sh/ruff/issues/16129
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # `RUF038` Surprising fix for  `Literal[True, False]` in functions with overloads
@@ -154,10 +154,6 @@ mypy 1.15.0 (compiled: yes)
 
 ---
 
-_Referenced in [astral-sh/ty#216](../../astral-sh/ty/issues/216.md) on 2025-02-12 23:18_
-
----
-
 _Comment by @Geo5 on 2025-02-12 23:34_
 
 Oh i am so sorry! I didn't read [the doc for rule `RUF038`](https://docs.astral.sh/ruff/rules/redundant-bool-literal/) close enough and did not look at the issues linked there! I think the issues for mypy and pyright might cover this?
@@ -220,9 +216,5 @@ _Comment by @Geo5 on 2025-02-16 15:01_
 
 I agree with everything you said, thank you for the writeup!
 Just for some additional context, i didn't hit the `mypy` bug without the fix, as i only ever called the overloaded function as `foo(..., True)` or `foo(..., False)`, but i agree that this is probably rare.
-
----
-
-_Referenced in [astral-sh/ruff#20211](../../astral-sh/ruff/issues/20211.md) on 2025-09-03 15:43_
 
 ---

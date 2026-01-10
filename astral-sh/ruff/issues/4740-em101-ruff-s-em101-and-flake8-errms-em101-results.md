@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-31T00:17:03Z
 updated_at: 2023-05-31T04:37:45Z
 url: https://github.com/astral-sh/ruff/issues/4740
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # [EM101] Ruff's EM101 and flake8-errms' EM101 results are inconsistent when the string literal is an empty string
@@ -64,10 +64,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-05-31 04:12_
 ---
 
 _Label `bug` added by @charliermarsh on 2023-05-31 04:12_
-
----
-
-_Referenced in [astral-sh/ruff#4745](../../astral-sh/ruff/pulls/4745.md) on 2023-05-31 04:18_
 
 ---
 

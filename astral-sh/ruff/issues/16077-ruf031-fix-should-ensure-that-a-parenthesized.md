@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-02-10T14:29:36Z
 updated_at: 2025-02-10T17:30:08Z
 url: https://github.com/astral-sh/ruff/issues/16077
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # RUF031 fix should ensure that a parenthesized single-element tuple has a comma
@@ -58,10 +58,6 @@ I think that even if the user selects `true` for `parenthesize-tuple-in-subscrip
 ---
 
 _Label `preview` added by @dylwil3 on 2025-02-10 17:21_
-
----
-
-_Referenced in [astral-sh/ruff#16083](../../astral-sh/ruff/pulls/16083.md) on 2025-02-10 17:21_
 
 ---
 

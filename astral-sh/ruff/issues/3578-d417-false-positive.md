@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-17T16:18:37Z
 updated_at: 2023-03-18T17:14:04Z
 url: https://github.com/astral-sh/ruff/issues/3578
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # D417 false-positive
@@ -77,10 +77,6 @@ _Assigned to @JonathanPlasse by @MichaReiser on 2023-03-17 16:37_
 ---
 
 _Label `bug` added by @MichaReiser on 2023-03-17 16:37_
-
----
-
-_Referenced in [astral-sh/ruff#3596](../../astral-sh/ruff/pulls/3596.md) on 2023-03-18 10:57_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-11T00:07:32Z
 updated_at: 2023-10-20T23:27:13Z
 url: https://github.com/astral-sh/ruff/issues/7904
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Does ruff have a plan for addressing flake8 or pycodestyle new changes?
@@ -59,10 +59,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-10-11 00:20_
 _Comment by @charliermarsh on 2023-10-11 00:20_
 
 I'll update E721 now and use this issue for it.
-
----
-
-_Referenced in [astral-sh/ruff#7905](../../astral-sh/ruff/pulls/7905.md) on 2023-10-11 00:33_
 
 ---
 

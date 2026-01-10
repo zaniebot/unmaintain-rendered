@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-11-20T14:01:13Z
 updated_at: 2025-12-10T14:20:30Z
 url: https://github.com/astral-sh/ruff/issues/21538
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # [Linter panic] RUF027 preview rule can cause linter panic on specific string
@@ -92,10 +92,6 @@ _Assigned to @dylwil3 by @dylwil3 on 2025-11-21 03:10_
 _Comment by @MichaReiser on 2025-12-10 13:55_
 
 This is actually valid Python syntax :) 
-
----
-
-_Referenced in [astral-sh/ruff#21895](../../astral-sh/ruff/pulls/21895.md) on 2025-12-10 14:10_
 
 ---
 

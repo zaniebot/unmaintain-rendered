@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-13T22:55:03Z
 updated_at: 2025-07-15T16:51:42Z
 url: https://github.com/astral-sh/ruff/issues/9507
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Versioned documentation
@@ -78,10 +78,6 @@ _Label `documentation` added by @charliermarsh on 2024-01-14 02:04_
 
 ---
 
-_Referenced in [astral-sh/ruff#4159](../../astral-sh/ruff/issues/4159.md) on 2024-01-14 03:21_
-
----
-
 _Comment by @willingc on 2024-01-24 06:00_
 
 Another option @charliermarsh @zanieb would be to move docs hosting to ReadTheDocs and let them maintain the versioning. Docs would build and preview on each PR. We did this for Jupyter.
@@ -107,9 +103,5 @@ Otherwise Google and other search engines likes to occasionally send people to o
 
 @kaddkaka I've turned your good suggestion into a separate issue - as versioned docs are only a workaround for a proper implementation of what you're after: 
 - #19365
-
----
-
-_Referenced in [astral-sh/ruff#19365](../../astral-sh/ruff/issues/19365.md) on 2025-07-15 16:50_
 
 ---

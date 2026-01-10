@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-27T16:32:15Z
 updated_at: 2023-06-28T00:27:27Z
 url: https://github.com/astral-sh/ruff/issues/5396
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Add Jupyter integration to the docs
@@ -40,10 +40,6 @@ Yeah, I think it would be useful as well.
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2023-06-27 18:25_
-
----
-
-_Referenced in [astral-sh/ruff#5403](../../astral-sh/ruff/pulls/5403.md) on 2023-06-27 20:32_
 
 ---
 

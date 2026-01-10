@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-02-02T21:58:49Z
 updated_at: 2025-05-30T05:57:57Z
 url: https://github.com/astral-sh/ruff/issues/2501
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Implement pydowngrade
@@ -174,14 +174,6 @@ https://github.com/dosisod/pun/blob/41d0e5056784d154a7d1699a3fdb25ea9027e2ad/tes
 
 ---
 
-_Referenced in [astral-sh/ruff#13889](../../astral-sh/ruff/issues/13889.md) on 2024-10-23 12:55_
-
----
-
-_Referenced in [astral-sh/ruff#12542](../../astral-sh/ruff/issues/12542.md) on 2025-01-22 16:42_
-
----
-
 _Comment by @ntBre on 2025-01-22 16:45_
 
 Another possible downgrade would be the opposite of UP046 and UP047:
@@ -189,14 +181,6 @@ Another possible downgrade would be the opposite of UP046 and UP047:
 > get linting errors for code that uses newer style generics and should be backward compatible with lower Python versions
 
 i.e removing PEP-695-style generics in favor of standalone `TypeVar`s, as suggested in #12542.
-
----
-
-_Referenced in [astral-sh/ruff#10290](../../astral-sh/ruff/issues/10290.md) on 2025-05-30 01:40_
-
----
-
-_Referenced in [astral-sh/ruff#18381](../../astral-sh/ruff/issues/18381.md) on 2025-05-30 02:12_
 
 ---
 
@@ -230,9 +214,5 @@ I  heard from @ntBre  after making this post, it sounds like the detection shoul
  I think asks in this issue includes  auto-fixes. (although detection is a great improvement, and greatly appreciated) 
 
 People were just discussing somewhat complicated workflows that they wanted this feature for: auto generating different versions of documentation, CI integrations ect. I just wanted to share that there's a somewhat simple use case. Wanting to have your code be valid in a version of python older than the one in your environment. 
-
----
-
-_Referenced in [astral-sh/ruff#19402](../../astral-sh/ruff/issues/19402.md) on 2025-07-17 15:28_
 
 ---

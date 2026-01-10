@@ -1,0 +1,125 @@
+```yaml
+number: 6511
+title: "One or more modules are part of multiple import sections, including: `src`."
+type: issue
+state: closed
+author: zhou13
+labels:
+  - configuration
+assignees: []
+created_at: 2023-08-11T19:00:08Z
+updated_at: 2024-07-25T18:58:08Z
+url: https://github.com/astral-sh/ruff/issues/6511
+synced_at: 2026-01-10T11:09:48Z
+```
+
+# One or more modules are part of multiple import sections, including: `src`.
+
+---
+
+_Issue opened by @zhou13 on 2023-08-11 19:00_
+
+When I run ruff against my codebase, I got the following:
+```
+     warning: One or more modules are part of multiple import sections, including: `src`
+```
+It is not clear to me what it means and how to avoid this warning. Googling does not yield any meaningful results.
+
+---
+
+_Comment by @charliermarsh on 2023-08-11 19:04_
+
+Are you able to include your Ruff configuration? Hard to help without more information.
+
+---
+
+_Label `waiting-on-author` added by @charliermarsh on 2023-08-11 19:04_
+
+---
+
+_Comment by @zhou13 on 2023-08-11 19:05_
+
+Sure:
+```
+[tool.ruff]
+line-length = 88
+select = ["F", "E", "W", "I001"] # pyflakes, pycodestyle, isort
+ignore = [
+    # E402 module level import not at top of file, very hard to workaround
+    "E402",
+    # Line too long
+    "E501",
+    # Do not use variables named 'I', 'O', or 'l'
+    "E741",
+]
+unfixable = ["F401", "F841"]
+extend-exclude = [
+    "*external*",
+    "third_party",
+]
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+src = ["src", "tests"]
+
+target-version = "py310"
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.ruff.isort]
+known-first-party = ["src"]
+known-local-folder = ["src"]
+```
+
+Ruff version:
+```
+$ ruff --version
+ruff 0.0.282
+```
+
+---
+
+_Comment by @charliermarsh on 2023-08-11 19:09_
+
+```toml
+[tool.ruff.isort]
+known-first-party = ["src"]
+known-local-folder = ["src"]
+```
+
+This part here is telling Ruff that imports like `import src.foo` or `from src import bar` should be classified as both first-party and local-folder, so Ruff isn't sure how to classify them, since those are contradictory instructions. Is `src` a package, or is it the folder that contains your package? You should be able to remove these two lines; otherwise, you likely want to exclude `known-local-folder = ["src"]`, that's a very uncommon option as "local folder" is really meant for relative imports (those that start with a dot).
+
+
+---
+
+_Comment by @zhou13 on 2023-08-11 19:16_
+
+Thank you so much! In my case my packages are under `src` folders so I removed these two lines. The warning is gone now.
+
+---
+
+_Closed by @zhou13 on 2023-08-11 19:16_
+
+---
+
+_Label `waiting-on-author` removed by @charliermarsh on 2023-08-11 19:21_
+
+---
+
+_Label `configuration` added by @charliermarsh on 2023-08-11 19:21_
+
+---
+
+_Comment by @charliermarsh on 2023-08-11 19:21_
+
+Great! Hopefully this issue will help someone in the future too :)
+
+---
+
+_Comment by @JayOfferdahl on 2024-07-25 18:58_
+
+> Great! Hopefully this issue will help someone in the future too :)
+
+It did! 😄 Thanks
+
+---

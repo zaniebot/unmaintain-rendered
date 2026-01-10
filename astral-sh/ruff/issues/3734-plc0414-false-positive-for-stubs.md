@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-25T22:02:13Z
 updated_at: 2023-03-27T18:39:03Z
 url: https://github.com/astral-sh/ruff/issues/3734
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # `PLC0414` false positive for stubs
@@ -64,10 +64,6 @@ Ah yeah. I mean, we definitely could disable this rule in `.pyi` files. It's jus
 
 ---
 
-_Referenced in [astral-sh/ruff#3761](../../astral-sh/ruff/pulls/3761.md) on 2023-03-27 18:17_
-
----
-
 _Closed by @charliermarsh on 2023-03-27 18:27_
 
 ---
@@ -75,9 +71,5 @@ _Closed by @charliermarsh on 2023-03-27 18:27_
 _Comment by @charliermarsh on 2023-03-27 18:39_
 
 Figured why not fix, better than flagging the `.pyi` files.
-
----
-
-_Referenced in [astral-sh/ruff#5698](../../astral-sh/ruff/issues/5698.md) on 2023-07-11 23:39_
 
 ---

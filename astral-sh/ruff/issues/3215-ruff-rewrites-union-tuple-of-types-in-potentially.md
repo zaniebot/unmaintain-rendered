@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-24T21:21:26Z
 updated_at: 2023-02-24T22:40:01Z
 url: https://github.com/astral-sh/ruff/issues/3215
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Ruff rewrites `Union[tuple_of_types]` in potentially breaking ways
@@ -112,34 +112,10 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-02-24 22:10_
 
 ---
 
-_Referenced in [astral-sh/ruff#3217](../../astral-sh/ruff/pulls/3217.md) on 2023-02-24 22:36_
-
----
-
 _Closed by @charliermarsh on 2023-02-24 22:40_
 
 ---
 
 _Closed by @charliermarsh on 2023-02-24 22:40_
-
----
-
-_Referenced in [astral-sh/ruff#3937](../../astral-sh/ruff/issues/3937.md) on 2023-04-11 17:28_
-
----
-
-_Referenced in [astral-sh/ruff#4108](../../astral-sh/ruff/issues/4108.md) on 2023-04-26 00:48_
-
----
-
-_Referenced in [astral-sh/ruff#4170](../../astral-sh/ruff/pulls/4170.md) on 2023-05-01 17:07_
-
----
-
-_Referenced in [astral-sh/ruff#4843](../../astral-sh/ruff/issues/4843.md) on 2023-06-03 23:07_
-
----
-
-_Referenced in [astral-sh/ruff#8698](../../astral-sh/ruff/issues/8698.md) on 2023-11-15 17:36_
 
 ---

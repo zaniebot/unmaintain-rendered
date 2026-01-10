@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-22T20:32:03Z
 updated_at: 2024-06-06T06:31:11Z
 url: https://github.com/astral-sh/ruff/issues/11093
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # NPY001 should not replace `np.bool` by `bool` (at least in type hints)
@@ -111,10 +111,6 @@ fyi, numpy 2 will not be released until June 16 (https://github.com/numpy/numpy/
 _Comment by @mtsokol on 2024-06-04 08:44_
 
 Right, I'll adjust the NPY001 to NumPy 2.0 changes to avoid a conflict with the NPY201 rule (namely `np.bool` was restored and points to NumPy's bool instead of a bool builtin, and `np.long` is back and points to C's `long` and `unsigned long` instead of a int builtin). 
-
----
-
-_Referenced in [astral-sh/ruff#11735](../../astral-sh/ruff/pulls/11735.md) on 2024-06-04 09:33_
 
 ---
 

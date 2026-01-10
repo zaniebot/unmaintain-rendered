@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-29T01:20:23Z
 updated_at: 2025-07-29T19:23:17Z
 url: https://github.com/astral-sh/ruff/issues/19610
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # SIM905 fix fails on r-string unescapable character concatenation cases
@@ -66,9 +66,5 @@ _Label `bug` added by @ntBre on 2025-07-29 19:23_
 ---
 
 _Label `fixes` added by @ntBre on 2025-07-29 19:23_
-
----
-
-_Referenced in [astral-sh/ruff#19702](../../astral-sh/ruff/pulls/19702.md) on 2025-08-01 23:28_
 
 ---

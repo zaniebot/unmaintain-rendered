@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-12-08T19:15:10Z
 updated_at: 2023-12-14T16:54:08Z
 url: https://github.com/astral-sh/ruff/issues/9056
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Windows Security flags `ruff.exe` as a virus
@@ -94,9 +94,5 @@ I'm gonna close this for now given that it's hard for us to take action on it un
 ---
 
 _Closed by @charliermarsh on 2023-12-14 16:54_
-
----
-
-_Referenced in [astral-sh/ruff#15239](../../astral-sh/ruff/issues/15239.md) on 2025-01-05 08:53_
 
 ---

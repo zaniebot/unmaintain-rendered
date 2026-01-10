@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-17T20:51:29Z
 updated_at: 2023-03-19T18:16:52Z
 url: https://github.com/astral-sh/ruff/issues/3585
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # [Autofix] Failed to autofix oneline python file
@@ -53,10 +53,6 @@ I think this should be fixed by #3584 too.
 _Comment by @qarmin on 2023-03-17 21:01_
 
 Yes, there is no crash anymore
-
----
-
-_Referenced in [astral-sh/ruff#3584](../../astral-sh/ruff/pulls/3584.md) on 2023-03-17 21:57_
 
 ---
 

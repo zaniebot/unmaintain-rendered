@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-18T01:25:21Z
 updated_at: 2024-01-10T16:35:23Z
 url: https://github.com/astral-sh/ruff/issues/5850
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Add unit tests for file discovery
@@ -33,10 +33,6 @@ Needs test coverage:
 ---
 
 _Label `internal` added by @zanieb on 2023-07-18 01:25_
-
----
-
-_Referenced in [astral-sh/ruff#5775](../../astral-sh/ruff/pulls/5775.md) on 2023-07-18 01:26_
 
 ---
 
@@ -77,10 +73,6 @@ Where should I add a test? `crates/ruff/src/resolver.rs`?
 _Comment by @charliermarsh on 2023-07-22 15:48_
 
 Yes I think that’s appropriate.
-
----
-
-_Referenced in [astral-sh/ruff#5997](../../astral-sh/ruff/pulls/5997.md) on 2023-07-23 01:01_
 
 ---
 

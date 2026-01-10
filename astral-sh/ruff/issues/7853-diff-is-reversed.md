@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-08T21:07:42Z
 updated_at: 2023-10-09T07:28:15Z
 url: https://github.com/astral-sh/ruff/issues/7853
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Diff is reversed
@@ -95,10 +95,6 @@ Oops, PR welcome, thank you.
 _Comment by @bluthej on 2023-10-09 05:33_
 
 @zanieb it seems like there are only two integration tests that test the output of the CLI diff option (`diff_shows_safe_fixes_by_default` and `diff_shows_unsafe_fixes_with_opt_in`), and they were added in #7769, which was merged 2 days after #7813 ^^
-
----
-
-_Referenced in [astral-sh/ruff#7855](../../astral-sh/ruff/pulls/7855.md) on 2023-10-09 05:38_
 
 ---
 

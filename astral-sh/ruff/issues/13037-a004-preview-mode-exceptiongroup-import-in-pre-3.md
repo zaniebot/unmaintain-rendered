@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-21T18:50:40Z
 updated_at: 2024-09-01T17:03:45Z
 url: https://github.com/astral-sh/ruff/issues/13037
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # A004 Preview Mode ExceptionGroup import in pre-3.11
@@ -79,10 +79,6 @@ _Label `preview` added by @dhruvmanila on 2024-08-23 04:58_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-30 22:23_
-
----
-
-_Referenced in [astral-sh/ruff#13172](../../astral-sh/ruff/pulls/13172.md) on 2024-08-30 23:00_
 
 ---
 

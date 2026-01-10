@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-02T12:00:01Z
 updated_at: 2023-07-03T00:18:35Z
 url: https://github.com/astral-sh/ruff/issues/5462
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # B017: Not catching BaseException
@@ -70,10 +70,6 @@ _Comment by @saippuakauppias on 2023-07-02 21:18_
 I don't know why it's not in other linters (maybe the developers forgot that `Exception` is not the root exception class), but I think it's very important and needed here.
 
 Ruff should be better, smarter and more accurate than other linters. Adding `BaseException` class will make it a bit better.
-
----
-
-_Referenced in [astral-sh/ruff#5466](../../astral-sh/ruff/pulls/5466.md) on 2023-07-02 23:28_
 
 ---
 

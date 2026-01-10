@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-03T18:37:49Z
 updated_at: 2025-05-04T09:31:35Z
 url: https://github.com/astral-sh/ruff/issues/17821
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # `lint.typing-extensions` not respected
@@ -67,10 +67,6 @@ ruff 0.11.8 (75effb8ed 2025-05-01)
 
 ---
 
-_Referenced in [python-telegram-bot/python-telegram-bot#4748](../../python-telegram-bot/python-telegram-bot/pulls/4748.md) on 2025-05-03 18:38_
-
----
-
 _Comment by @AlexWaygood on 2025-05-03 19:13_
 
 cc. @ntBre 
@@ -92,10 +88,6 @@ I missed a step combining configurations [here](https://github.com/astral-sh/ruf
 ---
 
 _Label `bug` added by @AlexWaygood on 2025-05-03 19:39_
-
----
-
-_Referenced in [astral-sh/ruff#17823](../../astral-sh/ruff/pulls/17823.md) on 2025-05-03 19:49_
 
 ---
 

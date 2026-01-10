@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-16T01:44:06Z
 updated_at: 2025-01-15T18:05:55Z
 url: https://github.com/astral-sh/ruff/issues/12913
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # [feature request] FastAPI rule: prefer `Annotated` for `Query`, `Path`, `Body`, `Cookie`
@@ -228,10 +228,6 @@ The only piece missing would be to move the `default` outside of `Annotated`. Ma
 ---
 
 _Label `help wanted` removed by @MichaReiser on 2024-12-02 17:23_
-
----
-
-_Referenced in [astral-sh/ruff#15462](../../astral-sh/ruff/pulls/15462.md) on 2025-01-13 22:26_
 
 ---
 

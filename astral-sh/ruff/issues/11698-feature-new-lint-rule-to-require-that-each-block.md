@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-02T21:17:11Z
 updated_at: 2024-06-07T19:30:08Z
 url: https://github.com/astral-sh/ruff/issues/11698
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # [Feature] new lint rule to require that each block must end with # or #. (HashtagDot) or a new line.
@@ -157,10 +157,6 @@ I have no problem with discussion continuing around this idea. Anyone is welcome
 
 ---
 
-_Referenced in [pylint-dev/pylint#9685](../../pylint-dev/pylint/issues/9685.md) on 2024-06-04 19:45_
-
----
-
 _Renamed from "[Feature] new lint rule to require that each block must end with # or #. or a new line." to "[Feature] new lint rule to require that each block must end with # or #. (hashdot) or a new line." by @EdSaleh on 2024-06-04 22:30_
 
 ---
@@ -178,9 +174,5 @@ _Renamed from "[Feature] new lint rule to require that each block must end with 
 ---
 
 _Renamed from "[Feature] new lint rule to require that each block must end with # or #. (HashtagDot) or a new line. And new lint rule for declaring variables to have #declare or #var comment." to "[Feature] new lint rule to require that each block must end with # or #. (HashtagDot) or a new line." by @EdSaleh on 2024-06-05 22:06_
-
----
-
-_Referenced in [astral-sh/ruff#11764](../../astral-sh/ruff/issues/11764.md) on 2024-06-06 19:28_
 
 ---

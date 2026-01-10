@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-10T06:58:03Z
 updated_at: 2023-08-17T02:15:52Z
 url: https://github.com/astral-sh/ruff/issues/6473
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Is there a way to raise `PT011` for any exception types?
@@ -98,10 +98,6 @@ _Assigned to @harupy by @charliermarsh on 2023-08-16 21:38_
 ---
 
 _Unassigned @charliermarsh by @charliermarsh on 2023-08-16 21:38_
-
----
-
-_Referenced in [astral-sh/ruff#6635](../../astral-sh/ruff/pulls/6635.md) on 2023-08-16 23:27_
 
 ---
 

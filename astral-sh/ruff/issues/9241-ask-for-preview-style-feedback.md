@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-12-22T06:00:50Z
 updated_at: 2024-02-13T11:37:38Z
 url: https://github.com/astral-sh/ruff/issues/9241
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Ask for preview style feedback
@@ -39,10 +39,6 @@ _Label `help wanted` added by @MichaReiser on 2023-12-22 06:00_
 ---
 
 _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-12-22 06:00_
-
----
-
-_Referenced in [astral-sh/ruff#8678](../../astral-sh/ruff/issues/8678.md) on 2023-12-22 06:01_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-08T04:41:14Z
 updated_at: 2025-03-10T08:31:43Z
 url: https://github.com/astral-sh/ruff/issues/16561
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # `useless-try-except (TRY203)` false negative?
@@ -124,10 +124,6 @@ Thanks for the confirmation :）
 _Comment by @harupy on 2025-03-08 07:46_
 
 Can I file a PR to fix this?
-
----
-
-_Referenced in [astral-sh/ruff#16564](../../astral-sh/ruff/pulls/16564.md) on 2025-03-08 08:56_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-11-15T22:37:17Z
 updated_at: 2025-05-06T01:34:43Z
 url: https://github.com/astral-sh/ruff/issues/8705
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Use the indent-width setting for E111 and E114
@@ -64,10 +64,6 @@ Oh, it does?
 _Comment by @charliermarsh on 2023-11-15 23:15_
 
 Interesting.
-
----
-
-_Referenced in [astral-sh/ruff#8708](../../astral-sh/ruff/pulls/8708.md) on 2023-11-15 23:18_
 
 ---
 
@@ -131,10 +127,6 @@ Yeah let's just rename that variable.
 
 ---
 
-_Referenced in [astral-sh/ruff#11230](../../astral-sh/ruff/pulls/11230.md) on 2024-05-01 11:56_
-
----
-
 _Comment by @sixshotx on 2025-05-06 01:34_
 
 Looks like ruff still does not take `indent-width` for E111 and E114? I am using `0.9.1`.
@@ -142,9 +134,5 @@ Looks like ruff still does not take `indent-width` for E111 and E114? I am using
 ```
 warning: The `format.indent-width` option with a value other than 4 is incompatible with `E111` and `E114`. We recommend disabling these rules when using the formatter, which enforces a consistent indentation width. Alternatively, set the `format.indent-width` option to `4`.
 ```
-
----
-
-_Referenced in [commaai/opendbc#2621](../../commaai/opendbc/pulls/2621.md) on 2025-08-04 22:20_
 
 ---

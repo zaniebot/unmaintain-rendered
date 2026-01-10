@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-07T15:26:31Z
 updated_at: 2024-05-04T04:05:57Z
 url: https://github.com/astral-sh/ruff/issues/10814
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # ruff server does not support E30* errors?
@@ -434,9 +434,5 @@ but ruff server still doesn't check E30* errors
 <img width="611" alt="image" src="https://github.com/astral-sh/ruff/assets/15830146/653cd1af-6218-434d-97c6-88ef74e0f674">
 
 Is there still a problem with my configuration?
-
----
-
-_Referenced in [astral-sh/ruff#11277](../../astral-sh/ruff/issues/11277.md) on 2024-05-04 04:07_
 
 ---

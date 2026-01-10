@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-10T14:22:16Z
 updated_at: 2023-07-11T06:08:10Z
 url: https://github.com/astral-sh/ruff/issues/5650
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Formatter: `Starred`
@@ -20,10 +20,6 @@ synced_at: 2026-01-10T01:56:48Z
 _Issue opened by @MichaReiser on 2023-07-10 14:22_
 
 _No description provided._
-
----
-
-_Referenced in [astral-sh/ruff#4798](../../astral-sh/ruff/issues/4798.md) on 2023-07-10 14:22_
 
 ---
 

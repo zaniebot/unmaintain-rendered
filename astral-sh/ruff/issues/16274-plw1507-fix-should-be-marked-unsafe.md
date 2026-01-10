@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-20T13:15:43Z
 updated_at: 2025-02-24T17:29:30Z
 url: https://github.com/astral-sh/ruff/issues/16274
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # PLW1507 fix should be marked unsafe
@@ -66,10 +66,6 @@ Can i fix that? :)
 ---
 
 _Assigned to @VascoSch92 by @ntBre on 2025-02-24 00:06_
-
----
-
-_Referenced in [astral-sh/ruff#16343](../../astral-sh/ruff/pulls/16343.md) on 2025-02-24 08:49_
 
 ---
 

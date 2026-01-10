@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-20T13:01:27Z
 updated_at: 2024-11-05T22:30:23Z
 url: https://github.com/astral-sh/ruff/issues/11056
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Improve backport friendliness of quotes in Python 3.12 f-string placeholders
@@ -77,10 +77,6 @@ Reading through the suggested solutions, (1) would be done by #6591, I don't thi
 I think for now it's reasonable to avoid changing the quotes even for 3.12 target version.
 
 Related: https://github.com/astral-sh/ruff/issues/10273, https://github.com/astral-sh/ruff/issues/10184
-
----
-
-_Referenced in [lablup/backend.ai#2053](../../lablup/backend.ai/pulls/2053.md) on 2024-04-23 07:40_
 
 ---
 
@@ -185,19 +181,11 @@ Yeah we don't enforce syntax errors right now -- that's known, and isn't a bug b
 
 ---
 
-_Referenced in [lablup/backend.ai#2826](../../lablup/backend.ai/pulls/2826.md) on 2024-09-10 06:48_
-
----
-
 _Comment by @achimnol on 2024-09-10 07:54_
 
 > What would be a bug is if we changed your code to use syntax that isn't supported by your target version.
 
 PEP-701 f-string literals are **auto-applied** to the Python 3.12 codes and they breaks up things when backported _as-is_.  The problem is that Ruff just applies the quotation change without giving any option to skip the change or proactive checks when executed in prior target versions.  For instance, the pattern matching syntax are not auto-applied but the user should deliberately rewrite existing codes, meaning that the user may simply defer introduction of it regardless of the Ruff/Python versions.  But we do not have such freedom of control for f-strings.  If this were a matter of style, it would be fine, but it is a breaking syntax error...
-
----
-
-_Referenced in [astral-sh/ruff#13371](../../astral-sh/ruff/issues/13371.md) on 2024-09-16 16:19_
 
 ---
 
@@ -220,10 +208,6 @@ f"{f"this isn't using single quotes because it contains single quotes that would
 ```
 
 Keeping the same quotes here should be fine because this syntax is Python 312 or newer
-
----
-
-_Referenced in [astral-sh/ruff#13860](../../astral-sh/ruff/pulls/13860.md) on 2024-10-21 14:28_
 
 ---
 
@@ -301,21 +285,5 @@ Likewise, choosing one style over another for reasons of backwards compatibility
 > I suggest that we create a new issue for this so that we can track this better. @matthewlloyd
 
 Great, I'll open an issue, thank you.
-
----
-
-_Referenced in [astral-sh/ruff#14118](../../astral-sh/ruff/issues/14118.md) on 2024-11-05 22:46_
-
----
-
-_Referenced in [lablup/backend.ai#3347](../../lablup/backend.ai/issues/3347.md) on 2025-01-02 13:47_
-
----
-
-_Referenced in [astral-sh/ruff-action#46](../../astral-sh/ruff-action/issues/46.md) on 2025-01-16 21:55_
-
----
-
-_Referenced in [astral-sh/ruff#16385](../../astral-sh/ruff/pulls/16385.md) on 2025-02-26 16:19_
 
 ---

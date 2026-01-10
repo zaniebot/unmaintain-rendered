@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-06-05T14:47:31Z
 updated_at: 2025-12-05T18:45:20Z
 url: https://github.com/astral-sh/ruff/issues/4866
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Disallow single letter variables outside of comprehensions
@@ -100,10 +100,6 @@ _Label `needs-decision` added by @charliermarsh on 2023-07-10 01:27_
 _Comment by @mwesthelle on 2023-10-31 16:39_
 
 I'm a fan of the pylint approach, which forbids single letter variable names by default, but allows custom exceptions e.g. for loop variables (i, j ,k) via a `good-names` setting: https://pylint.pycqa.org/en/latest/user_guide/configuration/all-options.html#good-names.
-
----
-
-_Referenced in [gentoo/portage#1356](../../gentoo/portage/pulls/1356.md) on 2024-07-04 19:02_
 
 ---
 

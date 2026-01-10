@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-03T01:28:37Z
 updated_at: 2023-03-03T19:15:57Z
 url: https://github.com/astral-sh/ruff/issues/3317
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # RET503: autofix puts return statements before comments of preceeding line
@@ -74,10 +74,6 @@ This has come up once before, will fix tomorrow.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-03-03 19:07_
-
----
-
-_Referenced in [astral-sh/ruff#3324](../../astral-sh/ruff/pulls/3324.md) on 2023-03-03 19:11_
 
 ---
 

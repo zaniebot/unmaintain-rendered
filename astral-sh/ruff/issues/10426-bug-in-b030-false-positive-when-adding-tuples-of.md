@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-15T18:30:45Z
 updated_at: 2024-03-18T00:31:25Z
 url: https://github.com/astral-sh/ruff/issues/10426
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Bug in B030: False positive when adding tuples of exception classes
@@ -69,10 +69,6 @@ _Comment by @autinerd on 2024-03-17 07:49_
 Sounds good to me!
 
 Using `RUF005` to replace tuple concatenations with unpacking eliminates this case of course, because tuple unpacking is detected correctly.
-
----
-
-_Referenced in [astral-sh/ruff#10437](../../astral-sh/ruff/pulls/10437.md) on 2024-03-17 15:02_
 
 ---
 

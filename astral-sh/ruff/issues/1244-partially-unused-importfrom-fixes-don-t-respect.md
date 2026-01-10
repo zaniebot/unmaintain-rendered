@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-15T00:31:15Z
 updated_at: 2022-12-16T04:13:59Z
 url: https://github.com/astral-sh/ruff/issues/1244
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:24Z
 ```
 
 # Partially unused `ImportFrom` fixes don't respect `# noqa`
@@ -62,10 +62,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-12-15 01:22_
 _Comment by @charliermarsh on 2022-12-15 04:58_
 
 (Definitely need to fix this.)
-
----
-
-_Referenced in [astral-sh/ruff#1259](../../astral-sh/ruff/pulls/1259.md) on 2022-12-16 04:11_
 
 ---
 

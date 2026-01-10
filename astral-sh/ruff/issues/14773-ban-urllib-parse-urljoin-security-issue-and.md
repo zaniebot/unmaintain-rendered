@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-04T15:50:42Z
 updated_at: 2024-12-10T06:36:57Z
 url: https://github.com/astral-sh/ruff/issues/14773
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Ban urllib.parse.urljoin (security issue and confusing name)
@@ -140,9 +140,5 @@ _Comment by @andreymal on 2024-12-09 22:20_
 _Comment by @akx on 2024-12-10 06:36_
 
 Absolutely! Sorry, I was thinking you meant `Path()` could be the right thing to use for joining URLs. Never mind me...
-
----
-
-_Referenced in [aio-libs/yarl#2](../../aio-libs/yarl/issues/2.md) on 2024-12-18 09:35_
 
 ---

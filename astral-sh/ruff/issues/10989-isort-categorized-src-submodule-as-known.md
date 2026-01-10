@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-17T07:12:38Z
 updated_at: 2024-04-17T19:18:36Z
 url: https://github.com/astral-sh/ruff/issues/10989
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # isort Categorized `src` submodule as Known(ThirdParty) (NoMatch) inside `src`
@@ -111,10 +111,6 @@ _Label `isort` added by @AlexWaygood on 2024-04-17 11:04_
 
 ---
 
-_Referenced in [astral-sh/ruff#11000](../../astral-sh/ruff/issues/11000.md) on 2024-04-17 13:40_
-
----
-
 _Comment by @charliermarsh on 2024-04-17 14:45_
 
 I'll try to reproduce.
@@ -197,9 +193,5 @@ Not unless someone puts their one config in a submodule.
 My use case is to force everyone in the project use the same config as in the CI regardless. And I wish for that config to mean the same everywhere in the project.
 
 I can fallback to an on-disk configuration or write a wrapper to replace cwd, but that would still be a workaround. The same as my current solution with manually passing all submodules.
-
----
-
-_Referenced in [astral-sh/ruff-pre-commit#103](../../astral-sh/ruff-pre-commit/issues/103.md) on 2025-03-03 06:28_
 
 ---

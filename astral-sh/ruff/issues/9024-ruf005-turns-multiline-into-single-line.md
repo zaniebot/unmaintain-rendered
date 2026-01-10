@@ -1,0 +1,115 @@
+```yaml
+number: 9024
+title: RUF005 turns multiline into single line
+type: issue
+state: open
+author: RonnyPfannschmidt
+labels:
+  - bug
+  - fixes
+assignees: []
+created_at: 2023-12-06T16:45:07Z
+updated_at: 2023-12-07T03:44:27Z
+url: https://github.com/astral-sh/ruff/issues/9024
+synced_at: 2026-01-10T11:09:51Z
+```
+
+# RUF005 turns multiline into single line
+
+---
+
+_Issue opened by @RonnyPfannschmidt on 2023-12-06 16:45_
+
+`RUF005`
+
+takes 
+```python
+import pytest
+
+EMPTY_LIST = pytest.param([], id="empty list")
+EMPTY_DICT = pytest.param({}, id="empty dict")
+
+EMPTY_STR = pytest.param("", id="empty str")
+
+EMPTY_BASICS = (EMPTY_LIST, EMPTY_DICT, EMPTY_STR)
+
+@pytest.mark.parametrize(
+        "page",
+        EMPTY_BASICS
+        + (
+            pytest.param([1], id="list of single int"),
+            pytest.param([1, 2], id="list of multiple ints"),
+            pytest.param(1.5, id="float"),
+            pytest.param(generate_uuid(), id="string"),
+            pytest.param(True, id="True"),
+            pytest.param(False, id="False"),
+            pytest.param("None", id="None"),
+            pytest.param("", id="empty string"),
+        ),
+    )
+def test_resource_types():
+        pass # empty example
+```
+
+and turns the detail into 
+
+```python
+import pytest
+
+EMPTY_LIST = pytest.param([], id="empty list")
+EMPTY_DICT = pytest.param({}, id="empty dict")
+
+EMPTY_STR = pytest.param("", id="empty str")
+
+EMPTY_BASICS = (EMPTY_LIST, EMPTY_DICT, EMPTY_STR)
+
+@pytest.mark.parametrize(
+        "page",
+        (*EMPTY_BASICS, pytest.param([1], id="list of single int"), pytest.param([1, 2], id="list of multiple ints"), pytest.param(1.5, id="float"), pytest.param(generate_uuid(), id="string"), pytest.param(True, id="True"), pytest.param(False, id="False"), pytest.param("None", id="None"), pytest.param("", id="empty string")),
+    )
+def test_resource_types():
+        pass # empty example
+```
+
+the issue can be verifyed on the playground
+the builtin formatter autofixes it as well, however the fix should try to keep indents
+
+a more pathological example with the same behaviour is 
+```python
+import pytest
+
+EMPTY_LIST = pytest.param([], id="empty list")
+EMPTY_DICT = pytest.param({}, id="empty dict")
+
+EMPTY_STR = pytest.param("", id="empty str")
+
+EMPTY_BASICS = (EMPTY_LIST, EMPTY_DICT, EMPTY_STR)
+
+@pytest.mark.parametrize(
+        "page",
+        (
+            pytest.param([1], id="list of single int"),
+            pytest.param([1, 2], id="list of multiple ints"),
+            pytest.param(1.5, id="float"),
+            pytest.param(generate_uuid(), id="string"), 
+            ) + EMPTY_BASICS + (
+            pytest.param(True, id="True"),
+            pytest.param(False, id="False"),
+            pytest.param("None", id="None"),
+            pytest.param("", id="empty string"),
+        ),
+    )
+def test_resource_types():
+        pass # empty example
+```
+   
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-12-07 03:44_
+
+---
+
+_Label `autofix` added by @charliermarsh on 2023-12-07 03:44_
+
+---

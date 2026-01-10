@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-18T20:37:12Z
 updated_at: 2024-10-24T09:05:34Z
 url: https://github.com/astral-sh/ruff/issues/8758
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Consider conditionally applying rule PLR6201
@@ -45,10 +45,6 @@ When the sequences are small, the cost of instantiation of a set in fact negativ
 ---
 
 _Label `rule` added by @charliermarsh on 2023-11-18 23:07_
-
----
-
-_Referenced in [pypa/hatch#1045](../../pypa/hatch/pulls/1045.md) on 2023-11-19 14:53_
 
 ---
 
@@ -155,14 +151,6 @@ Thanks for the details @flying-sheep
 ---
 
 _Closed by @zanieb on 2023-11-20 15:31_
-
----
-
-_Referenced in [astral-sh/ruff#9604](../../astral-sh/ruff/issues/9604.md) on 2024-01-22 00:57_
-
----
-
-_Referenced in [astral-sh/ruff#12051](../../astral-sh/ruff/pulls/12051.md) on 2024-06-27 09:53_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-20T08:55:36Z
 updated_at: 2024-01-30T22:00:09Z
 url: https://github.com/astral-sh/ruff/issues/5909
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # `RET504` invalid autofix
@@ -78,10 +78,6 @@ Shameless plug that Ruff can do it too :joy: https://beta.ruff.rs/docs/rules/sup
 _Comment by @tylerlaprade on 2023-07-21 03:02_
 
 Ah, I do have `SIM` enabled already, so I guess I have two sources of the autofixes!
-
----
-
-_Referenced in [astral-sh/ruff#9673](../../astral-sh/ruff/pulls/9673.md) on 2024-01-29 12:47_
 
 ---
 

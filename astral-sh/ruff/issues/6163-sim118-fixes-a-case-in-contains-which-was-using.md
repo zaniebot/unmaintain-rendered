@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-28T23:46:26Z
 updated_at: 2023-07-29T03:35:28Z
 url: https://github.com/astral-sh/ruff/issues/6163
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # SIM118 fixes a case in __contains__ which was using self, causing recusrion
@@ -65,10 +65,6 @@ _Label `bug` added by @charliermarsh on 2023-07-29 00:27_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-07-29 03:25_
-
----
-
-_Referenced in [astral-sh/ruff#6165](../../astral-sh/ruff/pulls/6165.md) on 2023-07-29 03:27_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-11T22:36:13Z
 updated_at: 2023-01-11T22:51:39Z
 url: https://github.com/astral-sh/ruff/issues/1791
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # SIM108 removes explanatory comments
@@ -61,13 +61,5 @@ yes, duplicate.
 ---
 
 _Closed by @spaceone on 2023-01-11 22:51_
-
----
-
-_Referenced in [astral-sh/ruff#1719](../../astral-sh/ruff/issues/1719.md) on 2023-01-11 22:55_
-
----
-
-_Referenced in [astral-sh/ruff#2621](../../astral-sh/ruff/issues/2621.md) on 2023-02-07 15:48_
 
 ---

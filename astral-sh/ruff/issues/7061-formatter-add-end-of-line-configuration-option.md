@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-02T07:53:49Z
 updated_at: 2024-12-03T03:52:25Z
 url: https://github.com/astral-sh/ruff/issues/7061
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter: Add end of line configuration option
@@ -43,15 +43,7 @@ _Label `cli` added by @MichaReiser on 2023-09-02 07:53_
 
 ---
 
-_Referenced in [astral-sh/ruff#7054](../../astral-sh/ruff/pulls/7054.md) on 2023-09-02 08:05_
-
----
-
 _Assigned to @MichaReiser by @MichaReiser on 2023-09-15 12:47_
-
----
-
-_Referenced in [astral-sh/ruff#7566](../../astral-sh/ruff/pulls/7566.md) on 2023-09-21 11:33_
 
 ---
 

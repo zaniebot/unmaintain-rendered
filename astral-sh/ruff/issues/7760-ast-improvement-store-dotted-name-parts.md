@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-02T09:50:01Z
 updated_at: 2023-10-27T02:54:44Z
 url: https://github.com/astral-sh/ruff/issues/7760
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # AST Improvement: Store dotted name parts
@@ -39,10 +39,6 @@ _Label `formatter` added by @konstin on 2023-10-02 09:50_
 
 ---
 
-_Referenced in [astral-sh/ruff#7744](../../astral-sh/ruff/pulls/7744.md) on 2023-10-02 09:51_
-
----
-
 _Label `formatter` removed by @charliermarsh on 2023-10-02 13:51_
 
 ---
@@ -63,10 +59,6 @@ Module(body=[Import(names=[alias(name='foo.bar')])], type_ignores=[])
 And the ASDL uses the same `identifier` symbol as in other nodes: https://docs.python.org/3/library/ast.html.
 
 But I care more about the ergonomics and performance than I do exact compatibility with CPython on these decisions. Would need to see what this makes easier or harder.
-
----
-
-_Referenced in [astral-sh/ruff#7859](../../astral-sh/ruff/pulls/7859.md) on 2023-10-09 08:18_
 
 ---
 

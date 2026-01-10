@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-16T14:38:46Z
 updated_at: 2024-01-09T20:30:32Z
 url: https://github.com/astral-sh/ruff/issues/8721
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # New rule suggestion: Force parentheses in `A or B and C`
@@ -40,10 +40,6 @@ _Comment by @tjkuson on 2023-12-02 13:28_
 Would it be possible for this rule to also lint against the use of compound `in` comparisons without parentheses? `False == False in [False]` evaluating to `True` is likely unintended and surprising.
 
 EDIT: Actually, this might be better as a different rule due to the AST differences.
-
----
-
-_Referenced in [astral-sh/ruff#8964](../../astral-sh/ruff/issues/8964.md) on 2023-12-02 13:39_
 
 ---
 
@@ -120,10 +116,6 @@ Alright, those are pretty persuasive. I'll leave `not` out for now, thanks!
 
 ---
 
-_Referenced in [astral-sh/ruff#9440](../../astral-sh/ruff/pulls/9440.md) on 2024-01-08 15:22_
-
----
-
 _Closed by @charliermarsh on 2024-01-09 01:28_
 
 ---
@@ -138,9 +130,5 @@ That might be a bit off-topic, but I felt like I need to say it, as you might be
 The precedence can be explained with a math analogy.
 Broadly speaking, in combinatorics, when creating formulas that describe probabilities, multiplication is like `and` (the rule of product) and addition is like `or` (the rule of sum). That's how I teach my students and it becomes very simple for them to read cases like `A or B and C` and see clearly that `B and C` gets evaluated before `A or ...`, as it would in `A + B * C`.
 But yeah, I agree it might be confusing for the majority of people.
-
----
-
-_Referenced in [astral-sh/ruff#19565](../../astral-sh/ruff/issues/19565.md) on 2025-07-28 09:54_
 
 ---

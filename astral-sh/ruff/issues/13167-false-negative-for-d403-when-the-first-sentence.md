@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-30T18:44:21Z
 updated_at: 2024-12-30T10:58:15Z
 url: https://github.com/astral-sh/ruff/issues/13167
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # False negative for D403 when the first sentence only has one word but the whole docstring is longer
@@ -63,10 +63,6 @@ _Label `needs-decision` removed by @MichaReiser on 2024-09-02 07:22_
 _Comment by @dscorbett on 2024-09-02 14:36_
 
 Ruff’s D403 already doesn’t match pydocstyle: Ruff flags `f1` and pydocstyle doesn’t. This is intentional due to #10775. As long as Ruff’s behavior is different, I think it should be self-consistent.
-
----
-
-_Referenced in [astral-sh/ruff#15082](../../astral-sh/ruff/pulls/15082.md) on 2024-12-20 14:59_
 
 ---
 

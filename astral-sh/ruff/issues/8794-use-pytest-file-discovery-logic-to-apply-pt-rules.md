@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-20T19:27:05Z
 updated_at: 2024-08-02T07:08:56Z
 url: https://github.com/astral-sh/ruff/issues/8794
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Use pytest file discovery logic to apply `PT` rules
@@ -37,22 +37,6 @@ _Label `linter` added by @dhruvmanila on 2023-11-20 19:27_
 
 ---
 
-_Referenced in [astral-sh/ruff#8145](../../astral-sh/ruff/issues/8145.md) on 2023-11-20 19:27_
-
----
-
-_Referenced in [astral-sh/ruff#8703](../../astral-sh/ruff/issues/8703.md) on 2023-11-20 20:02_
-
----
-
-_Referenced in [astral-sh/ruff#10143](../../astral-sh/ruff/issues/10143.md) on 2024-02-28 01:00_
-
----
-
-_Referenced in [astral-sh/ruff#10472](../../astral-sh/ruff/issues/10472.md) on 2024-03-19 13:00_
-
----
-
 _Comment by @flying-sheep on 2024-08-02 07:08_
 
 And the other way around, some rules never make sense for pytest,
@@ -66,9 +50,5 @@ and should always be disabled:
     'RUF018', # Assignment expressions in assert are fine here
 ]
 ```
-
----
-
-_Referenced in [astral-sh/ruff#13537](../../astral-sh/ruff/issues/13537.md) on 2024-10-03 15:21_
 
 ---

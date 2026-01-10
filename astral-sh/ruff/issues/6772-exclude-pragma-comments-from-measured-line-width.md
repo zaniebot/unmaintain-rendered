@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-22T14:32:06Z
 updated_at: 2023-09-01T07:39:16Z
 url: https://github.com/astral-sh/ruff/issues/6772
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Exclude pragma comments from measured line width
@@ -20,10 +20,6 @@ synced_at: 2026-01-10T01:56:49Z
 _Issue opened by @MichaReiser on 2023-08-22 14:32_
 
 Exclude trailing expression end-of-line comments to be included in the measured line width (`type: `, `pyright:` `pylint:`, `noqa`, but NOT `nocoverage` because it is a trailing clause comment that isn't sensitive about its positioning
-
----
-
-_Referenced in [astral-sh/ruff#6197](../../astral-sh/ruff/issues/6197.md) on 2023-08-22 14:32_
 
 ---
 
@@ -107,10 +103,6 @@ Might need some redundant trims to get `trimmed` unless we refactor some of #690
 _Comment by @MichaReiser on 2023-08-30 08:12_
 
 That looks about right. I don't think we need to handle non-breaking spaces. I don't even think most pragma comments remain valid if you add a non breaking space.
-
----
-
-_Referenced in [astral-sh/ruff#7008](../../astral-sh/ruff/pulls/7008.md) on 2023-08-30 12:02_
 
 ---
 
@@ -238,9 +230,5 @@ _Comment by @ndevenish on 2023-09-01 07:38_
 > I don't know how you accidentally end up with a NBPS. That's why I think this is rare.
 
 FWIW I _constantly_ type unintentional NBSP. On UK mac Keyboard, Alt-3 is #, and Alt-Space is NBSP. If I'm typing fast sometimes these can blur together (hitting space before releasing the alt). However, I always catch them now, because I set up my IDE to highlight NBSP. I'm not sure how often other people encounter or notice this problem, though.
-
----
-
-_Referenced in [astral-sh/ruff#8531](../../astral-sh/ruff/issues/8531.md) on 2023-11-06 22:28_
 
 ---

@@ -1,0 +1,164 @@
+```yaml
+number: 3431
+title: Ruff makes triple sure the user is aware an error code has been remapped when it has explictly been ignored
+type: issue
+state: closed
+author: onerandomusername
+labels:
+  - bug
+  - cli
+assignees: []
+created_at: 2023-03-10T05:13:55Z
+updated_at: 2023-03-14T15:22:16Z
+url: https://github.com/astral-sh/ruff/issues/3431
+synced_at: 2026-01-10T11:09:46Z
+```
+
+# Ruff makes triple sure the user is aware an error code has been remapped when it has explictly been ignored
+
+---
+
+_Issue opened by @onerandomusername on 2023-03-10 05:13_
+
+### Summary
+
+When ignoring a remapped error code, ruff is *very* insistent in error logs that the error code has been remapped.
+
+### Steps to reproduce
+
+pyproject.toml:
+```toml
+[tool.ruff]
+select = ["RUF"]
+ignore = ["RUF004"]
+```
+
+command: `ruff .` 
+There does not need to be any python files in the current directory.
+
+### Screenshots
+
+![image](https://user-images.githubusercontent.com/71233171/224229246-28d0a0b1-1081-4c2f-8700-b5ac9e97e9f6.png)
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-03-10 05:29_
+
+---
+
+_Label `cli` added by @charliermarsh on 2023-03-10 05:29_
+
+---
+
+_Comment by @charliermarsh on 2023-03-10 05:30_
+
+I think we _used_ to show this once, but a refactor made it more difficult to enforce that it appears "exactly once".
+
+---
+
+_Comment by @onerandomusername on 2023-03-10 05:38_
+
+IMO it would be better at the end of cli output rather than the beginning
+
+---
+
+_Comment by @MithicSpirit on 2023-03-10 05:59_
+
+It seems that this warning is coming from https://github.com/charliermarsh/ruff/blob/bb3bb24b59d8f0da5c42972b177cd29db9390d6f/crates/ruff/src/settings/mod.rs#L362-L369
+Is the issue that the function (`RuleTable::from`) is being called multiple times or is it just that there are multiple instances of the value in `redirects`? If it's the latter it shouldn't be hard to deduplicate, although the fact that it seems to be iterating over a hashmap makes me doubtful that this is the case.
+
+---
+
+_Comment by @charliermarsh on 2023-03-10 23:25_
+
+I think it's that we may call `RuleTable::from` multiple times. We actually _do_ have a mechanism to show a warning "exactly once", but it doesn't work with dynamic warnings (i.e., warnings like this that depend on data), since it basically inlines a one-time static boolean into the code via a macro.
+
+---
+
+_Comment by @MithicSpirit on 2023-03-10 23:57_
+
+Yeah I looked into that macro but realized that it wouldn't fix it. I think that it could be adapted for dynamic warnings like these by using a static hashmap with the appropriate locks, but I'm not sure if the overhead from that is worth it.
+
+---
+
+_Comment by @charliermarsh on 2023-03-11 00:00_
+
+I think it's probably worth it, since this isn't a high-performance codepath. Are you interested in giving that a try?
+
+---
+
+_Comment by @charliermarsh on 2023-03-11 00:01_
+
+I started on a kind of ridiculous change to use macros in `rule_redirects.rs`, like:
+
+```rust
+/// Returns the redirect target for the given code.
+pub(crate) fn get_redirect_target(code: &str) -> Option<&'static str> {
+    redirect(code).map(|(_, target)| target)
+}
+
+/// Returns the code and the redirect target if the given code is a redirect.
+/// (The same code is returned to obtain it with a static lifetime).
+pub(crate) fn get_redirect(code: &str) -> Option<(&'static str, &'static str)> {
+    redirect(code)
+}
+
+fn redirect(code: &str) -> Option<(&'static str, &'static str)> {
+    macro_rules! redirect {
+        ($src:expr, $dst:expr) => {{
+            if code == $src {
+                crate::warn_user_once!("`{}` has been remapped to `{}`.", $src, $dst);
+                return Some(($src, $dst));
+            }
+        }};
+    }
+
+    redirect!("SIM111", "SIM110");
+
+    return None;
+}
+```
+
+That actually _does_ work, but the issue is that the redirect itself is done _before_ we set up the logger (e.g., if the codes are provided as command-line arguments), so the warning doesn't show up in all cases because it's "too soon".
+
+
+---
+
+_Comment by @MithicSpirit on 2023-03-11 02:14_
+
+> I think it's probably worth it, since this isn't a high-performance codepath. Are you interested in giving that a try?
+
+I can give it a shot, but I should say I'm not too familiar with atomics (might be a good opportunity to learn, though).
+
+Since this function is not async, things like `Mutex` and `RwLock` are out. I'm thinking that the best option would be to use a static `FxHashSet` to keep track of which redirects have already been printed and a static `AtomicBool` to act as a lock on the hashset. From there I believe that it would be necessary to use a spinlock (again, because this function is not async); while this isn't great, the lock will be held only briefly, so there shouldn't be much time wasted spinlocking. What do you think about this solution?
+
+---
+
+_Comment by @onerandomusername on 2023-03-11 02:24_
+
+> That actually does work, but the issue is that the redirect itself is done before we set up the logger (e.g., if the codes are provided as command-line arguments), so the warning doesn't show up in all cases because it's "too soon".
+
+If a refactor is necessary than I also think it might be better to show warnings like this near the end of the output.
+
+---
+
+_Comment by @MithicSpirit on 2023-03-11 02:29_
+
+We could make the redirects `FxHashMap` static (and do the whole spinlocking thing while writing to it), then wait until all of the linting is done to print it out. This would require more refactoring than my solution, but probably less than @charliermarsh's current solution.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-03-13 23:33_
+
+---
+
+_Comment by @charliermarsh on 2023-03-13 23:33_
+
+I can help with this one.
+
+---
+
+_Closed by @charliermarsh on 2023-03-14 15:22_
+
+---

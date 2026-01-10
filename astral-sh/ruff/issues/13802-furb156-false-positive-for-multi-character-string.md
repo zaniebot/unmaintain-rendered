@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-17T20:27:37Z
 updated_at: 2024-11-09T20:31:28Z
 url: https://github.com/astral-sh/ruff/issues/13802
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # FURB156 false positive for multi-character string before `in`
@@ -53,10 +53,6 @@ _Label `preview` added by @MichaReiser on 2024-10-18 06:19_
 
 ---
 
-_Referenced in [astral-sh/ruff#13820](../../astral-sh/ruff/pulls/13820.md) on 2024-10-19 13:49_
-
----
-
 _Comment by @Aditya-PS-05 on 2024-10-19 17:21_
 
 @MichaReiser , 
@@ -68,18 +64,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-11-09 20:07_
 
 ---
 
-_Referenced in [astral-sh/ruff#14233](../../astral-sh/ruff/pulls/14233.md) on 2024-11-09 20:08_
-
----
-
 _Closed by @charliermarsh on 2024-11-09 20:31_
-
----
-
-_Referenced in [astral-sh/ruff#21144](../../astral-sh/ruff/issues/21144.md) on 2025-11-01 02:08_
-
----
-
-_Referenced in [astral-sh/ruff#21181](../../astral-sh/ruff/pulls/21181.md) on 2025-11-01 02:22_
 
 ---

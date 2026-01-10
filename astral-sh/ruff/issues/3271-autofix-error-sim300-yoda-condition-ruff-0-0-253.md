@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-28T11:05:24Z
 updated_at: 2023-02-28T16:59:04Z
 url: https://github.com/astral-sh/ruff/issues/3271
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # [Autofix error] SIM300 Yoda condition (Ruff 0.0.253)
@@ -38,10 +38,6 @@ _Label `bug` added by @charliermarsh on 2023-02-28 15:38_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-28 16:52_
-
----
-
-_Referenced in [astral-sh/ruff#3276](../../astral-sh/ruff/pulls/3276.md) on 2023-02-28 16:56_
 
 ---
 

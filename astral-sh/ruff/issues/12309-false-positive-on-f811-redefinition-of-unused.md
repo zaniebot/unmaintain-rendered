@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-13T12:52:15Z
 updated_at: 2024-07-13T19:22:19Z
 url: https://github.com/astral-sh/ruff/issues/12309
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # False positive on F811 "Redefinition of unused" when using contextlib.suppress
@@ -62,10 +62,6 @@ _Label `bug` added by @charliermarsh on 2024-07-13 16:49_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-13 18:24_
-
----
-
-_Referenced in [astral-sh/ruff#12311](../../astral-sh/ruff/pulls/12311.md) on 2024-07-13 18:24_
 
 ---
 

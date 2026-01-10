@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-02T22:25:27Z
 updated_at: 2023-03-09T19:12:34Z
 url: https://github.com/astral-sh/ruff/issues/1568
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # False positive: `UP024` Replace aliased errors with `OSError`
@@ -108,14 +108,6 @@ No prob at all, thanks for taking the time to file such a thorough Issue in the 
 
 ---
 
-_Referenced in [pypa/pip-audit#461](../../pypa/pip-audit/pulls/461.md) on 2023-01-02 22:30_
-
----
-
-_Referenced in [python/cpython#100696](../../python/cpython/issues/100696.md) on 2023-01-02 22:38_
-
----
-
 _Comment by @deliro on 2023-03-09 18:05_
 
 Hi guys! First of all, many thanks for this awesome tool!
@@ -168,9 +160,5 @@ Seems like ruff ignores the second one's MRO. Thank you!
 _Comment by @charliermarsh on 2023-03-09 19:12_
 
 Oh wow, yeah, looks like a bug!
-
----
-
-_Referenced in [astral-sh/ruff#3422](../../astral-sh/ruff/issues/3422.md) on 2023-03-09 19:13_
 
 ---

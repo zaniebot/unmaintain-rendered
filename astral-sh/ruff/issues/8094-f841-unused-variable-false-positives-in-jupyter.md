@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-10-20T15:31:23Z
 updated_at: 2024-02-27T06:47:56Z
 url: https://github.com/astral-sh/ruff/issues/8094
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # `F841` (unused-variable) false positives in Jupyter notebooks
@@ -66,10 +66,6 @@ _Label `wish` added by @charliermarsh on 2023-10-20 21:24_
 _Comment by @dhruvmanila on 2023-10-30 02:41_
 
 Thanks for opening this issue. Yes, this is the current limitation of linting Notebooks because Ruff considers everything past the IPython escape token (`!` in this case) as string. The reason being that there's no defined grammar on what can occur in that position and there could be any non-Python syntax as well. This is seen in your first example where bash syntax is being used instead (`!echo "Hello $var"`).
-
----
-
-_Referenced in [astral-sh/ruff#8354](../../astral-sh/ruff/issues/8354.md) on 2023-10-31 03:27_
 
 ---
 
@@ -165,9 +161,5 @@ The same issue can can `ARG001` e.g.
 def foo(var="World"):
     !echo "Hello $var"
 ```
-
----
-
-_Referenced in [astral-sh/ruff#11833](../../astral-sh/ruff/issues/11833.md) on 2024-06-11 11:52_
 
 ---

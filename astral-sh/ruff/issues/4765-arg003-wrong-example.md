@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-31T21:01:52Z
 updated_at: 2023-06-01T02:24:00Z
 url: https://github.com/astral-sh/ruff/issues/4765
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # ARG003: Wrong example
@@ -63,10 +63,6 @@ The neighboring rule contains the same error: https://beta.ruff.rs/docs/rules/un
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-06-01 02:11_
-
----
-
-_Referenced in [astral-sh/ruff#4771](../../astral-sh/ruff/pulls/4771.md) on 2023-06-01 02:14_
 
 ---
 

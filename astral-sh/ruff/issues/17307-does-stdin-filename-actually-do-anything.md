@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-09T09:27:12Z
 updated_at: 2025-04-28T08:32:20Z
 url: https://github.com/astral-sh/ruff/issues/17307
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Does `--stdin-filename` actually do anything?
@@ -143,9 +143,5 @@ I don't think that would be a good idea. You might run `ruff check` from a scrip
 ---
 
 _Closed by @MichaReiser on 2025-04-28 08:32_
-
----
-
-_Referenced in [astral-sh/ruff#20460](../../astral-sh/ruff/issues/20460.md) on 2025-09-18 03:26_
 
 ---

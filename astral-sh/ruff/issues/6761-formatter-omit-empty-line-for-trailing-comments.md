@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-22T09:21:50Z
 updated_at: 2023-08-31T20:55:07Z
 url: https://github.com/astral-sh/ruff/issues/6761
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter: Omit empty line for trailing comments before class/function
@@ -144,10 +144,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-08-29 14:56_
 _Comment by @charliermarsh on 2023-08-30 00:44_
 
 This is quite tricky but I am working on it :)
-
----
-
-_Referenced in [astral-sh/ruff#6999](../../astral-sh/ruff/pulls/6999.md) on 2023-08-30 02:15_
 
 ---
 

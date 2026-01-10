@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-29T02:34:12Z
 updated_at: 2023-10-14T18:55:40Z
 url: https://github.com/astral-sh/ruff/issues/6961
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # `no-self-use` (`PLR6301`) false positive on methods that call `super`
@@ -42,10 +42,6 @@ in this case the method cannot be converted to a static method, otherwise it wou
 
 ---
 
-_Referenced in [astral-sh/ruff#6934](../../astral-sh/ruff/issues/6934.md) on 2023-08-29 02:34_
-
----
-
 _Label `bug` added by @charliermarsh on 2023-08-29 03:12_
 
 ---
@@ -70,14 +66,6 @@ _Assigned to @LaBatata101 by @charliermarsh on 2023-08-29 21:35_
 
 ---
 
-_Referenced in [astral-sh/ruff#7933](../../astral-sh/ruff/pulls/7933.md) on 2023-10-13 02:16_
-
----
-
 _Closed by @charliermarsh on 2023-10-14 18:55_
-
----
-
-_Referenced in [astral-sh/ruff#9799](../../astral-sh/ruff/issues/9799.md) on 2024-02-02 20:33_
 
 ---

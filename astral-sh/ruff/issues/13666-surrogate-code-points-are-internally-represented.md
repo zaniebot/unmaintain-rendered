@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-07T16:31:06Z
 updated_at: 2025-03-28T03:16:47Z
 url: https://github.com/astral-sh/ruff/issues/13666
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Surrogate code points are internally represented as U+FFFD REPLACEMENT CHARACTER
@@ -85,10 +85,6 @@ _Label `needs-design` added by @MichaReiser on 2024-10-14 09:09_
 ---
 
 _Label `core` added by @MichaReiser on 2024-10-14 09:09_
-
----
-
-_Referenced in [RustPython/RustPython#5629](../../RustPython/RustPython/pulls/5629.md) on 2025-03-27 19:26_
 
 ---
 

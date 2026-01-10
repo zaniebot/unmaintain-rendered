@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-29T08:20:00Z
 updated_at: 2024-01-03T03:59:13Z
 url: https://github.com/astral-sh/ruff/issues/9304
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Incorrect ANN201 autofix
@@ -64,10 +64,6 @@ _Label `bug` added by @charliermarsh on 2023-12-29 12:42_
 
 ---
 
-_Referenced in [astral-sh/ruff#9310](../../astral-sh/ruff/pulls/9310.md) on 2023-12-29 16:19_
-
----
-
 _Closed by @charliermarsh on 2023-12-29 16:46_
 
 ---
@@ -113,10 +109,6 @@ _Comment by @charliermarsh on 2024-01-03 01:27_
 ---
 
 _Reopened by @charliermarsh on 2024-01-03 01:27_
-
----
-
-_Referenced in [astral-sh/ruff#9377](../../astral-sh/ruff/pulls/9377.md) on 2024-01-03 03:16_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-09-27T10:19:17Z
 updated_at: 2025-11-10T09:32:56Z
 url: https://github.com/astral-sh/ruff/issues/13533
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # new rule - replace `d.update({'key': 'value'})` with `d['key'] = 'value'`
@@ -241,23 +241,11 @@ _Label `accepted` added by @AlexWaygood on 2024-10-07 10:10_
 
 ---
 
-_Referenced in [astral-sh/ruff#13706](../../astral-sh/ruff/issues/13706.md) on 2024-10-10 15:42_
-
----
-
-_Referenced in [astral-sh/ruff#14564](../../astral-sh/ruff/pulls/14564.md) on 2024-11-24 05:05_
-
----
-
 _Renamed from "new rule - replace d.update({'key': 'value'}) with d['key'] = 'value'" to "new rule - replace `d.update({'key': 'value'})` with `d['key'] = 'value'`" by @MichaReiser on 2024-11-25 08:30_
 
 ---
 
 _Label `help wanted` removed by @MichaReiser on 2024-12-02 17:20_
-
----
-
-_Referenced in [astral-sh/ruff#14831](../../astral-sh/ruff/pulls/14831.md) on 2024-12-08 00:40_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-07T15:43:00Z
 updated_at: 2023-06-13T00:54:08Z
 url: https://github.com/astral-sh/ruff/issues/3387
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # PT016 recommends deprecated kwarg.
@@ -89,10 +89,6 @@ _Comment by @edgarrmondragon on 2023-03-08 00:40_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-06-12 23:51_
-
----
-
-_Referenced in [astral-sh/ruff#5040](../../astral-sh/ruff/pulls/5040.md) on 2023-06-13 00:47_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-27T23:00:07Z
 updated_at: 2025-02-10T19:32:42Z
 url: https://github.com/astral-sh/ruff/issues/5407
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Configurable TD checks
@@ -51,10 +51,6 @@ _Label `accepted` added by @charliermarsh on 2023-07-10 01:09_
 ---
 
 _Label `accepted` removed by @charliermarsh on 2023-07-11 13:05_
-
----
-
-_Referenced in [astral-sh/ruff#6808](../../astral-sh/ruff/issues/6808.md) on 2023-08-25 21:34_
 
 ---
 

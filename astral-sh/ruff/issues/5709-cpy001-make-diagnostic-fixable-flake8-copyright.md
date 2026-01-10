@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-12T13:11:21Z
 updated_at: 2025-12-18T09:31:50Z
 url: https://github.com/astral-sh/ruff/issues/5709
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # CPY001: Make diagnostic fixable (flake8_copyright)
@@ -64,10 +64,6 @@ X-posted from #5306:
 > +1 to this request. And to raise an alternative more generic implementation - which would be "file_starts_with" customization.
 > 
 > This variant would allow auto-fixing of CPY1 indirectly, but with an approach more generic. The generic implementation would allow Ruff to check for (and auto-fix) a mandatory pre-amble for each python file.
-
----
-
-_Referenced in [astropy/astropy#13786](../../astropy/astropy/issues/13786.md) on 2024-07-30 16:41_
 
 ---
 

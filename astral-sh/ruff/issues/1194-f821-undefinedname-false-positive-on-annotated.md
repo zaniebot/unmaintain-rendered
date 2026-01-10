@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-11T09:24:16Z
 updated_at: 2022-12-11T15:04:07Z
 url: https://github.com/astral-sh/ruff/issues/1194
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:18Z
 ```
 
 # F821 UndefinedName false positive on annotated global
@@ -54,10 +54,6 @@ _Label `bug` added by @charliermarsh on 2022-12-11 14:07_
 _Comment by @charliermarsh on 2022-12-11 14:11_
 
 Will fix today!
-
----
-
-_Referenced in [astral-sh/ruff#1196](../../astral-sh/ruff/pulls/1196.md) on 2022-12-11 15:03_
 
 ---
 

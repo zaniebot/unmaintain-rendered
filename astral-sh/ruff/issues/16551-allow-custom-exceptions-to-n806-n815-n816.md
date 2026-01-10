@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-07T12:21:29Z
 updated_at: 2025-03-07T19:49:57Z
 url: https://github.com/astral-sh/ruff/issues/16551
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Allow custom exceptions to N806, N815, N816
@@ -60,10 +60,6 @@ _Label `documentation` added by @ntBre on 2025-03-07 17:51_
 _Comment by @janosh on 2025-03-07 18:26_
 
 ah i missed that, that's exactly what i needed. 👍  would be great to mention that under `N815` and `N816` which i encounter more frequently
-
----
-
-_Referenced in [astral-sh/ruff#16557](../../astral-sh/ruff/pulls/16557.md) on 2025-03-07 18:52_
 
 ---
 

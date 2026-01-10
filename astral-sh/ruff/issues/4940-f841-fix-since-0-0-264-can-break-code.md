@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-07T21:07:10Z
 updated_at: 2023-06-07T22:25:38Z
 url: https://github.com/astral-sh/ruff/issues/4940
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # F841 fix since 0.0.264 can break code
@@ -78,10 +78,6 @@ _Label `bug` added by @charliermarsh on 2023-06-07 21:21_
 _Comment by @charliermarsh on 2023-06-07 21:21_
 
 No worries. I feel like the `nonlocal` reads aren't being properly attributed to the scope above, or something.
-
----
-
-_Referenced in [astral-sh/ruff#4943](../../astral-sh/ruff/pulls/4943.md) on 2023-06-07 22:17_
 
 ---
 

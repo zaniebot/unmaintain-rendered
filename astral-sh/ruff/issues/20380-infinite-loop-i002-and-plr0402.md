@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-14T19:40:03Z
 updated_at: 2025-09-25T21:08:16Z
 url: https://github.com/astral-sh/ruff/issues/20380
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # [Infinite loop] I002 and PLR0402
@@ -93,10 +93,6 @@ Would fix 100 errors.
 ### Version
 
 ruff 0.13.0 (a1fdd66f1 2025-09-10)
-
----
-
-_Referenced in [astral-sh/ruff#20381](../../astral-sh/ruff/pulls/20381.md) on 2025-09-15 00:10_
 
 ---
 

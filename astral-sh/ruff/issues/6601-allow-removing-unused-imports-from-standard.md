@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-15T19:43:08Z
 updated_at: 2025-02-11T20:32:11Z
 url: https://github.com/astral-sh/ruff/issues/6601
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Allow removing unused imports from standard library only
@@ -80,9 +80,5 @@ Personally I wouldn't go with option 3, because it wouldn't completely remove my
 
 Option 1 could be confused for enabling the import-removal behaviour in the first place. I like option 2 best.
 
-
----
-
-_Referenced in [astral-sh/ruff#18728](../../astral-sh/ruff/issues/18728.md) on 2025-06-18 15:25_
 
 ---

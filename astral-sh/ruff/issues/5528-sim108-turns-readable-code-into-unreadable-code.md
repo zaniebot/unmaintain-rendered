@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-05T09:14:03Z
 updated_at: 2025-05-22T07:27:53Z
 url: https://github.com/astral-sh/ruff/issues/5528
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # SIM108 turns readable code into unreadable code
@@ -125,14 +125,6 @@ You’re right, that wasn’t a very considerate suggestion. I’ve enjoyed SIM1
 
 ---
 
-_Referenced in [astral-sh/ruff#14017](../../astral-sh/ruff/issues/14017.md) on 2024-10-31 13:44_
-
----
-
-_Referenced in [astral-sh/ruff#14019](../../astral-sh/ruff/pulls/14019.md) on 2024-10-31 14:26_
-
----
-
 _Comment by @Avasam on 2024-12-28 19:58_
 
 I find the issue to be formatting related with long ternary conditionals. For example in JS/TS with ESLint I force-wrap all ternaries, but with Python having to add extra parenthesis (which are formatted on their own lines), or `\` (which Ruff and Black disallow), even such an option wouldn't work that great.
@@ -154,10 +146,6 @@ runner_image = (something[0].url
 I propose that this is more legible and briefer than the original code.
 
 (I hope we keep SIM108 in all cases.)
-
----
-
-_Referenced in [astral-sh/ruff#16104](../../astral-sh/ruff/issues/16104.md) on 2025-02-11 20:54_
 
 ---
 

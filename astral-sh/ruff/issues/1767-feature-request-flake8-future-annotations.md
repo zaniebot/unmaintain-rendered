@@ -1,0 +1,81 @@
+```yaml
+number: 1767
+title: "feature request: `flake8-future-annotations`"
+type: issue
+state: closed
+author: danieleades
+labels:
+  - plugin
+assignees: []
+created_at: 2023-01-10T12:07:00Z
+updated_at: 2023-01-10T23:25:08Z
+url: https://github.com/astral-sh/ruff/issues/1767
+synced_at: 2026-01-10T11:09:43Z
+```
+
+# feature request: `flake8-future-annotations`
+
+---
+
+_Issue opened by @danieleades on 2023-01-10 12:07_
+
+see https://pypi.org/project/flake8-future-annotations/
+
+---
+
+_Comment by @charliermarsh on 2023-01-10 12:18_
+
+Will https://github.com/charliermarsh/ruff/pull/1762 resolve this? (Supporting isort's `add-imports` setting?)
+
+---
+
+_Label `plugin` added by @charliermarsh on 2023-01-10 12:24_
+
+---
+
+_Comment by @charliermarsh on 2023-01-10 12:59_
+
+If so, that should go out today :)
+
+---
+
+_Comment by @danieleades on 2023-01-10 13:00_
+
+Not exactly. That feature will just insert the import indiscriminately in every file, whereas the plugin will (by default) only insert them where they would do something.
+It's a subtle distinction, maybe not worth worrying about
+
+---
+
+_Comment by @danieleades on 2023-01-10 13:06_
+
+These kinds of overlaps in functionality beg the question- what does the future of ruff look like? Right now it's aiming at being a drop-in replacement for existing tools, along with their various quirks and configuration.
+Is there going to be a ruff V2 that drops this legacy interface and prioritises self-consistency? What does that look like?
+Not related to this feature, just curious 
+
+---
+
+_Comment by @charliermarsh on 2023-01-10 23:15_
+
+Yeah I think for now, I'm gonna run with the `add-imports` approach. I like that it generalizes to other `__future__` imports (and other imports more broadly), and in doing some Code Search, it seems relatively popular. So I'm going to mark as closed _for now_ by #1762.
+
+---
+
+_Comment by @charliermarsh on 2023-01-10 23:21_
+
+> These kinds of overlaps in functionality beg the question- what does the future of ruff look like? Right now it's aiming at being a drop-in replacement for existing tools, along with their various quirks and configuration. Is there going to be a ruff V2 that drops this legacy interface and prioritises self-consistency? What does that look like? Not related to this feature, just curious
+
+Yes! @not-my-profile actually just created some issues that'll help move us in that direction (https://github.com/charliermarsh/ruff/issues/1773, https://github.com/charliermarsh/ruff/issues/1774).
+
+To lay out my current thinking (still early):
+
+- I'd like to move to a world in which we have our own categorization and lint rule names. If your project is fully on Ruff, it doesn't really make sense to think in terms of Flake8 plugins. And Ruff, ideally, wouldn't be bound by Flake8 conventions.
+- That said, compatibility with Flake8 is extremely helpful for adoption, and I don't want to give that up yet. So I'd like to continue to support the Flake8-style interface, and maintain the mapping from Flake8 plugins + rules to Ruff rules.
+- I'm hoping that, since this is all happening _within_ Ruff, we can provide tooling to automatically upgrade your codebase from Flake8 compatibility mode to first-class-Ruff mode. This would involve rewriting your `pyproject.toml`, and changing your action comments (`# noqa`, `# isort: skip`, etc.). So in theory, if you're fully on Ruff, we should be able to make it pretty easy to "upgrade".
+- Eventually, it could be the case that we no longer support the Flake8 compatibility mode; or even, that the Flake8 compatibility mode continues to exist, but internally, we're just remapping your configuration to the first-class-Ruff version (whatever that looks like at runtime).
+
+
+---
+
+_Closed by @charliermarsh on 2023-01-10 23:25_
+
+---

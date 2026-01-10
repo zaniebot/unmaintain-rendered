@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-21T10:47:14Z
 updated_at: 2022-11-21T18:30:25Z
 url: https://github.com/astral-sh/ruff/issues/849
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # Isort sorting order
@@ -49,14 +49,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-11-21 17:53_
 
 ---
 
-_Referenced in [astral-sh/ruff#856](../../astral-sh/ruff/pulls/856.md) on 2022-11-21 18:11_
-
----
-
 _Closed by @charliermarsh on 2022-11-21 18:30_
-
----
-
-_Referenced in [Mic92/nix-update#110](../../Mic92/nix-update/pulls/110.md) on 2022-11-21 20:58_
 
 ---

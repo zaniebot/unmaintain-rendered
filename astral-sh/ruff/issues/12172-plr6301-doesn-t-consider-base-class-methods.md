@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-03T15:51:07Z
 updated_at: 2025-08-11T22:21:10Z
 url: https://github.com/astral-sh/ruff/issues/12172
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # `PLR6301` doesn't consider base class methods
@@ -126,10 +126,6 @@ The general suggestion for now is to mark such methods as overrides: https://pla
 
 ---
 
-_Referenced in [astral-sh/ruff#12568](../../astral-sh/ruff/issues/12568.md) on 2024-07-29 15:42_
-
----
-
 _Label `type-inference` added by @MichaReiser on 2024-10-24 14:32_
 
 ---
@@ -142,10 +138,6 @@ _Comment by @DaniBodor on 2025-01-15 12:13_
 
 I ran into something similar with a class that immediately raises a `NotImplementedError`. 
 I've previously raised a similar issue (#12427) and there it was fixed using some generic definition of a "base class stub". I wonder whether that same definition could be used to determine when to flag PLR6301 and when not to.
-
----
-
-_Referenced in [astral-sh/ruff#15507](../../astral-sh/ruff/pulls/15507.md) on 2025-01-15 16:05_
 
 ---
 

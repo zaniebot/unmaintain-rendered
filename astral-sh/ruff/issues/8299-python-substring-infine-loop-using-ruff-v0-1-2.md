@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-28T09:00:56Z
 updated_at: 2023-10-30T23:38:15Z
 url: https://github.com/astral-sh/ruff/issues/8299
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Python Substring: infine loop using ruff v0.1.2
@@ -155,10 +155,6 @@ _Comment by @charliermarsh on 2023-10-28 22:37_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-30 23:21_
-
----
-
-_Referenced in [astral-sh/ruff#8369](../../astral-sh/ruff/pulls/8369.md) on 2023-10-30 23:27_
 
 ---
 

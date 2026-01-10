@@ -1,0 +1,149 @@
+```yaml
+number: 14666
+title: "Support `ruff rule rule-name`"
+type: issue
+state: open
+author: InSyncWithFoo
+labels:
+  - cli
+assignees: []
+created_at: 2024-11-29T05:17:07Z
+updated_at: 2025-01-22T22:16:03Z
+url: https://github.com/astral-sh/ruff/issues/14666
+synced_at: 2026-01-10T11:09:56Z
+```
+
+# Support `ruff rule rule-name`
+
+---
+
+_Issue opened by @InSyncWithFoo on 2024-11-29 05:17_
+
+This is how a rule's documentation is rendered in PyCharm (with the help of [RyeCharm](https://github.com/InSyncWithFoo/ryecharm)):
+
+![](https://github.com/user-attachments/assets/d4dc9cfd-51c7-4823-b758-8448c0954919)
+
+`D203` is one of the rare cases (~10) where a rule's documentation has a link to another rule's. Currently, clicking on such a link from the documentation popup would open the browser. As a plugin developer, I want to avoid this and instead resolve the link in place, same as what I did with option links (e.g., `lint.extend`).
+
+However, I have no way to know what rule a name refers to; if I knew its code, `ruff rule <code>` would work, but documentation links use hyphenated names, and `ruff rule <name>` has yet to be implemented.
+
+This issue is similar to #14348 and is a part of #1773.
+
+
+---
+
+_Label `cli` added by @dhruvmanila on 2024-11-29 05:26_
+
+---
+
+_Comment by @MichaReiser on 2024-11-29 07:40_
+
+This is great UX, and I like the idea of intercepting the rule links so that they appear in the editor instead. 
+
+I've some UX concerns about mixing rule codes and rule names in the CLI. It will set a precedence that other commands should accept rule names too. 
+
+Have you considered querying all rules once running `ruff rule --all --output-format=json`. The output contains the name for every rule (and its documentation). I don't expect it to be much more expensive than querying the documentation for a single rule.
+
+---
+
+_Comment by @MichaReiser on 2024-11-29 07:50_
+
+Another consideration here is that this PR technically makes renaming rules a breaking change. 
+
+---
+
+_Comment by @InSyncWithFoo on 2024-11-29 08:28_
+
+@MichaReiser I did consider `--all`, but the output is over 1 MB, compared to just ~1KB of a single rule. As projects can have different Ruff executables, 1 MB of JSON is a bit too large to be kept as a cache, though I will have to consider that if the PR is rejected.
+
+Querying, parsing and rendering repeatedly seems like a waste, considering all other tasks the IDE must be doing at the same time. Data for dependency version inlay hints, for example, are retrieved once every 5 seconds (configurable) to ensure real-time feedback:
+
+![](https://github.com/user-attachments/assets/75c0e600-dce1-40dc-8c6e-6f2c3031cbec)
+
+The most important point, however, is that querying by name feels more human.
+ 
+We can require `--preview` for this change and stabilize it sometimes later; in fact, I considered doing so from the start, but `rule` didn't already have `--preview`.
+
+
+---
+
+_Comment by @MichaReiser on 2024-11-29 08:41_
+
+>  I did consider --all, but the output is over 1 MB, compared to just ~1KB of a single rule. As projects can have different Ruff executables, 1 MB of JSON is a bit too large to be kept as a cache, though I will have to consider that if the PR is rejected.
+
+This doesn't seem too bad considering an IDE context, and you can reduce it to a simple `name` -> `code` mapping, which should be very compact. 
+
+---
+
+_Comment by @sbrugman on 2024-11-29 11:32_
+
+> It will set a precedence that other commands should accept rule names too.
+
+Isn't this exactly the direction we would like to be headed? 
+
+Charlie already gave it some thought and said he was in favour:
+
+> We should definitely do it.
+
+https://github.com/astral-sh/ruff/issues/1773#issuecomment-1378200094
+
+As noted in [this comment](https://github.com/astral-sh/ruff/issues/1773#issuecomment-1949473960) there is already some precedence of using human-names in the docs.
+
+This change is a great next step towards tackling #1773  (human-friendly names) and #1774 (categories) and/or #3363 (presets).
+
+Of course we need to be consider such as retaining numeric codes for backwards compatibility, ensuring the quality of names and mechanics such as accepting rule codes and rule names interchangeably. 
+
+@MichaReiser  Could the Astral team internally discuss that given these considerations we have green light to accept rule names in general, or that a detailed proposal is required? This seems to me like the most effective way of moving forward.
+
+---
+
+_Comment by @MichaReiser on 2024-11-29 11:42_
+
+I agree; we definitely want #1773. 
+
+I don't think this change brings us significantly closer to #1773. It doesn't tackle the hard problems but now introduces inconsistency in the CLI interface. 
+
+> Could the Astral team internally discuss that given these considerations we have green light to accept rule names in general, or that a detailed proposal is required? This seems to me like the most effective way of moving forward.
+
+I understand that our current sentiment is not to support rule names until #1774 is figured out, or at least requires a detailed proposal on how it interacts and a commitment to tackle it as a whole.
+
+
+
+---
+
+_Comment by @sbrugman on 2024-11-29 12:07_
+
+Ok clear. It wasn't apparent to me that using the human-friendly names had a dependency on the recategorisation/presets, and if it wouldn't have then consistently supporting codes and names throughout the CLI would make sense (at least to me).
+
+Then let's conclude that a detailed proposal taking into account the complexities of #1773, #1774 and #3363 is needed to move the needle!
+ 
+
+---
+
+_Comment by @InSyncWithFoo on 2024-11-29 12:21_
+
+> [...] you can reduce it to a simple `name` -> `code` mapping, which should be very compact.
+
+Cache invalidation is most certainly not my cup of tea, but if there really is no other way...
+
+
+---
+
+_Comment by @InSyncWithFoo on 2025-01-22 22:15_
+
+The JSON map ended up taking ~54k bytes due to double escaping (one JSON, one XML):
+
+```xml
+<component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    <!-- ... -->
+    &quot;insyncwithfoo.ryecharm.ruff.caching.ruleNameToCodeMap&quot;: &quot;{\&quot;result\&quot;:{\&quot;airflow-variable-name-task-id-mismatch\&quot;:\&quot;AIR001\&quot;,\&quot;airflow-dag-no-schedule-argument\&quot;:\&quot;AIR301\&quot;,\&quot;airflow3-removal\&quot;:\&quot;AIR302\&quot;,\&quot;airflow3-moved-to-provider\&quot;:\&quot;AIR303\&quot;,<!-- ... -->
+    <!-- ... -->
+  },
+  <!-- ... -->
+}</component>
+```
+
+Resolving seems snappy enough, so I guess all's well that ends well.
+
+---

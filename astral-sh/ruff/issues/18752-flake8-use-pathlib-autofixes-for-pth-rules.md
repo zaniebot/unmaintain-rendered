@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-06-18T13:43:46Z
 updated_at: 2025-06-18T14:02:22Z
 url: https://github.com/astral-sh/ruff/issues/18752
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [`flake8-use-pathlib`] Autofixes for `PTH` rules 
@@ -49,9 +49,5 @@ _Comment by @chirizxc on 2025-06-18 14:02_
 > Autofixes (ideally one PR per rule) are welcome. I'll close this as there's an existing issue for this already
 
 ok, thanks
-
----
-
-_Referenced in [astral-sh/ruff#18763](../../astral-sh/ruff/pulls/18763.md) on 2025-06-18 19:43_
 
 ---

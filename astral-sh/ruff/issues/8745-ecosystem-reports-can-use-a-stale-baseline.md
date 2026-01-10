@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-17T18:18:18Z
 updated_at: 2024-04-03T01:47:15Z
 url: https://github.com/astral-sh/ruff/issues/8745
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Ecosystem reports can use a stale baseline
@@ -54,9 +54,5 @@ I believe something like the following occurs:
 - Changes from (2) are incorrectly reported as coming from the pull request
 
 
-
----
-
-_Referenced in [astral-sh/ruff#10746](../../astral-sh/ruff/issues/10746.md) on 2024-04-03 01:47_
 
 ---

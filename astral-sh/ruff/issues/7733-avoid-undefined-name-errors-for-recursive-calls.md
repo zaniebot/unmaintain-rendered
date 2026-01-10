@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-01T04:05:55Z
 updated_at: 2024-07-19T14:33:08Z
 url: https://github.com/astral-sh/ruff/issues/7733
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Avoid `undefined-name` errors for recursive calls after deletions
@@ -42,10 +42,6 @@ _Label `bug` added by @charliermarsh on 2023-10-01 04:05_
 
 ---
 
-_Referenced in [python-trio/trio#2795](../../python-trio/trio/pulls/2795.md) on 2023-10-01 04:06_
-
----
-
 _Renamed from "Avoid undefined-name errors for recursive calls after deletions" to "Avoid `undefined-name` errors for recursive calls after deletions" by @charliermarsh on 2023-10-01 04:06_
 
 ---
@@ -68,10 +64,6 @@ NameError: name 'f' is not defined
 ```
 
 ... but I think as long as you just assume the worst if reassignment happens, then this shouldn't have other issues.
-
----
-
-_Referenced in [astral-sh/ruff#9858](../../astral-sh/ruff/issues/9858.md) on 2024-02-07 06:38_
 
 ---
 
@@ -98,9 +90,5 @@ main()
 $ python script.py
 NameError: free variable 'X' referenced before assignment in enclosing scope
 ```
-
----
-
-_Referenced in [astral-sh/ruff#14521](../../astral-sh/ruff/issues/14521.md) on 2024-11-23 07:14_
 
 ---

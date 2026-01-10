@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-05T22:19:48Z
 updated_at: 2024-12-21T10:33:12Z
 url: https://github.com/astral-sh/ruff/issues/12700
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # [red-knot] statically-known branches
@@ -32,31 +32,7 @@ _Added to milestone `Red Knot 2024` by @carljm on 2024-11-07 15:15_
 
 ---
 
-_Referenced in [astral-sh/ruff#14170](../../astral-sh/ruff/issues/14170.md) on 2024-11-07 16:32_
-
----
-
-_Referenced in [astral-sh/ruff#14171](../../astral-sh/ruff/issues/14171.md) on 2024-11-07 16:33_
-
----
-
 _Assigned to @sharkdp by @sharkdp on 2024-11-11 19:35_
-
----
-
-_Referenced in [astral-sh/ruff#14783](../../astral-sh/ruff/pulls/14783.md) on 2024-12-05 08:00_
-
----
-
-_Referenced in [astral-sh/ruff#14759](../../astral-sh/ruff/pulls/14759.md) on 2024-12-05 08:00_
-
----
-
-_Referenced in [astral-sh/ruff#14943](../../astral-sh/ruff/pulls/14943.md) on 2024-12-12 19:30_
-
----
-
-_Referenced in [astral-sh/ruff#15019](../../astral-sh/ruff/pulls/15019.md) on 2024-12-16 12:33_
 
 ---
 

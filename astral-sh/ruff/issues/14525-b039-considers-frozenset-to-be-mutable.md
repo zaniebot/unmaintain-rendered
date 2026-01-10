@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-22T11:13:52Z
 updated_at: 2024-11-24T02:29:26Z
 url: https://github.com/astral-sh/ruff/issues/14525
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # B039 considers `frozenset` to be mutable
@@ -131,10 +131,6 @@ _Assigned to @harupy by @AlexWaygood on 2024-11-22 13:35_
 _Comment by @harupy on 2024-11-22 13:39_
 
 @AlexWaygood Thanks!
-
----
-
-_Referenced in [astral-sh/ruff#14532](../../astral-sh/ruff/pulls/14532.md) on 2024-11-22 14:16_
 
 ---
 

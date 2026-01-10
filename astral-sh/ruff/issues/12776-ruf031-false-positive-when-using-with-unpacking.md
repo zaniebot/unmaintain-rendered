@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-09T08:12:34Z
 updated_at: 2024-08-09T15:30:30Z
 url: https://github.com/astral-sh/ruff/issues/12776
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # RUF031: False positive when using with unpacking 
@@ -86,10 +86,6 @@ This has been a good learning experience in both Rust and the intricacies of Pyt
 ---
 
 _Assigned to @dylwil3 by @MichaReiser on 2024-08-09 12:41_
-
----
-
-_Referenced in [astral-sh/ruff#12784](../../astral-sh/ruff/pulls/12784.md) on 2024-08-09 13:01_
 
 ---
 

@@ -13,7 +13,7 @@ assignees: []
 created_at: 2025-01-05T03:08:04Z
 updated_at: 2025-01-07T21:43:51Z
 url: https://github.com/astral-sh/ruff/issues/15263
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # RUF046 fix is wrong when a newline appears before a call expression’s opening parenthesis
@@ -64,10 +64,6 @@ _Label `preview` added by @AlexWaygood on 2025-01-05 18:13_
 ---
 
 _Assigned to @dylwil3 by @dylwil3 on 2025-01-05 21:00_
-
----
-
-_Referenced in [astral-sh/ruff#15277](../../astral-sh/ruff/pulls/15277.md) on 2025-01-05 21:04_
 
 ---
 

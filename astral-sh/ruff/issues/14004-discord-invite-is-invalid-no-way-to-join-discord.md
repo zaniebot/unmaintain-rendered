@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-30T18:08:52Z
 updated_at: 2024-10-30T19:13:34Z
 url: https://github.com/astral-sh/ruff/issues/14004
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Discord invite is invalid / no way to join discord server
@@ -54,13 +54,5 @@ This can be closed, thanks for your patience.
 ---
 
 _Closed by @jackklika on 2024-10-30 19:13_
-
----
-
-_Referenced in [astral-sh/ruff#14133](../../astral-sh/ruff/issues/14133.md) on 2024-11-06 13:16_
-
----
-
-_Referenced in [astral-sh/ruff#2313](../../astral-sh/ruff/issues/2313.md) on 2025-02-07 10:14_
 
 ---

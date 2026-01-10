@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-10T23:55:44Z
 updated_at: 2024-12-21T14:45:29Z
 url: https://github.com/astral-sh/ruff/issues/14903
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # RUF029 triggers on FastAPI routes when they're inner functions
@@ -57,10 +57,6 @@ Hopefully get into that in the following days :)
 ---
 
 _Label `bug` added by @MichaReiser on 2024-12-11 07:35_
-
----
-
-_Referenced in [astral-sh/ruff#15093](../../astral-sh/ruff/pulls/15093.md) on 2024-12-21 12:35_
 
 ---
 

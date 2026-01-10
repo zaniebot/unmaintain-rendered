@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-24T15:40:05Z
 updated_at: 2025-07-25T07:25:07Z
 url: https://github.com/astral-sh/ruff/issues/19532
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # `I` output differ with `isort` by a single blank line
@@ -235,9 +235,5 @@ Yes, I think this isn't possible. I didn't see any `profile` configuration in ou
 ---
 
 _Closed by @MichaReiser on 2025-07-25 07:25_
-
----
-
-_Referenced in [metabrainz/picard#2697](../../metabrainz/picard/pulls/2697.md) on 2025-08-05 22:03_
 
 ---

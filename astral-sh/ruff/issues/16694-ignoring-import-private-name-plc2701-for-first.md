@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-13T02:47:23Z
 updated_at: 2025-03-13T20:29:20Z
 url: https://github.com/astral-sh/ruff/issues/16694
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Ignoring `import-private-name` (`PLC2701`) for first party module imports
@@ -40,10 +40,6 @@ I understand that [known-first-party](https://docs.astral.sh/ruff/settings/#lint
 ---
 
 Ruff: 0.9.3
-
----
-
-_Referenced in [astral-sh/ruff#16691](../../astral-sh/ruff/issues/16691.md) on 2025-03-13 03:03_
 
 ---
 

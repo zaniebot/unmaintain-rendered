@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-03T19:57:31Z
 updated_at: 2024-06-08T20:10:52Z
 url: https://github.com/astral-sh/ruff/issues/11726
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # I001 is incompatible with ``isort`` since 0.4.5 for builtins starting with an underscore
@@ -30,10 +30,6 @@ I'll leave it up to you whether this needs to be reverted
 
 ---
 
-_Referenced in [pylint-dev/pylint#9679](../../pylint-dev/pylint/pulls/9679.md) on 2024-06-03 19:57_
-
----
-
 _Comment by @charliermarsh on 2024-06-08 19:51_
 
 Thanks, and sorry for the trouble. We moved to `stdlibs` (#11347) which has better coverage of the standard library, and this led to a few new modules being added. I agree that we should document it (so I'll use this issue to do so) and, in hindsight, probably should've sent this out in a minor release -- that's my fault.
@@ -45,10 +41,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-06-08 19:51_
 ---
 
 _Label `isort` added by @charliermarsh on 2024-06-08 19:51_
-
----
-
-_Referenced in [astral-sh/ruff#11804](../../astral-sh/ruff/pulls/11804.md) on 2024-06-08 20:07_
 
 ---
 

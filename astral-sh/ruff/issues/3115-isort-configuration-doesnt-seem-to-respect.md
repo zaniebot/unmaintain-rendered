@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-22T06:09:08Z
 updated_at: 2023-07-15T05:07:11Z
 url: https://github.com/astral-sh/ruff/issues/3115
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # isort configuration doesnt seem to respect localfolder (vs real isort) in monorepo
@@ -132,10 +132,6 @@ Thanks for the response
 
 ---
 
-_Referenced in [Toufool/AutoSplit#207](../../Toufool/AutoSplit/pulls/207.md) on 2023-04-08 00:24_
-
----
-
 _Comment by @franneck94 on 2023-04-23 10:22_
 
 Is it planned in the near future?
@@ -171,9 +167,5 @@ _Comment by @merc1031 on 2023-07-15 05:07_
 
 @charliermarsh 
 Hey just checking if this is any closer to being possible. After the newish Custom Sections feature was merged in i think this is the only thing holding back removing isort from our pre-commit pipeline.
-
----
-
-_Referenced in [astral-sh/ruff#6190](../../astral-sh/ruff/issues/6190.md) on 2023-07-31 09:46_
 
 ---

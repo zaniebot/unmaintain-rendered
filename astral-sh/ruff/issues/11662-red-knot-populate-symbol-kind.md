@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-31T22:12:04Z
 updated_at: 2024-08-05T17:37:36Z
 url: https://github.com/astral-sh/ruff/issues/11662
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # [red-knot] populate Symbol.kind
@@ -29,10 +29,6 @@ _Label `red-knot` added by @carljm on 2024-05-31 22:12_
 ---
 
 _Assigned to @plredmond by @carljm on 2024-05-31 22:12_
-
----
-
-_Referenced in [astral-sh/ruff#11663](../../astral-sh/ruff/issues/11663.md) on 2024-05-31 22:12_
 
 ---
 

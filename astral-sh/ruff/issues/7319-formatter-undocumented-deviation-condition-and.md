@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-12T21:04:31Z
 updated_at: 2023-09-14T08:43:55Z
 url: https://github.com/astral-sh/ruff/issues/7319
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter undocumented deviation: condition and slice wrapping
@@ -126,10 +126,6 @@ _Added to milestone `Formatter: Beta` by @MichaReiser on 2023-09-13 17:44_
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2023-09-13 17:44_
-
----
-
-_Referenced in [astral-sh/ruff#7380](../../astral-sh/ruff/pulls/7380.md) on 2023-09-14 08:34_
 
 ---
 

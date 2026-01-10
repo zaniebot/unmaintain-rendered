@@ -1,0 +1,90 @@
+```yaml
+number: 5246
+title: TRY301 disregards whether the raised exeption type is actually caught or not
+type: issue
+state: closed
+author: runfalk
+labels:
+  - bug
+assignees: []
+created_at: 2023-06-21T09:36:26Z
+updated_at: 2023-07-10T14:00:44Z
+url: https://github.com/astral-sh/ruff/issues/5246
+synced_at: 2026-01-10T11:09:47Z
+```
+
+# TRY301 disregards whether the raised exeption type is actually caught or not
+
+---
+
+_Issue opened by @runfalk on 2023-06-21 09:36_
+
+I believe the following is a false positive:
+
+```python
+# example.py
+try:
+    raise ValueError("foo")
+except TypeError:
+    print("We don't catch ValueError")
+```
+
+```
+$ poetry run ruff example.py 
+example.py:3:5: TRY301 Abstract `raise` to an inner function
+Found 1 errors.
+```
+
+I would expect `TRY301` only if we actually caught the `ValueError`.
+
+## Relevant metadata
+```
+$ poetry run python --version
+Python 3.11.3
+```
+
+```
+$ poetry run ruff --version
+ruff 0.0.274
+```
+
+```
+[tool.ruff]
+target-version = "py311"
+
+select = [
+    # ...
+    "TRY",  # tryceratops
+    # ...
+]
+ignore = [
+    # ...
+
+    # tryceratops
+    # (these options are probably irrelevant)
+    # Allow long inline exception messages
+    "TRY003",
+    # Allow return statements in try blocks
+    "TRY300",
+]
+```
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-06-21 15:32_
+
+---
+
+_Comment by @evanrittenhouse on 2023-06-30 14:32_
+
+You can assign this to me
+
+---
+
+_Assigned to @evanrittenhouse by @charliermarsh on 2023-06-30 17:28_
+
+---
+
+_Closed by @charliermarsh on 2023-07-10 14:00_
+
+---

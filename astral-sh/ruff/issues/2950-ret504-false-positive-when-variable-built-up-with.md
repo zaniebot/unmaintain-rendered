@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-16T06:07:01Z
 updated_at: 2023-03-09T19:50:09Z
 url: https://github.com/astral-sh/ruff/issues/2950
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # RET504 false-positive when variable built up with assignments and returned
@@ -352,19 +352,11 @@ Perhaps instead of an assignment count, heuristic could be reference count. In o
 
 ---
 
-_Referenced in [astral-sh/ruff#3393](../../astral-sh/ruff/pulls/3393.md) on 2023-03-08 00:25_
-
----
-
 _Comment by @charliermarsh on 2023-03-08 00:26_
 
 This PR productionizes that suggestion (avoid RET504 for variables with multiple assignments): https://github.com/charliermarsh/ruff/pull/3393.
 
 Feedback welcome, I won't be merging tonight.
-
----
-
-_Referenced in [astral-sh/ruff#3394](../../astral-sh/ruff/issues/3394.md) on 2023-03-08 00:31_
 
 ---
 
@@ -427,17 +419,5 @@ Also, one of the points of this sort of check is to help two people writing the 
 For example, I think this would have read much better without an extra assignment: https://github.com/scikit-build/scikit-build-core/pull/197/files#diff-5a9598893dbb4007601522cfb26b27c92d790c18bf35d7bfe86205ae1955fa0bR47-R48
 
 I'm not sure why Ruff didn't find that, as I'd guess #3393 wasn't in the version of Ruff that ran on that, but I wish it did.
-
----
-
-_Referenced in [astral-sh/ruff#3551](../../astral-sh/ruff/issues/3551.md) on 2023-03-15 23:40_
-
----
-
-_Referenced in [astral-sh/ruff#4997](../../astral-sh/ruff/pulls/4997.md) on 2023-06-10 02:42_
-
----
-
-_Referenced in [astral-sh/ruff#4998](../../astral-sh/ruff/pulls/4998.md) on 2023-06-10 02:52_
 
 ---

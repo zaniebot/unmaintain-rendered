@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-12-05T21:06:37Z
 updated_at: 2022-12-05T21:07:08Z
 url: https://github.com/astral-sh/ruff/issues/1077
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:16Z
 ```
 
 # Import-sorting should insert newlines before code blocks
@@ -29,10 +29,6 @@ _Label `bug` added by @charliermarsh on 2022-12-05 21:06_
 ---
 
 _Label `isort` added by @charliermarsh on 2022-12-05 21:06_
-
----
-
-_Referenced in [astral-sh/ruff#1078](../../astral-sh/ruff/pulls/1078.md) on 2022-12-05 21:06_
 
 ---
 

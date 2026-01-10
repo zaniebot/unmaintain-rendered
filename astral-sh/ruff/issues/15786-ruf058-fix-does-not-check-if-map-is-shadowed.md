@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-28T14:58:19Z
 updated_at: 2025-01-28T19:15:38Z
 url: https://github.com/astral-sh/ruff/issues/15786
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # RUF058 fix does not check if `map` is shadowed
@@ -63,10 +63,6 @@ Thanks for the report! I think this is a pretty small fix, just check `if !check
 ---
 
 _Assigned to @ntBre by @ntBre on 2025-01-28 15:51_
-
----
-
-_Referenced in [astral-sh/ruff#15790](../../astral-sh/ruff/pulls/15790.md) on 2025-01-28 17:07_
 
 ---
 

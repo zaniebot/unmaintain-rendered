@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-25T16:59:49Z
 updated_at: 2023-10-28T22:50:05Z
 url: https://github.com/astral-sh/ruff/issues/8222
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Formatter should respect extend-ignore
@@ -171,10 +171,6 @@ _Comment by @charliermarsh on 2023-10-26 15:18_
 _Comment by @tinovyatkin on 2023-10-26 15:19_
 
 Yes, changing to `ignore` removing the warning.
-
----
-
-_Referenced in [astral-sh/ruff#8305](../../astral-sh/ruff/pulls/8305.md) on 2023-10-28 13:59_
 
 ---
 

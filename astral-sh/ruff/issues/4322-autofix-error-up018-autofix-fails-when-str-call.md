@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-09T18:48:08Z
 updated_at: 2023-05-18T14:33:34Z
 url: https://github.com/astral-sh/ruff/issues/4322
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # [Autofix error] UP018 autofix fails when str() call is inside f-string: `f"{str()}"`
@@ -55,10 +55,6 @@ _Label `autofix` added by @konstin on 2023-05-09 18:48_
 ---
 
 _Label `autofix-error` added by @konstin on 2023-05-09 18:48_
-
----
-
-_Referenced in [astral-sh/ruff#4487](../../astral-sh/ruff/pulls/4487.md) on 2023-05-18 02:47_
 
 ---
 

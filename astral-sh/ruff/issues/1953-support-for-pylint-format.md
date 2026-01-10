@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-01-18T13:07:29Z
 updated_at: 2023-01-19T13:01:29Z
 url: https://github.com/astral-sh/ruff/issues/1953
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Support for pylint format
@@ -67,14 +67,6 @@ For the most part, what you want is in `printer.rs`. We'd want to add a new case
 
 ---
 
-_Referenced in [astral-sh/ruff#1995](../../astral-sh/ruff/pulls/1995.md) on 2023-01-19 11:33_
-
----
-
 _Closed by @charliermarsh on 2023-01-19 13:01_
-
----
-
-_Referenced in [astral-sh/ruff#19340](../../astral-sh/ruff/pulls/19340.md) on 2025-07-14 21:24_
 
 ---

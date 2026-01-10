@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-20T02:21:00Z
 updated_at: 2024-12-03T07:22:43Z
 url: https://github.com/astral-sh/ruff/issues/14473
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Flaking test `red_knot::file_watching directory_renamed`
@@ -150,17 +150,9 @@ I'd highly recommend setting up `test-log` and setting `RUST_LOG` so you can get
 
 ---
 
-_Referenced in [astral-sh/ruff#14533](../../astral-sh/ruff/pulls/14533.md) on 2024-11-22 16:38_
-
----
-
 _Comment by @MichaReiser on 2024-11-22 16:39_
 
 I enabled extra logging in https://github.com/astral-sh/ruff/pull/14533. Please let me know if you see the flake in a future run.
-
----
-
-_Referenced in [astral-sh/ruff#14543](../../astral-sh/ruff/pulls/14543.md) on 2024-11-22 21:45_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-18T15:53:02Z
 updated_at: 2025-11-12T07:29:24Z
 url: https://github.com/astral-sh/ruff/issues/20959
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # DOC102 false negative for NumPy-style comma-separated parameters
@@ -48,10 +48,6 @@ All checks passed!
 ### Version
 
 ruff 0.14.1 (2bffef596 2025-10-16)
-
----
-
-_Referenced in [astral-sh/ruff#20972](../../astral-sh/ruff/pulls/20972.md) on 2025-10-19 21:51_
 
 ---
 

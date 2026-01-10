@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-22T21:50:49Z
 updated_at: 2025-07-07T08:01:56Z
 url: https://github.com/astral-sh/ruff/issues/18868
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # formater: PEP8 operator recommendations
@@ -228,10 +228,6 @@ At least you need to remove note - it is lying
 _Comment by @charliermarsh on 2025-06-23 00:17_
 
 Sure, we can remove the mention of PEP 8. ("Lying" is a bit strong because it implies malicious intent -- this is just a mistake.)
-
----
-
-_Referenced in [astral-sh/ruff#18870](../../astral-sh/ruff/pulls/18870.md) on 2025-06-23 00:26_
 
 ---
 

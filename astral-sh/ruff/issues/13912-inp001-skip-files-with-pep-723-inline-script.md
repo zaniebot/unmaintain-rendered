@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-24T14:21:46Z
 updated_at: 2024-10-29T02:11:32Z
 url: https://github.com/astral-sh/ruff/issues/13912
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # INP001: Skip files with PEP 723 inline script metadata
@@ -51,10 +51,6 @@ Good call.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-10-29 01:35_
-
----
-
-_Referenced in [astral-sh/ruff#13974](../../astral-sh/ruff/pulls/13974.md) on 2024-10-29 02:05_
 
 ---
 

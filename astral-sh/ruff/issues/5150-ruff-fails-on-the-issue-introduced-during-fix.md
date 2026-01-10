@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-16T17:17:55Z
 updated_at: 2025-02-02T19:52:43Z
 url: https://github.com/astral-sh/ruff/issues/5150
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Ruff fails on the issue introduced during fix
@@ -51,10 +51,6 @@ Found 1 errors (1 fixed, 0 remaining).
 ---
 
 _Label `autofix` added by @charliermarsh on 2023-06-17 04:30_
-
----
-
-_Referenced in [astral-sh/ruff#15706](../../astral-sh/ruff/pulls/15706.md) on 2025-01-24 03:13_
 
 ---
 

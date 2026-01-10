@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-17T13:54:28Z
 updated_at: 2022-11-20T23:09:41Z
 url: https://github.com/astral-sh/ruff/issues/787
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # Add rule to use sys.exit() instead of exit()
@@ -56,10 +56,6 @@ Which, in this case, should not trigger an error.
 _Comment by @charliermarsh on 2022-11-18 18:55_
 
 We have to resolve that for https://github.com/charliermarsh/ruff/issues/780. We need to check if the `BindingKind` on the identifier is still `BindingKind::Builtin`. You could omit it for now if you'd rather wait until it's solved for #780.
-
----
-
-_Referenced in [astral-sh/ruff#816](../../astral-sh/ruff/pulls/816.md) on 2022-11-20 20:05_
 
 ---
 

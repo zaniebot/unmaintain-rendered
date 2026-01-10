@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-03T18:39:52Z
 updated_at: 2023-09-03T21:17:05Z
 url: https://github.com/astral-sh/ruff/issues/7100
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Rules UP021 cause autofix error
@@ -66,10 +66,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-09-03 20:58_
 ---
 
 _Label `bug` added by @charliermarsh on 2023-09-03 20:58_
-
----
-
-_Referenced in [astral-sh/ruff#7112](../../astral-sh/ruff/pulls/7112.md) on 2023-09-03 21:00_
 
 ---
 

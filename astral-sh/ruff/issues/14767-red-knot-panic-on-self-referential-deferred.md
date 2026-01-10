@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-12-04T09:03:08Z
 updated_at: 2025-04-22T16:20:54Z
 url: https://github.com/astral-sh/ruff/issues/14767
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Panic on self-referential deferred annotation (call expression)
@@ -56,10 +56,6 @@ _Added to milestone `Red Knot Alpha` by @carljm on 2025-03-27 18:33_
 ---
 
 _Assigned to @carljm by @carljm on 2025-03-27 19:08_
-
----
-
-_Referenced in [astral-sh/ruff#17535](../../astral-sh/ruff/pulls/17535.md) on 2025-04-22 01:50_
 
 ---
 

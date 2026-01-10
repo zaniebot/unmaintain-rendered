@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-12T10:03:40Z
 updated_at: 2024-03-30T00:26:14Z
 url: https://github.com/astral-sh/ruff/issues/10356
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # FBT003: Ignore by default django.db.models.Value
@@ -56,14 +56,6 @@ _Label `configuration` added by @zanieb on 2024-03-12 14:26_
 _Comment by @zanieb on 2024-03-12 14:27_
 
 An allow-list for this rule does seems reasonable.
-
----
-
-_Referenced in [astral-sh/ruff#10485](../../astral-sh/ruff/issues/10485.md) on 2024-03-20 14:21_
-
----
-
-_Referenced in [astral-sh/ruff#10531](../../astral-sh/ruff/pulls/10531.md) on 2024-03-23 00:27_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-06T06:07:33Z
 updated_at: 2025-03-03T10:45:23Z
 url: https://github.com/astral-sh/ruff/issues/12709
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Server setting to run subset of rules for "Fix All" code action
@@ -69,14 +69,6 @@ _Label `needs-design` added by @dhruvmanila on 2024-08-06 06:07_
 
 ---
 
-_Referenced in [astral-sh/ruff#12674](../../astral-sh/ruff/pulls/12674.md) on 2024-08-06 06:08_
-
----
-
-_Referenced in [astral-sh/ruff-vscode#260](../../astral-sh/ruff-vscode/issues/260.md) on 2024-08-23 04:01_
-
----
-
 _Comment by @dhruvmanila on 2025-02-11 08:52_
 
 Cross linking from the discussion thread: https://github.com/astral-sh/ruff/discussions/15991#discussioncomment-12127123
@@ -124,13 +116,5 @@ For example, `source.fixAll`:
     }
 }
 ```
-
----
-
-_Referenced in [astral-sh/ty#176](../../astral-sh/ty/issues/176.md) on 2025-06-03 16:06_
-
----
-
-_Referenced in [sublimelsp/LSP-ruff#102](../../sublimelsp/LSP-ruff/issues/102.md) on 2025-09-27 19:26_
 
 ---

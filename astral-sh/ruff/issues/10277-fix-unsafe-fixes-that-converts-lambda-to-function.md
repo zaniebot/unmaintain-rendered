@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-07T16:19:57Z
 updated_at: 2024-12-23T09:29:48Z
 url: https://github.com/astral-sh/ruff/issues/10277
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # `--fix --unsafe-fixes` that converts lambda to function (rule E731) removes underscores from numbers.
@@ -67,10 +67,6 @@ _Comment by @charliermarsh on 2024-03-11 16:58_
 ---
 
 _Label `parser` added by @zanieb on 2024-03-11 21:40_
-
----
-
-_Referenced in [astral-sh/ruff#15097](../../astral-sh/ruff/pulls/15097.md) on 2024-12-22 02:05_
 
 ---
 

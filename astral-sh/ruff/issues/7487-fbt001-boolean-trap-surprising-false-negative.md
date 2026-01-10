@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-18T09:49:35Z
 updated_at: 2023-11-12T20:09:24Z
 url: https://github.com/astral-sh/ruff/issues/7487
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # FBT001 Boolean trap surprising false negative with `bool | None`
@@ -38,10 +38,6 @@ def passes(x: bool | None) -> bool | None:
 chaught(True) #FBT003 trigger
 passes(False) #FBT003 trigger
 ```
-
----
-
-_Referenced in [astral-sh/ruff#7501](../../astral-sh/ruff/pulls/7501.md) on 2023-09-18 20:17_
 
 ---
 

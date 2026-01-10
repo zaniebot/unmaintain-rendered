@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-01-21T12:12:27Z
 updated_at: 2025-01-21T12:51:22Z
 url: https://github.com/astral-sh/ruff/issues/15636
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Daily property test run failed on Tue Jan 21 2025
@@ -51,10 +51,6 @@ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ---
 
 _Assigned to @AlexWaygood by @AlexWaygood on 2025-01-21 12:31_
-
----
-
-_Referenced in [astral-sh/ruff#15637](../../astral-sh/ruff/pulls/15637.md) on 2025-01-21 12:46_
 
 ---
 

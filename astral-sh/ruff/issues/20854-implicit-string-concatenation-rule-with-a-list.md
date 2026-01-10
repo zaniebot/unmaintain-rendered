@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-14T04:18:00Z
 updated_at: 2025-10-16T07:29:33Z
 url: https://github.com/astral-sh/ruff/issues/20854
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Implicit string concatenation rule with a list with a comment in between 
@@ -38,10 +38,6 @@ Every other issue I could find on this appeared to be closed, but none of them s
 ---
 
 _Renamed from "Implicit string concatination rule with a list with comments" to "Implicit string concatenation rule with a list with a comment in between " by @notatallshaw on 2025-10-14 04:18_
-
----
-
-_Referenced in [pypa/packaging#946](../../pypa/packaging/pulls/946.md) on 2025-10-14 04:22_
 
 ---
 
@@ -137,9 +133,5 @@ I wonder if there's an argument for a ISC rule or option that catches any implic
 ---
 
 _Closed by @MichaReiser on 2025-10-16 07:29_
-
----
-
-_Referenced in [astral-sh/ruff#13014](../../astral-sh/ruff/issues/13014.md) on 2025-10-16 07:30_
 
 ---

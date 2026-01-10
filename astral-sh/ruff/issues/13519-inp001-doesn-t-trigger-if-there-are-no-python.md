@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-26T01:14:08Z
 updated_at: 2024-11-10T03:03:35Z
 url: https://github.com/astral-sh/ruff/issues/13519
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # `INP001` doesn't trigger if there are no Python files in the immediate directory
@@ -60,10 +60,6 @@ _Comment by @charliermarsh on 2024-09-28 12:41_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-09 22:10_
-
----
-
-_Referenced in [astral-sh/ruff#14236](../../astral-sh/ruff/pulls/14236.md) on 2024-11-10 01:26_
 
 ---
 

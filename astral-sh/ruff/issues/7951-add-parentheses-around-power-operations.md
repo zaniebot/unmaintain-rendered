@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-13T16:40:25Z
 updated_at: 2023-10-16T07:39:28Z
 url: https://github.com/astral-sh/ruff/issues/7951
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Add parentheses around power operations
@@ -49,10 +49,6 @@ Is this documented anywhere in the style guide?
 _Comment by @charliermarsh on 2023-10-13 20:35_
 
 Maybe this? https://github.com/psf/black/pull/909
-
----
-
-_Referenced in [astral-sh/ruff#7955](../../astral-sh/ruff/pulls/7955.md) on 2023-10-13 20:48_
 
 ---
 

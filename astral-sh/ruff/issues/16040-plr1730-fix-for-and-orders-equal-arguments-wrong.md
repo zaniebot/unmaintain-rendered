@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-02-08T16:39:24Z
 updated_at: 2025-02-12T09:27:51Z
 url: https://github.com/astral-sh/ruff/issues/16040
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # PLR1730 fix for `<=` and `>=` orders equal arguments wrong
@@ -114,10 +114,6 @@ _Comment by @MichaReiser on 2025-02-08 17:47_
 > Oh sorry... This is my fault 🙈
 
 Don't worry. This is really on me. I should have caught that during the review. Thanks for taking another try at it.
-
----
-
-_Referenced in [astral-sh/ruff#16080](../../astral-sh/ruff/pulls/16080.md) on 2025-02-10 15:07_
 
 ---
 

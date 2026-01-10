@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-09T09:19:25Z
 updated_at: 2023-02-09T16:22:17Z
 url: https://github.com/astral-sh/ruff/issues/2684
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # TCH001 Re export x annotation
@@ -40,10 +40,6 @@ __init__.py:2:20: TCH001 Move application import `.stuff.Stuff` into a type-chec
 ---
 
 _Label `bug` added by @charliermarsh on 2023-02-09 12:13_
-
----
-
-_Referenced in [astral-sh/ruff#2689](../../astral-sh/ruff/pulls/2689.md) on 2023-02-09 16:12_
 
 ---
 

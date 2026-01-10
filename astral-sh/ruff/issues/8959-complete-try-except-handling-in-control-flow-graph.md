@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-01T23:07:23Z
 updated_at: 2025-01-03T03:55:01Z
 url: https://github.com/astral-sh/ruff/issues/8959
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Complete `try`-`except` handling in control-flow graph
@@ -24,10 +24,6 @@ I'm not exactly sure what's required here, but there are a bunch of TODOs.
 ---
 
 _Label `linter` added by @charliermarsh on 2023-12-01 23:07_
-
----
-
-_Referenced in [astral-sh/ruff#10891](../../astral-sh/ruff/pulls/10891.md) on 2024-04-12 00:34_
 
 ---
 

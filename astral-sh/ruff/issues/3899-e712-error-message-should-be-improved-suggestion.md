@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-06T11:41:11Z
 updated_at: 2023-04-13T19:02:25Z
 url: https://github.com/astral-sh/ruff/issues/3899
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # E712 Error message should be improved. Suggestion is not valid in pyspark code
@@ -57,10 +57,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-04-13 18:48_
 ---
 
 _Label `type-inference` removed by @charliermarsh on 2023-04-13 18:48_
-
----
-
-_Referenced in [astral-sh/ruff#3962](../../astral-sh/ruff/pulls/3962.md) on 2023-04-13 18:56_
 
 ---
 

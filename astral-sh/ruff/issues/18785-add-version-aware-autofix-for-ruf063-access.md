@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-19T07:10:04Z
 updated_at: 2025-06-19T09:11:39Z
 url: https://github.com/astral-sh/ruff/issues/18785
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Add version-aware autofix for RUF063 (access-annotations-from-class-dict)
@@ -36,10 +36,6 @@ Current Code: `foo.__dict__.get("__annotations__")` or `foo.__dict__["__annotati
   - Proposed Fix: Replace with `typing_extensions.get_annotations(foo)` and add the `import typing_extensions` statement.
 
 This multi-version approach will ensure the autofix applies the most appropriate and future-proof solution depending on the project's configured target-version.
-
----
-
-_Referenced in [astral-sh/ruff#18233](../../astral-sh/ruff/pulls/18233.md) on 2025-06-19 07:10_
 
 ---
 

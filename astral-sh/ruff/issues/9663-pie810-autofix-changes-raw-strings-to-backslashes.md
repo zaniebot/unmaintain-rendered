@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-28T14:47:41Z
 updated_at: 2025-01-23T17:12:11Z
 url: https://github.com/astral-sh/ruff/issues/9663
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # PIE810 autofix changes raw strings to backslashes
@@ -62,22 +62,10 @@ _Unassigned @charliermarsh by @charliermarsh on 2024-01-28 19:31_
 
 ---
 
-_Referenced in [astral-sh/ruff#10314](../../astral-sh/ruff/pulls/10314.md) on 2024-03-10 10:12_
-
----
-
 _Assigned to @ntBre by @ntBre on 2025-01-23 14:57_
 
 ---
 
-_Referenced in [astral-sh/ruff#15694](../../astral-sh/ruff/pulls/15694.md) on 2025-01-23 15:40_
-
----
-
 _Closed by @ntBre on 2025-01-23 17:12_
-
----
-
-_Referenced in [ArduPilot/ardupilot#30343](../../ArduPilot/ardupilot/pulls/30343.md) on 2025-06-14 09:04_
 
 ---

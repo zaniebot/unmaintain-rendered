@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-06-18T18:02:07Z
 updated_at: 2025-06-19T09:43:06Z
 url: https://github.com/astral-sh/ruff/issues/18764
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # C420 fix should be marked unsafe for comment deletion
@@ -74,10 +74,6 @@ _Label `fixes` added by @ntBre on 2025-06-18 18:08_
 ---
 
 _Label `help wanted` added by @ntBre on 2025-06-18 18:08_
-
----
-
-_Referenced in [astral-sh/ruff#18768](../../astral-sh/ruff/pulls/18768.md) on 2025-06-18 20:06_
 
 ---
 

@@ -1,0 +1,75 @@
+```yaml
+number: 16358
+title: "F821 False Positive with `del var` in `try`, `except`, `else`"
+type: issue
+state: closed
+author: cibere
+labels:
+  - bug
+assignees: []
+created_at: 2025-02-24T23:31:38Z
+updated_at: 2025-02-25T02:38:43Z
+url: https://github.com/astral-sh/ruff/issues/16358
+synced_at: 2026-01-10T11:09:57Z
+```
+
+# F821 False Positive with `del var` in `try`, `except`, `else`
+
+---
+
+_Issue opened by @cibere on 2025-02-24 23:31_
+
+### Description
+
+When using the `del` keyword on a variable in the `except` part of a `try`, `except`, `else` statement, any reference to said variable in the `else` portion is marked with `F821` as being undefined.
+
+Command: `ruff check --select F --isolated test_ruff.py`
+Ruff Version: `ruff 0.9.7`
+
+## Snippit
+```py
+var = 0
+try:
+    5 / var
+except:
+    print("In except")
+    del var
+else:
+    print("In else")
+    print(f"{var=}")
+```
+Expected Output When Running: `In except`
+Expected Output With Ruff: 
+```
+test_ruff.py:9:14: F821 Undefined name `var`
+  |
+7 | else:
+8 |     print("In else")
+9 |     print(f"{var=}")
+  |              ^^^ F821
+  |
+```
+However if `var` is set to `1` to remove the error, the following output is expected when running:
+```
+In else
+var=1
+```
+
+## Keywords
+"F821", "del var", "try, except, else", "del in try else"
+
+---
+
+_Label `bug` added by @ntBre on 2025-02-25 02:32_
+
+---
+
+_Comment by @ntBre on 2025-02-25 02:38_
+
+Thanks for the report! This looks like a duplicate of #6242. This bug has been around for quite a while!
+
+---
+
+_Closed by @ntBre on 2025-02-25 02:38_
+
+---

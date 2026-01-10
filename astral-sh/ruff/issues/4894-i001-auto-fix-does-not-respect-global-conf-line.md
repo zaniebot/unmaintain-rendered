@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-06T07:01:33Z
 updated_at: 2023-06-07T03:44:56Z
 url: https://github.com/astral-sh/ruff/issues/4894
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # I001: Auto-fix does not respect global conf `line-length`
@@ -199,9 +199,5 @@ I would also suggest to use relative imports at that level of nested packages. T
 ```python
 from acceptance.app.novum.pageobjects.base import BaseChangeSecurityQuestion
 ```
-
----
-
-_Referenced in [langchain-ai/langchain#18437](../../langchain-ai/langchain/pulls/18437.md) on 2024-03-13 04:48_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-25T08:57:39Z
 updated_at: 2023-07-25T18:10:11Z
 url: https://github.com/astral-sh/ruff/issues/6058
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # [Bug] Declaring a `[mccabe]` section without specifying `max-complexity` defaults it to `0`
@@ -43,10 +43,6 @@ _Label `bug` added by @charliermarsh on 2023-07-25 14:10_
 ---
 
 _Label `configuration` added by @charliermarsh on 2023-07-25 14:10_
-
----
-
-_Referenced in [astral-sh/ruff#6073](../../astral-sh/ruff/pulls/6073.md) on 2023-07-25 15:27_
 
 ---
 

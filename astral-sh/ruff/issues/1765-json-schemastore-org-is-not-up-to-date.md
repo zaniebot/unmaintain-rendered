@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-10T09:10:37Z
 updated_at: 2023-03-16T15:36:21Z
 url: https://github.com/astral-sh/ruff/issues/1765
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # json.schemastore.org is not up to date
@@ -42,10 +42,6 @@ _Comment by @charliermarsh on 2023-01-10 12:20_
 
 Unfortunately, the Schema Store doesn't support URLs for embedded schemas. So we can't point it to a URL if we want the schema to appear for `pyproject.toml` files. I initially implemented it as a URL (https://github.com/SchemaStore/schemastore/pull/2673), then intentionally changed it to bundle in the repo to support `pyproject.toml` files (https://github.com/SchemaStore/schemastore/pull/2683). It's an unfortunate limitation, but for now we have to update it periodically.
 
-
----
-
-_Referenced in [SchemaStore/schemastore#2724](../../SchemaStore/schemastore/pulls/2724.md) on 2023-01-10 12:21_
 
 ---
 

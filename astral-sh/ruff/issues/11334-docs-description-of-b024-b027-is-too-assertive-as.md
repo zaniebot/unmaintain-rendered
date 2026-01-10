@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-08T10:07:49Z
 updated_at: 2024-05-08T15:16:59Z
 url: https://github.com/astral-sh/ruff/issues/11334
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # [docs] Description of B024&B027 is too assertive, as compared flake8-bugbear
@@ -46,10 +46,6 @@ _Label `documentation` added by @AlexWaygood on 2024-05-08 10:55_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-08 14:55_
-
----
-
-_Referenced in [astral-sh/ruff#11341](../../astral-sh/ruff/pulls/11341.md) on 2024-05-08 15:03_
 
 ---
 

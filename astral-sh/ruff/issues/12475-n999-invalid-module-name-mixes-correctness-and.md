@@ -1,0 +1,100 @@
+```yaml
+number: 12475
+title: "`N999` (`invalid-module-name`) mixes correctness and stylistic recommendations"
+type: issue
+state: open
+author: edhinard
+labels:
+  - rule
+assignees: []
+created_at: 2024-07-23T09:14:06Z
+updated_at: 2024-08-01T21:34:27Z
+url: https://github.com/astral-sh/ruff/issues/12475
+synced_at: 2026-01-10T11:09:54Z
+```
+
+# `N999` (`invalid-module-name`) mixes correctness and stylistic recommendations
+
+---
+
+_Issue opened by @edhinard on 2024-07-23 09:14_
+
+Not only does rule N999 check that the PEP8 convention is respected, but also checks that the module name is syntactically correct. The latter is not part of PEP8. This is a problem for me currently working on "old non linted" code. I have to ignore this rule because of some modules whose names are syntactically correct but sometimes with capital letters.
+I think a E rule is missing that would only include the syntax checking of N999. (If I were you I would also remove that part from N999 for consistency)
+
+
+
+---
+
+_Comment by @MichaReiser on 2024-07-23 12:17_
+
+It doesn't seem that Python requires all module names to be valid identifiers. Only modules that are imported from other modules. But I might be wrong here. Ruff should always report a syntax error if you try to import a module with an invalid identifier name.
+
+---
+
+_Comment by @AlexWaygood on 2024-07-23 12:43_
+
+I believe @edhinard is complaining about something like the following directory structure:
+
+- `foo/`
+  - `foo/__init__.py` (empty file)
+  - `foo/NotPep8Compliant.py`
+  - `foo/not-an-identifier.py`
+
+They'd like a rule that complains about the naming of `foo/not-an-identifier.py`, as importing `foo.not-an-identifier` at runtime will fail. But they can't use our [`N999`](https://docs.astral.sh/ruff/rules/invalid-module-name/) rule (`invalid-module-name`) to flag this, because that would also flag `foo/NotPep8Compliant.py`). None of the other submodules in the `foo` package ever try to import `not-an-identifier` -- it's just exposed as a public submodule of the `foo` package -- so the bad name of the submodule also isn't caught by any of our rules that flag `SyntaxError`s.
+
+So I think the argument is that N999 should be split into two rules: one that flags invalid module names, and one that flags module names that are valid, but not PEP8-compliant. This seems like a reasonable argument to me, though it would mean we'd deviate from the behaviour of the original pep8-naming linter.
+
+---
+
+_Renamed from "syntactic part of N999 in another E rule" to "`N999` (`invalid-module-name`) mixes correctness and stylistic recommendations" by @AlexWaygood on 2024-07-23 12:44_
+
+---
+
+_Label `rule` added by @AlexWaygood on 2024-07-23 12:44_
+
+---
+
+_Comment by @edhinard on 2024-07-23 12:48_
+
+You are right module names don't have to be valid identifiers:
+```shell
+$ touch 3.py
+$ python3 -c "import importlib; print(importlib.import_module('3'))"
+<module '3' from '/tmp/3.py'>
+```
+But it is not a good idea:
+```shell
+$ python3 -c "import 3"
+  File "<string>", line 1
+    import 3
+           ^
+SyntaxError: invalid syntax
+```
+and ruff is here to help us avoid that.
+IMHO the problem with N999 is that it combine two checks: 1) the pep8 convention which we cannot always adhere to, 2) the "dangerous permissiveness" of non regular module names. It is important to have 2) - for example sub-directories may be implicitely imported by pytest.
+Probably a new "E" rule is not a good idea. But something not mixed with pep8 convention
+
+---
+
+_Comment by @MichaReiser on 2024-08-01 21:26_
+
+@AlexWaygood would you support this check as a separate rule? @AlexElvers is interested in it.
+
+---
+
+_Comment by @AlexWaygood on 2024-08-01 21:32_
+
+> @AlexWaygood would you support this check as a separate rule? @AlexElvers is interested in it.
+
+Are you asking if I'd support splitting the existing check up (as the OP in this issue is requesting) or if I'd support adding an additional, more opinionated rule that also checked N999-type things for files that are not part of packages (as was proposed in https://github.com/astral-sh/ruff/pull/12535)?
+
+For the first question: yes, definitely. For the second question: I think it could be a useful rule for some users, but I think it would probably be too opinionated for us to add now until we've done rule recategorisation.
+
+---
+
+_Comment by @MichaReiser on 2024-08-01 21:34_
+
+Oh, I thought it's both the same. Thanks for explaining and makes sense to me
+
+---

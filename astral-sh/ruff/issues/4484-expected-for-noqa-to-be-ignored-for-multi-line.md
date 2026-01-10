@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-17T22:29:23Z
 updated_at: 2023-05-18T13:05:29Z
 url: https://github.com/astral-sh/ruff/issues/4484
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Expected for noqa to be ignored for multi-line string variable?
@@ -104,10 +104,6 @@ should then continue to work because we only remap the lines of the multiline-st
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-05-18 12:54_
-
----
-
-_Referenced in [astral-sh/ruff#4490](../../astral-sh/ruff/pulls/4490.md) on 2023-05-18 12:59_
 
 ---
 

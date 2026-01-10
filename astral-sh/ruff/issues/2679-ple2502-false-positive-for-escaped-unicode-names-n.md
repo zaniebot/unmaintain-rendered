@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-09T03:21:12Z
 updated_at: 2023-02-10T21:59:30Z
 url: https://github.com/astral-sh/ruff/issues/2679
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # PLE2502: False positive for escaped unicode names ``'\N{...}'``
@@ -64,10 +64,6 @@ _Label `bug` added by @charliermarsh on 2023-02-09 03:23_
 _Comment by @charliermarsh on 2023-02-09 03:23_
 
 Thanks for filing.
-
----
-
-_Referenced in [astral-sh/ruff#2710](../../astral-sh/ruff/pulls/2710.md) on 2023-02-10 04:29_
 
 ---
 

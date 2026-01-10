@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-18T14:55:31Z
 updated_at: 2023-02-20T18:00:41Z
 url: https://github.com/astral-sh/ruff/issues/3010
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # E402 false positive
@@ -33,10 +33,6 @@ Ruff detects an `E402` error but flake8 does not.
 
 Also, when I open the playground link for the first time the errors are not underlined only when I refresh the page does it display the error.
 I use Firefox.
-
----
-
-_Referenced in [astral-sh/ruff#3018](../../astral-sh/ruff/pulls/3018.md) on 2023-02-18 18:11_
 
 ---
 

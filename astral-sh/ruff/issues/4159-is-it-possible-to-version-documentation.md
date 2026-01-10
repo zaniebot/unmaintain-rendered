@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-30T10:54:29Z
 updated_at: 2024-01-14T03:21:43Z
 url: https://github.com/astral-sh/ruff/issues/4159
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Is it possible to version documentation?
@@ -45,10 +45,6 @@ _Comment by @zanieb on 2023-06-28 22:53_
 ---
 
 _Renamed from "Use `mike` in order to have versioned documentation" to "Is it possible to version documentation?" by @JonathanPlasse on 2023-12-17 19:16_
-
----
-
-_Referenced in [astral-sh/ruff#9507](../../astral-sh/ruff/issues/9507.md) on 2024-01-14 02:04_
 
 ---
 

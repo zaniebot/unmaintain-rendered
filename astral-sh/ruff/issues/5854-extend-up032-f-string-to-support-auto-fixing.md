@@ -1,0 +1,143 @@
+```yaml
+number: 5854
+title: "Extend `UP032` (`f-string`) to support auto-fixing multi-line triple-quoted strings"
+type: issue
+state: closed
+author: harupy
+labels:
+  - fixes
+assignees: []
+created_at: 2023-07-18T05:22:11Z
+updated_at: 2023-07-18T16:40:39Z
+url: https://github.com/astral-sh/ruff/issues/5854
+synced_at: 2026-01-10T11:09:48Z
+```
+
+# Extend `UP032` (`f-string`) to support auto-fixing multi-line triple-quoted strings
+
+---
+
+_Issue opened by @harupy on 2023-07-18 05:22_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+UP032 currently ignores multi-lines strings:
+
+https://github.com/astral-sh/ruff/blob/a4e5e3205fce46f00456d7a7b015bd1140a7abe8/crates/ruff/src/rules/pyupgrade/rules/f_strings.rs#L328-L331
+
+
+## Examples
+
+```python
+# Ignored
+a = (
+  "{}"
+  "{}".format(1, 2)
+)
+
+# Ignored
+a = """
+{}
+""".format(1)
+
+# Not ignored
+a = "{}".format(1)
+```
+
+Is it possible to support auto-fixing the second case?
+
+---
+
+_Comment by @harupy on 2023-07-18 05:23_
+
+I'm testing the following change:
+
+```diff
+diff --git a/crates/ruff/src/rules/pyupgrade/rules/f_strings.rs b/crates/ruff/src/rules/pyupgrade/rules/f_strings.rs
+index 494274b3a..8f6b69892 100644
+--- a/crates/ruff/src/rules/pyupgrade/rules/f_strings.rs
++++ b/crates/ruff/src/rules/pyupgrade/rules/f_strings.rs
+@@ -325,8 +325,12 @@ pub(crate) fn f_strings(
+         return;
+     }
+ 
+-    // Avoid refactoring multi-line strings.
+-    if checker.locator.contains_line_break(template.range()) {
++    // Avoid refactoring implicitly-concatenated strings.
++    // if checker.locator.contains_line_break(template.range()) {
++    //     return;
++    // }
++    let contents = checker.locator.slice(template.range());
++    if is_implicit_concatenation(contents) {
+         return;
+     }
+ 
+@@ -338,7 +342,13 @@ pub(crate) fn f_strings(
+ 
+     // Avoid refactors that exceed the line length limit.
+     let col_offset = template.start() - checker.locator.line_start(template.start());
+-    if col_offset.to_usize() + contents.len() > line_length.get() {
++    // if col_offset.to_usize() + contents.len() > line_length.get() {
++    //     return;
++    // }
++    if contents
++        .split('\n')
++        .any(|line| col_offset.to_usize() + line.len() > line_length.get())
++    {
+         return;
+     }
+```
+
+Two changes:
+
+- Ignore implicitly-concatenated strings, not **all** multi-line strings.
+- Check the length of **each line** in the new contents, not the length of the entire new contents.
+
+## Result
+
+(Built ruff with the change above, and ran it in https://github.com/mlflow/mlflow)
+
+https://github.com/harupy/mlflow/commit/70eb98c8e1ac08ca2f1f196634e60a6a1c9471b0
+
+
+
+---
+
+_Renamed from "Extend `UP032` (`f-string`) to support fix multi-line triple-quoted strings" to "Extend `UP032` (`f-string`) to support auto-fixing multi-line triple-quoted strings" by @harupy on 2023-07-18 05:53_
+
+---
+
+_Comment by @harupy on 2023-07-18 09:14_
+
+I'm happy to file a PR if this proposal makes sense.
+
+---
+
+_Comment by @zanieb on 2023-07-18 13:57_
+
+Thanks for the issue and patch! It looks reasonable to me, I'd be curious to see the ecosystem report from a pull request :) 
+
+---
+
+_Label `autofix` added by @zanieb on 2023-07-18 13:57_
+
+---
+
+_Comment by @harupy on 2023-07-18 14:36_
+
+@zanieb Thanks for the comment, filed #5862 :)
+
+---
+
+_Closed by @konstin on 2023-07-18 16:40_
+
+---

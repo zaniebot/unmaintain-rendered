@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-28T10:59:47Z
 updated_at: 2023-02-28T16:56:30Z
 url: https://github.com/astral-sh/ruff/issues/3270
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # TRY200 false positive inside function definition inside except block
@@ -37,10 +37,6 @@ _Label `bug` added by @charliermarsh on 2023-02-28 15:38_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-28 16:34_
-
----
-
-_Referenced in [astral-sh/ruff#3275](../../astral-sh/ruff/pulls/3275.md) on 2023-02-28 16:51_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-18T18:37:20Z
 updated_at: 2023-12-18T19:39:53Z
 url: https://github.com/astral-sh/ruff/issues/9191
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # `FURB118` is incorrector for `operator.contains`. The operands are reversed!
@@ -57,10 +57,6 @@ Thanks!
 
 ---
 
-_Referenced in [dosisod/refurb#316](../../dosisod/refurb/issues/316.md) on 2023-12-18 18:51_
-
----
-
 _Comment by @charliermarsh on 2023-12-18 19:16_
 
 Fixing now :)
@@ -68,10 +64,6 @@ Fixing now :)
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-18 19:16_
-
----
-
-_Referenced in [astral-sh/ruff#9192](../../astral-sh/ruff/pulls/9192.md) on 2023-12-18 19:29_
 
 ---
 

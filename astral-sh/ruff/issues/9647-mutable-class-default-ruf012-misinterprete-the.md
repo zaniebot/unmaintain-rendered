@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-26T14:09:58Z
 updated_at: 2024-01-26T14:54:50Z
 url: https://github.com/astral-sh/ruff/issues/9647
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # mutable-class-default (RUF012) misinterprete the code block
@@ -105,10 +105,6 @@ Thank you! Will add.
 _Comment by @ArazHeydarov on 2024-01-26 14:31_
 
 Thank you for your quick response. 
-
----
-
-_Referenced in [astral-sh/ruff#9650](../../astral-sh/ruff/pulls/9650.md) on 2024-01-26 14:48_
 
 ---
 

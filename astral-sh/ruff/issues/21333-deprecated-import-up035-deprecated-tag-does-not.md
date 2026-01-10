@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-11-08T03:35:31Z
 updated_at: 2025-11-12T07:17:30Z
 url: https://github.com/astral-sh/ruff/issues/21333
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # `deprecated-import` (`UP035`) - `Deprecated` tag does not appear on deprecated types that are replaced with a builtin type
@@ -63,10 +63,6 @@ _Label `bug` added by @MichaReiser on 2025-11-10 09:04_
 ---
 
 _Label `good first issue` added by @MichaReiser on 2025-11-10 09:04_
-
----
-
-_Referenced in [astral-sh/ruff#21396](../../astral-sh/ruff/pulls/21396.md) on 2025-11-12 05:58_
 
 ---
 

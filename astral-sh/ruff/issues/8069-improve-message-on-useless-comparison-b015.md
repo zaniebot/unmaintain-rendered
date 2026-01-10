@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-19T17:20:33Z
 updated_at: 2023-10-28T11:18:03Z
 url: https://github.com/astral-sh/ruff/issues/8069
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Improve message on "useless-comparison" (B015)
@@ -69,10 +69,6 @@ I like your proposal!
 ---
 
 _Label `good first issue` added by @zanieb on 2023-10-20 21:20_
-
----
-
-_Referenced in [astral-sh/ruff#8295](../../astral-sh/ruff/pulls/8295.md) on 2023-10-28 03:49_
 
 ---
 

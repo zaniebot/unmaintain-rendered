@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-10T12:34:35Z
 updated_at: 2023-10-10T16:31:11Z
 url: https://github.com/astral-sh/ruff/issues/7891
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # ruff fix on UP032 breaks applied code when f-string is too long
@@ -73,10 +73,6 @@ _Label `bug` added by @charliermarsh on 2023-10-10 16:05_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-10 16:18_
-
----
-
-_Referenced in [astral-sh/ruff#7898](../../astral-sh/ruff/pulls/7898.md) on 2023-10-10 16:21_
 
 ---
 

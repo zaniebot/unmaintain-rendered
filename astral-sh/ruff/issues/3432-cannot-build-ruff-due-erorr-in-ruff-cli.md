@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-03-10T07:30:01Z
 updated_at: 2023-03-10T09:17:36Z
 url: https://github.com/astral-sh/ruff/issues/3432
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Cannot build ruff due erorr in ruff_cli
@@ -67,10 +67,6 @@ Date:   Wed Mar 8 12:11:55 2023 +0100
  create mode 100644 crates/ruff_cli/src/bin/ruff.rs
  delete mode 100644 crates/ruff_cli/src/main.rs
 ```
-
----
-
-_Referenced in [astral-sh/ruff#3434](../../astral-sh/ruff/pulls/3434.md) on 2023-03-10 08:48_
 
 ---
 

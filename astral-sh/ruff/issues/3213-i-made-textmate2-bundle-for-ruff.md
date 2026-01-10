@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-24T20:47:50Z
 updated_at: 2023-02-24T22:57:35Z
 url: https://github.com/astral-sh/ruff/issues/3213
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # I made TextMate2 Bundle for ruff
@@ -38,10 +38,6 @@ Thanks so much for this! I can add a note in the docs.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-24 22:10_
-
----
-
-_Referenced in [astral-sh/ruff#3219](../../astral-sh/ruff/pulls/3219.md) on 2023-02-24 22:54_
 
 ---
 

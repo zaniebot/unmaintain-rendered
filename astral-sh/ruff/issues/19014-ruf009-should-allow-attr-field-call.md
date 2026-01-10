@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-28T18:14:20Z
 updated_at: 2025-07-03T14:29:56Z
 url: https://github.com/astral-sh/ruff/issues/19014
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # RUF009 should allow attr.field(...) call
@@ -54,10 +54,6 @@ _Label `bug` added by @ntBre on 2025-06-28 18:27_
 ---
 
 _Label `rule` added by @ntBre on 2025-06-28 18:27_
-
----
-
-_Referenced in [astral-sh/ruff#19021](../../astral-sh/ruff/pulls/19021.md) on 2025-06-28 23:16_
 
 ---
 

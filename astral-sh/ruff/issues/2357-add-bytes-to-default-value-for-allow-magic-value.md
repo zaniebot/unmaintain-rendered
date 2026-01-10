@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-01-30T17:20:41Z
 updated_at: 2023-01-30T21:31:50Z
 url: https://github.com/astral-sh/ruff/issues/2357
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Add `bytes` to default value for `allow-magic-value-types`
@@ -51,10 +51,6 @@ Makes sense!
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-01-30 21:31_
-
----
-
-_Referenced in [astral-sh/ruff#2365](../../astral-sh/ruff/pulls/2365.md) on 2023-01-30 21:31_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-04T18:15:32Z
 updated_at: 2024-08-10T16:49:26Z
 url: https://github.com/astral-sh/ruff/issues/12189
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # SIM108 suggested for code block that could have been simplified to an `or`
@@ -49,10 +49,6 @@ Makes sense, thanks!
 ---
 
 _Label `accepted` added by @charliermarsh on 2024-07-04 18:17_
-
----
-
-_Referenced in [astral-sh/ruff#12796](../../astral-sh/ruff/pulls/12796.md) on 2024-08-10 15:44_
 
 ---
 

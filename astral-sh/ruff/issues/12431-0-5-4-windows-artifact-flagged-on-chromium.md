@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-07-21T14:55:07Z
 updated_at: 2024-07-23T12:28:01Z
 url: https://github.com/astral-sh/ruff/issues/12431
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # 0.5.4 Windows artifact flagged on Chromium
@@ -55,9 +55,5 @@ Thankfully, it seems to have passed, and now isn't flagged. Wish there was more 
 _Comment by @charliermarsh on 2024-07-23 12:28_
 
 Totally agree.
-
----
-
-_Referenced in [astral-sh/ruff#15239](../../astral-sh/ruff/issues/15239.md) on 2025-01-05 08:53_
 
 ---

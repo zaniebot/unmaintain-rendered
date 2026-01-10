@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-22T19:14:22Z
 updated_at: 2023-06-22T19:27:07Z
 url: https://github.com/astral-sh/ruff/issues/5308
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Allow `pydantic.BaseSettings` anywhere we allow `pydantic.BaseModel`
@@ -31,18 +31,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-06-22 19:14_
 
 ---
 
-_Referenced in [astral-sh/ruff#5273](../../astral-sh/ruff/pulls/5273.md) on 2023-06-22 19:14_
-
----
-
-_Referenced in [astral-sh/ruff#5312](../../astral-sh/ruff/pulls/5312.md) on 2023-06-22 19:20_
-
----
-
 _Closed by @charliermarsh on 2023-06-22 19:27_
-
----
-
-_Referenced in [astral-sh/ruff#8793](../../astral-sh/ruff/pulls/8793.md) on 2023-11-20 19:25_
 
 ---

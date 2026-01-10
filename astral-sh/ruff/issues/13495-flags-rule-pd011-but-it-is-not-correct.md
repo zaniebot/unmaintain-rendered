@@ -1,0 +1,50 @@
+```yaml
+number: 13495
+title: Flags rule PD011 but it is not correct
+type: issue
+state: closed
+author: santi-mir
+labels: []
+assignees: []
+created_at: 2024-09-24T10:22:23Z
+updated_at: 2024-09-24T10:25:36Z
+url: https://github.com/astral-sh/ruff/issues/13495
+synced_at: 2026-01-10T11:09:55Z
+```
+
+# Flags rule PD011 but it is not correct
+
+---
+
+_Issue opened by @santi-mir on 2024-09-24 10:22_
+
+* Rule PD011: https://docs.astral.sh/ruff/rules/pandas-use-of-dot-values/
+* Code does not use pandas
+
+```py
+a = list()
+a.values
+```
+
+> Use `.to_numpy()` instead of `.values`
+
+* It will always happen in cases where `a` is a `class` that happens to have `values` property.
+
+
+Maybe as a first fix it can check for the `pandas` module, I'm not using it, just as in the snippet above.
+
+---
+
+_Comment by @MichaReiser on 2024-09-24 10:25_
+
+Thanks. Yeah, that makes sense. We're working on type inference that will improve the precision of panda's rules. 
+
+For now, I recommend you to disable the rule by using `ruff.lint.ignore = ["PD011"])`. 
+
+I merge this issue into https://github.com/astral-sh/ruff/issues/6432 which discusses the problem holistically for all pandas rules.
+
+---
+
+_Closed by @MichaReiser on 2024-09-24 10:25_
+
+---

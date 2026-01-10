@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-05T17:50:26Z
 updated_at: 2024-11-07T22:07:28Z
 url: https://github.com/astral-sh/ruff/issues/14114
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] fix handling of known instances in `Type` relation methods
@@ -31,19 +31,7 @@ _Label `red-knot` added by @carljm on 2024-11-05 17:50_
 
 ---
 
-_Referenced in [astral-sh/ruff#14108](../../astral-sh/ruff/pulls/14108.md) on 2024-11-05 17:51_
-
----
-
 _Assigned to @AlexWaygood by @AlexWaygood on 2024-11-07 14:01_
-
----
-
-_Referenced in [astral-sh/ruff#14154](../../astral-sh/ruff/pulls/14154.md) on 2024-11-07 14:04_
-
----
-
-_Referenced in [astral-sh/ruff#14155](../../astral-sh/ruff/pulls/14155.md) on 2024-11-07 14:42_
 
 ---
 

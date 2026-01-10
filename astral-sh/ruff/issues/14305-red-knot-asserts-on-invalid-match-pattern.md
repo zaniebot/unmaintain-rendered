@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-13T08:08:17Z
 updated_at: 2024-11-13T19:31:56Z
 url: https://github.com/astral-sh/ruff/issues/14305
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Asserts on invalid match pattern
@@ -40,10 +40,6 @@ _Label `red-knot` added by @sharkdp on 2024-11-13 08:08_
 ---
 
 _Assigned to @sharkdp by @sharkdp on 2024-11-13 08:08_
-
----
-
-_Referenced in [astral-sh/ruff#14306](../../astral-sh/ruff/pulls/14306.md) on 2024-11-13 08:12_
 
 ---
 

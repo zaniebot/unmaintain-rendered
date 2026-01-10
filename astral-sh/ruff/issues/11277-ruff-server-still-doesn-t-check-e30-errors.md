@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-04T04:07:52Z
 updated_at: 2024-05-04T17:51:28Z
 url: https://github.com/astral-sh/ruff/issues/11277
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # ruff server still doesn't check E30* errors
@@ -148,10 +148,6 @@ _Label `bug` added by @charliermarsh on 2024-05-04 13:40_
 ---
 
 _Label `server` added by @charliermarsh on 2024-05-04 13:40_
-
----
-
-_Referenced in [astral-sh/ruff#11283](../../astral-sh/ruff/pulls/11283.md) on 2024-05-04 17:31_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-11-21T13:53:39Z
 updated_at: 2022-11-21T15:18:22Z
 url: https://github.com/astral-sh/ruff/issues/852
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # support light theme
@@ -37,10 +37,6 @@ _Label `enhancement` added by @charliermarsh on 2022-11-21 14:48_
 _Comment by @charliermarsh on 2022-11-21 14:48_
 
 Nice idea, for sure.
-
----
-
-_Referenced in [astral-sh/ruff#854](../../astral-sh/ruff/pulls/854.md) on 2022-11-21 15:09_
 
 ---
 

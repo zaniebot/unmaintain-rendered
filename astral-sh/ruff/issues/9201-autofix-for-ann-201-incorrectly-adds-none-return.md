@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-19T17:57:24Z
 updated_at: 2023-12-20T21:22:32Z
 url: https://github.com/astral-sh/ruff/issues/9201
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Autofix for ANN 201 incorrectly adds `None` Return Type
@@ -53,10 +53,6 @@ Nice, makes sense. Thank you!
 ---
 
 _Label `bug` added by @charliermarsh on 2023-12-19 21:06_
-
----
-
-_Referenced in [astral-sh/ruff#9206](../../astral-sh/ruff/pulls/9206.md) on 2023-12-20 04:50_
 
 ---
 

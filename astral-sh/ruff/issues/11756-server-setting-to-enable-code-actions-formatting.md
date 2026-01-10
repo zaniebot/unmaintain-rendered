@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-05T15:03:03Z
 updated_at: 2025-03-29T15:13:13Z
 url: https://github.com/astral-sh/ruff/issues/11756
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Server setting to enable code actions / formatting on save
@@ -93,10 +93,6 @@ Editor settings:
 ### ruff cli
 The Ruff CLI needs further discussion around new command (e.g. `ruff action --fix --isort--no-style`).
 Also, see this most-wanted feature request: https://github.com/astral-sh/ruff/issues/8232
-
----
-
-_Referenced in [astral-sh/ruff#11803](../../astral-sh/ruff/pulls/11803.md) on 2024-06-08 16:16_
 
 ---
 

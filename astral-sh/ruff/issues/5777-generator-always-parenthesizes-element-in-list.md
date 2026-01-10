@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-07-15T13:29:04Z
 updated_at: 2023-07-31T15:26:44Z
 url: https://github.com/astral-sh/ruff/issues/5777
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Generator always parenthesizes element in list comprehension
@@ -65,15 +65,7 @@ _Label `autofix` added by @dhruvmanila on 2023-07-15 13:30_
 
 ---
 
-_Referenced in [astral-sh/ruff#4880](../../astral-sh/ruff/pulls/4880.md) on 2023-07-15 13:42_
-
----
-
 _Label `help wanted` added by @MichaReiser on 2023-07-20 09:23_
-
----
-
-_Referenced in [astral-sh/ruff#6198](../../astral-sh/ruff/pulls/6198.md) on 2023-07-31 15:09_
 
 ---
 

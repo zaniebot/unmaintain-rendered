@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-14T01:25:36Z
 updated_at: 2024-08-15T01:02:58Z
 url: https://github.com/astral-sh/ruff/issues/12873
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # `ASYNC100` does not match upstream `flake8-async`
@@ -58,10 +58,6 @@ _Label `bug` added by @charliermarsh on 2024-08-14 01:32_
 ---
 
 _Label `help wanted` added by @MichaReiser on 2024-08-14 06:53_
-
----
-
-_Referenced in [astral-sh/ruff#12896](../../astral-sh/ruff/pulls/12896.md) on 2024-08-14 19:21_
 
 ---
 

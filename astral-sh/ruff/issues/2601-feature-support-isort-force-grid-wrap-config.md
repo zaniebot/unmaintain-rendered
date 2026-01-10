@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-06T01:49:33Z
 updated_at: 2024-09-23T20:36:39Z
 url: https://github.com/astral-sh/ruff/issues/2601
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Feature: Support isort force_grid_wrap config
@@ -66,32 +66,8 @@ See also #2600
 
 ---
 
-_Referenced in [astral-sh/ruff#2595](../../astral-sh/ruff/issues/2595.md) on 2023-05-10 05:16_
-
----
-
-_Referenced in [astral-sh/ruff#6190](../../astral-sh/ruff/issues/6190.md) on 2023-07-31 09:46_
-
----
-
-_Referenced in [ChildMindInstitute/mindlogger-backend-refactor#1034](../../ChildMindInstitute/mindlogger-backend-refactor/pulls/1034.md) on 2024-01-25 02:16_
-
----
-
-_Referenced in [ChildMindInstitute/mindlogger-backend-refactor#1035](../../ChildMindInstitute/mindlogger-backend-refactor/pulls/1035.md) on 2024-01-25 13:45_
-
----
-
 _Comment by @msto on 2024-09-23 20:36_
 
 Would love to see this implemented!
-
----
-
-_Referenced in [astral-sh/ruff#2600](../../astral-sh/ruff/issues/2600.md) on 2025-06-02 02:03_
-
----
-
-_Referenced in [devitocodes/devito#2771](../../devitocodes/devito/pulls/2771.md) on 2025-10-17 12:47_
 
 ---

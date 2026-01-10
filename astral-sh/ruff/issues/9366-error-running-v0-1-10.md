@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-02T20:48:59Z
 updated_at: 2024-01-02T22:23:50Z
 url: https://github.com/astral-sh/ruff/issues/9366
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Error running v0.1.10
@@ -59,10 +59,6 @@ _Label `bug` added by @charliermarsh on 2024-01-02 20:51_
 _Comment by @charliermarsh on 2024-01-02 20:52_
 
 If anyone is interested in a quick PR, welcome to it, otherwise I will :)
-
----
-
-_Referenced in [astral-sh/ruff#9367](../../astral-sh/ruff/pulls/9367.md) on 2024-01-02 20:58_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-31T16:59:08Z
 updated_at: 2025-03-31T21:25:05Z
 url: https://github.com/astral-sh/ruff/issues/17097
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Document `lint.flake8-import-conventions.extend-aliases` as being able to somewhat revert a default alias / enforce non-aliased
@@ -29,10 +29,6 @@ See how that improves configuration
 ![Image](https://github.com/user-attachments/assets/10d96b25-282c-43e5-aad2-35b253ee5004)
 
 I think that also now forces to use the non-aliased version, so it's not truly "removing" it. But it still promotes consistency.
-
----
-
-_Referenced in [python/typeshed#13731](../../python/typeshed/pulls/13731.md) on 2025-03-31 16:59_
 
 ---
 

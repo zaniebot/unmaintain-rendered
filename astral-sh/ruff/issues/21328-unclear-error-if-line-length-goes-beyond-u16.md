@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-11-07T22:44:37Z
 updated_at: 2025-11-10T18:29:37Z
 url: https://github.com/astral-sh/ruff/issues/21328
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # Unclear error if line-length goes beyond u16 boundaries
@@ -92,10 +92,6 @@ _Label `good first issue` added by @MichaReiser on 2025-11-07 22:58_
 ---
 
 _Label `configuration` added by @MichaReiser on 2025-11-07 22:58_
-
----
-
-_Referenced in [astral-sh/ruff#21329](../../astral-sh/ruff/pulls/21329.md) on 2025-11-07 23:15_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-10T19:41:42Z
 updated_at: 2023-02-16T04:35:25Z
 url: https://github.com/astral-sh/ruff/issues/2734
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Implement `flake8-module-name`
@@ -30,10 +30,6 @@ Regex is already used in https://github.com/charliermarsh/ruff/pull/2739
 ---
 
 _Label `rule` added by @charliermarsh on 2023-02-11 03:07_
-
----
-
-_Referenced in [astral-sh/ruff#2855](../../astral-sh/ruff/pulls/2855.md) on 2023-02-13 12:51_
 
 ---
 

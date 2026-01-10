@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-14T15:44:46Z
 updated_at: 2024-05-22T08:36:17Z
 url: https://github.com/astral-sh/ruff/issues/10927
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Failed to `detect-same-package` for `first-party`
@@ -139,10 +139,6 @@ _Comment by @serjflint on 2024-04-15 09:21_
 > And so imports of `library` and `plugins` are being assigned to that section, correctly.
 
 But when I write code in `library` `package` and import relative module using absolute import I expect it to be counted as `local-folder` or `first-party`.
-
----
-
-_Referenced in [astral-sh/ruff#10989](../../astral-sh/ruff/issues/10989.md) on 2024-04-17 08:23_
 
 ---
 

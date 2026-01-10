@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-03T10:18:11Z
 updated_at: 2023-01-03T15:26:00Z
 url: https://github.com/astral-sh/ruff/issues/1592
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T12:05:31Z
 ```
 
 # PT006 autofix: should maintain the replaced string's quote style instead of always using `"`
@@ -103,10 +103,6 @@ Yup That's what I did. :) It was quite interesting to learn how `SourceCodeGener
 
 ---
 
-_Referenced in [astral-sh/ruff#1600](../../astral-sh/ruff/pulls/1600.md) on 2023-01-03 13:41_
-
----
-
 _Closed by @charliermarsh on 2023-01-03 15:16_
 
 ---
@@ -114,9 +110,5 @@ _Closed by @charliermarsh on 2023-01-03 15:16_
 _Comment by @edgarrmondragon on 2023-01-03 15:25_
 
 TIL about `SourceCodeGenerator`. Thanks for fixing this @saadmk11 !
-
----
-
-_Referenced in [astral-sh/ruff#1620](../../astral-sh/ruff/issues/1620.md) on 2023-01-04 02:57_
 
 ---

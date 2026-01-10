@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-02T12:33:04Z
 updated_at: 2025-03-28T13:09:00Z
 url: https://github.com/astral-sh/ruff/issues/2472
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # [Question] is it possible to run ruff only on edited lines of a branch/commit?
@@ -86,9 +86,5 @@ _Comment by @victor-varjo on 2025-03-28 13:09_
 > introducedErrors = errorsAfter - errorsBefore
 
 And make it aware of file renames.
-
----
-
-_Referenced in [custom-components/zaptec#296](../../custom-components/zaptec/pulls/296.md) on 2025-08-22 15:08_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-02-18T21:04:19Z
 updated_at: 2023-02-19T00:38:21Z
 url: https://github.com/astral-sh/ruff/issues/3020
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Escape underscore in help text bugbear B007. Help text poorly rendered.
@@ -43,10 +43,6 @@ Seems like you need to escape the underscore?
 ruff 0.0.245
 `ruff --select B --show-source --target-version=py38`
 
-
----
-
-_Referenced in [astral-sh/ruff#3021](../../astral-sh/ruff/pulls/3021.md) on 2023-02-18 22:16_
 
 ---
 

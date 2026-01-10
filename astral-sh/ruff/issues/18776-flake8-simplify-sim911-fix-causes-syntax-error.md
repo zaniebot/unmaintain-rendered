@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-19T00:54:31Z
 updated_at: 2025-06-23T14:24:48Z
 url: https://github.com/astral-sh/ruff/issues/18776
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [flake8-simplify] SIM911 fix causes syntax error
@@ -62,10 +62,6 @@ ruff 0.12.0 (87f0feb21 2025-06-17) + playground
 ---
 
 _Label `bug` added by @ntBre on 2025-06-19 12:51_
-
----
-
-_Referenced in [astral-sh/ruff#18793](../../astral-sh/ruff/pulls/18793.md) on 2025-06-19 14:10_
 
 ---
 

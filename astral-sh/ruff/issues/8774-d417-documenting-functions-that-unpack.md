@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-20T05:24:24Z
 updated_at: 2025-12-08T19:00:07Z
 url: https://github.com/astral-sh/ruff/issues/8774
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # [D417] Documenting Functions that `Unpack`
@@ -200,10 +200,6 @@ Sounds good to me! I think it makes sense to suppress `D417` for parameters with
 ---
 
 _Assigned to @phongddo by @ntBre on 2025-12-04 23:21_
-
----
-
-_Referenced in [astral-sh/ruff#21816](../../astral-sh/ruff/pulls/21816.md) on 2025-12-05 15:56_
 
 ---
 

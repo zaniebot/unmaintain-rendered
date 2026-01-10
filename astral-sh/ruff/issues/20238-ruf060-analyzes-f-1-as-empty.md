@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-04T15:05:47Z
 updated_at: 2025-09-04T20:21:00Z
 url: https://github.com/astral-sh/ruff/issues/20238
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # RUF060 analyzes `f"" "1"` as empty
@@ -44,10 +44,6 @@ _Label `bug` added by @ntBre on 2025-09-04 17:37_
 
 ---
 
-_Referenced in [astral-sh/ruff#20231](../../astral-sh/ruff/pulls/20231.md) on 2025-09-04 17:37_
-
----
-
 _Label `preview` added by @ntBre on 2025-09-04 17:38_
 
 ---
@@ -55,10 +51,6 @@ _Label `preview` added by @ntBre on 2025-09-04 17:38_
 _Comment by @TaKO8Ki on 2025-09-04 18:05_
 
 I'll take this issue next 🚀 
-
----
-
-_Referenced in [astral-sh/ruff#20249](../../astral-sh/ruff/pulls/20249.md) on 2025-09-04 19:13_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-10T06:41:40Z
 updated_at: 2024-08-13T15:53:43Z
 url: https://github.com/astral-sh/ruff/issues/12268
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Stabilize `flake8-async` behavior changes
@@ -93,10 +93,6 @@ Ah I see, ok, makes sense.
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2024-08-12 10:45_
-
----
-
-_Referenced in [astral-sh/ruff#12844](../../astral-sh/ruff/pulls/12844.md) on 2024-08-12 12:35_
 
 ---
 

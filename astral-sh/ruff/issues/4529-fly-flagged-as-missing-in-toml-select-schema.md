@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-19T13:43:35Z
 updated_at: 2023-05-22T16:54:35Z
 url: https://github.com/astral-sh/ruff/issues/4529
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # `FLY` flagged as missing in TOML `select` schema
@@ -61,17 +61,5 @@ PR is up: https://github.com/SchemaStore/schemastore/pull/2974
 ---
 
 _Closed by @charliermarsh on 2023-05-22 16:54_
-
----
-
-_Referenced in [nbQA-dev/nbQA#824](../../nbQA-dev/nbQA/issues/824.md) on 2023-06-13 07:31_
-
----
-
-_Referenced in [astral-sh/ruff#5321](../../astral-sh/ruff/issues/5321.md) on 2023-06-23 03:07_
-
----
-
-_Referenced in [astral-sh/ruff#5504](../../astral-sh/ruff/issues/5504.md) on 2023-07-04 15:44_
 
 ---

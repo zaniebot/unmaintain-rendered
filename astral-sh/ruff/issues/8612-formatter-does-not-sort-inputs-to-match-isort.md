@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-11T09:18:33Z
 updated_at: 2023-11-11T13:57:35Z
 url: https://github.com/astral-sh/ruff/issues/8612
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Formatter does not sort inputs to match isort profile ["I"]
@@ -99,13 +99,5 @@ _Comment by @mwip on 2023-11-11 13:57_
 Thank you for the prompt and helpful reply. This totally makes sense. Excuse me missing the issue and thanks for linking it.
 
 I will just set up my on save hooks to run `ruff check --select "I" --fix` for the file in addition to a `ruff format`. Works fine for me. (I have to make use of Emacs' customizability in some way :wink: ). Maybe this help someone else finding this in the future.
-
----
-
-_Referenced in [astral-sh/ruff#8926](../../astral-sh/ruff/issues/8926.md) on 2023-11-30 15:55_
-
----
-
-_Referenced in [nvimtools/none-ls.nvim#45](../../nvimtools/none-ls.nvim/issues/45.md) on 2023-12-07 15:15_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-08T15:17:19Z
 updated_at: 2023-11-10T15:15:35Z
 url: https://github.com/astral-sh/ruff/issues/8565
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # UP041 false-positive in the case of target=py310
@@ -47,10 +47,6 @@ _Label `good first issue` added by @zanieb on 2023-11-08 17:21_
 ---
 
 _Assigned to @BurntSushi by @BurntSushi on 2023-11-09 14:01_
-
----
-
-_Referenced in [astral-sh/ruff#8587](../../astral-sh/ruff/pulls/8587.md) on 2023-11-09 17:46_
 
 ---
 

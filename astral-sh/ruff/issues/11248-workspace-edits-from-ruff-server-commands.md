@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-02T17:18:30Z
 updated_at: 2024-06-03T20:19:54Z
 url: https://github.com/astral-sh/ruff/issues/11248
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Workspace edits from `ruff server` commands occasionally fail in VS Code when operating on an yet-to-be-created file
@@ -50,10 +50,6 @@ _Assigned to @snowsignal by @snowsignal on 2024-05-02 17:18_
 
 ---
 
-_Referenced in [astral-sh/ruff#11206](../../astral-sh/ruff/pulls/11206.md) on 2024-05-14 06:22_
-
----
-
 _Comment by @T-256 on 2024-05-28 22:47_
 
 I can't repro this in v0.4.5. If you are still able to repro this, could you also provide the logs?
@@ -69,9 +65,5 @@ The only caveat is that this fix involve omitting document versions from workspa
 ---
 
 _Closed by @snowsignal on 2024-06-03 20:19_
-
----
-
-_Referenced in [astral-sh/ruff#11730](../../astral-sh/ruff/issues/11730.md) on 2024-06-04 06:11_
 
 ---

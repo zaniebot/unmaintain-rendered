@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-17T02:11:19Z
 updated_at: 2025-03-21T18:45:27Z
 url: https://github.com/astral-sh/ruff/issues/14395
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # No syntax error for `[(a := ...) for a in b]`
@@ -51,10 +51,6 @@ _Label `rule` added by @MichaReiser on 2024-11-17 09:16_
 
 ---
 
-_Referenced in [astral-sh/ruff#11934](../../astral-sh/ruff/issues/11934.md) on 2024-11-18 06:22_
-
----
-
 _Comment by @dhruvmanila on 2024-11-18 06:23_
 
 Yeah, I'll add this to #11934 as it's a syntax error raised by the compiler and not the parser. It can be verified by:
@@ -79,10 +75,6 @@ Module(
                   is_async=0)]))],
    type_ignores=[])
 ```
-
----
-
-_Referenced in [astral-sh/ruff#16106](../../astral-sh/ruff/pulls/16106.md) on 2025-03-17 20:02_
 
 ---
 

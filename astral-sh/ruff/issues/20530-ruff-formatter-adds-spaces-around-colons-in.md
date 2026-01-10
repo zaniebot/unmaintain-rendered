@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-23T08:04:05Z
 updated_at: 2025-11-06T13:28:56Z
 url: https://github.com/astral-sh/ruff/issues/20530
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Ruff formatter adds spaces around colons in complex slice expressions, violating PEP 8
@@ -177,9 +177,5 @@ _Label `question` added by @MichaReiser on 2025-09-23 08:30_
 ---
 
 _Closed by @MichaReiser on 2025-11-06 13:28_
-
----
-
-_Referenced in [Nativu5/Gemini-FastAPI#52](../../Nativu5/Gemini-FastAPI/pulls/52.md) on 2025-11-19 04:34_
 
 ---

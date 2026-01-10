@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-15T03:34:52Z
 updated_at: 2023-08-19T06:56:16Z
 url: https://github.com/astral-sh/ruff/issues/6582
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # new rule - detect unnecessary instance/class methods
@@ -73,10 +73,6 @@ class Bar(Foo):
 
 Bar().foo()
 ```
-
----
-
-_Referenced in [astral-sh/ruff#6574](../../astral-sh/ruff/pulls/6574.md) on 2023-08-17 19:41_
 
 ---
 

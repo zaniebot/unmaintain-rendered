@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-09T09:03:25Z
 updated_at: 2023-08-22T10:26:21Z
 url: https://github.com/astral-sh/ruff/issues/6442
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Spurious PLE1300 error with 0.0.283
@@ -42,10 +42,6 @@ _Issue opened by @DimitriPapadopoulos on 2023-08-09 09:03_
 
 The [Format String Syntax](https://docs.python.org/3/library/string.html#format-string-syntax) documentation states:
 > A _format_spec_ field can also include nested replacement fields within it. These nested replacement fields may contain a field name, conversion flag and format specification, but deeper nesting is not allowed.
-
----
-
-_Referenced in [codespell-project/codespell#3014](../../codespell-project/codespell/issues/3014.md) on 2023-08-09 09:05_
 
 ---
 
@@ -163,19 +159,11 @@ I think the parser doesn't quite support this, it'll need to be improved. (The r
 
 ---
 
-_Referenced in [astral-sh/ruff#6522](../../astral-sh/ruff/issues/6522.md) on 2023-08-12 13:23_
-
----
-
 _Assigned to @zanieb by @zanieb on 2023-08-14 17:56_
 
 ---
 
 _Unassigned @charliermarsh by @charliermarsh on 2023-08-14 19:49_
-
----
-
-_Referenced in [astral-sh/ruff#6616](../../astral-sh/ruff/pulls/6616.md) on 2023-08-16 14:14_
 
 ---
 
@@ -213,16 +201,8 @@ _Comment by @DimitriPapadopoulos on 2023-08-22 09:57_
 
 ---
 
-_Referenced in [astral-sh/ruff#6767](../../astral-sh/ruff/issues/6767.md) on 2023-08-22 10:19_
-
----
-
 _Comment by @DimitriPapadopoulos on 2023-08-22 10:20_
 
 I have opened #6767 as a follow-up to this ticket.
-
----
-
-_Referenced in [astral-sh/ruff#6773](../../astral-sh/ruff/pulls/6773.md) on 2023-08-24 09:07_
 
 ---

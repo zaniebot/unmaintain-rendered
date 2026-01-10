@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-12-06T08:14:26Z
 updated_at: 2024-12-07T03:00:35Z
 url: https://github.com/astral-sh/ruff/issues/14808
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [Fix error] C417 and walrus statements
@@ -108,10 +108,6 @@ index 4761c80b8..9e2baec85 100644
 ```
 
 Never mind. Didn't read the issue carefully.
-
----
-
-_Referenced in [astral-sh/ruff#14827](../../astral-sh/ruff/pulls/14827.md) on 2024-12-06 23:21_
 
 ---
 

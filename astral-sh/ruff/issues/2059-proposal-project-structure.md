@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-21T13:25:54Z
 updated_at: 2023-04-06T17:50:07Z
 url: https://github.com/astral-sh/ruff/issues/2059
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Proposal: Project structure
@@ -105,14 +105,6 @@ However I just had the realization that this could be addressed by simply creati
 │   └── ruff_dev/
 └── rules -> crates/ruff/src/rules/
 ```
-
----
-
-_Referenced in [astral-sh/ruff#2088](../../astral-sh/ruff/pulls/2088.md) on 2023-01-22 17:14_
-
----
-
-_Referenced in [astral-sh/ruff#2435](../../astral-sh/ruff/pulls/2435.md) on 2023-02-01 10:16_
 
 ---
 

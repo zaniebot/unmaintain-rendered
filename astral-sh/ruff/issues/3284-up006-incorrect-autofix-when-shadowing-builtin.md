@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-28T23:13:11Z
 updated_at: 2023-03-02T21:05:36Z
 url: https://github.com/astral-sh/ruff/issues/3284
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # UP006: Incorrect autofix when shadowing builtin
@@ -64,10 +64,6 @@ _Label `bug` added by @charliermarsh on 2023-02-28 23:13_
 _Comment by @charliermarsh on 2023-02-28 23:14_
 
 Thanks, you're right! These should check for redefined builtins.
-
----
-
-_Referenced in [astral-sh/ruff#3286](../../astral-sh/ruff/pulls/3286.md) on 2023-02-28 23:22_
 
 ---
 

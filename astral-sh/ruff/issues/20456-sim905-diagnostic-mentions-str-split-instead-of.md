@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-17T19:44:13Z
 updated_at: 2025-09-18T07:52:09Z
 url: https://github.com/astral-sh/ruff/issues/20456
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # SIM905 diagnostic mentions `str.split` instead of `str.rsplit`
@@ -43,10 +43,6 @@ _Label `good first issue` added by @ntBre on 2025-09-17 19:46_
 ---
 
 _Label `diagnostics` added by @ntBre on 2025-09-17 19:46_
-
----
-
-_Referenced in [astral-sh/ruff#20459](../../astral-sh/ruff/pulls/20459.md) on 2025-09-18 00:56_
 
 ---
 

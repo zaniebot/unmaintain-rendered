@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-11T13:48:52Z
 updated_at: 2023-02-11T04:17:35Z
 url: https://github.com/astral-sh/ruff/issues/1784
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Implement pycodestyle's `max-doc-length`
@@ -43,10 +43,6 @@ If you feel like "globbing" another tool, `docformatter` might have some [simila
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-01-12 01:14_
-
----
-
-_Referenced in [astral-sh/ruff#1804](../../astral-sh/ruff/pulls/1804.md) on 2023-01-12 03:28_
 
 ---
 
@@ -89,10 +85,6 @@ Wow TIL. Yeah I'll revisit the interplay between these and ensure that they matc
 
 ---
 
-_Referenced in [astral-sh/ruff#2756](../../astral-sh/ruff/issues/2756.md) on 2023-02-11 04:06_
-
----
-
 _Comment by @sterlinm on 2023-02-11 04:15_
 
 Thanks! I haven't learned rust yet so can't help much at the moment, but hope to be able to in the future. Amazing project, thanks so much!
@@ -102,9 +94,5 @@ Thanks! I haven't learned rust yet so can't help much at the moment, but hope to
 _Comment by @charliermarsh on 2023-02-11 04:17_
 
 Thank you for the kind words :) I'm tracking in #2756.
-
----
-
-_Referenced in [scipy/scipy#19491](../../scipy/scipy/pulls/19491.md) on 2023-11-08 10:54_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-09T18:15:15Z
 updated_at: 2025-01-19T16:10:44Z
 url: https://github.com/astral-sh/ruff/issues/15380
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] fix equivalence (and gradual equivalence) for differently-ordered unions and intersections
@@ -66,10 +66,6 @@ This would require that we track "user-facing" order (i.e. to preserve the user-
 ---
 
 _Assigned to @AlexWaygood by @AlexWaygood on 2025-01-13 15:17_
-
----
-
-_Referenced in [astral-sh/ruff#15516](../../astral-sh/ruff/pulls/15516.md) on 2025-01-15 22:21_
 
 ---
 

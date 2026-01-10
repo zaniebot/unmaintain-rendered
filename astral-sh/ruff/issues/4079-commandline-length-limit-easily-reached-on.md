@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-24T14:55:36Z
 updated_at: 2023-04-25T23:58:39Z
 url: https://github.com/astral-sh/ruff/issues/4079
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # commandline length limit easily reached on windows shell invocations
@@ -48,10 +48,6 @@ _Label `bug` added by @charliermarsh on 2023-04-25 05:14_
 _Comment by @charliermarsh on 2023-04-25 05:16_
 
 We should be able to support this, but it does require changes within Ruff AFAICT.
-
----
-
-_Referenced in [astral-sh/ruff#4087](../../astral-sh/ruff/pulls/4087.md) on 2023-04-25 05:41_
 
 ---
 

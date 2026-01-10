@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-11T21:45:05Z
 updated_at: 2025-07-10T06:07:56Z
 url: https://github.com/astral-sh/ruff/issues/4384
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # False positive `C901` thrown for outer function in closure
@@ -99,10 +99,6 @@ _Label `needs-decision` added by @charliermarsh on 2023-07-10 01:14_
 ---
 
 _Label `question` removed by @charliermarsh on 2023-07-10 01:14_
-
----
-
-_Referenced in [astral-sh/ruff#19228](../../astral-sh/ruff/issues/19228.md) on 2025-07-09 10:46_
 
 ---
 

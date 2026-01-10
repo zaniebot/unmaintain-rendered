@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-03T01:18:07Z
 updated_at: 2024-01-03T03:04:53Z
 url: https://github.com/astral-sh/ruff/issues/9374
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Infinite loop in F632/E711
@@ -43,10 +43,6 @@ Testable with `ruff --fix --unsafe-fixes ...`.
 
 ---
 
-_Referenced in [astral-sh/ruff#4972](../../astral-sh/ruff/issues/4972.md) on 2024-01-03 01:26_
-
----
-
 _Comment by @charliermarsh on 2024-01-03 01:27_
 
 Nice, thanks!
@@ -62,10 +58,6 @@ _Label `fuzzer` added by @charliermarsh on 2024-01-03 01:27_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-01-03 02:50_
-
----
-
-_Referenced in [astral-sh/ruff#9376](../../astral-sh/ruff/pulls/9376.md) on 2024-01-03 02:52_
 
 ---
 

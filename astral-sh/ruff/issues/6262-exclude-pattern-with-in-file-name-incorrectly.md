@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-02T04:21:09Z
 updated_at: 2025-08-13T13:24:20Z
 url: https://github.com/astral-sh/ruff/issues/6262
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # exclude pattern with `*` in file name incorrectly matches entire file path
@@ -28,10 +28,6 @@ this incorrectly excludes the file `foo/bar/baz.py`.
 since `excludes` takes globs (as mentioned [here](https://beta.ruff.rs/docs/configuration/#pyprojecttoml-discovery)), i would expect it to only match python files with names starting with `foo`.
 
 i'm on windows (which uses `\` as path separators instead of `/`), that may be related
-
----
-
-_Referenced in [astral-sh/ruff#6225](../../astral-sh/ruff/issues/6225.md) on 2023-08-02 04:24_
 
 ---
 
@@ -137,14 +133,6 @@ I was surprised to find out that this excluded all Python files in `tests/` _and
 
 ---
 
-_Referenced in [pact-foundation/pact-python#458](../../pact-foundation/pact-python/issues/458.md) on 2023-11-06 03:39_
-
----
-
-_Referenced in [astral-sh/ruff#11139](../../astral-sh/ruff/pulls/11139.md) on 2024-04-25 02:16_
-
----
-
 _Comment by @MichaReiser on 2024-06-25 10:47_
 
 Related https://github.com/astral-sh/ruff/issues/8267
@@ -204,22 +192,10 @@ Our plan for red knot is to have either an `include` and `exclude` (or both?) th
 
 ---
 
-_Referenced in [astral-sh/ty#176](../../astral-sh/ty/issues/176.md) on 2025-06-02 16:02_
-
----
-
 _Comment by @nedbat on 2025-08-01 20:26_
 
 I tried to only format Python files in the top-level directories, so used `include = ["*/*.py"]`   This found all Python files in the whole tree.  As @zanieb points out earlier, the way globset is being used, "*" and "**" are the same, removing power from the user.   "*" should not match path separators.
 
 BTW: The docs say, "go read the globset docs" without mentioning what options are in use, making this behavior difficult to read about.
-
----
-
-_Referenced in [astral-sh/ruff#19841](../../astral-sh/ruff/pulls/19841.md) on 2025-08-10 13:07_
-
----
-
-_Referenced in [astral-sh/ruff#21425](../../astral-sh/ruff/issues/21425.md) on 2025-11-13 23:23_
 
 ---

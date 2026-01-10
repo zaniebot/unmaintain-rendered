@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-05T18:58:51Z
 updated_at: 2024-11-05T19:25:47Z
 url: https://github.com/astral-sh/ruff/issues/14115
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] Panics on (some) starred expressions in annotations
@@ -48,10 +48,6 @@ _Label `red-knot` added by @sharkdp on 2024-11-05 18:58_
 ---
 
 _Assigned to @sharkdp by @sharkdp on 2024-11-05 18:58_
-
----
-
-_Referenced in [astral-sh/ruff#14106](../../astral-sh/ruff/pulls/14106.md) on 2024-11-05 19:00_
 
 ---
 

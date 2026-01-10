@@ -13,7 +13,7 @@ assignees: []
 created_at: 2025-02-08T09:16:34Z
 updated_at: 2025-02-09T16:16:30Z
 url: https://github.com/astral-sh/ruff/issues/16037
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Infinite loop when fixing file with `cast` and format strings
@@ -185,10 +185,6 @@ _Label `preview` added by @dylwil3 on 2025-02-08 23:24_
 
 ---
 
-_Referenced in [astral-sh/ruff#16047](../../astral-sh/ruff/pulls/16047.md) on 2025-02-08 23:25_
-
----
-
 _Comment by @dylwil3 on 2025-02-08 23:27_
 
 A fun puzzle!
@@ -212,10 +208,6 @@ cast(f"{x}")
 
 ---
 
-_Referenced in [astral-sh/ruff#16054](../../astral-sh/ruff/pulls/16054.md) on 2025-02-09 16:09_
-
----
-
 _Comment by @dylwil3 on 2025-02-09 16:11_
 
 > Brilliant work @dylwil3. How did you narrow that down?!
@@ -225,9 +217,5 @@ By an embarrassingly manual binary search 😅 ... it helped that at some point 
 ---
 
 _Closed by @dylwil3 on 2025-02-09 16:16_
-
----
-
-_Referenced in [astral-sh/ruff#16637](../../astral-sh/ruff/pulls/16637.md) on 2025-03-11 16:43_
 
 ---

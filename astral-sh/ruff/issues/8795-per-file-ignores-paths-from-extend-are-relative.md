@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-20T19:29:11Z
 updated_at: 2025-08-22T22:12:34Z
 url: https://github.com/astral-sh/ruff/issues/8795
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # `per-file-ignores` paths from `extend` are relative to the extended configuration file
@@ -306,10 +306,6 @@ I had tried variations on `**/test_*/__init__.py` that weren't relative, but I c
 
 ---
 
-_Referenced in [astral-sh/ruff#8845](../../astral-sh/ruff/issues/8845.md) on 2023-11-27 15:53_
-
----
-
 _Renamed from "per-file-ignores not coming in from extend" to "`per-file-ignores` paths from `extend` are relative to the extended configuration file" by @zanieb on 2023-11-27 15:53_
 
 ---
@@ -394,14 +390,6 @@ per_file_ignores: [
 
 ---
 
-_Referenced in [AntonioMrtz/SpotifyElectron#142](../../AntonioMrtz/SpotifyElectron/pulls/142.md) on 2024-06-07 11:38_
-
----
-
-_Referenced in [AntonioMrtz/SpotifyElectron#136](../../AntonioMrtz/SpotifyElectron/issues/136.md) on 2024-06-07 12:15_
-
----
-
 _Comment by @ewu63 on 2025-08-22 22:12_
 
 Just ran into this issue so bumping it lightly. I have a global global config file located at `~/.config/ruff/ruff.toml`, and within a repo there is a specific `ruff.toml` that overrides some config
@@ -417,9 +405,5 @@ Based on the docs
 I had expected my globs in the `per-file-ignores` section of my global config file to be respected relative to CWD when I import it via the `extend` flag, but that was not the case. When I run `ruff check` I get errors which were specifically ignored from the global config. However, if I run `ruff check` with the `--config-file ruff.toml` pointing to the _local_ config file, then the global paths become relative for some reason, even though _both invocations use the same local `ruff.toml` file_, and I no longer get any errors.
 
 I think the expected behaviour from me would be for there to be no difference between the two invocations, and both times the globs in the `per-file-ignores` should be matched relative to the CWD.
-
----
-
-_Referenced in [astral-sh/ruff#20090](../../astral-sh/ruff/issues/20090.md) on 2025-08-25 23:23_
 
 ---

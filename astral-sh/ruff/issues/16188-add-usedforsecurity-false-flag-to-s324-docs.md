@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-16T15:56:28Z
 updated_at: 2025-02-16T18:06:56Z
 url: https://github.com/astral-sh/ruff/issues/16188
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Add `usedforsecurity=False` flag to `S324` docs
@@ -25,22 +25,10 @@ It seems like adding `usedforsecurity=False` flag properly suppresses the rule `
 
 ---
 
-_Referenced in [astral-sh/ruff#16190](../../astral-sh/ruff/pulls/16190.md) on 2025-02-16 16:13_
-
----
-
-_Referenced in [pytorch/pytorch#147236](../../pytorch/pytorch/issues/147236.md) on 2025-02-16 16:16_
-
----
-
 _Label `documentation` added by @ntBre on 2025-02-16 17:02_
 
 ---
 
 _Closed by @ntBre on 2025-02-16 18:06_
-
----
-
-_Referenced in [pytorch/pytorch#147627](../../pytorch/pytorch/issues/147627.md) on 2025-02-21 15:07_
 
 ---

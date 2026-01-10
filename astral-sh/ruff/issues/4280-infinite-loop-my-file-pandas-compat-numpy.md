@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-08T12:05:21Z
 updated_at: 2023-05-08T19:33:31Z
 url: https://github.com/astral-sh/ruff/issues/4280
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # [Infinite loop] My File: pandas\compat\numpy\function.py
@@ -167,10 +167,6 @@ _Comment by @dhruvmanila on 2023-05-08 13:27_
 > We should either not flag the rule if no uppercase version of the first character of the first word exists, or not provide an autofix.
 
 I think the former makes sense!
-
----
-
-_Referenced in [astral-sh/ruff#4283](../../astral-sh/ruff/pulls/4283.md) on 2023-05-08 13:44_
 
 ---
 

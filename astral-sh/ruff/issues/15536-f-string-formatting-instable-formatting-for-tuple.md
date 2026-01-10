@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-16T17:43:52Z
 updated_at: 2025-01-17T09:08:11Z
 url: https://github.com/astral-sh/ruff/issues/15536
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # F-string formatting: Instable formatting for tuple with trailing comma
@@ -54,10 +54,6 @@ _Label `formatter` added by @MichaReiser on 2025-01-16 17:43_
 _Comment by @MichaReiser on 2025-01-16 17:55_
 
 This might be rather annoying to fix. I introduced this regression when I changed `RemoveSoftLines` to remove `if_group_breaks` elements to fix https://github.com/astral-sh/ruff/pull/14489. Maybe that was a bad idea after all, and we should instead have changed the power formatting?
-
----
-
-_Referenced in [astral-sh/ruff#15545](../../astral-sh/ruff/pulls/15545.md) on 2025-01-17 07:52_
 
 ---
 

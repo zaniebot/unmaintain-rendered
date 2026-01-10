@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-10T14:56:19Z
 updated_at: 2023-05-15T02:35:00Z
 url: https://github.com/astral-sh/ruff/issues/4348
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Overriding one sub-setting nulls out other inherited settings
@@ -84,14 +84,6 @@ I agree -- we should be overriding on a per-key basis, not a per-section basis.
 
 ---
 
-_Referenced in [astral-sh/ruff#4431](../../astral-sh/ruff/pulls/4431.md) on 2023-05-14 14:12_
-
----
-
 _Closed by @charliermarsh on 2023-05-15 02:35_
-
----
-
-_Referenced in [astral-sh/ruff#9872](../../astral-sh/ruff/issues/9872.md) on 2024-02-07 12:02_
 
 ---

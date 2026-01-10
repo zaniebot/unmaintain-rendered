@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-28T12:23:58Z
 updated_at: 2023-07-28T13:38:15Z
 url: https://github.com/astral-sh/ruff/issues/6148
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # RUF015 auto fix changes behavior
@@ -47,10 +47,6 @@ _Label `bug` added by @charliermarsh on 2023-07-28 12:50_
 _Comment by @charliermarsh on 2023-07-28 12:50_
 
 We should probably remove the slice cases here.
-
----
-
-_Referenced in [astral-sh/ruff#6150](../../astral-sh/ruff/pulls/6150.md) on 2023-07-28 13:02_
 
 ---
 

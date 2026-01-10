@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-24T13:55:07Z
 updated_at: 2025-09-17T17:50:56Z
 url: https://github.com/astral-sh/ruff/issues/15716
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # B023 False positive when there is a list comprehension with the same variable name in a loop.
@@ -50,10 +50,6 @@ This is NOT a duplicate of https://github.com/astral-sh/ruff/issues/7847, becaus
 ---
 
 _Label `bug` added by @MichaReiser on 2025-01-24 14:27_
-
----
-
-_Referenced in [astral-sh/ruff#16046](../../astral-sh/ruff/issues/16046.md) on 2025-02-08 22:54_
 
 ---
 
@@ -188,9 +184,5 @@ for value in range(5):
     result = add_one()(value)
     print(result)
 ```
-
----
-
-_Referenced in [astral-sh/ruff#20507](../../astral-sh/ruff/pulls/20507.md) on 2025-09-22 05:06_
 
 ---

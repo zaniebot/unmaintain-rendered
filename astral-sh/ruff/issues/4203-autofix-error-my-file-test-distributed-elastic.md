@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-03T13:06:29Z
 updated_at: 2023-05-04T14:17:43Z
 url: https://github.com/astral-sh/ruff/issues/4203
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # [Autofix error] My File: test/distributed/elastic/rendezvous/etcd_rendezvous_backend_test.py
@@ -335,15 +335,7 @@ Command to run: `ruff check --select=SIM105 --fix --diff --isolated src/SIM105.p
 
 ---
 
-_Referenced in [astral-sh/ruff#4215](../../astral-sh/ruff/pulls/4215.md) on 2023-05-04 01:10_
-
----
-
 _Label `bug` added by @charliermarsh on 2023-05-04 02:47_
-
----
-
-_Referenced in [astral-sh/ruff#4221](../../astral-sh/ruff/issues/4221.md) on 2023-05-04 11:51_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-08-26T08:24:24Z
 updated_at: 2025-08-26T12:42:55Z
 url: https://github.com/astral-sh/ruff/issues/20094
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # False positive for F821 in cases of `del` and function scopes
@@ -67,10 +67,6 @@ but the function scope is.
 ### Version
 
 ruff 0.12.9 (ef422460d 2025-08-14)
-
----
-
-_Referenced in [centre-for-humanities-computing/m-gsm-symbolic#42](../../centre-for-humanities-computing/m-gsm-symbolic/pulls/42.md) on 2025-08-26 08:24_
 
 ---
 

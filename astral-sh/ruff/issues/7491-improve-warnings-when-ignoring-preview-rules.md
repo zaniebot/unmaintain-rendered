@@ -1,0 +1,153 @@
+```yaml
+number: 7491
+title: Improve warnings when ignoring preview rules without preview flag
+type: issue
+state: closed
+author: bersbersbers
+labels:
+  - preview
+assignees: []
+created_at: 2023-09-18T12:43:53Z
+updated_at: 2023-10-08T16:14:38Z
+url: https://github.com/astral-sh/ruff/issues/7491
+synced_at: 2026-01-10T11:09:49Z
+```
+
+# Improve warnings when ignoring preview rules without preview flag
+
+---
+
+_Issue opened by @bersbersbers on 2023-09-18 12:43_
+
+```shell
+ruff check --isolated --ignore PLC1901,PLR0904  # version 0.0.290
+```
+outputs
+```
+warning: Selection of nursery rule `PLC1901` without the `--preview` flag is deprecated.
+warning: Selection `PLR0904` has no effect because the `--preview` flag was not included.
+```
+
+I think these warnings are rather irrelevant - they basically confirm what the users wants to do anyway, which is *not* select these rules.
+
+---
+
+_Assigned to @zanieb by @charliermarsh on 2023-09-18 13:06_
+
+---
+
+_Label `cli` added by @charliermarsh on 2023-09-18 13:06_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-09-18 13:06_
+
+---
+
+_Label `preview` added by @charliermarsh on 2023-09-18 13:06_
+
+---
+
+_Label `cli` removed by @charliermarsh on 2023-09-18 13:06_
+
+---
+
+_Comment by @silverwind on 2023-09-21 17:20_
+
+Also noticed this strange warning. I had `PLC1901` in my `ignore` config for a long time (because it's a unsafe rule), ruff v0.0.290 now suddenly started warning about it.
+
+---
+
+_Comment by @hmvp on 2023-09-21 17:21_
+
+> Also noticed this strange warning. I had `PLC1901` in my `ignore` config for a long time (because it's a unsafe rule), ruff v0.0.290 now suddenly started warning about it.
+
+That rule moved to the nursery, probably because its unsafe... We had the same..
+
+---
+
+_Comment by @silverwind on 2023-09-21 17:25_
+
+Does nursery mean it's disabled by default now when I `select=["PL"]`?
+
+---
+
+_Comment by @charliermarsh on 2023-09-21 17:27_
+
+@silverwind - Yeah, if you do `select=["PL"]`, `PLC1901` will _not_ be included.
+
+---
+
+_Comment by @silverwind on 2023-09-21 17:30_
+
+Thanks, I'll remove it then from `ignore` and I see the warning also makes sense. It should probably explain better what the "nursery" is, the online docs also have no info on this topic.
+
+---
+
+_Comment by @charliermarsh on 2023-09-21 17:33_
+
+"Nursery" was changed to ["Preview"](https://docs.astral.sh/ruff/preview/) -- we should probably update the docs to reflect that it used to be called "Nursery".
+
+---
+
+_Comment by @silverwind on 2023-09-21 17:37_
+
+I see. Maybe just reword the warning to something like this?
+
+```
+warning: Ignoring preview rule `<id>` has no effect unless `--preview` is specified.
+```
+
+---
+
+_Comment by @charliermarsh on 2023-09-21 17:46_
+
+\cc @zanieb - when you're back :)
+
+---
+
+_Renamed from "Remove unnecessary warnings when ignoring preview rules without preview flag" to "Improve warnings when ignoring preview rules without preview flag" by @zanieb on 2023-09-26 18:35_
+
+---
+
+_Comment by @zanieb on 2023-09-26 18:38_
+
+"select" is kind of a broad term in this warning, we're referring to the use of a _rule selector_ which can be used with any of the command line options e.g. `--select` / `--ignore`. I figured this would be a little ambiguous and we could improve it with more careful messaging in a follow-up — thanks for your feedback!
+
+---
+
+_Label `needs-decision` removed by @zanieb on 2023-09-26 18:38_
+
+---
+
+_Comment by @frenck on 2023-10-02 18:50_
+
+Just ran into this on the Home Assistant project. Honestly, I don't think this is a messaging problem.
+
+A rule was ignored explicitly and still gives us this warning. Meaning if you run it with `--preview`, it still was ignored. But that is now something we should not do anymore?
+
+It is a bit odd as we don't want it in preview but also want to ignore it if it gets out of preview/nursery.
+
+I'm not sure why an ignore flag has to trigger this warning. What is the goal for triggering the warning in that case? What is the risk if it would still be set to be ignored while only available in preview?
+
+I'm just confused about what problem is solved here and why this warning is added for this specific case reported in this issue.
+
+../Frenck
+
+---
+
+_Comment by @zanieb on 2023-10-02 19:02_
+
+Hey @frenck 
+
+The implementation is just naively collecting all of the selector options e.g. https://github.com/astral-sh/ruff/blob/316f75987d138028a282333f8cce780f064f4000/crates/ruff_workspace/src/configuration.rs#L703-L712
+
+This warning is not explicitly targetting use of `--ignore <RULE>`, it applies to _any_ option in which `<RULE>` is used. This was just the simplest way to implement the warning alongside our existing warnings, but we can update that iterator to be aware of the specific option used to remove or reword the message as needed.
+
+I'll be working on this soon.
+
+---
+
+_Closed by @zanieb on 2023-10-08 16:14_
+
+---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-20T14:17:56Z
 updated_at: 2023-12-20T14:36:02Z
 url: https://github.com/astral-sh/ruff/issues/9212
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Prefer `Never` to `NoReturn` in fixes
@@ -28,10 +28,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-12-20 14:17_
 ---
 
 _Label `autofix` added by @charliermarsh on 2023-12-20 14:18_
-
----
-
-_Referenced in [astral-sh/ruff#9213](../../astral-sh/ruff/pulls/9213.md) on 2023-12-20 14:25_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-27T12:33:30Z
 updated_at: 2023-10-28T11:15:32Z
 url: https://github.com/astral-sh/ruff/issues/8282
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Extend bad-dunder-method name to permit __index__
@@ -32,10 +32,6 @@ That seems reasonable to me — PR welcome!
 ---
 
 _Label `bug` added by @charliermarsh on 2023-10-27 13:38_
-
----
-
-_Referenced in [astral-sh/ruff#8300](../../astral-sh/ruff/pulls/8300.md) on 2023-10-28 09:05_
 
 ---
 

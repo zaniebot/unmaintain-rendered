@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-12T09:42:51Z
 updated_at: 2023-09-21T02:30:24Z
 url: https://github.com/astral-sh/ruff/issues/7291
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Detect `noqa` directives inside f-strings
@@ -46,10 +46,6 @@ The [`extract_noqa_line_for`](https://github.com/astral-sh/ruff/blob/a4a4616f0a4
 
 ---
 
-_Referenced in [astral-sh/ruff#7299](../../astral-sh/ruff/issues/7299.md) on 2023-09-12 09:45_
-
----
-
 _Label `python312` added by @dhruvmanila on 2023-09-12 09:45_
 
 ---
@@ -67,10 +63,6 @@ _Label `noqa` added by @dhruvmanila on 2023-09-12 09:47_
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2023-09-13 03:47_
-
----
-
-_Referenced in [astral-sh/ruff#7326](../../astral-sh/ruff/pulls/7326.md) on 2023-09-13 04:41_
 
 ---
 
@@ -235,10 +227,6 @@ from foo import (  # noqa: F401
 
 In which both of those `noqa` positions are valid.
 
-
----
-
-_Referenced in [astral-sh/ruff#7561](../../astral-sh/ruff/issues/7561.md) on 2023-09-21 02:30_
 
 ---
 

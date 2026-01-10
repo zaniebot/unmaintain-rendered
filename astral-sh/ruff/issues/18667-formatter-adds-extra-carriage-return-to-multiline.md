@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-13T19:22:49Z
 updated_at: 2025-06-15T05:53:07Z
 url: https://github.com/astral-sh/ruff/issues/18667
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Formatter adds extra carriage return to multiline f-string debug replacements
@@ -238,10 +238,6 @@ Step 1 only rarely needs to normalize line endings because it uses the `soft_lin
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2025-06-14 05:40_
-
----
-
-_Referenced in [astral-sh/ruff#18673](../../astral-sh/ruff/pulls/18673.md) on 2025-06-14 05:52_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-11T21:03:05Z
 updated_at: 2024-08-17T15:00:16Z
 url: https://github.com/astral-sh/ruff/issues/12805
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # `try-except-in-loop (PERF203)` possibly false-positives with `continue`/`pass` in `except` block
@@ -98,10 +98,6 @@ ruff 0.5.7
 
 ---
 
-_Referenced in [pypa/setuptools#4556](../../pypa/setuptools/pulls/4556.md) on 2024-08-11 21:24_
-
----
-
 _Comment by @MichaReiser on 2024-08-14 08:41_
 
 [Playground](https://play.ruff.rs/ef9da7e2-20b4-4f6d-b1c9-33ceac3db00d)
@@ -180,14 +176,6 @@ Oh, good point -- the docs do indeed seem to be quite lacking here. Fancy making
 
 ---
 
-_Referenced in [astral-sh/ruff#12947](../../astral-sh/ruff/pulls/12947.md) on 2024-08-17 12:24_
-
----
-
 _Closed by @AlexWaygood on 2024-08-17 15:00_
-
----
-
-_Referenced in [python/typeshed#13312](../../python/typeshed/pulls/13312.md) on 2024-12-26 23:26_
 
 ---

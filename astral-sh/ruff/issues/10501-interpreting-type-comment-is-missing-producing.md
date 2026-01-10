@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-21T03:08:23Z
 updated_at: 2024-03-22T00:09:25Z
 url: https://github.com/astral-sh/ruff/issues/10501
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Interpreting type comment is missing, producing different result from flake8
@@ -115,9 +115,5 @@ _Closed by @AlexWaygood on 2024-03-21 09:46_
 _Comment by @felixvd on 2024-03-22 00:09_
 
 That's a fair point. Thanks for your prompt and detailed response @AlexWaygood 
-
----
-
-_Referenced in [astral-sh/ruff#13925](../../astral-sh/ruff/issues/13925.md) on 2024-10-25 14:21_
 
 ---

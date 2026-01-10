@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-14T00:41:57Z
 updated_at: 2025-10-14T07:23:24Z
 url: https://github.com/astral-sh/ruff/issues/20853
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Fixes between E302 and I001 disagree
@@ -350,9 +350,5 @@ I think this is the same one as https://github.com/astral-sh/ruff/issues/12611
 ---
 
 _Closed by @MichaReiser on 2025-10-14 07:23_
-
----
-
-_Referenced in [astral-sh/ruff#12611](../../astral-sh/ruff/issues/12611.md) on 2025-10-14 07:24_
 
 ---

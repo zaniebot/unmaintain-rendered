@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-24T19:20:30Z
 updated_at: 2023-01-25T01:40:39Z
 url: https://github.com/astral-sh/ruff/issues/2140
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # PTH123 false positive
@@ -99,10 +99,6 @@ I can fix tonight.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-01-25 01:30_
-
----
-
-_Referenced in [astral-sh/ruff#2144](../../astral-sh/ruff/pulls/2144.md) on 2023-01-25 01:40_
 
 ---
 

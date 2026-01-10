@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-13T17:55:51Z
 updated_at: 2023-09-27T13:38:10Z
 url: https://github.com/astral-sh/ruff/issues/7358
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter: PyCharm support
@@ -28,10 +28,6 @@ _Label `formatter` added by @MichaReiser on 2023-09-13 17:55_
 ---
 
 _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-09-13 17:55_
-
----
-
-_Referenced in [koxudaxi/ruff-pycharm-plugin#259](../../koxudaxi/ruff-pycharm-plugin/pulls/259.md) on 2023-09-14 16:32_
 
 ---
 

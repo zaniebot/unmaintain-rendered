@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-04-06T15:10:33Z
 updated_at: 2025-04-29T14:07:18Z
 url: https://github.com/astral-sh/ruff/issues/17232
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] Output is not colorised even if `--color=always` is specified with `--output-format=concise`
@@ -134,10 +134,6 @@ I'm not entirely sure if my approach is correct. Any help would be greatly appre
 _Comment by @BurntSushi on 2025-04-18 16:35_
 
 I think any way you slice it, you'll need to add colors the tedious way. If you make a render object, that will do the "verbose" output. So the concise output fundamentally has to do its own thing and add colors to itself.
-
----
-
-_Referenced in [astral-sh/ruff#17479](../../astral-sh/ruff/pulls/17479.md) on 2025-04-19 13:29_
 
 ---
 

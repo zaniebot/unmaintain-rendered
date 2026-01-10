@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-21T17:02:20Z
 updated_at: 2023-03-21T23:17:05Z
 url: https://github.com/astral-sh/ruff/issues/3653
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Should .mako.py files be ignored?
@@ -34,9 +34,5 @@ I think what Mozilla is doing there strikes me as the right outcome. I could ima
 ---
 
 _Closed by @charliermarsh on 2023-03-21 23:17_
-
----
-
-_Referenced in [astral-sh/ruff#14124](../../astral-sh/ruff/issues/14124.md) on 2024-11-07 12:39_
 
 ---

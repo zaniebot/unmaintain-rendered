@@ -13,7 +13,7 @@ assignees: []
 created_at: 2025-06-11T19:33:19Z
 updated_at: 2025-06-17T05:39:44Z
 url: https://github.com/astral-sh/ruff/issues/18632
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Formatting produces invalid code on 3.13.4
@@ -192,18 +192,6 @@ ValueError: Unknown format code '\' for object of type 'int'
 ... }"
 '1'
 ```
-
----
-
-_Referenced in [astral-sh/ruff#18672](../../astral-sh/ruff/issues/18672.md) on 2025-06-14 23:36_
-
----
-
-_Referenced in [astral-sh/ruff#18704](../../astral-sh/ruff/pulls/18704.md) on 2025-06-16 11:40_
-
----
-
-_Referenced in [astral-sh/ruff#18708](../../astral-sh/ruff/pulls/18708.md) on 2025-06-16 14:04_
 
 ---
 

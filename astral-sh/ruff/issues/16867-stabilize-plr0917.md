@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-20T11:55:09Z
 updated_at: 2025-10-02T12:39:31Z
 url: https://github.com/astral-sh/ruff/issues/16867
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Stabilize `PLR0917`
@@ -21,10 +21,6 @@ synced_at: 2026-01-10T01:56:56Z
 _Issue opened by @flying-sheep on 2025-03-20 11:55_
 
 I think it looks pretty stable, no?
-
----
-
-_Referenced in [scverse/cookiecutter-scverse#364](../../scverse/cookiecutter-scverse/pulls/364.md) on 2025-03-20 12:05_
 
 ---
 
@@ -59,10 +55,6 @@ _Removed from milestone `v0.12` by @ntBre on 2025-06-10 20:38_
 ---
 
 _Added to milestone `v0.13` by @ntBre on 2025-06-10 20:38_
-
----
-
-_Referenced in [astral-sh/ruff#19240](../../astral-sh/ruff/pulls/19240.md) on 2025-07-09 17:24_
 
 ---
 

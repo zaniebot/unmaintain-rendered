@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-08T09:28:25Z
 updated_at: 2024-05-22T04:18:02Z
 url: https://github.com/astral-sh/ruff/issues/11333
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # PLE0237 false positive for slots literal concatenation 
@@ -76,10 +76,6 @@ _Label `bug` added by @dhruvmanila on 2024-05-09 11:30_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-22 04:00_
-
----
-
-_Referenced in [astral-sh/ruff#11488](../../astral-sh/ruff/pulls/11488.md) on 2024-05-22 04:12_
 
 ---
 

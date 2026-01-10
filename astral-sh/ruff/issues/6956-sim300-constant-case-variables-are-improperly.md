@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-28T20:52:47Z
 updated_at: 2023-12-20T20:26:08Z
 url: https://github.com/astral-sh/ruff/issues/6956
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # SIM300: CONSTANT_CASE variables are improperly flagged for yoda violation
@@ -108,10 +108,6 @@ assert SECONDS_IN_DAY == 60 * 60 * 24
 
 ---
 
-_Referenced in [astral-sh/ruff#8759](../../astral-sh/ruff/issues/8759.md) on 2023-11-18 23:05_
-
----
-
 _Comment by @charliermarsh on 2023-11-18 23:05_
 
 This came up again in https://github.com/astral-sh/ruff/issues/8759.
@@ -130,10 +126,6 @@ Looking at the example from @tdulcet, I guess it'd also need to consider arithme
 ---
 
 _Label `help wanted` added by @zanieb on 2023-11-20 15:57_
-
----
-
-_Referenced in [astral-sh/ruff#9164](../../astral-sh/ruff/pulls/9164.md) on 2023-12-16 19:22_
 
 ---
 

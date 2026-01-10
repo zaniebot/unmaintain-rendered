@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-09-19T17:28:50Z
 updated_at: 2025-10-23T13:23:39Z
 url: https://github.com/astral-sh/ruff/issues/7525
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter: Add --skip-string-normalization option (parity with Black)?
@@ -162,10 +162,6 @@ _Comment by @kbd on 2023-10-19 13:28_
 
 ---
 
-_Referenced in [astral-sh/ruff#8206](../../astral-sh/ruff/issues/8206.md) on 2023-10-25 09:43_
-
----
-
 _Comment by @MartinCura on 2023-10-25 20:01_
 
 Chiming in as i test the new formatter (awesome work you're doing, btw!):
@@ -208,10 +204,6 @@ FWIW those long strings usually fall under the user-facing-English-content categ
 
 ---
 
-_Referenced in [astral-sh/ruff#8252](../../astral-sh/ruff/issues/8252.md) on 2023-10-26 15:05_
-
----
-
 _Label `cli` added by @MichaReiser on 2023-10-26 23:54_
 
 ---
@@ -243,10 +235,6 @@ I inherited some 20y old code, where `"` and `'` are both used. Sadly I'm not th
 _Comment by @chockseswaramurthy on 2023-11-17 14:56_
 
 Adding comment for more data points :) . We also ran into this issue when trying to replace Black with ruff formatter in our 10yr old big’ish Django code base with `skip-string-normalization=true` configured currently. We use both single and double quotes and have preferred single quotes historically but also allow double quotes for some things. Internal consensus is leaning towards preserving existing quote styles to co-exist. From reading above, I think `quote-style = "preserve"` should help us adopt ruff formatter with minimal moving changes. 
-
----
-
-_Referenced in [astral-sh/ruff#8822](../../astral-sh/ruff/pulls/8822.md) on 2023-11-22 20:32_
 
 ---
 
@@ -286,10 +274,6 @@ This isn't what I want (would prefer for it to just not touch the string quoting
 _Comment by @charliermarsh on 2024-01-03 18:34_
 
 @mmerickel - Thank you, it's super helpful to get feedback like this.
-
----
-
-_Referenced in [astral-sh/ruff#9185](../../astral-sh/ruff/issues/9185.md) on 2024-01-08 07:15_
 
 ---
 

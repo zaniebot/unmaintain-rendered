@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-25T11:08:19Z
 updated_at: 2023-08-01T15:31:03Z
 url: https://github.com/astral-sh/ruff/issues/6066
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Formatter: Preserve leading empty lines of indented classes and functions
@@ -54,10 +54,6 @@ def f():
 ---
 
 _Label `formatter` added by @konstin on 2023-07-25 11:08_
-
----
-
-_Referenced in [astral-sh/ruff#6069](../../astral-sh/ruff/issues/6069.md) on 2023-07-25 11:22_
 
 ---
 
@@ -159,14 +155,6 @@ I think that could work well. Not sure if implementing custom placement is neces
 ---
 
 _Added to milestone `Formatter: Alpha` by @MichaReiser on 2023-07-31 15:49_
-
----
-
-_Referenced in [astral-sh/ruff#6203](../../astral-sh/ruff/issues/6203.md) on 2023-07-31 17:12_
-
----
-
-_Referenced in [astral-sh/ruff#6206](../../astral-sh/ruff/pulls/6206.md) on 2023-07-31 19:11_
 
 ---
 

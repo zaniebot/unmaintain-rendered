@@ -1,0 +1,227 @@
+```yaml
+number: 2315
+title: "Potential New Lint Check: Alphabetized Enums"
+type: issue
+state: open
+author: traviscook21
+labels:
+  - rule
+assignees: []
+created_at: 2023-01-29T00:37:12Z
+updated_at: 2025-07-03T00:03:09Z
+url: https://github.com/astral-sh/ruff/issues/2315
+synced_at: 2026-01-10T11:09:45Z
+```
+
+# Potential New Lint Check: Alphabetized Enums
+
+---
+
+_Issue opened by @traviscook21 on 2023-01-29 00:37_
+
+Hi there - thanks for the great repo.  I've been continually amazed by how many checks have been included and how fast `ruff` is.  The work y'all are doing is amazing.
+
+I'm interesting in adding a new set of linter checks around alphabetized enums.  In the variety of corporate repos I work in, there are some use cases with very long lists of values in an enum, like log types, slack channel names, etc.  We've been enforcing that these stay in alphabetical order via PR, but obviously enforcing via a lint check would be easier, especially if it can be auto fixed.  I've tried to find flake8 extensions that have a similar behavior but I have yet to find anything that does this exactly.  I'm a python developer without any Rust experience (yet) but would be interested in implementing in `ruff` if this is deemed appropriate as a new kind of check.
+
+Some examples:
+
+**:one: Alphabetize non-auto string values based on the enum attribute names.**
+
+Bad:
+```python
+from enum import Enum
+
+class Animals(Enum): 
+     DOG = "dog"
+     CAT = "cat"
+```
+
+Good:
+```python
+from enum import Enum
+
+class Animals(Enum): 
+     CAT = "cat"
+     DOG = "dog"
+```
+
+**:two: Order non-auto integer values based on the enum values**
+
+It's fairly common to use enums to handle priority order, so I think the clearest thing to do is to sort these on the values, not on the attribute names.  This could also be sorted on the attribute names.
+
+Bad:
+```python
+from enum import Enum
+
+class Priority(Enum):
+    THIRD_PARTY = 3
+    PUBLIC = 1
+    INTERNAL = 2
+```
+
+Good:
+```python
+from enum import Enum
+
+class Priority(Enum):
+    PUBLIC = 1    
+    INTERNAL = 2
+    THIRD_PARTY = 3
+```
+
+
+**:three: Alphabetize auto values based on the `StrEnum` attribute names.**
+
+When using a `StrEnum`, `auto` will set the values to `name.lower()` so changing the order will have no impact.
+
+Bad:
+```python
+from enum import StrEnum, auto
+
+class Animals(StrEnum):
+    DOG = auto()
+    CAT = auto()
+```
+
+Good:
+```python
+from enum import StrEnum, auto
+
+class Animals(StrEnum):
+    CAT = auto()
+    DOG = auto()
+```
+
+**:four: Do Nothing with regular enums that use `auto()`**
+  Because regular enum `auto()` assigns integer values, changing the order will change the integer values that get assigned.  Assuming all of the uses are internal, this might not cause issues, but if the values are written to a database, used outside the application, or any comparisons happen directly to the integer values, this could cause problems.  As a result, I think it's better to leave enums that look like this alone
+```python
+from enum import Enum, auto
+
+class Animals(Enum):
+    DOG = auto()
+    CAT = auto()
+```
+
+
+---
+
+_Comment by @charliermarsh on 2023-01-31 04:33_
+
+I think this is overall a reasonable suggestion. It'll take some care to preserve comments, if that's something that we care about.
+
+The main blockers here, IMO, are: (1) we're a little behind on defining the criteria for inclusion new checks (#2257), and (2) we need better mechanisms for categorizing these novel rules (we can put them in `RUF`, but I'd rather they go in some more experimental section -- see #1774).
+
+I'm hoping to write something up to kickstart the discussion on (1) by the end of the week.
+
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-01-31 04:33_
+
+---
+
+_Comment by @ngnpope on 2023-01-31 20:34_
+
+For this particular one it would be nice if it's possible to so something like the following:
+
+```python
+class Animals(Enum):
+    CAT = auto()
+    DOG = auto()
+    PIG = auto()
+
+    UNIDENTIFIED = auto()  # noqa: ENU001
+```
+
+Or whatever... Sometimes there is a special value that we don't want to sort, but I guess I'd expect the violation to normally be raised against the `class Animals(Enum):` line so flagging this could be awkward.
+
+---
+
+_Comment by @michaeloliverx on 2023-02-07 11:02_
+
+This is great suggestion! Something related would be the ability to sort collections that use enums as keys similar to the undocumented `isort` options to sort collections with string keys. I do this manually in many places which is always a pain.
+
+
+Being able to opt out an entire enum rather than each member with a comment would be useful also.
+
+---
+
+_Comment by @Quasar6X on 2024-11-26 15:55_
+
+Hi there - please do excuse me for resurrecting this old issue.
+
+First of all, I belive that this is a great idea, however I'd like to propoe a bit different sorting scheme and present an edge case which makes this difficult for Flag enums.
+
+### My proposal
+
+I think that natural sorting would be a better fit than strictly lexicographical sorting, as the latter would result in a sorting like this:
+
+```python
+class E(Enum):
+    VAR1 = auto()
+    VAR10 = auto()
+    VAR2 = auto()
+    VAR3 = auto()
+    VAR4 = auto()
+    VAR5 = auto()
+    VAR6 = auto()
+    VAR7 = auto()
+    VAR8 = auto()
+    VAR9 = auto()
+```
+
+Where, the intent was to have an ascending numbering scheme for the variants. However, there's a catch when the intent is to have a descending scheme. I propose to make this an option, with the default value being 'ascending' with the option to enable both.
+
+Example:
+```toml
+[tool.ruff.lint.<enum-sort-order-lint-key-here>]
+sort-order = ["ascending", "descending"]  # default: "ascending"
+```
+
+The drawback of this option is that the lint cannot be auto-fixable. I feel that this is a small drawback compared to the greater flexibility provided by it, thus making the lint applicable for more use-cases.
+
+I think that this approach would also fit #7220
+
+### The edge case
+
+Consider this Flag enum (also holds true for `IntFlag`):
+
+```python
+class E(Flag):
+    B = auto()
+    A = auto()
+```
+
+Now flag enum variants can be combined with `__or__` and `__xor__`. Given the definition above, the following statement
+```python
+print((E.A | E.B).name, (E.B | E.A).name, (E.A ^ E.B).name, (E.B ^ E.A).name)
+```
+prints: `B|A B|A B|A B|A` for python versions `>= 3.11`. This is because the operators need to keep commutativity in mind, thus the order is determined by the definition order of the variants. Sorting such enum variants in **any** ordering could break code where variant names are compared against strings.
+
+I believe that making Flag type enums unfixable in either "ascending" or "descending" options is sufficient, however the risk here is much greater making me lean towards extracting this part into another lint.
+ 
+
+
+---
+
+_Comment by @dhruvmanila on 2024-11-27 07:30_
+
+@Quasar6X Thanks for writing this up! Reading the original proposal, I think the rules would only look at enums that are "safe" to re-order i.e, it should avoid the edge case that you've mentioned and the one in your proposal. I'm curious to know if the example mentioned in your proposal is something that you've seen in a real codebase.
+
+---
+
+_Comment by @Quasar6X on 2024-11-27 08:14_
+
+I have yet to come across this in a python code base but I had seen this pattern in a C code base before.
+
+---
+
+_Comment by @r-barnes on 2025-07-03 00:02_
+
+Relatedly: there are often lists/dicts/other structures where the user might desire the contents to remain alphabetical.
+
+For instance, the code might contain a set of users privileged to access a resource - maintaining alphabetical order in that last increases readability.
+
+Perhaps a `# qa: desc-sort` and `# qa: asc-sort` that applies to the current block would be a general purpose way of allowing the user to request linted enforcement of ordering?
+
+---

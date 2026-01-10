@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-02T19:45:44Z
 updated_at: 2023-08-07T19:17:28Z
 url: https://github.com/astral-sh/ruff/issues/6285
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Union rules trigger duplicates on nested violations
@@ -48,19 +48,7 @@ _Label `bug` added by @charliermarsh on 2023-08-02 19:45_
 
 ---
 
-_Referenced in [astral-sh/ruff#6215](../../astral-sh/ruff/pulls/6215.md) on 2023-08-02 19:46_
-
----
-
-_Referenced in [astral-sh/ruff#6345](../../astral-sh/ruff/pulls/6345.md) on 2023-08-04 16:24_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2023-08-07 17:36_
-
----
-
-_Referenced in [astral-sh/ruff#6399](../../astral-sh/ruff/pulls/6399.md) on 2023-08-07 18:19_
 
 ---
 

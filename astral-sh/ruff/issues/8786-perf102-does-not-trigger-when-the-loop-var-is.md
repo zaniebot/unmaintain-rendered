@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-20T13:45:31Z
 updated_at: 2024-02-13T14:40:10Z
 url: https://github.com/astral-sh/ruff/issues/8786
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # PERF102 does not trigger when the loop var is used in a previous loop
@@ -149,13 +149,5 @@ _Comment by @mikeleppane on 2024-02-13 14:24_
 > I guess we could check if it's used _after_ the loop but that feels like a separate rule?
 
 Yep, perhaps the only way to solve this is to ignore possible bindings/references before the `for statement`. However, I'm not sure whether that requires a new rule? I'm fixing this to the current rule but if you disagree then I guess we can think about a new approach. 
-
----
-
-_Referenced in [astral-sh/ruff#9978](../../astral-sh/ruff/pulls/9978.md) on 2024-02-13 20:53_
-
----
-
-_Referenced in [astral-sh/ruff#14113](../../astral-sh/ruff/issues/14113.md) on 2024-11-05 17:24_
 
 ---

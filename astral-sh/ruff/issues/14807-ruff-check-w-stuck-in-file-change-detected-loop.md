@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-06T07:23:07Z
 updated_at: 2024-12-06T08:50:30Z
 url: https://github.com/astral-sh/ruff/issues/14807
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # ruff check -w stuck in file change detected loop when pyproject.toml present (since 0.7.3)
@@ -49,10 +49,6 @@ _Label `bug` added by @MichaReiser on 2024-12-06 08:30_
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2024-12-06 08:30_
-
----
-
-_Referenced in [astral-sh/ruff#14809](../../astral-sh/ruff/pulls/14809.md) on 2024-12-06 08:34_
 
 ---
 

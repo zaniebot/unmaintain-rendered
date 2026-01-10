@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-19T05:54:16Z
 updated_at: 2024-04-30T17:15:31Z
 url: https://github.com/astral-sh/ruff/issues/11027
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # `ruff server` add setup guide for helix editor
@@ -56,10 +56,6 @@ _Assigned to @snowsignal by @snowsignal on 2024-04-19 16:41_
 ---
 
 _Added to milestone `Ruff Server: Beta` by @snowsignal on 2024-04-19 16:41_
-
----
-
-_Referenced in [astral-sh/ruff#11183](../../astral-sh/ruff/pulls/11183.md) on 2024-04-28 03:22_
 
 ---
 

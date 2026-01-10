@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-19T06:55:01Z
 updated_at: 2025-06-23T11:51:47Z
 url: https://github.com/astral-sh/ruff/issues/18783
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [Perflint] PERF101 fix can cause syntax error
@@ -74,10 +74,6 @@ _Label `help wanted` added by @MichaReiser on 2025-06-19 09:17_
 _Comment by @LaBatata101 on 2025-06-19 14:44_
 
 I'm working on this
-
----
-
-_Referenced in [astral-sh/ruff#18803](../../astral-sh/ruff/pulls/18803.md) on 2025-06-19 20:00_
 
 ---
 

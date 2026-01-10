@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-01-06T04:32:21Z
 updated_at: 2025-01-06T08:04:19Z
 url: https://github.com/astral-sh/ruff/issues/15296
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Should some (or all) `pep8-naming (N)` not apply to stubs?
@@ -40,9 +40,5 @@ _Label `rule` added by @MichaReiser on 2025-01-06 08:04_
 ---
 
 _Label `needs-decision` added by @MichaReiser on 2025-01-06 08:04_
-
----
-
-_Referenced in [astral-sh/ruff#15954](../../astral-sh/ruff/pulls/15954.md) on 2025-02-05 00:13_
 
 ---

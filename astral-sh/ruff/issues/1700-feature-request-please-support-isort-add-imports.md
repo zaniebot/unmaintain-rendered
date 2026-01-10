@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-06T23:55:30Z
 updated_at: 2023-01-12T17:19:27Z
 url: https://github.com/astral-sh/ruff/issues/1700
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Feature Request: Please support isort add_imports option
@@ -88,10 +88,6 @@ Yes! (The rules are clear, I more meant, from the code perspective, ensuring we 
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-01-08 23:27_
-
----
-
-_Referenced in [astral-sh/ruff#1762](../../astral-sh/ruff/pulls/1762.md) on 2023-01-10 04:21_
 
 ---
 

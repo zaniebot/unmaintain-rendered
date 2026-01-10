@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-09-01T19:51:37Z
 updated_at: 2023-09-04T09:57:06Z
 url: https://github.com/astral-sh/ruff/issues/7050
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter removes parentheses around call chaining
@@ -313,10 +313,6 @@ _Unassigned @charliermarsh by @charliermarsh on 2023-09-03 18:45_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-09-03 20:34_
-
----
-
-_Referenced in [astral-sh/ruff#7109](../../astral-sh/ruff/pulls/7109.md) on 2023-09-03 20:41_
 
 ---
 

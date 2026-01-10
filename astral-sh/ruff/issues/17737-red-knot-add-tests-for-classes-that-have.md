@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-04-30T14:24:53Z
 updated_at: 2025-04-30T20:40:17Z
 url: https://github.com/astral-sh/ruff/issues/17737
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] Add tests for classes that have incompatible `__new__` and `__init__` methods
@@ -86,10 +86,6 @@ Can you assign me to this one?
 ---
 
 _Assigned to @LaBatata101 by @AlexWaygood on 2025-04-30 14:37_
-
----
-
-_Referenced in [astral-sh/ruff#17747](../../astral-sh/ruff/pulls/17747.md) on 2025-04-30 20:16_
 
 ---
 

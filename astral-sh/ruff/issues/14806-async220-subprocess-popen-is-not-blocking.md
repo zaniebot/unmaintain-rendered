@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-06T06:13:46Z
 updated_at: 2025-01-27T01:52:04Z
 url: https://github.com/astral-sh/ruff/issues/14806
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # ASYNC220: subprocess.Popen() is not blocking
@@ -79,10 +79,6 @@ While the initial process creation of `subprocess.Popen` is typically cheap, it 
 ---
 
 _Label `question` added by @charliermarsh on 2025-01-27 01:41_
-
----
-
-_Referenced in [astral-sh/ruff#15761](../../astral-sh/ruff/pulls/15761.md) on 2025-01-27 01:46_
 
 ---
 

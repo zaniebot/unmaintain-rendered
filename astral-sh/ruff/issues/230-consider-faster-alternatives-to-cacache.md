@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-09-20T13:08:45Z
 updated_at: 2022-11-20T18:36:34Z
 url: https://github.com/astral-sh/ruff/issues/230
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # Consider faster alternatives to cacache
@@ -38,10 +38,6 @@ We don't leverage the content-addressed nature of the cache. Can we do something
 ---
 
 _Label `good first issue` added by @charliermarsh on 2022-09-26 01:03_
-
----
-
-_Referenced in [astral-sh/ruff#833](../../astral-sh/ruff/pulls/833.md) on 2022-11-20 17:36_
 
 ---
 

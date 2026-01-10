@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-26T11:49:19Z
 updated_at: 2023-01-26T14:53:26Z
 url: https://github.com/astral-sh/ruff/issues/2191
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Wrong `respect-gitignore` example in Readme/Reference
@@ -29,10 +29,6 @@ ruff version 0.0.235
 ---
 
 _Label `documentation` added by @charliermarsh on 2023-01-26 14:49_
-
----
-
-_Referenced in [astral-sh/ruff#2196](../../astral-sh/ruff/pulls/2196.md) on 2023-01-26 14:53_
 
 ---
 

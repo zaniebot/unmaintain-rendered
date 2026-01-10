@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-10T14:34:50Z
 updated_at: 2024-12-17T18:34:27Z
 url: https://github.com/astral-sh/ruff/issues/9457
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Implicit concatenated string formatting
@@ -99,10 +99,6 @@ _Label `style` added by @MichaReiser on 2024-01-10 14:34_
 
 ---
 
-_Referenced in [astral-sh/ruff#8272](../../astral-sh/ruff/issues/8272.md) on 2024-01-10 14:36_
-
----
-
 _Comment by @tylerlaprade on 2024-01-10 15:50_
 
 I am in favor of this proposal. I don't want implicit string concatenation ever, whether it's on a single line or multiple, so anything that helps avoid it is good by me.
@@ -130,10 +126,6 @@ _Comment by @WieeRd on 2024-01-18 13:05_
 
 I, too, would prefer making this as the default behavior of the Ruff formatter.
 It's hard to imagine someone intentionally doing `"foo" "bar"`, and if they were to, `# fmt: skip` can be used.
-
----
-
-_Referenced in [astral-sh/ruff#9965](../../astral-sh/ruff/issues/9965.md) on 2024-02-12 23:18_
 
 ---
 
@@ -202,18 +194,6 @@ I view this proposal as a pragmatic step forward for Ruff. `ISC001` is a helpful
 
 ---
 
-_Referenced in [johnthagen/python-blueprint#95](../../johnthagen/python-blueprint/issues/95.md) on 2024-03-14 13:12_
-
----
-
-_Referenced in [johnthagen/python-blueprint#217](../../johnthagen/python-blueprint/pulls/217.md) on 2024-03-14 13:22_
-
----
-
-_Referenced in [nipreps/fmriprep#3280](../../nipreps/fmriprep/pulls/3280.md) on 2024-05-04 19:43_
-
----
-
 _Comment by @JacobHayes on 2024-06-17 20:44_
 
 I'd expect `r` strings to be relatively rare overall, but might make up a disproportionate number of _desired_ implicit concatenations. For the sake of 80:20 here on value:effort, perhaps:
@@ -244,31 +224,7 @@ Found 4 errors.
 
 ---
 
-_Referenced in [astral-sh/ruff#6936](../../astral-sh/ruff/issues/6936.md) on 2024-06-27 05:51_
-
----
-
-_Referenced in [astral-sh/ruff#12608](../../astral-sh/ruff/pulls/12608.md) on 2024-08-01 06:35_
-
----
-
-_Referenced in [astral-sh/ruff#13031](../../astral-sh/ruff/issues/13031.md) on 2024-08-22 08:57_
-
----
-
-_Referenced in [astral-sh/ruff#13371](../../astral-sh/ruff/issues/13371.md) on 2024-09-16 16:19_
-
----
-
 _Removed from milestone `Formatter: Stable` by @MichaReiser on 2024-09-27 07:22_
-
----
-
-_Referenced in [astral-sh/ruff#13663](../../astral-sh/ruff/pulls/13663.md) on 2024-10-16 08:50_
-
----
-
-_Referenced in [psf/black#4501](../../psf/black/issues/4501.md) on 2024-10-23 13:50_
 
 ---
 
@@ -281,10 +237,6 @@ Please give it a try and let me know if you run into any problems.
 ---
 
 _Closed by @MichaReiser on 2024-10-25 11:14_
-
----
-
-_Referenced in [johnthagen/python-blueprint#242](../../johnthagen/python-blueprint/issues/242.md) on 2024-10-28 13:47_
 
 ---
 
@@ -359,21 +311,5 @@ Black makes code review faster by producing the smallest diffs possible. Blacken
 >What usually happens once people are using Prettier is that they realize that they actually spend a lot of time and mental energy formatting their code. With Prettier editor integration, you can just press that magic key binding and poof, the code is formatted. This is an eye opening experience if anything else.
 
 -https://prettier.io/docs/en/why-prettier
-
----
-
-_Referenced in [Homebrew/homebrew-core#203745](../../Homebrew/homebrew-core/pulls/203745.md) on 2025-01-09 17:12_
-
----
-
-_Referenced in [home-assistant/core#135256](../../home-assistant/core/pulls/135256.md) on 2025-01-10 07:17_
-
----
-
-_Referenced in [home-assistant/core#135261](../../home-assistant/core/pulls/135261.md) on 2025-01-10 08:12_
-
----
-
-_Referenced in [home-assistant/core#135267](../../home-assistant/core/pulls/135267.md) on 2025-01-10 08:45_
 
 ---

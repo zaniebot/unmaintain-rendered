@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-22T21:15:37Z
 updated_at: 2024-07-24T22:08:24Z
 url: https://github.com/astral-sh/ruff/issues/12465
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # N804 and N805 apply `ignore-names` to function, rather than parameter names (`self`, `cls`)
@@ -132,10 +132,6 @@ Right, I don't think it makes sense to have N804 be disabled if N804 sees `cls` 
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-24 21:29_
-
----
-
-_Referenced in [astral-sh/ruff#12497](../../astral-sh/ruff/pulls/12497.md) on 2024-07-24 21:31_
 
 ---
 

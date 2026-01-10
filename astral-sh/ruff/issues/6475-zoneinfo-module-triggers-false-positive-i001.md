@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-10T09:35:42Z
 updated_at: 2023-08-10T14:05:14Z
 url: https://github.com/astral-sh/ruff/issues/6475
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # zoneinfo module triggers false positive I001
@@ -72,13 +72,5 @@ _Closed by @Atilla on 2023-08-10 13:19_
 _Comment by @charliermarsh on 2023-08-10 14:05_
 
 No worries, sorry for the churn.
-
----
-
-_Referenced in [astral-sh/ruff#13446](../../astral-sh/ruff/issues/13446.md) on 2024-09-22 05:07_
-
----
-
-_Referenced in [astral-sh/ruff#10457](../../astral-sh/ruff/issues/10457.md) on 2024-09-22 05:32_
 
 ---

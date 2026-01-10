@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-09T09:01:48Z
 updated_at: 2024-08-27T17:28:24Z
 url: https://github.com/astral-sh/ruff/issues/12256
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # ruff will Ignore target version when  work on pyi file
@@ -90,10 +90,6 @@ I would've recommended linking to https://typing.readthedocs.io/en/latest/refere
 
 ---
 
-_Referenced in [astral-sh/ruff#10290](../../astral-sh/ruff/issues/10290.md) on 2024-08-19 10:10_
-
----
-
 _Comment by @FichteFoll on 2024-08-19 11:22_
 
 I also fell into the wording trap of https://typing.readthedocs.io/en/latest/reference/stubs.html#syntax and only later (after re-reading it a couple times and studying various issues on this tracker) that the "syntax" section only refers to the "syntax" and not … language features. 
@@ -105,14 +101,6 @@ https://typing.readthedocs.io/en/latest/guides/writing_stubs.html#language-featu
 
 ---
 
-_Referenced in [astral-sh/ruff#13111](../../astral-sh/ruff/pulls/13111.md) on 2024-08-26 15:32_
-
----
-
 _Closed by @AlexWaygood on 2024-08-27 17:28_
-
----
-
-_Referenced in [astral-sh/ruff#13783](../../astral-sh/ruff/issues/13783.md) on 2024-10-16 20:30_
 
 ---

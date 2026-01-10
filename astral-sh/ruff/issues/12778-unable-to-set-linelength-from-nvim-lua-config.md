@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-09T10:01:35Z
 updated_at: 2025-01-07T05:17:22Z
 url: https://github.com/astral-sh/ruff/issues/12778
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Unable to set lineLength from nvim lua config
@@ -171,10 +171,6 @@ ruff_organize_imports ready (python) /Users/dhruv/.local/bin/ruff
 
 ---
 
-_Referenced in [astral-sh/ruff#12795](../../astral-sh/ruff/issues/12795.md) on 2024-08-10 15:20_
-
----
-
 _Comment by @SafetyMary on 2024-08-12 02:15_
 
 Thanks for the help @dhruvmanila 
@@ -251,10 +247,6 @@ Sorry my bad. Upon futher inspection, it seems ruff organize imports is not work
           },
         },
 ```
-
----
-
-_Referenced in [astral-sh/ruff#12806](../../astral-sh/ruff/pulls/12806.md) on 2024-08-14 09:38_
 
 ---
 

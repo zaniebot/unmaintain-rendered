@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-22T10:19:42Z
 updated_at: 2023-08-25T17:42:58Z
 url: https://github.com/astral-sh/ruff/issues/6767
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Spurious PLE1300 error with 0.0.285
@@ -54,10 +54,6 @@ If you're filing a bug report, please consider including the following informati
 
 ---
 
-_Referenced in [astral-sh/ruff#6442](../../astral-sh/ruff/issues/6442.md) on 2023-08-22 10:20_
-
----
-
 _Comment by @charliermarsh on 2023-08-22 12:49_
 
 Thanks for re-filing @DimitriPapadopoulos.
@@ -73,14 +69,6 @@ _Label `accepted` added by @charliermarsh on 2023-08-22 12:49_
 ---
 
 _Assigned to @zanieb by @zanieb on 2023-08-22 13:47_
-
----
-
-_Referenced in [astral-sh/ruff#6773](../../astral-sh/ruff/pulls/6773.md) on 2023-08-22 15:15_
-
----
-
-_Referenced in [astral-sh/ruff#6858](../../astral-sh/ruff/pulls/6858.md) on 2023-08-24 19:32_
 
 ---
 

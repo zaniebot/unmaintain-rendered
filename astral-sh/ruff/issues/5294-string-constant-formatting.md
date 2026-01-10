@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-22T10:26:27Z
 updated_at: 2023-07-10T14:22:01Z
 url: https://github.com/astral-sh/ruff/issues/5294
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # String constant formatting
@@ -20,10 +20,6 @@ synced_at: 2026-01-10T01:56:47Z
 _Issue opened by @MichaReiser on 2023-06-22 10:26_
 
 _No description provided._
-
----
-
-_Referenced in [astral-sh/ruff#4798](../../astral-sh/ruff/issues/4798.md) on 2023-06-22 10:26_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-12T16:54:33Z
 updated_at: 2023-01-13T17:56:44Z
 url: https://github.com/astral-sh/ruff/issues/1821
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # C405 fixer causes E231
@@ -47,14 +47,6 @@ _Label `autofix` added by @charliermarsh on 2023-01-12 21:00_
 
 ---
 
-_Referenced in [astral-sh/ruff#1854](../../astral-sh/ruff/pulls/1854.md) on 2023-01-13 17:56_
-
----
-
 _Closed by @charliermarsh on 2023-01-13 17:56_
-
----
-
-_Referenced in [astral-sh/ruff#2397](../../astral-sh/ruff/issues/2397.md) on 2023-01-31 14:22_
 
 ---

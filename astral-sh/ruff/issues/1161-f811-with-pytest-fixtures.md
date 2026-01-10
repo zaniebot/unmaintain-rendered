@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-12-09T10:45:14Z
 updated_at: 2022-12-09T11:17:37Z
 url: https://github.com/astral-sh/ruff/issues/1161
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:18Z
 ```
 
 # F811 with pytest fixtures
@@ -51,9 +51,5 @@ mm actually i can just add the fixture requirement with
 ---
 
 _Closed by @jiwidi on 2022-12-09 11:17_
-
----
-
-_Referenced in [astral-sh/ruff#20356](../../astral-sh/ruff/pulls/20356.md) on 2025-09-11 20:02_
 
 ---

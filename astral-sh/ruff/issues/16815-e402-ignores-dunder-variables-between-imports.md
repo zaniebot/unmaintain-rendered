@@ -1,0 +1,57 @@
+```yaml
+number: 16815
+title: E402 ignores dunder variables between imports
+type: issue
+state: open
+author: chaush-server
+labels:
+  - rule
+assignees: []
+created_at: 2025-03-17T16:12:35Z
+updated_at: 2025-03-17T16:36:41Z
+url: https://github.com/astral-sh/ruff/issues/16815
+synced_at: 2026-01-10T11:09:58Z
+```
+
+# E402 ignores dunder variables between imports
+
+---
+
+_Issue opened by @chaush-server on 2025-03-17 16:12_
+
+### Summary
+
+```python
+from asyncio import gather
+
+__all__ = ("RuleAccessor",)
+
+from code.base.rule.accessor import RuleBaseAccessor
+```
+
+![Image](https://github.com/user-attachments/assets/dd0c4e2d-f66e-43ff-95ef-2afb4381a8e8)
+
+### Version
+
+_No response_
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-03-17 16:34_
+
+---
+
+_Comment by @MichaReiser on 2025-03-17 16:36_
+
+`__dunder__` names were excluded in https://github.com/astral-sh/ruff/pull/294
+
+because of
+
+> Module level "dunders" (i.e. names with two leading and two trailing
+underscores) such as all, author, version, etc. should be
+placed after the module docstring but before any import statements
+except from future imports.
+
+There's an argument that we should flag `__all__` in between imports but that would be a different rule.
+
+---

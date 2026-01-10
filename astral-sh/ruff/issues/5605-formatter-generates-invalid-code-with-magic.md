@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-08T07:22:41Z
 updated_at: 2023-07-14T09:55:06Z
 url: https://github.com/astral-sh/ruff/issues/5605
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Formatter generates invalid code with magic trailing comma in slice expression
@@ -34,10 +34,6 @@ which is invalid since slice expressions can only exist in brackets (`[]`) and n
 ---
 
 _Label `formatter` added by @konstin on 2023-07-08 07:22_
-
----
-
-_Referenced in [astral-sh/ruff#5759](../../astral-sh/ruff/pulls/5759.md) on 2023-07-14 09:12_
 
 ---
 

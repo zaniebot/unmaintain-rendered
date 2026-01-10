@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-21T07:23:26Z
 updated_at: 2025-03-24T07:56:13Z
 url: https://github.com/astral-sh/ruff/issues/16886
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Types assigned to a type alias should be moved under type checking block
@@ -150,9 +150,5 @@ Yes, but not across multiple files, so we can only ensure this for type aliases 
 Overall I think we mostly agree, it's just that Ruff is trying much harder for the out of the box experience to yield few false positives, whereas the flake8 plugin is a bit more liberal, since there are no fixes that could automatically be applied. So it's important to weigh the cost of making this work for people that don't care about runtime typing and instead care about reducing import overhead as much as possible against the flexibility of making these rules still useful for people that do care about runtime typing to some degree, because they use a popular library like SQLAlchemy, FastAPI, pydantic, cattrs etc.
 
 We may be able to get away with a balanced approach that works for most use-cases using some heuristics, but we may also end up needing to provide a configuration option, if we want to satisfy most people's use-cases, instead of just a niche audience. It's difficult for me to predict which of the two is more likely to end up successful.
-
----
-
-_Referenced in [astral-sh/ruff#16981](../../astral-sh/ruff/pulls/16981.md) on 2025-03-26 13:01_
 
 ---

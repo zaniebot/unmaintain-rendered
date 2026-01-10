@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-05T14:45:52Z
 updated_at: 2022-11-05T19:33:48Z
 url: https://github.com/astral-sh/ruff/issues/601
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # README table generation script should automatically write to `README.md`
@@ -31,6 +31,6 @@ _Referenced in [astral-sh/ruff#606](../../astral-sh/ruff/pulls/606.md) on 2022-1
 
 ---
 
-_Closed by @charliermarsh on 2022-11-05 19:33_
+_Closed by @charliermarsh in #606 on 2022-11-05 19:33_
 
 ---

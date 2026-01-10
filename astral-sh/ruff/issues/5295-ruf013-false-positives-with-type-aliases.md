@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-22T10:36:47Z
 updated_at: 2023-10-18T16:59:20Z
 url: https://github.com/astral-sh/ruff/issues/5295
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # RUF013: False positives with type aliases 
@@ -143,10 +143,6 @@ _Comment by @charliermarsh on 2023-06-22 14:33_
 _Comment by @dhruvmanila on 2023-06-22 14:35_
 
 Please go ahead with today's release. I'll work on it tomorrow.
-
----
-
-_Referenced in [astral-sh/ruff#5344](../../astral-sh/ruff/pulls/5344.md) on 2023-06-23 17:11_
 
 ---
 

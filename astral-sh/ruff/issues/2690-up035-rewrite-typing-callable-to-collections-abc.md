@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-09T16:26:33Z
 updated_at: 2023-07-10T01:19:17Z
 url: https://github.com/astral-sh/ruff/issues/2690
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # `UP035`: Rewrite `typing.Callable` to `collections.abc.Callable` for Python 3.9.2+
@@ -40,10 +40,6 @@ _Label `question` added by @charliermarsh on 2023-02-09 23:05_
 _Comment by @ngnpope on 2023-02-09 23:12_
 
 That's right, it can't be enabled for 3.9.0 or 3.9.1.
-
----
-
-_Referenced in [astral-sh/ruff#3388](../../astral-sh/ruff/issues/3388.md) on 2023-03-08 17:25_
 
 ---
 
@@ -85,13 +81,5 @@ I would hope that people aren't using .0 or .1 by now, but reality is never the 
 ---
 
 _Closed by @charliermarsh on 2023-07-10 01:19_
-
----
-
-_Referenced in [pypa/setuptools#4721](../../pypa/setuptools/pulls/4721.md) on 2024-11-01 15:31_
-
----
-
-_Referenced in [pallets-eco/flask-admin#2654](../../pallets-eco/flask-admin/pulls/2654.md) on 2025-08-11 08:52_
 
 ---

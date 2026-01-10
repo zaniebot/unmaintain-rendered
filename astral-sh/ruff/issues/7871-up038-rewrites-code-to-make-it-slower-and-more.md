@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-09T14:26:54Z
 updated_at: 2025-03-13T23:20:17Z
 url: https://github.com/astral-sh/ruff/issues/7871
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # UP038 rewrites code to make it slower and more verbose
@@ -121,10 +121,6 @@ Anyway, thanks for the responses! I can write up a docs PR :)
 
 ---
 
-_Referenced in [astral-sh/ruff#7872](../../astral-sh/ruff/pulls/7872.md) on 2023-10-09 15:42_
-
----
-
 _Comment by @charliermarsh on 2023-10-09 18:36_
 
 Super interesting, thanks for sharing @AlexWaygood.
@@ -133,18 +129,6 @@ I _suspect_ that if I knew this at the time, I _probably_ wouldn't have added UP
 
 Removing it entirely feels off at this point, but I agree with trying to categorize it out of any default ruleset once we recategorize.
 
-
----
-
-_Referenced in [sphinx-contrib/sphinx-lint#104](../../sphinx-contrib/sphinx-lint/pulls/104.md) on 2023-11-24 17:13_
-
----
-
-_Referenced in [JelleZijlstra/typeshed_client#92](../../JelleZijlstra/typeshed_client/pulls/92.md) on 2024-02-13 16:04_
-
----
-
-_Referenced in [python/typeshed#11499](../../python/typeshed/pulls/11499.md) on 2024-02-29 17:09_
 
 ---
 
@@ -160,38 +144,6 @@ _Comment by @zanieb on 2024-03-15 01:26_
 I don't think performance fits into our concept of fix safety. I think not raising the violation makes a lot more sense than gating the fix for the violation. 
 
 Note you can [manually downgrade fixes to unsafe](https://docs.astral.sh/ruff/settings/#lint_extend-unsafe-fixes) in your configuration.
-
----
-
-_Referenced in [jaraco/skeleton#112](../../jaraco/skeleton/issues/112.md) on 2024-04-08 18:15_
-
----
-
-_Referenced in [cookiecutter/cookiecutter-django#5020](../../cookiecutter/cookiecutter-django/pulls/5020.md) on 2024-04-23 21:51_
-
----
-
-_Referenced in [pypa/setuptools#4379](../../pypa/setuptools/pulls/4379.md) on 2024-05-22 15:54_
-
----
-
-_Referenced in [scikit-image/scikit-image#7412](../../scikit-image/scikit-image/pulls/7412.md) on 2024-06-03 17:10_
-
----
-
-_Referenced in [pypa/pip#12983](../../pypa/pip/pulls/12983.md) on 2024-09-29 10:18_
-
----
-
-_Referenced in [pypa/setuptools-scm#1077](../../pypa/setuptools-scm/pulls/1077.md) on 2024-10-02 07:09_
-
----
-
-_Referenced in [pydata/xarray#9724](../../pydata/xarray/pulls/9724.md) on 2024-11-06 23:39_
-
----
-
-_Referenced in [PrairieLearn/PrairieLearn#11059](../../PrairieLearn/PrairieLearn/pulls/11059.md) on 2025-01-02 03:27_
 
 ---
 
@@ -241,22 +193,6 @@ IMO the winning arguement is that type hints should not be confused with real ti
 
 ---
 
-_Referenced in [jaraco/skeleton#160](../../jaraco/skeleton/pulls/160.md) on 2025-02-13 01:47_
-
----
-
-_Referenced in [jaraco/skeleton#158](../../jaraco/skeleton/pulls/158.md) on 2025-02-27 09:09_
-
----
-
-_Referenced in [scikit-learn/scikit-learn#30693](../../scikit-learn/scikit-learn/pulls/30693.md) on 2025-03-11 13:57_
-
----
-
-_Referenced in [astral-sh/ruff#16681](../../astral-sh/ruff/pulls/16681.md) on 2025-03-12 15:42_
-
----
-
 _Comment by @MichaReiser on 2025-03-12 15:43_
 
 The plan is to deprecate this rule in 0.10 and remove it in 0.11 or 0.12
@@ -278,53 +214,5 @@ _Closed by @MichaReiser on 2025-03-13 14:37_
 ---
 
 _Label `needs-decision` removed by @AlexWaygood on 2025-03-13 23:20_
-
----
-
-_Referenced in [pypa/pip#13284](../../pypa/pip/pulls/13284.md) on 2025-03-21 09:42_
-
----
-
-_Referenced in [danielhrisca/asammdf#1183](../../danielhrisca/asammdf/pulls/1183.md) on 2025-03-31 16:22_
-
----
-
-_Referenced in [pypa/cibuildwheel#2313](../../pypa/cibuildwheel/pulls/2313.md) on 2025-04-09 08:37_
-
----
-
-_Referenced in [numpy/numpy#28755](../../numpy/numpy/pulls/28755.md) on 2025-05-13 09:41_
-
----
-
-_Referenced in [esphome/esphome#9029](../../esphome/esphome/pulls/9029.md) on 2025-06-08 22:32_
-
----
-
-_Referenced in [onnx/onnx#7219](../../onnx/onnx/pulls/7219.md) on 2025-08-10 14:34_
-
----
-
-_Referenced in [WeblateOrg/weblate#16156](../../WeblateOrg/weblate/pulls/16156.md) on 2025-09-11 06:43_
-
----
-
-_Referenced in [mlflow/mlflow#17939](../../mlflow/mlflow/pulls/17939.md) on 2025-09-25 10:32_
-
----
-
-_Referenced in [cookiecutter/cookiecutter-django#6111](../../cookiecutter/cookiecutter-django/issues/6111.md) on 2025-10-11 15:01_
-
----
-
-_Referenced in [esphome/esphome#11628](../../esphome/esphome/pulls/11628.md) on 2025-11-01 04:35_
-
----
-
-_Referenced in [esphome/esphome#11645](../../esphome/esphome/pulls/11645.md) on 2025-11-01 05:57_
-
----
-
-_Referenced in [esphome/esphome#11646](../../esphome/esphome/pulls/11646.md) on 2025-11-01 06:02_
 
 ---

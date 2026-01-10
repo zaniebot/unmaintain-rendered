@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-08T21:48:10Z
 updated_at: 2025-05-09T06:01:09Z
 url: https://github.com/astral-sh/ruff/issues/17970
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Ruff as a rust crate / API?
@@ -43,13 +43,5 @@ I don't see any problems with this for as long as you use different names. CC: @
 ---
 
 _Label `release` added by @MichaReiser on 2025-05-09 06:01_
-
----
-
-_Referenced in [astral-sh/ruff#18655](../../astral-sh/ruff/issues/18655.md) on 2025-06-13 06:20_
-
----
-
-_Referenced in [astral-sh/ty#1572](../../astral-sh/ty/issues/1572.md) on 2025-11-15 20:56_
 
 ---

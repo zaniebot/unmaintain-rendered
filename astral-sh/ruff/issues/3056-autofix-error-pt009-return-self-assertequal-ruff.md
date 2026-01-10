@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-20T12:22:34Z
 updated_at: 2023-02-22T13:56:59Z
 url: https://github.com/astral-sh/ruff/issues/3056
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # [Autofix error] [PT009] return self.assertEqual (ruff 0.0.247)
@@ -78,10 +78,6 @@ That said, ruff should try hard to avoid creating invalid code - it should eithe
 ---
 
 _Label `bug` added by @charliermarsh on 2023-02-20 14:34_
-
----
-
-_Referenced in [astral-sh/ruff#3062](../../astral-sh/ruff/pulls/3062.md) on 2023-02-20 17:46_
 
 ---
 

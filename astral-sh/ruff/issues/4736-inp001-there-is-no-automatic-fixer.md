@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-30T21:47:07Z
 updated_at: 2023-05-31T04:43:47Z
 url: https://github.com/astral-sh/ruff/issues/4736
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # INP001: there is no automatic fixer
@@ -32,9 +32,5 @@ This seems reasonable but we don't have support for fixes that modify the _files
 ---
 
 _Label `autofix` added by @charliermarsh on 2023-05-31 04:43_
-
----
-
-_Referenced in [astral-sh/ruff#15029](../../astral-sh/ruff/issues/15029.md) on 2024-12-17 10:52_
 
 ---

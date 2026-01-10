@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-19T18:58:56Z
 updated_at: 2023-08-24T12:31:04Z
 url: https://github.com/astral-sh/ruff/issues/5893
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Unstable formatting of parenthesized implicit string concatenation
@@ -85,14 +85,6 @@ I'm taking this on as it seems to be fixed in my local branch for #6271
 
 ---
 
-_Referenced in [astral-sh/ruff#6852](../../astral-sh/ruff/pulls/6852.md) on 2023-08-24 12:19_
-
----
-
 _Closed by @MichaReiser on 2023-08-24 12:31_
-
----
-
-_Referenced in [astral-sh/ruff#7052](../../astral-sh/ruff/issues/7052.md) on 2023-09-01 21:46_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-22T14:04:15Z
 updated_at: 2024-11-27T17:25:49Z
 url: https://github.com/astral-sh/ruff/issues/14531
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # `redirected-noqa` (`RUF101`) does not detect file-level `# ruff: noqa` comments
@@ -45,10 +45,6 @@ _Label `bug` added by @AlexWaygood on 2024-11-22 14:04_
 ---
 
 _Label `help wanted` added by @MichaReiser on 2024-11-22 14:32_
-
----
-
-_Referenced in [astral-sh/ruff#14635](../../astral-sh/ruff/pulls/14635.md) on 2024-11-27 14:35_
 
 ---
 

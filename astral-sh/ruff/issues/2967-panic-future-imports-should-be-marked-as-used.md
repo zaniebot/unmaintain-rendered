@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-16T19:22:15Z
 updated_at: 2023-02-16T22:56:05Z
 url: https://github.com/astral-sh/ruff/issues/2967
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # [Panic] "`__future__` imports should be marked as used"
@@ -102,10 +102,6 @@ It fails for me on the main branch.
 _Comment by @charliermarsh on 2023-02-16 22:44_
 
 Ah it depends on the `.pyi` suffix (since that enables deferred annotation handling).
-
----
-
-_Referenced in [astral-sh/ruff#2974](../../astral-sh/ruff/pulls/2974.md) on 2023-02-16 22:48_
 
 ---
 

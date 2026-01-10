@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-10T19:07:57Z
 updated_at: 2024-10-17T17:22:11Z
 url: https://github.com/astral-sh/ruff/issues/12281
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Only Python cells should be validated in Jupyter notebooks
@@ -122,10 +122,6 @@ I suspect we'll want to introspect a mix of the notebook language, cell type, an
 
 ---
 
-_Referenced in [dotnet/interactive#3602](../../dotnet/interactive/issues/3602.md) on 2024-07-11 18:32_
-
----
-
 _Comment by @dhruvmanila on 2024-07-12 03:52_
 
 This is confusing.
@@ -169,10 +165,6 @@ https://github.com/openai/openai-cookbook/blob/main/examples/chatgpt/gpt_actions
 
 ---
 
-_Referenced in [astral-sh/ruff#12448](../../astral-sh/ruff/pulls/12448.md) on 2024-07-22 07:59_
-
----
-
 _Comment by @dhruvmanila on 2024-07-22 08:57_
 
 > Related, the open AI notebooks fail parsing because they contain "code" cells where only the `vscode.languageId` is set. I think we should start respecting `vscode.langaugeId`
@@ -180,10 +172,6 @@ _Comment by @dhruvmanila on 2024-07-22 08:57_
 > [openai/openai-cookbook@`main`/examples/chatgpt/gpt_actions_library/gpt_action_salesforce.ipynb?short_path=65a7845](https://github.com/openai/openai-cookbook/blob/main/examples/chatgpt/gpt_actions_library/gpt_action_salesforce.ipynb?short_path=65a7845&rgh-link-date=2024-07-22T07%3A58%3A18Z)
 
 Yeah, this seems reasonable. I'll want to check for any official documentation on this field and might require to look at the source code if it doesn't exists.
-
----
-
-_Referenced in [astral-sh/ruff#12864](../../astral-sh/ruff/pulls/12864.md) on 2024-08-13 15:54_
 
 ---
 
@@ -221,10 +209,6 @@ Agreed kernelspec.language as a fallback given the metadata captured from the no
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2024-08-13 17:38_
-
----
-
-_Referenced in [astral-sh/ruff#12875](../../astral-sh/ruff/pulls/12875.md) on 2024-08-14 03:26_
 
 ---
 

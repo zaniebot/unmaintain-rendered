@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-22T20:21:05Z
 updated_at: 2024-11-14T14:43:41Z
 url: https://github.com/astral-sh/ruff/issues/13448
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Several panics with red_knot
@@ -93,9 +93,5 @@ Thank you very much for providing this corpus. It helped a lot in finding some b
 ---
 
 _Closed by @sharkdp on 2024-11-14 14:43_
-
----
-
-_Referenced in [astral-sh/ruff#13778](../../astral-sh/ruff/issues/13778.md) on 2024-11-14 14:51_
 
 ---

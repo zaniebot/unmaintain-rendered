@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-01-11T13:50:44Z
 updated_at: 2025-01-16T06:08:17Z
 url: https://github.com/astral-sh/ruff/issues/9467
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Quoted annotations should be parsed as if parenthesized
@@ -57,10 +57,6 @@ Nice, I can work on this.
 
 ---
 
-_Referenced in [astral-sh/ruff#10742](../../astral-sh/ruff/pulls/10742.md) on 2024-04-02 21:05_
-
----
-
 _Comment by @MichaReiser on 2025-01-08 17:06_
 
 An easy fix here would probably be adding new `parse_parenthesized_expression` methods or to extend `parse_expression` with an argument whether it is parenthesized and then funneling that information to the lexer. 
@@ -86,10 +82,6 @@ Agreed. Both ruff and red knot utilizes the `parse_expression_range` function fr
 https://github.com/astral-sh/ruff/blob/21aa12a073091e31fd9ca5fc47a869a257e40df2/crates/ruff_python_parser/src/lib.rs#L157-L167
 
 So, as Micha suggested, we could add a `parse_parenthesized_expression_range` function. I'd suggest adding a new `Mode::ParenthesizedExpression` and initiating the `Lexer` with a `nesting` value of 1 which I think should solve this. It might require some testing. 
-
----
-
-_Referenced in [astral-sh/ruff#15387](../../astral-sh/ruff/pulls/15387.md) on 2025-01-09 23:37_
 
 ---
 

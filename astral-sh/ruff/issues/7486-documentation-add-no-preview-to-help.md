@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-18T09:24:57Z
 updated_at: 2023-09-19T13:22:48Z
 url: https://github.com/astral-sh/ruff/issues/7486
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Documentation: add `--no-preview` to `--help`
@@ -53,10 +53,6 @@ _Renamed from "Feature request: be able to disable `preview`" to "Documentation:
 ---
 
 _Label `documentation` added by @MichaReiser on 2023-09-18 13:01_
-
----
-
-_Referenced in [astral-sh/ruff#7504](../../astral-sh/ruff/pulls/7504.md) on 2023-09-19 02:36_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-18T17:28:07Z
 updated_at: 2025-04-18T22:08:59Z
 url: https://github.com/astral-sh/ruff/issues/17465
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] avoid divergent iteration due to unbounded union growth
@@ -46,15 +46,7 @@ _Added to milestone `Red Knot Alpha` by @carljm on 2025-04-18 17:28_
 
 ---
 
-_Referenced in [astral-sh/ruff#17457](../../astral-sh/ruff/issues/17457.md) on 2025-04-18 17:28_
-
----
-
 _Assigned to @carljm by @carljm on 2025-04-18 17:30_
-
----
-
-_Referenced in [astral-sh/ruff#17467](../../astral-sh/ruff/pulls/17467.md) on 2025-04-18 18:11_
 
 ---
 

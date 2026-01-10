@@ -1,0 +1,152 @@
+```yaml
+number: 13630
+title: Pydantic model not detected by RUF012
+type: issue
+state: closed
+author: cbornet
+labels:
+  - type-inference
+assignees: []
+created_at: 2024-10-04T16:08:51Z
+updated_at: 2025-09-10T14:57:08Z
+url: https://github.com/astral-sh/ruff/issues/13630
+synced_at: 2026-01-10T11:09:55Z
+```
+
+# Pydantic model not detected by RUF012
+
+---
+
+_Issue opened by @cbornet on 2024-10-04 16:08_
+
+* List of keywords you searched for before creating this issue: pydantic ruf012
+* The current Ruff version : 0.5.0
+
+RUF012 normally ignores pydantic models but not when the class inherits from an imported model.
+Eg:  file b.py
+```python
+from pydantic import BaseModel
+
+class B(BaseModel):
+    pass
+```
+file a.py
+```python
+from pydantic import BaseModel
+from b import B
+
+class Foo(B):
+    foo: list[str] = []
+
+class C(BaseModel):
+    pass
+
+class Bar(C):
+    bar: list[str] = []
+```
+
+Then run ruff
+```sh
+ruff check --select RUF012
+a.py:5:22: RUF012 Mutable class attributes should be annotated with `typing.ClassVar`
+  |
+4 | class Foo(B):
+5 |     foo: list[str] = []
+  |                      ^^ RUF012
+6 |
+7 | class C(BaseModel):
+  |
+
+Found 1 error.
+```
+I would expect ruff to not error.
+
+
+---
+
+_Comment by @zanieb on 2024-10-04 17:20_
+
+Ruff doesn't support multi-file analysis yet, we can't inspect the type across the import boundary 
+
+xref https://github.com/astral-sh/ruff/issues/7447
+
+---
+
+_Label `multifile-analysis` added by @zanieb on 2024-10-04 17:20_
+
+---
+
+_Comment by @cbornet on 2024-10-04 18:55_
+
+Thanks for the info. I'll follow #7447 with interest then.
+
+---
+
+_Comment by @zanieb on 2024-10-04 21:23_
+
+We're actively working on it, but it's a ways out.
+
+---
+
+_Label `type-inference` added by @MichaReiser on 2024-10-24 14:32_
+
+---
+
+_Label `multifile-analysis` removed by @MichaReiser on 2024-10-24 14:33_
+
+---
+
+_Comment by @jankatins on 2025-02-07 16:54_
+
+I nice workaround would be to make it possible to extend `has_default_copy_semantics()` list:
+
+https://github.com/astral-sh/ruff/blob/10d3e64ccdf69d90c3252a15b3408a4238427792/crates/ruff_linter/src/rules/ruff/rules/helpers.rs#L166C1-L183C2
+
+```rust
+/// Returns `true` if the given class has "default copy" semantics.
+///
+/// For example, Pydantic `BaseModel` and `BaseSettings` subclassses copy attribute defaults on
+/// instance creation. As such, the use of mutable default values is safe for such classes.
+pub(super) fn has_default_copy_semantics(
+    class_def: &ast::StmtClassDef,
+    semantic: &SemanticModel,
+) -> bool {
+    analyze::class::any_qualified_base_class(class_def, semantic, &|qualified_name| {
+        matches!(
+            qualified_name.segments(),
+            ["pydantic", "BaseModel" | "BaseSettings" | "BaseConfig"]
+                | ["pydantic_settings", "BaseSettings"]
+                | ["msgspec", "Struct"]
+                | ["sqlmodel", "SQLModel"]
+        )
+    })
+}
+```
+
+Would you be open to take such a PR?
+
+(such a solution would pobably also "close" https://github.com/astral-sh/ruff/issues/5639)
+
+---
+
+_Comment by @sjdemartini on 2025-02-07 17:04_
+
+Making that configurable was discussed a bit here https://github.com/astral-sh/ruff/issues/14892#issuecomment-2536960816, and it sounded like the preference is to hold off in favor of using type inference, once ruff supports that.
+
+---
+
+_Comment by @cbornet on 2025-09-10 08:44_
+
+Similar to #5639. Maybe this issue can be closed and followed in the other one for multiple files ?
+
+---
+
+_Comment by @ntBre on 2025-09-10 14:57_
+
+That makes sense to me, they do sound like the same root issue. Thanks for following up!
+
+---
+
+_Closed by @ntBre on 2025-09-10 14:57_
+
+---

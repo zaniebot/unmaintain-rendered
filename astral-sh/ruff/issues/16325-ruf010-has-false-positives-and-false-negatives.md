@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-23T16:13:50Z
 updated_at: 2025-06-26T15:53:53Z
 url: https://github.com/astral-sh/ruff/issues/16325
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # RUF010 has false positives and false negatives
@@ -141,10 +141,6 @@ _Label `bug` added by @dylwil3 on 2025-02-23 19:12_
 _Comment by @LaBatata101 on 2025-06-15 23:04_
 
 For the last case just the fix should be suppressed right?
-
----
-
-_Referenced in [astral-sh/ruff#18690](../../astral-sh/ruff/pulls/18690.md) on 2025-06-15 23:25_
 
 ---
 

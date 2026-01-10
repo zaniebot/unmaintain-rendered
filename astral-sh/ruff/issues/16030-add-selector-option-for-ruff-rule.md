@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-08T00:13:54Z
 updated_at: 2025-03-20T03:43:04Z
 url: https://github.com/astral-sh/ruff/issues/16030
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Add `--selector` option for `ruff rule`
@@ -57,9 +57,5 @@ I don't think this is necessarily the scope of this command. Maybe a ruff rule l
 _Comment by @InSyncWithFoo on 2025-02-09 07:36_
 
 I ended up using `ruff check --show-settings --isolated --select SEL`. One drawback is that I have to check whether a selector is a full code or not on my own (using length and/or known code list), which leads to unwanted results for redirected codes.
-
----
-
-_Referenced in [astral-sh/ruff#16056](../../astral-sh/ruff/issues/16056.md) on 2025-02-10 16:35_
 
 ---

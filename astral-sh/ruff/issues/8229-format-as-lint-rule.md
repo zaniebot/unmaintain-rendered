@@ -1,0 +1,54 @@
+```yaml
+number: 8229
+title: Format as lint rule
+type: issue
+state: closed
+author: hmvp
+labels:
+  - formatter
+assignees: []
+created_at: 2023-10-25T21:27:13Z
+updated_at: 2023-10-25T22:10:24Z
+url: https://github.com/astral-sh/ruff/issues/8229
+synced_at: 2026-01-10T11:09:50Z
+```
+
+# Format as lint rule
+
+---
+
+_Issue opened by @hmvp on 2023-10-25 21:27_
+
+Congrats on the release with the new formatter. Besides a few changed lines that I still need to investigate It looks really good!
+
+I was a bit surprised with the fact that it is *only* a separate command. I kind of expected it to work as a lint rule: `RUF300: Code not formatted` or something... Which of course includes an autofix.
+
+Using Ruff would allow me to drop 3 tools (flake8, isort, black) but I still need to run two commands...
+
+I also noticed #8185 and feel that those warnings are better suited in the case that the formatter is enabled as lint rule. It seems to me that as a separate command you might want to differ between formatting and conflicting lint rules...
+
+
+---
+
+_Comment by @zanieb on 2023-10-25 22:08_
+
+Thanks!
+
+We're planning to integrate the formatter and linter into a single command as a part of the "Stable" formatter release.
+
+Some previous mentions at https://github.com/astral-sh/ruff/discussions/7310#discussioncomment-7376397, https://github.com/astral-sh/ruff/discussions/7310#discussioncomment-7102010, and https://github.com/astral-sh/ruff/issues/7232
+
+I'm going to close this issue in favor of a tracking issue at https://github.com/astral-sh/ruff/issues/8232 which we'll use for general updates on this feature — implementing as a lint rule is only one of the possible interfaces.
+
+
+
+
+---
+
+_Closed by @zanieb on 2023-10-25 22:08_
+
+---
+
+_Label `formatter` added by @zanieb on 2023-10-25 22:08_
+
+---

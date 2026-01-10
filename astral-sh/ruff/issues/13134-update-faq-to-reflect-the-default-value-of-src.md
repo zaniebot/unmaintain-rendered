@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-28T06:07:26Z
 updated_at: 2024-08-29T11:57:54Z
 url: https://github.com/astral-sh/ruff/issues/13134
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Update FAQ to reflect the default value of `src`
@@ -41,10 +41,6 @@ _Label `good first issue` added by @dhruvmanila on 2024-08-28 06:07_
 _Comment by @dhruvmanila on 2024-08-28 06:07_
 
 I think we should instead highlight the fact that this was changed in 0.6 instead of removing the bullet point.
-
----
-
-_Referenced in [astral-sh/ruff#13145](../../astral-sh/ruff/pulls/13145.md) on 2024-08-29 03:57_
 
 ---
 

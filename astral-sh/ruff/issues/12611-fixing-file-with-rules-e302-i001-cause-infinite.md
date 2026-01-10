@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-01T12:45:28Z
 updated_at: 2025-10-14T07:24:02Z
 url: https://github.com/astral-sh/ruff/issues/12611
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Fixing file with rules E302, I001 cause infinite loop
@@ -80,10 +80,6 @@ _Label `help wanted` added by @MichaReiser on 2024-08-01 21:24_
 
 ---
 
-_Referenced in [astral-sh/ruff#18274](../../astral-sh/ruff/issues/18274.md) on 2025-05-23 13:08_
-
----
-
 _Comment by @TaKO8Ki on 2025-09-26 07:28_
 
 I will take this one.
@@ -91,10 +87,6 @@ I will take this one.
 ---
 
 _Assigned to @TaKO8Ki by @ntBre on 2025-09-26 15:31_
-
----
-
-_Referenced in [astral-sh/ruff#20853](../../astral-sh/ruff/issues/20853.md) on 2025-10-14 07:23_
 
 ---
 

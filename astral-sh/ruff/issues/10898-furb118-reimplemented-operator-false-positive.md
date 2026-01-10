@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-12T06:41:08Z
 updated_at: 2024-05-03T20:03:13Z
 url: https://github.com/astral-sh/ruff/issues/10898
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # (🐞) `FURB118` (reimplemented-operator) false positive when reference in the item position
@@ -101,14 +101,6 @@ shouldn't it just not even report the error at all in that case, since it means 
 _Comment by @KotlinIsland on 2024-04-15 02:24_
 
 Could be a constant
-
----
-
-_Referenced in [astral-sh/ruff#11045](../../astral-sh/ruff/issues/11045.md) on 2024-04-19 16:01_
-
----
-
-_Referenced in [astral-sh/ruff#11270](../../astral-sh/ruff/pulls/11270.md) on 2024-05-03 19:55_
 
 ---
 

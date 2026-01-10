@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-08T08:11:49Z
 updated_at: 2025-04-28T21:43:15Z
 url: https://github.com/astral-sh/ruff/issues/11332
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # `printf-string-formatting` (`UP031`) - fix should f-string instead of `str.format`
@@ -122,9 +122,5 @@ And I don't think that I can configure a specific rule to "run autofixes, but do
 ---
 
 Being able to configure `UP031` to fix directly to f-string without passing by / having to enable `UP032` would be beneficial.
-
----
-
-_Referenced in [astral-sh/ruff#17696](../../astral-sh/ruff/issues/17696.md) on 2025-04-28 22:17_
 
 ---

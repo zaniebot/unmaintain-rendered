@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-02T19:01:28Z
 updated_at: 2025-11-03T22:06:53Z
 url: https://github.com/astral-sh/ruff/issues/17796
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Formatting adds unnecessary parentheses to long patterns with `as` captures
@@ -40,10 +40,6 @@ First encountered in https://github.com/python/cpython/pull/133123/files#r207198
 _Comment by @brandtbucher on 2025-05-02 19:04_
 
 My guess is that ruff tries to wrap in parens, *then* start exploding the patterns if that isn't enough. Maybe trying to explode first would help?
-
----
-
-_Referenced in [python/cpython#133123](../../python/cpython/pulls/133123.md) on 2025-05-02 19:04_
 
 ---
 
@@ -82,18 +78,6 @@ https://github.com/astral-sh/ruff/blob/424b720c192f8603123c1a105cf12f343e45de3f/
 
 But I'd have to think about if we can do this always or only sometimes.
 
-
----
-
-_Referenced in [astral-sh/ruff#20482](../../astral-sh/ruff/issues/20482.md) on 2025-09-19 13:37_
-
----
-
-_Referenced in [python/cpython#139591](../../python/cpython/pulls/139591.md) on 2025-10-05 20:15_
-
----
-
-_Referenced in [astral-sh/ruff#21176](../../astral-sh/ruff/pulls/21176.md) on 2025-10-31 20:54_
 
 ---
 

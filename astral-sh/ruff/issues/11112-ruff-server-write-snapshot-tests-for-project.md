@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-23T18:18:53Z
 updated_at: 2025-05-07T15:08:32Z
 url: https://github.com/astral-sh/ruff/issues/11112
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # `ruff server`: Write snapshot tests for project + editor settings resolution
@@ -34,19 +34,11 @@ _Label `server` added by @snowsignal on 2024-04-23 18:18_
 
 ---
 
-_Referenced in [astral-sh/ruff#11062](../../astral-sh/ruff/pulls/11062.md) on 2024-04-23 18:19_
-
----
-
 _Assigned to @snowsignal by @snowsignal on 2024-04-23 19:40_
 
 ---
 
 _Added to milestone `Ruff Server: Stable` by @snowsignal on 2024-06-17 16:27_
-
----
-
-_Referenced in [astral-sh/ruff#11935](../../astral-sh/ruff/pulls/11935.md) on 2024-06-19 03:34_
 
 ---
 

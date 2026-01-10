@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-06-13T12:32:46Z
 updated_at: 2025-06-16T19:02:31Z
 url: https://github.com/astral-sh/ruff/issues/18660
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # PLW0128 skips assignment targets in square brackets and after asterisks
@@ -50,10 +50,6 @@ _Label `bug` added by @ntBre on 2025-06-13 12:47_
 ---
 
 _Label `help wanted` added by @ntBre on 2025-06-13 12:47_
-
----
-
-_Referenced in [astral-sh/ruff#18665](../../astral-sh/ruff/pulls/18665.md) on 2025-06-13 18:51_
 
 ---
 

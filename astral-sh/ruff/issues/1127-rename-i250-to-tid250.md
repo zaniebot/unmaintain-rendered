@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-07T19:15:16Z
 updated_at: 2022-12-07T20:12:24Z
 url: https://github.com/astral-sh/ruff/issues/1127
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:17Z
 ```
 
 # Rename `I250` to `TID250`
@@ -28,10 +28,6 @@ _Label `breaking` added by @charliermarsh on 2022-12-07 19:15_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2022-12-07 19:39_
-
----
-
-_Referenced in [astral-sh/ruff#1129](../../astral-sh/ruff/pulls/1129.md) on 2022-12-07 20:09_
 
 ---
 

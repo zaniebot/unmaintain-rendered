@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-20T16:45:34Z
 updated_at: 2025-03-20T21:48:50Z
 url: https://github.com/astral-sh/ruff/issues/16874
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Incorrect SyntaxError for `*` in strings in annotations (e.g. `Annotated`, `Literal`)
@@ -33,10 +33,6 @@ This issue is new in ruff 0.11.1 with preview enabled; it doesn't appear in ruff
 ### Version
 
 ruff 0.11.1 (c1971fdde 2025-03-20)
-
----
-
-_Referenced in [gchq/coreax#1000](../../gchq/coreax/pulls/1000.md) on 2025-03-20 16:50_
 
 ---
 
@@ -62,18 +58,6 @@ _Comment by @dangotbanned on 2025-03-20 17:07_
 
 Also popped up in CI for us 
 - https://github.com/vega/altair/actions/runs/13778777512/job/39119497035?pr=3815
-
----
-
-_Referenced in [chenyuxyz/tinygrad#731](../../chenyuxyz/tinygrad/pulls/731.md) on 2025-03-20 17:09_
-
----
-
-_Referenced in [tinygrad/tinygrad#9520](../../tinygrad/tinygrad/pulls/9520.md) on 2025-03-20 17:10_
-
----
-
-_Referenced in [vega/altair#3815](../../vega/altair/pulls/3815.md) on 2025-03-20 17:11_
 
 ---
 
@@ -1567,22 +1551,6 @@ Found 150 errors.
 
 ---
 
-_Referenced in [numpy/numtype#347](../../numpy/numtype/pulls/347.md) on 2025-03-20 17:25_
-
----
-
-_Referenced in [astral-sh/ruff#16878](../../astral-sh/ruff/pulls/16878.md) on 2025-03-20 18:12_
-
----
-
-_Referenced in [astral-sh/ruff#16879](../../astral-sh/ruff/pulls/16879.md) on 2025-03-20 19:56_
-
----
-
-_Referenced in [PrairieLearn/PrairieLearn#11611](../../PrairieLearn/PrairieLearn/pulls/11611.md) on 2025-03-20 20:38_
-
----
-
 _Closed by @ntBre on 2025-03-20 21:44_
 
 ---
@@ -1594,13 +1562,5 @@ _Closed by @ntBre on 2025-03-20 21:44_
 _Comment by @ntBre on 2025-03-20 21:48_
 
 This should be fixed by #16878, and #16879 should help to prevent similar issues with these in the future. This will be included in the next release, which should be first thing tomorrow!
-
----
-
-_Referenced in [ISISComputingGroup/ibex_bluesky_core#140](../../ISISComputingGroup/ibex_bluesky_core/pulls/140.md) on 2025-03-20 23:23_
-
----
-
-_Referenced in [data-apis/array-api-compat#257](../../data-apis/array-api-compat/pulls/257.md) on 2025-03-22 17:25_
 
 ---

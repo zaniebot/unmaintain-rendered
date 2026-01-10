@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-11-20T22:35:44Z
 updated_at: 2022-11-20T23:43:21Z
 url: https://github.com/astral-sh/ruff/issues/840
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # N807 should account for PEP 562
@@ -29,10 +29,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-11-20 22:50_
 _Comment by @charliermarsh on 2022-11-20 22:50_
 
 I can fix this.
-
----
-
-_Referenced in [astral-sh/ruff#841](../../astral-sh/ruff/pulls/841.md) on 2022-11-20 22:55_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-17T21:21:24Z
 updated_at: 2023-10-18T01:50:41Z
 url: https://github.com/astral-sh/ruff/issues/8027
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # [Panic] check file from stdin
@@ -96,10 +96,6 @@ _Label `bug` added by @charliermarsh on 2023-10-17 22:37_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-17 22:40_
-
----
-
-_Referenced in [astral-sh/ruff#8029](../../astral-sh/ruff/pulls/8029.md) on 2023-10-17 23:41_
 
 ---
 

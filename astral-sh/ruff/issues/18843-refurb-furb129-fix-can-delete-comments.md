@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-21T00:33:08Z
 updated_at: 2025-06-22T07:51:38Z
 url: https://github.com/astral-sh/ruff/issues/18843
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [`refurb`] `FURB129` fix can delete comments
@@ -91,10 +91,6 @@ _Label `bug` added by @MichaReiser on 2025-06-21 15:38_
 ---
 
 _Label `help wanted` added by @MichaReiser on 2025-06-21 15:38_
-
----
-
-_Referenced in [astral-sh/ruff#18858](../../astral-sh/ruff/pulls/18858.md) on 2025-06-21 21:49_
 
 ---
 

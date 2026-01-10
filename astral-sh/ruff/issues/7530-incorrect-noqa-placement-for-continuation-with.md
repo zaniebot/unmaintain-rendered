@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-20T04:58:43Z
 updated_at: 2023-09-20T11:07:21Z
 url: https://github.com/astral-sh/ruff/issues/7530
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Incorrect NoQA placement for continuation with multi-line string
@@ -80,10 +80,6 @@ _Label `bug` added by @dhruvmanila on 2023-09-20 04:58_
 ---
 
 _Label `noqa` added by @dhruvmanila on 2023-09-20 04:58_
-
----
-
-_Referenced in [astral-sh/ruff#7531](../../astral-sh/ruff/pulls/7531.md) on 2023-09-20 05:41_
 
 ---
 

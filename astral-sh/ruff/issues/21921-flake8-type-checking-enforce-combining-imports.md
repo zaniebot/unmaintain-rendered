@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-12-11T16:14:55Z
 updated_at: 2025-12-11T18:25:43Z
 url: https://github.com/astral-sh/ruff/issues/21921
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # `flake8-type-checking`: enforce combining imports from inside and outside a `TYPE_CHECKING` block (reverse of `strict`)
@@ -99,10 +99,6 @@ _Closed by @GideonBear on 2025-12-11 17:58_
 _Comment by @GideonBear on 2025-12-11 17:58_
 
 (accidentally closed as completed, meant to close as duplicate)
-
----
-
-_Referenced in [astral-sh/ruff#19548](../../astral-sh/ruff/issues/19548.md) on 2025-12-11 18:00_
 
 ---
 

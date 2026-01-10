@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-30T22:50:35Z
 updated_at: 2023-01-30T23:01:39Z
 url: https://github.com/astral-sh/ruff/issues/2368
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # [Infinite loop] When fixing empty __init__ file.
@@ -83,10 +83,6 @@ _Comment by @charliermarsh on 2023-01-30 22:52_
 _Comment by @charliermarsh on 2023-01-30 22:52_
 
 (Based on your example, you want to disable `D213`.)
-
----
-
-_Referenced in [astral-sh/ruff#2292](../../astral-sh/ruff/pulls/2292.md) on 2023-01-30 22:54_
 
 ---
 

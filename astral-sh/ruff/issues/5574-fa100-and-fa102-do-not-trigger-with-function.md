@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-07T00:12:50Z
 updated_at: 2023-07-07T04:21:46Z
 url: https://github.com/astral-sh/ruff/issues/5574
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # `FA100` and `FA102` do not trigger with function annotations
@@ -90,10 +90,6 @@ This seems to be inconsistent with `flake8-future-annotations`, the example code
 
 ---
 
-_Referenced in [lemma-osu/sknnr#43](../../lemma-osu/sknnr/pulls/43.md) on 2023-07-07 00:20_
-
----
-
 _Comment by @charliermarsh on 2023-07-07 00:32_
 
 Thanks for the clear issue. I need to look back to refresh myself on this.
@@ -117,10 +113,6 @@ Yeah this is a bug. Thanks! I'll make sure it's fixed for the next release.
 _Comment by @aazuspan on 2023-07-07 01:56_
 
 Awesome, thanks for such a quick response!
-
----
-
-_Referenced in [astral-sh/ruff#5575](../../astral-sh/ruff/pulls/5575.md) on 2023-07-07 02:01_
 
 ---
 

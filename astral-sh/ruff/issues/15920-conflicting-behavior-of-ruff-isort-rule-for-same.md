@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-04T01:43:47Z
 updated_at: 2025-02-05T08:37:11Z
 url: https://github.com/astral-sh/ruff/issues/15920
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Conflicting behavior of ruff isort rule for same file in different environments
@@ -140,9 +140,5 @@ I was able to fix it by simply omitting the `--config` argument when invoking it
 ---
 
 _Closed by @MichaReiser on 2025-02-05 08:37_
-
----
-
-_Referenced in [astral-sh/ruff-pre-commit#103](../../astral-sh/ruff-pre-commit/issues/103.md) on 2025-03-03 06:28_
 
 ---

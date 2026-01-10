@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-07-26T13:17:01Z
 updated_at: 2025-09-19T13:27:16Z
 url: https://github.com/astral-sh/ruff/issues/19568
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # C409 fix omits comma for `tuple([1],)`
@@ -57,10 +57,6 @@ _Label `fixes` added by @ntBre on 2025-07-26 13:50_
 ---
 
 _Label `help wanted` added by @ntBre on 2025-07-26 13:50_
-
----
-
-_Referenced in [astral-sh/ruff#19571](../../astral-sh/ruff/pulls/19571.md) on 2025-07-26 18:16_
 
 ---
 

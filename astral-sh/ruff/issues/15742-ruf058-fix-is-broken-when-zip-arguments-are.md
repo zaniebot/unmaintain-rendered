@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-25T17:04:24Z
 updated_at: 2025-01-25T18:42:29Z
 url: https://github.com/astral-sh/ruff/issues/15742
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # RUF058 fix is broken when `zip` arguments are starred empty iterables
@@ -74,10 +74,6 @@ _Label `fixes` added by @AlexWaygood on 2025-01-25 17:42_
 _Comment by @InSyncWithFoo on 2025-01-25 18:02_
 
 In this case, perhaps not emitting a diagnostic at all would be the correct thing to do. The user might be relying on `zip()` to take care of the empty case, and so they shouldn't be asked to change the code.
-
----
-
-_Referenced in [astral-sh/ruff#15744](../../astral-sh/ruff/pulls/15744.md) on 2025-01-25 18:32_
 
 ---
 

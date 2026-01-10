@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-09T08:56:29Z
 updated_at: 2025-10-24T13:40:27Z
 url: https://github.com/astral-sh/ruff/issues/20781
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # `PYI034` should not trigger on a metaclass
@@ -48,10 +48,6 @@ with the error shown above. We have an `is_metaclass` helper function that might
 ---
 
 _Label `bug` added by @ntBre on 2025-10-09 19:07_
-
----
-
-_Referenced in [astral-sh/ruff#20881](../../astral-sh/ruff/pulls/20881.md) on 2025-10-15 04:05_
 
 ---
 

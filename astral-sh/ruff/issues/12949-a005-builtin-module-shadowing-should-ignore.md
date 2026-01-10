@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-17T13:07:22Z
 updated_at: 2024-11-24T02:39:06Z
 url: https://github.com/astral-sh/ruff/issues/12949
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # A005 (builtin module shadowing) should ignore private modules
@@ -203,10 +203,6 @@ Excluding private modules does make sense to me, considering that there are that
 ---
 
 _Assigned to @AlexWaygood by @AlexWaygood on 2024-11-19 19:17_
-
----
-
-_Referenced in [astral-sh/ruff#14505](../../astral-sh/ruff/pulls/14505.md) on 2024-11-21 01:24_
 
 ---
 

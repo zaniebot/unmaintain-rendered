@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-09T14:38:17Z
 updated_at: 2025-01-10T18:21:35Z
 url: https://github.com/astral-sh/ruff/issues/15375
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Implicit concatenated f-string: Trailing end-of-line comment is moved
@@ -61,10 +61,6 @@ homeassistant/components/knx/climate.py:216:16: SLF001 Private member accessed: 
 
 Found 1 error.
 ```
-
----
-
-_Referenced in [home-assistant/core#135197](../../home-assistant/core/pulls/135197.md) on 2025-01-09 14:39_
 
 ---
 
@@ -121,10 +117,6 @@ Okay, I think I know how to fix this one. Thanks for reporting
 ---
 
 _Renamed from "noqa gets moved to the new line" to "Implicit concatenated f-string: Trailing end-of-line comment is moved" by @MichaReiser on 2025-01-09 15:09_
-
----
-
-_Referenced in [astral-sh/ruff#15378](../../astral-sh/ruff/pulls/15378.md) on 2025-01-09 17:50_
 
 ---
 

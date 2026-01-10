@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-30T02:55:50Z
 updated_at: 2024-05-30T04:18:09Z
 url: https://github.com/astral-sh/ruff/issues/11606
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Fix isort break the indent-width
@@ -136,10 +136,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-05-30 03:27_
 _Comment by @nasyxx on 2024-05-30 03:29_
 
 Yes. I encountered this problem when writing a `__init__` file.
-
----
-
-_Referenced in [astral-sh/ruff#11608](../../astral-sh/ruff/pulls/11608.md) on 2024-05-30 03:45_
 
 ---
 

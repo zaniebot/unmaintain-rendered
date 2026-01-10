@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-25T21:58:09Z
 updated_at: 2025-07-26T13:48:01Z
 url: https://github.com/astral-sh/ruff/issues/19566
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Trigger UP043 on <3.13 with __future__.annotations
@@ -152,13 +152,5 @@ TypeError: Too few parameters for typing.Generator; actual 1, expected 3
 _Comment by @ntBre on 2025-07-26 13:48_
 
 Thanks Alex! It sounds like we should definitely keep the version check, and the change suggested in the issue would still be helpful, even if it only strictly applies to `typing.Generator`.
-
----
-
-_Referenced in [astral-sh/ruff#20011](../../astral-sh/ruff/issues/20011.md) on 2025-08-20 21:35_
-
----
-
-_Referenced in [astral-sh/ruff#20027](../../astral-sh/ruff/pulls/20027.md) on 2025-09-08 22:00_
 
 ---

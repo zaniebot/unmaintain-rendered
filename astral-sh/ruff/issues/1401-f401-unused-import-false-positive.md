@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-27T11:45:58Z
 updated_at: 2023-05-24T15:12:11Z
 url: https://github.com/astral-sh/ruff/issues/1401
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # F401 (unused import) false positive
@@ -197,22 +197,6 @@ which does `str + int` at runtime.
 
 ---
 
-_Referenced in [astral-sh/ruff#2248](../../astral-sh/ruff/issues/2248.md) on 2023-01-27 13:24_
-
----
-
-_Referenced in [astral-sh/ruff#2359](../../astral-sh/ruff/issues/2359.md) on 2023-01-30 20:03_
-
----
-
-_Referenced in [astral-sh/ruff#3014](../../astral-sh/ruff/issues/3014.md) on 2023-02-18 18:06_
-
----
-
-_Referenced in [astral-sh/ruff#4044](../../astral-sh/ruff/issues/4044.md) on 2023-04-21 01:37_
-
----
-
 _Comment by @jack-mcivor on 2023-05-04 13:05_
 
 Came across this today - if it helps here is where the `from __future__ import annotations` issue was raised in `pyflakes`
@@ -226,10 +210,6 @@ Came across this today - if it helps here is where the `from __future__ import a
 _Comment by @charliermarsh on 2023-05-18 19:35_
 
 I've spent a while looking into this. What we might need is this: https://github.com/microsoft/pyright/commit/27bf8c1f2.
-
----
-
-_Referenced in [astral-sh/ruff#4509](../../astral-sh/ruff/pulls/4509.md) on 2023-05-18 20:41_
 
 ---
 

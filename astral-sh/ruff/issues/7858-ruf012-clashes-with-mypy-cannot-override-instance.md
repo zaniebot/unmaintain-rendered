@@ -1,0 +1,91 @@
+```yaml
+number: 7858
+title: "RUF012 clashes with mypy \"Cannot override instance variable with class variable\""
+type: issue
+state: closed
+author: ddorian
+labels:
+  - bug
+  - type-inference
+assignees: []
+created_at: 2023-10-09T08:03:49Z
+updated_at: 2024-02-25T22:05:26Z
+url: https://github.com/astral-sh/ruff/issues/7858
+synced_at: 2026-01-10T11:09:50Z
+```
+
+# RUF012 clashes with mypy "Cannot override instance variable with class variable"
+
+---
+
+_Issue opened by @ddorian on 2023-10-09 08:03_
+
+This is how fields are subclassed in `marshmallow` project.
+
+```python
+import marshmallow
+import typing as t
+
+class MyFloat22(marshmallow.fields.Float):
+    default_error_messages = {"invalid_bigint": "Number not valid bigint."}
+```
+
+If I leave it like this, I get RUF012 error on `default_error_messages` but no mypy errors.
+
+If I change the typing to:
+
+```python
+class MyFloat22(marshmallow.fields.Float):
+    default_error_messages: t.ClassVar[dict[str, str]] = {"invalid_bigint": "Number not valid bigint."}
+```
+
+I get mypy error:
+
+```bash
+mypy . --install-types
+error: Cannot override instance variable (previously declared on base class "Float") with class variable
+```
+
+Using Python 3.11, `marshmallow 3.20.1`, `mypy 1.5.1`, `ruff 0.0.290`.
+
+So who's correct/wrong?
+
+
+---
+
+_Label `question` added by @charliermarsh on 2023-10-13 01:26_
+
+---
+
+_Comment by @charliermarsh on 2023-12-07 14:51_
+
+Mypy is correct, but I need to figure out what we can do here.
+
+---
+
+_Label `question` removed by @charliermarsh on 2023-12-07 14:59_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-12-07 14:59_
+
+---
+
+_Label `type-inference` added by @charliermarsh on 2023-12-07 14:59_
+
+---
+
+_Comment by @charliermarsh on 2024-02-25 22:05_
+
+I think this works:
+
+```python
+class MyFloat22(marshmallow.fields.Float):
+    default_error_messages: t.Mapping[str, str] = {"invalid_bigint": "Number not valid bigint."}
+```
+
+---
+
+_Closed by @charliermarsh on 2024-02-25 22:05_
+
+---

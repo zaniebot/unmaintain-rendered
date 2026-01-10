@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-18T16:55:35Z
 updated_at: 2023-04-19T19:26:02Z
 url: https://github.com/astral-sh/ruff/issues/4009
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # False positive: `PYI015` marks assignments to `__slots__`, `__match_args__`, and `__all__` as errors
@@ -104,10 +104,6 @@ _Label `bug` added by @charliermarsh on 2023-04-18 16:58_
 _Comment by @charliermarsh on 2023-04-19 03:39_
 
 Planning to fix this tomorrow, along with a few other false positives.
-
----
-
-_Referenced in [astral-sh/ruff#4030](../../astral-sh/ruff/pulls/4030.md) on 2023-04-19 19:15_
 
 ---
 

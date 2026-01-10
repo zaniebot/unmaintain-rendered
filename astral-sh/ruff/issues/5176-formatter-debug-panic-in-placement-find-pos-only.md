@@ -1,0 +1,97 @@
+```yaml
+number: 5176
+title: "formatter: debug panic in placement::find_pos_only_slash_offset"
+type: issue
+state: closed
+author: davidszotten
+labels:
+  - formatter
+assignees: []
+created_at: 2023-06-19T07:38:28Z
+updated_at: 2023-06-20T09:10:29Z
+url: https://github.com/astral-sh/ruff/issues/5176
+synced_at: 2026-01-10T11:09:47Z
+```
+
+# formatter: debug panic in placement::find_pos_only_slash_offset
+
+---
+
+_Issue opened by @davidszotten on 2023-06-19 07:38_
+
+while working on comments inside tuple unpacking between stars and name (following https://github.com/astral-sh/ruff/pull/5167#discussion_r1233371050 )
+
+i was wondering if function arguments could have the same issue. in trying to test that i found my test case violates [this debug assert](https://github.com/astral-sh/ruff/blob/be11cae619d5a24adb4da34e64d3c5f270f9727b/crates/ruff_python_formatter/src/comments/placement.rs#L846)
+ 
+
+```
+$ cat ../../scratch.py
+def foo(
+    a=2 ** 3 # trailing
+):
+    ...
+```
+
+```
+$ cargo run --bin ruff_python_formatter -- --emit stdout ../../scratch.py
+   [...]
+thread 'main' panicked at 'assertion failed: `(left == right)`
+  left: `RParen`,
+ right: `Comma`', crates/ruff_python_formatter/src/comments/placement.rs:846:9
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+```
+
+commit: be11cae619d5a24ad
+
+
+---
+
+_Label `formatter` added by @MichaReiser on 2023-06-19 08:18_
+
+---
+
+_Comment by @MichaReiser on 2023-06-19 08:22_
+
+Thanks for reporting this issue. This is a bug in my implementation. We can fix it by either:
+
+Changing the fallback from `arguments.end()` to `arguments.end() - TextSize::new(1)` to exclude the `)`
+
+https://github.com/astral-sh/ruff/blob/be11cae619d5a24adb4da34e64d3c5f270f9727b/crates/ruff_python_formatter/src/comments/placement.rs#L640-L642 
+
+Gracefully handle a `)` in the `find_pos_only_slash` 
+
+https://github.com/astral-sh/ruff/blob/be11cae619d5a24adb4da34e64d3c5f270f9727b/crates/ruff_python_formatter/src/comments/placement.rs#L845-L846
+
+I would prefer the first fix because `between_arguments_range` is explicit about the range being *between* arguments, which isn't true for `)`.
+
+---
+
+_Comment by @MichaReiser on 2023-06-20 06:10_
+
+@davidszotten I tried to reproduce, but your provided snippet does not panic on main (although it gets formatted extremely weirdly):
+
+```python
+def foo(
+    a=2  # trailing
+    **3,
+):
+    ...
+```
+
+---
+
+_Comment by @MichaReiser on 2023-06-20 06:32_
+
+The weird formatting should be fixed in #5204
+
+---
+
+_Comment by @davidszotten on 2023-06-20 09:03_
+
+panic was fixed by #5192 (rustpython upgrade)
+
+---
+
+_Closed by @davidszotten on 2023-06-20 09:10_
+
+---

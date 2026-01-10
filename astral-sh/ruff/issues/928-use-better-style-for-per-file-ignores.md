@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-27T22:26:01Z
 updated_at: 2022-11-28T02:38:44Z
 url: https://github.com/astral-sh/ruff/issues/928
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # Use better style for per-file-ignores
@@ -50,10 +50,6 @@ _Comment by @charliermarsh on 2022-11-27 22:28_
 
 Yeah those are equivalent representations, it's more of a TOML thing than any specific choice made in Ruff. I'm sorry you lost time on it! I'll change the docs to use the non-inline syntax, for clarity.
 
-
----
-
-_Referenced in [astral-sh/ruff#931](../../astral-sh/ruff/pulls/931.md) on 2022-11-28 02:38_
 
 ---
 

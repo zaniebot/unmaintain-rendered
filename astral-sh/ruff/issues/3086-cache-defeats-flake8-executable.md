@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-21T17:35:20Z
 updated_at: 2023-02-21T23:20:08Z
 url: https://github.com/astral-sh/ruff/issues/3086
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # cache defeats flake8-executable
@@ -48,14 +48,6 @@ We need to use `ctime` on Unix platforms.
 
 ---
 
-_Referenced in [astral-sh/ruff#3104](../../astral-sh/ruff/pulls/3104.md) on 2023-02-21 22:43_
-
----
-
 _Closed by @charliermarsh on 2023-02-21 23:20_
-
----
-
-_Referenced in [astral-sh/ruff#3163](../../astral-sh/ruff/issues/3163.md) on 2023-02-23 08:47_
 
 ---

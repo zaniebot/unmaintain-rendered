@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-04T02:49:40Z
 updated_at: 2024-08-20T10:09:05Z
 url: https://github.com/astral-sh/ruff/issues/1619
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # False positive with F401 (imported but unused) for type comments
@@ -119,10 +119,6 @@ _Renamed from "False positive with F401 (imported but unused)" to "False positiv
 
 ---
 
-_Referenced in [astral-sh/ruff#4166](../../astral-sh/ruff/pulls/4166.md) on 2023-05-20 18:40_
-
----
-
 _Comment by @JonathanPlasse on 2023-05-22 08:43_
 
 All type comments can be replaced (c.f.: https://peps.python.org/pep-0526/#where-annotations-aren-t-allowed)
@@ -189,10 +185,6 @@ I stumbled onto this issue in the configparser project. I worked around it by co
 
 ---
 
-_Referenced in [astral-sh/ruff#6038](../../astral-sh/ruff/issues/6038.md) on 2023-07-24 18:08_
-
----
-
 _Comment by @vors on 2023-07-24 18:36_
 
 > Yeah we don't really support type comments right now, since they were made obsolete in Python 3.6 AFAIK. I know some projects still use them for compatibility... I'll think on it.
@@ -247,14 +239,6 @@ _Comment by @charliermarsh on 2023-07-26 02:21_
 
 ---
 
-_Referenced in [astral-sh/ruff#6807](../../astral-sh/ruff/issues/6807.md) on 2023-08-23 13:29_
-
----
-
-_Referenced in [astral-sh/ruff#129](../../astral-sh/ruff/issues/129.md) on 2023-09-08 11:46_
-
----
-
 _Comment by @vors on 2023-09-15 01:21_
 
 FWIW flake8 has the same problem (tested on flake8 6.1.0)
@@ -275,30 +259,10 @@ It looks like it was removed about a year ago: https://github.com/PyCQA/pyflakes
 
 ---
 
-_Referenced in [getsentry/sentry-python#2527](../../getsentry/sentry-python/issues/2527.md) on 2023-11-23 10:34_
-
----
-
-_Referenced in [astral-sh/ruff#10501](../../astral-sh/ruff/issues/10501.md) on 2024-03-21 09:46_
-
----
-
 _Comment by @ndevenish on 2024-08-20 10:09_
 
 We have some scripts that we explicitly maintain compatibility with python 2 (generally bootstrapping-related scripts that people can run on python2 and take care of bootstrapping a full environment).
 
 This is _very mildly_ annoying but easily fixed with a `noqa: F401` on the import, and is a narrow enough use case that this causes no pain.
-
----
-
-_Referenced in [astral-sh/ruff#13925](../../astral-sh/ruff/issues/13925.md) on 2024-10-25 14:21_
-
----
-
-_Referenced in [facebook/pyrefly#1084](../../facebook/pyrefly/issues/1084.md) on 2025-11-28 15:01_
-
----
-
-_Referenced in [getsentry/sentry-python#5206](../../getsentry/sentry-python/pulls/5206.md) on 2025-12-12 13:36_
 
 ---

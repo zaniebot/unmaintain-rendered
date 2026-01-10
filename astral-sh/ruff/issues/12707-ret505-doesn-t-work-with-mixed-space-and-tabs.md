@@ -13,7 +13,7 @@ assignees: []
 created_at: 2024-08-06T05:04:27Z
 updated_at: 2024-08-08T12:52:59Z
 url: https://github.com/astral-sh/ruff/issues/12707
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # RET505 doesn't work with mixed space and tabs
@@ -141,10 +141,6 @@ dedented to: " return False"
 ```
 
 So, the issue is upstream but not within the autofixing mechanisms, but in the `dedent_to` function.
-
----
-
-_Referenced in [astral-sh/ruff#12740](../../astral-sh/ruff/pulls/12740.md) on 2024-08-08 06:26_
 
 ---
 

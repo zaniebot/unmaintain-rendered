@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-05T10:36:42Z
 updated_at: 2023-02-10T02:00:41Z
 url: https://github.com/astral-sh/ruff/issues/2578
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # ruff --statistics could show fixable state
@@ -37,10 +37,6 @@ for unfixable items:
 ---
 
 _Label `cli` added by @charliermarsh on 2023-02-05 23:54_
-
----
-
-_Referenced in [astral-sh/ruff#2659](../../astral-sh/ruff/pulls/2659.md) on 2023-02-08 15:02_
 
 ---
 

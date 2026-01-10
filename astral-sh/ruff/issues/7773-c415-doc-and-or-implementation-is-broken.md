@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-03T03:58:03Z
 updated_at: 2023-10-03T04:18:51Z
 url: https://github.com/astral-sh/ruff/issues/7773
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # C415 doc and/or implementation is broken
@@ -88,10 +88,6 @@ But that still leaves two issues:
 _Comment by @charliermarsh on 2023-10-03 04:05_
 
 (Ruff does print warnings with `--fix`; I think it's `--diff` that suppresses the warnings, since the purpose of that flag is to show fix changes.)
-
----
-
-_Referenced in [astral-sh/ruff#7774](../../astral-sh/ruff/pulls/7774.md) on 2023-10-03 04:10_
 
 ---
 

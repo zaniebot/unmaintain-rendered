@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-28T07:16:45Z
 updated_at: 2024-12-10T00:26:26Z
 url: https://github.com/astral-sh/ruff/issues/6932
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # `eq-without-hash` (`PLW1641`) does not check for `__hash__` in superclasses
@@ -69,10 +69,6 @@ _Comment by @LefterisJP on 2023-09-16 20:59_
 Also hit this one while enabling `--preview`. It's a useful rule. It found out 1 place we were missing `__hash__` but then had 6 false positives due to superclasses.
 
 Added ```# noqa: PLW1641  # hash implemented by superclass``` at the false positives for now and keeping the rule.
-
----
-
-_Referenced in [astral-sh/ruff#7447](../../astral-sh/ruff/issues/7447.md) on 2023-09-17 00:05_
 
 ---
 

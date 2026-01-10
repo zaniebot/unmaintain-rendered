@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-10-17T17:06:00Z
 updated_at: 2024-10-22T07:42:41Z
 url: https://github.com/astral-sh/ruff/issues/13798
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] Report line numbers in mdtest relative to the markdown file, not the test snippet
@@ -166,10 +166,6 @@ _Comment by @carljm on 2024-10-17 21:09_
 > We may want to use a format that many editors recognize in the shell. E.g path/test.md:line Error so that you can directly jump to the relevant line
 
 Yes, good idea!
-
----
-
-_Referenced in [astral-sh/ruff#13804](../../astral-sh/ruff/pulls/13804.md) on 2024-10-18 05:02_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-14T15:22:49Z
 updated_at: 2025-06-14T16:25:33Z
 url: https://github.com/astral-sh/ruff/issues/18674
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # fmt: off sometimes gets ignored
@@ -124,9 +124,5 @@ this would give an `E115 expected an indented block (comment)` error with pytype
 ---
 
 _Closed by @mxmlnkn on 2025-06-14 16:23_
-
----
-
-_Referenced in [astral-sh/ruff#18795](../../astral-sh/ruff/issues/18795.md) on 2025-06-19 15:00_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-12-30T05:19:00Z
 updated_at: 2022-12-30T13:17:14Z
 url: https://github.com/astral-sh/ruff/issues/1464
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T12:05:29Z
 ```
 
 # Latest release error
@@ -34,10 +34,6 @@ Config:
 [tool.ruff.flake8-tidy-imports]
 ban-relative-imports = "all"
 ```
-
----
-
-_Referenced in [astral-sh/ruff#1465](../../astral-sh/ruff/pulls/1465.md) on 2022-12-30 06:42_
 
 ---
 

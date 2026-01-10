@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-18T03:26:57Z
 updated_at: 2025-10-23T10:55:40Z
 url: https://github.com/astral-sh/ruff/issues/20460
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # `ruff check --fix` to stdout when reading from stdin
@@ -38,10 +38,6 @@ I discovered this whilst trying to prepare a simple reproducer for a fixer issue
 ### Version
 
 _No response_
-
----
-
-_Referenced in [astral-sh/ruff#2389](../../astral-sh/ruff/issues/2389.md) on 2025-09-18 03:33_
 
 ---
 

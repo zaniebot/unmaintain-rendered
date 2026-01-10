@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-18T15:32:24Z
 updated_at: 2025-04-30T15:27:10Z
 url: https://github.com/astral-sh/ruff/issues/17462
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] fix constructor calls on classes with metaclasses
@@ -42,10 +42,6 @@ _Label `red-knot` added by @carljm on 2025-04-18 15:32_
 ---
 
 _Added to milestone `Red Knot Alpha` by @carljm on 2025-04-18 15:32_
-
----
-
-_Referenced in [astral-sh/ruff#17452](../../astral-sh/ruff/pulls/17452.md) on 2025-04-18 15:33_
 
 ---
 
@@ -91,19 +87,11 @@ so far my plan is to elevate `meta_class_no_type_fallback` to just `no_meta_clas
 
 ---
 
-_Referenced in [astral-sh/ruff#17662](../../astral-sh/ruff/pulls/17662.md) on 2025-04-28 01:50_
-
----
-
 _Assigned to @mishamsk by @sharkdp on 2025-04-28 06:34_
 
 ---
 
 _Unassigned @sharkdp by @sharkdp on 2025-04-28 06:34_
-
----
-
-_Referenced in [astral-sh/ruff#17733](../../astral-sh/ruff/pulls/17733.md) on 2025-04-30 13:00_
 
 ---
 

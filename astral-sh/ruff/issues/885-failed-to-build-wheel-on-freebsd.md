@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-11-23T03:29:04Z
 updated_at: 2023-12-01T03:11:24Z
 url: https://github.com/astral-sh/ruff/issues/885
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # Failed to build wheel on FreeBSD
@@ -135,10 +135,6 @@ https://doc.rust-lang.org/cargo/reference/manifest.html#the-rust-version-field
 
 ---
 
-_Referenced in [astral-sh/ruff#886](../../astral-sh/ruff/pulls/886.md) on 2022-11-23 04:19_
-
----
-
 _Comment by @hhartzer on 2022-11-23 04:19_
 
 Thank you! I'm actually going to give rust 165.0 a try via `rustup`. Will report back.
@@ -180,9 +176,5 @@ _Comment by @hhartzer on 2023-12-01 03:11_
 I think because the rust version was too old, I fetched rustup in this manner: https://forge.rust-lang.org/infra/other-installation-methods.html#rustup
 
 But the rust version in ports may be current enough now to install just via `pip` if you also have rust installed.
-
----
-
-_Referenced in [apache/arrow#40776](../../apache/arrow/issues/40776.md) on 2024-03-26 11:28_
 
 ---

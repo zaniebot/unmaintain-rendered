@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-17T12:56:25Z
 updated_at: 2023-02-24T22:40:00Z
 url: https://github.com/astral-sh/ruff/issues/2981
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # UP007 should leave type aliases alone
@@ -89,34 +89,6 @@ Is there any sense for when https://github.com/tiangolo/typer/pull/522 would be 
 
 ---
 
-_Referenced in [astral-sh/ruff#3215](../../astral-sh/ruff/issues/3215.md) on 2023-02-24 21:26_
-
----
-
-_Referenced in [astral-sh/ruff#3217](../../astral-sh/ruff/pulls/3217.md) on 2023-02-24 22:36_
-
----
-
 _Closed by @charliermarsh on 2023-02-24 22:40_
-
----
-
-_Referenced in [astral-sh/ruff#4108](../../astral-sh/ruff/issues/4108.md) on 2023-04-26 00:48_
-
----
-
-_Referenced in [astral-sh/ruff#4170](../../astral-sh/ruff/pulls/4170.md) on 2023-05-01 17:07_
-
----
-
-_Referenced in [astral-sh/ruff#4843](../../astral-sh/ruff/issues/4843.md) on 2023-06-03 23:07_
-
----
-
-_Referenced in [astral-sh/ruff#10290](../../astral-sh/ruff/issues/10290.md) on 2024-08-19 09:58_
-
----
-
-_Referenced in [astral-sh/ruff#13783](../../astral-sh/ruff/issues/13783.md) on 2024-10-16 20:30_
 
 ---

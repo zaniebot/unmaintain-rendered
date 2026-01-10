@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-02-16T16:09:03Z
 updated_at: 2023-02-17T23:44:15Z
 url: https://github.com/astral-sh/ruff/issues/2956
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # PT009: `--fix` ignores custom assertion messages
@@ -86,10 +86,6 @@ It does the right thing if you use `self.assertTrue(unittest, msg="The module ex
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-17 22:16_
-
----
-
-_Referenced in [astral-sh/ruff#3002](../../astral-sh/ruff/pulls/3002.md) on 2023-02-17 23:41_
 
 ---
 

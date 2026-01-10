@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-08T19:46:27Z
 updated_at: 2025-06-03T19:35:48Z
 url: https://github.com/astral-sh/ruff/issues/7248
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Implement `flake8-logging`
@@ -46,10 +46,6 @@ _Label `plugin` added by @zanieb on 2023-09-08 21:51_
 
 ---
 
-_Referenced in [astral-sh/ruff#7249](../../astral-sh/ruff/pulls/7249.md) on 2023-09-08 22:50_
-
----
-
 _Comment by @qdegraaf on 2023-09-08 23:29_
 
 I'm implementing `LOG007` but will wait for review and merge of https://github.com/astral-sh/ruff/pull/7249 and the boilerplate is in so it's easier to review  
@@ -67,18 +63,6 @@ _Comment by @jonprindiville on 2023-09-11 14:38_
 Hm, `LOG001` feels a bit like a specific case of [banned-api (`TID251`)](https://beta.ruff.rs/docs/rules/banned-api/).
 
 Not to say that `LOG001` *can't* have an explicit implementation, just reminds me of this other thing.
-
----
-
-_Referenced in [astral-sh/ruff#7397](../../astral-sh/ruff/pulls/7397.md) on 2023-09-15 02:54_
-
----
-
-_Referenced in [astral-sh/ruff#7399](../../astral-sh/ruff/pulls/7399.md) on 2023-09-15 04:44_
-
----
-
-_Referenced in [astral-sh/ruff#7410](../../astral-sh/ruff/pulls/7410.md) on 2023-09-15 16:03_
 
 ---
 
@@ -130,25 +114,9 @@ New rule `LOG015` added upstream: https://github.com/adamchainz/flake8-logging?t
 
 ---
 
-_Referenced in [astral-sh/ruff#12178](../../astral-sh/ruff/issues/12178.md) on 2024-07-04 04:47_
-
----
-
-_Referenced in [astral-sh/ruff#13046](../../astral-sh/ruff/issues/13046.md) on 2024-08-22 15:35_
-
----
-
 _Comment by @JCWasmx86 on 2024-11-10 10:14_
 
 I'm implementing LOG004
-
----
-
-_Referenced in [astral-sh/ruff#14245](../../astral-sh/ruff/pulls/14245.md) on 2024-11-10 16:23_
-
----
-
-_Referenced in [astral-sh/ruff#14302](../../astral-sh/ruff/pulls/14302.md) on 2024-11-13 00:31_
 
 ---
 
@@ -180,10 +148,6 @@ I believe the intent of LOG015 is to promote "namespaced" logging e.g. "logger.i
 
 ---
 
-_Referenced in [astral-sh/ruff#14390](../../astral-sh/ruff/issues/14390.md) on 2024-11-16 21:54_
-
----
-
 _Comment by @MichaReiser on 2024-11-16 21:56_
 
 Thanks. Makes sense. I created a new issue to track the resolution.
@@ -197,13 +161,5 @@ _Comment by @qartik on 2024-11-17 13:25_
 You are right. I was confused and my comment about wrongly triggering is invalid.
 
 Thanks for the update to the doc however.
-
----
-
-_Referenced in [astral-sh/ruff#14682](../../astral-sh/ruff/pulls/14682.md) on 2024-11-29 16:57_
-
----
-
-_Referenced in [astral-sh/ruff#15799](../../astral-sh/ruff/pulls/15799.md) on 2025-01-29 00:46_
 
 ---

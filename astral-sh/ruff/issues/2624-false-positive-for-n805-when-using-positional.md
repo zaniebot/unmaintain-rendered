@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-07T14:39:07Z
 updated_at: 2023-02-07T15:50:52Z
 url: https://github.com/astral-sh/ruff/issues/2624
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # False positive for N805 when using positional-only args
@@ -40,10 +40,6 @@ _Label `bug` added by @charliermarsh on 2023-02-07 15:42_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-07 15:42_
-
----
-
-_Referenced in [astral-sh/ruff#2626](../../astral-sh/ruff/pulls/2626.md) on 2023-02-07 15:49_
 
 ---
 

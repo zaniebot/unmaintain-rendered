@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-29T09:45:27Z
 updated_at: 2023-02-23T13:44:12Z
 url: https://github.com/astral-sh/ruff/issues/2321
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # SyntaxError in Python 3.11 when unpacking sequences inside of []
@@ -57,10 +57,6 @@ _Label `bug` added by @charliermarsh on 2023-01-29 16:31_
 
 ---
 
-_Referenced in [RustPython/RustPython#4479](../../RustPython/RustPython/issues/4479.md) on 2023-01-31 08:55_
-
----
-
 _Comment by @ned2 on 2023-01-31 09:00_
 
 Done: https://github.com/RustPython/RustPython/issues/4479
@@ -82,10 +78,6 @@ _Comment by @youknowone on 2023-02-21 17:49_
 The parser parts are resolved
 https://github.com/RustPython/RustPython/pull/4531
 https://github.com/RustPython/RustPython/pull/4532
-
----
-
-_Referenced in [astral-sh/ruff#3089](../../astral-sh/ruff/pulls/3089.md) on 2023-02-21 18:04_
 
 ---
 
@@ -126,17 +118,9 @@ Should I create a separate issue for this?
 
 ---
 
-_Referenced in [astral-sh/ruff#3167](../../astral-sh/ruff/pulls/3167.md) on 2023-02-23 09:03_
-
----
-
 _Comment by @charliermarsh on 2023-02-23 12:27_
 
 Thanks @LeeeeT, can you file a separate issue for the `*tuple` thing?
-
----
-
-_Referenced in [astral-sh/ruff#3170](../../astral-sh/ruff/issues/3170.md) on 2023-02-23 13:39_
 
 ---
 
@@ -149,9 +133,5 @@ _Comment by @charliermarsh on 2023-02-23 13:39_
 _Comment by @LeeeeT on 2023-02-23 13:44_
 
 Thank you for fixing it so quickly! ❤️
-
----
-
-_Referenced in [astral-sh/ruff#6078](../../astral-sh/ruff/issues/6078.md) on 2023-07-27 16:58_
 
 ---

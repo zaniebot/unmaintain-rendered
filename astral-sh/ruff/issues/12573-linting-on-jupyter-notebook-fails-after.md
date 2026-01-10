@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-29T09:32:58Z
 updated_at: 2024-07-30T12:39:20Z
 url: https://github.com/astral-sh/ruff/issues/12573
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Linting on Jupyter Notebook fails after reordering cells
@@ -188,10 +188,6 @@ So, what happens in this case where the cells are moved but the content remains 
 ```
 
 This goes back to https://github.com/astral-sh/ruff/pull/11864#discussion_r1639145836 as this explains why VS Code sends a request to close the text document corresponding to a notebook cell.
-
----
-
-_Referenced in [astral-sh/ruff#12575](../../astral-sh/ruff/pulls/12575.md) on 2024-07-30 09:40_
 
 ---
 

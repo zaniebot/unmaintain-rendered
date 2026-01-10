@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-07T14:14:14Z
 updated_at: 2025-01-08T16:34:52Z
 url: https://github.com/astral-sh/ruff/issues/15317
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Regression: panic messages about invalid mdtests are now swallowed by mdtest
@@ -42,10 +42,6 @@ _Label `red-knot` added by @AlexWaygood on 2025-01-07 14:14_
 
 ---
 
-_Referenced in [astral-sh/ruff#15241](../../astral-sh/ruff/pulls/15241.md) on 2025-01-07 14:14_
-
----
-
 _Label `help wanted` added by @AlexWaygood on 2025-01-07 14:14_
 
 ---
@@ -61,10 +57,6 @@ _Label `help wanted` removed by @AlexWaygood on 2025-01-07 14:21_
 _Comment by @dcreager on 2025-01-07 14:26_
 
 The panic that is being swallowed is not within the closure that is wrapped in `catch_unwind`.  I think the issue here is that the panic hook is global, and so if you're running tests concurrently, one thread might install the custom panic hook for its `catch_unwind` call while another thread is in the middle of e.g. this parse operation that might fail.
-
----
-
-_Referenced in [astral-sh/ruff#15319](../../astral-sh/ruff/pulls/15319.md) on 2025-01-07 15:12_
 
 ---
 

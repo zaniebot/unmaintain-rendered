@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-20T07:22:51Z
 updated_at: 2025-06-24T06:24:10Z
 url: https://github.com/astral-sh/ruff/issues/18818
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [`Pylint`] [preview] `PLE4703` false negative on any reassignment
@@ -45,10 +45,6 @@ _Label `rule` added by @ntBre on 2025-06-20 12:29_
 ---
 
 _Label `bug` added by @ntBre on 2025-06-20 12:30_
-
----
-
-_Referenced in [astral-sh/ruff#18833](../../astral-sh/ruff/pulls/18833.md) on 2025-06-20 20:10_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-23T12:15:08Z
 updated_at: 2023-03-23T17:01:41Z
 url: https://github.com/astral-sh/ruff/issues/3684
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Ruff runs all pydocstyle rules when the convention is specified in the config toml files
@@ -157,10 +157,6 @@ pip install ruff==0.0.258 && ruff check . --ignore D | wc -l
 _Comment by @charliermarsh on 2023-03-23 14:42_
 
 Yeah I've confirmed that it's a regression. I'll ship a fix today.
-
----
-
-_Referenced in [astral-sh/ruff#3685](../../astral-sh/ruff/pulls/3685.md) on 2023-03-23 16:54_
 
 ---
 

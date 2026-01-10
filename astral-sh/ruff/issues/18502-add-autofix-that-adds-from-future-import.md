@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-06T16:35:09Z
 updated_at: 2025-10-01T10:32:57Z
 url: https://github.com/astral-sh/ruff/issues/18502
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Add autofix that adds `from __future__ import annotations` only when it would be useful
@@ -51,18 +51,6 @@ _Label `rule` added by @AlexWaygood on 2025-06-06 16:35_
 ---
 
 _Label `fixes` added by @AlexWaygood on 2025-06-06 16:35_
-
----
-
-_Referenced in [astral-sh/ruff#13273](../../astral-sh/ruff/issues/13273.md) on 2025-06-06 17:15_
-
----
-
-_Referenced in [astral-sh/ruff#18903](../../astral-sh/ruff/pulls/18903.md) on 2025-06-23 20:11_
-
----
-
-_Referenced in [astral-sh/ruff#18919](../../astral-sh/ruff/pulls/18919.md) on 2025-06-24 16:46_
 
 ---
 
@@ -225,25 +213,9 @@ If that sounds good to everyone, I'll start working on a new prototype. I'm thin
 
 ---
 
-_Referenced in [astral-sh/ruff#19100](../../astral-sh/ruff/pulls/19100.md) on 2025-07-02 19:38_
-
----
-
 _Comment by @ntBre on 2025-07-03 13:45_
 
 I have the aforementioned prototype up in #19100 if any of y'all want to have a look! The logic for emitting the import still feels a little touchy, but I added the config option and a good number of tests, so hopefully it's a decent start for iterating.
-
----
-
-_Referenced in [Flexget/Flexget#4430](../../Flexget/Flexget/pulls/4430.md) on 2025-07-15 20:39_
-
----
-
-_Referenced in [astral-sh/ruff#19566](../../astral-sh/ruff/issues/19566.md) on 2025-07-25 21:58_
-
----
-
-_Referenced in [aiidateam/aiida-core#6704](../../aiidateam/aiida-core/pulls/6704.md) on 2025-09-29 13:32_
 
 ---
 
@@ -282,13 +254,5 @@ TL;DR -- it sounds like a good idea to have _a_ rule to automatically remove `fr
 _Comment by @ollie-bell on 2025-10-01 10:32_
 
 Yes FWIW i was referring to the case when you have `requires-python >= 3.14` in the context of eager removal of `from __future__ import annotations`
-
----
-
-_Referenced in [astral-sh/ruff#20739](../../astral-sh/ruff/issues/20739.md) on 2025-10-07 14:48_
-
----
-
-_Referenced in [easyscience/corelib#163](../../easyscience/corelib/pulls/163.md) on 2025-11-26 10:59_
 
 ---

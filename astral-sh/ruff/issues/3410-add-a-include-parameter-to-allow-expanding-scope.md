@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-03-08T21:52:09Z
 updated_at: 2023-08-24T00:10:30Z
 url: https://github.com/astral-sh/ruff/issues/3410
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Add a `include` parameter to allow expanding scope of included files
@@ -131,10 +131,6 @@ _Comment by @charliermarsh on 2023-03-08 22:55_
 
 ---
 
-_Referenced in [astral-sh/ruff#2192](../../astral-sh/ruff/issues/2192.md) on 2023-03-08 22:55_
-
----
-
 _Comment by @neingeist on 2023-03-09 00:42_
 
 Ah, I just noticed your example was a glob pattern, mine was a regex (because Black uses a regex here). Probably something to think about a bit.
@@ -191,14 +187,6 @@ include-scripts = ^[^\.]*$
 
 which means, "check all .py files, all .pyi files, and all files with no file extension that contain shebangs".
 
-
----
-
-_Referenced in [astral-sh/ruff#3783](../../astral-sh/ruff/issues/3783.md) on 2023-03-28 20:28_
-
----
-
-_Referenced in [astral-sh/ruff#3914](../../astral-sh/ruff/pulls/3914.md) on 2023-04-08 04:14_
 
 ---
 

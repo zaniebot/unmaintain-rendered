@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-05-29T18:21:00Z
 updated_at: 2025-05-29T18:21:25Z
 url: https://github.com/astral-sh/ruff/issues/18376
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Consider combining `Locator` and `SourceFile`
@@ -22,9 +22,5 @@ It could make sense (can be a follow up PR/issue to do it later) to investigate 
 
 _Originally posted by @MichaReiser in https://github.com/astral-sh/ruff/pull/18356#discussion_r2113269326_
             
-
----
-
-_Referenced in [astral-sh/ruff#18356](../../astral-sh/ruff/pulls/18356.md) on 2025-05-29 18:32_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-25T15:07:05Z
 updated_at: 2024-12-02T18:18:29Z
 url: https://github.com/astral-sh/ruff/issues/14585
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # PLC0206 should not flag if dict is being written
@@ -109,10 +109,6 @@ But I also see your point. I'm on the fence.
 
 ---
 
-_Referenced in [astral-sh/ruff#14601](../../astral-sh/ruff/pulls/14601.md) on 2024-11-26 05:18_
-
----
-
 _Comment by @MichaReiser on 2024-11-26 07:33_
 
 Oh, @dylwil3, you're right. This is the same as #13821. That's what you get for replying late in the day :laughing: 
@@ -203,9 +199,5 @@ _Label `bug` removed by @MichaReiser on 2024-12-02 08:09_
 ---
 
 _Label `help wanted` removed by @MichaReiser on 2024-12-02 08:09_
-
----
-
-_Referenced in [canonical/craft-application#575](../../canonical/craft-application/pulls/575.md) on 2024-12-02 21:45_
 
 ---

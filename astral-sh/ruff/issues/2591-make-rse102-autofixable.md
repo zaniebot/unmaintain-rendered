@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-05T22:10:31Z
 updated_at: 2023-02-05T23:19:28Z
 url: https://github.com/astral-sh/ruff/issues/2591
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Make RSE102 autofixable
@@ -32,10 +32,6 @@ _Label `autofix` added by @charliermarsh on 2023-02-05 22:16_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-05 22:30_
-
----
-
-_Referenced in [astral-sh/ruff#2596](../../astral-sh/ruff/pulls/2596.md) on 2023-02-05 23:17_
 
 ---
 

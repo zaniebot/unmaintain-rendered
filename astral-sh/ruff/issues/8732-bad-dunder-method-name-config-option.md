@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-17T01:12:51Z
 updated_at: 2023-11-21T23:44:25Z
 url: https://github.com/astral-sh/ruff/issues/8732
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # (🎁) `bad-dunder-method-name` config option
@@ -43,14 +43,6 @@ Also, the error message should reference this config option. (based mode: the LS
 ---
 
 _Label `configuration` added by @charliermarsh on 2023-11-17 16:39_
-
----
-
-_Referenced in [astral-sh/ruff#8808](../../astral-sh/ruff/issues/8808.md) on 2023-11-21 16:09_
-
----
-
-_Referenced in [astral-sh/ruff#8812](../../astral-sh/ruff/pulls/8812.md) on 2023-11-21 21:36_
 
 ---
 

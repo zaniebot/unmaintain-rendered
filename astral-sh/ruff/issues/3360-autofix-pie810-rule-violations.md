@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-03-06T15:34:13Z
 updated_at: 2023-03-10T05:17:24Z
 url: https://github.com/astral-sh/ruff/issues/3360
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Autofix PIE810 rule violations
@@ -61,14 +61,6 @@ Cool, thanks :)
 
 ---
 
-_Referenced in [astral-sh/ruff#3411](../../astral-sh/ruff/pulls/3411.md) on 2023-03-09 01:30_
-
----
-
 _Closed by @charliermarsh on 2023-03-10 05:17_
-
----
-
-_Referenced in [ArduPilot/ardupilot#30343](../../ArduPilot/ardupilot/pulls/30343.md) on 2025-06-14 09:04_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-19T20:37:40Z
 updated_at: 2024-07-20T01:32:34Z
 url: https://github.com/astral-sh/ruff/issues/12412
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # `builtin-argument-shadowing` (`A002`) should not fire when overriding
@@ -30,10 +30,6 @@ _Label `bug` added by @charliermarsh on 2024-07-20 00:58_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-07-20 01:01_
-
----
-
-_Referenced in [astral-sh/ruff#12415](../../astral-sh/ruff/pulls/12415.md) on 2024-07-20 01:19_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-15T09:49:20Z
 updated_at: 2025-07-01T10:19:56Z
 url: https://github.com/astral-sh/ruff/issues/4436
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Fails to install on Termux 
@@ -83,10 +83,6 @@ _Label `bug` added by @charliermarsh on 2023-05-15 15:31_
 ---
 
 _Label `release` added by @charliermarsh on 2023-05-15 15:31_
-
----
-
-_Referenced in [astral-sh/ruff#4439](../../astral-sh/ruff/pulls/4439.md) on 2023-05-18 00:51_
 
 ---
 

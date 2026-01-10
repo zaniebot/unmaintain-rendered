@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-19T19:01:16Z
 updated_at: 2024-01-20T00:59:48Z
 url: https://github.com/astral-sh/ruff/issues/9584
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # false positive on PLC2801 "unnecessary dunder... for __setattr__"
@@ -72,9 +72,5 @@ _Closed by @charliermarsh on 2024-01-20 00:59_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-01-20 00:59_
-
----
-
-_Referenced in [astral-sh/ruff#11636](../../astral-sh/ruff/issues/11636.md) on 2024-05-31 12:48_
 
 ---

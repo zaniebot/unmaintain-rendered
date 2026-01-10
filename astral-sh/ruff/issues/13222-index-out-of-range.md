@@ -1,0 +1,42 @@
+```yaml
+number: 13222
+title: index out of range
+type: issue
+state: closed
+author: mmbart
+labels: []
+assignees: []
+created_at: 2024-09-03T04:06:48Z
+updated_at: 2024-09-03T04:57:02Z
+url: https://github.com/astral-sh/ruff/issues/13222
+synced_at: 2026-01-10T11:09:55Z
+```
+
+# index out of range
+
+---
+
+_Issue opened by @mmbart on 2024-09-03 04:06_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+Ruff version: 0.0.254
+poetry run ruff . --fix  
+thread '<unnamed>' panicked at 'index out of bounds: the len is 70 but the index is 73', crates/ruff/src/source_code/locator.rs:83:9
+
+
+---
+
+_Closed by @mmbart on 2024-09-03 04:57_
+
+---

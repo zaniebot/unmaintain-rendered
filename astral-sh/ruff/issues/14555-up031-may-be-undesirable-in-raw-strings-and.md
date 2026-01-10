@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-23T08:30:23Z
 updated_at: 2024-11-26T14:53:36Z
 url: https://github.com/astral-sh/ruff/issues/14555
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # UP031 may be undesirable in raw strings and regular expressions
@@ -67,10 +67,6 @@ rf"^[A-Z0-9_-]{{0,{KEYWORD_LENGTH}}}$"
 note that I needed to escape raw `{` and `}` to `{{` and `}}` respectively. I don't think this makes the code more readable, and may actually be counterproductive. Admittedly this is a small example were it doesn't hurt too much but there could legitimately be much more involved cases in the wild.
 
 Would it be possible to change this rule so that it ignores raw strings altogether ?
-
----
-
-_Referenced in [astropy/astropy#17430](../../astropy/astropy/issues/17430.md) on 2024-11-23 08:32_
 
 ---
 
@@ -144,10 +140,6 @@ r"a { len: {{LENGTH}} }"
 Yeah, that's a hard metric to get right for all users, but I'm all ears if someone has suggestions. I'd suggest that users feel free to use noqa comments if they feel that it arguably looks worse in the few one-off cases where this happens. 
 
 
-
----
-
-_Referenced in [astropy/astropy#17452](../../astropy/astropy/pulls/17452.md) on 2024-11-26 09:22_
 
 ---
 

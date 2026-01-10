@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-26T04:51:59Z
 updated_at: 2024-12-04T19:16:55Z
 url: https://github.com/astral-sh/ruff/issues/14598
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Infer precise types for `len()` calls
@@ -52,10 +52,6 @@ def f(a: tuple[Literal[1], int] | tuple[Literal[2], str, str]) -> None:
         reveal_type(a[0])  # mypy    => Literal[1]
                            # pyright => Literal[1, 2]
 ```
-
----
-
-_Referenced in [astral-sh/ruff#14599](../../astral-sh/ruff/pulls/14599.md) on 2024-11-26 04:55_
 
 ---
 

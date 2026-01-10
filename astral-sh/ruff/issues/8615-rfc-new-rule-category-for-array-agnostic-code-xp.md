@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-11T12:41:57Z
 updated_at: 2024-03-28T16:52:23Z
 url: https://github.com/astral-sh/ruff/issues/8615
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # RFC: new rule category for array-agnostic code (XP)
@@ -135,16 +135,8 @@ Yeah, my intention would be to work on this gradually in the background (probabl
 
 ---
 
-_Referenced in [astral-sh/ruff#8910](../../astral-sh/ruff/pulls/8910.md) on 2023-11-29 17:04_
-
----
-
 _Comment by @MichaReiser on 2024-03-28 16:52_
 
 I really like the idea of this rule but we need to wait until #1774 is complete to have a better "home" for the rule.
-
----
-
-_Referenced in [astral-sh/ruff#12349](../../astral-sh/ruff/issues/12349.md) on 2024-07-18 10:23_
 
 ---

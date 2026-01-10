@@ -1,0 +1,60 @@
+```yaml
+number: 18318
+title: "Docs: add strikethrough to rule ID in rules list if rule is removed"
+type: issue
+state: closed
+author: MaddyGuthridge
+labels:
+  - documentation
+assignees: []
+created_at: 2025-05-26T13:23:53Z
+updated_at: 2025-05-27T13:37:08Z
+url: https://github.com/astral-sh/ruff/issues/18318
+synced_at: 2026-01-10T11:09:58Z
+```
+
+# Docs: add strikethrough to rule ID in rules list if rule is removed
+
+---
+
+_Issue opened by @MaddyGuthridge on 2025-05-26 13:23_
+
+As requested [here](https://github.com/astral-sh/ruff/pull/18297#issuecomment-2909545016), I've moved this to a separate issue. Apparently, adding a strikethrough was decided against early in the design of the docs, so I completely understand if there are good reasons not to do this.
+
+Here's what it would look like:
+
+![Image](https://github.com/user-attachments/assets/f1a3a6cf-9d1c-4a04-82bb-0d467b622192)
+
+---
+
+_Comment by @MichaReiser on 2025-05-26 13:58_
+
+I think the. main concern here is that it just feels "too much". There's the opacity, strikethrough, and the `x` icon at the end and it's not clear to me how using strikethrough would improve readability
+
+---
+
+_Label `documentation` added by @MichaReiser on 2025-05-26 13:58_
+
+---
+
+_Comment by @MaddyGuthridge on 2025-05-27 07:35_
+
+That's a fair point. I think the main benefit in my opinion is that each way of communicating it is read in a very different way. For example, I personally don't find the opacity filter to be especially helpful, and so the strikethrough communicates it better for me. This is especially the case because deprecated and removed filters have a similar opacity effect which is hard to distinguish imo.
+
+If you think it's too much, even with this rationale, that's completely ok. Feel free to close this issue :)
+
+---
+
+_Comment by @MichaReiser on 2025-05-27 13:37_
+
+Yeah, I prefer keeping it as is. 
+
+> This is especially the case because deprecated and removed filters have a similar opacity effect which is hard to distinguish imo.
+
+This is sort of intentional because new users shouldn't use those rules anymore.
+
+---
+
+_Closed by @MichaReiser on 2025-05-27 13:37_
+
+---

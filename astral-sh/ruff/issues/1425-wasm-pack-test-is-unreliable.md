@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-28T15:10:39Z
 updated_at: 2024-02-23T22:01:36Z
 url: https://github.com/astral-sh/ruff/issues/1425
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # `wasm-pack` test is unreliable
@@ -89,10 +89,6 @@ Well, actually.. when you start searching for the "shutdown signal" thing, numer
 
 For example: https://github.com/actions/runner-images/issues/6680
 One response: https://github.com/actions/runner-images/issues/6680#issuecomment-1335778010
-
----
-
-_Referenced in [astral-sh/ruff#1427](../../astral-sh/ruff/pulls/1427.md) on 2022-12-28 17:27_
 
 ---
 

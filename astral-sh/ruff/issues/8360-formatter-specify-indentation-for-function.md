@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-30T15:58:08Z
 updated_at: 2025-11-13T09:55:46Z
 url: https://github.com/astral-sh/ruff/issues/8360
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Formatter: Specify indentation for function parameters
@@ -334,10 +334,6 @@ Not something I'd use in mine. But I could also work with a codebase that uses i
 
 ---
 
-_Referenced in [huggingface/pytorch-image-models#2036](../../huggingface/pytorch-image-models/pulls/2036.md) on 2023-11-17 17:10_
-
----
-
 _Comment by @jsh9 on 2024-01-15 00:59_
 
 Hi authors of Ruff, may I follow up on this issue?  Do you have plans to include this configurability into Ruff in the near future?  Thanks!
@@ -424,17 +420,9 @@ match self.mode {
 
 ---
 
-_Referenced in [astral-sh/ruff#6893](../../astral-sh/ruff/issues/6893.md) on 2024-02-22 18:10_
-
----
-
 _Comment by @stolenzc on 2024-04-02 01:10_
 
 I am watching this issue more than 1 month, and I always wait for implement this function in ruff. our company have some code style rules, All other rules can be satisfied through configuration, only this one I can't. This style also follow pep8 style.  I like ruff, but I can't directly using it in my work and life.
-
----
-
-_Referenced in [nvaccess/nvda#14817](../../nvaccess/nvda/issues/14817.md) on 2024-04-11 15:55_
 
 ---
 
@@ -474,10 +462,6 @@ I think that to increase readability it might be reasonable to indent infinite l
 _Comment by @vvlutin on 2024-07-30 13:33_
 
 Brackets are sufficient for readability in both cases above. So if readability is the goal then the first option is newline character before closing bracket. And the second option is complication of indentation logic by double indentation levels specifically for arguments lists. If complicating logic considered pythonic option, then maybe pep8 should allow both cases explicitly.
-
----
-
-_Referenced in [vnmabus/rdata#45](../../vnmabus/rdata/pulls/45.md) on 2024-10-11 20:40_
 
 ---
 
@@ -556,10 +540,6 @@ _Comment by @vitor-amartins on 2025-04-04 13:47_
 Hi @jsh9, agree with all the points you brought. Also @rwightman has exact the same point that get me here, it's the approach used on Pycharm, and it keeps fighting with the ruff format, and only because of that I choose not to use ruff format. If it had a flag like mentioned by @jsh9, it would be the thing that would make me use format.
 
 @MichaReiser do you have any updates based on the presented points?
-
----
-
-_Referenced in [astral-sh/ruff#19921](../../astral-sh/ruff/pulls/19921.md) on 2025-08-14 22:42_
 
 ---
 

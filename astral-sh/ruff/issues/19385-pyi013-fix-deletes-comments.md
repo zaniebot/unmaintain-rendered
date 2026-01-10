@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-07-16T12:47:12Z
 updated_at: 2025-07-29T19:06:06Z
 url: https://github.com/astral-sh/ruff/issues/19385
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # PYI013 fix deletes comments
@@ -81,10 +81,6 @@ _Comment by @Luunynliny on 2025-07-16 15:25_
 ---
 
 _Assigned to @Luunynliny by @ntBre on 2025-07-16 15:34_
-
----
-
-_Referenced in [astral-sh/ruff#19399](../../astral-sh/ruff/pulls/19399.md) on 2025-07-17 14:11_
 
 ---
 

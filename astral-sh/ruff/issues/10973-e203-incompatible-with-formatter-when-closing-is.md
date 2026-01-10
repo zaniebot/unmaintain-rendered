@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-04-15T22:22:46Z
 updated_at: 2024-06-14T13:29:09Z
 url: https://github.com/astral-sh/ruff/issues/10973
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # E203: Incompatible with formatter when closing `]` is on its own line
@@ -194,10 +194,6 @@ _Renamed from "ruff check --fix --preview --unsafe-fixes conflicts with ruff for
 ---
 
 _Label `help wanted` added by @MichaReiser on 2024-04-16 09:21_
-
----
-
-_Referenced in [astral-sh/ruff#10999](../../astral-sh/ruff/pulls/10999.md) on 2024-04-17 13:38_
 
 ---
 

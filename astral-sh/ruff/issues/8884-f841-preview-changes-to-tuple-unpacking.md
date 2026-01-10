@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-11-28T23:25:18Z
 updated_at: 2025-03-03T09:51:37Z
 url: https://github.com/astral-sh/ruff/issues/8884
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # F841 preview changes to tuple unpacking
@@ -169,23 +169,7 @@ We're a big user of autofixing (including unsafe fixes) and the "remove the left
 
 ---
 
-_Referenced in [astral-sh/ruff#9461](../../astral-sh/ruff/issues/9461.md) on 2024-01-11 01:23_
-
----
-
 _Added to milestone `v0.2.0` by @MichaReiser on 2024-01-19 14:22_
-
----
-
-_Referenced in [great-expectations/great_expectations#9273](../../great-expectations/great_expectations/pulls/9273.md) on 2024-01-23 20:00_
-
----
-
-_Referenced in [astral-sh/ruff#9881](../../astral-sh/ruff/issues/9881.md) on 2024-02-07 21:50_
-
----
-
-_Referenced in [astral-sh/ruff#9936](../../astral-sh/ruff/pulls/9936.md) on 2024-02-11 21:41_
 
 ---
 
@@ -232,10 +216,6 @@ _Removed from milestone `v0.4.0` by @MichaReiser on 2024-04-04 09:08_
 
 ---
 
-_Referenced in [astral-sh/ruff#12839](../../astral-sh/ruff/pulls/12839.md) on 2024-08-12 11:07_
-
----
-
 _Comment by @AlexWaygood on 2024-08-12 11:17_
 
 I would support splitting this out into a separate check. In general, I think it's very useful for users for rules to be as fine-grained as possible so that they can easily select exactly which diagnostics and fixes they find to be helpful for them.
@@ -245,18 +225,6 @@ This also seems to be to be distinct enough that I think users would understand 
 > * I understand that the main motivation for a separate rule is to allow different fixability. I don't know if that's reason enough and could set a bad precedence.
 
 I think for a lot of our users, the ability we have to provide autofixes is a key value add over other tools in the Python ecosystem. I know when I first started using Ruff, this was a far bigger attraction than the performance gains that Ruff boasted. I think changes that make it easier for people to enable autofixes on their code are pretty valuable.
-
----
-
-_Referenced in [astral-sh/ruff#12657](../../astral-sh/ruff/pulls/12657.md) on 2024-08-15 23:02_
-
----
-
-_Referenced in [astral-sh/ruff#12912](../../astral-sh/ruff/issues/12912.md) on 2024-08-15 23:04_
-
----
-
-_Referenced in [Chia-Network/chia-blockchain#18801](../../Chia-Network/chia-blockchain/pulls/18801.md) on 2024-10-31 14:21_
 
 ---
 
@@ -295,14 +263,6 @@ _Label `accepted` added by @AlexWaygood on 2025-01-13 12:27_
 
 ---
 
-_Referenced in [astral-sh/ruff#16449](../../astral-sh/ruff/pulls/16449.md) on 2025-03-01 01:40_
-
----
-
 _Closed by @MichaReiser on 2025-03-03 09:51_
-
----
-
-_Referenced in [astral-sh/ruff#16753](../../astral-sh/ruff/issues/16753.md) on 2025-03-14 16:58_
 
 ---

@@ -1,0 +1,69 @@
+```yaml
+number: 7436
+title: Split UP035 (deprecated-import) for aliases
+type: issue
+state: open
+author: auscompgeek
+labels:
+  - rule
+  - help wanted
+assignees: []
+created_at: 2023-09-16T13:10:08Z
+updated_at: 2023-11-17T14:41:41Z
+url: https://github.com/astral-sh/ruff/issues/7436
+synced_at: 2026-01-10T11:09:49Z
+```
+
+# Split UP035 (deprecated-import) for aliases
+
+---
+
+_Issue opened by @auscompgeek on 2023-09-16 13:10_
+
+I'd like to request the `deprecated-import` rule be split in two. Currently `UP035` flags two different kinds of deprecations:
+
+- Names that have been moved, with a deprecated alias. Examples:
+  - `collections.*` => `collections.abc.*`
+  - `{pipes => shlex}.quote`
+- Types that are deprecated, considered equivalent by type checkers, but are different runtime values.
+  - This is everything in the `typing`, `typing_extensions` and `mypy_extensions` modules.
+
+For the former group, fixing them is significantly safer, since the only visible side-effects would be that a module wasn't imported (in the case of `pipes`), and a lack of a `DeprecationWarning`. It'd be rare for code to depend on those side-effects. The latter group can potentially be an unsafe change if something tries to observe the types directly at runtime though.
+
+Ultimately I'd like to be able to autofix the moved names, whilst being able to separately flag (with a suggested fix) the typing changes that would be observable at runtime.
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-09-19 03:38_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-09-19 03:38_
+
+---
+
+_Comment by @charliermarsh on 2023-09-19 03:40_
+
+Once we have https://github.com/astral-sh/ruff/issues/4181, I could see us making the former rules automatic fixes and the latter suggested. I'm hesitant to split these into two rules since the difference between them is so subtle, and more rules means more configuration burden for users.
+
+---
+
+_Label `needs-decision` removed by @charliermarsh on 2023-09-19 03:40_
+
+---
+
+_Comment by @zanieb on 2023-10-06 15:29_
+
+We now have support for applicability but this looks like a significant project to update — contributions welcome here!
+
+---
+
+_Label `help wanted` added by @zanieb on 2023-10-06 15:30_
+
+---
+
+_Comment by @tjkuson on 2023-11-17 14:41_
+
+I'm having a go at this, should have a PR this weekend (depending on how long it takes to determine the safety of each fix)!
+
+---

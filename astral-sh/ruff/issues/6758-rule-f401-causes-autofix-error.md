@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-22T08:12:33Z
 updated_at: 2023-08-22T15:55:29Z
 url: https://github.com/astral-sh/ruff/issues/6758
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 #  Rule F401 causes autofix error
@@ -65,10 +65,6 @@ _Label `fuzzer` added by @charliermarsh on 2023-08-22 13:14_
 _Comment by @charliermarsh on 2023-08-22 13:25_
 
 This is a regression from #6694 so not in live Ruff. Will fix today.
-
----
-
-_Referenced in [astral-sh/ruff#6774](../../astral-sh/ruff/pulls/6774.md) on 2023-08-22 15:30_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-31T18:47:31Z
 updated_at: 2025-11-08T20:31:10Z
 url: https://github.com/astral-sh/ruff/issues/20179
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # A001 misses some attributes referenced within the class scope
@@ -65,10 +65,6 @@ _Label `bug` added by @ntBre on 2025-09-01 14:59_
 ---
 
 _Label `rule` added by @ntBre on 2025-09-01 14:59_
-
----
-
-_Referenced in [astral-sh/ruff#20178](../../astral-sh/ruff/pulls/20178.md) on 2025-09-01 16:07_
 
 ---
 

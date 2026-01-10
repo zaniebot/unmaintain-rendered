@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-10T21:16:19Z
 updated_at: 2024-10-11T00:33:54Z
 url: https://github.com/astral-sh/ruff/issues/13708
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Extremely verbose `mdtest` output if a revealed type is not what is expected
@@ -92,10 +92,6 @@ Makes sense. I do also find it confusing for me personally, as well as contribut
 
 ---
 
-_Referenced in [astral-sh/ruff#13709](../../astral-sh/ruff/pulls/13709.md) on 2024-10-10 23:39_
-
----
-
 _Comment by @carljm on 2024-10-10 23:41_
 
 Pushed a PR that implements the first step (silencing `undefined-reveal` on any line including a `# revealed: ` assertion), and also tries to balance giving some more useful direction for undefined-reveal in mdtest context, without concealing red-knot's normal diagnostic for undefined-reveal.
@@ -107,9 +103,5 @@ _Closed by @carljm on 2024-10-11 00:33_
 ---
 
 _Closed by @carljm on 2024-10-11 00:33_
-
----
-
-_Referenced in [astral-sh/ruff#20820](../../astral-sh/ruff/pulls/20820.md) on 2025-10-12 16:50_
 
 ---

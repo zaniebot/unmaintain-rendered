@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-02T19:29:13Z
 updated_at: 2023-09-08T09:41:01Z
 url: https://github.com/astral-sh/ruff/issues/6284
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Formatter: Add coverage for comments in lambda star parameters
@@ -120,10 +120,6 @@ def f35(
 ```
 
 I can open a PR with the test cases and if any tweaks are preferred they can be made and discussed there.
-
----
-
-_Referenced in [astral-sh/ruff#6318](../../astral-sh/ruff/pulls/6318.md) on 2023-08-03 20:55_
 
 ---
 

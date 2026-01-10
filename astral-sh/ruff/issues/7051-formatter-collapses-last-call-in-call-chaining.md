@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-01T20:07:51Z
 updated_at: 2023-11-02T17:01:48Z
 url: https://github.com/astral-sh/ruff/issues/7051
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter collapses last call in call chaining
@@ -122,10 +122,6 @@ _Label `documentation` added by @MichaReiser on 2023-09-27 16:04_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-09-27 18:50_
-
----
-
-_Referenced in [astral-sh/ruff#7767](../../astral-sh/ruff/pulls/7767.md) on 2023-10-02 21:36_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-02T11:22:35Z
 updated_at: 2024-10-03T10:05:06Z
 url: https://github.com/astral-sh/ruff/issues/13603
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # B017 false-negative with multiple context managers
@@ -67,10 +67,6 @@ _Label `bug` added by @AlexWaygood on 2024-10-02 14:02_
 ---
 
 _Label `help wanted` added by @AlexWaygood on 2024-10-02 14:02_
-
----
-
-_Referenced in [astral-sh/ruff#13609](../../astral-sh/ruff/pulls/13609.md) on 2024-10-03 06:44_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-25T13:34:19Z
 updated_at: 2025-04-28T06:58:54Z
 url: https://github.com/astral-sh/ruff/issues/17626
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] don't ignore hidden files
@@ -23,19 +23,7 @@ see: https://github.com/astral-sh/ruff/pull/17569#discussion_r2059648418
 
 ---
 
-_Referenced in [astral-sh/ruff#17569](../../astral-sh/ruff/pulls/17569.md) on 2025-04-25 13:34_
-
----
-
 _Label `red-knot` added by @MichaReiser on 2025-04-25 13:35_
-
----
-
-_Referenced in [thejchap/ruff#1](../../thejchap/ruff/pulls/1.md) on 2025-04-26 03:38_
-
----
-
-_Referenced in [astral-sh/ruff#17655](../../astral-sh/ruff/pulls/17655.md) on 2025-04-27 15:04_
 
 ---
 

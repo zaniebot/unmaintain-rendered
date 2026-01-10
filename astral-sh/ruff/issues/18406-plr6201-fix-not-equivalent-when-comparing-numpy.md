@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-31T22:15:12Z
 updated_at: 2025-06-02T12:59:45Z
 url: https://github.com/astral-sh/ruff/issues/18406
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # `PLR6201` fix not equivalent when comparing `numpy.dtype` with numpy scalar types
@@ -56,10 +56,6 @@ See https://github.com/numpy/numpy/issues/17864 for a discussion of this behavio
 
 
 
-
----
-
-_Referenced in [numpy/numpy#7242](../../numpy/numpy/issues/7242.md) on 2025-06-01 13:58_
 
 ---
 

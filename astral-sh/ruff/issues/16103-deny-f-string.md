@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-02-11T20:06:06Z
 updated_at: 2025-02-12T14:01:40Z
 url: https://github.com/astral-sh/ruff/issues/16103
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Deny f-string
@@ -63,9 +63,5 @@ I agree, my concern is also with the use of `str()` and been able to use f-strin
 ---
 
 _Label `type-inference` added by @MichaReiser on 2025-02-12 14:01_
-
----
-
-_Referenced in [astral-sh/ruff#16246](../../astral-sh/ruff/issues/16246.md) on 2025-02-19 10:03_
 
 ---

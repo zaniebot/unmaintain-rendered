@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-11T10:57:53Z
 updated_at: 2023-02-11T19:53:01Z
 url: https://github.com/astral-sh/ruff/issues/2761
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 #  `flake8-type-checking` TCH00{1,2,3}: False negative 
@@ -108,10 +108,6 @@ Definitely a bug, thank you for the clear issue!
 
 ---
 
-_Referenced in [astral-sh/ruff#2774](../../astral-sh/ruff/pulls/2774.md) on 2023-02-11 17:43_
-
----
-
 _Comment by @charliermarsh on 2023-02-11 17:43_
 
 Fixed in the next release (probably tomorrow?).
@@ -147,9 +143,5 @@ I think in cases where annotations are used in quotes, `TCH004` should not be ra
 _Comment by @charliermarsh on 2023-02-11 19:53_
 
 Right right, my bad.
-
----
-
-_Referenced in [astral-sh/ruff#2779](../../astral-sh/ruff/pulls/2779.md) on 2023-02-11 19:56_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-16T21:25:16Z
 updated_at: 2025-01-16T16:07:27Z
 url: https://github.com/astral-sh/ruff/issues/14389
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [Infinite loop] ICN001 conflicts with I002 and F401 if an unused unconventionally aliased import is required
@@ -81,10 +81,6 @@ _Assigned to @ntBre by @ntBre on 2025-01-14 20:32_
 
 ---
 
-_Referenced in [astral-sh/ruff#15480](../../astral-sh/ruff/pulls/15480.md) on 2025-01-14 20:54_
-
----
-
 _Closed by @ntBre on 2025-01-16 15:45_
 
 ---
@@ -94,9 +90,5 @@ _Closed by @ntBre on 2025-01-16 15:45_
 ---
 
 _Unassigned @AlexWaygood by @AlexWaygood on 2025-01-16 16:07_
-
----
-
-_Referenced in [astral-sh/ruff#18729](../../astral-sh/ruff/issues/18729.md) on 2025-06-17 17:48_
 
 ---

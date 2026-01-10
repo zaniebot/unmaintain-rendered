@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-28T08:09:18Z
 updated_at: 2024-12-30T03:31:37Z
 url: https://github.com/astral-sh/ruff/issues/15165
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # `PTH201` fix does not consider trailing comma
@@ -70,10 +70,6 @@ _Comment by @dylwil3 on 2024-12-28 13:01_
 There is! It's here:
 
 https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/src/fix/edits.rs#L207
-
----
-
-_Referenced in [astral-sh/ruff#15177](../../astral-sh/ruff/pulls/15177.md) on 2024-12-29 02:33_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-14T09:21:47Z
 updated_at: 2024-10-17T07:14:35Z
 url: https://github.com/astral-sh/ruff/issues/11421
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # C901, PLR0912 and PLR0915 treat match/case as one statement
@@ -200,10 +200,6 @@ I don't have any arguments against this, and it does make sense (I think?) to in
 
 ---
 
-_Referenced in [astral-sh/ruff#11205](../../astral-sh/ruff/issues/11205.md) on 2024-05-22 03:13_
-
----
-
 _Comment by @charliermarsh on 2024-05-22 03:17_
 
 \cc @Pierre-Sassoulas 
@@ -240,10 +236,6 @@ Imo, the match case in python adds complexity because it's not a simple "case la
 
 ---
 
-_Referenced in [pylint-dev/pylint#9667](../../pylint-dev/pylint/pulls/9667.md) on 2024-05-22 07:17_
-
----
-
 _Comment by @AlexWaygood on 2024-05-23 13:38_
 
 I agree with @Pierre-Sassoulas. For the Mccabe plugin, I believe one of the primary motivations for the rule is to ensure that each function is testable in isolation. If a function has too many branches, it becomes hard to write a unit test for it. I think this is just as much a concern for `match`/`case` as it is with `if`/`elif`, as each new `case` statement in the `match`/`case` treee can be seen as a wholly distinct branch that you would need to account for when writing tests.
@@ -277,10 +269,6 @@ I can take a stab at this if that's ok.
 _Comment by @charliermarsh on 2024-05-23 16:37_
 
 Go for it -- thanks!
-
----
-
-_Referenced in [astral-sh/ruff#11521](../../astral-sh/ruff/pulls/11521.md) on 2024-05-23 19:34_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-22T22:12:41Z
 updated_at: 2023-01-22T22:40:58Z
 url: https://github.com/astral-sh/ruff/issues/2094
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # [ERROR] Failed to fix nested if: Expected outer if to have indented body and no else
@@ -93,10 +93,6 @@ _Comment by @charliermarsh on 2023-01-22 22:28_
 
 Yeah, I do consider it a false positive because the suggested fix actually has different behavior and semantics.
 
-
----
-
-_Referenced in [astral-sh/ruff#2095](../../astral-sh/ruff/pulls/2095.md) on 2023-01-22 22:39_
 
 ---
 

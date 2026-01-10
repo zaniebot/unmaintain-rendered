@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-11T12:05:53Z
 updated_at: 2024-08-16T15:47:01Z
 url: https://github.com/astral-sh/ruff/issues/12802
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Check `CPY` rules in the first cell (markdown, code, or raw cell type)
@@ -154,9 +154,5 @@ https://github.com/astral-sh/ruff/blob/5d85fb75eaf03f62c10472e7362ad2f1c8250e7a/
 ---
 
 _Renamed from "CPY: no support for Jupyter Notebook files" to "Check `CPY` rules in the first cell (markdown, code, or raw cell type)" by @dhruvmanila on 2024-08-16 15:47_
-
----
-
-_Referenced in [torchgeo/torchgeo#2440](../../torchgeo/torchgeo/pulls/2440.md) on 2024-12-02 16:05_
 
 ---

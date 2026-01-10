@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-16T10:07:05Z
 updated_at: 2025-01-18T04:39:24Z
 url: https://github.com/astral-sh/ruff/issues/15016
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Rule documentation link does not work with lower case code
@@ -52,10 +52,6 @@ _Comment by @dhruvmanila on 2025-01-17 06:35_
 I think it's fine to add the lowercase variant. The following would need to be updated to generate the redirects from lowercase rule codes as well:
 
 https://github.com/astral-sh/ruff/blob/7ddf59be5fdf6636e407dd31ebf199bfc6686bd6/scripts/generate_mkdocs.py#L257-L266
-
----
-
-_Referenced in [astral-sh/ruff#15564](../../astral-sh/ruff/pulls/15564.md) on 2025-01-18 00:52_
 
 ---
 

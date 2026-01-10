@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-14T17:27:34Z
 updated_at: 2024-11-22T12:13:56Z
 url: https://github.com/astral-sh/ruff/issues/14342
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Panics when 'break' is used in nested definitions inside loops
@@ -289,10 +289,6 @@ while True:
 ```
 
 The problem is that the semantic index builder currently doesn't handle the case of invalid `break` statements. It treats the `break` inside the function definition as being part of the `while` loops.
-
----
-
-_Referenced in [astral-sh/ruff#14522](../../astral-sh/ruff/pulls/14522.md) on 2024-11-22 09:58_
 
 ---
 

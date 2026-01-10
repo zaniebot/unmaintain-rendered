@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-26T13:56:09Z
 updated_at: 2023-09-01T16:27:34Z
 url: https://github.com/astral-sh/ruff/issues/6898
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # formatter panic with comment between joined f-strings
@@ -111,14 +111,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-09-01 16:06_
 
 ---
 
-_Referenced in [astral-sh/ruff#7047](../../astral-sh/ruff/pulls/7047.md) on 2023-09-01 16:12_
-
----
-
 _Closed by @charliermarsh on 2023-09-01 16:27_
-
----
-
-_Referenced in [astral-sh/ruff#20580](../../astral-sh/ruff/pulls/20580.md) on 2025-09-25 18:30_
 
 ---

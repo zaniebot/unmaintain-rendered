@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-02-28T17:42:59Z
 updated_at: 2025-11-07T00:23:57Z
 url: https://github.com/astral-sh/ruff/issues/3278
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Request: flake8-encodings
@@ -53,15 +53,7 @@ Python 3.15!
 
 ---
 
-_Referenced in [scikit-hep/pyhf#2124](../../scikit-hep/pyhf/pulls/2124.md) on 2023-02-28 17:46_
-
----
-
 _Label `plugin` added by @charliermarsh on 2023-02-28 17:53_
-
----
-
-_Referenced in [astral-sh/ruff#3416](../../astral-sh/ruff/pulls/3416.md) on 2023-03-09 10:20_
 
 ---
 
@@ -72,10 +64,6 @@ _Label `needs-decision` added by @charliermarsh on 2023-07-10 01:26_
 _Comment by @pwuertz on 2024-01-31 14:47_
 
 Should this be detected when enabling `PLW1514` in current versions of ruff? The PR https://github.com/astral-sh/ruff/pull/3416 does seem to include some tests for issues with `Path`, but it didn't make it into ruff yet?
-
----
-
-_Referenced in [twisted/towncrier#577](../../twisted/towncrier/pulls/577.md) on 2024-02-10 16:55_
 
 ---
 

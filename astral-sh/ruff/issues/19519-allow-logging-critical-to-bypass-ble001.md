@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-24T03:29:54Z
 updated_at: 2025-07-25T21:52:59Z
 url: https://github.com/astral-sh/ruff/issues/19519
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Allow `logging.critical` to bypass `BLE001`
@@ -42,10 +42,6 @@ except Exception:
     logging.critical("Could not run.", exc_info=True)
 ```
 Doesn't seem that there is any principled reason to allow the former but not the latter.
-
----
-
-_Referenced in [astral-sh/ruff#19520](../../astral-sh/ruff/pulls/19520.md) on 2025-07-24 04:50_
 
 ---
 

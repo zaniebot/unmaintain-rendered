@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-09T13:31:11Z
 updated_at: 2025-10-13T20:22:37Z
 url: https://github.com/astral-sh/ruff/issues/20787
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # B006 fixes’ insertions appear in reverse parameter order
@@ -187,9 +187,5 @@ _Comment by @ntBre on 2025-10-13 20:22_
 Hmm, I usually think of `Known problems` as more like the rule applying when it shouldn't. This is more of an implementation detail, but I guess if we can't fix it easily, it makes sense to point it out in the docs.
 
 It might fit a little better in the `Fix Safety` section actually since it also changes the evaluation order.
-
----
-
-_Referenced in [astral-sh/ruff#20811](../../astral-sh/ruff/issues/20811.md) on 2025-10-13 20:27_
 
 ---

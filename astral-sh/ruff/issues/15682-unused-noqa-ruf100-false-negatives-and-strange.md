@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-23T07:29:57Z
 updated_at: 2025-03-19T11:12:54Z
 url: https://github.com/astral-sh/ruff/issues/15682
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # `unused-noqa` (`RUF100`) - false negatives and strange behavior with multiple codes
@@ -111,22 +111,6 @@ Oh, so the problem linked in #14229 is that we incorrectly parsed text coming af
 That means we have to define a heuristic of what we treat as codes and what as non-code. 
 
 I also just found https://github.com/astral-sh/ruff/pull/12811
-
----
-
-_Referenced in [astral-sh/ruff#12811](../../astral-sh/ruff/pulls/12811.md) on 2025-01-23 13:59_
-
----
-
-_Referenced in [astral-sh/ruff#15940](../../astral-sh/ruff/issues/15940.md) on 2025-02-04 15:08_
-
----
-
-_Referenced in [astral-sh/ruff#8157](../../astral-sh/ruff/issues/8157.md) on 2025-02-06 02:15_
-
----
-
-_Referenced in [astral-sh/ruff#16483](../../astral-sh/ruff/pulls/16483.md) on 2025-03-03 21:31_
 
 ---
 

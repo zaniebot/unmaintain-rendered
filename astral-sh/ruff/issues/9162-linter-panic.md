@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-16T12:29:32Z
 updated_at: 2023-12-17T12:54:00Z
 url: https://github.com/astral-sh/ruff/issues/9162
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # [Linter panic]
@@ -530,10 +530,6 @@ _Label `bug` added by @charliermarsh on 2023-12-16 17:24_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-16 21:34_
-
----
-
-_Referenced in [astral-sh/ruff#9168](../../astral-sh/ruff/pulls/9168.md) on 2023-12-17 12:46_
 
 ---
 

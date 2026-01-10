@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-06T18:33:38Z
 updated_at: 2024-04-24T15:56:13Z
 url: https://github.com/astral-sh/ruff/issues/10806
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # [`flake8-blind-expect`] Allow `raise ... from ex` in `except Exception as ex` in BLE001
@@ -92,10 +92,6 @@ _Comment by @autinerd on 2024-04-07 03:51_
 Thanks!
 
 The variable is only redundant when it is used in `raise ex` (TRY201) or in `logging.exception()` (TRY401), but in `raise ... from ex` it is needed. 
-
----
-
-_Referenced in [astral-sh/ruff#11131](../../astral-sh/ruff/pulls/11131.md) on 2024-04-24 15:39_
 
 ---
 

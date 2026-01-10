@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-20T21:25:42Z
 updated_at: 2023-08-24T20:02:28Z
 url: https://github.com/astral-sh/ruff/issues/5931
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Format type parameters on functions and classes
@@ -40,15 +40,7 @@ _Label `formatter` added by @konstin on 2023-07-20 21:25_
 
 ---
 
-_Referenced in [astral-sh/ruff#5929](../../astral-sh/ruff/issues/5929.md) on 2023-07-20 21:26_
-
----
-
 _Assigned to @zanieb by @konstin on 2023-07-20 21:26_
-
----
-
-_Referenced in [astral-sh/ruff#6161](../../astral-sh/ruff/pulls/6161.md) on 2023-07-28 19:26_
 
 ---
 

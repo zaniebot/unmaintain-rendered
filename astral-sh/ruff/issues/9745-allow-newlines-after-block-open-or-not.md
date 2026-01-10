@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-31T17:07:59Z
 updated_at: 2025-11-11T13:36:32Z
 url: https://github.com/astral-sh/ruff/issues/9745
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Allow newlines after block open (or not)
@@ -75,10 +75,6 @@ Having said that and after looking at the [known deviations](https://docs.astral
 
 ---
 
-_Referenced in [astral-sh/ruff#8566](../../astral-sh/ruff/issues/8566.md) on 2024-03-18 08:29_
-
----
-
 _Comment by @chicheng on 2024-03-27 15:27_
 
 Hi, yes please add an option to preserve up to 1 empty line.
@@ -133,17 +129,9 @@ class B(A):
 
 ---
 
-_Referenced in [astral-sh/ruff#11133](../../astral-sh/ruff/issues/11133.md) on 2024-04-24 17:07_
-
----
-
 _Comment by @alechouse97 on 2024-05-30 19:13_
 
 Any updates on this? This is one the last remaining issues for ruff to finally replace black in my workflow.
-
----
-
-_Referenced in [mozilla/pontoon#3248](../../mozilla/pontoon/pulls/3248.md) on 2024-05-31 16:29_
 
 ---
 
@@ -163,10 +151,6 @@ Looking forward to updates, thanks!
 
 ---
 
-_Referenced in [MESMER-group/mesmer#490](../../MESMER-group/mesmer/pulls/490.md) on 2024-08-08 08:05_
-
----
-
 _Comment by @thclark on 2024-09-13 14:17_
 
 From the perspective of someone with dyslexia; this really makes code harder to read - I need whitespace around the block to help parse what's in it.
@@ -176,10 +160,6 @@ From the perspective of someone with dyslexia; this really makes code harder to 
 _Comment by @plynch-chwy on 2024-10-18 14:23_
 
 I was looking to make the switch to ruff and use the handful of ignored linting rules we use with pre-commit. After a couple of hours I only just found that this is an option I can't ignore or set as `unfixable`? It's kinda unfortunate that this issue is still open for almost a year as I was excited to switch.
-
----
-
-_Referenced in [astral-sh/ruff#13371](../../astral-sh/ruff/issues/13371.md) on 2024-11-25 16:47_
 
 ---
 
@@ -223,10 +203,6 @@ Hi, what's the status on this? If I'm not mistaken, Black already made this stab
 I see that this was discussed for https://github.com/astral-sh/ruff/issues/8678 in #8893. Then it was briefly mentioned in the plans for the 2025 style guide in https://github.com/astral-sh/ruff/issues/13371#issuecomment-2498529767, but it wasn't planned.
 
 We've switched from black to ruff and loving it, but this issue prevents us from formatting Django migrations without the unnecessary noise of removing empty newlines after the `class` header that Black leaves as-is.
-
----
-
-_Referenced in [wagtail/wagtail#12886](../../wagtail/wagtail/pulls/12886.md) on 2025-02-17 11:45_
 
 ---
 
@@ -300,10 +276,6 @@ _Comment by @grizzlydevil on 2025-04-08 08:02_
 I was testing Ruff for our project. It's super quick but the change from black to this is a bit of a deal breaker as people in the project are used to these blank lines they improve readability. Also probably we're used to it. We'll see what others decide. But this change would be very appreciated.
 
 Thank you.
-
----
-
-_Referenced in [robotframework/robotframework#5387](../../robotframework/robotframework/issues/5387.md) on 2025-04-08 15:19_
 
 ---
 
@@ -388,22 +360,6 @@ These are tools that should help in writing code, and not dictate what and how t
 
 ---
 
-_Referenced in [astral-sh/ruff#15927](../../astral-sh/ruff/issues/15927.md) on 2025-09-17 09:27_
-
----
-
-_Referenced in [astral-sh/ruff#20482](../../astral-sh/ruff/issues/20482.md) on 2025-09-20 11:12_
-
----
-
-_Referenced in [Future-House/paper-qa#1141](../../Future-House/paper-qa/pulls/1141.md) on 2025-10-16 19:03_
-
----
-
-_Referenced in [astral-sh/ruff#21110](../../astral-sh/ruff/pulls/21110.md) on 2025-10-28 16:51_
-
----
-
 _Comment by @MichaReiser on 2025-11-11 12:36_
 
 @ntBre should we close this now that #21110 has merged. (I'm leaning towards yes to get a better sense in which cases where we should allow empty lines and why)
@@ -427,9 +383,5 @@ Just to reiterate, our main use case is for Django migration files. It might be 
 _Comment by @MichaReiser on 2025-11-11 13:36_
 
 I suggest opening a new issue specifically for class headers so that we get clear feedback on what's most important)
-
----
-
-_Referenced in [astral-sh/ruff#21380](../../astral-sh/ruff/issues/21380.md) on 2025-11-11 14:44_
 
 ---

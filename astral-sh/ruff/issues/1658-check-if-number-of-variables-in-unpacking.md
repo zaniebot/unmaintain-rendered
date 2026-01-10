@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-05T10:41:14Z
 updated_at: 2023-01-05T17:31:48Z
 url: https://github.com/astral-sh/ruff/issues/1658
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Check if number of variables in unpacking assignment matches slice notation
@@ -31,9 +31,5 @@ Sidenote: This check would only work for conventional containers because custom 
 ---
 
 _Label `rule` added by @charliermarsh on 2023-01-05 14:44_
-
----
-
-_Referenced in [astral-sh/ruff#21731](../../astral-sh/ruff/pulls/21731.md) on 2025-12-01 14:45_
 
 ---

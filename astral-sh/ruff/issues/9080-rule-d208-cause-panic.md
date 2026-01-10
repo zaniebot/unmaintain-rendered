@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-12-10T12:02:08Z
 updated_at: 2023-12-15T17:02:16Z
 url: https://github.com/astral-sh/ruff/issues/9080
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Rule D208 cause panic
@@ -174,10 +174,6 @@ _Label `bug` added by @dhruvmanila on 2023-12-11 15:39_
 ---
 
 _Label `fuzzer` added by @dhruvmanila on 2023-12-11 15:39_
-
----
-
-_Referenced in [astral-sh/ruff#9147](../../astral-sh/ruff/pulls/9147.md) on 2023-12-15 10:52_
 
 ---
 

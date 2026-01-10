@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-20T14:53:44Z
 updated_at: 2025-01-08T13:32:54Z
 url: https://github.com/astral-sh/uv/issues/10056
-synced_at: 2026-01-10T01:57:23Z
+synced_at: 2026-01-10T11:10:22Z
 ```
 
 # "uv add PySide6" fails when the latest version doesn't have a wheel for the current platform
@@ -62,23 +62,11 @@ This is tracked in https://github.com/astral-sh/uv/issues/9711 (though this is r
 
 ---
 
-_Referenced in [astral-sh/uv#9711](../../astral-sh/uv/issues/9711.md) on 2024-12-20 16:51_
-
----
-
 _Label `bug` added by @charliermarsh on 2024-12-20 16:51_
 
 ---
 
 _Label `duplicate` added by @charliermarsh on 2024-12-20 16:51_
-
----
-
-_Referenced in [OpenAdaptAI/OpenAdapt#931](../../OpenAdaptAI/OpenAdapt/pulls/931.md) on 2024-12-31 00:29_
-
----
-
-_Referenced in [cbrnr/mnelab#470](../../cbrnr/mnelab/pulls/470.md) on 2025-01-08 08:09_
 
 ---
 

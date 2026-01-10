@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-23T13:21:53Z
 updated_at: 2024-09-23T13:48:45Z
 url: https://github.com/astral-sh/ruff/issues/13483
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [Panic] broken pipe leads to panic
@@ -58,14 +58,6 @@ _Label `bug` added by @charliermarsh on 2024-09-23 13:24_
 _Comment by @charliermarsh on 2024-09-23 13:25_
 
 I'll fix it now.
-
----
-
-_Referenced in [astral-sh/ruff#13484](../../astral-sh/ruff/pulls/13484.md) on 2024-09-23 13:29_
-
----
-
-_Referenced in [astral-sh/ruff#13485](../../astral-sh/ruff/pulls/13485.md) on 2024-09-23 13:31_
 
 ---
 

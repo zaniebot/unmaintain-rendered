@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-04T00:12:29Z
 updated_at: 2024-08-05T07:22:55Z
 url: https://github.com/astral-sh/ruff/issues/12656
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # macOS test failure for resolver::tests::symlink
@@ -319,10 +319,6 @@ Assuming this isn't a mistake on my end (in which case - whoops!), you're welcom
 ---
 
 _Label `red-knot` added by @AlexWaygood on 2024-08-04 08:33_
-
----
-
-_Referenced in [astral-sh/ruff#12682](../../astral-sh/ruff/pulls/12682.md) on 2024-08-05 07:18_
 
 ---
 

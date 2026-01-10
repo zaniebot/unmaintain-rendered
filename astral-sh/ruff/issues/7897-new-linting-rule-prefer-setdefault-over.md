@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-10T15:10:26Z
 updated_at: 2023-10-12T05:21:54Z
 url: https://github.com/astral-sh/ruff/issues/7897
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # New Linting Rule: Prefer `setdefault` Over Conditional Key Checks for Dictionary Assignment
@@ -121,9 +121,5 @@ _Label `rule` added by @dhruvmanila on 2023-10-12 05:21_
 ---
 
 _Label `needs-decision` added by @dhruvmanila on 2023-10-12 05:21_
-
----
-
-_Referenced in [astral-sh/ruff#16775](../../astral-sh/ruff/pulls/16775.md) on 2025-03-16 12:39_
 
 ---

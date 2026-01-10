@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-16T02:23:20Z
 updated_at: 2024-10-27T11:05:25Z
 url: https://github.com/astral-sh/ruff/issues/6606
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Add sphinx documentation style to pydocstyle config
@@ -92,14 +92,6 @@ Ditto @winwinashwin. We would adopt Ruff immediately on [this project](https://g
 
 ---
 
-_Referenced in [mozilla/mozanalysis#214](../../mozilla/mozanalysis/pulls/214.md) on 2024-02-29 18:54_
-
----
-
-_Referenced in [mozilla/mozanalysis#218](../../mozilla/mozanalysis/issues/218.md) on 2024-03-14 15:09_
-
----
-
 _Comment by @jaladh-singhal on 2024-03-27 20:21_
 
 Hi, just checking if/when this will be available?
@@ -113,14 +105,6 @@ _Comment by @Lassii- on 2024-08-12 08:59_
 Hello,
 
 Also wondering if there's any plan updates to this? The project I work for is also looking for the support.
-
----
-
-_Referenced in [python-semantic-release/python-semantic-release#1029](../../python-semantic-release/python-semantic-release/issues/1029.md) on 2024-09-24 23:28_
-
----
-
-_Referenced in [python-semantic-release/python-semantic-release#1030](../../python-semantic-release/python-semantic-release/pulls/1030.md) on 2024-09-24 23:37_
 
 ---
 
@@ -162,13 +146,5 @@ _Comment by @seppzer0 on 2024-10-27 11:05_
 @MichaReiser , thank you for your response! I do understand that pinging people is not great, unfortunately though it is often the only way to remind of the topic at hand.
 
 Thank you once again for your work! Looking towards to this great feature 👍🏻
-
----
-
-_Referenced in [wagtail/wagtail#13503](../../wagtail/wagtail/issues/13503.md) on 2025-10-24 08:37_
-
----
-
-_Referenced in [sphinx-contrib/sphinx-lint#141](../../sphinx-contrib/sphinx-lint/issues/141.md) on 2025-10-31 08:26_
 
 ---

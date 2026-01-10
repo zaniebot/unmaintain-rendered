@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-03-13T16:48:36Z
 updated_at: 2025-09-23T07:25:18Z
 url: https://github.com/astral-sh/ruff/issues/16712
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Package not identified as first party when name has a dash
@@ -189,10 +189,6 @@ Oh, I wasn't aware that you can use a glob for `src`. Nice find!
 
 ---
 
-_Referenced in [astral-sh/ty#179](../../astral-sh/ty/issues/179.md) on 2025-03-14 08:56_
-
----
-
 _Comment by @heiner on 2025-05-01 07:23_
 
 Note that `src` in `[tool.ruff]` doesn't help in cases where the imported module is an .so file that is built via e.g. C++ or Rust. As an example, a `pyproject.toml` could look like
@@ -352,10 +348,6 @@ Happy to create that. I assumed it was the underscore that mislead it, but renam
 
 ---
 
-_Referenced in [astral-sh/ruff#17761](../../astral-sh/ruff/issues/17761.md) on 2025-05-01 08:15_
-
----
-
 _Comment by @heiner on 2025-05-01 08:15_
 
 New issue here: https://github.com/astral-sh/ruff/issues/17761
@@ -365,9 +357,5 @@ New issue here: https://github.com/astral-sh/ruff/issues/17761
 _Comment by @Jonathan-Landeed on 2025-09-23 07:20_
 
 On the topic of better monorepo support, would classifying all [tool.uv.workspace].members as first-party make sense? The glob solution works, but it's a bit more cumbersome for me because not everything is at a single level and a double-glob was giving me problems (I think it was finding 3rd party imports in virtual envs).
-
----
-
-_Referenced in [astral-sh/ruff#20954](../../astral-sh/ruff/issues/20954.md) on 2025-10-18 11:47_
 
 ---

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-30T08:46:59Z
 updated_at: 2023-06-19T05:01:09Z
 url: https://github.com/astral-sh/ruff/issues/2343
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Isort doesn't consider tomllib as part of the standard library
@@ -77,10 +77,6 @@ Note that `isort` auto-generates these files [here](https://github.com/PyCQA/iso
 
 ---
 
-_Referenced in [astral-sh/ruff#2345](../../astral-sh/ruff/pulls/2345.md) on 2023-01-30 10:04_
-
----
-
 _Comment by @charliermarsh on 2023-01-30 22:55_
 
 Fixed in #2345.
@@ -94,10 +90,6 @@ _Closed by @charliermarsh on 2023-01-30 22:55_
 _Comment by @yakMM on 2023-01-31 09:02_
 
 Should another issue be opened to respect the `target-version` for the imports or is supporting the latest stdlib enough?
-
----
-
-_Referenced in [astral-sh/ruff#2491](../../astral-sh/ruff/pulls/2491.md) on 2023-02-02 19:42_
 
 ---
 
@@ -126,9 +118,5 @@ Found 1 error (1 fixed, 0 remaining).
 _Comment by @bersbersbers on 2023-06-19 04:56_
 
 Update: I noticed I still had `requires-python = ">=3.10"` in my `pyproject.toml` - changing that to `>=3.11` fixed the issue. (The fact that this is not assumed by running on Python 3.11.4, even without a `project.toml` file, is probably intended.)
-
----
-
-_Referenced in [astral-sh/ruff-vscode#465](../../astral-sh/ruff-vscode/issues/465.md) on 2024-05-16 08:33_
 
 ---

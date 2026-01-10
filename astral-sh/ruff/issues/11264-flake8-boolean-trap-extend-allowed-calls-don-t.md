@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-03T15:32:43Z
 updated_at: 2025-05-21T21:14:12Z
 url: https://github.com/astral-sh/ruff/issues/11264
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # `flake8-boolean-trap.extend-allowed-calls` don't resolve class types
@@ -94,9 +94,5 @@ _Label `wish` added by @MichaReiser on 2025-03-19 07:02_
 _Comment by @danra on 2025-05-21 21:14_
 
 Ran into this as well trying to whitelist the canonical `torch.Tensor.requires_grad_`
-
----
-
-_Referenced in [astral-sh/ruff#18247](../../astral-sh/ruff/issues/18247.md) on 2025-05-21 21:18_
 
 ---

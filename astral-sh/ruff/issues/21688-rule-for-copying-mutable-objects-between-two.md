@@ -1,0 +1,51 @@
+```yaml
+number: 21688
+title: Rule for copying mutable objects between two persistent variables
+type: issue
+state: open
+author: EternityForest
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-11-29T08:43:13Z
+updated_at: 2025-12-01T18:48:28Z
+url: https://github.com/astral-sh/ruff/issues/21688
+synced_at: 2026-01-10T11:10:00Z
+```
+
+# Rule for copying mutable objects between two persistent variables
+
+---
+
+_Issue opened by @EternityForest on 2025-11-29 08:43_
+
+### Summary
+
+One bug pattern that I've encountered several times is
+something like `a.x = b.x`, or even `a.x = a.y = {}`
+
+The times I've done it are often when doing change detection, you do `x.old = x.new`, then mutate `x.old`, when you meant to do `x.old = deepcopy(x.new)`
+
+Then, something mutates one of the two variables, and they both change, because they're the same object, and it can be very hard to track down why keys are suddenly appearing for seemingly no reason in your data structures.
+
+
+Maybe there could be a rule that prevents assigning one mutable property of an object directly or indirectly(like by passing it as a an argument) to another.
+
+It could also warn on assigning one mutable item to multiple objects, or assigning between globals and objects.
+
+---
+
+_Label `rule` added by @amyreese on 2025-12-01 18:45_
+
+---
+
+_Label `needs-decision` added by @amyreese on 2025-12-01 18:45_
+
+---
+
+_Comment by @amyreese on 2025-12-01 18:47_
+
+I think this would be a very pedantic rule, as there are plenty of use cases where passing/sharing/reusing mutable collections is the correct/intended thing to do, or copying would be expensive and unnecessary. It would also require type information in order to know whether an attribute is mutable or not.
+
+---

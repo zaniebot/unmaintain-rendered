@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-12-30T22:09:57Z
 updated_at: 2025-01-30T05:42:57Z
 url: https://github.com/astral-sh/ruff/issues/15207
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # `flake8-bandit`'s `S4` rules don't apply to stubs
@@ -29,10 +29,6 @@ Ruff: 0.8.4 (rules are currently in preview)
 
 ---
 
-_Referenced in [astral-sh/ruff#14535](../../astral-sh/ruff/issues/14535.md) on 2024-12-30 22:14_
-
----
-
 _Label `rule` added by @dhruvmanila on 2024-12-31 05:23_
 
 ---
@@ -44,10 +40,6 @@ Thank you for the report!
 Thinking from a user perspective, I think this _might_ still be useful when removing the import from both the Python and the respective stub files. Without this rule highlighting the fact that the import exists in the stub file as well, the user might forget to remove them. Your point is correct that this wouldn't affect anyone as stub files aren't executed but it might still be useful.
 
 I'd prefer to get opinions from @AlexWaygood, he's currently on vacation this week so not expecting any reply this week.
-
----
-
-_Referenced in [astral-sh/ruff#15206](../../astral-sh/ruff/issues/15206.md) on 2024-12-31 17:56_
 
 ---
 
@@ -66,10 +58,6 @@ _Label `help wanted` added by @AlexWaygood on 2025-01-03 15:59_
 ---
 
 _Label `accepted` added by @AlexWaygood on 2025-01-03 15:59_
-
----
-
-_Referenced in [astral-sh/ruff#15822](../../astral-sh/ruff/pulls/15822.md) on 2025-01-30 01:24_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-12T14:42:01Z
 updated_at: 2023-10-12T16:09:33Z
 url: https://github.com/astral-sh/ruff/issues/7929
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Feature Request: Support isort literal ordering
@@ -59,13 +59,5 @@ _Closed by @charliermarsh on 2023-10-12 16:09_
 ---
 
 _Label `isort` added by @charliermarsh on 2023-10-12 16:09_
-
----
-
-_Referenced in [astral-sh/ruff#1198](../../astral-sh/ruff/issues/1198.md) on 2023-10-12 17:48_
-
----
-
-_Referenced in [astral-sh/ruff#10085](../../astral-sh/ruff/issues/10085.md) on 2024-02-26 11:45_
 
 ---

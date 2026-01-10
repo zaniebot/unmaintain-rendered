@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-15T14:55:56Z
 updated_at: 2023-07-19T12:05:40Z
 url: https://github.com/astral-sh/ruff/issues/5779
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Remove parentheses from tuples in comprehension target
@@ -45,15 +45,7 @@ Ruff should not add parentheses around `k, v`.
 
 ---
 
-_Referenced in [astral-sh/ruff#4798](../../astral-sh/ruff/issues/4798.md) on 2023-07-15 14:55_
-
----
-
 _Label `formatter` added by @MichaReiser on 2023-07-15 14:58_
-
----
-
-_Referenced in [astral-sh/ruff#5771](../../astral-sh/ruff/pulls/5771.md) on 2023-07-15 14:58_
 
 ---
 
@@ -70,10 +62,6 @@ Interesting. Didn't know `black` would *never* format the tuple with parentheses
     for a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a, a in this_is_a_very_long_variable_which_will_cause_a_trailing_comma_which_breaks_the_comprehension
 }
 ```
-
----
-
-_Referenced in [astral-sh/ruff#5790](../../astral-sh/ruff/pulls/5790.md) on 2023-07-15 23:27_
 
 ---
 
@@ -124,10 +112,6 @@ but I find this looks rather weird.
 ---
 
 _Assigned to @cnpryer by @MichaReiser on 2023-07-17 08:41_
-
----
-
-_Referenced in [astral-sh/ruff#5810](../../astral-sh/ruff/pulls/5810.md) on 2023-07-17 13:34_
 
 ---
 

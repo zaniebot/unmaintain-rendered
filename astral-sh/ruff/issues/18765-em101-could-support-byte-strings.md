@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-18T18:23:07Z
 updated_at: 2025-06-25T14:53:57Z
 url: https://github.com/astral-sh/ruff/issues/18765
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # EM101 could support byte strings
@@ -59,19 +59,11 @@ A [github search](https://github.com/search?q=language%3APython+raise+RuntimeErr
 
 ---
 
-_Referenced in [astral-sh/ruff#18766](../../astral-sh/ruff/issues/18766.md) on 2025-06-18 20:43_
-
----
-
 _Label `rule` added by @MichaReiser on 2025-06-19 09:32_
 
 ---
 
 _Label `help wanted` added by @MichaReiser on 2025-06-19 09:33_
-
----
-
-_Referenced in [astral-sh/ruff#18867](../../astral-sh/ruff/pulls/18867.md) on 2025-06-22 21:46_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-05T09:28:35Z
 updated_at: 2024-05-02T18:48:54Z
 url: https://github.com/astral-sh/ruff/issues/10787
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # `PERF402` triggers, incorrectly, on async for loops
@@ -72,10 +72,6 @@ async def foo() -> None:
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-05-02 18:06_
-
----
-
-_Referenced in [astral-sh/ruff#11250](../../astral-sh/ruff/pulls/11250.md) on 2024-05-02 18:37_
 
 ---
 

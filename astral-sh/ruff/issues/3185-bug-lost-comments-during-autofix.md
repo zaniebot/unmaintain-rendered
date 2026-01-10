@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-23T18:58:42Z
 updated_at: 2023-02-24T03:48:43Z
 url: https://github.com/astral-sh/ruff/issues/3185
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # bug: lost comments during autofix
@@ -60,10 +60,6 @@ _Comment by @charliermarsh on 2023-02-23 19:02_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-24 03:39_
-
----
-
-_Referenced in [astral-sh/ruff#3198](../../astral-sh/ruff/pulls/3198.md) on 2023-02-24 03:44_
 
 ---
 

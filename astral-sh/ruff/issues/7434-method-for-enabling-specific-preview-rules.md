@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-09-16T09:48:52Z
 updated_at: 2023-09-28T20:00:35Z
 url: https://github.com/astral-sh/ruff/issues/7434
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Method for enabling specific preview rules
@@ -83,14 +83,6 @@ The approach in #7390 looks good to me.
 
 ---
 
-_Referenced in [astral-sh/ruff#7390](../../astral-sh/ruff/pulls/7390.md) on 2023-09-26 20:27_
-
----
-
 _Closed by @zanieb on 2023-09-28 20:00_
-
----
-
-_Referenced in [astral-sh/ruff#12343](../../astral-sh/ruff/issues/12343.md) on 2024-07-16 09:13_
 
 ---

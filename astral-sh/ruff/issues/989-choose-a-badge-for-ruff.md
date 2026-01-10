@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-01T23:25:30Z
 updated_at: 2023-01-06T05:33:08Z
 url: https://github.com/astral-sh/ruff/issues/989
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Choose a badge for Ruff
@@ -42,10 +42,6 @@ When there is a badge/logo/icon, it would also be nice to have it added to [Buil
 _Comment by @charliermarsh on 2022-12-17 04:20_
 
 I want this but I need a logo first!
-
----
-
-_Referenced in [astral-sh/ruff#1535](../../astral-sh/ruff/issues/1535.md) on 2023-01-01 21:38_
 
 ---
 
@@ -100,10 +96,6 @@ This is what I'm considering:
 
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v1.json)](https://github.com/charliermarsh/ruff)
 
-
----
-
-_Referenced in [astral-sh/ruff#1642](../../astral-sh/ruff/pulls/1642.md) on 2023-01-04 22:26_
 
 ---
 

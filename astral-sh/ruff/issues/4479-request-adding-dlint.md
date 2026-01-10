@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-05-17T20:45:13Z
 updated_at: 2024-04-09T22:18:25Z
 url: https://github.com/astral-sh/ruff/issues/4479
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Request: adding dlint
@@ -26,10 +26,6 @@ Supporting the rules from dlint - https://github.com/dlint-py/dlint would be gre
 ---
 
 _Renamed from "Support for dlint" to "Request: adding dlint" by @AbdealiLoKo on 2023-05-17 20:45_
-
----
-
-_Referenced in [astral-sh/ruff#4482](../../astral-sh/ruff/pulls/4482.md) on 2023-05-17 22:02_
 
 ---
 
@@ -122,10 +118,6 @@ DUO138 implementation:
 _Comment by @qdegraaf on 2023-07-06 16:57_
 
 Yeah I can't find anything like that yet either. I'll see if I can find some time to make that the first DLint rule and can audit the rest of the list after.
-
----
-
-_Referenced in [astral-sh/ruff#5614](../../astral-sh/ruff/pulls/5614.md) on 2023-07-08 14:54_
 
 ---
 

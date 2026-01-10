@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-28T21:40:16Z
 updated_at: 2024-12-10T09:53:54Z
 url: https://github.com/astral-sh/ruff/issues/14663
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # ANN001 for unused function argument
@@ -123,10 +123,6 @@ Other than that, this can be closed from my side. Thanks!
 _Comment by @MichaReiser on 2024-12-10 09:47_
 
 That's a good call out. Let me add it real quick.
-
----
-
-_Referenced in [astral-sh/ruff#14888](../../astral-sh/ruff/pulls/14888.md) on 2024-12-10 09:49_
 
 ---
 

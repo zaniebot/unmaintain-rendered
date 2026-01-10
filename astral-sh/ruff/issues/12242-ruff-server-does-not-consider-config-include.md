@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-08T10:40:26Z
 updated_at: 2024-07-10T04:12:59Z
 url: https://github.com/astral-sh/ruff/issues/12242
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # `ruff server` does not consider config `include`
@@ -71,14 +71,6 @@ _Comment by @dhruvmanila on 2024-07-08 14:56_
 I think the simplest solution here is to use the logic of the various `FileResolverSettings` information from `python_files_in_path` function and incorporate it into the linting and formatting entry point for the `ruff server`.
 
 But, a long term goal would to have some kind of abstraction which can resolve the path based on the given settings.
-
----
-
-_Referenced in [astral-sh/ruff#12252](../../astral-sh/ruff/pulls/12252.md) on 2024-07-09 06:15_
-
----
-
-_Referenced in [astral-sh/ruff#12254](../../astral-sh/ruff/issues/12254.md) on 2024-07-09 07:39_
 
 ---
 

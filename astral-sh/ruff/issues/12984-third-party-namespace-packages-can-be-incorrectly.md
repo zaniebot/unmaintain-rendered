@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-19T09:32:31Z
 updated_at: 2025-05-05T16:40:02Z
 url: https://github.com/astral-sh/ruff/issues/12984
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Third-party namespace packages can be incorrectly considered first-party packages by `isort` rules
@@ -165,14 +165,6 @@ _Assigned to @AlexWaygood by @AlexWaygood on 2024-08-19 12:19_
 
 ---
 
-_Referenced in [astral-sh/ruff#12987](../../astral-sh/ruff/pulls/12987.md) on 2024-08-19 12:20_
-
----
-
-_Referenced in [pypa/pip#12937](../../pypa/pip/pulls/12937.md) on 2024-08-24 20:32_
-
----
-
 _Comment by @smartYSC on 2024-11-06 10:14_
 
 I ran into the same problem recently but thought I was just too stupid to find the right settings combination. I opened a discussion about it here: https://github.com/astral-sh/ruff/discussions/12038
@@ -190,18 +182,10 @@ _Unassigned @AlexWaygood by @AlexWaygood on 2025-03-17 12:49_
 
 ---
 
-_Referenced in [astral-sh/ruff#16565](../../astral-sh/ruff/pulls/16565.md) on 2025-03-27 21:46_
-
----
-
 _Closed by @dylwil3 on 2025-05-05 16:40_
 
 ---
 
 _Closed by @dylwil3 on 2025-05-05 16:40_
-
----
-
-_Referenced in [astral-sh/ruff#20453](../../astral-sh/ruff/issues/20453.md) on 2025-09-17 21:14_
 
 ---

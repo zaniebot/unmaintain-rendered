@@ -1,0 +1,59 @@
+```yaml
+number: 9893
+title: "Enforce every `tqdm()` has a `desc: str`"
+type: issue
+state: open
+author: janosh
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2024-02-08T10:43:57Z
+updated_at: 2024-02-10T23:59:26Z
+url: https://github.com/astral-sh/ruff/issues/9893
+synced_at: 2026-01-10T11:09:52Z
+```
+
+# Enforce every `tqdm()` has a `desc: str`
+
+---
+
+_Issue opened by @janosh on 2024-02-08 10:43_
+
+> very opinionated so feel free to close.
+
+all instances of `tqdm` should have a description. when later inspecting logs e.g. from jobs that ran on HPC, this helps a lot to remember what the progress bar was tracking.
+
+```py
+from tqdm import tqdm
+
+# bad
+for ii in tqdm(range(10, 0, -1)):
+    pass
+
+# good
+for ii in tqdm(range(10, 0, -1), desc="countdown"):
+    pass
+
+# bad
+for ii in tqdm(range(10)):
+    for jj in tqdm(range(10), leave=False):
+        pass
+
+# good
+for ii in tqdm(range(10), desc="outer"):
+    for jj in tqdm(range(10), desc="inner", leave=False):
+        pass
+```
+
+open question is whether the rule should ignore `tqdm(leave=False)` cases. even with `leave=False`, it still shows up e.g. in slurm log files so leaning towards no.
+
+---
+
+_Label `rule` added by @charliermarsh on 2024-02-10 23:59_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2024-02-10 23:59_
+
+---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-23T23:06:22Z
 updated_at: 2025-09-19T17:54:46Z
 url: https://github.com/astral-sh/ruff/issues/20057
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # New rule: `B912` require `strict=` argument for `map(...)` with >=2 iterables on Python 3.14+
@@ -40,10 +40,6 @@ This sounds similar to [(B905)](https://docs.astral.sh/ruff/rules/zip-without-ex
 ---
 
 _Label `needs-decision` removed by @MichaReiser on 2025-09-15 13:18_
-
----
-
-_Referenced in [astral-sh/ruff#20429](../../astral-sh/ruff/pulls/20429.md) on 2025-09-16 04:14_
 
 ---
 

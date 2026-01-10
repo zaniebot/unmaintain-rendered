@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-24T11:51:58Z
 updated_at: 2024-06-24T11:57:28Z
 url: https://github.com/astral-sh/ruff/issues/12014
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Deprecate or un-deprecate `extend-ignore` and `extend-unfixable`
@@ -33,13 +33,5 @@ _Label `configuration` added by @MichaReiser on 2024-06-24 11:51_
 ---
 
 _Label `cli` added by @MichaReiser on 2024-06-24 11:51_
-
----
-
-_Referenced in [astral-sh/ruff#12007](../../astral-sh/ruff/pulls/12007.md) on 2024-06-24 11:52_
-
----
-
-_Referenced in [astral-sh/ruff#18884](../../astral-sh/ruff/issues/18884.md) on 2025-06-23 06:44_
 
 ---

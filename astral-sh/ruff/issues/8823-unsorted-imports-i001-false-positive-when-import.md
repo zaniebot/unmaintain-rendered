@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-23T07:05:13Z
 updated_at: 2023-12-07T03:56:24Z
 url: https://github.com/astral-sh/ruff/issues/8823
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # `unsorted-imports` (`I001`) false positive when `import __future__` is below `from __future__` import
@@ -49,10 +49,6 @@ _Label `bug` added by @charliermarsh on 2023-11-23 09:53_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-07 03:34_
-
----
-
-_Referenced in [astral-sh/ruff#9039](../../astral-sh/ruff/pulls/9039.md) on 2023-12-07 03:34_
 
 ---
 

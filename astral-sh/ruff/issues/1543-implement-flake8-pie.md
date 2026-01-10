@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-01-02T01:25:26Z
 updated_at: 2023-02-07T02:22:34Z
 url: https://github.com/astral-sh/ruff/issues/1543
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Implement flake8-pie
@@ -189,18 +189,6 @@ I didn't realize you actually wrote that plugin, very cool.
 
 ---
 
-_Referenced in [astral-sh/ruff#1578](../../astral-sh/ruff/pulls/1578.md) on 2023-01-03 02:37_
-
----
-
-_Referenced in [astral-sh/ruff#1580](../../astral-sh/ruff/pulls/1580.md) on 2023-01-03 03:08_
-
----
-
-_Referenced in [astral-sh/ruff#1581](../../astral-sh/ruff/pulls/1581.md) on 2023-01-03 03:25_
-
----
-
 _Label `good first issue` added by @charliermarsh on 2023-01-12 03:34_
 
 ---
@@ -209,27 +197,11 @@ _Renamed from "Misc rules from flake8-pie" to "Implement flake8-pie" by @charlie
 
 ---
 
-_Referenced in [astral-sh/ruff#1881](../../astral-sh/ruff/pulls/1881.md) on 2023-01-15 03:07_
-
----
-
-_Referenced in [astral-sh/ruff#1884](../../astral-sh/ruff/pulls/1884.md) on 2023-01-15 04:25_
-
----
-
-_Referenced in [astral-sh/ruff#1922](../../astral-sh/ruff/pulls/1922.md) on 2023-01-16 21:12_
-
----
-
 _Comment by @ljesparis on 2023-01-16 21:47_
 
 I was passing by and was wondering if can i write some of these ? I'm actually learning rust, but, these plugins look easy enough.
 
 I actually got around to developing the **prefer_unique_enums rule** last night 😅  and i made a mistake with a PR so i closed it 😓 
-
----
-
-_Referenced in [astral-sh/ruff#1923](../../astral-sh/ruff/pulls/1923.md) on 2023-01-16 21:48_
 
 ---
 
@@ -258,9 +230,5 @@ Gonna close this for now, can always do that final rule if anyone wants to grab 
 ---
 
 _Closed by @charliermarsh on 2023-02-06 19:08_
-
----
-
-_Referenced in [astral-sh/ruff#2616](../../astral-sh/ruff/pulls/2616.md) on 2023-02-07 01:32_
 
 ---

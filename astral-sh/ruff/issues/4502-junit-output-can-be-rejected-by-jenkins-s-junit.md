@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-18T17:28:08Z
 updated_at: 2023-05-20T03:38:53Z
 url: https://github.com/astral-sh/ruff/issues/4502
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # JUnit output can be rejected by Jenkins's junit test reporter when there are no lint errors
@@ -117,10 +117,6 @@ This may also not be as straightforward to implement because the JUnit emitter o
 _Comment by @charliermarsh on 2023-05-20 02:58_
 
 @MichaReiser - Yeah, I think our best bet here is to output a single passing test. I can handle.
-
----
-
-_Referenced in [astral-sh/ruff#4537](../../astral-sh/ruff/pulls/4537.md) on 2023-05-20 03:33_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-15T04:51:25Z
 updated_at: 2024-10-15T08:49:54Z
 url: https://github.com/astral-sh/ruff/issues/13755
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Checking file with rule FIX001 cause panic
@@ -188,10 +188,6 @@ also other rules panics, but I think that with exactly same reason:
 [python_compressed.zip](https://github.com/user-attachments/files/17372745/python_compressed.zip)
 [python_compressed.zip](https://github.com/user-attachments/files/17372746/python_compressed.zip)
 
-
----
-
-_Referenced in [astral-sh/ruff#13756](../../astral-sh/ruff/pulls/13756.md) on 2024-10-15 06:26_
 
 ---
 

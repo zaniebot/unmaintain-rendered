@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-04T04:39:29Z
 updated_at: 2024-05-06T14:05:53Z
 url: https://github.com/astral-sh/ruff/issues/11278
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Support task-tags in flake8-todo rules
@@ -50,9 +50,5 @@ I think being able to keep track of when task tags are being used inconsistently
 ---
 
 _Label `question` removed by @charliermarsh on 2024-05-06 14:05_
-
----
-
-_Referenced in [astral-sh/ruff#5407](../../astral-sh/ruff/issues/5407.md) on 2025-02-07 14:12_
 
 ---

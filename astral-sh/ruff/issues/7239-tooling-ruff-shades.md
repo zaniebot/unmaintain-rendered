@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-08T08:15:46Z
 updated_at: 2023-10-27T22:28:03Z
 url: https://github.com/astral-sh/ruff/issues/7239
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Tooling: Ruff-shades
@@ -49,19 +49,11 @@ _Assigned to @zanieb by @MichaReiser on 2023-09-27 13:29_
 
 ---
 
-_Referenced in [astral-sh/ruff#6506](../../astral-sh/ruff/issues/6506.md) on 2023-09-27 16:30_
-
----
-
 _Removed from milestone `Formatter: Beta` by @MichaReiser on 2023-10-25 08:23_
 
 ---
 
 _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-10-25 08:23_
-
----
-
-_Referenced in [astral-sh/ruff#8223](../../astral-sh/ruff/pulls/8223.md) on 2023-10-25 19:15_
 
 ---
 

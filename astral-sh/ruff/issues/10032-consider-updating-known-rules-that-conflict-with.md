@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-02-18T20:33:11Z
 updated_at: 2024-02-19T07:32:32Z
 url: https://github.com/astral-sh/ruff/issues/10032
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Consider updating known rules that conflict with formatter
@@ -33,9 +33,5 @@ We should make the rules compatible with the formatter inside of pyi files.  I'l
 ---
 
 _Closed by @MichaReiser on 2024-02-19 07:32_
-
----
-
-_Referenced in [astral-sh/ruff#10114](../../astral-sh/ruff/issues/10114.md) on 2024-02-24 20:19_
 
 ---

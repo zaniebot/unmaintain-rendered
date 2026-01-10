@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-12-27T11:36:08Z
 updated_at: 2025-12-28T11:31:58Z
 url: https://github.com/astral-sh/ruff/issues/22221
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # F401 fix causes infinite loop adding duplicates to `__all__`
@@ -79,9 +79,5 @@ _Label `fixes` added by @ntBre on 2025-12-27 14:45_
 _Comment by @ntBre on 2025-12-27 15:05_
 
 Thanks for the report! I suspect this is related to our recent submodule import changes. cc @dylwil3 
-
----
-
-_Referenced in [astral-sh/ruff#22359](../../astral-sh/ruff/pulls/22359.md) on 2026-01-03 16:31_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-15T20:22:08Z
 updated_at: 2023-04-16T23:11:02Z
 url: https://github.com/astral-sh/ruff/issues/3980
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # bug: `ERA001` flags non-code segments as commented-out code
@@ -82,10 +82,6 @@ _Renamed from "bug: `ERA001` flags non-code segments" to "bug: `ERA001` flags no
 ---
 
 _Label `bug` added by @charliermarsh on 2023-04-15 20:54_
-
----
-
-_Referenced in [astral-sh/ruff#3984](../../astral-sh/ruff/pulls/3984.md) on 2023-04-16 09:59_
 
 ---
 

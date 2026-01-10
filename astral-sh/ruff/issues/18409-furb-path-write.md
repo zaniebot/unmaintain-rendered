@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-01T07:22:38Z
 updated_at: 2025-12-17T14:18:15Z
 url: https://github.com/astral-sh/ruff/issues/18409
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [FURB] Path write
@@ -89,10 +89,6 @@ _Label `rule` added by @MichaReiser on 2025-06-02 10:00_
 ---
 
 _Label `help wanted` added by @MichaReiser on 2025-06-02 10:00_
-
----
-
-_Referenced in [astral-sh/ruff#21080](../../astral-sh/ruff/pulls/21080.md) on 2025-10-26 10:43_
 
 ---
 

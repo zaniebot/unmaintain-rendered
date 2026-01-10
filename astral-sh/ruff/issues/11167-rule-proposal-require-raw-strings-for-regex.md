@@ -1,0 +1,34 @@
+```yaml
+number: 11167
+title: "Rule proposal: require raw strings for regex patterns"
+type: issue
+state: closed
+author: andersk
+labels:
+  - rule
+assignees: []
+created_at: 2024-04-26T18:49:45Z
+updated_at: 2024-11-19T12:44:56Z
+url: https://github.com/astral-sh/ruff/issues/11167
+synced_at: 2026-01-10T11:09:53Z
+```
+
+# Rule proposal: require raw strings for regex patterns
+
+---
+
+_Issue opened by @andersk on 2024-04-26 18:49_
+
+We could have a rule that enforces the [`re` documentation’s recommendation](https://docs.python.org/3/library/re.html) of rewriting `re.compile("pattern")` to `re.compile(r"pattern")`, and similar for the first argument of `re.search`, `re.match`, `re.fullmatch`, `re.split`, `re.findall`, `re.finditer`, `re.sub`, `re.subn`.
+
+Prior art: [flake8-literal](https://github.com/plinss/flake8-literal) `LIT103` with the `literal-re-pattern-raw` option set to `always`.
+
+---
+
+_Label `rule` added by @charliermarsh on 2024-04-26 22:43_
+
+---
+
+_Closed by @MichaReiser on 2024-11-19 12:44_
+
+---

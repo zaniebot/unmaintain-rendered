@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-06-29T19:51:06Z
 updated_at: 2023-06-30T00:03:41Z
 url: https://github.com/astral-sh/ruff/issues/5448
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Infer Python target version from Poetry dependencies
@@ -56,13 +56,5 @@ _Closed by @MicaelJarniac on 2023-06-29 19:57_
 _Comment by @charliermarsh on 2023-06-30 00:03_
 
 For posterity, this conversation happened in Discord via a Poetry maintainer: https://discord.com/channels/1039017663004942429/1070132471699607623/1107271647657996448
-
----
-
-_Referenced in [astral-sh/ruff#7957](../../astral-sh/ruff/issues/7957.md) on 2023-10-14 18:36_
-
----
-
-_Referenced in [astral-sh/ruff#10175](../../astral-sh/ruff/issues/10175.md) on 2024-02-29 17:23_
 
 ---

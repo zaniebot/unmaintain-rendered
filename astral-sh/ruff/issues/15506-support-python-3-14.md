@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-15T15:44:22Z
 updated_at: 2025-08-08T12:35:07Z
 url: https://github.com/astral-sh/ruff/issues/15506
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Support Python 3.14
@@ -128,10 +128,6 @@ Below the fold is a list of rules that may need to be adjusted to handle t-strin
 
 ---
 
-_Referenced in [astral-sh/ruff#15483](../../astral-sh/ruff/pulls/15483.md) on 2025-01-15 15:44_
-
----
-
 _Label `python314` added by @MichaReiser on 2025-01-15 15:46_
 
 ---
@@ -164,14 +160,6 @@ We may also need to go through all string related rules to determine if they sho
 
 ---
 
-_Referenced in [astral-sh/ruff#17906](../../astral-sh/ruff/pulls/17906.md) on 2025-05-07 03:50_
-
----
-
-_Referenced in [astral-sh/ruff#18014](../../astral-sh/ruff/pulls/18014.md) on 2025-05-11 08:12_
-
----
-
 _Comment by @Rogdham on 2025-05-11 08:15_
 
 > Run [generate_known_standard_library.py](https://github.com/astral-sh/ruff/blob/main/scripts/generate_known_standard_library.py) and make sure annotationlib is added
@@ -179,22 +167,6 @@ _Comment by @Rogdham on 2025-05-11 08:15_
 I have created the PR #18014 after upgrading upstream Python library _stdlibs_.
 
 I can confirm that `annotationlib` and `compression` are both added.
-
----
-
-_Referenced in [astral-sh/ruff#19331](../../astral-sh/ruff/pulls/19331.md) on 2025-07-14 15:37_
-
----
-
-_Referenced in [astral-sh/ruff#19333](../../astral-sh/ruff/pulls/19333.md) on 2025-07-14 16:15_
-
----
-
-_Referenced in [astral-sh/ruff#19355](../../astral-sh/ruff/pulls/19355.md) on 2025-07-15 12:13_
-
----
-
-_Referenced in [astral-sh/ruff#19358](../../astral-sh/ruff/pulls/19358.md) on 2025-07-15 14:40_
 
 ---
 

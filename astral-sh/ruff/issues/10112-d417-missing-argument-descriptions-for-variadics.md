@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-02-24T15:50:01Z
 updated_at: 2024-12-31T11:16:57Z
 url: https://github.com/astral-sh/ruff/issues/10112
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # [D417] Missing argument descriptions for variadics *args and **kwargs should be optional
@@ -145,10 +145,6 @@ _Removed from milestone `v0.8` by @AlexWaygood on 2024-11-18 11:38_
 ---
 
 _Added to milestone `v0.9` by @AlexWaygood on 2024-11-18 11:38_
-
----
-
-_Referenced in [astral-sh/ruff#15210](../../astral-sh/ruff/pulls/15210.md) on 2024-12-31 05:50_
 
 ---
 

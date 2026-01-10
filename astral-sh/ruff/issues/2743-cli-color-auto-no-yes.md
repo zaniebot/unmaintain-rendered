@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-02-10T21:27:47Z
 updated_at: 2023-07-06T13:01:41Z
 url: https://github.com/astral-sh/ruff/issues/2743
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # CLI: --color=auto|no|yes
@@ -131,9 +131,5 @@ I feel like the command line `-h` is more discoverable.
 The `--color=auto|yes|no` help documentation could mention the env vars for those who prefer to use that, but I think it's more common in CI or build scripts than for when the user needs it on the command line.
 
 BTW ruff is great!
-
----
-
-_Referenced in [Infleqtion/client-superstaq#1242](../../Infleqtion/client-superstaq/pulls/1242.md) on 2025-07-02 15:39_
 
 ---

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-04-09T17:56:43Z
 updated_at: 2025-04-15T11:32:23Z
 url: https://github.com/astral-sh/ruff/issues/17322
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] Consider further optimising visibility constraints applied to `*`-import definitions
@@ -38,10 +38,6 @@ _Label `performance` added by @AlexWaygood on 2025-04-09 17:56_
 ---
 
 _Label `red-knot` added by @AlexWaygood on 2025-04-09 17:56_
-
----
-
-_Referenced in [astral-sh/ruff#17375](../../astral-sh/ruff/pulls/17375.md) on 2025-04-13 17:49_
 
 ---
 

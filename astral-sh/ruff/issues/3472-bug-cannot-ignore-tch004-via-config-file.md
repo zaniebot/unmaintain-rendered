@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-13T01:14:35Z
 updated_at: 2023-03-14T20:24:02Z
 url: https://github.com/astral-sh/ruff/issues/3472
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Bug - Cannot ignore `TCH004` via config file
@@ -92,18 +92,6 @@ _Label `bug` added by @charliermarsh on 2023-03-13 02:15_
 
 ---
 
-_Referenced in [astral-sh/ruff#3474](../../astral-sh/ruff/pulls/3474.md) on 2023-03-13 02:16_
-
----
-
 _Closed by @charliermarsh on 2023-03-13 02:23_
-
----
-
-_Referenced in [great-expectations/great_expectations#7349](../../great-expectations/great_expectations/pulls/7349.md) on 2023-03-14 18:02_
-
----
-
-_Referenced in [astral-sh/ruff#5787](../../astral-sh/ruff/issues/5787.md) on 2023-07-15 20:35_
 
 ---

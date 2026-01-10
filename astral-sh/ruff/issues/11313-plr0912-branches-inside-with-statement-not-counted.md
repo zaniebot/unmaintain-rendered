@@ -1,0 +1,100 @@
+```yaml
+number: 11313
+title: " PLR0912: branches inside `with` statement not counted"
+type: issue
+state: closed
+author: Kakadus
+labels:
+  - bug
+  - good first issue
+assignees: []
+created_at: 2024-05-06T18:15:29Z
+updated_at: 2024-05-08T03:10:14Z
+url: https://github.com/astral-sh/ruff/issues/11313
+synced_at: 2026-01-10T11:09:53Z
+```
+
+#  PLR0912: branches inside `with` statement not counted
+
+---
+
+_Issue opened by @Kakadus on 2024-05-06 18:15_
+
+PLR0912(too-many-branches) does not count branches inside `with: ` blocks. With pylint the following is detected, while ruff does not detect this rule violation 
+```py
+from contextlib import suppress
+def capital(country):
+    with suppress(Exception):
+        if country == "Australia":
+            return "Canberra"
+        elif country == "Brazil":
+            return "Brasilia"
+        elif country == "Canada":
+            return "Ottawa"
+        elif country == "England":
+            return "London"
+        elif country == "France":
+            return "Paris"
+        elif country == "Germany":
+            return "Berlin"
+        elif country == "Poland":
+            return "Warsaw"
+        elif country == "Romania":
+            return "Bucharest"
+        elif country == "Spain":
+            return "Madrid"
+        elif country == "Thailand":
+            return "Bangkok"
+        elif country == "Turkey":
+            return "Ankara"
+        elif country == "Undefined":
+            return None
+        else:
+            return "Some"
+
+```
+Ruff version: 0.4.3
+command: `ruff check test.py --select PLR0912 --isolated`
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-05-06 19:57_
+
+---
+
+_Comment by @charliermarsh on 2024-05-06 19:57_
+
+Seems like a bug.
+
+---
+
+_Label `good first issue` added by @dhruvmanila on 2024-05-07 09:02_
+
+---
+
+_Comment by @dhruvmanila on 2024-05-07 09:03_
+
+This seems like an easy fix which is to just include the `Stmt::With` in this function:
+
+https://github.com/astral-sh/ruff/blob/868bbd4de6e193352d2d9a44be2f323a0887dd51/crates/ruff_linter/src/rules/pylint/rules/too_many_branches.rs#L88-L88
+
+And then to add some test cases.
+
+---
+
+_Closed by @charliermarsh on 2024-05-08 03:10_
+
+---

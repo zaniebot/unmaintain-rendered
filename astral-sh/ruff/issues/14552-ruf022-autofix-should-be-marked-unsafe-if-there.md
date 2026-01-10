@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-23T04:12:59Z
 updated_at: 2024-11-24T12:49:30Z
 url: https://github.com/astral-sh/ruff/issues/14552
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # RUF022 autofix should be marked unsafe if there are own-line comments between `__all__` items
@@ -167,10 +167,6 @@ _Renamed from "RUF022 autofix should be marked unsafe if there are own-line comm
 ---
 
 _Assigned to @AlexWaygood by @AlexWaygood on 2024-11-23 22:49_
-
----
-
-_Referenced in [astral-sh/ruff#14560](../../astral-sh/ruff/pulls/14560.md) on 2024-11-23 23:18_
 
 ---
 

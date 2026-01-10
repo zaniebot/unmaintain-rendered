@@ -1,0 +1,70 @@
+```yaml
+number: 7235
+title: "Formatter: Documentation"
+type: issue
+state: closed
+author: MichaReiser
+labels:
+  - documentation
+  - formatter
+assignees: []
+created_at: 2023-09-08T07:58:13Z
+updated_at: 2023-10-20T23:08:28Z
+url: https://github.com/astral-sh/ruff/issues/7235
+synced_at: 2026-01-10T11:09:49Z
+```
+
+# Formatter: Documentation
+
+---
+
+_Issue opened by @MichaReiser on 2023-09-08 07:58_
+
+Document
+* how to migrate a project from black to ruff or use ruff's formatter in a new project. 
+* the configuration options 
+* Suppression comments 
+
+---
+
+_Label `documentation` added by @MichaReiser on 2023-09-08 07:58_
+
+---
+
+_Label `formatter` added by @MichaReiser on 2023-09-08 07:58_
+
+---
+
+_Added to milestone `Formatter: Stable` by @MichaReiser on 2023-09-08 07:58_
+
+---
+
+_Removed from milestone `Formatter: Stable` by @MichaReiser on 2023-09-08 07:58_
+
+---
+
+_Added to milestone `Formatter: Beta` by @MichaReiser on 2023-09-08 07:58_
+
+---
+
+_Comment by @charliermarsh on 2023-09-10 21:41_
+
+I'd be interested in owning the documentation.
+
+---
+
+_Comment by @MichaReiser on 2023-09-11 06:13_
+
+> I'd be interested in owning the documentation.
+
+Sounds good. The timeline for this is probably a month or so from now. 
+
+---
+
+_Assigned to @charliermarsh by @konstin on 2023-09-11 07:58_
+
+---
+
+_Closed by @charliermarsh on 2023-10-20 23:08_
+
+---

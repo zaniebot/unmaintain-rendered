@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-03-17T09:22:06Z
 updated_at: 2023-03-17T18:29:07Z
 url: https://github.com/astral-sh/ruff/issues/3571
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # E721 False negative when variable name is "types"
@@ -52,10 +52,6 @@ _Label `good first issue` added by @charliermarsh on 2023-03-17 14:46_
 _Comment by @charliermarsh on 2023-03-17 14:46_
 
 👍 We need to verify that `types` hasn't been overridden. We do this in a lot of places, but must've missed this one!
-
----
-
-_Referenced in [astral-sh/ruff#3582](../../astral-sh/ruff/pulls/3582.md) on 2023-03-17 18:22_
 
 ---
 

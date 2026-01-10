@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-08T01:17:23Z
 updated_at: 2025-10-30T17:01:24Z
 url: https://github.com/astral-sh/ruff/issues/14185
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Request: Autofix for `redundant-numeric-union`/`PYI041` & `redundant-literal-union`/`PYI051`
@@ -26,23 +26,7 @@ I lumped both rules together here because I think the fix is the exact same: dro
 
 ---
 
-_Referenced in [microsoft/python-type-stubs#340](../../microsoft/python-type-stubs/pulls/340.md) on 2024-11-08 03:11_
-
----
-
 _Label `fixes` added by @MichaReiser on 2024-11-08 07:40_
-
----
-
-_Referenced in [astral-sh/ruff#14214](../../astral-sh/ruff/pulls/14214.md) on 2024-11-08 23:01_
-
----
-
-_Referenced in [astral-sh/ruff#14273](../../astral-sh/ruff/pulls/14273.md) on 2024-11-11 14:36_
-
----
-
-_Referenced in [astral-sh/ruff#15343](../../astral-sh/ruff/pulls/15343.md) on 2025-01-08 09:56_
 
 ---
 
@@ -59,10 +43,6 @@ I lost track of this issue and forgot to work on it. Can someone please assign m
 ---
 
 _Assigned to @kiran-4444 by @ntBre on 2025-03-23 14:45_
-
----
-
-_Referenced in [astral-sh/ruff#17003](../../astral-sh/ruff/pulls/17003.md) on 2025-03-26 20:26_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-03-26T17:28:44Z
 updated_at: 2025-03-26T18:26:59Z
 url: https://github.com/astral-sh/ruff/issues/16985
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # F821 "Undefined name" for Literal values
@@ -88,9 +88,5 @@ https://play.ruff.rs/903e0a21-6e61-4210-8469-0520206ebc96
 ---
 
 _Closed by @ntBre on 2025-03-26 18:26_
-
----
-
-_Referenced in [frappe/frappe#31925](../../frappe/frappe/issues/31925.md) on 2025-03-27 10:56_
 
 ---

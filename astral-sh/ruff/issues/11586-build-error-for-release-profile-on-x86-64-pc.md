@@ -1,0 +1,188 @@
+```yaml
+number: 11586
+title: "Build error for release profile on `x86_64-pc-windows-gnu`"
+type: issue
+state: closed
+author: T-256
+labels:
+  - windows
+assignees: []
+created_at: 2024-05-28T21:23:20Z
+updated_at: 2025-02-21T11:50:43Z
+url: https://github.com/astral-sh/ruff/issues/11586
+synced_at: 2026-01-10T11:09:53Z
+```
+
+# Build error for release profile on `x86_64-pc-windows-gnu`
+
+---
+
+_Issue opened by @T-256 on 2024-05-28 21:23_
+
+Debug profile, built successfully, but release profile produces errors. here is log file:
+[err.log](https://github.com/astral-sh/ruff/files/15476110/err.log)
+
+abstract:
+```log
+PS E:\crates\ruff> cargo b --release
+   Compiling ruff_workspace v0.0.0 (E:\crates\ruff\crates\ruff_workspace)
+   Compiling ruff_python_formatter v0.0.0 (E:\crates\ruff\crates\ruff_python_formatter)
+   Compiling ruff_server v0.2.2 (E:\crates\ruff\crates\ruff_server)
+error: linking with `x86_64-w64-mingw32-gcc` failed: exit code: 1
+  |
+  = note: "x86_64-w64-mingw32-gcc" "-fno-use-linker-plugin" "-Wl,--dynamicbase" "-Wl,  ...[75 KB more]
+  = note: C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.aho_corasick-4fc2a255abd66f6d.aho_corasick.61358d8f59a0b45d-cgu.07.rcgu.o.rcgu.o:aho_corasick.61358:(.text+0x20c3): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr10memchr_raw2FN17h618d063ddc5353c7E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.aho_corasick-4fc2a255abd66f6d.aho_corasick.61358d8f59a0b45d-cgu.07.rcgu.o.rcgu.o:aho_corasick.61358:(.text+0x2193): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr2_raw2FN17hda836e9b9f82e15cE'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.aho_corasick-4fc2a255abd66f6d.aho_corasick.61358d8f59a0b45d-cgu.07.rcgu.o.rcgu.o:aho_corasick.61358:(.text+0x228d): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr3_raw2FN17h7a7ed12eca0fefc9E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.aho_corasick-4fc2a255abd66f6d.aho_corasick.61358d8f59a0b45d-cgu.07.rcgu.o.rcgu.o:aho_corasick.61358:(.text+0x234e): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr10memchr_raw2FN17h618d063ddc5353c7E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.aho_corasick-4fc2a255abd66f6d.aho_corasick.61358d8f59a0b45d-cgu.07.rcgu.o.rcgu.o:aho_corasick.61358:(.text+0x23e2): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr2_raw2FN17hda836e9b9f82e15cE'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.aho_corasick-4fc2a255abd66f6d.aho_corasick.61358d8f59a0b45d-cgu.07.rcgu.o.rcgu.o:aho_corasick.61358:(.text+0x2477): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr3_raw2FN17h7a7ed12eca0fefc9E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.regex_automata-8087316b5b78a293.regex_automata.e1978bb43e0f5db-cgu.02.rcgu.o.rcgu.o:regex_automata.e19:(.text+0x7399): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr3_raw2FN17h7a7ed12eca0fefc9E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.regex_automata-8087316b5b78a293.regex_automata.e1978bb43e0f5db-cgu.02.rcgu.o.rcgu.o:regex_automata.e19:(.text+0x74a2): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr2_raw2FN17hda836e9b9f82e15cE'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.regex_automata-8087316b5b78a293.regex_automata.e1978bb43e0f5db-cgu.02.rcgu.o.rcgu.o:regex_automata.e19:(.text+0x7593): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr10memchr_raw2FN17h618d063ddc5353c7E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.regex_automata-8087316b5b78a293.regex_automata.e1978bb43e0f5db-cgu.02.rcgu.o.rcgu.o:regex_automata.e19:(.text+0x79df): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr2_raw2FN17hda836e9b9f82e15cE'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.regex_automata-8087316b5b78a293.regex_automata.e1978bb43e0f5db-cgu.02.rcgu.o.rcgu.o:regex_automata.e19:(.text+0x7ad3): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr10memchr_raw2FN17h618d063ddc5353c7E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.regex_automata-8087316b5b78a293.regex_automata.e1978bb43e0f5db-cgu.02.rcgu.o.rcgu.o:regex_automata.e19:(.text+0x7bd9): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr3_raw2FN17h7a7ed12eca0fefc9E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.regex_automata-8087316b5b78a293.regex_automata.e1978bb43e0f5db-cgu.02.rcgu.o.rcgu.o:regex_automata.e19:(.text+0x7f42): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr3_raw2FN17h7a7ed12eca0fefc9E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.regex_automata-8087316b5b78a293.regex_automata.e1978bb43e0f5db-cgu.02.rcgu.o.rcgu.o:regex_automata.e19:(.text+0x801f): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr2_raw2FN17hda836e9b9f82e15cE'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.regex_automata-8087316b5b78a293.regex_automata.e1978bb43e0f5db-cgu.02.rcgu.o.rcgu.o:regex_automata.e19:(.text+0x8478): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr10memchr_raw2FN17h618d063ddc5353c7E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.regex_automata-8087316b5b78a293.regex_automata.e1978bb43e0f5db-cgu.02.rcgu.o.rcgu.o:regex_automata.e19:(.text+0x889c): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr3_raw2FN17h7a7ed12eca0fefc9E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.regex_automata-8087316b5b78a293.regex_automata.e1978bb43e0f5db-cgu.02.rcgu.o.rcgu.o:regex_automata.e19:(.text+0x89ae): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr10memchr_raw2FN17h618d063ddc5353c7E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.regex_automata-8087316b5b78a293.regex_automata.e1978bb43e0f5db-cgu.02.rcgu.o.rcgu.o:regex_automata.e19:(.text+0x8ab2): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr2_raw2FN17hda836e9b9f82e15cE'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.regex_automata-8087316b5b78a293.regex_automata.e1978bb43e0f5db-cgu.02.rcgu.o.rcgu.o:regex_automata.e19:(.text+0x90fd): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr2_raw2FN17hda836e9b9f82e15cE'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.regex_automata-8087316b5b78a293.regex_automata.e1978bb43e0f5db-cgu.02.rcgu.o.rcgu.o:regex_automata.e19:(.text+0x9237): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr3_raw2FN17h7a7ed12eca0fefc9E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.regex_automata-8087316b5b78a293.regex_automata.e1978bb43e0f5db-cgu.02.rcgu.o.rcgu.o:regex_automata.e19:(.text+0x9362): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr10memchr_raw2FN17h618d063ddc5353c7E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.regex_automata-8087316b5b78a293.regex_automata.e1978bb43e0f5db-cgu.05.rcgu.o.rcgu.o:regex_automata.e19:(.text+0x32de): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr10memchr_raw2FN17h618d063ddc5353c7E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.regex_automata-8087316b5b78a293.regex_automata.e1978bb43e0f5db-cgu.05.rcgu.o.rcgu.o:regex_automata.e19:(.text+0x33e2): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr2_raw2FN17hda836e9b9f82e15cE'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.regex_automata-8087316b5b78a293.regex_automata.e1978bb43e0f5db-cgu.05.rcgu.o.rcgu.o:regex_automata.e19:(.text+0x3517): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr3_raw2FN17h7a7ed12eca0fefc9E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.ruff_python_formatter-d04e736c2481ef8a.ruff_python_formatter.9dee42ec154ec7d4-cgu.08.rcgu.o.rcgu.o:ruff_python_format:(.text+0x3966): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr2_raw2FN17hda836e9b9f82e15cE'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.ruff_python_formatter-d04e736c2481ef8a.ruff_python_formatter.9dee42ec154ec7d4-cgu.12.rcgu.o.rcgu.o:ruff_python_format:(.text+0x4d37): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr2_raw2FN17hda836e9b9f82e15cE'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.ruff_python_formatter-d04e736c2481ef8a.ruff_python_formatter.9dee42ec154ec7d4-cgu.14.rcgu.o.rcgu.o:ruff_python_format:(.text+0x343f): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr10memchr_raw2FN17h618d063ddc5353c7E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.ruff_python_parser-fda4f126870e947c.ruff_python_parser.b89a1574932f071c-cgu.0.rcgu.o.rcgu.o:ruff_python_parser:(.text+0xfb72): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr2_raw2FN17hda836e9b9f82e15cE'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.ruff_python_parser-fda4f126870e947c.ruff_python_parser.b89a1574932f071c-cgu.0.rcgu.o.rcgu.o:ruff_python_parser:(.text+0x1086a): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr3_raw2FN17h7a7ed12eca0fefc9E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.ruff_python_parser-fda4f126870e947c.ruff_python_parser.b89a1574932f071c-cgu.0.rcgu.o.rcgu.o:ruff_python_parser:(.text+0x108a3): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr10memchr_raw2FN17h618d063ddc5353c7E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.ruff_python_parser-fda4f126870e947c.ruff_python_parser.b89a1574932f071c-cgu.0.rcgu.o.rcgu.o:ruff_python_parser:(.text+0x1d2c3): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr10memchr_raw2FN17h618d063ddc5353c7E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.ruff_python_parser-fda4f126870e947c.ruff_python_parser.b89a1574932f071c-cgu.0.rcgu.o.rcgu.o:ruff_python_parser:(.text+0x1d3dc): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr10memchr_raw2FN17h618d063ddc5353c7E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.ruff_python_parser-fda4f126870e947c.ruff_python_parser.b89a1574932f071c-cgu.0.rcgu.o.rcgu.o:ruff_python_parser:(.text+0x1dd81): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr10memchr_raw2FN17h618d063ddc5353c7E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.ruff_python_parser-fda4f126870e947c.ruff_python_parser.b89a1574932f071c-cgu.0.rcgu.o.rcgu.o:ruff_python_parser:(.text+0x1fabc): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr3_raw2FN17h7a7ed12eca0fefc9E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.ruff_python_parser-fda4f126870e947c.ruff_python_parser.b89a1574932f071c-cgu.0.rcgu.o.rcgu.o:ruff_python_parser:(.text+0x20b01): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr3_raw2FN17h7a7ed12eca0fefc9E'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.ruff_source_file-9e3527bffbe461b0.ruff_source_file.d34ff7af2c172c7c-cgu.01.rcgu.o.rcgu.o:ruff_source_file.d:(.text+0x132): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr12memrchr2_raw2FN17h77df0598d0fcb37bE'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.ruff_source_file-9e3527bffbe461b0.ruff_source_file.d34ff7af2c172c7c-cgu.01.rcgu.o.rcgu.o:ruff_source_file.d:(.text+0x242): undefined reference to `__imp__ZN6memchr4arch6x86_646memchr11memchr2_raw2FN17hda836e9b9f82e15cE'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.tracing-a3877614066def19.tracing.5441c59aa9d48259-cgu.01.rcgu.o.rcgu.o:tracing.5441c59aa9:(.text+0x85): undefined reference to `__imp__ZN12tracing_core10dispatcher15GLOBAL_DISPATCH17h1c5a9e6d56948a0dE'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.tracing-a3877614066def19.tracing.5441c59aa9d48259-cgu.01.rcgu.o.rcgu.o:tracing.5441c59aa9:(.text+0xa1): undefined reference to `__imp__ZN12tracing_core10dispatcher15GLOBAL_DISPATCH17h1c5a9e6d56948a0dE'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.tracing-a3877614066def19.tracing.5441c59aa9d48259-cgu.01.rcgu.o.rcgu.o:tracing.5441c59aa9:(.text+0x279): undefined reference to `__imp__ZN12tracing_core10dispatcher15GLOBAL_DISPATCH17h1c5a9e6d56948a0dE'
+          C:/msys2/ucrt64/bin/../lib/gcc/x86_64-w64-mingw32/13.2.0/../../../../x86_64-w64-mingw32/bin/ld.exe: E:\crates\ruff\target\release\deps\ruff_python_formatter-a6d455985f2903e7.tracing-a3877614066def19.tracing.5441c59aa9d48259-cgu.01.rcgu.o.rcgu.o:tracing.5441c59aa9:(.text+0x2a7): undefined reference to `__imp__ZN12tracing_core10dispatcher15GLOBAL_DISPATCH17h1c5a9e6d56948a0dE'
+          collect2.exe: error: ld returned 1 exit status
+
+  = note: some `extern` functions couldn't be found; some native libraries may need to be installed or have their path specified
+  = note: use the `-l` flag to specify native libraries to link
+  = note: use the `cargo:rustc-link-lib` directive to specify the native libraries to link with Cargo (see https://doc.rust-lang.org/cargo/reference/build-scripts.html#rustc-link-lib)
+
+error: could not compile `ruff_python_formatter` (bin "ruff_python_formatter") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+```
+
+---
+
+_Label `windows` added by @MichaReiser on 2024-05-29 08:30_
+
+---
+
+_Comment by @MichaReiser on 2024-05-29 09:19_
+
+Hmm, I spend some time looking into this but I'm unsure what's happening. 
+
+I'm successfully able to build ripgrep and romejs with the `x86_64-pc-windows-gnu` target but not ruff... 
+
+---
+
+_Comment by @MichaReiser on 2024-05-29 10:39_
+
+Okay, I'm able to build ruff after I disabled link time optimizations (setting `lto=false` in `Cargo.toml`). The build even succeeds when I set `lto="fat"`. 
+
+I'm still unable to reproduce this with ripgrep. Setting `lto` to `flat` doesn't trigger the issue. 
+
+This makes me wonder if, by chance, this is a linker issue. @BurntSushi any guesses?
+
+---
+
+_Comment by @T-256 on 2024-05-29 10:39_
+
+Reproduced same on GHA:
+https://github.com/T-256/ruff/actions/runs/9284396370/job/25546692607
+
+---
+
+_Comment by @T-256 on 2024-05-29 11:47_
+
+Regressed by https://github.com/astral-sh/ruff/pull/9031 and related to https://github.com/astral-sh/ruff/issues/9245.
+
+Workaround:
+> Since [per-target profiles](https://github.com/rust-lang/cargo/issues/4897) aren't really a thing, I was able to get around this issue by setting the environment variable `CARGO_PROFILE_RELEASE_LTO` to `false`. This'll work for me for now until https://github.com/rust-lang/rust/issues/109797 is fixed.
+
+_Originally posted by @cr1901 in https://github.com/astral-sh/ruff/issues/9245#issuecomment-1950273225_
+
+---
+
+_Closed by @T-256 on 2024-05-29 11:47_
+
+---
+
+_Comment by @MichaReiser on 2024-05-29 11:51_
+
+@T-256 nice for finding these details. I guess a work around on our side could be to set LTO to "fat" or disable it for this specific target (I think that's possible?)
+
+---
+
+_Reopened by @MichaReiser on 2024-05-29 11:51_
+
+---
+
+_Comment by @BurntSushi on 2024-05-29 11:55_
+
+Yeah the specific bug is related to something about inlining functions with statics: https://github.com/rust-lang/rust/issues/109797
+
+And see also: https://github.com/BurntSushi/memchr/issues/145
+
+---
+
+_Comment by @mati865 on 2024-06-05 17:35_
+
+Another workaround is to link with LLD instead of default ld.bfd, that way you can still use ThinLTO.
+
+---
+
+_Comment by @T-256 on 2024-06-05 21:39_
+
+@mati865 I tested with 
+```toml
+[target.x86_64-pc-windows-gnu]
+linker = "rust-lld"
+```
+but I got errors even on `lto=off`:
+```
+                                                                         
+error: linking with `rust-lld` failed: exit code: 1                                                                                  
+  |
+  = note: "rust-lld" "-flavor" "gnu" "C:\\WINDOWS\\TEMP\\rustcxO6dBX\\list.def" "--dynamicbase" "--disable-auto-image-base" "-m" "i386pep" "--high-entropy-va" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\self-contained\\dllcrt2.o" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\rsbegin.o" "C:\\WINDOWS\\TEMP\\rustcxO6dBX\\symbols.o" "E:\\crates\\ruff\\target\\release\\deps\\vte_generate_state_changes-c8349d2f6a9946a9.vte_generate_state_changes.57057eadc13a9b41-cgu.0.rcgu.o" "E:\\crates\\ruff\\target\\release\\deps\\vte_generate_state_changes-c8349d2f6a9946a9.2543lwsoi1zanot8.rcgu.rmeta" "E:\\crates\\ruff\\target\\release\\deps\\vte_generate_state_changes-c8349d2f6a9946a9.1019vx92ivbei8xv.rcgu.o" "-L" "E:\\crates\\ruff\\target\\release\\deps" "-L" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib" "-Bstatic" "E:\\crates\\ruff\\target\\release\\deps\\libquote-8bf022faaf31a1a6.rlib" "E:\\crates\\ruff\\target\\release\\deps\\libproc_macro2-41e5a393ded84c34.rlib" "E:\\crates\\ruff\\target\\release\\deps\\libunicode_ident-84d1a3a2a096a72b.rlib" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\libproc_macro-77e81e580912ada4.rlib" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\libstd-a1f74822451877d1.rlib" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\libpanic_unwind-17d59fcffbb1858c.rlib" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\libobject-bbbe10091d0fd58d.rlib" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\libmemchr-ff20eb48d2567174.rlib" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\libaddr2line-030e3ef637a6c0e1.rlib" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\libgimli-53e82cde34eb1119.rlib" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\librustc_demangle-8a1d947ff4a075c3.rlib" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\libstd_detect-a6a7bc9844ea0859.rlib" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\libhashbrown-a963c0ad0363ef1a.rlib" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\librustc_std_workspace_alloc-1bc86c6d4a47ec27.rlib" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\libminiz_oxide-57b7601d31d3fe19.rlib" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\libadler-5ea4baaad4eac651.rlib" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\libunwind-504a546f931d1b95.rlib" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\libcfg_if-c18dc5b831cc4c35.rlib" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\liblibc-3a48b664c1fa889c.rlib" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\liballoc-2552a9f38657c70e.rlib" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\librustc_std_workspace_core-dab1b9a2489b7d16.rlib" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\libcore-d7fd3f351d39ae46.rlib" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\libcompiler_builtins-b44a9797859024b2.rlib" "-Bdynamic" "-lkernel32" "-ladvapi32" "-lkernel32" "-lntdll" "-luserenv" "-lws2_32" "-lkernel32" "-lws2_32" "-lkernel32" "-lgcc_eh" "-l:libpthread.a" "-lmsvcrt" "-lmingwex" "-lmingw32" "-lgcc" "-lmsvcrt" "-luser32" "-lkernel32" "--nxcompat" "-L" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib" "-L" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\self-contained" "-o" "E:\\crates\\ruff\\target\\release\\deps\\vte_generate_state_changes-c8349d2f6a9946a9.dll" "--gc-sections" "-shared" "--out-implib=E:\\crates\\ruff\\target\\release\\deps\\libvte_generate_state_changes-c8349d2f6a9946a9.dll.a" "--strip-debug" "C:\\Users\\Tester\\.rustup\\toolchains\\1.78-x86_64-pc-windows-gnu\\lib\\rustlib\\x86_64-pc-windows-gnu\\lib\\rsend.o"     
+  = note: rust-lld: error: <root>: undefined symbol: _DllMainCRTStartup
+```
+
+---
+
+_Comment by @mati865 on 2024-06-05 22:08_
+
+@T-256 you cannot use LLD like that for Unix and windows-gnu targets, it has to be called through the compiler to add the libraries.
+With stable Rust you can use LLD from your PATH with `-Clink-arg=-fuse-ld=lld` or `rust-lld` provided by Rust using nightly `-Zlinker-features=+lld`.
+
+---
+
+_Comment by @T-256 on 2025-02-21 11:50_
+
+Upstream issue has been closed.
+
+---
+
+_Closed by @T-256 on 2025-02-21 11:50_
+
+---

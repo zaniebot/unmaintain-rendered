@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-18T13:40:41Z
 updated_at: 2023-01-18T23:42:51Z
 url: https://github.com/astral-sh/ruff/issues/1954
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Possible overlap between SIM300 and PLC2201
@@ -55,10 +55,6 @@ These rules are actually _slightly_ different because the Pylint rule flags any 
 _Comment by @charliermarsh on 2023-01-18 23:16_
 
 I'll probably extend SIM300 to flag those cases too.
-
----
-
-_Referenced in [astral-sh/ruff#1980](../../astral-sh/ruff/pulls/1980.md) on 2023-01-18 23:36_
 
 ---
 

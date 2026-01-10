@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-03-15T19:59:28Z
 updated_at: 2023-03-21T03:48:07Z
 url: https://github.com/astral-sh/ruff/issues/3549
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # `printf-style-formatting` ignores direct-string interpolation
@@ -40,15 +40,7 @@ _Label `good first issue` added by @charliermarsh on 2023-03-16 00:08_
 
 ---
 
-_Referenced in [astral-sh/ruff#3554](../../astral-sh/ruff/issues/3554.md) on 2023-03-16 07:00_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2023-03-18 02:21_
-
----
-
-_Referenced in [astral-sh/ruff#3600](../../astral-sh/ruff/pulls/3600.md) on 2023-03-18 19:25_
 
 ---
 
@@ -93,13 +85,5 @@ Though we do now fix cases like:
 "%s" % "foo"
 "%s" % f"foo{bar}"
 ```
-
----
-
-_Referenced in [astral-sh/ruff#6796](../../astral-sh/ruff/issues/6796.md) on 2023-08-22 23:24_
-
----
-
-_Referenced in [astral-sh/ruff#7579](../../astral-sh/ruff/issues/7579.md) on 2023-09-21 19:25_
 
 ---

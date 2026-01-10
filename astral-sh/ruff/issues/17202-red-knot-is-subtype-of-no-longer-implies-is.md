@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-04-04T12:13:10Z
 updated_at: 2025-04-04T20:00:30Z
 url: https://github.com/astral-sh/ruff/issues/17202
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] `is_subtype_of` no longer implies `is_assignable_to` for all `Type::Tuple` types
@@ -102,10 +102,6 @@ _Renamed from "Daily property test run failed on Fri Apr 04 2025" to "[red-knot]
 ---
 
 _Assigned to @sharkdp by @sharkdp on 2025-04-04 19:04_
-
----
-
-_Referenced in [astral-sh/ruff#17213](../../astral-sh/ruff/pulls/17213.md) on 2025-04-04 19:22_
 
 ---
 

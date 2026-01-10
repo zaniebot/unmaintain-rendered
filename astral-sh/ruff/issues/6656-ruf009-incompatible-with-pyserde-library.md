@@ -1,0 +1,89 @@
+```yaml
+number: 6656
+title: RUF009 incompatible with pyserde library dataclass field function
+type: issue
+state: closed
+author: kujenga
+labels: []
+assignees: []
+created_at: 2023-08-17T19:11:28Z
+updated_at: 2023-08-17T20:20:56Z
+url: https://github.com/astral-sh/ruff/issues/6656
+synced_at: 2026-01-10T11:09:48Z
+```
+
+# RUF009 incompatible with pyserde library dataclass field function
+
+---
+
+_Issue opened by @kujenga on 2023-08-17 19:11_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+This issue is reporting what seems to be a limitation/bug in the RUF009 rule, where helper functions wrapping `dataclasses.field` are not allowed by the rule.
+
+One such example of this comes from the https://github.com/yukinarit/pyserde library in the way it provides a helper function that allows metadata to be defined on fields, as documented here: https://yukinarit.github.io/pyserde/guide/en/field-attributes.html with the source code for the helper itself calling out to the `dataclasses.field` function here: https://github.com/yukinarit/pyserde/blob/89680ed429401d41e2a4584b8023cb6366786e41/serde/core.py#L541
+
+My thinking here is that ruff should allow patterns like this. It would be ideal if it was able to determine these are acceptable automatically, or otherwise perhaps a configuration could allow specific functions to be used.
+
+Thank you!
+
+## Steps to reproduce:
+
+This file reproduces the issue in two ways, one with the serde library and another with a wrapper function defined here:
+```py
+from dataclasses import dataclass
+
+from serde import field
+
+
+def field_wrapper(*args, **kwargs):
+    field(*args, **kwargs)
+
+
+@dataclass
+class Example:
+    serde_list: list[int] = field(default_factory=list)
+    wrapped_list: list[int] = field_wrapper(default_factory=list)
+```
+
+These commands reproduce the error (no other config needed):
+```
+$ pip install -q pyserde ruff
+$ ruff --version
+ruff 0.0.284
+$ ruff check --select=RUF009 main.py
+main.py:12:29: RUF009 Do not perform function call `field` in dataclass defaults
+main.py:13:31: RUF009 Do not perform function call `field_wrapper` in dataclass defaults
+Found 2 errors.
+```
+
+
+---
+
+_Comment by @zanieb on 2023-08-17 19:56_
+
+Hey @kujenga it sounds like you're looking for the [`extend-immutable-calls`](https://beta.ruff.rs/docs/settings/#flake8-bugbear-extend-immutable-calls) setting e.g. you'd add `serde.field`. Does that work for you?
+
+I don't think we're likely to add defaults to that from outside the standard library since their APIs are harder for us to keep up to date with.
+
+---
+
+_Comment by @kujenga on 2023-08-17 20:20_
+
+Aha! And I even managed to miss it in the https://beta.ruff.rs/docs/rules/function-call-in-dataclass-default-argument/ docs. Thanks for the quick response! I'll close this out.
+
+---
+
+_Closed by @kujenga on 2023-08-17 20:20_
+
+---

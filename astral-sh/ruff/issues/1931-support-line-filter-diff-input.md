@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-01-17T10:29:01Z
 updated_at: 2023-01-17T15:40:04Z
 url: https://github.com/astral-sh/ruff/issues/1931
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Support line filter / diff input
@@ -146,13 +146,5 @@ It is! I'll close this for now in favor of that issue then.
 ---
 
 _Closed by @charliermarsh on 2023-01-17 15:40_
-
----
-
-_Referenced in [astral-sh/ruff#2189](../../astral-sh/ruff/issues/2189.md) on 2023-01-26 06:52_
-
----
-
-_Referenced in [astral-sh/ruff#2472](../../astral-sh/ruff/issues/2472.md) on 2023-02-02 13:06_
 
 ---

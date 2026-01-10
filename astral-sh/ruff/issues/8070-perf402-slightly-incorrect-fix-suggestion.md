@@ -1,0 +1,82 @@
+```yaml
+number: 8070
+title: PERF402 slightly incorrect fix suggestion
+type: issue
+state: open
+author: Skylion007
+labels:
+  - bug
+assignees: []
+created_at: 2023-10-19T17:27:57Z
+updated_at: 2024-02-15T08:03:38Z
+url: https://github.com/astral-sh/ruff/issues/8070
+synced_at: 2026-01-10T11:09:50Z
+```
+
+# PERF402 slightly incorrect fix suggestion
+
+---
+
+_Issue opened by @Skylion007 on 2023-10-19 17:27_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+```
+a = []
+for i in range(10):
+    for j in range(100):
+        a.append(j)
+```
+ruff version 0.1.0
+
+This rule outputs
+```test-perf.py:4:9: PERF402 Use `list` or `list.copy` to create a copy of a list```
+Which while correct in that something should be done here, it really should be calling .extend() not the list or list.copy() constructor. Doing
+```
+a = []
+for i in range(10):
+    a = list(range(100))
+```
+would yield an invalid result.
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-10-20 21:19_
+
+---
+
+_Comment by @qdegraaf on 2023-10-25 12:43_
+
+Do we want to specify that this is only really relevant for nested if-loops? Or do we also want to suggest it for single loops like in the default example in our docs and [upstream implementation](https://github.com/tonybaloney/perflint#w8402--use-a-list-copy-instead-of-a-for-loop-use-list-copy).
+
+Right now PERF402 docs describe converting from:
+
+```python
+/// original = list(range(10000))
+/// filtered = []
+/// for i in original:
+///     filtered.append(i)
+```
+to
+```python
+/// original = list(range(10000))
+/// filtered = list(original)
+```
+([NIT] that filtered name is kind of misleading too here)
+Do we want this to become:
+
+```python
+/// original = list(range(10000))
+/// filtered = [].extend(original)
+```
+?
+
+---

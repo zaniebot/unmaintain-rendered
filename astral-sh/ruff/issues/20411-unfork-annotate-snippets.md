@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-15T07:51:57Z
 updated_at: 2025-10-27T20:18:18Z
 url: https://github.com/astral-sh/ruff/issues/20411
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Unfork annotate-snippets
@@ -26,14 +26,6 @@ However, we've since made new changes. We should explore if we can migrate back 
 ---
 
 _Label `dependencies` added by @MichaReiser on 2025-09-15 07:51_
-
----
-
-_Referenced in [astral-sh/ruff#20443](../../astral-sh/ruff/pulls/20443.md) on 2025-09-24 22:33_
-
----
-
-_Referenced in [astral-sh/ruff#20648](../../astral-sh/ruff/issues/20648.md) on 2025-09-30 15:32_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-29T00:13:55Z
 updated_at: 2022-11-29T03:16:19Z
 url: https://github.com/astral-sh/ruff/issues/951
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # Support registering custom noqa codes
@@ -34,10 +34,6 @@ Makes sense. (We may also want to support this in `--add-noqa` calls.)
 ---
 
 _Label `configuration` added by @charliermarsh on 2022-11-29 01:06_
-
----
-
-_Referenced in [astral-sh/ruff#955](../../astral-sh/ruff/pulls/955.md) on 2022-11-29 03:15_
 
 ---
 

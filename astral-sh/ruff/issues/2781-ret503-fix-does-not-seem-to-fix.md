@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-11T21:46:15Z
 updated_at: 2023-02-16T18:42:49Z
 url: https://github.com/astral-sh/ruff/issues/2781
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # RET503 --fix: Does not seem to fix
@@ -46,10 +46,6 @@ _Label `bug` added by @charliermarsh on 2023-02-11 21:53_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-11 21:53_
-
----
-
-_Referenced in [astral-sh/ruff#2962](../../astral-sh/ruff/pulls/2962.md) on 2023-02-16 17:44_
 
 ---
 

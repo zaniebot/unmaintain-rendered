@@ -10,9 +10,9 @@ labels:
   - imports
 assignees: []
 created_at: 2025-12-31T02:31:48Z
-updated_at: 2026-01-09T08:30:32Z
+updated_at: 2026-01-10T10:17:07Z
 url: https://github.com/astral-sh/ty/issues/2290
-synced_at: 2026-01-10T01:56:41Z
+synced_at: 2026-01-10T11:36:40Z
 ```
 
 # Go to definition cannot solve relative import in third-party files when using a virtual env location other than `.venv`
@@ -167,5 +167,11 @@ _Assigned to @MichaReiser by @Gankra on 2026-01-09 04:09_
 ---
 
 _Closed by @MichaReiser on 2026-01-09 08:30_
+
+---
+
+_Comment by @winlaic on 2026-01-10 10:12_
+
+Thanks guys! Looking forward to updating to the new version!
 
 ---

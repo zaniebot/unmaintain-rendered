@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-05-29T10:14:55Z
 updated_at: 2025-06-20T18:20:28Z
 url: https://github.com/astral-sh/ruff/issues/18365
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [Infinite loop] Conflict between F401 and PLC0414; redundant alias is removed, redundant alias is added as re-export
@@ -109,10 +109,6 @@ I'm working on this
 ---
 
 _Assigned to @GideonBear by @ntBre on 2025-05-30 11:54_
-
----
-
-_Referenced in [astral-sh/ruff#18400](../../astral-sh/ruff/pulls/18400.md) on 2025-05-31 08:34_
 
 ---
 

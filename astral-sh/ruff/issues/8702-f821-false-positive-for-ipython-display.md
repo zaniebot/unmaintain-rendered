@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-15T18:52:58Z
 updated_at: 2023-11-16T01:58:46Z
 url: https://github.com/astral-sh/ruff/issues/8702
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # F821 false positive for IPython display()
@@ -56,10 +56,6 @@ Not that I know of... I think they are just display() and magic commands
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-11-15 21:13_
-
----
-
-_Referenced in [astral-sh/ruff#8707](../../astral-sh/ruff/pulls/8707.md) on 2023-11-15 23:16_
 
 ---
 

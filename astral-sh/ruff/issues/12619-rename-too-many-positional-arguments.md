@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-02T07:15:21Z
 updated_at: 2024-08-15T16:13:26Z
 url: https://github.com/astral-sh/ruff/issues/12619
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Rename `too-many-positional{→-arguments}`
@@ -55,14 +55,6 @@ _Label `help wanted` added by @AlexWaygood on 2024-08-02 11:02_
 
 ---
 
-_Referenced in [astral-sh/ruff#12905](../../astral-sh/ruff/pulls/12905.md) on 2024-08-15 13:26_
-
----
-
 _Closed by @MichaReiser on 2024-08-15 16:13_
-
----
-
-_Referenced in [pylint-dev/pylint#9842](../../pylint-dev/pylint/pulls/9842.md) on 2024-08-16 19:02_
 
 ---

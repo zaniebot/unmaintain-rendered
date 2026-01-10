@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-01T20:41:03Z
 updated_at: 2023-06-10T04:05:03Z
 url: https://github.com/astral-sh/ruff/issues/4173
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # possible false positive with RET504 and class method
@@ -38,10 +38,6 @@ def training_step(self, dataloader_iter: Iterator) -> STEP_OUTPUT:
 
 ---
 
-_Referenced in [Lightning-AI/pytorch-lightning#17540](../../Lightning-AI/pytorch-lightning/pulls/17540.md) on 2023-05-01 20:44_
-
----
-
 _Label `bug` added by @charliermarsh on 2023-05-02 01:01_
 
 ---
@@ -49,10 +45,6 @@ _Label `bug` added by @charliermarsh on 2023-05-02 01:01_
 _Comment by @charliermarsh on 2023-05-06 18:15_
 
 I'm considering changing this rule to only detect the simple case of "assignment followed by return".
-
----
-
-_Referenced in [astral-sh/ruff#4997](../../astral-sh/ruff/pulls/4997.md) on 2023-06-10 02:42_
 
 ---
 

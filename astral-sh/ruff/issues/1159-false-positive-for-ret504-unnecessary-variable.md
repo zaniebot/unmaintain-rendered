@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-09T09:22:01Z
 updated_at: 2022-12-09T17:28:10Z
 url: https://github.com/astral-sh/ruff/issues/1159
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:18Z
 ```
 
 # False positive for “RET504: Unnecessary variable assignment before `return` statement”
@@ -36,10 +36,6 @@ _Label `bug` added by @charliermarsh on 2022-12-09 14:43_
 _Comment by @charliermarsh on 2022-12-09 14:43_
 
 Good catch.
-
----
-
-_Referenced in [astral-sh/ruff#1163](../../astral-sh/ruff/pulls/1163.md) on 2022-12-09 17:28_
 
 ---
 

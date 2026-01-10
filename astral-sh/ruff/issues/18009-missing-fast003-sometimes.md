@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-10T20:37:54Z
 updated_at: 2025-06-11T07:18:31Z
 url: https://github.com/astral-sh/ruff/issues/18009
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Missing FAST003 sometimes
@@ -59,10 +59,6 @@ Could you please make it better and emit FAST003 in this case?
 ### Version
 
 0.11.9
-
----
-
-_Referenced in [astral-sh/ruff#18019](../../astral-sh/ruff/pulls/18019.md) on 2025-05-11 19:33_
 
 ---
 

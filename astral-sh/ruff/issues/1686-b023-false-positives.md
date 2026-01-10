@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-06T09:24:33Z
 updated_at: 2023-01-11T02:23:49Z
 url: https://github.com/astral-sh/ruff/issues/1686
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # B023 False positives
@@ -47,14 +47,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-01-11 01:22_
 
 ---
 
-_Referenced in [astral-sh/ruff#1776](../../astral-sh/ruff/pulls/1776.md) on 2023-01-11 02:23_
-
----
-
 _Closed by @charliermarsh on 2023-01-11 02:23_
-
----
-
-_Referenced in [akretion/partner-module-information#15](../../akretion/partner-module-information/pulls/15.md) on 2024-05-17 18:30_
 
 ---

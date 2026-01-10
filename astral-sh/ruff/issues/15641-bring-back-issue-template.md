@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-21T13:51:40Z
 updated_at: 2025-01-22T07:48:36Z
 url: https://github.com/astral-sh/ruff/issues/15641
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Bring back issue template
@@ -28,10 +28,6 @@ Let's give it a try to bring back our issue template that we removed in https://
 ---
 
 _Label `help wanted` added by @MichaReiser on 2025-01-21 13:51_
-
----
-
-_Referenced in [astral-sh/ruff#15651](../../astral-sh/ruff/pulls/15651.md) on 2025-01-21 16:05_
 
 ---
 

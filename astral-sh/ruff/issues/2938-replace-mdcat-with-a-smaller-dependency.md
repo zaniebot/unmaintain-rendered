@@ -1,0 +1,182 @@
+```yaml
+number: 2938
+title: "Replace `mdcat` with a smaller dependency"
+type: issue
+state: closed
+author: charliermarsh
+labels: []
+assignees: []
+created_at: 2023-02-15T21:10:57Z
+updated_at: 2023-04-16T22:59:34Z
+url: https://github.com/astral-sh/ruff/issues/2938
+synced_at: 2026-01-10T11:09:45Z
+```
+
+# Replace `mdcat` with a smaller dependency
+
+---
+
+_Issue opened by @charliermarsh on 2023-02-15 21:10_
+
+I didn't realize it at the time, but `mdcat` is a huge dependency, because it pulls in a request library, an image-rendering library, etc.
+
+Without `mdcat`:
+
+![Screen Shot 2023-02-15 at 4 01 37 PM](https://user-images.githubusercontent.com/1309177/219164357-552a28a3-25d9-4b59-af6f-b7a555031da8.png)
+
+With `mdcat`:
+
+![Screen Shot 2023-02-15 at 3 59 04 PM](https://user-images.githubusercontent.com/1309177/219164262-486a0097-daf2-4fe7-aa4a-c25348a80026.png)
+
+
+---
+
+_Comment by @charliermarsh on 2023-02-15 21:12_
+
+`termimad` is way, way smaller:
+
+![Screen Shot 2023-02-15 at 4 02 45 PM](https://user-images.githubusercontent.com/1309177/219165209-85a12a49-6fac-4598-a9f5-58869cce6874.png)
+
+But it admittedly looks less nice, or at least requires a lot more configuration and tuning.
+
+
+---
+
+_Comment by @charliermarsh on 2023-02-15 21:18_
+
+The other alternative is to submit some changes to `mdcat` to make the bigger dependencies optional via features.
+
+---
+
+_Comment by @not-my-profile on 2023-02-15 21:21_
+
+(off-topic nit but when sharing the output of commands on GitHub and the colors aren't important I prefer to use code blocks since text is more accessible and readable than screenshots)
+
+---
+
+_Comment by @charliermarsh on 2023-02-15 21:21_
+
+(Yeah, sorry, that's lazy of me, will avoid.)
+
+---
+
+_Comment by @not-my-profile on 2023-02-15 21:22_
+
+(I agree about the issue ... we should try to avoid bloat / unnecessary dependencies.)
+
+---
+
+_Comment by @charliermarsh on 2023-02-15 21:23_
+
+Yeah I probably can't spend much time on this right now, so maybe the question is: do we leave this in, and fix it later? Or remove it, and re-add when it's been improved?
+
+---
+
+_Comment by @not-my-profile on 2023-02-15 21:31_
+
+We could feature gate it and disable the feature by default.
+
+---
+
+_Comment by @charliermarsh on 2023-02-16 00:14_
+
+Would we enable it for releases? So just gate to speed up dev? Or disable in "prod" for now too?
+
+---
+
+_Comment by @messense on 2023-02-16 03:01_
+
+> The other alternative is to submit some changes to `mdcat` to make the bigger dependencies optional via features.
+
+Opened https://github.com/swsnr/mdcat/pull/237
+
+---
+
+_Comment by @charliermarsh on 2023-02-16 03:14_
+
+You're a hero! Thank you.
+
+---
+
+_Comment by @messense on 2023-02-16 13:17_
+
+There is a bit of push back from `mdcat` maintainer on that PR so it'll take some time to land.
+
+---
+
+_Comment by @charliermarsh on 2023-02-16 14:03_
+
+My read from that response is that they only really intend `mdcat` to be used as a crate for tools in which Markdown rendering is a core feature -- or perhaps not at all? and instead intend it to be solely a command-line utility. If they're not interested in powering this kind of use-case, that's fine and totally their prerogative! If so, we'll just revert.
+
+
+---
+
+_Comment by @messense on 2023-02-16 14:13_
+
+I think piping/paging to `mdcat` is a good point, this way we can also support `bat` like Homebrew did: https://github.com/Homebrew/brew/pull/6504
+
+---
+
+_Comment by @MichaReiser on 2023-02-16 14:33_
+
+I see two additional alternatives that could be worth exploring, assuming we want to keep the functionality as is (and e.g. not link to the website). 
+
+## Use `mdcat` at compile time
+
+We could use `mdcat` at compile time (or any markdown parser) and use it to embed the highlighted documentation into ruff. This has the added benefit that the markdown syntax can be validated at compile time and printing the documentation only requires serializing to the terminal. This would be similar to what Rome uses to document its rules (Rome didn't include the documentation as part of the CLI. Instead, we added a link to the diagnostic name that pointed to the website and generated the rules on it).  [Source](https://github.com/rome/tools/blob/b6e7a394697d74b40242b18bac836428290b33f3/xtask/codegen/src/generate_configuration.rs#L63-L105)
+
+## Use a custom syntax
+
+Rome uses a custom markup syntax that is also used to format diagnostics consistently ([source](https://github.com/rome/tools/blob/b6e7a394697d74b40242b18bac836428290b33f3/crates/rome_console/README.md#L28)). Using that syntax directly would be a bit cumbersome in the documentation. Still, it could be a good intermediate representation into which the markdown gets turned into. 
+
+## Drawbacks
+
+Both approaches would require us to implement the logic for rendering the documentation while respecting the CLI width. 
+
+
+---
+
+_Comment by @charliermarsh on 2023-02-16 16:47_
+
+> piping/paging to `mdcat` is a good point
+
+Just to make sure I understand the suggestion, this would require that users install `mdcat` on their own, right?
+
+> Use mdcat at compile time
+
+This is interesting. What would it "compile" to exactly? Dumb question, but does mdcat not require knowledge of the target terminal when compiling Markdown for printing?
+
+---
+
+_Comment by @charliermarsh on 2023-02-16 16:51_
+
+I think I'm partial to removing this functionality for now, and revisiting later... It's a nice feature, but I don't think it's worth significant investment on our side, and it's not clear to me whether the `mdcat` changes will get merged (or if it's worth @messense's time to invest in them further).
+
+
+---
+
+_Comment by @charliermarsh on 2023-02-16 17:46_
+
+Closing for now as I've removed this. But we can revisit in the future, or if mdcat merges that change :)
+
+---
+
+_Closed by @charliermarsh on 2023-02-16 17:46_
+
+---
+
+_Comment by @swsnr on 2023-04-15 12:14_
+
+@charliermarsh @messense Just wanted to make you aware that the upcoming 2.0.0 release moves the core rendering code into a new `pulldown-cmark-mdcat` crate, and moved out heavy dependencies or guarded them behind features.
+
+You should be able to depend on `pulldown-cmark-mdcat` with `default-features = false, features = ["regex-fancy"]` for mdcat without the reqwest, resvg and image dependencies, at the cost of no SVG support, no HTTP support, and reduced inline image support on some terminals.
+
+I'll release this as 2.0.0 soonish.
+
+---
+
+_Comment by @charliermarsh on 2023-04-16 22:59_
+
+@swsnr - Thanks for the heads up, that's great to hear, and appreciate all your work on `mdcat` :)
+
+---

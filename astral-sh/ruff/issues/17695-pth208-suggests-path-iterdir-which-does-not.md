@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-04-28T21:48:12Z
 updated_at: 2025-04-30T14:38:58Z
 url: https://github.com/astral-sh/ruff/issues/17695
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # `PTH208` suggests `Path.iterdir()`, which does not support file descriptors
@@ -51,10 +51,6 @@ Related: #17694, #17693, #17691, #12871, #7620
 
 ---
 
-_Referenced in [astral-sh/ruff#17699](../../astral-sh/ruff/issues/17699.md) on 2025-04-29 06:10_
-
----
-
 _Label `bug` added by @MichaReiser on 2025-04-29 06:13_
 
 ---
@@ -64,10 +60,6 @@ _Label `rule` added by @MichaReiser on 2025-04-29 06:13_
 ---
 
 _Label `help wanted` added by @MichaReiser on 2025-04-29 06:13_
-
----
-
-_Referenced in [astral-sh/ruff#17715](../../astral-sh/ruff/pulls/17715.md) on 2025-04-29 15:59_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-08-01T11:51:04Z
 updated_at: 2023-08-01T15:04:43Z
 url: https://github.com/astral-sh/ruff/issues/6236
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Don't move imports under `if TYPE_CHECKING` if they're added to `__all__`
@@ -60,9 +60,5 @@ Incredible, thank you so much!
 _Comment by @charliermarsh on 2023-08-01 15:04_
 
 This should be fixed in v0.0.282, which is out now.
-
----
-
-_Referenced in [laminlabs/lamindb-setup#731](../../laminlabs/lamindb-setup/pulls/731.md) on 2024-04-25 13:26_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-16T06:38:22Z
 updated_at: 2024-06-11T18:29:49Z
 url: https://github.com/astral-sh/ruff/issues/10968
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Server log messages should use `window/logMessage`
@@ -68,15 +68,7 @@ _Added to milestone `Ruff Server: Beta` by @snowsignal on 2024-04-16 21:08_
 
 ---
 
-_Referenced in [astral-sh/ruff#11169](../../astral-sh/ruff/pulls/11169.md) on 2024-04-26 23:30_
-
----
-
 _Removed from milestone `Ruff Server: Beta` by @snowsignal on 2024-05-22 09:47_
-
----
-
-_Referenced in [astral-sh/ruff#11747](../../astral-sh/ruff/pulls/11747.md) on 2024-06-05 01:01_
 
 ---
 

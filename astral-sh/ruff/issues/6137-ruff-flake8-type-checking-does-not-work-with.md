@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-07-27T23:42:34Z
 updated_at: 2023-08-04T02:29:43Z
 url: https://github.com/astral-sh/ruff/issues/6137
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # `ruff.flake8-type-checking` Does not work with `FastAPI`
@@ -131,9 +131,5 @@ In short, the paths included the configuration file need to be paths to imported
 ---
 
 _Closed by @charliermarsh on 2023-08-04 02:29_
-
----
-
-_Referenced in [astral-sh/ruff#9312](../../astral-sh/ruff/issues/9312.md) on 2023-12-29 18:43_
 
 ---

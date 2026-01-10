@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-05T23:32:34Z
 updated_at: 2025-12-30T16:32:12Z
 url: https://github.com/astral-sh/ruff/issues/9848
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # New rule: disallow code in `__init__` modules
@@ -33,10 +33,6 @@ _Label `rule` added by @charliermarsh on 2024-02-11 00:08_
 ---
 
 _Label `needs-decision` added by @charliermarsh on 2024-02-11 00:08_
-
----
-
-_Referenced in [astral-sh/ruff#11631](../../astral-sh/ruff/issues/11631.md) on 2024-06-01 23:34_
 
 ---
 
@@ -93,10 +89,6 @@ empty init files.........................................................Failed
 
 not empty: my_app/__init__.py
 not empty: my_app/something/__init__.py
-
----
-
-_Referenced in [astral-sh/ruff#22143](../../astral-sh/ruff/pulls/22143.md) on 2025-12-22 17:46_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-31T12:41:23Z
 updated_at: 2023-05-31T16:35:24Z
 url: https://github.com/astral-sh/ruff/issues/1510
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # `textwrap` always uses LF line endings
@@ -54,10 +54,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-05-30 03:54_
 _Comment by @charliermarsh on 2023-05-30 03:54_
 
 Fixing this as part of another refactor.
-
----
-
-_Referenced in [astral-sh/ruff#4731](../../astral-sh/ruff/pulls/4731.md) on 2023-05-30 17:10_
 
 ---
 

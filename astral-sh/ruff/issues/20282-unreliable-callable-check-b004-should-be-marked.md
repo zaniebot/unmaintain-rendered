@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-06T22:30:43Z
 updated_at: 2025-09-12T19:27:19Z
 url: https://github.com/astral-sh/ruff/issues/20282
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # `unreliable-callable-check` (B004) should be marked unsafe
@@ -51,10 +51,6 @@ ruff 0.12.12 (c6516e9b6 2025-09-04)
 ---
 
 _Label `fixes` added by @ntBre on 2025-09-08 13:56_
-
----
-
-_Referenced in [astral-sh/ruff#20318](../../astral-sh/ruff/pulls/20318.md) on 2025-09-09 16:30_
 
 ---
 

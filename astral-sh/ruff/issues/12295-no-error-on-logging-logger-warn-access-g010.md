@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-12T08:32:29Z
 updated_at: 2024-07-12T12:50:05Z
 url: https://github.com/astral-sh/ruff/issues/12295
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # No error on `logging.Logger.warn` access [G010]
@@ -72,10 +72,6 @@ As a side note, current stable version of `mypy` does not find this issue either
 
 ---
 
-_Referenced in [celery/kombu#2058](../../celery/kombu/pulls/2058.md) on 2024-07-12 09:24_
-
----
-
 _Label `type-inference` added by @charliermarsh on 2024-07-12 12:35_
 
 ---
@@ -93,9 +89,5 @@ _Label `bug` added by @charliermarsh on 2024-07-12 12:49_
 _Comment by @charliermarsh on 2024-07-12 12:50_
 
 (`logger.warn("...")` should work, but I think you picked that up already :))
-
----
-
-_Referenced in [astral-sh/ruff#17219](../../astral-sh/ruff/issues/17219.md) on 2025-04-05 08:46_
 
 ---

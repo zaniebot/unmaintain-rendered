@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-30T15:57:02Z
 updated_at: 2024-11-30T20:10:32Z
 url: https://github.com/astral-sh/ruff/issues/14690
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # PLC1802 has false negatives for `ascii` and `sorted`
@@ -46,10 +46,6 @@ Found 2 errors.
 ---
 
 _Label `rule` added by @MichaReiser on 2024-11-30 17:11_
-
----
-
-_Referenced in [astral-sh/ruff#14692](../../astral-sh/ruff/pulls/14692.md) on 2024-11-30 17:41_
 
 ---
 

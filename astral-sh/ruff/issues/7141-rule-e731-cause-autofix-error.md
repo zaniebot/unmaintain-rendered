@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-05T06:22:15Z
 updated_at: 2023-09-05T17:06:59Z
 url: https://github.com/astral-sh/ruff/issues/7141
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Rule E731 cause autofix error
@@ -61,10 +61,6 @@ _Label `fuzzer` added by @MichaReiser on 2023-09-05 07:01_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-09-05 16:55_
-
----
-
-_Referenced in [astral-sh/ruff#7170](../../astral-sh/ruff/pulls/7170.md) on 2023-09-05 16:56_
 
 ---
 

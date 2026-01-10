@@ -1,0 +1,243 @@
+```yaml
+number: 18198
+title: Speed up caching
+type: issue
+state: open
+author: ntBre
+labels:
+  - performance
+assignees: []
+created_at: 2025-05-19T15:42:59Z
+updated_at: 2025-08-11T14:46:13Z
+url: https://github.com/astral-sh/ruff/issues/18198
+synced_at: 2026-01-10T11:09:58Z
+```
+
+# Speed up caching
+
+---
+
+_Issue opened by @ntBre on 2025-05-19 15:42_
+
+It looks like the caching slowdown is not recent, it's been in a pretty steady decline since that 6x number was recorded. These tags aren't exact, just the tag before the commit I was bisecting:
+
+| Tag     | Speedup |
+|---------|---------|
+| 0.11.10 | 1.3     |
+| 0.9.2   | 1.4     |
+| 0.7.3   | 1.7     |
+| 0.5.7   | 1.7     |
+| 0.5.0   | 1.7     |
+| 0.4.5   | 2.6     |
+| 0.3.0   | 3.4     |
+| 0.0.290 | 3.6     |
+| 0.0.240 | 6.1     |
+
+`Speedup` is the relative speedup reading from cache, as reported in the hyperfine summary above.
+
+I couldn't actually build 0.0.240 because of a git dep on libCST that doesn't exist anymore, so that number is from `CONTRIBUTING.md`. 0.0.290 is the earliest version I could build easily because it added the `ruff_linter` crate, which is where I had my CPython clone.
+
+I added a panic after the caching early return in `lint_path` and can confirm that the cache is working too. (I also tried adding a  panic _before_ the early return, right at the top of `lint_path` and it definitely panicked)
+
+_Originally posted by @ntBre in https://github.com/astral-sh/ruff/issues/18051#issuecomment-2891351620_
+            
+
+---
+
+_Label `performance` added by @ntBre on 2025-05-19 15:43_
+
+---
+
+_Comment by @dylwil3 on 2025-05-21 23:27_
+
+Is it possible to record the absolute numbers instead of just the ratio? Not to make you do more work on an already thorough investigation - but it's not immediately clear how much of this is caching slowing down and how much is the cold performance speeding up. For example - one of the big drops is before and after the hand-written parser.
+
+---
+
+_Comment by @ntBre on 2025-05-21 23:39_
+
+That's a good idea, I can definitely extend the table. From what I remember while running these, the absolute times were growing too, but it's better to be sure.
+
+---
+
+_Comment by @ntBre on 2025-05-22 02:17_
+
+This _was_ interesting. These numbers are from my laptop and retrieving the github releases instead of building from source, so the exact ratios are a little different, but the trend is the same.
+
+| Version | Cold | Cache | Speedup |
+|---------|------|-------|---------|
+| 0.1.0 | 298.5 | 73.3 | 4.07 |
+| 0.2.0 | 309.0 | 72.9 | 4.24 |
+| 0.3.0 | 264.2 | 73.0 | 3.62 |
+| 0.4.0 | 175.9 | 73.2 | 2.40 |
+| 0.5.0 | 237.6 | 125.0 | 1.90 |
+| 0.6.0 | 224.4 | 122.6 | 1.83 |
+| 0.7.0 | 224.8 | 122.2 | 1.84 |
+| 0.8.0 | 207.8 | 102.6 | 2.02 |
+| 0.9.0 | 211.7 | 102.4 | 2.07 |
+| 0.10.0 | 293.9 | 186.4 | 1.58 |
+| 0.11.0 | 294.6 | 185.6 | 1.59 |
+
+![Image](https://github.com/user-attachments/assets/b5ae5a2e-0f64-44b9-82d4-818ee83ad066)
+
+---
+
+_Comment by @dylwil3 on 2025-08-04 14:05_
+
+I tried to reproduce this the other day and wasn't able to - maybe my machine is so slow they all look the same 😄 
+
+Do you happen to have somewhere in your shell history the exact `hyperfine` invocation you were using? I'm wondering if I wasn't cleaning up or prepping something properly.
+
+---
+
+_Comment by @ntBre on 2025-08-04 14:11_
+
+I believe I was using the steps from the [CPython Benchmark](https://github.com/astral-sh/ruff/blob/main/CONTRIBUTING.md#cpython-benchmark), but I can try to reproduce again too in case I was doing something wrong.
+
+I definitely should have included this information to begin with anyway!
+
+---
+
+_Comment by @dylwil3 on 2025-08-04 14:24_
+
+Hmm - I think when I tried that I ran into issues when using past versions. We have a config setting `per-file-target-version` that was only added in 0.9, and it's used in the ruff settings in our root. So presumably you added `--isolated` but then maybe it's unclear whether you used the default rules or selected ALL, or something in between?
+
+---
+
+_Comment by @ntBre on 2025-08-04 14:28_
+
+Alright let me check my shell history as you said initially 😆 I don't use my laptop much so there's hope that it's still there.
+
+I found this on my desktop:
+
+```
+cargo build --release --bin ruff && hyperfine --warmup 10 \
+  "./target/release/ruff check ./crates/ruff_linter/resources/test/cpython/ --no-cache -e" \
+  "./target/release/ruff check ./crates/ruff_linter/resources/test/cpython/ -e"
+```
+
+which I think is exactly from the contributing guidelines, but I ran the tests in the table and graph on the laptop.
+
+---
+
+_Comment by @dylwil3 on 2025-08-04 14:32_
+
+oh - were you checking out different tags then and building each time? if so... should we be concerned that our ruff config has changed over time, so this isn't really apples to apples? In your other comment you mentioned pulling down the release binaries - so I wonder if you used a different command then?
+
+edit: oh I misunderstood - you're on your desktop now and the other commands were from your laptop which you'll check later. got it! no rush and no worries!
+
+---
+
+_Comment by @ntBre on 2025-08-04 14:42_
+
+A tragedy in the shell history:
+
+```
+  718  /var/folders/kp/cfn46rgs7h5fjd5mdtrf_0500000gn/T/tmp.bqt7zydwRK
+  719  ls
+  720  vim bench.sh
+  721  sh bench.sh
+  722  vim bench.sh
+  723  sh bench.sh
+  724  vim bench.sh
+  725  ./bench.sh
+  726  sh bench.sh
+  727  vim table.md
+  728  ls
+  729  vim bench.sh
+  730  cat bench.sh
+  731  hyperfine -w 10 "./ruff0.6.0 check cpython --no-cache -e" "./ruff0.6.0 check cpython -e"
+  732  cat table.md
+  733  vim table.md
+  734  v=10; hyperfine -w 10 "./ruff0.$v.0 check cpython --no-cache -e" "./ruff0.$v.0 check cpython -e"
+```
+
+I guess I wrote a script in a temp directory and threw it all away after. But I think the manual runs were sanity checks, presumably with the same command. It looks like I must have cloned CPython in the same tempdir and run on that, which might explain why I didn't hit any configuration conflicts. I definitely remember downloading all of the release binaries because some of the early ones have slightly different paths on GitHub, so it wasn't just a simple `for release in {1..12}; do curl ...`
+
+---
+
+_Comment by @dylwil3 on 2025-08-04 14:48_
+
+That makes sense! 
+
+The other thing I'm wondering about is whether we are getting some noise from printing diagnostics, especially because our diagnostics have gotten "prettier" over time. So we should probably add the `-s` flag. For example: when I run the most recent `ruff` on `cpython` with `--select ALL` it takes a whopping 4 seconds - but that's because it's printing the whole time. With `-s` it's back to subsecond speeds.
+
+But of course - the fact remains that the cache is not offering a reasonable speedup _currently_. Just trying to rule out other artifacts to help pin down when the problem truly arose.
+
+---
+
+_Comment by @ntBre on 2025-08-04 14:58_
+
+Yeah that makes sense to me. You probably wouldn't want 10 warmup runs if they take 4 seconds either!
+
+Both metrics might be interesting, though. If printing has gotten that much slower, it could also be good to know. I guess that might even be a "good" reason why the cache isn't helping as much? If the cached runs are also dominated by printing
+
+Anyway, thanks for looking into this and let me know if any more info would help! I'm excited to see what you find.
+
+---
+
+_Comment by @MichaReiser on 2025-08-07 13:30_
+
+It might also make sense to compare the runtime on a project other than CPython. Cpython is uncommon in the sense that it has tons of diagnostics. That's not the typical Ruff project. 
+
+---
+
+_Comment by @ntBre on 2025-08-11 14:16_
+
+Following up on Micha's suggestion, here are the results for two of our other ecosystem projects, along with CPython:
+
+| Command                                                                                                            |   Mean [ms] | Min [ms] | Max [ms] |
+|:-------------------------------------------------------------------------------------------------------------------|------------:|---------:|---------:|
+| `./target/release/ruff check ./crates/ruff_linter/resources/test/cpython --no-cache --isolated --exit-zero`        | 322.2 ± 4.5 |    316.0 |    330.7 |
+| `./target/release/ruff check ./crates/ruff_linter/resources/test/cpython --isolated --exit-zero`                   | 215.9 ± 4.3 |    209.5 |    223.5 |
+| `./target/release/ruff check ./crates/ruff_linter/resources/test/home-assistant --no-cache --isolated --exit-zero` | 278.3 ± 2.0 |    276.3 |    281.8 |
+| `./target/release/ruff check ./crates/ruff_linter/resources/test/home-assistant --isolated --exit-zero`            |  37.1 ± 1.0 |     35.3 |     39.6 |
+| `./target/release/ruff check ./crates/ruff_linter/resources/test/airflow --no-cache --isolated --exit-zero`        | 132.2 ± 1.4 |    129.8 |    135.2 |
+| `./target/release/ruff check ./crates/ruff_linter/resources/test/airflow --isolated --exit-zero`                   |  34.2 ± 0.8 |     32.7 |     37.2 |
+
+`home-assistant` has no errors, and `airflow` has 9, so maybe CPython's time really is dominated by printing. On these other projects, the cache is still a large speedup.
+
+
+---
+
+_Comment by @dylwil3 on 2025-08-11 14:35_
+
+Nice! And here's the difference with/without printing for cpython to get a sense (on my laptop, and outliers notwithstanding...).
+
+Maybe there isn't a problem after all and our diagnostics just got fancier to print?
+
+```zsh
+ruff_linter/resources/test on  main [$]
+❯ hyperfine --warmup 10 "ruff check --isolated --no-cache -e -s cpython" "ruff check --isolated --no-cache -e cpython" "ruff check --isolated -e cpython" "ruff check --isolated -e -s cpython"
+Benchmark 1: ruff check --isolated --no-cache -e -s cpython
+  Time (mean ± σ):      92.6 ms ±   1.5 ms    [User: 755.6 ms, System: 96.9 ms]
+  Range (min … max):    89.9 ms …  95.9 ms    30 runs
+
+Benchmark 2: ruff check --isolated --no-cache -e cpython
+  Time (mean ± σ):     221.9 ms ±   1.9 ms    [User: 881.9 ms, System: 100.8 ms]
+  Range (min … max):   219.3 ms … 224.5 ms    13 runs
+
+Benchmark 3: ruff check --isolated -e cpython
+  Time (mean ± σ):     166.7 ms ±  17.9 ms    [User: 172.7 ms, System: 82.2 ms]
+  Range (min … max):   158.4 ms … 221.4 ms    18 runs
+
+  Warning: Statistical outliers were detected. Consider re-running this benchmark on a quiet system without any interferences from other programs. It might help to use the '--warmup' or '--prepare' options.
+
+Benchmark 4: ruff check --isolated -e -s cpython
+  Time (mean ± σ):      31.4 ms ±   1.1 ms    [User: 41.9 ms, System: 78.1 ms]
+  Range (min … max):    29.6 ms …  34.3 ms    81 runs
+
+Summary
+  ruff check --isolated -e -s cpython ran
+    2.95 ± 0.12 times faster than ruff check --isolated --no-cache -e -s cpython
+    5.31 ± 0.60 times faster than ruff check --isolated -e cpython
+    7.07 ± 0.26 times faster than ruff check --isolated --no-cache -e cpython
+```
+
+---
+
+_Comment by @dylwil3 on 2025-08-11 14:46_
+
+Or maybe the issue should be renamed "Speed up printing" 😄 
+
+---

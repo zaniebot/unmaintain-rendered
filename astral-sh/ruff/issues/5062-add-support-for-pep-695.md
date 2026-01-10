@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-06-13T18:59:12Z
 updated_at: 2023-08-28T15:01:44Z
 url: https://github.com/astral-sh/ruff/issues/5062
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Add support for PEP 695
@@ -80,55 +80,11 @@ Progress on the Rust Python parser can be tracked at https://github.com/RustPyth
 
 ---
 
-_Referenced in [astral-sh/ruff#5842](../../astral-sh/ruff/pulls/5842.md) on 2023-07-17 23:28_
-
----
-
-_Referenced in [astral-sh/ruff#5863](../../astral-sh/ruff/pulls/5863.md) on 2023-07-18 14:41_
-
----
-
-_Referenced in [astral-sh/ruff#5865](../../astral-sh/ruff/pulls/5865.md) on 2023-07-18 15:45_
-
----
-
-_Referenced in [astral-sh/ruff#5866](../../astral-sh/ruff/pulls/5866.md) on 2023-07-18 16:20_
-
----
-
-_Referenced in [astral-sh/ruff#5869](../../astral-sh/ruff/pulls/5869.md) on 2023-07-18 17:40_
-
----
-
-_Referenced in [astral-sh/ruff#5870](../../astral-sh/ruff/pulls/5870.md) on 2023-07-18 18:14_
-
----
-
-_Referenced in [astral-sh/ruff#5927](../../astral-sh/ruff/pulls/5927.md) on 2023-07-20 17:17_
-
----
-
-_Referenced in [astral-sh/ruff#6109](../../astral-sh/ruff/pulls/6109.md) on 2023-07-26 22:28_
-
----
-
-_Referenced in [astral-sh/ruff#6161](../../astral-sh/ruff/pulls/6161.md) on 2023-07-28 19:26_
-
----
-
-_Referenced in [astral-sh/ruff#6162](../../astral-sh/ruff/pulls/6162.md) on 2023-07-28 21:04_
-
----
-
 _Comment by @zanieb on 2023-07-31 15:36_
 
 We now support parsing and analysis (#6109) of type aliases and parameters. 
 
 Formatting support is being added in #6161 and #6162.
-
----
-
-_Referenced in [astral-sh/ruff#6289](../../astral-sh/ruff/pulls/6289.md) on 2023-08-02 23:46_
 
 ---
 
@@ -143,13 +99,5 @@ _Label `python312` added by @zanieb on 2023-08-24 20:02_
 _Comment by @zanieb on 2023-08-28 15:01_
 
 Additional resource; may be useful for refinements to scoping https://jellezijlstra.github.io/pep695
-
----
-
-_Referenced in [bwhmather/ssort#102](../../bwhmather/ssort/issues/102.md) on 2023-12-21 17:16_
-
----
-
-_Referenced in [astral-sh/ruff#11099](../../astral-sh/ruff/issues/11099.md) on 2024-04-23 06:56_
 
 ---

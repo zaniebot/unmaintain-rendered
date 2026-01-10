@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-29T17:26:12Z
 updated_at: 2023-12-31T12:10:47Z
 url: https://github.com/astral-sh/ruff/issues/9311
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Formatter: Improve handling of syntax errors
@@ -59,18 +59,6 @@ I can fix these.
 _Comment by @zanieb on 2023-12-29 20:28_
 
 It'd also be nice to exit with a specific code if we only fail due to syntax errors rather than some sort of other failure :) that way we can report it nicely in the ecosystem checks instead of treating it as a failed run of Ruff.
-
----
-
-_Referenced in [astral-sh/ruff#9316](../../astral-sh/ruff/pulls/9316.md) on 2023-12-29 22:22_
-
----
-
-_Referenced in [astral-sh/ruff#9293](../../astral-sh/ruff/pulls/9293.md) on 2023-12-30 03:41_
-
----
-
-_Referenced in [astral-sh/ruff#9321](../../astral-sh/ruff/pulls/9321.md) on 2023-12-30 19:50_
 
 ---
 

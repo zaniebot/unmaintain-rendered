@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-21T08:51:38Z
 updated_at: 2023-08-21T14:05:10Z
 url: https://github.com/astral-sh/ruff/issues/6716
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Failed to create fix for UnnecessaryDoubleCastOrProcess: Expected at least one argument in inner function call
@@ -48,10 +48,6 @@ _Label `bug` added by @charliermarsh on 2023-08-21 12:56_
 ---
 
 _Label `fuzzer` added by @charliermarsh on 2023-08-21 12:56_
-
----
-
-_Referenced in [astral-sh/ruff#6725](../../astral-sh/ruff/pulls/6725.md) on 2023-08-21 13:15_
 
 ---
 

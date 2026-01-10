@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-09-15T02:18:42Z
 updated_at: 2022-12-10T16:19:43Z
 url: https://github.com/astral-sh/ruff/issues/197
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T12:06:12Z
 ```
 
 # Show an error when using a name prior to usage of global keyword
@@ -83,10 +83,6 @@ Interesting I think these are actually _syntax_ errors?
 
 ---
 
-_Referenced in [astral-sh/ruff#1178](../../astral-sh/ruff/pulls/1178.md) on 2022-12-10 16:18_
-
----
-
 _Closed by @charliermarsh on 2022-12-10 16:19_
 
 ---
@@ -94,9 +90,5 @@ _Closed by @charliermarsh on 2022-12-10 16:19_
 _Comment by @charliermarsh on 2022-12-10 16:19_
 
 Implemented as `PLE0118` (to match Pylint's `E0118`).
-
----
-
-_Referenced in [astral-sh/ruff#18263](../../astral-sh/ruff/pulls/18263.md) on 2025-05-23 08:17_
 
 ---

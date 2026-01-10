@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-02-20T00:18:56Z
 updated_at: 2025-10-30T16:51:38Z
 url: https://github.com/astral-sh/ruff/issues/3045
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Rule to enforce import module only
@@ -29,10 +29,6 @@ _Label `rule` added by @charliermarsh on 2023-02-20 00:19_
 ---
 
 _Label `needs-decision` added by @charliermarsh on 2023-07-10 01:31_
-
----
-
-_Referenced in [astral-sh/ruff#5841](../../astral-sh/ruff/issues/5841.md) on 2023-07-17 21:04_
 
 ---
 
@@ -63,10 +59,6 @@ should be disallowed
 _Comment by @qthequartermasterman on 2025-03-24 17:20_
 
 https://github.com/Enforcer/pylint_google_style_guide_imports_enforcing exists as a reference implementation. It is a pylint plugin.
-
----
-
-_Referenced in [astral-sh/ruff#21118](../../astral-sh/ruff/pulls/21118.md) on 2025-10-29 15:08_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-08T11:04:57Z
 updated_at: 2024-12-04T14:52:20Z
 url: https://github.com/astral-sh/ruff/issues/8555
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Autoformat COM812 compatible
@@ -73,10 +73,6 @@ _Label `formatter` removed by @MichaReiser on 2023-11-27 04:27_
 ---
 
 _Label `linter` added by @MichaReiser on 2023-11-27 04:27_
-
----
-
-_Referenced in [astral-sh/ruff#6525](../../astral-sh/ruff/issues/6525.md) on 2024-01-29 05:18_
 
 ---
 

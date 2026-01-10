@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-08T03:36:25Z
 updated_at: 2025-05-30T01:40:31Z
 url: https://github.com/astral-sh/ruff/issues/10290
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # PEP 585 usages of `list`, `tuple`, `type`, etc. in type aliases are not flagged when `requires-python` includes `< 3.9`.
@@ -174,10 +174,6 @@ Thanks for the pointer. Will add a comment about my confusion there.
 
 ---
 
-_Referenced in [astral-sh/ruff#13783](../../astral-sh/ruff/issues/13783.md) on 2024-10-16 20:30_
-
----
-
 _Comment by @asglover on 2025-05-30 01:30_
 
 Just to clarify,  Is there no "DOWN" set of rules that I can use to lint a program to make sure that it won't commit syntax errors on the minimum allowable target-version? That's what I assumed the "target-version" setting did until a close reading. So it only guarantees not to suggest breaking upgrades? 
@@ -201,9 +197,5 @@ There is https://github.com/astral-sh/ruff/issues/2501 for a possible pydowngrad
 I'm not sure I'm following exactly on the `target-version` docs, so that might be good for a separate issue!
 
 Thanks for the kind words!
-
----
-
-_Referenced in [astral-sh/ruff#18381](../../astral-sh/ruff/issues/18381.md) on 2025-05-30 02:12_
 
 ---

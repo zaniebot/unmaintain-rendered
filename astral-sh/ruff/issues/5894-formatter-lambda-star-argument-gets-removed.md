@@ -13,7 +13,7 @@ assignees: []
 created_at: 2023-07-19T19:18:49Z
 updated_at: 2023-08-02T19:31:23Z
 url: https://github.com/astral-sh/ruff/issues/5894
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Formatter: lambda star argument gets removed
@@ -40,10 +40,6 @@ _Comment by @MichaReiser on 2023-07-19 21:04_
 
 ---
 
-_Referenced in [astral-sh/ruff#6069](../../astral-sh/ruff/issues/6069.md) on 2023-07-25 11:22_
-
----
-
 _Label `good first issue` added by @MichaReiser on 2023-07-31 13:14_
 
 ---
@@ -53,10 +49,6 @@ _Label `help wanted` added by @MichaReiser on 2023-07-31 13:14_
 ---
 
 _Added to milestone `Formatter: Alpha` by @MichaReiser on 2023-07-31 15:49_
-
----
-
-_Referenced in [astral-sh/ruff#6203](../../astral-sh/ruff/issues/6203.md) on 2023-07-31 16:57_
 
 ---
 
@@ -73,10 +65,6 @@ To my knowledge it's unclaimed, go for it. Here's the PR that added initial lamb
 ---
 
 _Assigned to @LaBatata101 by @MichaReiser on 2023-08-01 05:37_
-
----
-
-_Referenced in [astral-sh/ruff#6257](../../astral-sh/ruff/pulls/6257.md) on 2023-08-01 21:35_
 
 ---
 

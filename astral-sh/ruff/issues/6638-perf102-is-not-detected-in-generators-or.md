@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-17T03:42:10Z
 updated_at: 2023-08-20T12:57:26Z
 url: https://github.com/astral-sh/ruff/issues/6638
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # `PERF102` is not detected in generators or comprehensions
@@ -79,9 +79,5 @@ _Comment by @harupy on 2023-08-20 07:51_
 One question: To detect whether the iterator variables are used in the comprehension, can we use the same approach as the `function_uses_loop_variable` rule?
 
 https://github.com/astral-sh/ruff/blob/7e9023b6f85c28bcfdc7fe82a507d7752e84edcf/crates/ruff/src/rules/flake8_bugbear/rules/function_uses_loop_variable.rs#L283-L284
-
----
-
-_Referenced in [astral-sh/ruff#7022](../../astral-sh/ruff/pulls/7022.md) on 2023-08-31 14:12_
 
 ---

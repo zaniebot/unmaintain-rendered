@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-11T04:12:59Z
 updated_at: 2024-02-13T05:44:23Z
 url: https://github.com/astral-sh/ruff/issues/9928
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # PLR6201 fails but cannot be fixed on `list in tuple(list, list)`
@@ -46,10 +46,6 @@ Agreed. It's hard to fix this _in general_ because we need arbitrary type infere
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-12 17:10_
-
----
-
-_Referenced in [astral-sh/ruff#9956](../../astral-sh/ruff/pulls/9956.md) on 2024-02-12 17:17_
 
 ---
 

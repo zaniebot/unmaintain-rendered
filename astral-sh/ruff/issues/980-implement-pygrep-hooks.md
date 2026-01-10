@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-12-01T16:42:17Z
 updated_at: 2023-05-11T03:26:30Z
 url: https://github.com/astral-sh/ruff/issues/980
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Implement pygrep-hooks
@@ -52,17 +52,9 @@ I will implement `python-no-eval`.
 
 ---
 
-_Referenced in [astral-sh/ruff#994](../../astral-sh/ruff/pulls/994.md) on 2022-12-02 10:11_
-
----
-
 _Comment by @squiddy on 2022-12-15 17:36_
 
 I'm working on `python-no-log-warn`.
-
----
-
-_Referenced in [astral-sh/ruff#1250](../../astral-sh/ruff/pulls/1250.md) on 2022-12-15 19:38_
 
 ---
 
@@ -72,27 +64,11 @@ Working on `python-check-blanket-type-ignore` now.
 
 ---
 
-_Referenced in [astral-sh/ruff#1440](../../astral-sh/ruff/pulls/1440.md) on 2022-12-29 17:22_
-
----
-
 _Label `rule` removed by @charliermarsh on 2022-12-31 18:17_
 
 ---
 
 _Label `plugin` added by @charliermarsh on 2022-12-31 18:17_
-
----
-
-_Referenced in [astral-sh/ruff#1626](../../astral-sh/ruff/pulls/1626.md) on 2023-01-04 05:16_
-
----
-
-_Referenced in [astropy/astropy#14297](../../astropy/astropy/pulls/14297.md) on 2023-01-23 19:56_
-
----
-
-_Referenced in [materialsproject/pymatgen#2847](../../materialsproject/pymatgen/pulls/2847.md) on 2023-02-15 19:16_
 
 ---
 
@@ -131,14 +107,6 @@ _Comment by @finswimmer on 2023-04-30 20:01_
 > It is implemented as PYI033.
 
 Hm, looks like this is only for stub files (`.pyi`) I cannot get it work for normal python files. :man_shrugging: 
-
----
-
-_Referenced in [astral-sh/ruff#4166](../../astral-sh/ruff/pulls/4166.md) on 2023-04-30 21:20_
-
----
-
-_Referenced in [astral-sh/ruff#4366](../../astral-sh/ruff/pulls/4366.md) on 2023-05-11 03:18_
 
 ---
 

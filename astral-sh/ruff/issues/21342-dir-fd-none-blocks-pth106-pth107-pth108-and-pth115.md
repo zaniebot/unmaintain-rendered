@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-11-08T17:51:21Z
 updated_at: 2025-11-10T14:32:47Z
 url: https://github.com/astral-sh/ruff/issues/21342
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # `dir_fd=None` blocks PTH106, PTH107, PTH108, and PTH115
@@ -42,9 +42,5 @@ ruff 0.14.4 (c7ff9826d 2025-11-06)
 ---
 
 _Label `rule` added by @ntBre on 2025-11-10 14:32_
-
----
-
-_Referenced in [astral-sh/ruff#21371](../../astral-sh/ruff/pulls/21371.md) on 2025-11-11 00:19_
 
 ---

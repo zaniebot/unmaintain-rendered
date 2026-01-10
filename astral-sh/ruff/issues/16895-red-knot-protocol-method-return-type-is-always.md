@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-03-21T12:31:51Z
 updated_at: 2025-03-23T17:51:11Z
 url: https://github.com/astral-sh/ruff/issues/16895
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] Protocol method return type is always inferred as `None`
@@ -88,10 +88,6 @@ _Comment by @AlexWaygood on 2025-03-21 13:09_
 they are already excluded from the check -- there's a diagnostic emitted on the `f` function in `bar.py` here but not on the `f` function in `foo.pyi`: https://playknot.ruff.rs/06f3885f-d482-41f0-b998-9b63f89ccefc
 
 It looks like `@overload`-decorated functions are also already excluded.
-
----
-
-_Referenced in [astral-sh/ruff#16900](../../astral-sh/ruff/pulls/16900.md) on 2025-03-21 16:08_
 
 ---
 

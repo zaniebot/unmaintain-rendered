@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-29T20:00:33Z
 updated_at: 2025-01-18T22:31:59Z
 url: https://github.com/astral-sh/ruff/issues/15182
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [Infinite loop] Failed to Converge After 100 Iterations When Fixing Imports (e.g., I001, F401, F811)
@@ -1163,14 +1163,6 @@ Nothing here has changed since you posted this. We need to swap the priority of 
 
 ---
 
-_Referenced in [astral-sh/ruff#15574](../../astral-sh/ruff/pulls/15574.md) on 2025-01-18 22:22_
-
----
-
 _Closed by @charliermarsh on 2025-01-18 22:31_
-
----
-
-_Referenced in [astral-sh/ruff#15583](../../astral-sh/ruff/issues/15583.md) on 2025-01-19 17:07_
 
 ---

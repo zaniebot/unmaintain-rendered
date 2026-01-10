@@ -1,0 +1,97 @@
+```yaml
+number: 6796
+title: "Request: Raise error on any printf style formatting for direct string interpolation"
+type: issue
+state: closed
+author: Avasam
+labels:
+  - rule
+assignees: []
+created_at: 2023-08-22T23:24:37Z
+updated_at: 2024-11-26T07:00:42Z
+url: https://github.com/astral-sh/ruff/issues/6796
+synced_at: 2026-01-10T11:09:49Z
+```
+
+# Request: Raise error on any printf style formatting for direct string interpolation
+
+---
+
+_Issue opened by @Avasam on 2023-08-22 23:24_
+
+As explained here: https://github.com/astral-sh/ruff/issues/3549#issuecomment-1477242022 , Ruff cannot safely autofix all usages of [printf-style-formatting (UP031)](https://beta.ruff.rs/docs/rules/printf-string-formatting/).
+
+I would still like cases like `"%s" % may_be_a_single_element_tuple` to be raised, as they can be manually fixed.
+I don't mind whether this is done through UP031 or as another rule (could be in FLY, see https://github.com/astral-sh/ruff/issues/2102#issuecomment-1400731914).
+
+
+
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-08-25 21:40_
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-08-25 21:40_
+
+---
+
+_Comment by @charliermarsh on 2023-08-25 21:40_
+
+I think this is a reasonable change. I'd love to get more opinions on it.
+
+---
+
+_Comment by @Avasam on 2023-10-06 13:03_
+
+This likely now relates to #3863/#7769 (fixable groups/fix applicability).
+
+You may still want to split it in a different rule to separately configure "fixable w/o type information" vs "unfixable (bad argument count)/risky fix". Idk.
+
+In my case I'm looking to refactor out print-f style formatting. And prevent using it in new code across my projects. The following risky fix is acceptable during the refactoring phase (under the understanding it *is* a **risky** fix and needs review, but can be fixed later if missed during testing):
+
+```py
+world = ("World",)
+print("Hello %s" % world)
+>>> Hello World
+print(f"Hello {world}")
+>>> Hello ('World',)
+``` 
+
+---
+
+_Comment by @zanieb on 2023-10-06 15:27_
+
+Hey @Avasam the applicability (safety level) is attached to the fix not the rule so we could generate an always applicable fix when type information is around but a sometimes applicable fix when not. Does that address your case?
+
+---
+
+_Comment by @Avasam on 2023-10-06 17:52_
+
+As far as the original post goes. I really just want to prevent printf formatting and raise location in CI . Autofix or not.
+
+As far as autofixing goes. It'd be a *nice to have* for me if printf-style strings are updated even if it causes the constructed string to change. My last comment is just because I think those two features are likely related.
+
+
+---
+
+_Label `needs-decision` removed by @zanieb on 2023-11-29 15:51_
+
+---
+
+_Comment by @zanieb on 2023-11-29 15:52_
+
+I'd be happy to review a pull request that changes this rule to raise a violation when type information cannot be inferred. We should gate this behavior behind preview mode. We can explore an unsafe fix after.
+
+---
+
+_Comment by @MichaReiser on 2024-11-26 07:00_
+
+Ruff 0.8 now flags all format string usages, see https://github.com/astral-sh/ruff/issues/12461
+
+---
+
+_Closed by @MichaReiser on 2024-11-26 07:00_
+
+---

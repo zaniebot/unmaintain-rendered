@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-15T11:53:54Z
 updated_at: 2023-04-14T01:28:32Z
 url: https://github.com/astral-sh/ruff/issues/2918
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # PT006 fix adds unneeded parenthesis
@@ -80,10 +80,6 @@ Expected:
 
 ---
 
-_Referenced in [home-assistant/core#88165](../../home-assistant/core/pulls/88165.md) on 2023-02-15 11:55_
-
----
-
 _Label `bug` added by @charliermarsh on 2023-02-15 13:18_
 
 ---
@@ -113,10 +109,6 @@ I'm not sure if you've any other solution in mind so just thought to share this.
 _Comment by @dhruvmanila on 2023-04-13 05:12_
 
 Actually, I've a better solution in mind, will try to fix it by tonight.
-
----
-
-_Referenced in [astral-sh/ruff#3955](../../astral-sh/ruff/pulls/3955.md) on 2023-04-13 07:20_
 
 ---
 

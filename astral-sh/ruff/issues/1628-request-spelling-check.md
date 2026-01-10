@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-04T12:10:17Z
 updated_at: 2025-11-12T14:24:10Z
 url: https://github.com/astral-sh/ruff/issues/1628
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Request: Spelling check
@@ -45,14 +45,6 @@ _Comment by @charliermarsh on 2023-01-04 15:50_
 
 ---
 
-_Referenced in [astral-sh/ruff#1820](../../astral-sh/ruff/issues/1820.md) on 2023-01-12 16:27_
-
----
-
-_Referenced in [astral-sh/ruff#1999](../../astral-sh/ruff/pulls/1999.md) on 2023-01-19 17:14_
-
----
-
 _Comment by @colin99d on 2023-02-10 23:30_
 
 I have been thinking about this for a while and I think we should keep spell checking separate from Ruff for the following reasons:
@@ -70,10 +62,6 @@ Yeah that makes sense. Let's pass on this for now.
 ---
 
 _Closed by @charliermarsh on 2023-02-11 00:08_
-
----
-
-_Referenced in [zenml-io/zenml#1400](../../zenml-io/zenml/pulls/1400.md) on 2023-03-09 17:54_
 
 ---
 
@@ -97,14 +85,6 @@ If the spell checker understands Python, it'll be able to tell what's my fault a
 
 ---
 
-_Referenced in [astral-sh/ruff#5014](../../astral-sh/ruff/issues/5014.md) on 2023-06-11 18:39_
-
----
-
-_Referenced in [qiskit-community/ffsim#161](../../qiskit-community/ffsim/issues/161.md) on 2024-09-25 13:04_
-
----
-
 _Comment by @adam-grant-hendry on 2024-11-24 00:49_
 
 > > I have been thinking about this for a while and I think we should keep spell checking separate from Ruff for the following reasons:
@@ -125,10 +105,6 @@ _Comment by @adam-grant-hendry on 2024-11-24 00:49_
 > If the spell checker understands Python, it'll be able to tell what's my fault and what's outside my control, and so if the typo is on something from an external lib, it can ignore them, as I can't control that, but if the typo is on my own functions and variable names, it can then warn me.
 
 Also regarding 2, I need to spellcheck docstrings for my documentation, so I do actually do need to run in through python files sometimes.
-
----
-
-_Referenced in [ansys/pyaedt#6157](../../ansys/pyaedt/pulls/6157.md) on 2025-05-16 10:04_
 
 ---
 

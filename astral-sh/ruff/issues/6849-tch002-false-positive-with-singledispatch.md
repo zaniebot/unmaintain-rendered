@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-24T10:15:55Z
 updated_at: 2023-12-01T03:04:59Z
 url: https://github.com/astral-sh/ruff/issues/6849
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # TCH002 false positive with `singledispatch`
@@ -79,10 +79,6 @@ _Label `bug` added by @charliermarsh on 2023-08-24 13:25_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-11-30 20:20_
-
----
-
-_Referenced in [astral-sh/ruff#8934](../../astral-sh/ruff/pulls/8934.md) on 2023-12-01 02:05_
 
 ---
 

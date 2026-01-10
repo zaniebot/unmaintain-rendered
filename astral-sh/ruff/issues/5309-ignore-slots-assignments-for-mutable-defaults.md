@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-22T19:15:24Z
 updated_at: 2023-06-22T19:40:56Z
 url: https://github.com/astral-sh/ruff/issues/5309
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Ignore `__slots__` assignments for mutable defaults
@@ -28,10 +28,6 @@ _Label `bug` added by @charliermarsh on 2023-06-22 19:15_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-06-22 19:15_
-
----
-
-_Referenced in [astral-sh/ruff#5314](../../astral-sh/ruff/pulls/5314.md) on 2023-06-22 19:32_
 
 ---
 

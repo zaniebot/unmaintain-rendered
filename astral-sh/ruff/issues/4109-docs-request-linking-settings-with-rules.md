@@ -1,0 +1,53 @@
+```yaml
+number: 4109
+title: "Docs request: linking settings with rules"
+type: issue
+state: closed
+author: jamesbraza
+labels:
+  - documentation
+assignees: []
+created_at: 2023-04-26T00:56:45Z
+updated_at: 2023-05-02T00:59:02Z
+url: https://github.com/astral-sh/ruff/issues/4109
+synced_at: 2026-01-10T11:09:47Z
+```
+
+# Docs request: linking settings with rules
+
+---
+
+_Issue opened by @jamesbraza on 2023-04-26 00:56_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+I made https://github.com/charliermarsh/ruff/issues/4106 because I didn't know how to configure `ruff`'s internal `isort`.  I had just been looking here: https://beta.ruff.rs/docs/rules/#isort-i.
+
+However, there's a whole `isort` config section here: https://beta.ruff.rs/docs/settings/#isort
+
+The request: can we link the settings page in the rules page, for all tools where both pages exist?
+
+---
+
+_Comment by @charliermarsh on 2023-04-26 17:19_
+
+It would be nice to include a reference + link to the settings at the top of each rule section.
+
+---
+
+_Label `documentation` added by @charliermarsh on 2023-04-26 17:19_
+
+---
+
+_Closed by @charliermarsh on 2023-05-02 00:59_
+
+---

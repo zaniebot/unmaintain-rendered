@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-02-25T13:04:32Z
 updated_at: 2025-03-13T03:17:09Z
 url: https://github.com/astral-sh/ruff/issues/16370
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Document and establish new MSRV policy
@@ -39,14 +39,6 @@ _Comment by @MichaReiser on 2025-02-25 13:05_
 _Comment by @carljm on 2025-02-25 16:55_
 
 Sure, I can do this. I checked off the "decide on N-1 vs N-2" task above, since I think we've agreed on N-2.
-
----
-
-_Referenced in [astral-sh/ruff#16384](../../astral-sh/ruff/pulls/16384.md) on 2025-02-25 20:42_
-
----
-
-_Referenced in [astral-sh/ruff#16294](../../astral-sh/ruff/pulls/16294.md) on 2025-02-25 21:00_
 
 ---
 

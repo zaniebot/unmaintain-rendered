@@ -1,0 +1,65 @@
+```yaml
+number: 17729
+title: ruff format --check --silent still output the same log as with --quiet
+type: issue
+state: open
+author: lephuongbg
+labels:
+  - cli
+  - help wanted
+assignees: []
+created_at: 2025-04-30T05:22:02Z
+updated_at: 2025-04-30T11:06:51Z
+url: https://github.com/astral-sh/ruff/issues/17729
+synced_at: 2026-01-10T11:09:58Z
+```
+
+# ruff format --check --silent still output the same log as with --quiet
+
+---
+
+_Issue opened by @lephuongbg on 2025-04-30 05:22_
+
+### Summary
+
+I'm trying to set-up `ruff format --check` in precommit hook and would like it to only return an exit code, instead of outputting anything. 
+
+The description of `ruff format --check --silent` says "Disable all logging (but still exit with status code "1" upon detecting diagnostics)", which is what I need but when actually running it, it still shows "Would reformat: [filename]"
+
+### Version
+
+0.11.7
+
+---
+
+_Renamed from "ruff check --silent still output the same log as with --quiet" to "ruff format --check --silent still output the same log as with --quiet" by @lephuongbg on 2025-04-30 05:22_
+
+---
+
+_Comment by @MichaReiser on 2025-04-30 06:19_
+
+We would also need to wrap the line printing the stats here 
+
+https://github.com/astral-sh/ruff/blob/861931795c4b0d9bf4a95b4bb3227c524036d338/crates/ruff/src/commands/format.rs#L194-L205
+
+by a `if self.log_level >= LogLevel::Default {` check
+
+---
+
+_Label `cli` added by @MichaReiser on 2025-04-30 06:19_
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2025-04-30 06:19_
+
+---
+
+_Comment by @Kalmaegi on 2025-04-30 11:05_
+
+I'll try to solve this problem.
+
+---
+
+_Assigned to @Kalmaegi by @MichaReiser on 2025-04-30 11:06_
+
+---

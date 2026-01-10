@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-02T00:21:50Z
 updated_at: 2025-05-11T13:16:23Z
 url: https://github.com/astral-sh/ruff/issues/9767
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # new rule - useless if statement
@@ -38,10 +38,6 @@ This is similar to `if-with-same-arms` (SIM114) in `flake8-simplify`, so I filed
 ---
 
 _Label `rule` added by @AlexWaygood on 2024-02-02 11:02_
-
----
-
-_Referenced in [PaddlePaddle/Paddle#66004](../../PaddlePaddle/Paddle/pulls/66004.md) on 2024-07-12 17:25_
 
 ---
 

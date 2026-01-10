@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-10-23T08:14:14Z
 updated_at: 2024-10-23T16:12:02Z
 url: https://github.com/astral-sh/uv/issues/8490
-synced_at: 2026-01-10T01:57:19Z
+synced_at: 2026-01-10T11:10:20Z
 ```
 
 # Specify a commit instead of tag with `tool.uv.sources`
@@ -46,10 +46,6 @@ wonderwords = { git = "https://github.com/mrmaxguns/wonderwordsmodule", rev = "5
 _Comment by @cthoyt on 2024-10-23 09:44_
 
 Amazing! I can make a PR to the documentation to make this more clear
-
----
-
-_Referenced in [astral-sh/uv#8497](../../astral-sh/uv/pulls/8497.md) on 2024-10-23 11:33_
 
 ---
 

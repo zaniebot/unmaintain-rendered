@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-22T18:35:46Z
 updated_at: 2024-08-27T16:00:20Z
 url: https://github.com/astral-sh/ruff/issues/13062
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # docstring-missing-returns (DOC201) reports on explicit `None` returns in bodies that return `None` only
@@ -55,14 +55,6 @@ _Label `docstring` added by @AlexWaygood on 2024-08-22 19:02_
 ---
 
 _Label `accepted` added by @AlexWaygood on 2024-08-22 19:02_
-
----
-
-_Referenced in [astral-sh/ruff#13064](../../astral-sh/ruff/pulls/13064.md) on 2024-08-22 22:52_
-
----
-
-_Referenced in [astral-sh/ruff#13001](../../astral-sh/ruff/issues/13001.md) on 2024-08-23 18:44_
 
 ---
 

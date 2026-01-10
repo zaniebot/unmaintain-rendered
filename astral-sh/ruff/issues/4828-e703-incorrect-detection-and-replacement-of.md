@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-03T05:49:56Z
 updated_at: 2023-06-20T02:22:34Z
 url: https://github.com/astral-sh/ruff/issues/4828
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # E703: Incorrect detection and replacement of semicolon
@@ -55,19 +55,7 @@ _Label `bug` added by @charliermarsh on 2023-06-04 02:04_
 
 ---
 
-_Referenced in [astral-sh/ruff#4972](../../astral-sh/ruff/issues/4972.md) on 2023-06-08 19:55_
-
----
-
-_Referenced in [astral-sh/ruff#4404](../../astral-sh/ruff/issues/4404.md) on 2023-06-09 04:40_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2023-06-20 02:07_
-
----
-
-_Referenced in [astral-sh/ruff#5199](../../astral-sh/ruff/pulls/5199.md) on 2023-06-20 02:12_
 
 ---
 

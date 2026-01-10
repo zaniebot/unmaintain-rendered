@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-22T13:35:26Z
 updated_at: 2023-10-02T14:44:21Z
 url: https://github.com/astral-sh/ruff/issues/7598
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Format jupyter notebooks
@@ -59,10 +59,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-10-01 20:10_
 _Comment by @charliermarsh on 2023-10-01 20:12_
 
 I have a working version of this going.
-
----
-
-_Referenced in [astral-sh/ruff#7749](../../astral-sh/ruff/pulls/7749.md) on 2023-10-01 23:34_
 
 ---
 

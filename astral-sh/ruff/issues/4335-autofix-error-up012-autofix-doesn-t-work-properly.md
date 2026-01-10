@@ -1,0 +1,54 @@
+```yaml
+number: 4335
+title: "[Autofix error] UP012 autofix doesn't work properly with string using implicit concatenation"
+type: issue
+state: closed
+author: lengau
+labels:
+  - bug
+assignees: []
+created_at: 2023-05-10T01:07:36Z
+updated_at: 2023-05-10T02:57:11Z
+url: https://github.com/astral-sh/ruff/issues/4335
+synced_at: 2026-01-10T11:09:47Z
+```
+
+# [Autofix error] UP012 autofix doesn't work properly with string using implicit concatenation
+
+---
+
+_Issue opened by @lengau on 2023-05-10 01:07_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+The following code gets a detected syntax error from the UP012 autofix:
+
+```python
+a = (
+    "abc"
+    "def"
+).encode()
+```
+
+when running with `ruff check --isolated --fix --select UP012 test.py` in ruff 0.0.265.
+
+P.S. Thanks for the great tool!
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-05-10 01:44_
+
+---
+
+_Closed by @charliermarsh on 2023-05-10 02:57_
+
+---

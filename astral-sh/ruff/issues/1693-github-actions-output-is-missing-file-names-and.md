@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-06T15:03:41Z
 updated_at: 2023-01-06T21:09:45Z
 url: https://github.com/astral-sh/ruff/issues/1693
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # GitHub Actions output is missing file names and line numbers
@@ -23,10 +23,6 @@ See: https://github.com/pypa/hatch/pull/702#issuecomment-1373727049.
 Here's an example: https://github.com/pypa/hatch/actions/runs/3853184547/jobs/6565955257.
 
 The action comments appear in the right spot in the "Files changed" tabs, but should the locations also be visible in the logs?
-
----
-
-_Referenced in [pypa/hatch#702](../../pypa/hatch/pulls/702.md) on 2023-01-06 15:03_
 
 ---
 
@@ -57,10 +53,6 @@ Thanks, I'll look into it today.
 _Comment by @charliermarsh on 2023-01-06 17:07_
 
 Relevant: https://github.com/golangci/golangci-lint-action/issues/119
-
----
-
-_Referenced in [astral-sh/ruff#1696](../../astral-sh/ruff/pulls/1696.md) on 2023-01-06 17:14_
 
 ---
 

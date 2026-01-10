@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-05T18:25:43Z
 updated_at: 2025-03-19T04:16:38Z
 url: https://github.com/astral-sh/ruff/issues/1667
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Error fixes are logged without indicating file names
@@ -50,10 +50,6 @@ _Label `cli` added by @charliermarsh on 2023-01-06 23:16_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-01-06 23:52_
-
----
-
-_Referenced in [astral-sh/ruff#1701](../../astral-sh/ruff/pulls/1701.md) on 2023-01-07 00:08_
 
 ---
 

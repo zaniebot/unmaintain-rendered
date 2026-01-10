@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-05T20:52:47Z
 updated_at: 2022-12-06T20:24:32Z
 url: https://github.com/astral-sh/ruff/issues/1076
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:16Z
 ```
 
 # Failure to recognize too many blank lines
@@ -90,9 +90,5 @@ Closing in favor of #1073.
 ---
 
 _Closed by @charliermarsh on 2022-12-06 20:24_
-
----
-
-_Referenced in [PyLops/pylops#485](../../PyLops/pylops/issues/485.md) on 2023-02-18 23:54_
 
 ---

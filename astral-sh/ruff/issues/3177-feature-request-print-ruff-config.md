@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-23T16:38:32Z
 updated_at: 2023-02-24T05:07:32Z
 url: https://github.com/astral-sh/ruff/issues/3177
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # feature request: print ruff config
@@ -94,10 +94,6 @@ _Comment by @charliermarsh on 2023-02-23 17:47_
 
 Let's leave this open since there are a few things to improve here. We can't really change `ruff help`, since `ruff --show-settings /path/to/file.py` only works for historical reasons. We didn't _used_ to have multiple subcommands, but then we moved linting to `ruff check`. For backwards compatibility, we treat `ruff check` as the "default" subcommand. It's a little hacky, but it does work.
 
-
----
-
-_Referenced in [astral-sh/ruff#3201](../../astral-sh/ruff/pulls/3201.md) on 2023-02-24 04:16_
 
 ---
 

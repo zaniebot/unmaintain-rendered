@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-08-28T07:37:13Z
 updated_at: 2024-09-26T06:35:23Z
 url: https://github.com/astral-sh/ruff/issues/6933
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Can omit parentheses layout for patterns
@@ -50,23 +50,11 @@ match test:
 
 ---
 
-_Referenced in [astral-sh/ruff#5834](../../astral-sh/ruff/issues/5834.md) on 2023-08-28 07:37_
-
----
-
 _Label `formatter` added by @MichaReiser on 2023-08-28 07:51_
 
 ---
 
 _Added to milestone `Formatter: Beta` by @MichaReiser on 2023-08-28 07:51_
-
----
-
-_Referenced in [astral-sh/ruff#6905](../../astral-sh/ruff/pulls/6905.md) on 2023-08-28 07:52_
-
----
-
-_Referenced in [astral-sh/ruff#7050](../../astral-sh/ruff/issues/7050.md) on 2023-09-01 20:11_
 
 ---
 
@@ -117,10 +105,6 @@ _Label `accepted` added by @charliermarsh on 2023-09-27 14:40_
 
 ---
 
-_Referenced in [astral-sh/ruff#8678](../../astral-sh/ruff/issues/8678.md) on 2023-11-28 07:24_
-
----
-
 _Comment by @MichaReiser on 2024-02-08 14:31_
 
 I'm going to remove this from the stable release since it hasn't come up often. 
@@ -135,18 +119,6 @@ _Removed from milestone `Formatter: Stable` by @MichaReiser on 2024-02-08 14:32_
 
 ---
 
-_Referenced in [astral-sh/ruff#13371](../../astral-sh/ruff/issues/13371.md) on 2024-09-17 08:55_
-
----
-
-_Referenced in [astral-sh/ruff#13510](../../astral-sh/ruff/pulls/13510.md) on 2024-09-25 15:18_
-
----
-
 _Closed by @MichaReiser on 2024-09-26 06:35_
-
----
-
-_Referenced in [Homebrew/homebrew-core#203745](../../Homebrew/homebrew-core/pulls/203745.md) on 2025-01-09 17:12_
 
 ---

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-27T21:10:25Z
 updated_at: 2024-09-02T12:10:56Z
 url: https://github.com/astral-sh/ruff/issues/13128
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Rule request: Warn whenever any default value is provided in __post_init__
@@ -78,10 +78,6 @@ _Label `accepted` added by @AlexWaygood on 2024-08-28 09:03_
 ---
 
 _Label `help wanted` added by @AlexWaygood on 2024-08-28 22:04_
-
----
-
-_Referenced in [astral-sh/ruff#13192](../../astral-sh/ruff/pulls/13192.md) on 2024-09-01 11:34_
 
 ---
 

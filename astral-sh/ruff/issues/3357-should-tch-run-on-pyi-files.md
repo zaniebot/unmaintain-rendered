@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-03-06T07:49:14Z
 updated_at: 2023-03-06T20:19:27Z
 url: https://github.com/astral-sh/ruff/issues/3357
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Should TCH run on pyi files?
@@ -83,10 +83,6 @@ I can fix this today.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-03-06 16:20_
-
----
-
-_Referenced in [astral-sh/ruff#3362](../../astral-sh/ruff/pulls/3362.md) on 2023-03-06 16:37_
 
 ---
 

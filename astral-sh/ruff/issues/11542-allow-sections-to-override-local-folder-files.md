@@ -1,0 +1,88 @@
+```yaml
+number: 11542
+title: "Allow `sections` to override `local-folder` files"
+type: issue
+state: open
+author: TerryRPatterson
+labels:
+  - isort
+assignees: []
+created_at: 2024-05-26T00:07:21Z
+updated_at: 2024-05-27T04:54:55Z
+url: https://github.com/astral-sh/ruff/issues/11542
+synced_at: 2026-01-10T11:09:53Z
+```
+
+# Allow `sections` to override `local-folder` files
+
+---
+
+_Issue opened by @TerryRPatterson on 2024-05-26 00:07_
+
+At the moment, imports having an import level greater than zero are always classified as a local folder import, even if they match a pattern specified in the sections configuration.
+
+It would be nice if the sections check had higher priority than local folders.
+
+I have a couple of imports which need to be in a different section to call out that they are wrappers around optional deps.
+
+
+---
+
+_Comment by @charliermarsh on 2024-05-26 17:22_
+
+Do you mind providing a concrete example? Aren't relative imports always within the same package? How would they belong to a different section?
+
+---
+
+_Label `isort` added by @charliermarsh on 2024-05-26 17:22_
+
+---
+
+_Label `needs-info` added by @charliermarsh on 2024-05-26 17:22_
+
+---
+
+_Comment by @TerryRPatterson on 2024-05-26 18:17_
+
+Sure, I have a custom section defined:
+```toml
+[lint.isort]
+section-order=[
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder",
+    "extra-types",
+]
+
+[lint.isort.sections]
+extra-types=['.types.extras.*']
+```
+and when applied to this file:
+
+```python
+from .types.path import Path
+from .types.pyobject import PyObject
+from .types.string import String
+from .types.struct_reference import StructReference
+
+# Types wrapping optional dependencies 
+from .types.extras.secret import Secret
+from .types.extras.url import Url
+```
+
+It wants to sort the `.types.extras` import into the middle of the local-folder section.
+
+
+---
+Forgot to include this in the initial post.
+I really appreciate the work y'all have put into ruff and uv they are both awesome tools.
+
+
+
+---
+
+_Label `needs-info` removed by @dhruvmanila on 2024-05-27 04:54_
+
+---

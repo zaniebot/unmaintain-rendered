@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-05-02T09:34:14Z
 updated_at: 2023-11-10T05:29:24Z
 url: https://github.com/astral-sh/ruff/issues/4186
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Respect `Applicability` in LSP
@@ -23,14 +23,6 @@ This task is part of #4181 and it depends on #4183 and #4185
 * Double check if we need to change the LSP fix command to use `--fix-unsafe` when applying a code fix. 
 * Change the `fixAll` action handler to only apply safe fixes by default
 * Introduce a new option to also run unsafe fixes as part of `fixAll`
-
----
-
-_Referenced in [astral-sh/ruff#4181](../../astral-sh/ruff/issues/4181.md) on 2023-05-02 09:34_
-
----
-
-_Referenced in [astral-sh/ruff#7769](../../astral-sh/ruff/pulls/7769.md) on 2023-10-03 17:34_
 
 ---
 

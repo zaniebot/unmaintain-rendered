@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-02-01T22:10:36Z
 updated_at: 2023-02-02T16:24:44Z
 url: https://github.com/astral-sh/ruff/issues/2456
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # PT009 changes `assertFalse()` into `assert … is False`
@@ -82,10 +82,6 @@ _Comment by @spaceone on 2023-02-02 10:07_
 
 https://github.com/python/cpython/blob/main/Lib/unittest/case.py#L705-L709
 I'll do a PR.
-
----
-
-_Referenced in [astral-sh/ruff#2476](../../astral-sh/ruff/pulls/2476.md) on 2023-02-02 13:33_
 
 ---
 

@@ -1,0 +1,75 @@
+```yaml
+number: 8746
+title: PERF101 False positive
+type: issue
+state: closed
+author: NeilGirdhar
+labels:
+  - bug
+  - rule
+assignees: []
+created_at: 2023-11-17T19:57:52Z
+updated_at: 2023-11-21T21:35:43Z
+url: https://github.com/astral-sh/ruff/issues/8746
+synced_at: 2026-01-10T11:09:51Z
+```
+
+# PERF101 False positive
+
+---
+
+_Issue opened by @NeilGirdhar on 2023-11-17 19:57_
+
+From the CPython source:
+```
+        klasses = [
+            Mock, MagicMock, NonCallableMock, NonCallableMagicMock
+        ]
+        for Klass in list(klasses):  # PERF101 [*] Do not cast an iterable to `list` before iterating over it
+            klasses.append(lambda K=Klass: K(spec=Anything))
+            klasses.append(lambda K=Klass: K(spec_set=Anything))
+```
+The auto-fix rule removes `list`, which breaks this code.
+
+
+---
+
+_Comment by @zanieb on 2023-11-17 19:58_
+
+What type is `klasses`? How does this break the code?
+
+---
+
+_Comment by @NeilGirdhar on 2023-11-17 20:01_
+
+It's a list.  Removing the copy means that the append statements below would modify the list that's being iterated over.  I edited in the context.
+
+---
+
+_Comment by @zanieb on 2023-11-17 20:03_
+
+I see that makes sense. We can probably special case `append` calls to the inner item which would then not trigger the rule. Separately, I think this code should use `copy(klasses)` which is much clearer.
+
+---
+
+_Comment by @NeilGirdhar on 2023-11-17 20:04_
+
+I agree with you that `copy` would have been clearer.  (Not my code and I can't change it.)
+
+---
+
+_Label `bug` added by @zanieb on 2023-11-17 20:04_
+
+---
+
+_Label `rule` added by @zanieb on 2023-11-17 20:04_
+
+---
+
+_Assigned to @dhruvmanila by @dhruvmanila on 2023-11-21 16:00_
+
+---
+
+_Closed by @dhruvmanila on 2023-11-21 21:35_
+
+---

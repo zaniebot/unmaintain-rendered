@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-05T10:55:47Z
 updated_at: 2025-02-18T21:43:13Z
 url: https://github.com/astral-sh/ruff/issues/15960
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [red-knot] Attributes implicitly declared via their parameter types
@@ -35,10 +35,6 @@ We have pre-existing tests with `TODO` comments for this scenario. The goal of t
 https://github.com/astral-sh/ruff/blob/7ca778f4923590503b1be7958c4e44fcab1e0f98/crates/red_knot_python_semantic/resources/mdtest/attributes.md?plain=1#L33-L34
 
 Part of: #14164 
-
----
-
-_Referenced in [astral-sh/ruff#14164](../../astral-sh/ruff/issues/14164.md) on 2025-02-05 10:55_
 
 ---
 
@@ -224,10 +220,6 @@ class Timestamp:
 
 ---
 
-_Referenced in [astral-sh/ruff#16111](../../astral-sh/ruff/pulls/16111.md) on 2025-02-12 03:14_
-
----
-
 _Comment by @mishamsk on 2025-02-12 03:19_
 
 @sharkdp thanks a lot for the doc link, it helped indeed. If you think there are other such docs that will help me understand overarching red_knot goals/strategy that guide such decisions - would really appreciate them. The more I know, the easier it is for me to align with the core team.
@@ -250,18 +242,10 @@ _Assigned to @sharkdp by @sharkdp on 2025-02-13 12:17_
 
 ---
 
-_Referenced in [astral-sh/ruff#16208](../../astral-sh/ruff/pulls/16208.md) on 2025-02-17 08:41_
-
----
-
 _Closed by @sharkdp on 2025-02-18 21:43_
 
 ---
 
 _Closed by @sharkdp on 2025-02-18 21:43_
-
----
-
-_Referenced in [astral-sh/ty#1515](../../astral-sh/ty/issues/1515.md) on 2025-11-10 15:50_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-03T20:56:05Z
 updated_at: 2023-05-20T18:50:17Z
 url: https://github.com/astral-sh/ruff/issues/3870
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Support `flake8-todos`
@@ -42,10 +42,6 @@ _Label `plugin` added by @charliermarsh on 2023-04-03 22:56_
 _Comment by @evanrittenhouse on 2023-04-06 21:59_
 
 I can try to implement this!
-
----
-
-_Referenced in [astral-sh/ruff#3921](../../astral-sh/ruff/pulls/3921.md) on 2023-04-09 02:28_
 
 ---
 

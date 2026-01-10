@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-25T04:36:04Z
 updated_at: 2023-11-13T23:03:42Z
 url: https://github.com/astral-sh/ruff/issues/8197
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Proposal: Formatting options to enable "vertical formatting" and "grid formatting"
@@ -123,9 +123,5 @@ _Closed by @MichaReiser on 2023-10-26 23:55_
 ---
 
 _Renamed from "Proposal: Formatting option to enable "vertical formatting"" to "Proposal: Formatting options to enable "vertical formatting" and "grid formatting"" by @NeilGirdhar on 2023-11-13 23:03_
-
----
-
-_Referenced in [astral-sh/ruff#2600](../../astral-sh/ruff/issues/2600.md) on 2023-11-13 23:04_
 
 ---

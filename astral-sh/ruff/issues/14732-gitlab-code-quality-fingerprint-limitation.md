@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-02T14:18:50Z
 updated_at: 2025-09-09T17:04:39Z
 url: https://github.com/astral-sh/ruff/issues/14732
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Gitlab code quality fingerprint limitation: multiple errors with identical message
@@ -141,9 +141,5 @@ Let me know if you think this should be in a separate issue.
 _Comment by @ntBre on 2025-09-05 17:59_
 
 That does sound like something we could resolve separately if you want to open a new issue, thanks for letting us know!
-
----
-
-_Referenced in [astral-sh/ruff#20305](../../astral-sh/ruff/issues/20305.md) on 2025-09-08 14:27_
 
 ---

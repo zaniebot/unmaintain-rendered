@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-29T07:37:36Z
 updated_at: 2024-02-29T08:26:45Z
 url: https://github.com/astral-sh/ruff/issues/10163
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Ruff does not seem to detect syntax errors related to unmatched quotes within f-strings.
@@ -83,13 +83,5 @@ I totally agree. I merge this into https://github.com/astral-sh/ruff/issues/6591
 ---
 
 _Closed by @MichaReiser on 2024-02-29 08:26_
-
----
-
-_Referenced in [astral-sh/ruff#13322](../../astral-sh/ruff/issues/13322.md) on 2024-09-11 02:39_
-
----
-
-_Referenced in [astral-sh/ruff#15521](../../astral-sh/ruff/pulls/15521.md) on 2025-01-16 13:31_
 
 ---

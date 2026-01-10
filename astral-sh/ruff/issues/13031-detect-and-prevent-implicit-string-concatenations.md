@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-21T11:59:31Z
 updated_at: 2024-08-22T08:57:47Z
 url: https://github.com/astral-sh/ruff/issues/13031
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Detect and prevent implicit string concatenations e.g. lists
@@ -59,10 +59,6 @@ _Renamed from "Detect and prevent implicit split concetatenations e.g. lists" to
 _Comment by @MichaReiser on 2024-08-21 12:08_
 
 Can you help me understand how this rule would be different from ISC001 or why we should have both rules? We generally prefer **not** to have rules with overlapping concerns.
-
----
-
-_Referenced in [astral-sh/ruff#13014](../../astral-sh/ruff/issues/13014.md) on 2024-08-21 12:09_
 
 ---
 
@@ -201,16 +197,8 @@ Black has a fix in preview mode to prevent some of the ISC-related issues, but i
 
 ---
 
-_Referenced in [astral-sh/ruff#13048](../../astral-sh/ruff/issues/13048.md) on 2024-08-22 08:48_
-
----
-
 _Comment by @MichaReiser on 2024-08-22 08:57_
 
 @hugovk we plan on implementing a simpler solution that we feel more confident in stabilizing (the mentioned black preview style has been in preview for a long term). See https://github.com/astral-sh/ruff/issues/9457
-
----
-
-_Referenced in [astral-sh/ruff#14638](../../astral-sh/ruff/issues/14638.md) on 2024-11-27 16:59_
 
 ---

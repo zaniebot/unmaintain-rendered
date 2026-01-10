@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-06-01T16:16:06Z
 updated_at: 2024-06-02T09:03:16Z
 url: https://github.com/astral-sh/ruff/issues/11679
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # File directive `# flake8: noqa` also suppresses isort errors
@@ -85,9 +85,5 @@ For example, maybe something like:
 
 instead of:
 > Note that Ruff will also respect Flake8's `# flake8: noqa` directive, and will treat it as equivalent to `# ruff: noqa`.
-
----
-
-_Referenced in [huggingface/datasets#6942](../../huggingface/datasets/issues/6942.md) on 2024-06-02 09:43_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-09-21T22:29:04Z
 updated_at: 2023-02-03T18:28:29Z
 url: https://github.com/astral-sh/ruff/issues/252
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # E501 reported in spite of noqa for string literal containing spaces
@@ -79,10 +79,6 @@ I'll try to fix this today, I think it's important.
 ---
 
 _Added to milestone `Release 0.1.0` by @charliermarsh on 2022-09-22 12:31_
-
----
-
-_Referenced in [astral-sh/ruff#257](../../astral-sh/ruff/pulls/257.md) on 2022-09-22 16:15_
 
 ---
 

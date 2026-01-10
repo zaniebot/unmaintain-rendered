@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-01T23:16:18Z
 updated_at: 2024-06-01T23:21:12Z
 url: https://github.com/astral-sh/ruff/issues/11685
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # SIM103 creates double negative
@@ -44,10 +44,6 @@ foo.py:2:5: SIM103 Return the condition `not not 10 < num < 100` directly
 
 _Originally posted by @dimbleby in https://github.com/astral-sh/ruff/issues/6184#issuecomment-2143492291_
             
-
----
-
-_Referenced in [astral-sh/ruff#11684](../../astral-sh/ruff/pulls/11684.md) on 2024-06-01 23:16_
 
 ---
 

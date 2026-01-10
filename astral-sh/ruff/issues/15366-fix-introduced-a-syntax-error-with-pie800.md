@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-09T04:45:45Z
 updated_at: 2025-01-10T14:52:33Z
 url: https://github.com/astral-sh/ruff/issues/15366
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Fix introduced a syntax error with PIE800
@@ -77,10 +77,6 @@ _Label `bug` added by @dhruvmanila on 2025-01-09 04:58_
 ---
 
 _Label `fixes` added by @dhruvmanila on 2025-01-09 04:58_
-
----
-
-_Referenced in [astral-sh/ruff#15394](../../astral-sh/ruff/pulls/15394.md) on 2025-01-10 09:52_
 
 ---
 

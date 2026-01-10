@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-15T23:04:11Z
 updated_at: 2025-03-31T18:23:30Z
 url: https://github.com/astral-sh/ruff/issues/12912
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # C409 now makes code slower
@@ -25,10 +25,6 @@ Introduced in https://github.com/astral-sh/ruff/pull/12657
 `tuple(i for i in range(10000))` is like 50% slower than `tuple([i for i in range(10000)])`. I think it's still fine to have this as a lint, but it's now impossible to configure ruff to distinguish between the two.
 
 This is a thematically similar complaint to https://github.com/astral-sh/ruff/issues/8884
-
----
-
-_Referenced in [astral-sh/ruff#12657](../../astral-sh/ruff/pulls/12657.md) on 2024-08-15 23:04_
 
 ---
 
@@ -113,10 +109,6 @@ I wouldn't mind merging my Feature Request with an already open issue.
 
 ---
 
-_Referenced in [pypa/setuptools#4386](../../pypa/setuptools/pulls/4386.md) on 2024-12-31 00:04_
-
----
-
 _Comment by @Skylion007 on 2025-03-04 15:11_
 
 See this PR https://github.com/pytorch/pytorch/pull/148412#issue-2892876294 for timing that shows that removing the list comprehension here can be sub-optimal. At least, we need to add a knob to back out of the preview behavior.
@@ -136,19 +128,11 @@ At the very least, there should be a knob to turn this more controversial behavi
 
 ---
 
-_Referenced in [pytorch/pytorch#148412](../../pytorch/pytorch/pulls/148412.md) on 2025-03-04 15:12_
-
----
-
 _Comment by @MichaReiser on 2025-03-04 15:18_
 
 > was the preview of this rule removed recently? We really should make this behavior optin since it's worse.
 
 I didn't go back further but it is stable since before october 2023
-
----
-
-_Referenced in [astral-sh/ruff#16500](../../astral-sh/ruff/issues/16500.md) on 2025-03-04 15:23_
 
 ---
 
@@ -176,14 +160,6 @@ https://github.com/astral-sh/ruff/blob/a1a536b2c57ae1a7cc9e84b60db0e8216a34fc9d/
 
 ---
 
-_Referenced in [astral-sh/ruff#15468](../../astral-sh/ruff/issues/15468.md) on 2025-03-11 07:41_
-
----
-
-_Referenced in [astral-sh/ruff#16904](../../astral-sh/ruff/issues/16904.md) on 2025-03-31 18:18_
-
----
-
 _Comment by @Avasam on 2025-03-31 18:21_
 
 Looks like tuple call with a generator expression is getting optimized in Python 3.14 from https://github.com/astral-sh/ruff/issues/12912
@@ -191,9 +167,5 @@ Looks like tuple call with a generator expression is getting optimized in Python
 I don't have actual numbers to compare though.
 
 (thanks @davfsa for spotting this in https://github.com/astral-sh/ruff/issues/16904#issuecomment-2766646655 )
-
----
-
-_Referenced in [astral-sh/ruff#21588](../../astral-sh/ruff/issues/21588.md) on 2025-12-03 05:24_
 
 ---

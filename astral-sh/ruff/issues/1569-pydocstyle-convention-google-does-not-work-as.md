@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-02T22:48:54Z
 updated_at: 2023-07-15T09:04:15Z
 url: https://github.com/astral-sh/ruff/issues/1569
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Pydocstyle `convention = "google"` does not work as expected
@@ -97,10 +97,6 @@ _Comment by @charliermarsh on 2023-01-02 23:04_
 The current setup is confusing enough that I'm slightly embarrassed by it, which is a sign that I should probably fix it 😅 
 
 I'll use this issue to track the work, if that's okay.
-
----
-
-_Referenced in [astral-sh/ruff#1574](../../astral-sh/ruff/pulls/1574.md) on 2023-01-02 23:36_
 
 ---
 
@@ -210,14 +206,6 @@ You can also point the extension to an interpreter or hard-code the path to the 
 _Comment by @charliermarsh on 2023-01-03 22:09_
 
 I think what you're describing above makes sense, RE adding to the `ignore` list instead. It's kind of like saying that `convention = "google"` makes Ruff operate as if none of the non-Google-related checks exist? And it's a little more explicit which I prefer.
-
----
-
-_Referenced in [astral-sh/ruff#1611](../../astral-sh/ruff/pulls/1611.md) on 2023-01-04 01:34_
-
----
-
-_Referenced in [pola-rs/polars#9890](../../pola-rs/polars/pulls/9890.md) on 2023-07-15 08:48_
 
 ---
 

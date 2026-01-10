@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-03T05:38:56Z
 updated_at: 2025-11-19T18:14:37Z
 url: https://github.com/astral-sh/ruff/issues/18436
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Add ability to disable multi-line string concatenation with ruff format
@@ -56,10 +56,6 @@ I think there is more value in disabling this feature for ruff format than havin
 
 ---
 
-_Referenced in [nvaccess/nvda#17671](../../nvaccess/nvda/pulls/17671.md) on 2025-06-03 05:39_
-
----
-
 _Label `formatter` added by @MichaReiser on 2025-06-03 06:57_
 
 ---
@@ -101,14 +97,6 @@ There's no real special use case, it's more the general desire to keep multiline
 ---
 
 _Renamed from "Respect magic trailing comma when considering multi-line string concatenation with ruff format" to "Add ability to disable multi-line string concatenation with ruff format" by @seanbudd on 2025-06-04 02:09_
-
----
-
-_Referenced in [dask/dask#12126](../../dask/dask/pulls/12126.md) on 2025-11-13 21:52_
-
----
-
-_Referenced in [astral-sh/ruff#21526](../../astral-sh/ruff/issues/21526.md) on 2025-11-19 16:13_
 
 ---
 

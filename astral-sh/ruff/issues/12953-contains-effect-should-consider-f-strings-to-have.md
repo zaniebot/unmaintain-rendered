@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-08-17T14:24:06Z
 updated_at: 2024-08-19T00:13:30Z
 url: https://github.com/astral-sh/ruff/issues/12953
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # `contains_effect` should consider f-strings to have effects
@@ -64,9 +64,5 @@ I would vote against changing this... The same could be said for attribute acces
 _Comment by @dscorbett on 2024-08-19 00:13_
 
 Some expressions, like literals, definitely don’t have side effects, so their fixes needn’t be marked unsafe. `contains_effect` could have three return values, indicating the availability of safe fixes (definitely no side effect), unsafe fixes (maybe a side effect, but probably not), and no fixes (probably a side effect).
-
----
-
-_Referenced in [astral-sh/ruff#13127](../../astral-sh/ruff/pulls/13127.md) on 2024-08-27 20:36_
 
 ---

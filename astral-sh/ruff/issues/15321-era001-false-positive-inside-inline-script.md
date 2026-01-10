@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-07T15:32:46Z
 updated_at: 2025-01-07T21:22:24Z
 url: https://github.com/astral-sh/ruff/issues/15321
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # ERA001 false positive inside inline script metadata with trailing additional comment
@@ -76,10 +76,6 @@ _Label `bug` added by @charliermarsh on 2025-01-07 16:52_
 ---
 
 _Label `help wanted` added by @charliermarsh on 2025-01-07 16:52_
-
----
-
-_Referenced in [astral-sh/ruff#15330](../../astral-sh/ruff/pulls/15330.md) on 2025-01-07 20:19_
 
 ---
 

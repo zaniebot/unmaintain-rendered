@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-11T21:27:13Z
 updated_at: 2024-03-17T03:48:25Z
 url: https://github.com/astral-sh/ruff/issues/10345
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Use `--config` in ecosystem checks
@@ -90,9 +90,5 @@ _Comment by @zanieb on 2024-03-17 03:48_
 
 1. I'm not sure, I'd have to check. @AlexWaygood added that feature, I presume there's a way to unset keys.
 2. I don't have a strong preference. `options.to_ruff_args() + overrides.to_ruff_args()` seems reasonable to start.
-
----
-
-_Referenced in [astral-sh/ruff#10436](../../astral-sh/ruff/pulls/10436.md) on 2024-03-17 12:22_
 
 ---

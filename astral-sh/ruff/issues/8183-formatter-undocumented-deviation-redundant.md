@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-24T20:46:23Z
 updated_at: 2023-10-26T06:29:00Z
 url: https://github.com/astral-sh/ruff/issues/8183
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Formatter undocumented deviation: Redundant parentheses in boolean expression can lead to extra line breaks
@@ -70,10 +70,6 @@ Okay I think I understand it now... It is an issue with `can_omit_parentheses`. 
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2023-10-25 10:40_
-
----
-
-_Referenced in [astral-sh/ruff#8238](../../astral-sh/ruff/pulls/8238.md) on 2023-10-26 03:31_
 
 ---
 

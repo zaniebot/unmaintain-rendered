@@ -1,0 +1,58 @@
+```yaml
+number: 11913
+title: "`ruff server`: Implement snapshot tests for code actions"
+type: issue
+state: closed
+author: snowsignal
+labels:
+  - server
+assignees: []
+created_at: 2024-06-18T03:50:49Z
+updated_at: 2025-05-07T15:08:33Z
+url: https://github.com/astral-sh/ruff/issues/11913
+synced_at: 2026-01-10T11:09:54Z
+```
+
+# `ruff server`: Implement snapshot tests for code actions
+
+---
+
+_Issue opened by @snowsignal on 2024-06-18 03:50_
+
+Similar to https://github.com/astral-sh/ruff/issues/11912, we need snapshot tests to verify that the contents of code actions, both quick fixes and source actions, remain consistent with various test documents.
+
+---
+
+_Label `server` added by @snowsignal on 2024-06-18 03:50_
+
+---
+
+_Added to milestone `Ruff Server: Stable` by @snowsignal on 2024-06-18 03:50_
+
+---
+
+_Assigned to @snowsignal by @snowsignal on 2024-06-18 03:50_
+
+---
+
+_Removed from milestone `Ruff Server: Stable` by @snowsignal on 2024-06-27 04:48_
+
+---
+
+_Added to milestone `Ruff Server: Post-Stable` by @snowsignal on 2024-06-27 04:48_
+
+---
+
+_Unassigned @snowsignal by @dhruvmanila on 2024-07-10 03:01_
+
+---
+
+_Comment by @dhruvmanila on 2025-02-28 04:39_
+
+I'm going to merge this with https://github.com/astral-sh/ty/issues/88
+
+---
+
+_Closed by @dhruvmanila on 2025-02-28 04:39_
+
+---

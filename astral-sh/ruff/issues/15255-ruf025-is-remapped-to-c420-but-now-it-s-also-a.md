@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-04T12:52:05Z
 updated_at: 2025-01-05T08:49:16Z
 url: https://github.com/astral-sh/ruff/issues/15255
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # RUF025 is remapped to C420 but now it's also a new rule
@@ -31,10 +31,6 @@ warning: `RUF025` has been remapped to `C420`.
 So I suppose (luckily?) the new rule was not *actually* added yet because it's impossible to use it, it only appears in docs and in the codebase.
 
 Rule codes that were remapped from are supposed to remain reserved forever, right?
-
----
-
-_Referenced in [astral-sh/ruff#15104](../../astral-sh/ruff/pulls/15104.md) on 2025-01-04 12:52_
 
 ---
 

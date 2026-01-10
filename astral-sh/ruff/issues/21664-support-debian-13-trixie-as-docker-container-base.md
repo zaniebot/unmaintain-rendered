@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-11-27T16:24:46Z
 updated_at: 2025-12-10T17:23:36Z
 url: https://github.com/astral-sh/ruff/issues/21664
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # Support Debian 13 "Trixie" as docker container base
@@ -40,9 +40,5 @@ _Label `question` added by @MichaReiser on 2025-11-27 16:27_
 ---
 
 _Label `question` removed by @MichaReiser on 2025-12-10 17:23_
-
----
-
-_Referenced in [astral-sh/ruff#21149](../../astral-sh/ruff/pulls/21149.md) on 2025-12-10 17:23_
 
 ---

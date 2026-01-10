@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-29T08:09:46Z
 updated_at: 2025-10-12T06:38:20Z
 url: https://github.com/astral-sh/ruff/issues/20625
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Wanted: Option to restrict applied rules to a subset
@@ -39,10 +39,6 @@ _Comment by @MichaReiser on 2025-09-29 08:25_
 See my comment on your other issue. You can use `--fixable` and `--unfixable` to limit which rules should be fixed.
 
 You can use `--extend-select` to enable **additional** rules`. You can use `--ignore` to disable additional rules
-
----
-
-_Referenced in [astral-sh/ruff#20815](../../astral-sh/ruff/issues/20815.md) on 2025-10-12 03:45_
 
 ---
 

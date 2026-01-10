@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-26T17:00:39Z
 updated_at: 2023-09-14T20:02:53Z
 url: https://github.com/astral-sh/ruff/issues/3744
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # nbqa + isort produces false positive
@@ -109,10 +109,6 @@ _Comment by @MarcoGorelli on 2023-04-03 20:18_
 > If you want a reproducer than clone the branch I've linked there and run pre-commit run --all-files.
 
 thanks, this is useful! will look into it
-
----
-
-_Referenced in [conda-forge/nbqa-feedstock#49](../../conda-forge/nbqa-feedstock/pulls/49.md) on 2023-04-04 08:55_
 
 ---
 

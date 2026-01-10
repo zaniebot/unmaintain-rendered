@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-31T02:18:00Z
 updated_at: 2023-01-31T04:11:58Z
 url: https://github.com/astral-sh/ruff/issues/2373
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # A way to list per-file-ignore rules for debugging
@@ -84,10 +84,6 @@ Oh, i hadn't realized those were in there, thank you!
 _Comment by @charliermarsh on 2023-01-31 02:53_
 
 No worries! It could be nice if we _also_ told you when a pattern matched a file. We already do that for `exclude` (if you set `--verbose`).
-
----
-
-_Referenced in [astral-sh/ruff#2376](../../astral-sh/ruff/pulls/2376.md) on 2023-01-31 04:07_
 
 ---
 

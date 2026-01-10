@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-12-08T17:55:17Z
 updated_at: 2025-01-05T19:11:33Z
 url: https://github.com/astral-sh/ruff/issues/14840
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] `...` should be treated as a valid parameter default for any annotation in a stub file
@@ -91,10 +91,6 @@ On Ruff's `main` branch, with a local clone of typeshed at `../typeshed` (relati
 ---
 
 _Assigned to @Glyphack by @carljm on 2024-12-14 02:20_
-
----
-
-_Referenced in [astral-sh/ruff#14982](../../astral-sh/ruff/pulls/14982.md) on 2024-12-15 12:01_
 
 ---
 

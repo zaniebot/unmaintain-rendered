@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-16T08:31:26Z
 updated_at: 2024-01-16T20:02:43Z
 url: https://github.com/astral-sh/ruff/issues/9548
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # `RUF011` possible false positive for optional unwrapping in dict comprehension
@@ -112,9 +112,5 @@ Oh sorry, I can confirm that this was already fixed on `main` but hasn't been re
 ---
 
 _Closed by @charliermarsh on 2024-01-16 20:02_
-
----
-
-_Referenced in [XKNX/xknxproject#351](../../XKNX/xknxproject/pulls/351.md) on 2024-01-16 20:14_
 
 ---

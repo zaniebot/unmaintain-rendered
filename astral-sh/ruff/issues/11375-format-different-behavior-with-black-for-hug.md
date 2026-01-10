@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-12T06:34:52Z
 updated_at: 2024-11-15T08:46:37Z
 url: https://github.com/astral-sh/ruff/issues/11375
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # format: different behavior with black for `hug_parens_with_braces_and_square_brackets` and generators
@@ -172,10 +172,6 @@ I don't think this is intentional. The only thing we need to be mindful of is th
 
 ---
 
-_Referenced in [astral-sh/ruff#13371](../../astral-sh/ruff/issues/13371.md) on 2024-09-20 06:25_
-
----
-
 _Comment by @trim21 on 2024-11-14 22:08_
 
 I encounter a case that ruff didn't format this code, this look similar, is this same issue ?
@@ -226,9 +222,5 @@ _Comment by @trim21 on 2024-11-15 08:46_
 > @trim21 I suspect your example is https://docs.astral.sh/ruff/formatter/black/#call-expressions-with-a-single-multiline-string-argument although I don't fully understand what's the input
 
 oh, thanks  i miss this
-
----
-
-_Referenced in [astral-sh/ruff#20482](../../astral-sh/ruff/issues/20482.md) on 2025-09-19 13:44_
 
 ---

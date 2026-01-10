@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-12T01:28:57Z
 updated_at: 2024-11-14T18:37:14Z
 url: https://github.com/astral-sh/ruff/issues/14290
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # (🎁) new rule: in type annotations, prefer `None` appears at the end of unions
@@ -32,10 +32,6 @@ _Label `rule` added by @MichaReiser on 2024-11-12 08:08_
 ---
 
 _Label `typing` added by @MichaReiser on 2024-11-12 08:08_
-
----
-
-_Referenced in [astral-sh/ruff#14314](../../astral-sh/ruff/pulls/14314.md) on 2024-11-13 11:48_
 
 ---
 

@@ -9,9 +9,9 @@ labels:
   - bidirectional inference
 assignees: []
 created_at: 2025-11-03T21:58:50Z
-updated_at: 2026-01-09T06:50:47Z
+updated_at: 2026-01-10T08:59:17Z
 url: https://github.com/astral-sh/ty/issues/1473
-synced_at: 2026-01-10T01:56:40Z
+synced_at: 2026-01-10T11:36:23Z
 ```
 
 # better inference for generics not fully constrained at their construction
@@ -109,5 +109,35 @@ My suggestion does have the drawback that empty arrays need explicit types. I do
 ---
 
 _Assigned to @ibraheemdev by @ibraheemdev on 2026-01-09 06:50_
+
+---
+
+_Comment by @AndBoyS on 2026-01-10 08:59_
+
+> <img alt="Image" width="698" height="70" src="https://private-user-images.githubusercontent.com/8939474/531080762-ad573c98-28ef-46a0-a9bb-a7008300c435.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NjgwMzQ5MjMsIm5iZiI6MTc2ODAzNDYyMywicGF0aCI6Ii84OTM5NDc0LzUzMTA4MDc2Mi1hZDU3M2M5OC0yOGVmLTQ2YTAtYTliYi1hNzAwODMwMGM0MzUucG5nP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LUNyZWRlbnRpYWw9QUtJQVZDT0RZTFNBNTNQUUs0WkElMkYyMDI2MDExMCUyRnVzLWVhc3QtMSUyRnMzJTJGYXdzNF9yZXF1ZXN0JlgtQW16LURhdGU9MjAyNjAxMTBUMDg0MzQzWiZYLUFtei1FeHBpcmVzPTMwMCZYLUFtei1TaWduYXR1cmU9MzMyZTgzOGEwMTUwMTFkZmIwMGVmMDE4MWUxZGY2MWMyZDkzMTRkYTc1OWIxMWMwYTBhZjQ2MjNhMWZkY2FjMSZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QifQ.NycMJrwvjVKAOVaZTykMsj1BssKMArgJoEVrGRuiMCo">
+> I mean I don't really need to make a big argument for this but the above screenshot is obviously and clearly unusable for basically any project.
+> 
+> There should really be a parameter that enforces the following:
+> 
+> ### _Every variable must have a non-Unknown type specified at initialization time_
+> * If it's an empty array, it should be an error. Explicitly annotate list[Any] if that's what you meant.
+> * If it's an explicit array [1, 2, 3], or a list comprehension, it should infer the common type.
+> * No "back propagation" ever, you should be able to deduce the type by reading the file top-to-bottom.
+> 
+> IMO, this should be the default and other options need not even exist, I don't see how the current behavior would ever be useful (No other typechecker to my knowledge does this). But, if `list[X | Unknown]` and "assume array type via what's .add'ed later on" is desired behavior and/or default, that's could still work as long as an option for the above semantics still _exists_. I would never not use such an option.
+> 
+> My suggestion does have the drawback that empty arrays need explicit types. I don't think this is a huge tradeoff as empty arrays are fairly rare. At least, in proper type-safe functional code, everything should be list comprehensions, rarely will you modify an array. Even if you do write a lot of imperative-style array building, it's not worse than the current method, which also requires explicitly annotating `list[X]` at every declaration in order to get type-safe code.
+
+As a mypy user this does make sense for me, but ty's approach is about minimizing friction when using untyped code
+Feels like there should just be a gradual guarantee and strict mode, the first being used when you have old untyped code, and the strict mode for new code where you don't need Unknown type.
+
+As for the original post, second approach seems more straight-forward, we can even have Unknown in this
+
+```
+x = []  # list[Unknown]
+x.append(1)  # list[Unknown | int]
+```
+
+I like the idea of explaining how type was constructed, maybe we can even have extra action in lsp like "explain type", where ty will show all code that determined the type
 
 ---

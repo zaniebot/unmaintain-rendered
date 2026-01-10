@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-29T14:16:15Z
 updated_at: 2025-11-06T14:16:38Z
 url: https://github.com/astral-sh/ruff/issues/15809
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # `C417` has multiple problems
@@ -81,19 +81,7 @@ map(lambda x, y: x + y, a, b)  # Currently no error
 
 ---
 
-_Referenced in [astral-sh/ruff#15802](../../astral-sh/ruff/pulls/15802.md) on 2025-01-29 15:21_
-
----
-
 _Label `bug` added by @charliermarsh on 2025-01-29 15:59_
-
----
-
-_Referenced in [astral-sh/ruff#15876](../../astral-sh/ruff/pulls/15876.md) on 2025-02-02 00:47_
-
----
-
-_Referenced in [astral-sh/ruff#15955](../../astral-sh/ruff/pulls/15955.md) on 2025-02-05 01:01_
 
 ---
 

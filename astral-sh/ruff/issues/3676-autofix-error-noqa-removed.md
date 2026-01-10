@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-23T05:19:06Z
 updated_at: 2023-03-26T14:51:13Z
 url: https://github.com/astral-sh/ruff/issues/3676
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # [Autofix Error] noqa Removed
@@ -88,10 +88,6 @@ https://github.com/JacobCoffee/polyfactory/blob/c95b3e9ed71eb15afc65def2aa3eb570
 
 ![image](https://user-images.githubusercontent.com/45884264/227111241-2080c445-9df4-4567-820c-1e9be1bc202b.png)
 
-
----
-
-_Referenced in [litestar-org/polyfactory#152](../../litestar-org/polyfactory/pulls/152.md) on 2023-03-23 05:33_
 
 ---
 

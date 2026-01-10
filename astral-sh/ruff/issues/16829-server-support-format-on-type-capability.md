@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-18T11:21:21Z
 updated_at: 2025-03-18T11:21:21Z
 url: https://github.com/astral-sh/ruff/issues/16829
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Server: Support format on type capability
@@ -29,9 +29,5 @@ _Label `server` added by @dhruvmanila on 2025-03-18 11:21_
 ---
 
 _Label `wish` added by @dhruvmanila on 2025-03-18 11:21_
-
----
-
-_Referenced in [astral-sh/ruff-vscode#724](../../astral-sh/ruff-vscode/issues/724.md) on 2025-03-18 11:22_
 
 ---

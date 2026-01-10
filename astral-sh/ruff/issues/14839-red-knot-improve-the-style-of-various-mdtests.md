@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-12-08T17:21:26Z
 updated_at: 2024-12-10T13:05:53Z
 url: https://github.com/astral-sh/ruff/issues/14839
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Improve the style of various mdtests
@@ -61,10 +61,6 @@ _Label `testing` added by @AlexWaygood on 2024-12-08 17:21_
 
 ---
 
-_Referenced in [astral-sh/ruff#14858](../../astral-sh/ruff/pulls/14858.md) on 2024-12-09 12:36_
-
----
-
 _Comment by @InSyncWithFoo on 2024-12-09 15:37_
 
 I'll take this. PR coming tomorrow.
@@ -72,10 +68,6 @@ I'll take this. PR coming tomorrow.
 ---
 
 _Assigned to @InSyncWithFoo by @AlexWaygood on 2024-12-09 15:43_
-
----
-
-_Referenced in [astral-sh/ruff#14884](../../astral-sh/ruff/pulls/14884.md) on 2024-12-10 00:42_
 
 ---
 

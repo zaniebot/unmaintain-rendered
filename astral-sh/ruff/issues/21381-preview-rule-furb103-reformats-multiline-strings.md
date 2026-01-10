@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-11-11T15:01:45Z
 updated_at: 2025-11-16T08:32:43Z
 url: https://github.com/astral-sh/ruff/issues/21381
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # Preview rule FURB103 reformats multiline strings
@@ -81,10 +81,6 @@ _Comment by @chirizxc on 2025-11-14 13:55_
 <img width="1165" height="497" alt="Image" src="https://github.com/user-attachments/assets/2ec0113d-da1d-4ee3-9e3d-182c99abade2" />
 
 Is it possible to use it instead of the old `make_suggestion`?
-
----
-
-_Referenced in [astral-sh/ruff#21454](../../astral-sh/ruff/pulls/21454.md) on 2025-11-14 14:11_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-12-10T09:21:20Z
 updated_at: 2025-12-15T17:54:52Z
 url: https://github.com/astral-sh/ruff/issues/21890
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # PERF403 update suggestion will make code slower
@@ -55,10 +55,6 @@ if __name__ == "__main__":
 ### Version
 
 _No response_
-
----
-
-_Referenced in [astral-sh/ruff#21891](../../astral-sh/ruff/issues/21891.md) on 2025-12-10 09:37_
 
 ---
 

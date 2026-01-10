@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-29T21:04:15Z
 updated_at: 2025-09-10T14:22:45Z
 url: https://github.com/astral-sh/ruff/issues/17724
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # detect code duplication
@@ -44,10 +44,6 @@ _Label `wish` added by @MichaReiser on 2025-04-30 06:22_
 
 ---
 
-_Referenced in [astral-sh/ruff#18432](../../astral-sh/ruff/issues/18432.md) on 2025-06-02 15:53_
-
----
-
 _Comment by @Spenhouet on 2025-09-10 14:22_
 
 Not having tested any of these projects but still sharing for reference:
@@ -61,9 +57,5 @@ Not having tested any of these projects but still sharing for reference:
 - https://github.com/swharden/duplicate-code-finder
 
 Does anyone have experience with any of these or any other? Looking for recommendations.
-
----
-
-_Referenced in [astral-sh/ruff#872](../../astral-sh/ruff/issues/872.md) on 2025-09-10 14:37_
 
 ---

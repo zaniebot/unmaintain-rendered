@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-29T19:01:00Z
 updated_at: 2024-05-24T14:57:47Z
 url: https://github.com/astral-sh/ruff/issues/11207
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # ruff server not closing with neovim instances
@@ -60,14 +60,6 @@ _Label `bug` added by @dhruvmanila on 2024-04-30 08:14_
 
 ---
 
-_Referenced in [astral-sh/ruff#11222](../../astral-sh/ruff/pulls/11222.md) on 2024-04-30 23:07_
-
----
-
-_Referenced in [LazyVim/LazyVim#3057](../../LazyVim/LazyVim/pulls/3057.md) on 2024-05-02 19:44_
-
----
-
 _Closed by @snowsignal on 2024-05-03 01:09_
 
 ---
@@ -107,9 +99,5 @@ happy to do more investigation, but would you mind explaining how to get the log
 _Comment by @dhruvmanila on 2024-05-24 14:57_
 
 No worries. You can find the file path using `vim.lsp.get_log_path()` function. You can then copy paste the relevant lines (usually would be at the end of the file) related to `ruff`.
-
----
-
-_Referenced in [astral-sh/ruff#11545](../../astral-sh/ruff/issues/11545.md) on 2024-05-26 16:13_
 
 ---

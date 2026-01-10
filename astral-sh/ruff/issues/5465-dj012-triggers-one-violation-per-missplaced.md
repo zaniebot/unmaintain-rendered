@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-02T19:33:44Z
 updated_at: 2023-07-03T06:08:42Z
 url: https://github.com/astral-sh/ruff/issues/5465
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # DJ012 triggers one violation per missplaced database field. Could be grouped as one single one?
@@ -57,10 +57,6 @@ Yeah, I think this would be better behavior. Nice idea.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-07-03 00:18_
-
----
-
-_Referenced in [astral-sh/ruff#5469](../../astral-sh/ruff/pulls/5469.md) on 2023-07-03 00:56_
 
 ---
 

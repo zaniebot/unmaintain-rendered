@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-14T00:57:36Z
 updated_at: 2023-02-14T02:26:24Z
 url: https://github.com/astral-sh/ruff/issues/2878
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Suggestion: Do not autofix TRY004 `prefer-type-error`
@@ -30,10 +30,6 @@ _Label `autofix` added by @charliermarsh on 2023-02-14 02:16_
 _Comment by @charliermarsh on 2023-02-14 02:16_
 
 Yeah I agree with this.
-
----
-
-_Referenced in [astral-sh/ruff#2880](../../astral-sh/ruff/pulls/2880.md) on 2023-02-14 02:24_
 
 ---
 

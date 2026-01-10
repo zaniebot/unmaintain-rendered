@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-25T02:17:31Z
 updated_at: 2023-07-29T11:41:06Z
 url: https://github.com/astral-sh/ruff/issues/6050
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # [Proposal] New setting for `pep8-naming`: `extend-ignore-names`
@@ -41,10 +41,6 @@ _Label `accepted` added by @charliermarsh on 2023-07-28 04:38_
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2023-07-29 10:51_
-
----
-
-_Referenced in [astral-sh/ruff#6169](../../astral-sh/ruff/pulls/6169.md) on 2023-07-29 11:07_
 
 ---
 

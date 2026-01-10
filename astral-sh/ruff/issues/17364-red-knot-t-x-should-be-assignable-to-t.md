@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-04-12T00:50:25Z
 updated_at: 2025-04-15T20:34:09Z
 url: https://github.com/astral-sh/ruff/issues/17364
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] `T & ~X` should be assignable to `T`
@@ -49,15 +49,7 @@ _Added to milestone `Red Knot Alpha` by @carljm on 2025-04-12 00:50_
 
 ---
 
-_Referenced in [astral-sh/ruff#17301](../../astral-sh/ruff/pulls/17301.md) on 2025-04-12 01:53_
-
----
-
 _Assigned to @dcreager by @dcreager on 2025-04-15 18:07_
-
----
-
-_Referenced in [astral-sh/ruff#17413](../../astral-sh/ruff/pulls/17413.md) on 2025-04-15 19:27_
 
 ---
 

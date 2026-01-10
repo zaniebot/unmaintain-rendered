@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-12-20T22:09:56Z
 updated_at: 2025-07-24T14:03:32Z
 url: https://github.com/astral-sh/ruff/issues/1306
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # False-positive `DTZ007`:  The use of `datetime.datetime.strptime()` without %z must be followed by `.replace(tzinfo=)`
@@ -119,10 +119,6 @@ _Comment by @charliermarsh on 2023-04-21 02:15_
 
 ---
 
-_Referenced in [astral-sh/ruff#7488](../../astral-sh/ruff/issues/7488.md) on 2023-09-18 10:14_
-
----
-
 _Comment by @jonas-w on 2024-03-25 21:13_
 
 Don't know if this is the same issue, but there is also a false-positive if the format string is an f-string.
@@ -143,10 +139,6 @@ dt = datetime.strptime("","%Y-%m-%d %H:%M:%S%z") # everything okay
 
 dt = datetime.strptime("", f"%Y-%m-%d %H:%M:%S%z") # throws DTZ007
 ```
-
----
-
-_Referenced in [astral-sh/ruff#10601](../../astral-sh/ruff/issues/10601.md) on 2024-03-26 07:45_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-27T09:04:33Z
 updated_at: 2025-01-22T16:42:35Z
 url: https://github.com/astral-sh/ruff/issues/12542
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Rules pertaining to PEP 695
@@ -58,18 +58,6 @@ Thanks, you're right, that's my mistake. We may want to fold this into #4617, an
 
 ---
 
-_Referenced in [astral-sh/ruff#4617](../../astral-sh/ruff/issues/4617.md) on 2024-07-28 11:45_
-
----
-
-_Referenced in [astral-sh/ruff#15642](../../astral-sh/ruff/issues/15642.md) on 2025-01-21 13:58_
-
----
-
-_Referenced in [astral-sh/ruff#15565](../../astral-sh/ruff/pulls/15565.md) on 2025-01-22 16:29_
-
----
-
 _Closed by @ntBre on 2025-01-22 16:35_
 
 ---
@@ -83,9 +71,5 @@ _Comment by @ntBre on 2025-01-22 16:42_
 Cases (1) and (3) should now be handled by the rules UP046 and UP047 added in https://github.com/astral-sh/ruff/pull/15565, with a few caveats being tracked in https://github.com/astral-sh/ruff/issues/15642.
 
 I think case (2) would be a good fit for the "pydowngrade" suggestion from #2501, so I'm closing this and making a comment there.
-
----
-
-_Referenced in [astral-sh/ruff#2501](../../astral-sh/ruff/issues/2501.md) on 2025-01-22 16:45_
 
 ---

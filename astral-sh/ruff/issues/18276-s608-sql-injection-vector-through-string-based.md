@@ -1,0 +1,95 @@
+```yaml
+number: 18276
+title: S608 - SQL Injection vector through string-based query construction
+type: issue
+state: closed
+author: laguill
+labels:
+  - question
+assignees: []
+created_at: 2025-05-23T13:25:40Z
+updated_at: 2025-05-28T07:52:07Z
+url: https://github.com/astral-sh/ruff/issues/18276
+synced_at: 2026-01-10T11:09:58Z
+```
+
+# S608 - SQL Injection vector through string-based query construction
+
+---
+
+_Issue opened by @laguill on 2025-05-23 13:25_
+
+### Summary
+
+I have this script that store all tables from a sql database and Ruff is report error S608.
+
+```python
+    # Dict to store tables dataframes
+    dataframes = {}
+
+    # Store each tables in a dataframe
+    for table in tables_list:
+        query = f"SELECT * FROM '{table}'" # error S608 SQL Injection vector through string-based query construction
+        dataframes[table] = mo.sql(
+            query,
+            output=False,
+            engine=engine,
+        )
+    return
+```
+
+If correct the script as specify in [documentation](https://docs.astral.sh/ruff/rules/hardcoded-sql-expression/)
+it becomes
+
+```python
+    dataframes = {}
+
+    # Store each tables in a dataframe
+    for table in tables_list:
+        query = "SELECT * FROM '%s'" % table # error UP031 Use format specifier instead of percent format
+        dataframes[table] = mo.sql(
+            query,
+            output=False,
+            engine=engine,
+        )
+    return
+```
+
+So I correct the code again
+
+```python
+
+    dataframes = {}
+
+    # Store each tables in a dataframe
+    for table in tables_list:
+        query = "SELECT * FROM '{}'".format(table) # UP032 Use f-string instead of `format` call
+        dataframes[table] = mo.sql(
+            query,
+            output=False,
+            engine=engine,
+        )
+    return
+```
+
+This is running in circle...
+
+So what should be the correct way to write SQL query ?
+
+---
+
+_Comment by @MichaReiser on 2025-05-23 13:52_
+
+The example in the documentation is an example where the code is incorrect. It isn't the proposed fix. The proper fix is to escape `table` before inserting the variable into your query to avoid that someone sets table to `table = "users'; DELETE * from users where '' = '" which would drop all content from the users table! 
+
+Now, how this is done depends on the SQL library that you use in your project. However, it also seems that this is a script where `tables_list` isn't provided by users. It's then safe to suppress the warning with `# noqa: S608`
+
+---
+
+_Label `question` added by @MichaReiser on 2025-05-23 13:52_
+
+---
+
+_Closed by @MichaReiser on 2025-05-28 07:52_
+
+---

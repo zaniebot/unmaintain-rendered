@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-13T15:05:39Z
 updated_at: 2023-11-14T21:45:52Z
 url: https://github.com/astral-sh/ruff/issues/8653
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # support no_sections option for isort
@@ -55,10 +55,6 @@ I don't believe we support this today.
 _Comment by @jelmer on 2023-11-13 17:19_
 
 FWIW I'm trying to come up with a PR for this.
-
----
-
-_Referenced in [astral-sh/ruff#8657](../../astral-sh/ruff/pulls/8657.md) on 2023-11-13 17:39_
 
 ---
 

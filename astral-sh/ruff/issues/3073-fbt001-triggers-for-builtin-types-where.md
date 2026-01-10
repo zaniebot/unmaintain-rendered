@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-20T22:07:07Z
 updated_at: 2023-02-20T23:08:20Z
 url: https://github.com/astral-sh/ruff/issues/3073
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # `FBT001` triggers for builtin types where positional arguments have to be used
@@ -63,10 +63,6 @@ _Label `bug` added by @charliermarsh on 2023-02-20 22:33_
 _Comment by @charliermarsh on 2023-02-20 22:33_
 
 Good call, will add these exemptions.
-
----
-
-_Referenced in [astral-sh/ruff#3075](../../astral-sh/ruff/pulls/3075.md) on 2023-02-20 23:05_
 
 ---
 

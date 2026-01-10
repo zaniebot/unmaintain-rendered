@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-03-09T13:41:25Z
 updated_at: 2023-03-14T18:48:14Z
 url: https://github.com/astral-sh/ruff/issues/3418
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Keep `# noqa` comments when forcing single-line imports
@@ -114,10 +114,6 @@ Although this can be mitigated by running `ruff` 2 more times, once with `--noqa
  
 
 
-
----
-
-_Referenced in [astral-sh/ruff#3521](../../astral-sh/ruff/pulls/3521.md) on 2023-03-14 18:36_
 
 ---
 

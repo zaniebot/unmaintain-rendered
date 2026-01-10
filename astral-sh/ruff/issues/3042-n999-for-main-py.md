@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-19T21:11:22Z
 updated_at: 2023-02-20T17:56:17Z
 url: https://github.com/astral-sh/ruff/issues/3042
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # N999 for `__main__.py`
@@ -42,10 +42,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-02-19 21:27_
 ---
 
 _Label `bug` added by @charliermarsh on 2023-02-19 21:27_
-
----
-
-_Referenced in [astral-sh/ruff#3043](../../astral-sh/ruff/pulls/3043.md) on 2023-02-19 21:36_
 
 ---
 

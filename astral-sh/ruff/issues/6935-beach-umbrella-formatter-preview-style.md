@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-28T08:46:22Z
 updated_at: 2024-01-10T16:53:00Z
 url: https://github.com/astral-sh/ruff/issues/6935
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # :beach_umbrella: Formatter Preview style
@@ -45,31 +45,11 @@ _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-08-28 08:46_
 
 ---
 
-_Referenced in [astral-sh/ruff#6581](../../astral-sh/ruff/issues/6581.md) on 2023-09-02 08:21_
-
----
-
-_Referenced in [astral-sh/ruff#7082](../../astral-sh/ruff/pulls/7082.md) on 2023-09-04 08:38_
-
----
-
 _Label `preview` added by @MichaReiser on 2023-09-15 09:51_
 
 ---
 
 _Renamed from ":beach_umbrella: Black Preview style" to ":beach_umbrella: Formatter Preview style" by @MichaReiser on 2023-10-17 00:43_
-
----
-
-_Referenced in [astral-sh/ruff#8043](../../astral-sh/ruff/issues/8043.md) on 2023-10-18 22:03_
-
----
-
-_Referenced in [fpgmaas/deptry#507](../../fpgmaas/deptry/pulls/507.md) on 2023-10-28 11:43_
-
----
-
-_Referenced in [astral-sh/ruff#8357](../../astral-sh/ruff/issues/8357.md) on 2023-10-30 14:37_
 
 ---
 
@@ -122,9 +102,5 @@ _Comment by @MichaReiser on 2023-11-29 04:01_
 _Comment by @zanieb on 2023-11-29 04:03_
 
 Hm... let's leave it closed for now and we can re-open or create a new one if we need it later.
-
----
-
-_Referenced in [astral-sh/ruff#9639](../../astral-sh/ruff/pulls/9639.md) on 2024-01-25 11:46_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-04T18:57:10Z
 updated_at: 2023-07-04T20:25:18Z
 url: https://github.com/astral-sh/ruff/issues/5510
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Expand Ruff's default exclusions
@@ -55,10 +55,6 @@ It's relevant in the context of VS Code: https://github.com/astral-sh/ruff/discu
 _Comment by @dhruvmanila on 2023-07-04 19:16_
 
 Makes sense then! No objections from my side 👍
-
----
-
-_Referenced in [astral-sh/ruff#5513](../../astral-sh/ruff/pulls/5513.md) on 2023-07-04 20:11_
 
 ---
 

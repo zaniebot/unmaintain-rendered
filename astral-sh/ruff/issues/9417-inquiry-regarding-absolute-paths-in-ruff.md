@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-06T22:44:53Z
 updated_at: 2024-12-14T16:22:37Z
 url: https://github.com/astral-sh/ruff/issues/9417
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Inquiry Regarding Absolute Paths in Ruff
@@ -310,13 +310,5 @@ Any ideas or suggestions on how to fix this?
 
 Thanks in advance!
 
-
----
-
-_Referenced in [astral-sh/ruff#14974](../../astral-sh/ruff/pulls/14974.md) on 2024-12-14 18:33_
-
----
-
-_Referenced in [astral-sh/ruff#14985](../../astral-sh/ruff/issues/14985.md) on 2024-12-15 16:11_
 
 ---

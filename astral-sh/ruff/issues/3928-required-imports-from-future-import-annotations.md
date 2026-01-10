@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-10T20:12:28Z
 updated_at: 2023-04-12T02:31:22Z
 url: https://github.com/astral-sh/ruff/issues/3928
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # `required-imports  = ["from __future__ import annotations"]` reports missing import in `pyi` files
@@ -77,10 +77,6 @@ required-imports = ["from __future__ import annotations"]
   "I002", # from __future__ import annotations
 ]
 ```
-
----
-
-_Referenced in [astral-sh/ruff#3940](../../astral-sh/ruff/pulls/3940.md) on 2023-04-12 02:20_
 
 ---
 

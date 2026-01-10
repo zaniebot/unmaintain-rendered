@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-26T21:13:28Z
 updated_at: 2025-10-28T17:49:27Z
 url: https://github.com/astral-sh/ruff/issues/21081
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # Ruff format on multiple directories returns inconsistent results
@@ -145,10 +145,6 @@ Would reformat: scripts/_docs/extract_configuration_docs.py
 ---
 
 _Label `bug` added by @MichaReiser on 2025-10-27 07:28_
-
----
-
-_Referenced in [astral-sh/ruff#20979](../../astral-sh/ruff/pulls/20979.md) on 2025-10-27 07:28_
 
 ---
 

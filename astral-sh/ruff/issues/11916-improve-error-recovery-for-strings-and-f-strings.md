@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-18T04:50:46Z
 updated_at: 2025-10-21T06:57:30Z
 url: https://github.com/astral-sh/ruff/issues/11916
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Improve error recovery for strings and f-strings
@@ -83,14 +83,6 @@ _Label `parser` added by @dhruvmanila on 2024-06-18 04:50_
 _Comment by @dhruvmanila on 2024-06-19 04:36_
 
 After #11915, if we do start emitting the tokens for unterminated strings, we should avoid running any token-based rules on them. This could be done by checking whether the `Unterminated` token flag is set or not.
-
----
-
-_Referenced in [astral-sh/ruff#11937](../../astral-sh/ruff/issues/11937.md) on 2024-06-19 11:16_
-
----
-
-_Referenced in [astral-sh/ruff#11946](../../astral-sh/ruff/issues/11946.md) on 2024-06-20 03:56_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-17T17:33:12Z
 updated_at: 2024-04-18T00:09:14Z
 url: https://github.com/astral-sh/ruff/issues/11002
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Display enabled rules
@@ -98,10 +98,6 @@ Which I cannot even map to a rule in the output of the `ruff rule --output-forma
 Let me also just add what I need it for. We want to move as much rules from pylint over to ruff. I have a script checking current enabled pylint rules, then checking in the full list of ruff rules if it is there, and then it prints it all in a list. This list is then something we can systematically take and enable in ruff, and disable in pylint.
 
 And it will be nice if I can have the already enabled rules in ruff to better structure the output of the script. And for added sanity make sure there are no rules enabled in both.
-
----
-
-_Referenced in [astral-sh/ruff#11003](../../astral-sh/ruff/pulls/11003.md) on 2024-04-17 19:54_
 
 ---
 

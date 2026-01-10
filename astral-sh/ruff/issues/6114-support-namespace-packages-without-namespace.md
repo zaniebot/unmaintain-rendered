@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-27T01:59:44Z
 updated_at: 2023-08-05T02:08:15Z
 url: https://github.com/astral-sh/ruff/issues/6114
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Support namespace packages without `namespace-packages` setting
@@ -77,22 +77,10 @@ _Comment by @charliermarsh on 2023-07-27 02:50_
 
 ---
 
-_Referenced in [astral-sh/ruff#5920](../../astral-sh/ruff/pulls/5920.md) on 2023-07-27 10:47_
-
----
-
 _Comment by @hmc-cs-mdrissi on 2023-08-05 02:08_
 
 pyright while not python does still call python for sys.path. Beyond helping with namespace packages it also deals helps a lot of import weirdness like handling .pth files/ways sys.path can be modified. 
 
 Pylint's namespace package detection is buggy and I haven't seen an approach that really works besides explicitness/sys.path. Here's a test [repo](https://github.com/hmc-cs-mdrissi/tricky_namespace_package_lint) that's small but is already enough to lead to issues for number of tools due to there being files with same name that are distinguished if you detect namespace packages correctly.
-
----
-
-_Referenced in [astral-sh/ruff#6474](../../astral-sh/ruff/issues/6474.md) on 2023-08-10 08:27_
-
----
-
-_Referenced in [astral-sh/ruff#10541](../../astral-sh/ruff/pulls/10541.md) on 2024-03-24 08:43_
 
 ---

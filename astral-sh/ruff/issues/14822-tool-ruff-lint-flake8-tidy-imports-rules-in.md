@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-06T16:14:20Z
 updated_at: 2024-12-09T11:09:51Z
 url: https://github.com/astral-sh/ruff/issues/14822
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [tool.ruff.lint.flake8-tidy-imports] rules in pyproject.toml parent are ignore pyproject.toml child file
@@ -155,13 +155,5 @@ I don't think that's currently possible, and we're aware of this limitation in R
 The solution to this is that we introduce a new sentinel value: "unset" or add a "level" setting to it that can be "ignore", "warn" or "error" so that a sub-configuration can remove (disable) a previous banned api override
 
 This is related to https://github.com/astral-sh/ruff/issues/9872
-
----
-
-_Referenced in [astral-sh/ruff#18723](../../astral-sh/ruff/issues/18723.md) on 2025-06-17 13:56_
-
----
-
-_Referenced in [apache/airflow#53700](../../apache/airflow/pulls/53700.md) on 2025-07-24 08:58_
 
 ---

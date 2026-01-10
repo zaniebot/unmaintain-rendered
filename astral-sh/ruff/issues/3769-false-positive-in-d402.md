@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-28T13:30:28Z
 updated_at: 2023-03-28T15:00:43Z
 url: https://github.com/astral-sh/ruff/issues/3769
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # False positive in D402
@@ -52,9 +52,5 @@ Yeah FWIW pydocstyle also flags this. I can't think of a more reliable way to im
 ---
 
 _Label `docstring` added by @charliermarsh on 2023-03-28 15:00_
-
----
-
-_Referenced in [astral-sh/ruff#13242](../../astral-sh/ruff/issues/13242.md) on 2024-09-04 12:55_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-11T02:48:16Z
 updated_at: 2024-10-18T05:21:44Z
 url: https://github.com/astral-sh/ruff/issues/11366
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Native server indexes the entire project when no local config found
@@ -198,19 +198,11 @@ _Unassigned @snowsignal by @dhruvmanila on 2024-07-10 03:01_
 
 ---
 
-_Referenced in [astral-sh/ruff#12299](../../astral-sh/ruff/pulls/12299.md) on 2024-07-12 12:11_
-
----
-
 _Comment by @dhruvmanila on 2024-07-15 09:54_
 
 There are two more options that could be implemented here:
 1. Not indexing the project if there's no root configuration file present
 2. Or, use a fallback settings (default) if there's no root configuration file present
-
----
-
-_Referenced in [astral-sh/ruff#12362](../../astral-sh/ruff/pulls/12362.md) on 2024-07-17 12:51_
 
 ---
 
@@ -226,21 +218,9 @@ _Added to milestone `Ruff Server: Post-Stable` by @dhruvmanila on 2024-07-22 10:
 
 ---
 
-_Referenced in [astral-sh/ruff-vscode#549](../../astral-sh/ruff-vscode/issues/549.md) on 2024-08-07 02:38_
-
----
-
 _Comment by @akthe-at on 2024-08-08 20:02_
 
 Just wanted to say great job on improving this over the last few releases. This only takes ~10 seconds to successfully format compared to the ~2 minutes before...Same file, same directory, same repeated format "issues" and a vastly improved user experience now.
-
----
-
-_Referenced in [astral-sh/ruff-vscode#606](../../astral-sh/ruff-vscode/issues/606.md) on 2024-09-07 23:44_
-
----
-
-_Referenced in [astral-sh/ruff-vscode#627](../../astral-sh/ruff-vscode/issues/627.md) on 2024-10-09 06:40_
 
 ---
 
@@ -254,18 +234,10 @@ One solution is mentioned in https://github.com/astral-sh/ruff-vscode/issues/627
 
 ---
 
-_Referenced in [astral-sh/ruff#13770](../../astral-sh/ruff/pulls/13770.md) on 2024-10-16 09:11_
-
----
-
 _Closed by @dhruvmanila on 2024-10-18 05:21_
 
 ---
 
 _Closed by @dhruvmanila on 2024-10-18 05:21_
-
----
-
-_Referenced in [astral-sh/ruff-vscode#637](../../astral-sh/ruff-vscode/issues/637.md) on 2024-10-29 10:03_
 
 ---

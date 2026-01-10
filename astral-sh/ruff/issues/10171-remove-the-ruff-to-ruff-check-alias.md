@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-29T14:00:14Z
 updated_at: 2024-10-08T13:45:13Z
 url: https://github.com/astral-sh/ruff/issues/10171
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Remove the `ruff` to `ruff check` alias
@@ -37,19 +37,11 @@ _Added to milestone `v0.4` by @MichaReiser on 2024-02-29 14:00_
 
 ---
 
-_Referenced in [astral-sh/ruff-lsp#392](../../astral-sh/ruff-lsp/pulls/392.md) on 2024-02-29 14:25_
-
----
-
 _Removed from milestone `v0.4.0` by @dhruvmanila on 2024-04-18 19:49_
 
 ---
 
 _Added to milestone `v0.5.0` by @dhruvmanila on 2024-04-18 19:49_
-
----
-
-_Referenced in [astral-sh/ruff#12011](../../astral-sh/ruff/pulls/12011.md) on 2024-06-24 09:30_
 
 ---
 
@@ -81,10 +73,6 @@ Exactly
 
 ---
 
-_Referenced in [astral-sh/ruff#12833](../../astral-sh/ruff/pulls/12833.md) on 2024-08-12 09:00_
-
----
-
 _Removed from milestone `v0.6` by @MichaReiser on 2024-08-12 13:59_
 
 ---
@@ -94,9 +82,5 @@ _Added to milestone `v0.7` by @MichaReiser on 2024-08-12 13:59_
 ---
 
 _Closed by @AlexWaygood on 2024-10-08 13:45_
-
----
-
-_Referenced in [jazzband/django-redis#781](../../jazzband/django-redis/pulls/781.md) on 2025-06-27 09:14_
 
 ---

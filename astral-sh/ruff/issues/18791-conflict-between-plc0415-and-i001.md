@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-19T12:00:47Z
 updated_at: 2025-07-24T19:27:47Z
 url: https://github.com/astral-sh/ruff/issues/18791
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Conflict between PLC0415 and I001
@@ -48,10 +48,6 @@ https://play.ruff.rs/af23bcb0-ee1d-4a2e-82dd-f8655a94d041
 ### Version
 
 ruff v0.12.0
-
----
-
-_Referenced in [home-assistant/core#147106](../../home-assistant/core/pulls/147106.md) on 2025-06-19 12:09_
 
 ---
 

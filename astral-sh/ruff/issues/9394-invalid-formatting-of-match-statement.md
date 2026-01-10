@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-04T20:53:21Z
 updated_at: 2024-01-09T14:39:14Z
 url: https://github.com/astral-sh/ruff/issues/9394
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Invalid formatting of match statement
@@ -60,10 +60,6 @@ Can reproduce this with `ruff 0.1.11 (fefc7e819 2024-01-02)` with and without th
 _Comment by @charliermarsh on 2024-01-05 00:21_
 
 I can take a look -- thanks for this.
-
----
-
-_Referenced in [astral-sh/ruff#9396](../../astral-sh/ruff/pulls/9396.md) on 2024-01-05 00:38_
 
 ---
 

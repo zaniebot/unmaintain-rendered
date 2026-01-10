@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-14T08:48:49Z
 updated_at: 2024-12-15T15:22:05Z
 url: https://github.com/astral-sh/ruff/issues/14969
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Checking file with rule PERF401 cause panic
@@ -175,10 +175,6 @@ _Label `bug` added by @AlexWaygood on 2024-12-14 13:28_
 ---
 
 _Label `help wanted` added by @AlexWaygood on 2024-12-14 13:29_
-
----
-
-_Referenced in [astral-sh/ruff#14971](../../astral-sh/ruff/pulls/14971.md) on 2024-12-14 15:57_
 
 ---
 

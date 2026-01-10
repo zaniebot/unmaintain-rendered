@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-13T17:46:04Z
 updated_at: 2025-01-15T08:22:49Z
 url: https://github.com/astral-sh/ruff/issues/15459
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Broken f-string formatting after ruff 0.9
@@ -112,10 +112,6 @@ Thanks for reporting this. We do have code handling dictionary and other express
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2025-01-13 20:13_
-
----
-
-_Referenced in [astral-sh/ruff#15471](../../astral-sh/ruff/pulls/15471.md) on 2025-01-14 10:16_
 
 ---
 

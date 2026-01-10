@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-07-17T00:03:32Z
 updated_at: 2024-09-01T10:16:58Z
 url: https://github.com/astral-sh/ruff/issues/12353
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # False positive ASYNC109 when `timeout` goes to `asyncio.timeout`
@@ -294,10 +294,6 @@ The remaining concern I had was with async functions that have a timeout paramet
 
 ---
 
-_Referenced in [Danielhiversen/pyTibber#299](../../Danielhiversen/pyTibber/pulls/299.md) on 2024-08-20 09:20_
-
----
-
 _Comment by @jessekv on 2024-08-21 06:16_
 
 > Could you tell me a bit more about this and why/how it only applies to Python 3.11 and newer?
@@ -305,10 +301,6 @@ _Comment by @jessekv on 2024-08-21 06:16_
 `asyncio.timeout` was only introduced in Python 3.11
 
 @MichaReiser should we file a different issue, or do you want to keep using this one?
-
----
-
-_Referenced in [astral-sh/ruff#13023](../../astral-sh/ruff/pulls/13023.md) on 2024-08-21 07:28_
 
 ---
 
@@ -337,10 +329,6 @@ This also makes a lot of sense. I concur a great alternate route is a more verbo
 ---
 
 I will leave this issue open for an improvement in the motivation section of this rule's docs
-
----
-
-_Referenced in [astral-sh/ruff#13146](../../astral-sh/ruff/pulls/13146.md) on 2024-08-29 05:14_
 
 ---
 

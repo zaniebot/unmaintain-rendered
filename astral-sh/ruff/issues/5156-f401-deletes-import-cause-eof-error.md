@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-17T06:38:08Z
 updated_at: 2023-06-19T04:09:03Z
 url: https://github.com/astral-sh/ruff/issues/5156
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # F401 Deletes import, cause EOF error
@@ -186,14 +186,6 @@ No, sorry I updated the comment. It's occurring whenever the continuation charac
 
 ---
 
-_Referenced in [astral-sh/ruff#5173](../../astral-sh/ruff/pulls/5173.md) on 2023-06-19 03:45_
-
----
-
 _Closed by @charliermarsh on 2023-06-19 04:09_
-
----
-
-_Referenced in [astral-sh/ruff#4972](../../astral-sh/ruff/issues/4972.md) on 2023-06-19 14:10_
 
 ---

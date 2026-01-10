@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-12T20:50:10Z
 updated_at: 2023-11-29T03:29:33Z
 url: https://github.com/astral-sh/ruff/issues/7316
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter undocumented deviation: slice formatting
@@ -153,10 +153,6 @@ _Added to milestone `Formatter: Beta` by @MichaReiser on 2023-09-13 06:54_
 
 ---
 
-_Referenced in [astral-sh/ruff#7332](../../astral-sh/ruff/pulls/7332.md) on 2023-09-13 10:02_
-
----
-
 _Label `wontfix` removed by @konstin on 2023-09-13 10:20_
 
 ---
@@ -207,10 +203,6 @@ _Removed from milestone `Formatter: Stable` by @MichaReiser on 2023-10-26 23:57_
 ---
 
 _Label `wontfix` removed by @MichaReiser on 2023-10-27 02:08_
-
----
-
-_Referenced in [psf/black#4042](../../psf/black/issues/4042.md) on 2023-11-28 09:51_
 
 ---
 

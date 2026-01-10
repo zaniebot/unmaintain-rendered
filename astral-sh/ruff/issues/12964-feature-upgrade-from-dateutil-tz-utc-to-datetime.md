@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-08-18T14:17:13Z
 updated_at: 2024-08-19T08:29:33Z
 url: https://github.com/astral-sh/ruff/issues/12964
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Feature: upgrade from `dateutil.tz.UTC` to `datetime.UTC` or `datetime.timezone.utc`
@@ -70,9 +70,5 @@ there are also `pytz.UTC` and `pytz.utc`
 ---
 
 _Label `needs-design` added by @MichaReiser on 2024-08-19 08:29_
-
----
-
-_Referenced in [Data-Simply/pyretailscience#166](../../Data-Simply/pyretailscience/pulls/166.md) on 2025-03-31 19:12_
 
 ---

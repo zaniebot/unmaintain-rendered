@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-23T15:36:19Z
 updated_at: 2024-02-14T14:09:22Z
 url: https://github.com/astral-sh/ruff/issues/8147
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Ruff fails with memory allocation of X bytes failed
@@ -159,10 +159,6 @@ Thins I tried without success so far:
 
 ---
 
-_Referenced in [astral-sh/ruff#8333](../../astral-sh/ruff/pulls/8333.md) on 2023-10-30 02:21_
-
----
-
 _Comment by @mrcljx on 2023-11-04 01:54_
 
 I managed to capture a backtrace of the crash:
@@ -243,10 +239,6 @@ index 81830ca25..8cdfb5f43 100644
      let mut args =
          argfile::expand_args_from(args, argfile::parse_fromfile, argfile::PREFIX).unwrap();
 ```
-
----
-
-_Referenced in [astral-sh/ruff#8577](../../astral-sh/ruff/issues/8577.md) on 2023-11-09 14:53_
 
 ---
 
@@ -396,10 +388,6 @@ this is the entire output at the moment:
 ❯ ls /Users/mattia.baldari/project/.ruff_cache/
 0.1.13       0.1.14       CACHEDIR.TAG
 ```
-
----
-
-_Referenced in [astral-sh/ruff#9729](../../astral-sh/ruff/issues/9729.md) on 2024-01-31 07:31_
 
 ---
 
@@ -642,14 +630,6 @@ I suspect that we run into some form of race and the file only gets written part
 I think a first good starting point to fix this is to write the cache to a temporary file and then rename it when writing was successful. This doesn't just help with potential races but also protects about corrupted cache files in case the ruff process dies in the middle of writing the cache (for whatever reason).
 
 
-
----
-
-_Referenced in [astral-sh/ruff#9981](../../astral-sh/ruff/pulls/9981.md) on 2024-02-14 09:56_
-
----
-
-_Referenced in [astral-sh/ruff#9982](../../astral-sh/ruff/issues/9982.md) on 2024-02-14 11:27_
 
 ---
 

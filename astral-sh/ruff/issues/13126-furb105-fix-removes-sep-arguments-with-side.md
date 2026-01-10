@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-27T18:46:26Z
 updated_at: 2024-08-30T16:17:48Z
 url: https://github.com/astral-sh/ruff/issues/13126
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # FURB105 fix removes `sep` arguments with side effects
@@ -63,10 +63,6 @@ _Label `accepted` added by @AlexWaygood on 2024-08-27 19:13_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-30 15:44_
-
----
-
-_Referenced in [astral-sh/ruff#13165](../../astral-sh/ruff/pulls/13165.md) on 2024-08-30 16:00_
 
 ---
 

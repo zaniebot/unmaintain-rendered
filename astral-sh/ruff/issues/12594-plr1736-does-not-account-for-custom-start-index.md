@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-31T15:04:16Z
 updated_at: 2024-08-01T01:21:17Z
 url: https://github.com/astral-sh/ruff/issues/12594
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # PLR1736 does not account for custom start index
@@ -53,10 +53,6 @@ Thanks.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-08-01 01:14_
-
----
-
-_Referenced in [astral-sh/ruff#12603](../../astral-sh/ruff/pulls/12603.md) on 2024-08-01 01:17_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-18T22:59:45Z
 updated_at: 2023-02-07T02:31:55Z
 url: https://github.com/astral-sh/ruff/issues/1976
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Getting F821 Undefined name "xyz" for typing.Literal values when imported indirectly
@@ -115,10 +115,6 @@ Oh nice! Good to know that there are more examples of this, and glad it solves y
 _Comment by @henryiii on 2023-01-19 22:16_
 
 Solves my problem too, thank you! Though I use relative imports, so it seems to not be triggering on `from .._compat.typing import Literal`. If I change it to absolute, then it works.
-
----
-
-_Referenced in [astral-sh/ruff#2005](../../astral-sh/ruff/issues/2005.md) on 2023-01-19 22:28_
 
 ---
 

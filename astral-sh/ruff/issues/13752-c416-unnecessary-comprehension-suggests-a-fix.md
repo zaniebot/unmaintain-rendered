@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-14T14:58:11Z
 updated_at: 2024-10-17T08:04:33Z
 url: https://github.com/astral-sh/ruff/issues/13752
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [C416 unnecessary-comprehension] Suggests a fix leading to RecursionError
@@ -186,10 +186,6 @@ ruff 0.6.9
 ``` 
 
 
-
----
-
-_Referenced in [OSGeo/grass#4514](../../OSGeo/grass/pulls/4514.md) on 2024-10-14 15:11_
 
 ---
 

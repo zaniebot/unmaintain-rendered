@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-31T12:28:36Z
 updated_at: 2026-01-06T00:36:17Z
 url: https://github.com/astral-sh/ruff/issues/17091
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # `PLW1510`: `subprocess.run` without explicit `check` argument: Mark fix as manual
@@ -62,10 +62,6 @@ That's even more fine/versatile 🚀
 ---
 
 _Renamed from "`PLW1510`: `subprocess.run` without explicit `check` argument: Remove autofix" to "`PLW1510`: `subprocess.run` without explicit `check` argument: Mark fix as manual" by @stdedos on 2025-03-31 12:44_
-
----
-
-_Referenced in [astral-sh/ruff#22318](../../astral-sh/ruff/pulls/22318.md) on 2025-12-31 20:43_
 
 ---
 

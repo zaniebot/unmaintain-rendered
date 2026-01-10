@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-29T11:45:21Z
 updated_at: 2024-12-04T13:16:33Z
 url: https://github.com/astral-sh/ruff/issues/14676
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # `TC006` in `0.8.1` is too broad
@@ -338,14 +338,6 @@ I think `RUF` is currently causing a disproportionate amount of contention for u
 
 ---
 
-_Referenced in [vega/altair#3706](../../vega/altair/pulls/3706.md) on 2024-12-02 15:50_
-
----
-
-_Referenced in [astral-sh/ruff#14749](../../astral-sh/ruff/pulls/14749.md) on 2024-12-03 07:42_
-
----
-
 _Comment by @MichaReiser on 2024-12-03 08:21_
 
 > If you like it, use it, if you don't, don't. I don't see evidence in this thread of user demand for a more complex version of the rule. (I do see a case for adding a line to the docs to clarify that the rule prioritizes consistency, even though some type expressions have very little or no cost.)
@@ -465,21 +457,5 @@ _Closed by @AlexWaygood on 2024-12-04 13:16_
 ---
 
 _Closed by @AlexWaygood on 2024-12-04 13:16_
-
----
-
-_Referenced in [astral-sh/ruff#14787](../../astral-sh/ruff/pulls/14787.md) on 2024-12-05 11:26_
-
----
-
-_Referenced in [vega/vega-datasets#647](../../vega/vega-datasets/pulls/647.md) on 2024-12-14 19:07_
-
----
-
-_Referenced in [zarr-developers/zarr-python#3032](../../zarr-developers/zarr-python/pulls/3032.md) on 2025-05-04 08:29_
-
----
-
-_Referenced in [pypa/pipx#1626](../../pypa/pipx/pulls/1626.md) on 2025-05-04 09:25_
 
 ---

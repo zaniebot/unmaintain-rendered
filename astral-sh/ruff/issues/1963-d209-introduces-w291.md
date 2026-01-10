@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-01-18T15:59:52Z
 updated_at: 2023-01-18T17:09:19Z
 url: https://github.com/astral-sh/ruff/issues/1963
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # D209 introduces W291
@@ -62,14 +62,6 @@ _Label `autofix` added by @charliermarsh on 2023-01-18 16:44_
 
 ---
 
-_Referenced in [astral-sh/ruff#1967](../../astral-sh/ruff/pulls/1967.md) on 2023-01-18 17:09_
-
----
-
 _Closed by @charliermarsh on 2023-01-18 17:09_
-
----
-
-_Referenced in [astral-sh/ruff#2397](../../astral-sh/ruff/issues/2397.md) on 2023-01-31 14:22_
 
 ---

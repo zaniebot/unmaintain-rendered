@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-07T21:43:55Z
 updated_at: 2023-11-07T23:08:14Z
 url: https://github.com/astral-sh/ruff/issues/8549
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # [Feature request]: support `flake8-no-implicit-concat` (NIC)
@@ -157,13 +157,5 @@ _Comment by @wtfzambo on 2023-11-07 23:08_
 ---
 
 _Closed by @wtfzambo on 2023-11-07 23:08_
-
----
-
-_Referenced in [astral-sh/ruff#9093](../../astral-sh/ruff/issues/9093.md) on 2023-12-11 14:50_
-
----
-
-_Referenced in [mikedh/trimesh#2163](../../mikedh/trimesh/pulls/2163.md) on 2024-02-26 19:03_
 
 ---

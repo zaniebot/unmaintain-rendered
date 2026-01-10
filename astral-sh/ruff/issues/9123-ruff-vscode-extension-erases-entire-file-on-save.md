@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-12-14T02:54:32Z
 updated_at: 2023-12-14T05:38:30Z
 url: https://github.com/astral-sh/ruff/issues/9123
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # ruff VSCode extension erases entire file on save
@@ -210,10 +210,6 @@ _Label `cli` added by @MichaReiser on 2023-12-14 03:43_
 
 ---
 
-_Referenced in [astral-sh/ruff-lsp#341](../../astral-sh/ruff-lsp/pulls/341.md) on 2023-12-14 03:59_
-
----
-
 _Closed by @charliermarsh on 2023-12-14 04:41_
 
 ---
@@ -221,9 +217,5 @@ _Closed by @charliermarsh on 2023-12-14 04:41_
 _Comment by @charliermarsh on 2023-12-14 05:38_
 
 Should be fixed in the latest version, just published.
-
----
-
-_Referenced in [astral-sh/ruff#15734](../../astral-sh/ruff/issues/15734.md) on 2025-01-24 22:39_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-05T12:03:05Z
 updated_at: 2022-12-06T17:46:40Z
 url: https://github.com/astral-sh/ruff/issues/1053
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:15Z
 ```
 
 # `flake8-annotations` rules do not ignore functions with type overloads
@@ -73,10 +73,6 @@ Gonna call this a bug since flake8-annotations seems to handle it just fine.
 _Comment by @charliermarsh on 2022-12-06 05:13_
 
 Will fix this tomorrow.
-
----
-
-_Referenced in [astral-sh/ruff#1110](../../astral-sh/ruff/pulls/1110.md) on 2022-12-06 17:46_
 
 ---
 

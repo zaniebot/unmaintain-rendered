@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-10T14:50:18Z
 updated_at: 2025-02-10T17:35:02Z
 url: https://github.com/astral-sh/ruff/issues/16078
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Skip ecosystem check for red-knot only changes
@@ -74,9 +74,5 @@ Let's close this for now. I'll observe and report back ;)
 ---
 
 _Closed by @MichaReiser on 2025-02-10 17:35_
-
----
-
-_Referenced in [astral-sh/ruff#16522](../../astral-sh/ruff/issues/16522.md) on 2025-03-05 18:05_
 
 ---

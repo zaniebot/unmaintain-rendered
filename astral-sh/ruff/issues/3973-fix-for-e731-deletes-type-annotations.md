@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-04-14T07:07:45Z
 updated_at: 2023-04-16T23:15:40Z
 url: https://github.com/astral-sh/ruff/issues/3973
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # (🐞) fix for E731 deletes type annotations
@@ -66,10 +66,6 @@ _Assigned to @dhruvmanila by @charliermarsh on 2023-04-15 20:54_
 _Comment by @charliermarsh on 2023-04-15 20:55_
 
 Thanks @dhruvmanila!
-
----
-
-_Referenced in [astral-sh/ruff#3983](../../astral-sh/ruff/pulls/3983.md) on 2023-04-16 06:34_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-25T10:47:05Z
 updated_at: 2025-10-01T21:43:43Z
 url: https://github.com/astral-sh/ruff/issues/20570
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Query regarding try-consider-else documentation
@@ -174,10 +174,6 @@ _Label `documentation` added by @ntBre on 2025-09-25 14:26_
 _Comment by @LilMonk on 2025-09-26 01:09_
 
 Sure will try to make the changes
-
----
-
-_Referenced in [astral-sh/ruff#20587](../../astral-sh/ruff/pulls/20587.md) on 2025-09-26 01:41_
 
 ---
 

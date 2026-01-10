@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-10T17:42:34Z
 updated_at: 2023-02-10T20:21:09Z
 url: https://github.com/astral-sh/ruff/issues/2721
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # E701 false positive: type annotation
@@ -38,10 +38,6 @@ _Label `bug` added by @charliermarsh on 2023-02-10 17:58_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-10 18:10_
-
----
-
-_Referenced in [astral-sh/ruff#2737](../../astral-sh/ruff/pulls/2737.md) on 2023-02-10 20:03_
 
 ---
 

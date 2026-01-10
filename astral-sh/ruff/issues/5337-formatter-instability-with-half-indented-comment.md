@@ -13,7 +13,7 @@ assignees: []
 created_at: 2023-06-23T16:25:47Z
 updated_at: 2023-08-16T07:09:51Z
 url: https://github.com/astral-sh/ruff/issues/5337
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Formatter instability with half-indented comment
@@ -123,10 +123,6 @@ class A:
 print()
 ```
 It's important though that the comments gets indented on the same level as the statement it is attached to
-
----
-
-_Referenced in [astral-sh/ruff#6460](../../astral-sh/ruff/pulls/6460.md) on 2023-08-09 21:14_
 
 ---
 

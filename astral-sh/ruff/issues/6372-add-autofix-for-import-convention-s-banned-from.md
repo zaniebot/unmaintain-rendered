@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-06T11:35:47Z
 updated_at: 2025-02-08T18:04:47Z
 url: https://github.com/astral-sh/ruff/issues/6372
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Add autofix for import convention's `banned-from` rule
@@ -143,10 +143,6 @@ _Label `accepted` added by @charliermarsh on 2023-08-06 14:16_
 ---
 
 _Renamed from "Improvement for using TCH and ICN rules together" to "Add autofix for import convention's `banned-from` rule" by @charliermarsh on 2023-08-06 14:16_
-
----
-
-_Referenced in [astral-sh/ruff#6414](../../astral-sh/ruff/pulls/6414.md) on 2023-08-08 02:09_
 
 ---
 

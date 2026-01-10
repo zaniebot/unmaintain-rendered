@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-25T10:58:24Z
 updated_at: 2025-10-31T15:10:16Z
 url: https://github.com/astral-sh/ruff/issues/21073
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # Documentation for `extend` doesn't accurately describe `lint.ignore` and `lint.select` behavior
@@ -79,10 +79,6 @@ I think it makes sense to add a link to the Rule selection page and copy the fol
 ---
 
 _Label `documentation` added by @MichaReiser on 2025-10-27 09:00_
-
----
-
-_Referenced in [astral-sh/ruff#21135](../../astral-sh/ruff/pulls/21135.md) on 2025-10-30 09:49_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-11T16:34:54Z
 updated_at: 2024-10-25T07:03:35Z
 url: https://github.com/astral-sh/ruff/issues/9472
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Lone unused import in if-statement should not get autofixed, or the if-statement should removed
@@ -98,13 +98,5 @@ cc @AlexWaygood @MichaReiser
 _Comment by @MichaReiser on 2024-10-25 07:03_
 
 @gpauloski I could see such a rule to be useful, but we should think about its scope. E.g what about empty `else` branches (in `for`, `try` etc statements)? And we have to be careful about typing stubs. It's probably best to discuss such a rule in a new issue
-
----
-
-_Referenced in [astral-sh/ruff#13929](../../astral-sh/ruff/issues/13929.md) on 2024-10-25 16:11_
-
----
-
-_Referenced in [astral-sh/ruff#14763](../../astral-sh/ruff/pulls/14763.md) on 2024-12-04 16:49_
 
 ---

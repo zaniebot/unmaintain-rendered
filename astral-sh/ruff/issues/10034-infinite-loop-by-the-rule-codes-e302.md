@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-19T01:38:39Z
 updated_at: 2024-03-29T20:03:51Z
 url: https://github.com/astral-sh/ruff/issues/10034
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # [Infinite loop] by the rule codes E302
@@ -46,10 +46,6 @@ make lint
 Ruff version v0.2.2
 
 
-
----
-
-_Referenced in [apache/iceberg-python#442](../../apache/iceberg-python/pulls/442.md) on 2024-02-19 01:41_
 
 ---
 

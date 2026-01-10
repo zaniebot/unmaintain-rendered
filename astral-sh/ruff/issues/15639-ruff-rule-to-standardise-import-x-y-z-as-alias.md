@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-21T13:35:59Z
 updated_at: 2025-01-22T08:56:22Z
 url: https://github.com/astral-sh/ruff/issues/15639
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Ruff rule to standardise `import x.y.z as alias` and `from x.y import z as alias`
@@ -88,10 +88,6 @@ _Label `rule` added by @MichaReiser on 2025-01-21 14:01_
 
 ---
 
-_Referenced in [home-assistant/core#136156](../../home-assistant/core/pulls/136156.md) on 2025-01-21 15:02_
-
----
-
 _Comment by @AlexWaygood on 2025-01-21 18:12_
 
 Is this a duplicate of https://github.com/astral-sh/ruff/issues/14070?
@@ -127,9 +123,5 @@ However, I think that #14070 is too broad as not all imports are equivalent, and
 
 I'll try to add a comment there but maybe keep this open a little while longer...
 
-
----
-
-_Referenced in [astral-sh/ruff#14070](../../astral-sh/ruff/issues/14070.md) on 2025-01-22 09:30_
 
 ---

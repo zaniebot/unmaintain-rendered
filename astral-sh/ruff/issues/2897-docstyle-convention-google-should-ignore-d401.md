@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-02-14T17:32:59Z
 updated_at: 2023-02-14T20:42:22Z
 url: https://github.com/astral-sh/ruff/issues/2897
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # docstyle.convention = "google" should ignore D401
@@ -104,10 +104,6 @@ _Label `bug` added by @charliermarsh on 2023-02-14 20:38_
 ---
 
 _Label `docstring` added by @charliermarsh on 2023-02-14 20:38_
-
----
-
-_Referenced in [astral-sh/ruff#2900](../../astral-sh/ruff/pulls/2900.md) on 2023-02-14 20:39_
 
 ---
 

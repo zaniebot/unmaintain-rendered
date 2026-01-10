@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-07T23:16:51Z
 updated_at: 2024-01-08T14:59:18Z
 url: https://github.com/astral-sh/ruff/issues/9426
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Variable named "args" leads to ambiguous docstring parsing
@@ -387,10 +387,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-01-08 02:12_
 
 ---
 
-_Referenced in [astral-sh/ruff#9427](../../astral-sh/ruff/pulls/9427.md) on 2024-01-08 02:35_
-
----
-
 _Comment by @charliermarsh on 2024-01-08 02:35_
 
 I _think_ I was able to fix this in https://github.com/astral-sh/ruff/pull/9427.
@@ -424,9 +420,5 @@ I will be eagerly waiting for your next release to update it.
 _Comment by @charliermarsh on 2024-01-08 14:59_
 
 Oh, great call! I can close the other issue too :)
-
----
-
-_Referenced in [astral-sh/ruff#12738](../../astral-sh/ruff/issues/12738.md) on 2024-08-08 04:18_
 
 ---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-17T06:37:39Z
 updated_at: 2023-04-18T03:22:40Z
 url: https://github.com/astral-sh/ruff/issues/3992
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # RET504 off-by-1  line / bogus error when returning an argument
@@ -64,10 +64,6 @@ _Comment by @charliermarsh on 2023-04-17 13:26_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-04-18 02:36_
-
----
-
-_Referenced in [astral-sh/ruff#4004](../../astral-sh/ruff/pulls/4004.md) on 2023-04-18 03:16_
 
 ---
 

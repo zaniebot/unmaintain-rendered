@@ -1,0 +1,59 @@
+```yaml
+number: 11785
+title: "[red-knot] condense literal class and function types"
+type: issue
+state: closed
+author: carljm
+labels:
+  - help wanted
+  - ty
+assignees: []
+created_at: 2024-06-06T21:51:22Z
+updated_at: 2024-09-03T07:23:30Z
+url: https://github.com/astral-sh/ruff/issues/11785
+synced_at: 2026-01-10T11:09:53Z
+```
+
+# [red-knot] condense literal class and function types
+
+---
+
+_Issue opened by @carljm on 2024-06-06 21:51_
+
+Display e.g. `Literal[C1, C2]`, not `Literal[C1] | Literal[C2]`
+
+For now I think we should not mix different kinds of literals, i.e. we should still produce `Literal[1] | Literal[C] | Literal[f]`, not `Literal[1, C, f]`.
+
+
+---
+
+_Label `red-knot` added by @carljm on 2024-06-06 21:51_
+
+---
+
+_Comment by @diceroll123 on 2024-08-18 01:32_
+
+Related: https://github.com/astral-sh/ruff/issues/7881
+
+---
+
+_Comment by @MichaReiser on 2024-08-18 07:42_
+
+@carljm is this something a contributor could take up?
+
+---
+
+_Comment by @carljm on 2024-08-18 19:52_
+
+Sure. It should just be a localized change in `types/display.rs` for UnionType
+Display, handled similarly to IntLiteral types. 
+
+---
+
+_Label `help wanted` added by @MichaReiser on 2024-08-18 21:00_
+
+---
+
+_Closed by @MichaReiser on 2024-09-03 07:23_
+
+---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-11-27T16:01:25Z
 updated_at: 2025-07-24T15:05:25Z
 url: https://github.com/astral-sh/ruff/issues/14636
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # New lint rules for Strength Reduction optimizations
@@ -148,14 +148,6 @@ _Label `rule` added by @dhruvmanila on 2024-11-28 06:06_
 ---
 
 _Label `needs-decision` added by @dhruvmanila on 2024-11-28 06:06_
-
----
-
-_Referenced in [astral-sh/ruff#14835](../../astral-sh/ruff/issues/14835.md) on 2024-12-08 13:25_
-
----
-
-_Referenced in [astral-sh/ruff#15447](../../astral-sh/ruff/issues/15447.md) on 2025-01-13 00:59_
 
 ---
 

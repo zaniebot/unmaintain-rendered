@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-29T22:43:54Z
 updated_at: 2023-10-30T00:44:26Z
 url: https://github.com/astral-sh/ruff/issues/8328
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # `--extend-per-file-ignores` isn't respected on the CLI
@@ -33,10 +33,6 @@ _Label `cli` added by @charliermarsh on 2023-10-29 22:44_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-29 22:44_
-
----
-
-_Referenced in [astral-sh/ruff#8329](../../astral-sh/ruff/pulls/8329.md) on 2023-10-29 22:48_
 
 ---
 

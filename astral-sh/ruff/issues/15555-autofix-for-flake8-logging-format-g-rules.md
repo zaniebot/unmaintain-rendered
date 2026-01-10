@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-17T17:30:20Z
 updated_at: 2025-09-16T16:58:48Z
 url: https://github.com/astral-sh/ruff/issues/15555
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Autofix for flake8-logging-format (G) rules
@@ -36,10 +36,6 @@ _Label `fixes` added by @MichaReiser on 2025-01-17 17:48_
 _Comment by @justinchuby on 2025-01-17 17:51_
 
 The current rule we need the most in microsoft/onnxruntime is G004. Because everything else can be turned into an f-string first.
-
----
-
-_Referenced in [astral-sh/ruff#15727](../../astral-sh/ruff/issues/15727.md) on 2025-01-24 18:27_
 
 ---
 
@@ -193,10 +189,6 @@ class LazyLog:
 
 ---
 
-_Referenced in [astral-sh/ruff#19302](../../astral-sh/ruff/issues/19302.md) on 2025-07-12 22:46_
-
----
-
 _Comment by @spaceone on 2025-09-10 21:15_
 
 When autofix for this rule would be available, a lot of time would be saved.
@@ -339,10 +331,6 @@ Interesting that the one thing that was implemented is not even technically corr
 _Comment by @ntBre on 2025-09-11 19:44_
 
 That is interesting, thanks for pointing that out. I guess we should make the fix unsafe in this case, if there's no precise equivalent. Only a case like `{var!s}` would technically be safe to convert to `%s`, if I understand correctly.
-
----
-
-_Referenced in [astral-sh/ruff#20416](../../astral-sh/ruff/pulls/20416.md) on 2025-09-15 13:25_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-11T15:33:03Z
 updated_at: 2023-02-12T18:19:13Z
 url: https://github.com/astral-sh/ruff/issues/2766
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Link relevant settings in rule documentation
@@ -43,10 +43,6 @@ _Label `documentation` added by @charliermarsh on 2023-02-11 17:08_
 
 ---
 
-_Referenced in [astral-sh/ruff#2776](../../astral-sh/ruff/pulls/2776.md) on 2023-02-11 18:32_
-
----
-
 _Comment by @not-my-profile on 2023-02-11 18:37_
 
 I know a nice way to do this ... I'll implement it after #2775 has been merged, since the refactors in that PR make implementing what I have in mind easier.
@@ -56,10 +52,6 @@ I know a nice way to do this ... I'll implement it after #2775 has been merged, 
 _Comment by @charliermarsh on 2023-02-11 18:39_
 
 Awesome :)
-
----
-
-_Referenced in [astral-sh/ruff#2777](../../astral-sh/ruff/pulls/2777.md) on 2023-02-11 19:01_
 
 ---
 

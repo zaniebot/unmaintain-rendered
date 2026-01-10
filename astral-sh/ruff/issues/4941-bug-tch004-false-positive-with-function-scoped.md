@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-07T21:09:22Z
 updated_at: 2023-06-07T22:22:23Z
 url: https://github.com/astral-sh/ruff/issues/4941
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # [bug] TCH004 false positive with function-scoped imports
@@ -50,9 +50,5 @@ Oh, hah, this was also fixed by #4942.
 ---
 
 _Closed by @charliermarsh on 2023-06-07 22:22_
-
----
-
-_Referenced in [astral-sh/ruff#6928](../../astral-sh/ruff/issues/6928.md) on 2023-08-28 04:59_
 
 ---

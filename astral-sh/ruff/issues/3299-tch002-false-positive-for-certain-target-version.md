@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-02T09:46:44Z
 updated_at: 2023-03-02T21:45:28Z
 url: https://github.com/astral-sh/ruff/issues/3299
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # TCH002 false positive for certain target_version or no `__future__.annotations` import
@@ -74,10 +74,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-03-02 18:19_
 _Comment by @charliermarsh on 2023-03-02 18:20_
 
 👍 Those should be treated as runtime annotations, since they're defined within a class scope. Thank you!
-
----
-
-_Referenced in [astral-sh/ruff#3312](../../astral-sh/ruff/pulls/3312.md) on 2023-03-02 21:37_
 
 ---
 

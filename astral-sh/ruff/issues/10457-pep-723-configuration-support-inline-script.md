@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-18T13:56:33Z
 updated_at: 2025-01-07T15:35:59Z
 url: https://github.com/astral-sh/ruff/issues/10457
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # PEP 723 configuration support (inline script metadata)
@@ -29,17 +29,9 @@ _Label `configuration` added by @MichaReiser on 2024-03-18 13:56_
 
 ---
 
-_Referenced in [astral-sh/ruff#13446](../../astral-sh/ruff/issues/13446.md) on 2024-09-22 05:31_
-
----
-
-_Comment by @majutsushi on 2024-09-22 05:32_
+_Comment by @janlarres on 2024-09-22 05:32_
 
 This would be quite useful to be able to specify the `requires-python` version. I just had a case where I was using the zoneinfo module that was added to the standard library in 3.9, and I was surprised that Ruff sorted it under third-party imports (see also https://github.com/astral-sh/ruff/issues/6475 and https://github.com/astral-sh/ruff/issues/13354). So I think it would be great if Ruff could support the metadata comment block for that.
-
----
-
-_Referenced in [astral-sh/ruff#14258](../../astral-sh/ruff/issues/14258.md) on 2024-11-11 08:06_
 
 ---
 
@@ -69,18 +61,6 @@ _Comment by @MichaReiser on 2024-11-12 08:19_
 
 ---
 
-_Referenced in [astral-sh/ruff#15320](../../astral-sh/ruff/issues/15320.md) on 2025-01-07 15:29_
-
----
-
 _Renamed from "PEP 723 configuration support" to "PEP 723 configuration support (inline script metadata)" by @AlexWaygood on 2025-01-07 15:35_
-
----
-
-_Referenced in [astral-sh/uv#14579](../../astral-sh/uv/pulls/14579.md) on 2025-07-13 03:41_
-
----
-
-_Referenced in [mongodb/mongo-c-driver#2115](../../mongodb/mongo-c-driver/pulls/2115.md) on 2025-09-10 20:53_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-26T02:56:06Z
 updated_at: 2025-11-03T15:26:30Z
 url: https://github.com/astral-sh/ruff/issues/8237
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # ☂️ Formatter: Support formatting of embedded code
@@ -49,10 +49,6 @@ _Label `wish` added by @MichaReiser on 2023-10-26 02:56_
 
 ---
 
-_Referenced in [astral-sh/ruff-pre-commit#55](../../astral-sh/ruff-pre-commit/issues/55.md) on 2023-10-26 02:56_
-
----
-
 _Renamed from "☂️ Format Python code embedded in other languages" to "☂️ Formatter: Support formatting of embedded code" by @MichaReiser on 2023-10-26 02:58_
 
 ---
@@ -80,34 +76,6 @@ potential duplicate of https://github.com/astral-sh/ruff/issues/3792
 _Comment by @henryiii on 2023-10-26 16:25_
 
 https://github.com/adamchainz/blacken-docs does this with black and markdown, ReST, and LaTeX. You can see the block types supported there. (python, pycon, etc). Even better, maybe  the block types could be configurable, say setting `md-blocks = ["python", "ipython", "{code-cell} ipython3"]` would allow you to run on python, ipython, and executable Python (see https://jupyterbook.org/en/stable/file-types/myst-notebooks.html). 
-
----
-
-_Referenced in [astropy/astropy#15367](../../astropy/astropy/pulls/15367.md) on 2023-11-17 05:03_
-
----
-
-_Referenced in [astral-sh/ruff#8800](../../astral-sh/ruff/issues/8800.md) on 2023-11-21 14:45_
-
----
-
-_Referenced in [astral-sh/ruff#8811](../../astral-sh/ruff/pulls/8811.md) on 2023-12-13 20:37_
-
----
-
-_Referenced in [pybamm-team/PyBaMM#3656](../../pybamm-team/PyBaMM/pulls/3656.md) on 2023-12-23 22:03_
-
----
-
-_Referenced in [astral-sh/ruff#9326](../../astral-sh/ruff/issues/9326.md) on 2024-01-02 18:45_
-
----
-
-_Referenced in [astral-sh/ruff#9620](../../astral-sh/ruff/issues/9620.md) on 2024-01-23 05:21_
-
----
-
-_Referenced in [jagerber48/sciform#134](../../jagerber48/sciform/pulls/134.md) on 2024-01-27 12:46_
 
 ---
 
@@ -253,97 +221,9 @@ def least_square_mapping_MoorePenrose(
 
 ---
 
-_Referenced in [pytest-dev/pytest#11901](../../pytest-dev/pytest/pulls/11901.md) on 2024-02-01 21:00_
-
----
-
 _Comment by @aneeshusa on 2024-03-04 23:10_
 
 +1 to this - beyond `blacken-docs`, `shed` which I'm currently switching from has this feature too!
-
----
-
-_Referenced in [litestar-org/litestar#3211](../../litestar-org/litestar/issues/3211.md) on 2024-03-16 05:56_
-
----
-
-_Referenced in [astral-sh/ruff#3542](../../astral-sh/ruff/issues/3542.md) on 2024-03-20 07:44_
-
----
-
-_Referenced in [yt-project/yt#4868](../../yt-project/yt/pulls/4868.md) on 2024-04-19 09:02_
-
----
-
-_Referenced in [scientific-python/cookie#343](../../scientific-python/cookie/issues/343.md) on 2024-04-27 21:10_
-
----
-
-_Referenced in [astropy/astropy#16523](../../astropy/astropy/pulls/16523.md) on 2024-06-03 17:03_
-
----
-
-_Referenced in [marshmallow-code/apispec-webframeworks#151](../../marshmallow-code/apispec-webframeworks/pulls/151.md) on 2024-07-02 15:21_
-
----
-
-_Referenced in [GenericMappingTools/pygmt#3409](../../GenericMappingTools/pygmt/pulls/3409.md) on 2024-08-22 08:05_
-
----
-
-_Referenced in [astral-sh/ruff#283](../../astral-sh/ruff/issues/283.md) on 2024-11-19 16:29_
-
----
-
-_Referenced in [MultiQC/MultiQC#1678](../../MultiQC/MultiQC/issues/1678.md) on 2024-12-11 13:18_
-
----
-
-_Referenced in [pyvista/pyvista#6991](../../pyvista/pyvista/pulls/6991.md) on 2024-12-17 08:57_
-
----
-
-_Referenced in [microsoft/LightGBM#6783](../../microsoft/LightGBM/pulls/6783.md) on 2025-02-11 00:44_
-
----
-
-_Referenced in [adamchainz/blacken-docs#352](../../adamchainz/blacken-docs/issues/352.md) on 2025-02-17 14:59_
-
----
-
-_Referenced in [wagtail/wagtail#12892](../../wagtail/wagtail/pulls/12892.md) on 2025-02-18 19:32_
-
----
-
-_Referenced in [litestar-org/litestar#4112](../../litestar-org/litestar/pulls/4112.md) on 2025-04-13 14:30_
-
----
-
-_Referenced in [analogdevicesinc/pyadi-iio#662](../../analogdevicesinc/pyadi-iio/pulls/662.md) on 2025-04-15 08:04_
-
----
-
-_Referenced in [ansys/pyansys-dev-guide#589](../../ansys/pyansys-dev-guide/issues/589.md) on 2025-05-07 12:43_
-
----
-
-_Referenced in [ansys/pyansys-dev-guide#593](../../ansys/pyansys-dev-guide/issues/593.md) on 2025-05-07 13:40_
-
----
-
-_Referenced in [ansys/pyansys-dev-guide#592](../../ansys/pyansys-dev-guide/pulls/592.md) on 2025-05-12 08:35_
-
----
-
-_Referenced in [ansys/pyansys-dev-guide#594](../../ansys/pyansys-dev-guide/pulls/594.md) on 2025-05-12 08:52_
-
----
-
-_Referenced in [ansys/pyaedt#6157](../../ansys/pyaedt/pulls/6157.md) on 2025-05-16 10:04_
-
----
-
-_Referenced in [ansys/pystk#733](../../ansys/pystk/pulls/733.md) on 2025-06-11 09:19_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-13T00:11:07Z
 updated_at: 2024-03-14T08:35:26Z
 url: https://github.com/astral-sh/ruff/issues/10374
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # E303: missing detection
@@ -67,10 +67,6 @@ _Label `bug` added by @dhruvmanila on 2024-03-13 07:32_
 _Comment by @hoel-bagard on 2024-03-13 12:52_
 
 I'll have a look at it, thanks for reporting the bug.
-
----
-
-_Referenced in [astral-sh/ruff#10382](../../astral-sh/ruff/pulls/10382.md) on 2024-03-13 13:18_
 
 ---
 

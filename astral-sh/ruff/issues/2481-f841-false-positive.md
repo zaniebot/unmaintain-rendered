@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-02T16:09:55Z
 updated_at: 2023-02-02T17:22:00Z
 url: https://github.com/astral-sh/ruff/issues/2481
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # F841 - False positive
@@ -48,10 +48,6 @@ Interesting, thanks!
 _Comment by @charliermarsh on 2023-02-02 17:13_
 
 Flake8 misses this too.
-
----
-
-_Referenced in [astral-sh/ruff#2484](../../astral-sh/ruff/pulls/2484.md) on 2023-02-02 17:17_
 
 ---
 

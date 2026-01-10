@@ -1,0 +1,121 @@
+```yaml
+number: 2151
+title: "pydantic model validator triggers N805: First argument of a method should be named `self`"
+type: issue
+state: closed
+author: hofrob
+labels:
+  - question
+assignees: []
+created_at: 2023-01-25T09:20:13Z
+updated_at: 2025-09-10T13:53:58Z
+url: https://github.com/astral-sh/ruff/issues/2151
+synced_at: 2026-01-10T11:09:45Z
+```
+
+# pydantic model validator triggers N805: First argument of a method should be named `self`
+
+---
+
+_Issue opened by @hofrob on 2023-01-25 09:20_
+
+Sorry to bother you guys with this again (#769), but there may be a regression here (or I'm too stupid  to find out what I'm doing wrong).
+
+Reproduce:
+
+* create a new project with the current version of ruff (0.0.231 at the time of writing)
+* create a python file with a pydantic model with a validator
+* run `ruff -n --select N805 n805.py`
+
+Contents of `n805.py` (which looks exactly like the test case):
+
+```python
+import pydantic
+
+
+class TestN805(pydantic.BaseModel):
+    first: str
+    second: str
+
+    @pydantic.validator("first")
+    def min_length(cls, value: str) -> str:
+        pass
+```
+
+Result: 
+
+```bash
+n805.py:9:20: N805 First argument of a method should be named `self`
+```
+
+---
+
+_Comment by @charliermarsh on 2023-01-25 12:18_
+
+No prob! Can you try adding this to your `pyproject.toml`?
+
+```toml
+[tool.ruff.pep8-naming]
+# Allow Pydantic's `@validator` decorator to trigger class method treatment.
+classmethod-decorators = ["classmethod", "pydantic.validator"]
+```
+
+There's an explanation [here](https://github.com/charliermarsh/ruff#pep8-naming) in the README.
+
+---
+
+_Comment by @charliermarsh on 2023-01-25 12:19_
+
+(This tells Ruff that methods annotated with `@pydantic.validator` (or `from pydantic import validator; @validator`) should be considered class methods.)
+
+---
+
+_Label `question` added by @charliermarsh on 2023-01-25 12:19_
+
+---
+
+_Comment by @hofrob on 2023-01-25 12:22_
+
+Oh, so I have to tell ruff which methods are considered as class methods!
+
+Thanks a lot for the quick reply! And for this insanely useful tool!
+
+---
+
+_Closed by @hofrob on 2023-01-25 12:22_
+
+---
+
+_Comment by @charliermarsh on 2023-01-25 12:23_
+
+Awesome, glad it's working for you :)
+
+---
+
+_Comment by @Bobronium on 2023-02-10 08:19_
+
+Comming here from https://github.com/PyCQA/pep8-naming/issues/169
+
+Couldn't get it to work with `"validator"` added to config, but `"pydantic.validator"`, as suggested here, worked.
+
+
+---
+
+_Comment by @luminoso on 2025-04-07 13:15_
+
+The updated syntax for ruff and pydantic v2 is:
+
+```toml
+[tool.ruff.lint.pep8-naming]
+# Allow Pydantic's `@validator` decorator to trigger class method treatment.
+classmethod-decorators = ["classmethod", "pydantic.field_validator"]
+```
+
+---
+
+_Comment by @FBosler on 2025-09-10 13:53_
+
+What about model_validator? it behaves differently for `mode="before"` vs `mode="after"` one should be a class method, one an instance method. I additionally decorated the ones that are classmethods with the classmethod decorator ... but don't love it
+
+
+---

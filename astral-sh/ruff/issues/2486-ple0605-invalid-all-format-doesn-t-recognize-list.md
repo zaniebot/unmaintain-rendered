@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-02T17:32:09Z
 updated_at: 2023-02-02T20:45:16Z
 url: https://github.com/astral-sh/ruff/issues/2486
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # PLE0605 (invalid-all-format) doesn't recognize list constructor
@@ -53,10 +53,6 @@ _Label `bug` added by @charliermarsh on 2023-02-02 17:36_
 _Comment by @charliermarsh on 2023-02-02 17:51_
 
 Will get this into the next release (tomorrow or Saturday).
-
----
-
-_Referenced in [astral-sh/ruff#2499](../../astral-sh/ruff/pulls/2499.md) on 2023-02-02 20:26_
 
 ---
 

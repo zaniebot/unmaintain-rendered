@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-07-20T13:18:05Z
 updated_at: 2025-08-01T02:18:08Z
 url: https://github.com/astral-sh/ruff/issues/19437
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # PTH201 should check all subclasses of `PurePath`
@@ -35,10 +35,6 @@ WindowsPath(".")
 ### Version
 
 ruff 0.12.4 (ee2759b36 2025-07-17)
-
----
-
-_Referenced in [astral-sh/ruff#19440](../../astral-sh/ruff/pulls/19440.md) on 2025-07-20 16:57_
 
 ---
 

@@ -1,0 +1,107 @@
+```yaml
+number: 9644
+title: F821 (undefined imports) false positives (?) in notebooks when using the %run magic
+type: issue
+state: open
+author: tvatter
+labels:
+  - type-inference
+  - wish
+  - linter
+  - notebook
+assignees: []
+created_at: 2024-01-26T09:01:03Z
+updated_at: 2024-10-24T14:33:44Z
+url: https://github.com/astral-sh/ruff/issues/9644
+synced_at: 2026-01-10T11:09:51Z
+```
+
+# F821 (undefined imports) false positives (?) in notebooks when using the %run magic
+
+---
+
+_Issue opened by @tvatter on 2024-01-26 09:01_
+
+## Context
+
+I have a setup file  (e.g., IPython magic, display options for pandas, Seaborn visualization settings, etc) which I then import with the `%run` magic to avoid copy-pasting and making sure my settings are consistent between the different notebooks. Unfortunately, it leads to F821 (undefined imports) in the notebooks, which kinda defeats the purpose. 
+
+## Question
+
+Is it a false positive? And if not, what is the proper way of achieving this sort of setup across a collection of notebooks while avoiding lintter/formatter errors?
+
+## MWE
+
+Let's say I have a file called `mwe_setup.py` that contains:
+
+```
+import matplotlib.pyplot as plt
+```
+
+And then a file called `mwe.ipynb` that contains a single code cell
+
+```
+%run mwe_setup.py
+fig, ax = plt.subplots()
+```
+
+Then running `ruff check mwe.ipynb` results in`` F821 Undefined name `plt` ``.
+
+---
+
+_Label `wish` added by @MichaReiser on 2024-01-26 09:15_
+
+---
+
+_Label `linter` added by @MichaReiser on 2024-01-26 09:15_
+
+---
+
+_Comment by @tvatter on 2024-01-30 07:45_
+
+@charliermarsh Is the fix you wrote for #9648 also supposed to deal with my issue? I still see the false positives unfortunately.
+
+Or had @MichaReiser labelled this as "wish" because imports through the `%run` magic are known to not be supported by ruff? In which case, what would be a good workaround?
+
+---
+
+_Label `notebook` added by @MichaReiser on 2024-01-30 08:20_
+
+---
+
+_Comment by @MichaReiser on 2024-01-30 08:23_
+
+The challenge is that it requires multi file analysis that ruff doesn't support yet. The analyzer needs to stop when seeing `%run mwe_setup.py`, analyze the file (if it hasn't done so already) and merge the scope of the current file with the scope of `mwe_setup.py`. We aren't there yet. 
+
+For now, you can try to use https://docs.astral.sh/ruff/settings/#builtins and define `plt` as a builtin. This has the downside that ruff will never warn about `plt` not being defined, even if the `%run mwe_setup.py` is missing. 
+
+---
+
+_Comment by @tvatter on 2024-01-30 08:47_
+
+I'm guessing that my issue is similar to star imports (#8569) as I had also tried this. Looking forward to see the multi file analysis in ruff, this tool is awesome!
+
+Anyway, for my set of notebooks, I use a `ruff.toml` file containing e.g.
+
+```
+[lint.per-file-ignores]
+"mwe_setup.py" = ["F401"]
+```
+
+to avoid having ruff erase the imports I make in the setup file. Thus, your solution seems like OK as a temporary workaround. I just have to make sure my `mwe_setup.py` and `ruff.toml` are "synced", but it's less work than updating every notebook in a collection.
+
+
+
+---
+
+_Label `multifile-analysis` added by @dhruvmanila on 2024-01-30 10:05_
+
+---
+
+_Label `type-inference` added by @MichaReiser on 2024-10-24 14:33_
+
+---
+
+_Label `multifile-analysis` removed by @MichaReiser on 2024-10-24 14:33_
+
+---

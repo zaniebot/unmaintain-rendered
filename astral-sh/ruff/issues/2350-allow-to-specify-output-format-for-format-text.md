@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-01-30T12:09:25Z
 updated_at: 2024-04-07T10:18:26Z
 url: https://github.com/astral-sh/ruff/issues/2350
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # allow to specify output format for --format=text
@@ -105,9 +105,5 @@ nvim -q <(ruff check --output-format=pylint)
 ```
 
 
-
----
-
-_Referenced in [astral-sh/ruff#20438](../../astral-sh/ruff/issues/20438.md) on 2025-09-17 07:22_
 
 ---

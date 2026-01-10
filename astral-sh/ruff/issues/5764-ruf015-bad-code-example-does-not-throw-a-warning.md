@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-14T18:26:55Z
 updated_at: 2023-07-21T00:08:10Z
 url: https://github.com/astral-sh/ruff/issues/5764
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # RUF015 bad code example does not throw a warning
@@ -47,10 +47,6 @@ _Label `bug` added by @charliermarsh on 2023-07-14 19:45_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-07-14 20:47_
-
----
-
-_Referenced in [astral-sh/ruff#5767](../../astral-sh/ruff/pulls/5767.md) on 2023-07-14 23:37_
 
 ---
 

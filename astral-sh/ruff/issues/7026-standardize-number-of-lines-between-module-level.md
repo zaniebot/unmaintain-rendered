@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-08-31T15:46:22Z
 updated_at: 2023-09-06T16:09:18Z
 url: https://github.com/astral-sh/ruff/issues/7026
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Standardize number of lines between module-level docstring and first import
@@ -71,9 +71,5 @@ Yes exactly. I can close this issue since it's duplicated.
 ---
 
 _Closed by @petermattia on 2023-09-06 16:09_
-
----
-
-_Referenced in [astral-sh/ruff#3759](../../astral-sh/ruff/issues/3759.md) on 2025-02-06 15:14_
 
 ---

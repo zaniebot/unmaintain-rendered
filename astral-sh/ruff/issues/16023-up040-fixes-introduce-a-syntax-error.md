@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-07T15:31:26Z
 updated_at: 2025-02-07T17:05:19Z
 url: https://github.com/astral-sh/ruff/issues/16023
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # UP040 fixes introduce a syntax error
@@ -105,10 +105,6 @@ _Label `bug` added by @MichaReiser on 2025-02-07 16:23_
 ---
 
 _Label `fixes` added by @MichaReiser on 2025-02-07 16:23_
-
----
-
-_Referenced in [astral-sh/ruff#16026](../../astral-sh/ruff/pulls/16026.md) on 2025-02-07 16:36_
 
 ---
 

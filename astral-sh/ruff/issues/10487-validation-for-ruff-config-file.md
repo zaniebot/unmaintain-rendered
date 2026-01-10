@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-20T09:45:56Z
 updated_at: 2024-04-01T14:52:06Z
 url: https://github.com/astral-sh/ruff/issues/10487
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Validation for ruff config file
@@ -178,13 +178,5 @@ You can also run `ruff check --show-settings` to view the final, resolved settin
 _Comment by @aneeshusa on 2024-04-01 14:52_
 
 +1 to this, I accidentally ran into `Ensuring there are no rules that appear both in the select and ignore sections simultaneously.` when updating an old POC to use latest ruff. Went to write an internal test and realized this is something ruff could be handling itself
-
----
-
-_Referenced in [astral-sh/ruff#12774](../../astral-sh/ruff/issues/12774.md) on 2024-08-09 06:23_
-
----
-
-_Referenced in [astral-sh/ruff#13726](../../astral-sh/ruff/issues/13726.md) on 2024-10-13 14:19_
 
 ---

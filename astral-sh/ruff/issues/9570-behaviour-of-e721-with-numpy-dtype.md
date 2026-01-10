@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-01-17T22:00:45Z
 updated_at: 2024-01-29T17:39:03Z
 url: https://github.com/astral-sh/ruff/issues/9570
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Behaviour of E721 with numpy.dtype
@@ -48,10 +48,6 @@ Looking at https://github.com/numpy/numpy/blob/5feea41396910a3065c8e79886127fad4
 
 I suppose we should ask a numpy dev — ping @mhvk — about preferred syntax.
 
-
----
-
-_Referenced in [astropy/astropy#15889](../../astropy/astropy/pulls/15889.md) on 2024-01-18 15:46_
 
 ---
 
@@ -107,14 +103,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-01-29 17:13_
 
 ---
 
-_Referenced in [astral-sh/ruff#9676](../../astral-sh/ruff/pulls/9676.md) on 2024-01-29 17:21_
-
----
-
 _Closed by @charliermarsh on 2024-01-29 17:39_
-
----
-
-_Referenced in [astral-sh/ruff#12290](../../astral-sh/ruff/issues/12290.md) on 2024-07-11 16:46_
 
 ---

@@ -1,0 +1,108 @@
+```yaml
+number: 21518
+title: E722 BaseException should also be considered as bare except
+type: issue
+state: open
+author: typenoob
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2025-11-19T01:19:39Z
+updated_at: 2025-12-04T01:20:07Z
+url: https://github.com/astral-sh/ruff/issues/21518
+synced_at: 2026-01-10T11:10:00Z
+```
+
+# E722 BaseException should also be considered as bare except
+
+---
+
+_Issue opened by @typenoob on 2025-11-19 01:19_
+
+### Summary
+
+According to the document,
+> A bare except catches BaseException which includes KeyboardInterrupt, SystemExit, Exception, and others. Catching > BaseException can make it hard to interrupt the program (e.g., with Ctrl-C) and can disguise other problems.
+
+A bare except is equal with catching BaseException explicitly.
+Therefore we should report the following snippets as well.
+```python
+try:
+    pass
+except BaseException:
+    pass
+```
+Does it make sense?
+
+---
+
+_Label `rule` added by @amyreese on 2025-11-19 01:24_
+
+---
+
+_Label `needs-decision` added by @amyreese on 2025-11-19 01:24_
+
+---
+
+_Comment by @amyreese on 2025-11-19 01:25_
+
+Seems like a reasonable thing to catch, IMO.
+
+---
+
+_Comment by @ntBre on 2025-11-19 01:39_
+
+I think [blind-except (BLE001)](https://docs.astral.sh/ruff/rules/blind-except/) is meant to catch this case.  We should probably cross-link between the two rules at least.
+
+---
+
+_Comment by @typenoob on 2025-11-19 02:24_
+
+BLE001 also catches the ```except Exception:``` which conflicts with the E722's suggestion.
+> If you actually need to catch an unknown error, use Exception which will catch regular program errors but not important system
+> exceptions.
+
+> ```py
+> def run_a_function(some_other_fn):
+>    try:
+>        some_other_fn()
+>    except Exception as e:
+>        print(f"How exceptional! {e}")
+> ```
+
+---
+
+_Comment by @Avasam on 2025-12-03 05:37_
+
+Depends on the intention for the rule: is a bare `except` bad because `BaseException` is bad? Or is it because most devs not knowledgeable about Python's exception internals won't even know that `except` isn't `except Exception` ? And avoiding bare excepts helps clarify intent whilst avoiding accidentally eating up Keyboard interrupts.
+
+If you write `except BaseException`, you are being explicit about your intentions.
+
+> which conflicts with the E722's suggestion.
+
+I don't see them conflicting. One helps you clarify intent, the other then tells you you may be hiding away unexpected errors (rather than logging or rethrowing)
+
+---
+
+_Comment by @typenoob on 2025-12-04 00:49_
+
+> I don't see them conflicting. 
+
+I mean they can't use together. E722 allow **Exception**, but BLE001 don't. So I can't combine them to a point where **BaseException** and **bare expect** is not allowed but **Exception** is allowed. 
+
+And since E772's intention is described as below
+
+>A bare except catches BaseException which includes KeyboardInterrupt, SystemExit, Exception, and others. Catching BaseException can make it hard to interrupt the program (e.g., with Ctrl-C) and can disguise other problems.
+
+IMO, in E772, **BaseException** is eqaul to **bare except** and should be treat equally. If you think they have slight difference, then it's fine to stay still. Though I can't get it through reading the docs.
+
+---
+
+_Comment by @typenoob on 2025-12-04 00:56_
+
+>  is a bare except bad because BaseException is bad? Or is it because most devs not knowledgeable about Python's exception internals won't even know that except isn't except (Exception) ?
+
+So what's the intention actually? Since its name is **bare-except**, I prefer the latter. But without your explanation, I would have stuck with the former.
+
+---

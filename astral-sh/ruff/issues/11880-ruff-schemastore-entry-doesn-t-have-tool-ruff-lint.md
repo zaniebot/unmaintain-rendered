@@ -1,0 +1,318 @@
+```yaml
+number: 11880
+title: "`ruff` SchemaStore entry doesn't have `tool.ruff.lint`"
+type: issue
+state: closed
+author: jamesbraza
+labels:
+  - question
+assignees: []
+created_at: 2024-06-14T20:37:26Z
+updated_at: 2024-06-14T22:05:48Z
+url: https://github.com/astral-sh/ruff/issues/11880
+synced_at: 2026-01-10T11:09:53Z
+```
+
+# `ruff` SchemaStore entry doesn't have `tool.ruff.lint`
+
+---
+
+_Issue opened by @jamesbraza on 2024-06-14 20:37_
+
+With `ruff==0.4.9`, `validate-pyproject==0.18` and `validate-pyproject-schema-store==2024.6.10` in `pre-commit`:
+
+```yaml
+  - repo: https://github.com/abravalheri/validate-pyproject
+    rev: v0.18
+    hooks:
+      - id: validate-pyproject
+        additional_dependencies:
+          - "validate-pyproject-schema-store[all]"
+```
+
+Running `validate-pyproject` on my `pyproject.toml` with `tool.ruff.lint` in it:
+
+```
+Validate pyproject.toml.......................................................Failed
+- hook id: validate-pyproject
+- exit code: 1
+
+Invalid file: pyproject.toml
+[ERROR] `tool.ruff.lint` cannot be validated by any definition:
+
+    - type: table
+      keys:
+        'allowed-confusables':
+          type: [array, null]
+          items: {type: string, max length: 1, min length: 1}
+        'dummy-variable-rgx':
+          type: [string, null]
+        'exclude':
+          type: [array, null]
+          items: {type: string}
+        'explicit-preview-rules':
+          type: [boolean, null]
+        'extend-fixable':
+          type: [array, null]
+          items: {}
+        'extend-ignore':
+          deprecated: True
+          type: [array, null]
+          items: {}
+        'extend-per-file-ignores':
+          type: [table, null]
+          additional keys:
+            type: array
+            items: {}
+        'extend-safe-fixes':
+          type: [array, null]
+          items: {}
+        'extend-select':
+          type: [array, null]
+          items: {}
+        'extend-unfixable':
+          deprecated: True
+          type: [array, null]
+          items: {}
+        'extend-unsafe-fixes':
+          type: [array, null]
+          items: {}
+        'external':
+          type: [array, null]
+          items: {type: string}
+        'fixable':
+          type: [array, null]
+          items: {}
+        'flake8-annotations':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'flake8-bandit':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'flake8-boolean-trap':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'flake8-bugbear':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'flake8-builtins':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'flake8-comprehensions':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'flake8-copyright':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'flake8-errmsg':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'flake8-gettext':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'flake8-implicit-str-concat':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'flake8-import-conventions':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'flake8-pytest-style':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'flake8-quotes':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'flake8-self':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'flake8-tidy-imports':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'flake8-type-checking':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'flake8-unused-arguments':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'ignore':
+          type: [array, null]
+          items: {}
+        'ignore-init-module-imports':
+          type: [boolean, null]
+        'isort':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'logger-objects':
+          type: [array, null]
+          items: {type: string}
+        'mccabe':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'pep8-naming':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'per-file-ignores':
+          type: [table, null]
+          additional keys:
+            type: array
+            items: {}
+        'preview':
+          type: [boolean, null]
+        'pycodestyle':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'pydocstyle':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'pyflakes':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'pylint':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'pyupgrade':
+          at least one of the following:
+            - {}
+            - {type: null}
+        'select':
+          type: [array, null]
+          items: {}
+        'task-tags':
+          type: [array, null]
+          items: {type: string}
+        'typing-modules':
+          type: [array, null]
+          items: {type: string}
+        'unfixable':
+          type: [array, null]
+          items: {}
+      additional keys: False
+    - {type: null}
+```
+
+Is `tool.ruff.lint` in https://github.com/SchemaStore/schemastore/blob/master/src/schemas/json/ruff.json?
+
+---
+
+_Comment by @zanieb on 2024-06-14 20:43_
+
+Yep this is defined at https://github.com/SchemaStore/schemastore/blob/9f41e44514dddbe9c5dca604055bafb72ba514c2/src/schemas/json/ruff.json#L419-L428
+
+Seems like an issue with `validate-pyproject-schema-store`?
+
+---
+
+_Label `question` added by @zanieb on 2024-06-14 20:43_
+
+---
+
+_Comment by @jamesbraza on 2024-06-14 20:56_
+
+Actually this runs fine:
+
+```toml
+[tool.ruff.lint]
+extend-select = [
+    "FURB105",
+]
+```
+
+And this generates the crash:
+
+```toml
+[tool.ruff.lint]
+extend-select = [
+    "FURB105",
+    "FURB154",
+]
+```
+
+It seems FURB154 was just released today in https://github.com/astral-sh/ruff/tree/v0.4.9.
+
+So it seems https://github.com/SchemaStore/schemastore/blob/master/src/schemas/json/ruff.json#L2559-L2561 needs updating?
+
+And it's a bad failure message from `validate-pyproject`
+
+---
+
+_Comment by @jamesbraza on 2024-06-14 21:05_
+
+Cc @alex-700 since he added `FURB154` in https://github.com/astral-sh/ruff/pull/11187 (would you mind adding it to JSON schema as well?)
+
+---
+
+_Comment by @zanieb on 2024-06-14 21:10_
+
+Thanks for investigating! It should be present in our copy of the schema, we just need to push to schema store.
+
+---
+
+_Comment by @jamesbraza on 2024-06-14 21:13_
+
+Ah, I see:
+
+https://github.com/astral-sh/ruff/blob/ccc418cc49eaaac28197c503ac711f4972672a5e/ruff.schema.json#L3070
+
+Do you think there is an opportunity for increased automation here?
+
+---
+
+_Comment by @zanieb on 2024-06-14 21:13_
+
+We have to open a pull request downstream and we have a script to automate it
+
+---
+
+_Comment by @jamesbraza on 2024-06-14 21:17_
+
+Okay gotchu that sounds good. Do you think that script can be auto-run by Ruff's CI when a new release is cut in GitHub?
+
+---
+
+_Comment by @zanieb on 2024-06-14 21:21_
+
+I don't think we have a bot account that would open pull requests over in another organization.
+
+---
+
+_Comment by @zanieb on 2024-06-14 21:51_
+
+https://github.com/SchemaStore/schemastore/pull/3866
+
+We'll just need to be better about doing this during releases.
+
+---
+
+_Comment by @jamesbraza on 2024-06-14 22:05_
+
+Okay sounds good, going to close this out in favor of that PR
+
+---
+
+_Closed by @jamesbraza on 2024-06-14 22:05_
+
+---

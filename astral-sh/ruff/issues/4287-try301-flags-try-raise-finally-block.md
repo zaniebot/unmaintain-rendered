@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-08T17:29:45Z
 updated_at: 2023-05-09T09:40:52Z
 url: https://github.com/astral-sh/ruff/issues/4287
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # TRY301 flags try - raise - finally block
@@ -61,10 +61,6 @@ _Label `bug` added by @charliermarsh on 2023-05-09 02:27_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-05-09 03:31_
-
----
-
-_Referenced in [astral-sh/ruff#4301](../../astral-sh/ruff/pulls/4301.md) on 2023-05-09 03:33_
 
 ---
 

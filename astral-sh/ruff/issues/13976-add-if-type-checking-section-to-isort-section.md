@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-29T04:42:26Z
 updated_at: 2025-01-27T15:31:15Z
 url: https://github.com/astral-sh/ruff/issues/13976
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # add if TYPE_CHECKING section to isort section order
@@ -198,9 +198,5 @@ _Comment by @fraser-langton on 2024-12-12 03:19_
 _Comment by @Sxderp on 2025-01-27 15:31_
 
 Yeah, I would also like TYPE_CHECKING to be at the end. 
-
----
-
-_Referenced in [astral-sh/ruff#21132](../../astral-sh/ruff/issues/21132.md) on 2025-10-30 04:00_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-25T18:55:26Z
 updated_at: 2024-11-03T16:30:51Z
 url: https://github.com/astral-sh/ruff/issues/13931
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] fix adding intersection to negative side of an intersection
@@ -30,15 +30,7 @@ _Label `red-knot` added by @carljm on 2024-10-25 18:55_
 
 ---
 
-_Referenced in [astral-sh/ruff#13918](../../astral-sh/ruff/pulls/13918.md) on 2024-10-25 19:00_
-
----
-
 _Label `help wanted` added by @carljm on 2024-10-26 01:51_
-
----
-
-_Referenced in [astral-sh/ruff#13962](../../astral-sh/ruff/pulls/13962.md) on 2024-10-28 10:59_
 
 ---
 

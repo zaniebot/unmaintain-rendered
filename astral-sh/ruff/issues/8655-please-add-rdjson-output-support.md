@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-13T16:04:56Z
 updated_at: 2024-06-04T10:01:59Z
 url: https://github.com/astral-sh/ruff/issues/8655
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Please add rdjson output support
@@ -47,10 +47,6 @@ _Label `help wanted` added by @charliermarsh on 2023-11-13 18:10_
 _Comment by @charliermarsh on 2023-11-13 18:11_
 
 No objection to including this, PR welcome if anyone is up for it!
-
----
-
-_Referenced in [astral-sh/ruff#8253](../../astral-sh/ruff/issues/8253.md) on 2023-11-13 21:56_
 
 ---
 
@@ -204,10 +200,6 @@ Yep, format doesn't have any output formats except main diff
 
 ---
 
-_Referenced in [astral-sh/ruff#11682](../../astral-sh/ruff/pulls/11682.md) on 2024-06-01 16:46_
-
----
-
 _Comment by @tobb10001 on 2024-06-03 20:01_
 
 In #11682 I implemented RDJson formatting for `ruff check`. I didn't address anything regarding formatting.
@@ -227,9 +219,5 @@ _Closed by @charliermarsh on 2024-06-03 20:03_
 _Comment by @keramblock on 2024-06-04 10:01_
 
 @tobb10001 thanks a lot!
-
----
-
-_Referenced in [evrone/evrone-django-template#21](../../evrone/evrone-django-template/issues/21.md) on 2024-12-23 13:55_
 
 ---

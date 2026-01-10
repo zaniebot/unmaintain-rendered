@@ -1,0 +1,75 @@
+```yaml
+number: 18107
+title: "PLW1514 doesn’t recognize `encoding` positional argument of `codecs.open`"
+type: issue
+state: closed
+author: dscorbett
+labels:
+  - bug
+  - fixes
+  - help wanted
+assignees: []
+created_at: 2025-05-14T19:25:37Z
+updated_at: 2025-05-15T20:17:09Z
+url: https://github.com/astral-sh/ruff/issues/18107
+synced_at: 2026-01-10T11:09:58Z
+```
+
+# PLW1514 doesn’t recognize `encoding` positional argument of `codecs.open`
+
+---
+
+_Issue opened by @dscorbett on 2025-05-14 19:25_
+
+### Summary
+
+[`unspecified-encoding` (PLW1514)](https://docs.astral.sh/ruff/rules/unspecified-encoding/) fails to recognize the `encoding` parameter of `codecs.open` when the argument is passed positionally. `encoding` is at a different position in `codecs.open` than in `open`.
+
+```console
+$ cat >plw1514.py <<'# EOF'
+import codecs
+codecs.open("plw1514.py", "r", "utf-8").close()
+# EOF
+
+$ python plw1514.py
+
+$ ruff --isolated check plw1514.py --preview --select PLW1514 --unsafe-fixes --fix
+Found 1 error (1 fixed, 0 remaining).
+
+$ cat plw1514.py
+import codecs
+codecs.open("plw1514.py", "r", "utf-8", encoding="utf-8").close()
+
+$ python plw1514.py
+Traceback (most recent call last):
+  File "plw1514.py", line 2, in <module>
+    codecs.open("plw1514.py", "r", "utf-8", encoding="utf-8").close()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: open() got multiple values for argument 'encoding'
+```
+
+### Version
+
+ruff 0.11.9 (2370297cd 2025-05-09)
+
+---
+
+_Label `bug` added by @ntBre on 2025-05-14 19:57_
+
+---
+
+_Label `fixes` added by @ntBre on 2025-05-14 19:57_
+
+---
+
+_Label `help wanted` added by @ntBre on 2025-05-14 19:57_
+
+---
+
+_Closed by @ntBre on 2025-05-15 20:17_
+
+---
+
+_Closed by @ntBre on 2025-05-15 20:17_
+
+---

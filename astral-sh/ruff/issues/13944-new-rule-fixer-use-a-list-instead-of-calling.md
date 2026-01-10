@@ -1,0 +1,123 @@
+```yaml
+number: 13944
+title: "New Rule + fixer: Use a list instead of calling split with string literals"
+type: issue
+state: closed
+author: Avasam
+labels:
+  - rule
+  - accepted
+assignees: []
+created_at: 2024-10-28T00:33:58Z
+updated_at: 2024-11-02T17:15:37Z
+url: https://github.com/astral-sh/ruff/issues/13944
+synced_at: 2026-01-10T11:09:55Z
+```
+
+# New Rule + fixer: Use a list instead of calling split with string literals
+
+---
+
+_Issue opened by @Avasam on 2024-10-28 00:33_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* List of keywords you searched for before creating this issue. Write them down here so that others can find this issue more easily and help provide feedback.
+  e.g. "RUF001", "unused variable", "Jupyter notebook"
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+I've seen this pattern a handful of time:
+```py
+"""
+	itemA
+	itemB
+	itemC
+""".split()
+```
+or
+```py
+"a,b,c,d".split(",")
+```
+And I'd like a rule to transform usages of `join` with literals into actual inline lists without the overhead of calling "join". My two examples above would become:
+```py
+[
+	"itemA",
+	"itemB",
+	"itemC",
+]
+```
+or
+```py
+["a", "b", "c", "d"]
+```
+
+I don't think this rule exists in any linters that I'm aware of.
+
+The exact details of how this gets formatted isn't important to this rule. Probably just rewrite everything on a single line and let formatting/other rules take care of the rest.
+
+---
+
+_Label `rule` added by @dhruvmanila on 2024-10-28 05:14_
+
+---
+
+_Label `needs-decision` added by @dhruvmanila on 2024-10-28 05:15_
+
+---
+
+_Renamed from "New Rule + fixer: Use a list instead of calling join with string literals" to "New Rule + fixer: Use a list instead of calling split with string literals" by @Avasam on 2024-10-28 15:20_
+
+---
+
+_Comment by @sbrugman on 2024-10-29 14:17_
+
+Great suggestion, I think it's worth adding. With autofix this adds to developer experience as writing the comma-seperated pattern is sometimes just more convenient.
+
+Real-world examples:
+- https://github.com/apache/fury/blob/main/java/benchmark/analyze.py#L246
+- https://github.com/alibaba/AliceMind/blob/main/VECO/NLU/evaluate.py#L103
+- https://github.com/microsoft/DirectXShaderCompiler/blob/main/utils/hct/hctdb.py#L261
+- https://github.com/pandas-dev/pandas/blob/main/pandas/tests/reshape/merge/test_merge_asof.py#L61
+- https://github.com/numpy/numpy/blob/main/numpy/f2py/tests/test_return_real.py#L91
+
+Similar rule: https://docs.astral.sh/ruff/rules/static-join-to-f-string/
+
+---
+
+_Comment by @MichaReiser on 2024-10-30 08:07_
+
+This seems reasonable. Although I'm somewhat surprised that people do this :D 
+
+The comma pattern seems easy enough to detect. The `split` without a `separator` needs some extra care to ensure we apply the exact same logic. 
+
+---
+
+_Label `needs-decision` removed by @MichaReiser on 2024-10-30 08:07_
+
+---
+
+_Label `accepted` added by @MichaReiser on 2024-10-30 08:08_
+
+---
+
+_Comment by @sbrugman on 2024-10-31 08:42_
+
+For posterity, @AlexWaygood noticed that this rule exists in flake8-simplify:
+ https://github.com/MartinThoma/flake8-simplify/issues/86 (SIM905)
+
+---
+
+_Closed by @charliermarsh on 2024-11-02 17:15_
+
+---
+
+_Closed by @charliermarsh on 2024-11-02 17:15_
+
+---

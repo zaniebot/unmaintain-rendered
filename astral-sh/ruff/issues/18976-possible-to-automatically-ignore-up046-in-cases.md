@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-27T05:52:59Z
 updated_at: 2025-06-27T13:49:02Z
 url: https://github.com/astral-sh/ruff/issues/18976
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Possible to automatically ignore UP046 in cases of manual variance setting
@@ -73,9 +73,5 @@ _Comment by @AlexWaygood on 2025-06-27 13:49_
 > in cases where I'm manually setting a `TypeVar` to covariant or contravariant (which is not something supported through the inline syntax) it would be convenient to avoid enforcement of the rule.
 
 In most cases, type checkers _should_ be able to correctly infer the variance of a TypeVar (that's why it's not possible to manually specify them with the new syntax, after all!). So it _should_ be pretty rare that you _need_ to manually override the type checker's inference and specify a different variance to the one that the type checker infers. I'd argue it's rare enough that you should just be able to deal with this by adding `# noqa` comments to the specific problematic classes?
-
----
-
-_Referenced in [astral-sh/ruff#18894](../../astral-sh/ruff/issues/18894.md) on 2025-10-29 13:35_
 
 ---

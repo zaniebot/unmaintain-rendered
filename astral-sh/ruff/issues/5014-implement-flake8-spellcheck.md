@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-06-11T15:05:01Z
 updated_at: 2025-11-12T15:56:55Z
 url: https://github.com/astral-sh/ruff/issues/5014
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # Implement flake8-spellcheck 
@@ -86,10 +86,6 @@ _Comment by @ashrub-holvi on 2024-08-16 13:54_
 
 I had **no** experience with `typos` or `codespell` yet, but feels like checking source code just like text files may produce a lot of false errors.
 So, perhaps good to have an option to check comments and docstrings only, because on code review we reading code much more careful than non-code parts.
-
----
-
-_Referenced in [pyvista/pyvista#7110](../../pyvista/pyvista/pulls/7110.md) on 2025-01-23 07:10_
 
 ---
 

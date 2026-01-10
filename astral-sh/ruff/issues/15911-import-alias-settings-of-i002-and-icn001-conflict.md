@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-03T14:18:23Z
 updated_at: 2025-02-04T23:05:37Z
 url: https://github.com/astral-sh/ruff/issues/15911
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Import alias settings of I002 and ICN001 conflict even when they agree
@@ -43,10 +43,6 @@ _Label `bug` added by @AlexWaygood on 2025-02-03 15:56_
 ---
 
 _Assigned to @dylwil3 by @dylwil3 on 2025-02-03 16:48_
-
----
-
-_Referenced in [astral-sh/ruff#15918](../../astral-sh/ruff/pulls/15918.md) on 2025-02-03 23:26_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-12-30T07:39:13Z
 updated_at: 2025-03-07T19:04:45Z
 url: https://github.com/astral-sh/ruff/issues/15199
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Avoid inferring types in error case during unpacking
@@ -27,18 +27,10 @@ _Label `red-knot` added by @dhruvmanila on 2024-12-30 07:39_
 
 ---
 
-_Referenced in [astral-sh/ruff#16530](../../astral-sh/ruff/pulls/16530.md) on 2025-03-06 10:31_
-
----
-
 _Closed by @carljm on 2025-03-07 19:04_
 
 ---
 
 _Closed by @carljm on 2025-03-07 19:04_
-
----
-
-_Referenced in [astral-sh/ruff#16469](../../astral-sh/ruff/pulls/16469.md) on 2025-03-08 02:32_
 
 ---

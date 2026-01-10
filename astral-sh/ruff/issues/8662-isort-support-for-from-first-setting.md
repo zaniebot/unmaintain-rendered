@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-13T19:07:18Z
 updated_at: 2023-11-21T23:36:16Z
 url: https://github.com/astral-sh/ruff/issues/8662
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # isort: support for ``from_first`` setting
@@ -36,10 +36,6 @@ from os import path
 import enum
 import os
 ```
-
----
-
-_Referenced in [astral-sh/ruff#8663](../../astral-sh/ruff/pulls/8663.md) on 2023-11-13 19:41_
 
 ---
 

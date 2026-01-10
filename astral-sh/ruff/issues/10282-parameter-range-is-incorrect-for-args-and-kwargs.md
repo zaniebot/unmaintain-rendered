@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-07T22:58:34Z
 updated_at: 2024-03-08T23:57:50Z
 url: https://github.com/astral-sh/ruff/issues/10282
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # `Parameter` range is incorrect for `*args` and `**kwargs`
@@ -57,10 +57,6 @@ I generally agree, since `x: int = 1` is the parameter range for a non-variadic 
 ---
 
 _Label `internal` added by @charliermarsh on 2024-03-07 23:18_
-
----
-
-_Referenced in [astral-sh/ruff#10283](../../astral-sh/ruff/pulls/10283.md) on 2024-03-07 23:57_
 
 ---
 

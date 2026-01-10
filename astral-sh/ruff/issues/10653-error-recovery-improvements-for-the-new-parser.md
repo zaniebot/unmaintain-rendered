@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-29T07:58:47Z
 updated_at: 2025-12-01T09:17:54Z
 url: https://github.com/astral-sh/ruff/issues/10653
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # ☂️ Error recovery improvements for the new parser
@@ -119,19 +119,7 @@ _Assigned to @dhruvmanila by @dhruvmanila on 2024-03-29 08:39_
 
 ---
 
-_Referenced in [astral-sh/ruff#10730](../../astral-sh/ruff/pulls/10730.md) on 2024-04-03 09:13_
-
----
-
-_Referenced in [astral-sh/ruff#14315](../../astral-sh/ruff/issues/14315.md) on 2024-11-14 04:44_
-
----
-
 _Unassigned @dhruvmanila by @dhruvmanila on 2025-02-14 08:37_
-
----
-
-_Referenced in [astral-sh/ruff#16140](../../astral-sh/ruff/issues/16140.md) on 2025-02-14 08:49_
 
 ---
 
@@ -139,17 +127,9 @@ _Label `tracking` added by @dhruvmanila on 2025-02-19 03:05_
 
 ---
 
-_Referenced in [astral-sh/ruff#16493](../../astral-sh/ruff/pulls/16493.md) on 2025-03-08 03:31_
-
----
-
 _Comment by @dhruvmanila on 2025-03-08 03:36_
 
 - [ ] 18. Consider changing `ast::ExprSubscript` to make `slice` field `Optional` so that an empty slice (which is an error) does not need to include an empty `ExprName` node as a placeholder.
-
----
-
-_Referenced in [astral-sh/ruff#18281](../../astral-sh/ruff/pulls/18281.md) on 2025-05-26 11:29_
 
 ---
 
@@ -177,18 +157,10 @@ _Comment by @MichaReiser on 2025-11-10 08:59_
 
 ---
 
-_Referenced in [astral-sh/ruff#21703](../../astral-sh/ruff/pulls/21703.md) on 2025-11-30 13:41_
-
----
-
 _Comment by @11happy on 2025-11-30 13:42_
 
 I have linked the PR for first one.
 Thank you : )
-
----
-
-_Referenced in [astral-sh/ruff#21720](../../astral-sh/ruff/pulls/21720.md) on 2025-12-01 09:13_
 
 ---
 

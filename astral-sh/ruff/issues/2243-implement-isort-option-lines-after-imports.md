@@ -1,0 +1,53 @@
+```yaml
+number: 2243
+title: Implement isort option lines_after_imports
+type: issue
+state: closed
+author: qbedard
+labels:
+  - good first issue
+  - isort
+assignees: []
+created_at: 2023-01-27T05:46:54Z
+updated_at: 2023-02-02T02:39:47Z
+url: https://github.com/astral-sh/ruff/issues/2243
+synced_at: 2026-01-10T11:09:45Z
+```
+
+# Implement isort option lines_after_imports
+
+---
+
+_Issue opened by @qbedard on 2023-01-27 05:46_
+
+The isort configuration is missing the [lines_after_imports](https://pycqa.github.io/isort/docs/configuration/options.html#lines-after-imports) option. 😭
+
+I rely on this one. Any chance it can be added?
+
+Thanks for the amazing tool. ❤️
+
+---
+
+_Label `good first issue` added by @charliermarsh on 2023-01-27 12:25_
+
+---
+
+_Label `isort` added by @charliermarsh on 2023-01-27 12:25_
+
+---
+
+_Comment by @reidswan on 2023-01-28 10:33_
+
+Mind if I tackle this one? 
+
+---
+
+_Comment by @charliermarsh on 2023-01-28 12:17_
+
+Feel free!
+
+---
+
+_Closed by @charliermarsh on 2023-02-02 02:39_
+
+---

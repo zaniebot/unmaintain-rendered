@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-20T23:07:12Z
 updated_at: 2023-07-05T23:11:48Z
 url: https://github.com/astral-sh/ruff/issues/2044
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # F401 false positive (imported but unused)
@@ -162,15 +162,7 @@ The relevant PR that introduced this behavior is: https://github.com/charliermar
 
 ---
 
-_Referenced in [astral-sh/ruff#2065](../../astral-sh/ruff/pulls/2065.md) on 2023-01-21 17:45_
-
----
-
 _Closed by @charliermarsh on 2023-01-21 17:50_
-
----
-
-_Referenced in [astral-sh/ruff#3477](../../astral-sh/ruff/issues/3477.md) on 2023-03-13 18:46_
 
 ---
 
@@ -209,9 +201,5 @@ Flake8 gives the same result. You should be able to add a `# noqa: F811` to line
 _Comment by @MichaelTiemannOSC on 2023-07-05 23:11_
 
 Silly me!  I didn't put the F811 where it belonged.  Now fixed...  Thanks!
-
----
-
-_Referenced in [astral-sh/ruff#9418](../../astral-sh/ruff/pulls/9418.md) on 2024-01-07 01:51_
 
 ---

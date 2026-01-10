@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-11-26T10:04:04Z
 updated_at: 2025-12-29T18:00:46Z
 url: https://github.com/astral-sh/ruff/issues/21638
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # Import Sorting not stable
@@ -106,10 +106,6 @@ I was able to pinpoint the issue with your help 🥳 . We recently refactored ou
 The only remaining question is that the directory was completely empty and contained no `__init__.py`, so it’s a bit surprising that Ruff detected it as a Python package or used it for module classification.
 
 To answer my own question, I was not aware of [PEP 420](https://peps.python.org/pep-0420/) allowing *namespace packages*. Thus, I assume this is expected behavior on Ruff’s side. Thanks again for the quick assistance!
-
----
-
-_Referenced in [astral-sh/ruff#21647](../../astral-sh/ruff/issues/21647.md) on 2025-11-26 21:50_
 
 ---
 

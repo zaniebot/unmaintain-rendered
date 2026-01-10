@@ -1,0 +1,53 @@
+```yaml
+number: 1051
+title: "Improve error message when `pyproject.toml` parsing fails"
+type: issue
+state: closed
+author: XN137
+labels: []
+assignees: []
+created_at: 2022-12-05T10:01:18Z
+updated_at: 2022-12-05T17:43:22Z
+url: https://github.com/astral-sh/ruff/issues/1051
+synced_at: 2026-01-10T12:09:58Z
+```
+
+# Improve error message when `pyproject.toml` parsing fails
+
+---
+
+_Issue opened by @XN137 on 2022-12-05 10:01_
+
+in a folder with `pyproject.toml` header as:
+```
+[tool.black]line-length = 140
+```
+(just accidentally no newline in-between, this probably is not supported in toml at all)
+
+ruff failed without any context on the parsing error:
+```
+> ruff .
+error expected newline, found an identifier at line 1 column 13
+```
+
+it would be more user friendly if the error reported in which file the parsing error happened
+
+---
+
+_Label `enhancement` added by @charliermarsh on 2022-12-05 14:08_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2022-12-05 16:58_
+
+---
+
+_Closed by @charliermarsh on 2022-12-05 17:04_
+
+---
+
+_Comment by @XN137 on 2022-12-05 17:43_
+
+thank you for the quick reaction :+1: 
+
+---

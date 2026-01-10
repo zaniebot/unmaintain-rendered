@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-24T15:23:36Z
 updated_at: 2025-04-01T23:48:32Z
 url: https://github.com/astral-sh/ruff/issues/16953
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] Implement subtyping/assignability between different callable objects
@@ -35,10 +35,6 @@ _Label `red-knot` added by @dhruvmanila on 2025-03-24 15:23_
 
 ---
 
-_Referenced in [astral-sh/ruff#16804](../../astral-sh/ruff/pulls/16804.md) on 2025-03-24 15:23_
-
----
-
 _Label `help wanted` added by @carljm on 2025-03-24 16:41_
 
 ---
@@ -48,14 +44,6 @@ _Comment by @MatthewMckee4 on 2025-03-24 23:24_
 >  A CallableType is always a subtype of KnownClass::Object (and never the other way around)
 
 Can we not generalize this for every type? 
-
----
-
-_Referenced in [astral-sh/ruff#16960](../../astral-sh/ruff/pulls/16960.md) on 2025-03-25 00:08_
-
----
-
-_Referenced in [astral-sh/ruff#16970](../../astral-sh/ruff/pulls/16970.md) on 2025-03-25 16:26_
 
 ---
 
@@ -85,10 +73,6 @@ We have it in is_assignable_to
 
 ---
 
-_Referenced in [astral-sh/ruff#17005](../../astral-sh/ruff/pulls/17005.md) on 2025-03-26 23:39_
-
----
-
 _Added to milestone `Red Knot Q1 2025` by @carljm on 2025-03-27 18:33_
 
 ---
@@ -106,14 +90,6 @@ _Assigned to @MatthewMckee4 by @carljm on 2025-03-27 19:05_
 ---
 
 _Renamed from "[red-knot] Implement subtyping between different callable objects" to "[red-knot] Implement subtyping/assignability between different callable objects" by @sharkdp on 2025-03-31 14:34_
-
----
-
-_Referenced in [astral-sh/ruff#17095](../../astral-sh/ruff/pulls/17095.md) on 2025-03-31 14:57_
-
----
-
-_Referenced in [astral-sh/ruff#17105](../../astral-sh/ruff/pulls/17105.md) on 2025-03-31 23:23_
 
 ---
 

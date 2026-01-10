@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-02-14T21:40:48Z
 updated_at: 2023-03-22T15:36:03Z
 url: https://github.com/astral-sh/ruff/issues/2902
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Rename rules according to naming convention
@@ -39,29 +39,9 @@ I also added `numpy-*` to the NumPy-specific rules.
 
 ---
 
-_Referenced in [astral-sh/ruff#2915](../../astral-sh/ruff/pulls/2915.md) on 2023-02-15 10:29_
-
----
-
 _Comment by @charliermarsh on 2023-02-26 20:20_
 
 I'm gonna try and do a pass on _all_ rules and propose the changes here.
-
----
-
-_Referenced in [astral-sh/ruff#3283](../../astral-sh/ruff/pulls/3283.md) on 2023-02-28 21:30_
-
----
-
-_Referenced in [astral-sh/ruff#1773](../../astral-sh/ruff/issues/1773.md) on 2023-03-07 08:01_
-
----
-
-_Referenced in [astral-sh/ruff#3660](../../astral-sh/ruff/pulls/3660.md) on 2023-03-22 02:23_
-
----
-
-_Referenced in [astral-sh/ruff#3661](../../astral-sh/ruff/pulls/3661.md) on 2023-03-22 02:31_
 
 ---
 

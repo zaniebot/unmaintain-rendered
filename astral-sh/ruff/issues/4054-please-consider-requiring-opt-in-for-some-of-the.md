@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-04-21T02:56:14Z
 updated_at: 2025-01-08T21:34:56Z
 url: https://github.com/astral-sh/ruff/issues/4054
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Please consider requiring opt-in for some of the new subprocess rules
@@ -65,10 +65,6 @@ A similar `subprocess` problem appears in #4045 - opt-out's not a bad idea, IMO,
 ---
 
 _Label `question` added by @charliermarsh on 2023-04-25 00:13_
-
----
-
-_Referenced in [astral-sh/ruff#4089](../../astral-sh/ruff/issues/4089.md) on 2023-04-25 15:03_
 
 ---
 
@@ -174,10 +170,6 @@ _Label `question` removed by @charliermarsh on 2023-07-10 01:15_
 
 ---
 
-_Referenced in [ansible/ansible-creator#250](../../ansible/ansible-creator/pulls/250.md) on 2024-08-02 16:12_
-
----
-
 _Comment by @sbrudenell on 2025-01-08 21:34_
 
 > 1. While these rules do arguably "ban" `subprocess` calls, I think the _intention_ is that they force you to explicitly allow any uses of `subprocess` via a deliberate `noqa` or `nosec` comment.
@@ -189,13 +181,5 @@ I thought the usefulness of `noqa` was for rules that are *usually* actionable b
 I'm not seeing how `S603` is actionable. I don't see meaning to writing `noqa` every time I write `subprocess`. That's automatic, not "deliberate". It's also not ideal to further clutter to my `--ignore` config. (I already don't know why it's all there or when I should review it).
 
 Can you explain the use case? Are there teams who have a process to (regularly?) review all `noqa`s in their code or something? I've never been part of a review process that could make use of an alert like this, but maybe I've never been on a big enough team.
-
----
-
-_Referenced in [astral-sh/ruff#16541](../../astral-sh/ruff/issues/16541.md) on 2025-03-06 18:26_
-
----
-
-_Referenced in [nationalarchives/ds-caselaw-public-ui#2230](../../nationalarchives/ds-caselaw-public-ui/pulls/2230.md) on 2025-07-17 12:50_
 
 ---

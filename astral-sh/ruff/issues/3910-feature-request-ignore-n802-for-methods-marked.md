@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-04-08T00:06:08Z
 updated_at: 2023-04-08T03:11:51Z
 url: https://github.com/astral-sh/ruff/issues/3910
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Feature request: ignore `N802` for methods marked with `@override`
@@ -33,10 +33,6 @@ ignore-names = ["closeEvent", "paintEvent", "keyPressEvent", "mousePressEvent", 
 
 ---
 
-_Referenced in [Toufool/AutoSplit#207](../../Toufool/AutoSplit/pulls/207.md) on 2023-04-08 00:24_
-
----
-
 _Comment by @charliermarsh on 2023-04-08 02:51_
 
 Makes sense!
@@ -47,22 +43,6 @@ _Label `bug` added by @charliermarsh on 2023-04-08 02:52_
 
 ---
 
-_Referenced in [astral-sh/ruff#3912](../../astral-sh/ruff/pulls/3912.md) on 2023-04-08 03:03_
-
----
-
 _Closed by @charliermarsh on 2023-04-08 03:11_
-
----
-
-_Referenced in [astral-sh/ruff#5400](../../astral-sh/ruff/issues/5400.md) on 2023-06-27 18:47_
-
----
-
-_Referenced in [astral-sh/ruff#6958](../../astral-sh/ruff/issues/6958.md) on 2023-08-28 21:31_
-
----
-
-_Referenced in [astral-sh/ruff#8867](../../astral-sh/ruff/issues/8867.md) on 2023-11-28 19:19_
 
 ---

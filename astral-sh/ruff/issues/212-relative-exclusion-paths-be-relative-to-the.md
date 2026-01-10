@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-09-16T09:03:04Z
 updated_at: 2023-02-03T18:28:29Z
 url: https://github.com/astral-sh/ruff/issues/212
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # Relative exclusion paths be relative to the project root (home of `pyproject.toml`)
@@ -66,14 +66,6 @@ _Added to milestone `Release 0.1.0` by @charliermarsh on 2022-09-17 18:22_
 
 ---
 
-_Referenced in [astral-sh/ruff#228](../../astral-sh/ruff/pulls/228.md) on 2022-09-20 02:44_
-
----
-
 _Closed by @charliermarsh on 2022-09-20 02:45_
-
----
-
-_Referenced in [codegrande/ruff#3](../../codegrande/ruff/pulls/3.md) on 2024-05-17 07:07_
 
 ---

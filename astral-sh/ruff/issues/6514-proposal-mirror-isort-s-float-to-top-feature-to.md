@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-12T00:14:00Z
 updated_at: 2025-12-26T19:07:29Z
 url: https://github.com/astral-sh/ruff/issues/6514
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # [Proposal] Mirror isort's float-to-top feature to autofix simple cases of E402
@@ -89,10 +89,6 @@ float-to-top = true
 _Comment by @adamstirk-ct on 2024-04-30 18:03_
 
 Is there any news on getting float-to-top added?
-
----
-
-_Referenced in [astral-sh/ruff#13151](../../astral-sh/ruff/issues/13151.md) on 2024-08-30 02:22_
 
 ---
 
@@ -180,10 +176,6 @@ I guess that could work. There is the small issue of whether people have used `#
 The other consideration here is the organise-imports logic in editors -- I personally (and suspect others too) would want the float-to-top behaviour to happen when running that editor command. It looks like `organize_imports_edit` has a list of rules which it aims to fix though, so hooking that up shouldn't be too hard ... as long as that'd still obey people's choice of whether or not E402 should be being fixed or not (in general).
 
 Thanks, I'll have a look at this as an option and see if I can work out what the various UX options/trade-offs are.
-
----
-
-_Referenced in [astral-sh/ruff#22212](../../astral-sh/ruff/pulls/22212.md) on 2025-12-26 19:05_
 
 ---
 

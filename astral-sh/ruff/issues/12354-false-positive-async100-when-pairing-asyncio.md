@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-17T00:08:25Z
 updated_at: 2024-08-01T02:12:44Z
 url: https://github.com/astral-sh/ruff/issues/12354
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # False positive ASYNC100 when pairing `asyncio.timeout` with `asyncio.TaskGroup`
@@ -40,10 +40,6 @@ I think this is a false positive, as the inner `asyncio.TaskGroup` has an implic
 ---
 
 _Label `bug` added by @charliermarsh on 2024-07-17 00:39_
-
----
-
-_Referenced in [astral-sh/ruff#12605](../../astral-sh/ruff/pulls/12605.md) on 2024-08-01 02:08_
 
 ---
 

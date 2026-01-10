@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-07-25T15:09:20Z
 updated_at: 2025-07-28T10:18:08Z
 url: https://github.com/astral-sh/ruff/issues/19559
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Rule suggestion: always import from definition
@@ -93,17 +93,5 @@ Thanks for the swift reply. Yeah makes sense that this would need ty. Exciting t
 ---
 
 _Label `type-inference` added by @MichaReiser on 2025-07-28 10:18_
-
----
-
-_Referenced in [astral-sh/ruff#20131](../../astral-sh/ruff/issues/20131.md) on 2025-08-28 13:08_
-
----
-
-_Referenced in [astral-sh/ruff#20748](../../astral-sh/ruff/issues/20748.md) on 2025-10-07 16:11_
-
----
-
-_Referenced in [astral-sh/ruff#21182](../../astral-sh/ruff/issues/21182.md) on 2025-11-03 18:36_
 
 ---

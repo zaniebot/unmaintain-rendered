@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-25T17:09:03Z
 updated_at: 2025-03-07T18:26:28Z
 url: https://github.com/astral-sh/ruff/issues/6878
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # F841 "Undefined name" false positive in exception-nested-closure
@@ -139,14 +139,6 @@ For what it's worth, there are a few duplicates reports of this issue over in py
 
 ---
 
-_Referenced in [tinygrad/tinygrad#2473](../../tinygrad/tinygrad/pulls/2473.md) on 2023-11-27 22:35_
-
----
-
-_Referenced in [astral-sh/ruff#14521](../../astral-sh/ruff/issues/14521.md) on 2024-11-23 07:14_
-
----
-
 _Comment by @FranciscoKnebel on 2025-01-03 20:42_
 
 Had this same error: an except defining a variable, using it inside a lambda and auto-fix breaking the code.
@@ -199,13 +191,5 @@ _Comment by @ewall-ot on 2025-03-07 18:26_
 Thanks for the response, @ntBre. Sorry, I thought I was on the latest version of ruff but clearly was a bit behind, because sure enough this isn't reproducible on the latest, along with a related one I had noticed (F401 "unused-import" if the imported module was only used inside the f-string).
 
 Nice to see this product under such active development!
-
----
-
-_Referenced in [VOICEVOX/voicevox_engine#1563](../../VOICEVOX/voicevox_engine/pulls/1563.md) on 2025-03-22 01:18_
-
----
-
-_Referenced in [astral-sh/ruff#19612](../../astral-sh/ruff/issues/19612.md) on 2025-07-30 12:17_
 
 ---

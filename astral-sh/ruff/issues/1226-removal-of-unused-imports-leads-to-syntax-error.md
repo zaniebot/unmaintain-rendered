@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-13T03:46:24Z
 updated_at: 2022-12-16T03:17:33Z
 url: https://github.com/astral-sh/ruff/issues/1226
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:23Z
 ```
 
 # Removal of unused imports leads to syntax error
@@ -39,10 +39,6 @@ produces
 if True:
 
 ```
-
----
-
-_Referenced in [astral-sh/ruff#1206](../../astral-sh/ruff/pulls/1206.md) on 2022-12-13 03:46_
 
 ---
 
@@ -136,10 +132,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-12-14 18:57_
 _Comment by @charliermarsh on 2022-12-15 04:58_
 
 I am working on this, it's just a bit tricky. But I think I've mostly figured out the rules.
-
----
-
-_Referenced in [astral-sh/ruff#1253](../../astral-sh/ruff/pulls/1253.md) on 2022-12-15 22:04_
 
 ---
 

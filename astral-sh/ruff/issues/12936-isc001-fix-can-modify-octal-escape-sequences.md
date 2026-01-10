@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-16T15:44:47Z
 updated_at: 2024-08-27T17:53:28Z
 url: https://github.com/astral-sh/ruff/issues/12936
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # ISC001 fix can modify octal escape sequences
@@ -156,14 +156,6 @@ Sounds good, I'll give it a shot!
 
 ---
 
-_Referenced in [astral-sh/ruff#13118](../../astral-sh/ruff/pulls/13118.md) on 2024-08-26 22:16_
-
----
-
 _Closed by @AlexWaygood on 2024-08-27 17:53_
-
----
-
-_Referenced in [astral-sh/ruff#16309](../../astral-sh/ruff/issues/16309.md) on 2025-02-21 19:51_
 
 ---

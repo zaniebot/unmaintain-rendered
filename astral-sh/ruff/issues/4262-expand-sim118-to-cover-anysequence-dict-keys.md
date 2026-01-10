@@ -1,0 +1,80 @@
+```yaml
+number: 4262
+title: Expand SIM118 to cover AnySequence(dict.keys())
+type: issue
+state: open
+author: janosh
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2023-05-06T23:25:43Z
+updated_at: 2023-07-10T01:29:24Z
+url: https://github.com/astral-sh/ruff/issues/4262
+synced_at: 2026-01-10T11:09:47Z
+```
+
+# Expand SIM118 to cover AnySequence(dict.keys())
+
+---
+
+_Issue opened by @janosh on 2023-05-06 23:25_
+
+Would be nice if SIM118 could be expanded (or a new rule created) that not just covers iterating over dict keys but also converting them to any type of iterable:
+
+```py
+# bad
+list(dict.keys())
+tuple(dict.keys())
+set(dict.keys())
+[*dict.keys()]
+{*dict.keys()}
+
+# good
+list(dict)
+tuple(dict)
+set(dict)
+[*dict]
+{*dict}
+```
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-05-07 02:28_
+
+---
+
+_Comment by @Skylion007 on 2023-05-07 16:24_
+
+@janosh File this issue as a fix to flake8-comprehensions so that ruff matches the plugin behavior ~https://github.com/adamchainz/flake8-comprehensions/~ https://github.com/MartinThoma/flake8-simplify
+
+---
+
+_Comment by @charliermarsh on 2023-05-07 17:35_
+
+If flake8-comprehensions implements it, we definitely will, that's an easy call. Otherwise, we have to make the choice to add it to the Ruff rule set. I do think this makes sense to add though.
+
+
+---
+
+_Comment by @janosh on 2023-05-07 18:14_
+
+@Skylion007 Do you mean https://github.com/MartinThoma/flake8-simplify?
+
+---
+
+_Comment by @Skylion007 on 2023-05-07 18:15_
+
+Ah yes.
+
+---
+
+_Comment by @charliermarsh on 2023-05-07 20:31_
+
+We can always add a new rule to `RUF` and redirect it to a `SIM` rule if it gets implemented there.
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-07-10 01:29_
+
+---

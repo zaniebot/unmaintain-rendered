@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-16T22:40:20Z
 updated_at: 2022-11-26T15:12:08Z
 url: https://github.com/astral-sh/ruff/issues/780
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # False positive for F821
@@ -142,10 +142,6 @@ I'm behind on this, it'll come soon :)
 
 ---
 
-_Referenced in [astral-sh/ruff#787](../../astral-sh/ruff/issues/787.md) on 2022-11-18 18:55_
-
----
-
 _Comment by @JonathanPlasse on 2022-11-19 06:15_
 
 @charliermarsh, I could work on it if it is ok with you.
@@ -155,10 +151,6 @@ _Comment by @JonathanPlasse on 2022-11-19 06:15_
 _Comment by @charliermarsh on 2022-11-20 15:53_
 
 That'd be great @JonathanPlasse! I know it's relevant to the `sys.exit` stuff too.
-
----
-
-_Referenced in [astral-sh/ruff#911](../../astral-sh/ruff/pulls/911.md) on 2022-11-26 12:56_
 
 ---
 

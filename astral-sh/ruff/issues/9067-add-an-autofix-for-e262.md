@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-09T15:42:34Z
 updated_at: 2023-12-09T20:18:08Z
 url: https://github.com/astral-sh/ruff/issues/9067
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Add an autofix for `E262`
@@ -40,10 +40,6 @@ _Label `autofix` added by @charliermarsh on 2023-12-09 16:02_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-09 19:52_
-
----
-
-_Referenced in [astral-sh/ruff#9075](../../astral-sh/ruff/pulls/9075.md) on 2023-12-09 19:52_
 
 ---
 

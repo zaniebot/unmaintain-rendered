@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-22T23:30:55Z
 updated_at: 2024-12-18T19:37:35Z
 url: https://github.com/astral-sh/ruff/issues/14548
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] remove TODO catch-all case in infer_unary_expression
@@ -37,10 +37,6 @@ _Assigned to @carljm by @carljm on 2024-11-22 23:30_
 
 ---
 
-_Referenced in [astral-sh/ruff#14549](../../astral-sh/ruff/issues/14549.md) on 2024-11-22 23:34_
-
----
-
 _Comment by @AlexWaygood on 2024-11-23 10:35_
 
 > For many of the unhandled types (e.g. `Type::FunctionLiteral`, `Type::ClassLiteral`, `Type::SubclassOf`) the correct handling will simply be an `unsupported-operator` diagnostic.
@@ -62,10 +58,6 @@ _Assigned to @dcreager by @dcreager on 2024-12-17 19:25_
 ---
 
 _Unassigned @carljm by @dcreager on 2024-12-17 19:25_
-
----
-
-_Referenced in [astral-sh/ruff#15045](../../astral-sh/ruff/pulls/15045.md) on 2024-12-18 15:48_
 
 ---
 

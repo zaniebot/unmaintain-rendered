@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-29T18:57:40Z
 updated_at: 2025-11-06T13:28:44Z
 url: https://github.com/astral-sh/ruff/issues/20637
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # TC001-3 runtime-evaluated-decorators not working when an instance is created via a function.
@@ -69,10 +69,6 @@ No problem, glad it helped!
 I found it surprising that we weren't resolving the types too. It might be worth looking into that, but updating the docs seems like a good idea if not.
 
 There was some previous discussion of a regex on the PR adding the snippet above (https://github.com/astral-sh/ruff/pull/15204#issuecomment-2565732182) and in https://github.com/astral-sh/ruff/pull/15060#issuecomment-2565719324. It seems like we were hesitant to add it at the time, but maybe we can revisit it if checking the types doesn't pan out.
-
----
-
-_Referenced in [astral-sh/ruff#21282](../../astral-sh/ruff/issues/21282.md) on 2025-11-05 21:43_
 
 ---
 

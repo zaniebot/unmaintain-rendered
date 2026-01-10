@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-04T03:32:33Z
 updated_at: 2024-07-26T02:02:05Z
 url: https://github.com/astral-sh/ruff/issues/6327
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Cannot detect imported path does not exist
@@ -64,10 +64,6 @@ We wrote a Python module resolver that can support this in theory, but the detai
 _Comment by @charliermarsh on 2023-08-16 04:06_
 
 On second thought, we could just detect whether this package (`xx`) is first-party, and then see if the module exists within the first-party package, and raise if not.
-
----
-
-_Referenced in [astral-sh/ruff#9103](../../astral-sh/ruff/issues/9103.md) on 2023-12-12 06:19_
 
 ---
 

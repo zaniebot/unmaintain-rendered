@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-03-21T11:23:49Z
 updated_at: 2024-03-22T20:06:36Z
 url: https://github.com/astral-sh/ruff/issues/10508
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Strange autofix for PYI025 if `"Set"` is included in `__all__`
@@ -153,18 +153,6 @@ _Assigned to @AlexWaygood by @AlexWaygood on 2024-03-22 12:27_
 
 ---
 
-_Referenced in [astral-sh/ruff#10525](../../astral-sh/ruff/pulls/10525.md) on 2024-03-22 13:23_
-
----
-
-_Referenced in [astral-sh/ruff#10527](../../astral-sh/ruff/pulls/10527.md) on 2024-03-22 17:54_
-
----
-
 _Closed by @AlexWaygood on 2024-03-22 20:06_
-
----
-
-_Referenced in [astral-sh/ruff#10547](../../astral-sh/ruff/pulls/10547.md) on 2024-03-24 14:55_
 
 ---

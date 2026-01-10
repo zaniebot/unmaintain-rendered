@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-14T18:34:46Z
 updated_at: 2024-01-16T05:17:43Z
 url: https://github.com/astral-sh/ruff/issues/9138
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Add private function calls check to make sure there isn't one being called outside of the module it was defined 
@@ -77,10 +77,6 @@ I believe this would be closed by https://github.com/astral-sh/ruff/pull/5920.
 
 ---
 
-_Referenced in [astral-sh/ruff#5920](../../astral-sh/ruff/pulls/5920.md) on 2024-01-10 20:01_
-
----
-
 _Comment by @Eric-Mendes on 2024-01-12 12:19_
 
 Indeed, @charliermarsh. Thanks for pointing that out, I didn't see that issue before.
@@ -88,9 +84,5 @@ Indeed, @charliermarsh. Thanks for pointing that out, I didn't see that issue be
 ---
 
 _Closed by @charliermarsh on 2024-01-16 05:17_
-
----
-
-_Referenced in [Eric-Mendes/private-calls-pre-commit#17](../../Eric-Mendes/private-calls-pre-commit/pulls/17.md) on 2024-01-22 16:43_
 
 ---

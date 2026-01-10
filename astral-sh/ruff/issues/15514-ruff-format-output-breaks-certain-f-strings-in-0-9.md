@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-15T20:52:48Z
 updated_at: 2025-01-16T11:01:43Z
 url: https://github.com/astral-sh/ruff/issues/15514
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # `ruff format` output breaks certain f-strings in 0.9
@@ -87,10 +87,6 @@ Sorry, forgot to include my config!
 _Comment by @MichaReiser on 2025-01-15 21:53_
 
 No worries. The issue contained enough details that I could figure it out myself. Thanks for reporting 
-
----
-
-_Referenced in [astral-sh/ruff#15524](../../astral-sh/ruff/pulls/15524.md) on 2025-01-16 07:42_
 
 ---
 

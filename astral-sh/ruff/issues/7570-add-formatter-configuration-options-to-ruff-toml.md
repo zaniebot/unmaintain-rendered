@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-21T11:34:45Z
 updated_at: 2023-09-25T09:39:32Z
 url: https://github.com/astral-sh/ruff/issues/7570
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Add formatter configuration options to `ruff.toml`
@@ -23,10 +23,6 @@ _Issue opened by @MichaReiser on 2023-09-21 11:34_
 * quote style
 * indent style
 * magic trailing comma
-
----
-
-_Referenced in [astral-sh/ruff#7566](../../astral-sh/ruff/pulls/7566.md) on 2023-09-21 11:34_
 
 ---
 

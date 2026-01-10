@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-23T19:35:43Z
 updated_at: 2024-01-24T04:26:04Z
 url: https://github.com/astral-sh/ruff/issues/9630
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 #  Default Ruff configuration file reports schema error
@@ -72,10 +72,6 @@ Ah, I see, it's specifically this line:
 # enabled.
 docstring-code-line-length = "dynamic"
 ```
-
----
-
-_Referenced in [astral-sh/ruff#9632](../../astral-sh/ruff/pulls/9632.md) on 2024-01-24 03:32_
 
 ---
 

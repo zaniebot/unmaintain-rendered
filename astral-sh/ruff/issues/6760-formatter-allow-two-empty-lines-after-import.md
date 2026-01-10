@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-22T09:17:24Z
 updated_at: 2023-08-22T16:27:42Z
 url: https://github.com/astral-sh/ruff/issues/6760
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter: Allow two empty lines after `import`
@@ -122,10 +122,6 @@ _Added to milestone `Formatter: Beta` by @MichaReiser on 2023-08-22 14:15_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-08-22 15:31_
-
----
-
-_Referenced in [astral-sh/ruff#6777](../../astral-sh/ruff/pulls/6777.md) on 2023-08-22 15:55_
 
 ---
 

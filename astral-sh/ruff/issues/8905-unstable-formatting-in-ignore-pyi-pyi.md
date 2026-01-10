@@ -12,7 +12,7 @@ assignees: []
 created_at: 2023-11-29T07:20:38Z
 updated_at: 2023-12-04T00:15:42Z
 url: https://github.com/astral-sh/ruff/issues/8905
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Unstable formatting in `ignore_pyi.pyi` 
@@ -47,15 +47,7 @@ _Label `help wanted` added by @MichaReiser on 2023-11-29 07:21_
 
 ---
 
-_Referenced in [astral-sh/ruff#8901](../../astral-sh/ruff/pulls/8901.md) on 2023-11-29 07:49_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-03 20:45_
-
----
-
-_Referenced in [astral-sh/ruff#8984](../../astral-sh/ruff/pulls/8984.md) on 2023-12-03 20:47_
 
 ---
 

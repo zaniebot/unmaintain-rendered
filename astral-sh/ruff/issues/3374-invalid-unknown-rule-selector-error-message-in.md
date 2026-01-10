@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-03-06T23:31:19Z
 updated_at: 2023-03-07T00:04:54Z
 url: https://github.com/astral-sh/ruff/issues/3374
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Invalid "unknown rule selector" error message in some cases
@@ -115,10 +115,6 @@ error: Unknown rule selector `555`
 _Comment by @charliermarsh on 2023-03-06 23:38_
 
 Yeah totally agree.
-
----
-
-_Referenced in [astral-sh/ruff#3375](../../astral-sh/ruff/pulls/3375.md) on 2023-03-06 23:43_
 
 ---
 

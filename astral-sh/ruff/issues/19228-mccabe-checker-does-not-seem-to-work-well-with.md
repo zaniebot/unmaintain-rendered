@@ -9,7 +9,7 @@ assignees: []
 created_at: 2025-07-09T09:37:26Z
 updated_at: 2025-07-09T10:46:14Z
 url: https://github.com/astral-sh/ruff/issues/19228
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # McCabe checker does not seem to work well with decorators
@@ -86,9 +86,5 @@ The decorators aren't relevant. The issue is that the rule as it is defined toda
 ---
 
 _Closed by @MichaReiser on 2025-07-09 10:46_
-
----
-
-_Referenced in [astral-sh/ruff#4384](../../astral-sh/ruff/issues/4384.md) on 2025-07-10 06:07_
 
 ---

@@ -8,9 +8,9 @@ labels:
   - bug
 assignees: []
 created_at: 2025-12-31T10:47:23Z
-updated_at: 2025-12-31T15:27:29Z
+updated_at: 2026-01-10T10:51:02Z
 url: https://github.com/astral-sh/ruff/issues/22315
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T12:06:56Z
 ```
 
 # ANN201 Incorrect autofix return type for raise in loop
@@ -74,5 +74,38 @@ We do hope to have more general control-flow analysis at some point (https://git
 ---
 
 _Label `bug` added by @ntBre on 2025-12-31 15:27_
+
+---
+
+_Comment by @11happy on 2026-01-10 10:51_
+
+Hii @ntBre , for the above issue as you mentioned loops are assumed to always execute atleast once, which causes for the above tests case to result in `Terminal::Raise` behaviour eventually returning `NoReturn` , for solution could we check if iterable in `for` & `while` stmt  is guranteed to be non-empty something along these lines: 
+```
+fn nonempty_tmep_check(iter: &Expr) -> bool {
+    match iter {
+        Expr::List(ast::ExprList { elts, .. }) => !elts.is_empty(),
+        Expr::Tuple(ast::ExprTuple { elts, .. }) => !elts.is_empty(),
+        Expr::Set(ast::ExprSet { elts, .. }) => !elts.is_empty(),
+        Expr::Dict(ast::ExprDict { items, .. }) => !items.is_empty(),
+        Expr::StringLiteral(ast::ExprStringLiteral { value, .. }) => !value.is_empty(),
+        Expr::BytesLiteral(ast::ExprBytesLiteral { value, .. }) => !value.is_empty(),
+        _ => false,
+    }
+}
+```
+
+& then in `Terminal::from_body` we can only apply terminal behaviour if we know the loops executes, however how do we make sure for function calls or other variables ? What do you think of this approach please let me know.
+
+Also while exploring the codebase I noticed both `sometimes_break` & `always_break` have same doc comments, I think `always_break` should have correct doc comment.
+```
+/// Returns `true` if the body may break via a `break` statement.
+fn sometimes_breaks(stmts: &[Stmt]) -> bool 
+
+ /// Returns `true` if the body may break via a `break` statement.
+fn always_breaks(stmts: &[Stmt]) -> bool
+
+```
+
+
 
 ---

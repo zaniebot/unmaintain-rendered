@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-14T07:09:48Z
 updated_at: 2024-09-24T13:13:14Z
 url: https://github.com/astral-sh/ruff/issues/733
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # F821 Undefined name when using Literal from typing
@@ -74,10 +74,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2022-11-14 16:01_
 
 ---
 
-_Referenced in [astral-sh/ruff#746](../../astral-sh/ruff/pulls/746.md) on 2022-11-15 01:21_
-
----
-
 _Closed by @charliermarsh on 2022-11-15 02:29_
 
 ---
@@ -102,10 +98,6 @@ mycode.py:5:35: F821 Undefined name `C`
 _Comment by @charliermarsh on 2022-11-15 03:50_
 
 🤦 I missed a one-line change specific to `Literal`, one sec.
-
----
-
-_Referenced in [astral-sh/ruff#748](../../astral-sh/ruff/pulls/748.md) on 2022-11-15 03:53_
 
 ---
 

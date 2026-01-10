@@ -2,15 +2,15 @@
 number: 19922
 title: Validate required_version before validating rules
 type: issue
-state: open
+state: closed
 author: hauntsaninja
 labels:
   - configuration
 assignees: []
 created_at: 2025-08-15T00:25:44Z
-updated_at: 2025-09-10T21:25:14Z
+updated_at: 2026-01-07T17:29:28Z
 url: https://github.com/astral-sh/ruff/issues/19922
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # Validate required_version before validating rules
@@ -89,6 +89,6 @@ Of course this can't be fixed retroactively, so the sooner it gets in, probably 
 
 ---
 
-_Referenced in [jaraco/skeleton#185](../../jaraco/skeleton/pulls/185.md) on 2025-10-31 18:06_
+_Closed by @MichaReiser on 2026-01-07 17:29_
 
 ---

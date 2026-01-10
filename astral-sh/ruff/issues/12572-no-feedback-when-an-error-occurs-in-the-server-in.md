@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-30T02:27:26Z
 updated_at: 2025-01-15T07:50:09Z
 url: https://github.com/astral-sh/ruff/issues/12572
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # No feedback when an error occurs in the server in certain cases
@@ -42,9 +42,5 @@ I looked at this and I think the reason this error message isn't displayed is be
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2025-01-15 07:50_
-
----
-
-_Referenced in [astral-sh/ruff#15494](../../astral-sh/ruff/pulls/15494.md) on 2025-01-15 12:42_
 
 ---

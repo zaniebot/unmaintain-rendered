@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-09-28T09:59:23Z
 updated_at: 2024-10-03T15:30:58Z
 url: https://github.com/astral-sh/ruff/issues/13545
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # collapsible-else-if (PLR5501) --fix removes comments
@@ -89,14 +89,6 @@ To keep it relevant, I would continue on the line #elif and move on the next lin
 _Comment by @zanieb on 2024-09-30 15:50_
 
 We have test coverage for this behavior already at https://github.com/astral-sh/ruff/blob/0f674d1d903d0fa0da08eed7c2ed7250c362b805/crates/ruff_linter/src/rules/pylint/snapshots/ruff_linter__rules__pylint__tests__PLR5501_collapsible_else_if.py.snap#L73-L84
-
----
-
-_Referenced in [astral-sh/ruff#13572](../../astral-sh/ruff/pulls/13572.md) on 2024-09-30 16:21_
-
----
-
-_Referenced in [astral-sh/ruff#13573](../../astral-sh/ruff/pulls/13573.md) on 2024-09-30 16:27_
 
 ---
 

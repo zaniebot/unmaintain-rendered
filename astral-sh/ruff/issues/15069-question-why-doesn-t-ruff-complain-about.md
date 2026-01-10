@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-12-19T15:11:03Z
 updated_at: 2024-12-23T08:22:11Z
 url: https://github.com/astral-sh/ruff/issues/15069
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Question: why doesn't ruff complain about CapsWords (PascalCase)?
@@ -186,10 +186,6 @@ from logger import Logger  # only Logger needs to be imported
 
 logger = Logger(Logger.Option.INFO)
 ```
-
----
-
-_Referenced in [astral-sh/ruff#14905](../../astral-sh/ruff/issues/14905.md) on 2024-12-23 08:22_
 
 ---
 

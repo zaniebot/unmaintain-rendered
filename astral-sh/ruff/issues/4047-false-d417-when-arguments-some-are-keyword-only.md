@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-04-20T14:34:48Z
 updated_at: 2023-04-25T05:32:17Z
 url: https://github.com/astral-sh/ruff/issues/4047
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # False D417 when arguments some are keyword only.
@@ -174,10 +174,6 @@ I think it's reasonable to include those under the Google section.
 _Comment by @charliermarsh on 2023-04-22 22:10_
 
 (Thank you so much for chiming in, @pawamoy)
-
----
-
-_Referenced in [astral-sh/ruff#4067](../../astral-sh/ruff/pulls/4067.md) on 2023-04-22 22:26_
 
 ---
 

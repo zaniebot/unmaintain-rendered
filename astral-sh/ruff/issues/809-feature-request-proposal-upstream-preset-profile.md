@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-18T18:47:46Z
 updated_at: 2024-04-18T08:43:38Z
 url: https://github.com/astral-sh/ruff/issues/809
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # [Feature Request / Proposal] Upstream / preset / profile to preconfigure options
@@ -94,14 +94,6 @@ sure! ill have a go at it and send a pr
 
 ---
 
-_Referenced in [pypa/hatch#624](../../pypa/hatch/pulls/624.md) on 2022-11-27 14:56_
-
----
-
-_Referenced in [astral-sh/ruff#1055](../../astral-sh/ruff/issues/1055.md) on 2022-12-05 14:41_
-
----
-
 _Comment by @charliermarsh on 2022-12-16 05:30_
 
 We now have `extend = "/path/to/pyproject.toml"` which is relevant here.
@@ -123,10 +115,6 @@ https://www.typescriptlang.org/tsconfig#extends
 _Comment by @charliermarsh on 2023-03-06 17:52_
 
 Created a Discussion around this: https://github.com/charliermarsh/ruff/discussions/3363
-
----
-
-_Referenced in [astral-sh/ruff#2179](../../astral-sh/ruff/issues/2179.md) on 2023-03-07 02:24_
 
 ---
 

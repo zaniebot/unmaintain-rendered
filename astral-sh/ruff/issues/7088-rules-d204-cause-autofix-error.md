@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-03T16:00:38Z
 updated_at: 2023-09-11T13:09:49Z
 url: https://github.com/astral-sh/ruff/issues/7088
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Rules D204 cause autofix error
@@ -64,10 +64,6 @@ _Label `bug` added by @charliermarsh on 2023-09-03 22:31_
 ---
 
 _Assigned to @konstin by @konstin on 2023-09-05 21:27_
-
----
-
-_Referenced in [astral-sh/ruff#7174](../../astral-sh/ruff/pulls/7174.md) on 2023-09-11 13:01_
 
 ---
 

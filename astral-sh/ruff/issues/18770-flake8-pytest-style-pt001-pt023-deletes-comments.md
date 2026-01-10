@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-06-18T21:07:13Z
 updated_at: 2025-06-20T06:24:00Z
 url: https://github.com/astral-sh/ruff/issues/18770
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [flake8-pytest-style] PT001/PT023 deletes comments inside the parenthesis
@@ -69,10 +69,6 @@ _Renamed from "[flake8-pytest-style] PT001 deletes comments inside the parenthes
 
 ---
 
-_Referenced in [astral-sh/ruff#18771](../../astral-sh/ruff/issues/18771.md) on 2025-06-18 21:41_
-
----
-
 _Label `bug` added by @ntBre on 2025-06-19 00:05_
 
 ---
@@ -88,10 +84,6 @@ _Label `help wanted` added by @ntBre on 2025-06-19 00:05_
 _Comment by @MichaReiser on 2025-06-19 11:05_
 
 Thanks. We should mark this fix as unsafe if it intersects with any comment
-
----
-
-_Referenced in [astral-sh/ruff#18792](../../astral-sh/ruff/pulls/18792.md) on 2025-06-19 13:42_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-15T20:53:05Z
 updated_at: 2023-09-16T17:10:36Z
 url: https://github.com/astral-sh/ruff/issues/7420
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter incompatibility: extra parentheses around `await` assignment
@@ -65,19 +65,11 @@ _Added to milestone `Formatter: Beta` by @MichaReiser on 2023-09-15 21:02_
 
 ---
 
-_Referenced in [astral-sh/ruff#7423](../../astral-sh/ruff/issues/7423.md) on 2023-09-15 21:15_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2023-09-15 21:21_
 
 ---
 
 _Label `accepted` added by @charliermarsh on 2023-09-15 21:21_
-
----
-
-_Referenced in [astral-sh/ruff#7424](../../astral-sh/ruff/pulls/7424.md) on 2023-09-15 21:30_
 
 ---
 
@@ -88,10 +80,6 @@ Closing as duplicate of #7431 (They have the same root cause)
 ---
 
 _Closed by @MichaReiser on 2023-09-16 14:37_
-
----
-
-_Referenced in [astral-sh/ruff#7431](../../astral-sh/ruff/issues/7431.md) on 2023-09-16 14:38_
 
 ---
 

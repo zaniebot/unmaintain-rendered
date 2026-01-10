@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-12T05:23:31Z
 updated_at: 2023-03-14T02:37:13Z
 url: https://github.com/astral-sh/ruff/issues/3458
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Ecosystem CI sometimes gets confused about upstream
@@ -27,14 +27,6 @@ E.g., in https://github.com/charliermarsh/ruff/pull/3456 -- that PR didn't affec
 ---
 
 _Label `bug` added by @charliermarsh on 2023-03-12 05:23_
-
----
-
-_Referenced in [astral-sh/ruff#3467](../../astral-sh/ruff/pulls/3467.md) on 2023-03-12 19:17_
-
----
-
-_Referenced in [astral-sh/ruff#3499](../../astral-sh/ruff/pulls/3499.md) on 2023-03-14 01:28_
 
 ---
 

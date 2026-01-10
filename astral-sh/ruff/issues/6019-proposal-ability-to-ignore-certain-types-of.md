@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-23T23:25:24Z
 updated_at: 2024-11-03T21:39:24Z
 url: https://github.com/astral-sh/ruff/issues/6019
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # [Proposal] Ability to ignore certain types of commented-out code in `ERA001`
@@ -35,10 +35,6 @@ _Comment by @berzi on 2024-01-21 17:27_
 Upvoted. PyCharm allows comments like `# language=regexp` to inject a language into a string in the following line, but this gets detected as commented out code by ruff and it's annoying to have to explicitly append a `# noqa: ERA001` each time.
 
 The setting could work exactly like `dummy-variable-rgx`, meaning a Regex pattern that, if matched, causes the error not to trigger for that particular line (or better yet for it and following lines that would otherwise trigger it).
-
----
-
-_Referenced in [astral-sh/ruff#14069](../../astral-sh/ruff/pulls/14069.md) on 2024-11-03 21:23_
 
 ---
 

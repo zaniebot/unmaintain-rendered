@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-12T09:43:28Z
 updated_at: 2023-09-20T11:58:23Z
 url: https://github.com/astral-sh/ruff/issues/7298
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Update `ISC001`, `ISC002` to check in f-strings
@@ -28,10 +28,6 @@ The rules needs to be updated to account for the f-strings. The implementation u
 
 1. We'll need to get the f-string range from the `Indexer` when we encounter a `FStringStart` token.
 2. Another solution would be to consume all of the tokens from `FStringStart` to `FStringEnd` to get the range. I think using the `Indexer` is better.
-
----
-
-_Referenced in [astral-sh/ruff#7299](../../astral-sh/ruff/issues/7299.md) on 2023-09-12 09:45_
 
 ---
 

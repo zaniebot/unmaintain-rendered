@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-19T15:13:52Z
 updated_at: 2024-05-03T20:03:14Z
 url: https://github.com/astral-sh/ruff/issues/11045
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # FURB118 static method "false positive"
@@ -87,10 +87,6 @@ I'm not so sure, feel free to close.
 Anyway, thanks for the tool and the quick response!
 
 PS: This is a bit related to #10898
-
----
-
-_Referenced in [astral-sh/ruff#11270](../../astral-sh/ruff/pulls/11270.md) on 2024-05-03 19:55_
 
 ---
 

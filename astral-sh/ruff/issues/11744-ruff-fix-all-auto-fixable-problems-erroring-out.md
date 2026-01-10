@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-06-04T22:07:40Z
 updated_at: 2024-06-11T18:50:02Z
 url: https://github.com/astral-sh/ruff/issues/11744
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # `Ruff: Fix all auto-fixable problems` erroring out in VSCode
@@ -81,10 +81,6 @@ Ideally, this command should not be appearing for non-Python files. I'll work on
 
 ---
 
-_Referenced in [astral-sh/ruff-vscode#487](../../astral-sh/ruff-vscode/pulls/487.md) on 2024-06-04 23:25_
-
----
-
 _Comment by @MadhavVij on 2024-06-05 14:15_
 
 Hi @snowsignal ,
@@ -107,10 +103,6 @@ _Comment by @snowsignal on 2024-06-05 16:09_
 > <<Should I close this issue or you need it to track the Pull Request?>>
 
 I'll leave this issue open to track the pull request. Thanks!
-
----
-
-_Referenced in [astral-sh/ruff#11823](../../astral-sh/ruff/pulls/11823.md) on 2024-06-10 14:14_
 
 ---
 

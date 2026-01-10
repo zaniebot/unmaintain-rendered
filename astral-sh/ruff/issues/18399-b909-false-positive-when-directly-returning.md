@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-05-31T03:25:36Z
 updated_at: 2025-06-13T14:39:57Z
 url: https://github.com/astral-sh/ruff/issues/18399
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # B909 false positive when directly returning mutation
@@ -58,10 +58,6 @@ _Label `help wanted` added by @ntBre on 2025-05-31 14:03_
 _Comment by @ntBre on 2025-05-31 14:04_
 
 Thanks for the report! Without looking at the code this _seems_ like a pretty straightforward fix since we already handle the second case here.
-
----
-
-_Referenced in [astral-sh/ruff#18408](../../astral-sh/ruff/pulls/18408.md) on 2025-06-01 04:42_
 
 ---
 

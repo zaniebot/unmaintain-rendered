@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-17T08:10:31Z
 updated_at: 2022-12-19T05:10:09Z
 url: https://github.com/astral-sh/ruff/issues/1269
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:24Z
 ```
 
 # flake8-print auto fix removes valid code
@@ -76,10 +76,6 @@ I can fix this, unless @squiddy has started on it.
 _Comment by @squiddy on 2022-12-18 06:48_
 
 Go ahead @charliermarsh :)
-
----
-
-_Referenced in [astral-sh/ruff#1287](../../astral-sh/ruff/pulls/1287.md) on 2022-12-19 05:10_
 
 ---
 

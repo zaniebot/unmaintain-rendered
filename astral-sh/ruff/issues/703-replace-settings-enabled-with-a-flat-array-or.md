@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-11-12T17:15:50Z
 updated_at: 2023-02-03T18:28:00Z
 url: https://github.com/astral-sh/ruff/issues/703
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # Replace `settings.enabled` with a flat array or bitset library
@@ -43,10 +43,6 @@ Somehow this ended up being a tiny bit _slower_: https://github.com/charliermars
 ---
 
 _Unassigned @charliermarsh by @charliermarsh on 2023-01-11 04:28_
-
----
-
-_Referenced in [astral-sh/ruff#1890](../../astral-sh/ruff/pulls/1890.md) on 2023-01-15 19:17_
 
 ---
 

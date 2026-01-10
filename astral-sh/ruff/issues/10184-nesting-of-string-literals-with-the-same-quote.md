@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-03-01T12:32:28Z
 updated_at: 2025-02-25T03:02:34Z
 url: https://github.com/astral-sh/ruff/issues/10184
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # nesting of string literals with the same quote type inside f-string
@@ -188,18 +188,6 @@ That's true. I'm leaning towards leaving it as is and allow users to configure w
 ---
 
 _Closed by @Zerotask on 2024-03-01 13:59_
-
----
-
-_Referenced in [astral-sh/ruff#10273](../../astral-sh/ruff/issues/10273.md) on 2024-03-07 11:34_
-
----
-
-_Referenced in [astral-sh/ruff#11056](../../astral-sh/ruff/issues/11056.md) on 2024-04-22 09:39_
-
----
-
-_Referenced in [nccgroup/SteppingStones#12](../../nccgroup/SteppingStones/pulls/12.md) on 2024-10-16 08:23_
 
 ---
 

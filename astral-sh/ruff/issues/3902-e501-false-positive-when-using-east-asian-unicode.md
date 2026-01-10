@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-04-06T15:03:42Z
 updated_at: 2023-06-16T02:25:24Z
 url: https://github.com/astral-sh/ruff/issues/3902
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # E501 false positive when using east_asian_unicode string
@@ -54,10 +54,6 @@ Indeed, if I open the file in Python and count the length of each line, I only g
 >>> [len(line) for line in content.splitlines()]
 [28, 0, 15, 72, 34, 1]
 ```
-
----
-
-_Referenced in [pandas-dev/pandas#52452](../../pandas-dev/pandas/pulls/52452.md) on 2023-04-06 15:04_
 
 ---
 
@@ -123,10 +119,6 @@ $ ./venv/bin/ruff check foo.py
 foo.py:1:7: E501 Line too long (8 > 7 characters)
 Found 1 error.
 ```
-
----
-
-_Referenced in [astral-sh/ruff#5133](../../astral-sh/ruff/issues/5133.md) on 2023-06-16 02:24_
 
 ---
 

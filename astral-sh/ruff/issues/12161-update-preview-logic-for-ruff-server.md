@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-07-03T04:42:41Z
 updated_at: 2024-07-18T05:35:03Z
 url: https://github.com/astral-sh/ruff/issues/12161
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Update preview logic for Ruff server
@@ -36,10 +36,6 @@ _Label `server` added by @dhruvmanila on 2024-07-03 04:42_
 ---
 
 _Added to milestone `Ruff Server: Stable` by @dhruvmanila on 2024-07-03 04:43_
-
----
-
-_Referenced in [astral-sh/ruff#12208](../../astral-sh/ruff/pulls/12208.md) on 2024-07-05 14:00_
 
 ---
 

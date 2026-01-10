@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-09T17:19:47Z
 updated_at: 2024-12-06T20:55:58Z
 url: https://github.com/astral-sh/ruff/issues/13693
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] infer types from parameter annotations
@@ -30,14 +30,6 @@ _Label `red-knot` added by @carljm on 2024-10-09 17:19_
 
 ---
 
-_Referenced in [astral-sh/ruff#13672](../../astral-sh/ruff/issues/13672.md) on 2024-10-09 17:22_
-
----
-
-_Referenced in [astral-sh/ruff#13758](../../astral-sh/ruff/pulls/13758.md) on 2024-10-15 10:58_
-
----
-
 _Added to milestone `Red Knot 2024` by @carljm on 2024-11-07 15:19_
 
 ---
@@ -46,23 +38,11 @@ _Assigned to @AlexWaygood by @carljm on 2024-11-07 16:00_
 
 ---
 
-_Referenced in [astral-sh/ruff#14303](../../astral-sh/ruff/pulls/14303.md) on 2024-11-13 00:47_
-
----
-
-_Referenced in [astral-sh/ruff#14304](../../astral-sh/ruff/pulls/14304.md) on 2024-11-13 03:07_
-
----
-
 _Assigned to @carljm by @carljm on 2024-11-14 17:37_
 
 ---
 
 _Unassigned @AlexWaygood by @carljm on 2024-11-14 17:37_
-
----
-
-_Referenced in [astral-sh/ruff#14802](../../astral-sh/ruff/pulls/14802.md) on 2024-12-06 01:19_
 
 ---
 

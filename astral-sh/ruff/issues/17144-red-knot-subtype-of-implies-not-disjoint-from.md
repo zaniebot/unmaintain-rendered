@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-04-02T09:36:33Z
 updated_at: 2025-04-02T22:08:14Z
 url: https://github.com/astral-sh/ruff/issues/17144
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] `subtype_of_implies_not_disjoint_from` property test is now flaky
@@ -74,10 +74,6 @@ I had a thought -- I think the issue (or at least one issue) might be that we sh
 We know that for all `StringLiteral` types, their `__class__` is set to _exactly_ `str`. Not "`str` or some subclass of `str`" -- _exactly_ `str`. And instances of `str` are not callable; therefore all `StringLiteral` types are disjoint from all callable types. The same applies to all `Type::IntLiteral`, `Type::BooleanLiteral`, `Type::BytesLiteral` and `Type::SliceLiteral` types.
 
 If we understand these variants as being disjoint from `Type::Callable` types, I think this will mean that we'll simplify `Callable[[], None] & Literal[""]` to `Never`, which should fix the property test.
-
----
-
-_Referenced in [astral-sh/ruff#17160](../../astral-sh/ruff/pulls/17160.md) on 2025-04-02 21:21_
 
 ---
 

@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-09-29T09:26:20Z
 updated_at: 2023-02-22T14:28:57Z
 url: https://github.com/astral-sh/ruff/issues/282
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # Support pattern matching
@@ -39,50 +39,6 @@ Yeah it makes some appearances in the RustPython AST but it doesn't seem to be s
 
 ---
 
-_Referenced in [astral-sh/ruff#286](../../astral-sh/ruff/issues/286.md) on 2022-09-29 19:38_
-
----
-
-_Referenced in [astral-sh/ruff#680](../../astral-sh/ruff/issues/680.md) on 2022-11-11 10:59_
-
----
-
-_Referenced in [astral-sh/ruff#1140](../../astral-sh/ruff/issues/1140.md) on 2022-12-08 13:38_
-
----
-
-_Referenced in [astral-sh/ruff#1146](../../astral-sh/ruff/issues/1146.md) on 2022-12-08 21:26_
-
----
-
-_Referenced in [RustPython/RustPython#3427](../../RustPython/RustPython/pulls/3427.md) on 2022-12-10 02:53_
-
----
-
-_Referenced in [RustPython/RustPython#4323](../../RustPython/RustPython/pulls/4323.md) on 2022-12-12 17:42_
-
----
-
-_Referenced in [astral-sh/ruff#1228](../../astral-sh/ruff/pulls/1228.md) on 2022-12-15 08:31_
-
----
-
-_Referenced in [pypa/abi3audit#35](../../pypa/abi3audit/pulls/35.md) on 2022-12-22 15:51_
-
----
-
-_Referenced in [astral-sh/ruff#1414](../../astral-sh/ruff/issues/1414.md) on 2022-12-28 00:42_
-
----
-
-_Referenced in [astral-sh/ruff#1634](../../astral-sh/ruff/issues/1634.md) on 2023-01-04 16:27_
-
----
-
-_Referenced in [woodruffw/autopost#3](../../woodruffw/autopost/pulls/3.md) on 2023-01-10 04:12_
-
----
-
 _Comment by @woodruffw on 2023-01-10 04:13_
 
 The parser in question is `rustpython-parser`, correct? No promises, but I can take a look at its current state and see whether I can contribute support for the `match` syntax.
@@ -101,37 +57,9 @@ Yeah that's the one! There's been a little bit of progress in that PR. There's a
 
 ---
 
-_Referenced in [Fraunhofer-AISEC/gallia#347](../../Fraunhofer-AISEC/gallia/pulls/347.md) on 2023-01-11 10:09_
-
----
-
-_Referenced in [astral-sh/ruff#1783](../../astral-sh/ruff/issues/1783.md) on 2023-01-11 15:19_
-
----
-
-_Referenced in [cmudig/draco2#466](../../cmudig/draco2/pulls/466.md) on 2023-01-11 19:32_
-
----
-
 _Comment by @charliermarsh on 2023-01-14 15:16_
 
 I'd love to sponsor someone (financially, that is) to work on this issue (in RustPython). If you're interested, shoot me a DM on [Twitter](https://twitter.com/charliermarsh) or email me at charlie.r.marsh@gmail.com :)
-
----
-
-_Referenced in [astral-sh/ruff#1989](../../astral-sh/ruff/issues/1989.md) on 2023-01-19 04:49_
-
----
-
-_Referenced in [astral-sh/ruff#1992](../../astral-sh/ruff/issues/1992.md) on 2023-01-26 19:28_
-
----
-
-_Referenced in [johnthagen/python-blueprint#141](../../johnthagen/python-blueprint/issues/141.md) on 2023-01-30 12:48_
-
----
-
-_Referenced in [astral-sh/ruff#2377](../../astral-sh/ruff/issues/2377.md) on 2023-01-31 05:59_
 
 ---
 
@@ -169,39 +97,15 @@ We could: always log an `error` message if a file fails to parse + exit 1.
 
 ---
 
-_Referenced in [scverse/cookiecutter-scverse#142](../../scverse/cookiecutter-scverse/issues/142.md) on 2023-01-31 18:53_
-
----
-
 _Comment by @jad-haddad on 2023-02-02 09:36_
 
 @charliermarsh is there an issue for this (logging an error when failing to parse) that I can subscribe to?
 
 ---
 
-_Referenced in [astral-sh/ruff#2473](../../astral-sh/ruff/issues/2473.md) on 2023-02-02 13:01_
-
----
-
 _Comment by @charliermarsh on 2023-02-02 13:01_
 
 @JadHADDAD92 - No but thank you for the reminder -- I just created #2473, hopefully I can knock it out today.
-
----
-
-_Referenced in [astral-sh/ruff#2545](../../astral-sh/ruff/issues/2545.md) on 2023-02-03 15:01_
-
----
-
-_Referenced in [astral-sh/ruff#2505](../../astral-sh/ruff/pulls/2505.md) on 2023-02-06 22:36_
-
----
-
-_Referenced in [astral-sh/ruff#2671](../../astral-sh/ruff/issues/2671.md) on 2023-02-08 23:06_
-
----
-
-_Referenced in [astral-sh/ruff#2686](../../astral-sh/ruff/issues/2686.md) on 2023-02-09 14:19_
 
 ---
 
@@ -214,10 +118,6 @@ What direction are we going in order to support this?
 _Comment by @charliermarsh on 2023-02-18 04:23_
 
 I'm working on it here: https://github.com/RustPython/RustPython/pull/4519. There are a few problems to solve but that implementation already supports many of the variants.
-
----
-
-_Referenced in [PyLops/pylops#485](../../PyLops/pylops/issues/485.md) on 2023-02-18 23:54_
 
 ---
 
@@ -272,17 +172,9 @@ _Comment by @charliermarsh on 2023-02-19 23:28_
 
 ---
 
-_Referenced in [astral-sh/ruff#3047](../../astral-sh/ruff/pulls/3047.md) on 2023-02-20 03:40_
-
----
-
 _Comment by @charliermarsh on 2023-02-20 04:07_
 
 I expect this to go out some time this week, hopefully in the next few days. The PR is up as #3047 (plus depends on https://github.com/RustPython/RustPython/pull/4519 in RustPython).
-
----
-
-_Referenced in [RustPython/RustPython#4519](../../RustPython/RustPython/pulls/4519.md) on 2023-02-21 17:43_
 
 ---
 
@@ -322,21 +214,5 @@ Thanks, that's much better.
 _Comment by @charliermarsh on 2023-02-22 14:28_
 
 @danstewart - I cut a new pre-release last night that includes v0.0.251, so you can pull it in if you switch to the pre-release channel. I'll probably cut a main-channel release today or tomorrow.
-
----
-
-_Referenced in [pyodide/pyodide#3522](../../pyodide/pyodide/pulls/3522.md) on 2023-03-01 11:55_
-
----
-
-_Referenced in [astral-sh/ruff#3473](../../astral-sh/ruff/pulls/3473.md) on 2023-03-13 01:53_
-
----
-
-_Referenced in [pyodide/sphinx-js-fork#169](../../pyodide/sphinx-js-fork/pulls/169.md) on 2024-11-07 09:49_
-
----
-
-_Referenced in [climatepolicyradar/cpr-sdk#178](../../climatepolicyradar/cpr-sdk/pulls/178.md) on 2025-01-16 13:45_
 
 ---

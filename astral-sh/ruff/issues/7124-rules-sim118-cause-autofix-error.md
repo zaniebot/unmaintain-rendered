@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-04T06:05:13Z
 updated_at: 2023-09-05T11:51:36Z
 url: https://github.com/astral-sh/ruff/issues/7124
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Rules SIM118 cause autofix error
@@ -72,10 +72,6 @@ Again a whitespace problem, we're removing the `.keys()` method but there's no w
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-09-05 11:41_
-
----
-
-_Referenced in [astral-sh/ruff#7150](../../astral-sh/ruff/pulls/7150.md) on 2023-09-05 11:44_
 
 ---
 

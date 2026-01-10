@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-01-26T17:57:29Z
 updated_at: 2025-10-06T10:23:37Z
 url: https://github.com/astral-sh/ruff/issues/2208
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # B020 false positive: for foo.bar in baz
@@ -40,10 +40,6 @@ _Label `question` added by @charliermarsh on 2023-01-26 21:27_
 ---
 
 _Renamed from "B020 false positive" to "B020 false positive: for foo.bar in baz" by @spaceone on 2023-02-22 12:08_
-
----
-
-_Referenced in [astral-sh/ruff#3022](../../astral-sh/ruff/pulls/3022.md) on 2023-02-22 12:08_
 
 ---
 

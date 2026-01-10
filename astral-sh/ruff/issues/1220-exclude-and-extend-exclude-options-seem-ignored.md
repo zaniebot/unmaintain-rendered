@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-12-12T20:55:08Z
 updated_at: 2024-11-01T18:51:23Z
 url: https://github.com/astral-sh/ruff/issues/1220
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # `exclude` and `extend-exclude` options seem ignored when running with pre-commit
@@ -141,15 +141,7 @@ _Comment by @charliermarsh on 2022-12-20 00:49_
 
 ---
 
-_Referenced in [astral-sh/ruff#1295](../../astral-sh/ruff/pulls/1295.md) on 2022-12-20 01:08_
-
----
-
 _Closed by @charliermarsh on 2022-12-20 01:09_
-
----
-
-_Referenced in [fpgmaas/cookiecutter-poetry#81](../../fpgmaas/cookiecutter-poetry/issues/81.md) on 2023-02-14 12:28_
 
 ---
 

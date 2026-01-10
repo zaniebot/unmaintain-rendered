@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-20T23:26:46Z
 updated_at: 2025-11-26T06:51:38Z
 url: https://github.com/astral-sh/ruff/issues/11060
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Suggestion: Implement Sourcery rules
@@ -238,10 +238,6 @@ _Label `plugin` added by @dhruvmanila on 2024-10-30 03:19_
 ---
 
 _Label `needs-decision` added by @dhruvmanila on 2024-10-30 03:19_
-
----
-
-_Referenced in [astral-sh/ruff#19518](../../astral-sh/ruff/pulls/19518.md) on 2025-07-24 00:59_
 
 ---
 

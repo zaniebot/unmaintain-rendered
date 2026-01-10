@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-17T14:20:18Z
 updated_at: 2023-02-24T23:14:28Z
 url: https://github.com/astral-sh/ruff/issues/2988
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Additional configuration file `.ruff.toml`
@@ -132,14 +132,6 @@ Didn't know it supported globs. Good to know.
 _Comment by @charliermarsh on 2023-02-17 21:44_
 
 Yeah `per-file-ignores` is the recommended route for sub-package configuration if all you need to do is turn rules off (which is common for tests).
-
----
-
-_Referenced in [astral-sh/ruff#3172](../../astral-sh/ruff/issues/3172.md) on 2023-02-23 15:43_
-
----
-
-_Referenced in [astral-sh/ruff#3221](../../astral-sh/ruff/pulls/3221.md) on 2023-02-24 23:11_
 
 ---
 

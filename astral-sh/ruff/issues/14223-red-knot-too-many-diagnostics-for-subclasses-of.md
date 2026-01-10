@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-11-09T11:20:14Z
 updated_at: 2025-01-20T13:35:31Z
 url: https://github.com/astral-sh/ruff/issues/14223
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Too many diagnostics for subclasses of cyclic classes
@@ -54,10 +54,6 @@ _Label `help wanted` added by @AlexWaygood on 2024-11-09 11:20_
 ---
 
 _Label `bug` added by @AlexWaygood on 2024-11-09 12:09_
-
----
-
-_Referenced in [astral-sh/ruff#15561](../../astral-sh/ruff/pulls/15561.md) on 2025-01-17 22:22_
 
 ---
 

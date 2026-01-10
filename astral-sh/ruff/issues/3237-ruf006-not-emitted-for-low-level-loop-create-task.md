@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-02-26T10:15:15Z
 updated_at: 2023-09-21T04:37:39Z
 url: https://github.com/astral-sh/ruff/issues/3237
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # RUF006 not emitted for low-level `loop.create_task`
@@ -64,10 +64,6 @@ This requires more static analysis than we're currently capable of doing, but I'
 ---
 
 _Label `type-inference` added by @charliermarsh on 2023-02-27 21:49_
-
----
-
-_Referenced in [astral-sh/ruff#7562](../../astral-sh/ruff/pulls/7562.md) on 2023-09-21 04:25_
 
 ---
 

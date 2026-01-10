@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-06-07T11:49:26Z
 updated_at: 2023-07-10T01:11:48Z
 url: https://github.com/astral-sh/ruff/issues/4923
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # `try-except-pass` does not flag `contextlib.suppress(Exception)`
@@ -58,9 +58,5 @@ _Label `question` removed by @charliermarsh on 2023-07-10 01:11_
 ---
 
 _Label `needs-decision` added by @charliermarsh on 2023-07-10 01:11_
-
----
-
-_Referenced in [astral-sh/ruff#18213](../../astral-sh/ruff/pulls/18213.md) on 2025-06-05 02:50_
 
 ---

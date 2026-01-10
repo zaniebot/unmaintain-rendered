@@ -1,0 +1,105 @@
+```yaml
+number: 11226
+title: "☂️ Remove `SoftKeywordTransformer`"
+type: issue
+state: closed
+author: dhruvmanila
+labels:
+  - parser
+assignees: []
+created_at: 2024-05-01T02:37:17Z
+updated_at: 2024-05-02T05:03:04Z
+url: https://github.com/astral-sh/ruff/issues/11226
+synced_at: 2026-01-10T11:09:53Z
+```
+
+# ☂️ Remove `SoftKeywordTransformer`
+
+---
+
+_Issue opened by @dhruvmanila on 2024-05-01 02:37_
+
+This issue is to keep track of the tasks required to remove the `SoftKeywordTransformer`.
+
+The main reason to remove this is to improve error recovery because it can't classify the soft keywords between a keyword and an identifier correctly in cases which has syntax errors. This would mean that the lexer and the parser are out of sync. For example:
+
+```py
+match foo
+    case "bar"
+        ...
+```
+
+Here, both `match` and `case` are keywords but the current logic marks them as identifier leading to bad error recovery.
+
+## Work items
+
+### Add the checkpoint - rewind infrastructure in the parser
+
+- Update `TokenSource`
+  - Update `tokens: IntoIter<LexResult>` to `tokens: Vec<LexResult>`
+  - Add a `position: TextSize` field
+  - Add a `checkpoint` method which creates a `TokenSourceCheckpoint`
+  - Add a `rewind` method which resets the token source to the given `TokenSourceCheckpoint`
+  - Add a `peek2` method which returns the second `TokenKind` without consuming any tokens
+- Implement `TokenSourceCheckpoint` with the following fields:
+
+    ```rust
+    struct TokenSourceCheckpoint {
+        position: TextSize,
+        errors_pos: usize
+    }
+    ```
+
+- Update `Parser`
+  - Add a `checkpoint` method which creates a `ParserCheckpoint`
+  - Add a `rewind` method which resets the parser to the given `ParserCheckpoint`
+  - Add a `peek2` method which returns the second `TokenKind` without consuming any tokens
+- Implement `ParserCheckpoint` with the following fields:
+
+    ```rust
+    struct ParserCheckpoint {
+        tokens: TokenSourceCheckpoint,
+        errors_pos: usize,
+        current: Spanned,
+        current_token_id: TokenId,
+        last_token_end: TextSize,
+        recovery_context: RecoveryContext
+    }
+    ```
+
+### Update statement parsing which uses soft keywords
+
+- Update `match` statement parsing
+  - Fast path: Use two token lookahead to determine if `match` is a keyword or not
+  - Slow path: If the fast path fails, use the checkpoint - rewind infrastructure to parse the subject expression and consider it as a keyword if:
+    - Current token is `:`, peek is `Newline`, peek2 is `Indent`
+    - Or, current token is `Newline`, peek is `Indent`, peek2 is `case`
+- Update `type` alias statement parsing
+  - Use two token lookahead to determine if `type` is a keyword or an not
+- Update `parse_identifier` to not raise “Expected an identifier” error if the current token is a soft keyword
+
+### Update `with` item parsing to use checkpoint - rewind infrastructure
+
+This might get a bit involved to transfer the logic to make sure it’s correct but I think we can utilize Pyright’s implementation as a reference
+
+Internal document: https://www.notion.so/astral-sh/Soft-keywords-4f132faea4134d9facad3fed155dc3c4?pvs=4
+
+---
+
+_Label `parser` added by @dhruvmanila on 2024-05-01 02:37_
+
+---
+
+_Assigned to @dhruvmanila by @dhruvmanila on 2024-05-01 02:37_
+
+---
+
+_Comment by @dhruvmanila on 2024-05-02 05:03_
+
+This needs to be re-worked because of the way the tasks are dependent on other tasks.
+
+---
+
+_Closed by @dhruvmanila on 2024-05-02 05:03_
+
+---

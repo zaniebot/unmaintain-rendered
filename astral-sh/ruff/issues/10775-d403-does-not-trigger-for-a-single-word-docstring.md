@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-04T14:41:48Z
 updated_at: 2024-04-05T06:42:01Z
 url: https://github.com/astral-sh/ruff/issues/10775
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # D403 does not trigger for a single-word docstring that ends with a period
@@ -107,14 +107,6 @@ I'll put up a PR but I"m not sure if we should change the current behavior becau
 
 ---
 
-_Referenced in [astral-sh/ruff#10776](../../astral-sh/ruff/pulls/10776.md) on 2024-04-04 16:20_
-
----
-
 _Closed by @MichaReiser on 2024-04-05 06:42_
-
----
-
-_Referenced in [astral-sh/ruff#13167](../../astral-sh/ruff/issues/13167.md) on 2024-08-30 18:44_
 
 ---

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-14T14:55:47Z
 updated_at: 2024-08-09T06:46:33Z
 url: https://github.com/astral-sh/ruff/issues/10926
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Glob pattern for isort `sections` or `force-to-top`
@@ -116,10 +116,6 @@ Hi! Yes, I use it.
 The problem is that `package` is already mentioned in `first-party`. But I need `package.pytest_init` to be in a different section or at the top of `first-party`. 
 
 I could write all such `package.pytest_init` manually, but with hundreds of them it would help to have a glob pattern.
-
----
-
-_Referenced in [astral-sh/ruff#10989](../../astral-sh/ruff/issues/10989.md) on 2024-04-17 08:25_
 
 ---
 

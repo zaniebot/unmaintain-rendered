@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-16T10:52:19Z
 updated_at: 2025-10-10T13:02:26Z
 url: https://github.com/astral-sh/ruff/issues/19384
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # [docs] DTZ011: Docs confuse `date` with `datetime`
@@ -67,10 +67,6 @@ _Label `help wanted` added by @MichaReiser on 2025-07-18 13:42_
 _Comment by @ageorgou on 2025-10-08 20:23_
 
 [DTZ012](https://docs.astral.sh/ruff/rules/call-date-fromtimestamp/) also has the same issue. I can take a pass at correcting the documentation for them to mention `date` objects.
-
----
-
-_Referenced in [astral-sh/ruff#20778](../../astral-sh/ruff/pulls/20778.md) on 2025-10-08 22:10_
 
 ---
 

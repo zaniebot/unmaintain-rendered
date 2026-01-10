@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-02-23T13:39:02Z
 updated_at: 2023-02-23T16:58:42Z
 url: https://github.com/astral-sh/ruff/issues/3170
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Allow variadic annotation on `*args`
@@ -30,14 +30,6 @@ _Renamed from "@charliermarsh, I'm still getting an error when trying to annotat
 _Comment by @charliermarsh on 2023-02-23 13:39_
 
 Closed by https://github.com/RustPython/RustPython/pull/4557.
-
----
-
-_Referenced in [astral-sh/ruff#2321](../../astral-sh/ruff/issues/2321.md) on 2023-02-23 13:39_
-
----
-
-_Referenced in [astral-sh/ruff#3178](../../astral-sh/ruff/pulls/3178.md) on 2023-02-23 16:51_
 
 ---
 

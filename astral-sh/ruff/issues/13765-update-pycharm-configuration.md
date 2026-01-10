@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-15T20:44:56Z
 updated_at: 2025-05-20T15:44:03Z
 url: https://github.com/astral-sh/ruff/issues/13765
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Update PyCharm Configuration
@@ -32,10 +32,6 @@ Thanks for noticing. Yeah, we should update the screenshot.
 ---
 
 _Label `documentation` added by @dhruvmanila on 2024-10-16 04:32_
-
----
-
-_Referenced in [astral-sh/ruff#13767](../../astral-sh/ruff/pulls/13767.md) on 2024-10-16 04:38_
 
 ---
 

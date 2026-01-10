@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-04T19:59:08Z
 updated_at: 2025-07-04T04:59:04Z
 url: https://github.com/astral-sh/ruff/issues/18470
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Stacking `# noqa` with other ignore comments causes an E501 (line too long) violation
@@ -162,10 +162,6 @@ will try to fix it
 ---
 
 _Assigned to @CodeMan62 by @ntBre on 2025-06-05 12:31_
-
----
-
-_Referenced in [astral-sh/ruff#18604](../../astral-sh/ruff/pulls/18604.md) on 2025-06-10 05:19_
 
 ---
 

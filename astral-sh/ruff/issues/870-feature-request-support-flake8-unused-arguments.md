@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-22T05:21:10Z
 updated_at: 2022-12-07T17:15:42Z
 url: https://github.com/astral-sh/ruff/issues/870
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:14Z
 ```
 
 # Feature request: support flake8-unused-arguments
@@ -39,15 +39,7 @@ Nice idea.
 
 ---
 
-_Referenced in [astral-sh/ruff#909](../../astral-sh/ruff/pulls/909.md) on 2022-11-26 22:07_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2022-12-06 20:34_
-
----
-
-_Referenced in [astral-sh/ruff#1126](../../astral-sh/ruff/pulls/1126.md) on 2022-12-07 16:56_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-20T08:47:54Z
 updated_at: 2025-02-27T02:16:15Z
 url: https://github.com/astral-sh/ruff/issues/16267
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Avoid indexing the project if config preference is `editorOnly`
@@ -79,10 +79,6 @@ I'd recommend opening a PR, we can discuss it there.
 ---
 
 _Assigned to @dcarrier by @dhruvmanila on 2025-02-25 10:21_
-
----
-
-_Referenced in [astral-sh/ruff#16381](../../astral-sh/ruff/pulls/16381.md) on 2025-02-25 18:58_
 
 ---
 

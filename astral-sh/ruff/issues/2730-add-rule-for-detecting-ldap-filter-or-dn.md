@@ -1,0 +1,46 @@
+```yaml
+number: 2730
+title: Add rule for detecting LDAP filter or DN injections
+type: issue
+state: open
+author: spaceone
+labels:
+  - rule
+  - needs-decision
+assignees: []
+created_at: 2023-02-10T18:42:59Z
+updated_at: 2023-07-10T01:31:35Z
+url: https://github.com/astral-sh/ruff/issues/2730
+synced_at: 2026-01-10T11:09:45Z
+```
+
+# Add rule for detecting LDAP filter or DN injections
+
+---
+
+_Issue opened by @spaceone on 2023-02-10 18:42_
+
+A new rule which checks for LDAP filter and LDAP DN inections would be nice:
+
+`filter = '(&(objectClass=person)(uid=%s)' % (username,)` is vulnerable.
+Instead `ldap.filter.filter_format('(&(objectClass=person)(uid=%s)' , [username])` can be used to escape filters.
+
+`dn = 'uid=%s,cn=users,dc=base' % (username,)` ist vulnerable. Instead  ` 'uid=%s,cn=users,dc=base` % (ldap.dn.escape_dn_chars(username),)` can be used to escape DN's.
+
+https://www.owasp.org/index.php/LDAP_Injection_Prevention_Cheat_Sheet
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-02-10 19:33_
+
+---
+
+_Comment by @spaceone on 2023-02-10 19:45_
+
+upstream requested as well: https://github.com/PyCQA/bandit/issues/309
+
+---
+
+_Label `needs-decision` added by @charliermarsh on 2023-07-10 01:31_
+
+---

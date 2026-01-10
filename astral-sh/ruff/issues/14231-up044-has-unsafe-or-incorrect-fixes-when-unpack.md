@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-09T18:43:08Z
 updated_at: 2024-11-09T20:47:29Z
 url: https://github.com/astral-sh/ruff/issues/14231
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # UP044 has unsafe or incorrect fixes when `Unpack` is used in unusual ways
@@ -118,10 +118,6 @@ _Label `bug` added by @charliermarsh on 2024-11-09 19:31_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-11-09 20:12_
-
----
-
-_Referenced in [astral-sh/ruff#14234](../../astral-sh/ruff/pulls/14234.md) on 2024-11-09 20:30_
 
 ---
 

@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-09-06T07:44:50Z
 updated_at: 2024-09-17T12:50:55Z
 url: https://github.com/astral-sh/ruff/issues/13261
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Config file "extend" not working from language server
@@ -118,10 +118,6 @@ fn open_configuration_file(config_path: &Path) -> crate::Result<Configuration> {
 ```
 
 Need to find a good approach to test this change.
-
----
-
-_Referenced in [astral-sh/ruff#13285](../../astral-sh/ruff/pulls/13285.md) on 2024-09-08 19:26_
 
 ---
 

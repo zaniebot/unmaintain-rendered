@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-17T03:49:33Z
 updated_at: 2023-05-17T15:33:24Z
 url: https://github.com/astral-sh/ruff/issues/4464
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # target-version refers version from .python-version file
@@ -66,9 +66,5 @@ _Label `configuration` added by @charliermarsh on 2023-05-17 15:33_
 ---
 
 _Label `question` removed by @charliermarsh on 2023-05-17 15:33_
-
----
-
-_Referenced in [astral-sh/ruff#16355](../../astral-sh/ruff/issues/16355.md) on 2025-02-25 08:20_
 
 ---

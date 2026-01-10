@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-23T10:39:23Z
 updated_at: 2023-08-23T23:09:35Z
 url: https://github.com/astral-sh/ruff/issues/6812
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Failed to create fix for PytestCompositeAssertion: Unable to fix multiline statement
@@ -63,10 +63,6 @@ _Label `needs-decision` added by @charliermarsh on 2023-08-23 13:58_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-08-23 22:46_
-
----
-
-_Referenced in [astral-sh/ruff#6829](../../astral-sh/ruff/pulls/6829.md) on 2023-08-23 22:53_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-31T22:37:04Z
 updated_at: 2023-08-01T03:42:32Z
 url: https://github.com/astral-sh/ruff/issues/6213
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # except-as followed by a space before the colon causes a debug assertion failure
@@ -48,19 +48,11 @@ Fairly certain that this assertion is just not accounting for whitespace, which 
 
 ---
 
-_Referenced in [astral-sh/ruff#4972](../../astral-sh/ruff/issues/4972.md) on 2023-07-31 22:39_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2023-08-01 03:31_
 
 ---
 
 _Label `bug` added by @charliermarsh on 2023-08-01 03:31_
-
----
-
-_Referenced in [astral-sh/ruff#6218](../../astral-sh/ruff/pulls/6218.md) on 2023-08-01 03:33_
 
 ---
 

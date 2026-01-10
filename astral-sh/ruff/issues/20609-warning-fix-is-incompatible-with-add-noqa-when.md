@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-09-28T15:38:00Z
 updated_at: 2025-09-30T06:34:19Z
 url: https://github.com/astral-sh/ruff/issues/20609
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # `warning: --fix is incompatible with --add-noqa` when using `--diff`
@@ -48,10 +48,6 @@ Adding a warning (at least) makes sense. Similar to what we already do https://g
 Although I'd suggest an error in that case because the user clearly intended to **not change** any files. This should be fairly straightforward by listing `diff` as a conflicting here:
 
 https://github.com/astral-sh/ruff/blob/959f55ae057843f8b3fe59a23577f5ae3948a903/crates/ruff/src/args.rs#L408-L419
-
----
-
-_Referenced in [astral-sh/ruff#20642](../../astral-sh/ruff/pulls/20642.md) on 2025-09-29 23:53_
 
 ---
 

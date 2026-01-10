@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-19T14:12:27Z
 updated_at: 2025-03-31T09:13:08Z
 url: https://github.com/astral-sh/ruff/issues/9200
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # How to ignore E501: Line too long in docstrings
@@ -64,10 +64,6 @@ Good call -- it's mentioned in the docs [here](https://docs.astral.sh/ruff/linte
 ---
 
 _Label `documentation` added by @charliermarsh on 2023-12-19 21:07_
-
----
-
-_Referenced in [astral-sh/ruff#9205](../../astral-sh/ruff/pulls/9205.md) on 2023-12-20 03:58_
 
 ---
 

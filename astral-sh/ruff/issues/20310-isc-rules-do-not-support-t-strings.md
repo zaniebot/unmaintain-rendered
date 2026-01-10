@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-09-08T21:21:16Z
 updated_at: 2025-09-12T18:00:13Z
 url: https://github.com/astral-sh/ruff/issues/20310
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # ISC rules do not support t-strings
@@ -63,10 +63,6 @@ _Label `python314` added by @ntBre on 2025-09-08 21:22_
 ---
 
 _Assigned to @dylwil3 by @dylwil3 on 2025-09-09 12:11_
-
----
-
-_Referenced in [astral-sh/ruff#20357](../../astral-sh/ruff/pulls/20357.md) on 2025-09-11 21:05_
 
 ---
 

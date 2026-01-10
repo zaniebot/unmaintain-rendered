@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-08-24T02:50:41Z
 updated_at: 2025-08-28T20:35:49Z
 url: https://github.com/astral-sh/ruff/issues/20058
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # PLE2502 should detect U+061C ARABIC LETTER MARK
@@ -42,10 +42,6 @@ ruff 0.12.10 (c68ff8d90 2025-08-21)
 ---
 
 _Label `rule` added by @ntBre on 2025-08-25 12:48_
-
----
-
-_Referenced in [astral-sh/ruff#20106](../../astral-sh/ruff/pulls/20106.md) on 2025-08-26 21:52_
 
 ---
 

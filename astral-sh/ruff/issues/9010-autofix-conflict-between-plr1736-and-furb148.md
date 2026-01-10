@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-05T15:45:09Z
 updated_at: 2023-12-05T20:25:29Z
 url: https://github.com/astral-sh/ruff/issues/9010
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Autofix conflict between `PLR1736` and `FURB148`
@@ -60,10 +60,6 @@ _Comment by @charliermarsh on 2023-12-05 16:01_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-12-05 19:51_
-
----
-
-_Referenced in [astral-sh/ruff#9012](../../astral-sh/ruff/pulls/9012.md) on 2023-12-05 20:08_
 
 ---
 

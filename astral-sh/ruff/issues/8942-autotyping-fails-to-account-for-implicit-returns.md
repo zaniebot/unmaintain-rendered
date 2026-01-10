@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-12-01T04:40:32Z
 updated_at: 2023-12-01T17:35:03Z
 url: https://github.com/astral-sh/ruff/issues/8942
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Autotyping fails to account for implicit returns
@@ -51,10 +51,6 @@ _Comment by @MichaReiser on 2023-12-01 06:25_
 > @MichaReiser - Do you think it's feasible to use the unreachable code graph to implement this?
 
 Using the control flow graph is an option. Although I fear that building the control flow graph just for this might be a bit overkill because we aren't interested in control flows, but only care about exit nodes of the function. I would need to look into it again but from what I remember is that Hindley milner is AST based. We could potentially implement a subset of it. But it heavily depends on how accurate the type analysis should be.
-
----
-
-_Referenced in [astral-sh/ruff#8952](../../astral-sh/ruff/pulls/8952.md) on 2023-12-01 17:16_
 
 ---
 

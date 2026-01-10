@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-17T09:45:35Z
 updated_at: 2023-10-17T14:13:06Z
 url: https://github.com/astral-sh/ruff/issues/8005
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # PLW3201 "_" is not a bad dunder name
@@ -56,10 +56,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-10-17 13:50_
 _Comment by @charliermarsh on 2023-10-17 13:54_
 
 Seems reasonable, it's almost certainly intentional.
-
----
-
-_Referenced in [astral-sh/ruff#8015](../../astral-sh/ruff/pulls/8015.md) on 2023-10-17 13:55_
 
 ---
 

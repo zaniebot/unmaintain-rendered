@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-12T14:13:07Z
 updated_at: 2024-03-15T03:55:58Z
 url: https://github.com/astral-sh/ruff/issues/10358
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Don't strip an ellipsis (`...`) from a function's body - this has special meaning to type-checkers
@@ -59,10 +59,6 @@ Should we make another exception for `if TYPE_CHECKING` blocks?
 
 ---
 
-_Referenced in [astral-sh/ruff#8756](../../astral-sh/ruff/issues/8756.md) on 2024-03-12 14:41_
-
----
-
 _Comment by @rsokl on 2024-03-12 14:43_
 
 > Should we make another exception for if TYPE_CHECKING blocks?
@@ -76,10 +72,6 @@ Treating `pass` and `...` as being the same seems weird to me. They are definite
 _Comment by @zanieb on 2024-03-13 14:30_
 
 This should be relatively easy if someone is interested in it.
-
----
-
-_Referenced in [astral-sh/ruff#10413](../../astral-sh/ruff/pulls/10413.md) on 2024-03-14 21:55_
 
 ---
 

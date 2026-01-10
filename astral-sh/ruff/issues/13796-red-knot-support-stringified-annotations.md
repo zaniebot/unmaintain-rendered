@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-10-17T16:41:08Z
 updated_at: 2024-11-15T04:10:20Z
 url: https://github.com/astral-sh/ruff/issues/13796
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # [red-knot] support stringified annotations
@@ -152,10 +152,6 @@ _Added to milestone `Red Knot 2024` by @carljm on 2024-11-07 15:23_
 ---
 
 _Assigned to @dhruvmanila by @carljm on 2024-11-07 15:23_
-
----
-
-_Referenced in [astral-sh/ruff#14151](../../astral-sh/ruff/pulls/14151.md) on 2024-11-13 18:12_
 
 ---
 

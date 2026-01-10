@@ -1,0 +1,78 @@
+```yaml
+number: 1793
+title: C408 fixer should respect indentation level
+type: issue
+state: closed
+author: spaceone
+labels:
+  - wontfix
+  - fixes
+assignees: []
+created_at: 2023-01-11T22:47:38Z
+updated_at: 2023-01-14T01:48:56Z
+url: https://github.com/astral-sh/ruff/issues/1793
+synced_at: 2026-01-10T11:09:44Z
+```
+
+# C408 fixer should respect indentation level
+
+---
+
+_Issue opened by @spaceone on 2023-01-11 22:47_
+
+```
+$ ruff --isolated  --select C408 foo.py
+foo.py:1:14: C408 Unnecessary `dict` call (rewrite as a literal)
+Found 1 error(s).
+1 potentially fixable with the --fix option.
+$ cat foo.py
+ssl_params = dict(key_file=key_file,
+                  cert_file=cert_file,
+                  ca_certs=ca_certs,
+                  ssl_version=ssl_version,
+                  password=key_file_password)
+$ ruff --isolated  --select C408 --fix foo.py
+Found 1 error(s) (1 fixed, 0 remaining).
+$ cat foo.py
+ssl_params = {"key_file": key_file,
+                  "cert_file": cert_file,
+                  "ca_certs": ca_certs,
+                  "ssl_version": ssl_version,
+                  "password": key_file_password}
+```
+
+Expected result:
+```
+ssl_params = {"key_file": key_file,
+              "cert_file": cert_file,
+              "ca_certs": ca_certs,
+              "ssl_version": ssl_version,
+              "password": key_file_password}
+```
+
+---
+
+_Label `autofix` added by @charliermarsh on 2023-01-11 23:36_
+
+---
+
+_Comment by @charliermarsh on 2023-01-11 23:37_
+
+Very hard to get right in a general way until we do full autoformatting, since we actually are "preserving" the whitespace.
+
+
+---
+
+_Label `wontfix` added by @charliermarsh on 2023-01-11 23:47_
+
+---
+
+_Comment by @charliermarsh on 2023-01-11 23:47_
+
+Marking as wontfix for now since it likely won't be fixed in its current form.
+
+---
+
+_Closed by @charliermarsh on 2023-01-14 01:48_
+
+---

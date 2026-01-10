@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-02-07T22:47:41Z
 updated_at: 2025-02-10T04:57:16Z
 url: https://github.com/astral-sh/ruff/issues/16041
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Unexpected relative path handling in native server mode
@@ -147,10 +147,6 @@ _Label `bug` added by @dhruvmanila on 2025-02-08 17:35_
 ---
 
 _Label `server` added by @dhruvmanila on 2025-02-08 17:35_
-
----
-
-_Referenced in [astral-sh/ruff#16043](../../astral-sh/ruff/pulls/16043.md) on 2025-02-08 17:59_
 
 ---
 

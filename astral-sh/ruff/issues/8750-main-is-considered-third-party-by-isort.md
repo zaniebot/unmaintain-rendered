@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-11-18T02:34:34Z
 updated_at: 2023-11-21T11:52:30Z
 url: https://github.com/astral-sh/ruff/issues/8750
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # __main__ is considered third party by isort
@@ -83,14 +83,6 @@ That's right -- mostly likely in here: https://github.com/astral-sh/ruff/blob/e3
 
 ---
 
-_Referenced in [astral-sh/ruff#8805](../../astral-sh/ruff/pulls/8805.md) on 2023-11-21 08:45_
-
----
-
 _Closed by @charliermarsh on 2023-11-21 11:52_
-
----
-
-_Referenced in [astral-sh/ruff#10549](../../astral-sh/ruff/issues/10549.md) on 2024-03-24 18:25_
 
 ---

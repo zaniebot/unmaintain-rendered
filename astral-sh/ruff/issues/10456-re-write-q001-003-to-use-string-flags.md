@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-18T13:26:11Z
 updated_at: 2024-03-18T13:26:12Z
 url: https://github.com/astral-sh/ruff/issues/10456
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Re-write `Q001-003` to use string flags
@@ -28,9 +28,5 @@ This is a low priority task.
 ---
 
 _Label `rule` added by @dhruvmanila on 2024-03-18 13:26_
-
----
-
-_Referenced in [astral-sh/ruff#10312](../../astral-sh/ruff/pulls/10312.md) on 2024-03-19 09:54_
 
 ---

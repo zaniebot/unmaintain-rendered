@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-04-16T17:29:44Z
 updated_at: 2024-10-30T12:47:21Z
 url: https://github.com/astral-sh/ruff/issues/10980
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # RUF029 (unneeded async) needs nuance for class methods
@@ -174,9 +174,5 @@ Further feedback on RUF029 not specific to class methods, if a test relies on an
 fixtures depending on other async fixtures has a similar problem.
 
 I started attempting to [add this to flake8-async](https://github.com/python-trio/flake8-async/pull/309) before I found RUF029, and there I'm opting to disable the check if a function is called `test_xxx` and takes a parameter (since that param could be an async fixture). For fixtures I look for `@pytest.fixture` + any parameters.
-
----
-
-_Referenced in [python-trio/flake8-async#309](../../python-trio/flake8-async/pulls/309.md) on 2024-10-30 12:48_
 
 ---

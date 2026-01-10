@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-11-22T23:52:30Z
 updated_at: 2025-11-24T17:22:06Z
 url: https://github.com/astral-sh/ruff/issues/21584
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # Flag variables that 1. aren't reassigned, and 2. are missing `Final`
@@ -45,10 +45,6 @@ X = 1
 print(X)
 ```
 would result in a warning
-
----
-
-_Referenced in [astral-sh/ruff#21585](../../astral-sh/ruff/pulls/21585.md) on 2025-11-22 23:53_
 
 ---
 

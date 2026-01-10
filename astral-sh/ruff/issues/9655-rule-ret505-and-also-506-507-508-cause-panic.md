@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-01-27T06:20:59Z
 updated_at: 2024-01-27T14:15:34Z
 url: https://github.com/astral-sh/ruff/issues/9655
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # Rule RET505(and also 506,507,508) cause panic
@@ -118,10 +118,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-01-27 14:01_
 ---
 
 _Label `bug` added by @charliermarsh on 2024-01-27 14:01_
-
----
-
-_Referenced in [astral-sh/ruff#9657](../../astral-sh/ruff/pulls/9657.md) on 2024-01-27 14:10_
 
 ---
 

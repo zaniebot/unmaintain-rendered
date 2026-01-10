@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-16T10:55:54Z
 updated_at: 2025-10-17T15:47:54Z
 url: https://github.com/astral-sh/ruff/issues/1912
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Implement import-linter
@@ -58,10 +58,6 @@ If helpful in the interim, we do support some subset of this via `flake8-tidy-im
 ---
 
 _Label `plugin` added by @charliermarsh on 2023-01-16 17:19_
-
----
-
-_Referenced in [astral-sh/ruff#10300](../../astral-sh/ruff/issues/10300.md) on 2024-03-09 19:59_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-07-03T12:17:48Z
 updated_at: 2025-08-06T06:42:52Z
 url: https://github.com/astral-sh/ruff/issues/19118
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # ICN001 import aliases should be normalized before checking against `__debug__`
@@ -55,10 +55,6 @@ _Label `bug` added by @ntBre on 2025-07-03 14:41_
 ---
 
 _Label `fixes` added by @ntBre on 2025-07-03 14:41_
-
----
-
-_Referenced in [astral-sh/ruff#19411](../../astral-sh/ruff/pulls/19411.md) on 2025-07-17 20:07_
 
 ---
 

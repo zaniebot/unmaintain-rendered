@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-10-10T09:31:02Z
 updated_at: 2023-11-02T22:56:42Z
 url: https://github.com/astral-sh/ruff/issues/7890
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Are isort configurations able to be skipped or just applicable in some files?
@@ -139,9 +139,5 @@ inline-quotes = "single"
 multiline-quotes = "double"
 avoid-escape = false
 
-
----
-
-_Referenced in [astral-sh/ruff#7696](../../astral-sh/ruff/issues/7696.md) on 2024-01-11 17:05_
 
 ---

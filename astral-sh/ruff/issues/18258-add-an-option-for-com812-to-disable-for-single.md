@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-05-22T17:25:02Z
 updated_at: 2025-06-03T18:11:44Z
 url: https://github.com/astral-sh/ruff/issues/18258
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Add an option for COM812 to disable for single-argument functions?
@@ -79,9 +79,5 @@ _Comment by @davidt on 2025-06-03 18:11_
 I have a working implementation of a setting for this. Should I spend the time to clean up the change and put it up for review?
 
 Thanks!
-
----
-
-_Referenced in [astral-sh/ruff#21567](../../astral-sh/ruff/pulls/21567.md) on 2025-11-21 18:14_
 
 ---

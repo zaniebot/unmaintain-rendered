@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-02-10T18:23:20Z
 updated_at: 2023-02-10T18:27:19Z
 url: https://github.com/astral-sh/ruff/issues/2727
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # S112 underline whole source code
@@ -29,10 +29,6 @@ it should show the whole try-except block.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-10 18:25_
-
----
-
-_Referenced in [astral-sh/ruff#2729](../../astral-sh/ruff/pulls/2729.md) on 2023-02-10 18:27_
 
 ---
 

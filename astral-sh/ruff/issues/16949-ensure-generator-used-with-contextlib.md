@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-24T14:15:41Z
 updated_at: 2025-04-19T22:02:47Z
 url: https://github.com/astral-sh/ruff/issues/16949
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Ensure generator used with `contextlib.contextmanager` yields only once
@@ -34,10 +34,6 @@ _Label `rule` added by @ntBre on 2025-03-24 14:19_
 _Comment by @maxmynter on 2025-04-07 03:57_
 
 Working on this :)
-
----
-
-_Referenced in [astral-sh/ruff#17281](../../astral-sh/ruff/pulls/17281.md) on 2025-04-07 16:43_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-22T22:45:13Z
 updated_at: 2023-02-22T23:23:27Z
 url: https://github.com/astral-sh/ruff/issues/3147
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Ruff incorrectly shows UP013 violations for functional TypedDicts that cannot be converted to class syntax
@@ -53,19 +53,11 @@ Originally discussed here https://github.com/charliermarsh/ruff/issues/1212#issu
 
 ---
 
-_Referenced in [astral-sh/ruff#1212](../../astral-sh/ruff/issues/1212.md) on 2023-02-22 22:46_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-22 23:05_
 
 ---
 
 _Label `bug` added by @charliermarsh on 2023-02-22 23:05_
-
----
-
-_Referenced in [astral-sh/ruff#3148](../../astral-sh/ruff/pulls/3148.md) on 2023-02-22 23:20_
 
 ---
 

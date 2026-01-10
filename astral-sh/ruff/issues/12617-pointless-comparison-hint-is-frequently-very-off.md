@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-01T20:57:34Z
 updated_at: 2024-09-03T05:21:50Z
 url: https://github.com/astral-sh/ruff/issues/12617
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # pointless comparison hint is frequently very off base
@@ -86,10 +86,6 @@ _Comment by @lolbinarycat on 2024-08-02 15:22_
 > As a general rule, to me it seems more likely that someone made a typo than that they misunderstood the fundamentals of Python semantics (thinking that Python has implicit returns when it does not).
 
 missing the entire left-hand side is a pretty big typo, and python is very frequently used by beginner programmers and programmers who do not usually specialize in python (like me, i'm mostly a rust programmer, but i know just enough python to get by with basic tweaks)
-
----
-
-_Referenced in [astral-sh/ruff#12944](../../astral-sh/ruff/pulls/12944.md) on 2024-08-16 22:21_
 
 ---
 

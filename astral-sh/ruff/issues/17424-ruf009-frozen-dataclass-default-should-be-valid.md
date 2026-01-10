@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-16T10:53:34Z
 updated_at: 2025-06-23T19:10:13Z
 url: https://github.com/astral-sh/ruff/issues/17424
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # RUF009 - Frozen Dataclass default should be valid
@@ -157,18 +157,6 @@ I would like to start working on this from Monday.
 
 ---
 
-_Referenced in [astral-sh/ruff#18734](../../astral-sh/ruff/pulls/18734.md) on 2025-06-17 19:20_
-
----
-
-_Referenced in [astral-sh/ruff#18735](../../astral-sh/ruff/pulls/18735.md) on 2025-06-17 19:49_
-
----
-
 _Closed by @ntBre on 2025-06-23 19:10_
-
----
-
-_Referenced in [astral-sh/ruff#20266](../../astral-sh/ruff/issues/20266.md) on 2025-09-05 13:13_
 
 ---

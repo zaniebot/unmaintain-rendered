@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-20T06:47:18Z
 updated_at: 2023-03-26T18:17:37Z
 url: https://github.com/astral-sh/ruff/issues/3051
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # Do not enforce line length limit for long URL in docstrings
@@ -90,14 +90,6 @@ Okay... so there are various [common docstring formats](https://stackoverflow.co
 
 ---
 
-_Referenced in [astral-sh/ruff#3625](../../astral-sh/ruff/issues/3625.md) on 2023-03-20 13:39_
-
----
-
-_Referenced in [astral-sh/ruff#3663](../../astral-sh/ruff/pulls/3663.md) on 2023-03-22 03:29_
-
----
-
 _Assigned to @charliermarsh by @charliermarsh on 2023-03-22 03:31_
 
 ---
@@ -114,9 +106,5 @@ Another issue where I've run into this when I recently started using ruff (wonde
 ---
 
 _Closed by @charliermarsh on 2023-03-26 18:17_
-
----
-
-_Referenced in [astral-sh/ruff#5019](../../astral-sh/ruff/issues/5019.md) on 2023-06-12 07:38_
 
 ---

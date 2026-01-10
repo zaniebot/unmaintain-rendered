@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-06-18T06:53:27Z
 updated_at: 2024-06-20T11:24:25Z
 url: https://github.com/astral-sh/ruff/issues/11920
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # [red-knot] Create `red-knot-python-semantic` crate
@@ -32,10 +32,6 @@ _Label `red-knot` added by @MichaReiser on 2024-06-18 06:54_
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2024-06-18 06:54_
-
----
-
-_Referenced in [astral-sh/ruff#11860](../../astral-sh/ruff/pulls/11860.md) on 2024-06-18 07:00_
 
 ---
 

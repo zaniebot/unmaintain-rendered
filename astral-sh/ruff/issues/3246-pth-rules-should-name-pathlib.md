@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-27T06:38:11Z
 updated_at: 2023-03-04T04:33:14Z
 url: https://github.com/astral-sh/ruff/issues/3246
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # PTH-rules should name pathlib
@@ -103,10 +103,6 @@ format!("`os.mkdir(...)` should be replaced by `Path(...).mkdir()`")
 _Comment by @charliermarsh on 2023-02-28 02:34_
 
 (I think it's ok to literally use "..." as a placeholder rather than trying to replicate the input value.)
-
----
-
-_Referenced in [astral-sh/ruff#3333](../../astral-sh/ruff/pulls/3333.md) on 2023-03-04 03:09_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-08-03T06:51:29Z
 updated_at: 2023-08-11T13:50:27Z
 url: https://github.com/astral-sh/ruff/issues/6299
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Formatter: `MatchCase`
@@ -20,10 +20,6 @@ synced_at: 2026-01-10T01:56:48Z
 _Issue opened by @dhruvmanila on 2023-08-03 06:51_
 
 _No description provided._
-
----
-
-_Referenced in [astral-sh/ruff#5834](../../astral-sh/ruff/issues/5834.md) on 2023-08-03 06:51_
 
 ---
 
@@ -39,15 +35,7 @@ _Label `formatter` added by @dhruvmanila on 2023-08-03 06:52_
 
 ---
 
-_Referenced in [astral-sh/ruff#6286](../../astral-sh/ruff/pulls/6286.md) on 2023-08-03 06:53_
-
----
-
 _Added to milestone `Formatter: Alpha` by @dhruvmanila on 2023-08-03 07:01_
-
----
-
-_Referenced in [astral-sh/ruff#6360](../../astral-sh/ruff/pulls/6360.md) on 2023-08-05 04:22_
 
 ---
 

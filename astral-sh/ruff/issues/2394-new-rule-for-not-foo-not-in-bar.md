@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-31T13:25:44Z
 updated_at: 2023-03-02T03:25:28Z
 url: https://github.com/astral-sh/ruff/issues/2394
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # new rule for `not foo not in bar`
@@ -31,14 +31,6 @@ The code was created by https://github.com/charliermarsh/ruff/issues/2219.
 ---
 
 _Label `rule` added by @charliermarsh on 2023-01-31 14:13_
-
----
-
-_Referenced in [astral-sh/ruff#2397](../../astral-sh/ruff/issues/2397.md) on 2023-01-31 14:22_
-
----
-
-_Referenced in [astral-sh/ruff#2547](../../astral-sh/ruff/issues/2547.md) on 2023-02-03 16:26_
 
 ---
 

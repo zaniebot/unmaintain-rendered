@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-12T09:42:44Z
 updated_at: 2023-09-19T06:26:03Z
 url: https://github.com/astral-sh/ruff/issues/7290
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Update `Indexer` to use new tokens to compute the ranges
@@ -32,10 +32,6 @@ A `FStringStart`/`FStringEnd` token consists of prefixes (`f`, `fr`, etc.) and q
 
 ---
 
-_Referenced in [astral-sh/ruff#7299](../../astral-sh/ruff/issues/7299.md) on 2023-09-12 09:45_
-
----
-
 _Label `rule` added by @dhruvmanila on 2023-09-12 09:45_
 
 ---
@@ -53,10 +49,6 @@ _Label `core` added by @dhruvmanila on 2023-09-12 09:47_
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2023-09-13 02:31_
-
----
-
-_Referenced in [astral-sh/ruff#7325](../../astral-sh/ruff/pulls/7325.md) on 2023-09-13 04:41_
 
 ---
 

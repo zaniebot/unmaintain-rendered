@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-14T03:18:26Z
 updated_at: 2023-01-14T08:21:18Z
 url: https://github.com/astral-sh/ruff/issues/1860
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # `wasm-pack build` doesn't support the new crate structure
@@ -24,17 +24,9 @@ The fix for that would be to append `-p ruff` to the command, so that the comman
 
 ---
 
-_Referenced in [astral-sh/ruff#1816](../../astral-sh/ruff/pulls/1816.md) on 2023-01-14 03:20_
-
----
-
 _Comment by @charliermarsh on 2023-01-14 03:20_
 
 Thanks, let me know if I can be helpful.
-
----
-
-_Referenced in [astral-sh/ruff#1861](../../astral-sh/ruff/pulls/1861.md) on 2023-01-14 03:43_
 
 ---
 

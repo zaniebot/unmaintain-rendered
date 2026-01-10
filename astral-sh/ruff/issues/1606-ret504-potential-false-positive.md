@@ -1,0 +1,56 @@
+```yaml
+number: 1606
+title: RET504 potential false-positive
+type: issue
+state: closed
+author: twoertwein
+labels: []
+assignees: []
+created_at: 2023-01-03T18:04:38Z
+updated_at: 2023-01-03T18:38:16Z
+url: https://github.com/astral-sh/ruff/issues/1606
+synced_at: 2026-01-10T12:05:31Z
+```
+
+# RET504 potential false-positive
+
+---
+
+_Issue opened by @twoertwein on 2023-01-03 18:04_
+
+flake8-return behaves the same as ruff in the following example:
+
+```py
+from pathlib import Path
+
+def add_extension(path: Path, extension: str, *, has_to_exists: bool = False):
+    new_path = path.with_suffix(f".{extension}")
+    if has_to_exists and not new_path.is_file() and path.is_file():
+        new_path = path
+    return new_path
+```
+> test.py:8:12: RET504 Unnecessary variable assignment before `return` statement
+
+I assume flake8-return would prefer an (ugly) `return path if (..........) else .....`. Is this the intended behavior, or should a second assignment to the return variable be counted as a usage?
+
+---
+
+_Comment by @charliermarsh on 2023-01-03 18:38_
+
+I think it wants:
+
+```py
+from pathlib import Path
+
+def add_extension(path: Path, extension: str, *, has_to_exists: bool = False):
+    new_path = path.with_suffix(f".{extension}")
+    if has_to_exists and not new_path.is_file() and path.is_file():
+        return path
+    return new_path
+```
+
+---
+
+_Closed by @charliermarsh on 2023-01-03 18:38_
+
+---

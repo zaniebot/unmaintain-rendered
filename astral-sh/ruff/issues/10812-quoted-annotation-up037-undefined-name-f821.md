@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-07T12:14:05Z
 updated_at: 2024-12-30T09:34:57Z
 url: https://github.com/astral-sh/ruff/issues/10812
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # `quoted-annotation` (`UP037`), `undefined-name` (`F821`) & `quoted-type-alias` (`TC008`) - false positives on pyright inlined `TypedDict`s
@@ -60,10 +60,6 @@ I don't believe a PEP has yet been written to formally propose this new way of w
 
 ---
 
-_Referenced in [astral-sh/ruff#12082](../../astral-sh/ruff/issues/12082.md) on 2024-06-28 04:15_
-
----
-
 _Comment by @DetachHead on 2024-12-03 06:30_
 
 fyi there's now a draft PEP for this: https://github.com/python/peps/pull/4082
@@ -87,10 +83,6 @@ _Renamed from "`quoted-annotation` (`UP037`) & `undefined-name` (`F821`) - false
 ---
 
 _Renamed from "`quoted-annotation` (`UP037`), `undefined-name` (`F821`) & quoted-type-alias` (`TC008`) - false positives on pyright inlined `TypedDict`s" to "`quoted-annotation` (`UP037`), `undefined-name` (`F821`) & `quoted-type-alias` (`TC008`) - false positives on pyright inlined `TypedDict`s" by @DetachHead on 2024-12-04 22:51_
-
----
-
-_Referenced in [astral-sh/ruff#15073](../../astral-sh/ruff/pulls/15073.md) on 2024-12-20 00:34_
 
 ---
 

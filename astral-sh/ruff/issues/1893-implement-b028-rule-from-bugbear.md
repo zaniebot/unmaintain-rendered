@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-15T11:53:50Z
 updated_at: 2023-01-16T17:24:08Z
 url: https://github.com/astral-sh/ruff/issues/1893
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Implement B028 rule from bugbear
@@ -97,9 +97,5 @@ Ah yeah, ok, looks like it's being renamed to [B907](https://github.com/PyCQA/fl
 ---
 
 _Closed by @charliermarsh on 2023-01-16 17:24_
-
----
-
-_Referenced in [astral-sh/ruff#11977](../../astral-sh/ruff/pulls/11977.md) on 2024-06-21 21:54_
 
 ---

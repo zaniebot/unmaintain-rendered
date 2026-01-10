@@ -1,0 +1,63 @@
+```yaml
+number: 6908
+title: "`E501` - option to customize line length"
+type: issue
+state: closed
+author: DetachHead
+labels:
+  - documentation
+  - good first issue
+assignees: []
+created_at: 2023-08-27T01:00:54Z
+updated_at: 2023-08-28T18:45:32Z
+url: https://github.com/astral-sh/ruff/issues/6908
+synced_at: 2026-01-10T11:09:49Z
+```
+
+# `E501` - option to customize line length
+
+---
+
+_Issue opened by @DetachHead on 2023-08-27 01:00_
+
+also, it seems weird that [the docs only mention PEP 8's 79 character recommendation](https://beta.ruff.rs/docs/rules/line-too-long/#why-is-this-bad) but the number it actually uses 88 characters
+
+---
+
+_Comment by @charliermarsh on 2023-08-27 02:16_
+
+Is this covered by https://beta.ruff.rs/docs/settings/#line-length ?
+
+---
+
+_Label `waiting-on-author` added by @charliermarsh on 2023-08-27 02:16_
+
+---
+
+_Comment by @DetachHead on 2023-08-27 02:20_
+
+yeah, i guess i missed that because it wasn't mentioned in [the rule's "Options" section](https://beta.ruff.rs/docs/rules/line-too-long/#options). is there a reason for that?
+
+---
+
+_Comment by @charliermarsh on 2023-08-27 13:45_
+
+Just an oversight -- will fix, thank you.
+
+---
+
+_Label `waiting-on-author` removed by @zanieb on 2023-08-27 15:47_
+
+---
+
+_Label `documentation` added by @zanieb on 2023-08-27 15:47_
+
+---
+
+_Label `good first issue` added by @zanieb on 2023-08-27 15:47_
+
+---
+
+_Closed by @charliermarsh on 2023-08-28 18:45_
+
+---

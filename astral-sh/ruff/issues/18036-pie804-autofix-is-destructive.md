@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-05-12T10:13:03Z
 updated_at: 2025-05-12T15:17:00Z
 url: https://github.com/astral-sh/ruff/issues/18036
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # PIE804 autofix is destructive
@@ -84,10 +84,6 @@ _Label `fixes` added by @MichaReiser on 2025-05-12 10:33_
 ---
 
 _Label `help wanted` added by @MichaReiser on 2025-05-12 10:33_
-
----
-
-_Referenced in [astral-sh/ruff#18046](../../astral-sh/ruff/pulls/18046.md) on 2025-05-12 14:34_
 
 ---
 

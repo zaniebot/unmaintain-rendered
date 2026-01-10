@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-31T18:59:08Z
 updated_at: 2022-12-31T23:04:13Z
 url: https://github.com/astral-sh/ruff/issues/1517
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T12:05:30Z
 ```
 
 # RET504 - false positive
@@ -42,10 +42,6 @@ That makes sense. We could cause assignments to invalidate the rule. I think we 
 ---
 
 _Label `bug` added by @charliermarsh on 2022-12-31 19:03_
-
----
-
-_Referenced in [astral-sh/ruff#1520](../../astral-sh/ruff/pulls/1520.md) on 2022-12-31 23:04_
 
 ---
 

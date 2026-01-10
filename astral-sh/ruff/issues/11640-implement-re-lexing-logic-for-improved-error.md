@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-05-31T14:29:12Z
 updated_at: 2024-06-17T06:47:02Z
 url: https://github.com/astral-sh/ruff/issues/11640
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # Implement re-lexing logic for improved error recovery
@@ -30,10 +30,6 @@ _Label `parser` added by @dhruvmanila on 2024-05-31 14:29_
 ---
 
 _Assigned to @dhruvmanila by @dhruvmanila on 2024-05-31 14:29_
-
----
-
-_Referenced in [astral-sh/ruff#11845](../../astral-sh/ruff/pulls/11845.md) on 2024-06-12 17:42_
 
 ---
 

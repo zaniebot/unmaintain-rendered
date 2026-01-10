@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-09T22:32:22Z
 updated_at: 2022-12-09T22:44:19Z
 url: https://github.com/astral-sh/ruff/issues/1168
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:18Z
 ```
 
 # Implement `D301` (`MissingRPrefixForBackslash`)
@@ -28,10 +28,6 @@ _Label `rule` added by @charliermarsh on 2022-12-09 22:32_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2022-12-09 22:32_
-
----
-
-_Referenced in [astral-sh/ruff#1169](../../astral-sh/ruff/pulls/1169.md) on 2022-12-09 22:44_
 
 ---
 

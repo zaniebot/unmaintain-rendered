@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-27T23:21:09Z
 updated_at: 2024-02-06T16:29:04Z
 url: https://github.com/astral-sh/ruff/issues/6927
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Implement `django-upgrade`
@@ -77,13 +77,5 @@ I could imagine us adding a few of the rules that look helpful on a continuous b
 ---
 
 _Closed by @charliermarsh on 2024-02-06 16:29_
-
----
-
-_Referenced in [cookiecutter/cookiecutter-django#4834](../../cookiecutter/cookiecutter-django/pulls/4834.md) on 2024-02-06 20:24_
-
----
-
-_Referenced in [adamchainz/django-upgrade#450](../../adamchainz/django-upgrade/issues/450.md) on 2024-05-13 22:05_
 
 ---

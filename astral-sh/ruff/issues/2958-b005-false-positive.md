@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-16T16:54:23Z
 updated_at: 2023-02-17T00:05:32Z
 url: https://github.com/astral-sh/ruff/issues/2958
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # B005 false positive
@@ -54,9 +54,5 @@ Yeah I just tested and it _seems_ like this is fixed on main.
 ---
 
 _Closed by @charliermarsh on 2023-02-17 00:05_
-
----
-
-_Referenced in [astral-sh/ruff#2976](../../astral-sh/ruff/pulls/2976.md) on 2023-02-17 00:39_
 
 ---

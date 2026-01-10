@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-14T03:55:44Z
 updated_at: 2022-12-20T00:48:28Z
 url: https://github.com/astral-sh/ruff/issues/1233
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:23Z
 ```
 
 # "Unnecessary variable assignment before `return`" is too eager
@@ -80,14 +80,6 @@ you can't really reorder the statements without changing the behavior.
 And while this example seems contrived, the real code that triggered this was SQLAlchemy models being "hydrated" through some associated function call equivalent to `bad`, without referencing the equivalent of `bar`.
 
 With that being said, this is perhaps edge-casey enough that one just puts a noqa on it and calls it a day (which is what i did).
-
----
-
-_Referenced in [astral-sh/ruff#1290](../../astral-sh/ruff/issues/1290.md) on 2022-12-19 15:08_
-
----
-
-_Referenced in [astral-sh/ruff#1294](../../astral-sh/ruff/pulls/1294.md) on 2022-12-20 00:47_
 
 ---
 

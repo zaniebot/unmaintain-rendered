@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-09T02:32:23Z
 updated_at: 2023-10-10T03:15:15Z
 url: https://github.com/astral-sh/ruff/issues/7854
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Request: PYI030 autofix
@@ -37,10 +37,6 @@ Should be doable if anyone is interested in it.
 ---
 
 _Label `accepted` added by @charliermarsh on 2023-10-09 19:07_
-
----
-
-_Referenced in [astral-sh/ruff#7880](../../astral-sh/ruff/pulls/7880.md) on 2023-10-10 01:20_
 
 ---
 

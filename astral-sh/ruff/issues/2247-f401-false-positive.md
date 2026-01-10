@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-27T10:19:30Z
 updated_at: 2023-01-27T16:25:46Z
 url: https://github.com/astral-sh/ruff/issues/2247
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # F401 false positive
@@ -65,10 +65,6 @@ No worries! Will try to fix today. We do mark those kinds of explicit re-exports
 ---
 
 _Label `bug` added by @charliermarsh on 2023-01-27 12:25_
-
----
-
-_Referenced in [astral-sh/ruff#2251](../../astral-sh/ruff/pulls/2251.md) on 2023-01-27 13:22_
 
 ---
 

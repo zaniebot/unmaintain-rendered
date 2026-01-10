@@ -1,0 +1,87 @@
+```yaml
+number: 17951
+title: PLW2901 should be more configurable
+type: issue
+state: open
+author: siegfriedpammer
+labels:
+  - rule
+  - configuration
+assignees: []
+created_at: 2025-05-08T13:37:10Z
+updated_at: 2025-07-31T08:09:10Z
+url: https://github.com/astral-sh/ruff/issues/17951
+synced_at: 2026-01-10T11:09:58Z
+```
+
+# PLW2901 should be more configurable
+
+---
+
+_Issue opened by @siegfriedpammer on 2025-05-08 13:37_
+
+### Summary
+
+Similar to #7273
+
+PLW2901 seems to combine different problems into one rule:
+
+* reassignment of loop variables
+* reuse of loop variables in nested loops/contexts
+
+In our codebase we often reassign the loop variable to do some preprocessing or in-place conversions/type hints, for ex. like this:
+
+```py
+for line in lines:
+    line = line.strip()
+    # ...
+```
+```py
+for file in files:
+    file = pathlib.Path(file)
+    # ...
+```
+
+Wouldn't it make sense to split this into multiple rules or provide a configuration option? Having to introduce a second variable name for the "processed" loop value could also be a source of bugs: now you have two valid names to choose from and it could be the wrong one.
+
+However **reusing the same loop variable name in a nested loop is just plain wrong** and wouldn't compile in most other programming languages, while reassigning the loop variable is just fine.
+
+---
+
+_Comment by @Avasam on 2025-05-08 16:08_
+
+I considered disabling this rule in typeshed for similar reasons: https://github.com/python/typeshed/pull/13749
+
+> [redefined-loop-name (PLW2901)](https://docs.astral.sh/ruff/rules/redefined-loop-name/#redefined-loop-name-plw2901) disallows overwriting a loop variable with an assignement. Can catch some good code smells, but what it caught here feels quite pedantic. Maybe we could feature-request an exception for immediatly-reassigned loop variables? (which also feels cleaner than an additional comprehension/map)
+
+But we ended up renaming on re-assignement.
+
+
+---
+
+_Label `rule` added by @MichaReiser on 2025-05-09 06:31_
+
+---
+
+_Label `configuration` added by @MichaReiser on 2025-05-09 06:31_
+
+---
+
+_Comment by @mscheifer on 2025-07-31 08:09_
+
+My code base has several functions that conditionally re-assign loop variables. It's stuff like:
+```python
+simplified_args = []
+for arg in arguments:
+   for other_arg in arguments:
+       if intersect(arg, other_arg):
+          arg = arg.reduce(other_arg)
+   if arg.is_empty():
+      continue
+   simplified_args.append(arg)
+```
+Note that I can't mutate `arg` (as suggested in #7273) as other contexts might share a reference to it.
+
+I'd consider PLW2901 a false-positive on this code.
+
+---

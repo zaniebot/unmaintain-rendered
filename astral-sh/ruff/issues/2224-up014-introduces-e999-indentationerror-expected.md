@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-26T21:07:33Z
 updated_at: 2023-01-26T21:24:23Z
 url: https://github.com/astral-sh/ruff/issues/2224
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # UP014 introduces E999 IndentationError: expected an indented block
@@ -66,10 +66,6 @@ _Label `bug` added by @charliermarsh on 2023-01-26 21:12_
 
 ---
 
-_Referenced in [astral-sh/ruff#2226](../../astral-sh/ruff/pulls/2226.md) on 2023-01-26 21:23_
-
----
-
 _Comment by @charliermarsh on 2023-01-26 21:24_
 
 For now, turning these fixes off when the code is indented. Will come back with a proper fix.
@@ -77,9 +73,5 @@ For now, turning these fixes off when the code is indented. Will come back with 
 ---
 
 _Closed by @charliermarsh on 2023-01-26 21:24_
-
----
-
-_Referenced in [astral-sh/ruff#2397](../../astral-sh/ruff/issues/2397.md) on 2023-01-31 14:22_
 
 ---

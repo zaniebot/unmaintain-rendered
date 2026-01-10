@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-15T10:42:26Z
 updated_at: 2024-02-16T03:40:02Z
 url: https://github.com/astral-sh/ruff/issues/9995
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # SIM113 false positive with async for loops
@@ -51,10 +51,6 @@ ruff 0.2.1
 ```
 
 
-
----
-
-_Referenced in [astral-sh/ruff#9996](../../astral-sh/ruff/pulls/9996.md) on 2024-02-15 10:48_
 
 ---
 

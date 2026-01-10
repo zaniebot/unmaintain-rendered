@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-03-01T14:31:53Z
 updated_at: 2024-03-03T18:17:53Z
 url: https://github.com/astral-sh/ruff/issues/10185
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # [website] monospace text should include `monospace` as final fallback
@@ -44,10 +44,6 @@ Thanks! Totally fine to report here in absence of better options. (The repo is i
 ---
 
 _Label `bug` added by @charliermarsh on 2024-03-01 14:51_
-
----
-
-_Referenced in [astral-sh/astral-sh#64](../../astral-sh/astral-sh/pulls/64.md) on 2024-03-01 16:38_
 
 ---
 

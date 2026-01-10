@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-19T00:58:49Z
 updated_at: 2023-01-16T03:03:37Z
 url: https://github.com/astral-sh/ruff/issues/813
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # Replacing black and blue?
@@ -70,10 +70,6 @@ Yeah, I'd like to see what minimal set of extensions we'd need to the AST and pa
 _Comment by @charliermarsh on 2022-11-22 17:01_
 
 For more inspiration, there's also [tokenize-rt](https://github.com/asottile/tokenize-rt), which implements round-tripping for Python's `tokenize`. However, this would require that the entire autoformatter operate on tokens rather than an AST, which seems challenging.
-
----
-
-_Referenced in [astral-sh/ruff#1904](../../astral-sh/ruff/issues/1904.md) on 2023-01-16 03:02_
 
 ---
 

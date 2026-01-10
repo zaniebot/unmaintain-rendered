@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-12T19:11:40Z
 updated_at: 2025-06-24T12:25:17Z
 url: https://github.com/astral-sh/ruff/issues/18651
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Unnecessary `crate::` prefixes in `crates/ruff_python_ast/generated.rs`
@@ -45,10 +45,6 @@ https://github.com/astral-sh/ruff/blob/02394b8049b52836ae7daca7132fab93031d1162/
 ---
 
 _Label `internal` added by @ntBre on 2025-06-12 19:39_
-
----
-
-_Referenced in [astral-sh/ruff#18652](../../astral-sh/ruff/pulls/18652.md) on 2025-06-12 20:41_
 
 ---
 

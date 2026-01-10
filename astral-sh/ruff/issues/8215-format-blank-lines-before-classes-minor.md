@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-25T13:19:31Z
 updated_at: 2023-10-26T00:32:01Z
 url: https://github.com/astral-sh/ruff/issues/8215
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Format: Blank lines before classes minor inconsistency
@@ -119,10 +119,6 @@ Thanks!
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-10-25 18:56_
-
----
-
-_Referenced in [astral-sh/ruff#8224](../../astral-sh/ruff/pulls/8224.md) on 2023-10-25 18:58_
 
 ---
 

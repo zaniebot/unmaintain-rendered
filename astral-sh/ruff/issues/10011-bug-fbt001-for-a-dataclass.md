@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-16T16:46:00Z
 updated_at: 2024-02-18T15:03:18Z
 url: https://github.com/astral-sh/ruff/issues/10011
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Bug(?): FBT001 for a dataclass
@@ -70,10 +70,6 @@ _Comment by @charliermarsh on 2024-02-18 14:22_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-02-18 14:56_
-
----
-
-_Referenced in [astral-sh/ruff#10027](../../astral-sh/ruff/pulls/10027.md) on 2024-02-18 14:56_
 
 ---
 

@@ -1,0 +1,117 @@
+```yaml
+number: 9858
+title: Ruff complains wrongly when we delete a variable in a function ( F821 )
+type: issue
+state: open
+author: Leo-Adlakha
+labels:
+  - bug
+assignees: []
+created_at: 2024-02-06T11:56:44Z
+updated_at: 2026-01-08T08:10:47Z
+url: https://github.com/astral-sh/ruff/issues/9858
+synced_at: 2026-01-10T11:09:52Z
+```
+
+# Ruff complains wrongly when we delete a variable in a function ( F821 )
+
+---
+
+_Issue opened by @Leo-Adlakha on 2024-02-06 11:56_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+Hi, Ruff raises an issue with the following code snippet, even when the code is running fine. Could you please fix this issue ?
+
+```
+MyHost :: adlakha$ ruff test.py 
+test.py:10:19: F821 Undefined name `ABC_123`
+Found 1 error.
+```
+
+Code Snippet for reproducing the bug:
+
+```py
+def abc():
+    global ABC_123
+    global XYZ_123
+
+    class ABC_123():
+        pass
+
+    class XYZ_123():
+        def inputs(self):
+            yield ABC_123
+
+    print(XYZ_123().inputs())
+
+    del ABC_123
+    del XYZ_123
+
+abc()
+```
+
+Command invoked:
+
+```
+ruff <name-of-the-file>
+```
+
+Ruff version - `0.1.6`
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-02-06 14:56_
+
+---
+
+_Comment by @charliermarsh on 2024-02-06 15:00_
+
+This likely won't be fixed in the near future since it requires tracing the function calls themselves -- i.e., we need to know that `inputs()` wasn't called after the variable was deleted, as in:
+
+```python
+def abc():
+    global ABC_123
+    global XYZ_123
+
+    class ABC_123():
+        pass
+
+    class XYZ_123():
+        def inputs(self):
+            yield ABC_123
+
+    XYZ_123().inputs()
+
+    del ABC_123
+
+    XYZ_123().inputs()
+
+abc()
+```
+
+(Mypy and Pyright don't raise any errors on this, even though it will error at runtime.)
+
+I'll label it as a bug but candidly I'd recommend trying to restructure the code to avoid this kind of binding flow -- it's hard to follow and really hard for static analyzers to help you with.
+
+---
+
+_Comment by @Avasam on 2024-02-07 06:38_
+
+Is this a duplicate of either/or:
+- https://github.com/astral-sh/ruff/issues/6242
+- https://github.com/astral-sh/ruff/issues/7733
+- https://github.com/astral-sh/ruff/issues/9349
+
+And the similar tracing problem as with other `F821` issues?
+
+---

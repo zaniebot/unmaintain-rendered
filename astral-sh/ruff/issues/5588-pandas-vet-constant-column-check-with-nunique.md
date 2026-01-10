@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-07-07T09:48:27Z
 updated_at: 2023-07-17T09:44:19Z
 url: https://github.com/astral-sh/ruff/issues/5588
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # [pandas-vet] Constant column check with nunique
@@ -54,10 +54,6 @@ Note that https://github.com/pandas-dev/pandas/pull/54064 was merged to pandas. 
 There are quite some projects that [could benefit](https://github.com/search?q=%22nunique%28%29+%3D%3D+1%22+language%3APython+&type=code) from this rule.
 
 (pandas-vet does not seem that active anymore)
-
----
-
-_Referenced in [astral-sh/ruff#5802](../../astral-sh/ruff/pulls/5802.md) on 2023-07-16 09:43_
 
 ---
 

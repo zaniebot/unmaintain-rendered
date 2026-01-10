@@ -1,0 +1,50 @@
+```yaml
+number: 8338
+title: "The formatter's ParseError indicates the offset within the file but not the line number"
+type: issue
+state: closed
+author: rgeronimi
+labels:
+  - bug
+  - cli
+assignees: []
+created_at: 2023-10-30T07:06:19Z
+updated_at: 2023-12-31T12:10:47Z
+url: https://github.com/astral-sh/ruff/issues/8338
+synced_at: 2026-01-10T11:09:50Z
+```
+
+# The formatter's ParseError indicates the offset within the file but not the line number
+
+---
+
+_Issue opened by @rgeronimi on 2023-10-30 07:06_
+
+When ruff's formatter encounters an invalid Python file, it prints out the offset position of the offending Python statement rather than the line number. E.g.,:
+`
+error: Failed to format commands/liberrors.py: source contains syntax errors: ParseError { error: UnrecognizedToken(Name { name: "THE_INVALID_FILE" }, None), offset: 208, source_path: "<filename>" }
+157 files left unchanged
+`
+It should return the line number, as Black does.
+
+---
+
+_Renamed from "Format's ParseError indicates offset but not the line number" to "The formatter's ParseError indicates the offset within the file but not the line number" by @rgeronimi on 2023-10-30 07:06_
+
+---
+
+_Label `cli` added by @charliermarsh on 2023-10-30 23:32_
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2023-12-30 20:30_
+
+---
+
+_Label `bug` added by @charliermarsh on 2023-12-30 20:30_
+
+---
+
+_Closed by @charliermarsh on 2023-12-31 12:10_
+
+---

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-18T15:43:10Z
 updated_at: 2024-04-07T00:15:59Z
 url: https://github.com/astral-sh/ruff/issues/3011
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # F821 false positive for .pyi
@@ -99,23 +99,11 @@ Yeah, we should probably just change the behavior of `ast.rs` on `pyi` files to 
 
 ---
 
-_Referenced in [astral-sh/ruff#3909](../../astral-sh/ruff/issues/3909.md) on 2023-04-07 23:36_
-
----
-
-_Referenced in [Toufool/AutoSplit#207](../../Toufool/AutoSplit/pulls/207.md) on 2023-04-08 00:24_
-
----
-
 _Label `question` removed by @charliermarsh on 2023-05-08 22:54_
 
 ---
 
 _Label `core` added by @charliermarsh on 2023-05-08 22:54_
-
----
-
-_Referenced in [astral-sh/ruff#7136](../../astral-sh/ruff/issues/7136.md) on 2023-09-04 21:41_
 
 ---
 
@@ -126,14 +114,6 @@ Hey!
 Are there any plans for this issue, now that flake8-pyi has been fully integrated?
 
 Thanks and have a great day!
-
----
-
-_Referenced in [python/typeshed#10909](../../python/typeshed/pulls/10909.md) on 2023-10-18 20:49_
-
----
-
-_Referenced in [python/typeshed#11496](../../python/typeshed/pulls/11496.md) on 2024-02-29 04:30_
 
 ---
 
@@ -204,22 +184,6 @@ _Label `core` removed by @dhruvmanila on 2024-03-13 07:56_
 
 ---
 
-_Referenced in [astral-sh/ruff#10779](../../astral-sh/ruff/pulls/10779.md) on 2024-04-04 20:43_
-
----
-
-_Referenced in [astral-sh/ruff#10788](../../astral-sh/ruff/pulls/10788.md) on 2024-04-05 11:11_
-
----
-
 _Closed by @AlexWaygood on 2024-04-07 00:16_
-
----
-
-_Referenced in [python/typeshed#11771](../../python/typeshed/pulls/11771.md) on 2024-04-16 16:33_
-
----
-
-_Referenced in [astral-sh/ruff#15677](../../astral-sh/ruff/issues/15677.md) on 2025-01-22 22:27_
 
 ---

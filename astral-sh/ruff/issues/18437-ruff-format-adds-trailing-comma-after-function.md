@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-06-03T08:09:18Z
 updated_at: 2025-06-05T12:31:06Z
 url: https://github.com/astral-sh/ruff/issues/18437
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # ruff format adds trailing comma after function call, silently turning return value into tuple
@@ -303,10 +303,6 @@ Tests are run with this command:
 + : 'Run tests with coverage'
 + .venv/bin/python -m coverage run --source=src -m pytest -o log_cli=true --log-level=INFO --show-capture=log -W ignore:DeprecationWarning -vv
 ```
-
----
-
-_Referenced in [pytest-dev/pytest#13489](../../pytest-dev/pytest/issues/13489.md) on 2025-06-04 08:25_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-12-19T10:15:29Z
 updated_at: 2023-12-20T16:03:04Z
 url: https://github.com/astral-sh/ruff/issues/9197
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # [TCH] moving  `typing` imports into `TYPE_CHECKING` block does not work as intended
@@ -190,18 +190,6 @@ So I agree that it works as intended but with 'strict' it's a linter panic. I'll
 
 ---
 
-_Referenced in [astral-sh/ruff#9214](../../astral-sh/ruff/pulls/9214.md) on 2023-12-20 15:49_
-
----
-
 _Closed by @charliermarsh on 2023-12-20 16:03_
-
----
-
-_Referenced in [conda/conda-build#5178](../../conda/conda-build/pulls/5178.md) on 2024-02-12 17:13_
-
----
-
-_Referenced in [astral-sh/ruff#16529](../../astral-sh/ruff/issues/16529.md) on 2025-03-06 08:29_
 
 ---

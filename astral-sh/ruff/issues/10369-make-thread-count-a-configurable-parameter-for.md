@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-12T18:17:20Z
 updated_at: 2024-03-18T21:07:01Z
 url: https://github.com/astral-sh/ruff/issues/10369
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # Make thread count a configurable parameter for `ruff server`
@@ -33,10 +33,6 @@ _Assigned to @snowsignal by @snowsignal on 2024-03-12 18:17_
 ---
 
 _Label `configuration` added by @snowsignal on 2024-03-12 18:17_
-
----
-
-_Referenced in [astral-sh/ruff#10399](../../astral-sh/ruff/pulls/10399.md) on 2024-03-14 02:39_
 
 ---
 

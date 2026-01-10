@@ -9,7 +9,7 @@ assignees: []
 created_at: 2024-12-19T11:10:12Z
 updated_at: 2024-12-19T12:21:56Z
 url: https://github.com/astral-sh/ruff/issues/15057
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # Unused import not detected F401
@@ -74,9 +74,5 @@ And in this case my example is correctly detected by pyflakes:
 _Comment by @MichaReiser on 2024-12-19 12:21_
 
 As far as I can tell it's the same underlying issue and it should be fixed by https://github.com/astral-sh/ruff/pull/13965
-
----
-
-_Referenced in [astral-sh/ruff#13965](../../astral-sh/ruff/pulls/13965.md) on 2024-12-19 12:25_
 
 ---

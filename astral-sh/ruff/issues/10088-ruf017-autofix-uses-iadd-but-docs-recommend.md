@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-22T23:54:40Z
 updated_at: 2024-03-30T00:32:35Z
 url: https://github.com/astral-sh/ruff/issues/10088
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # RUF017 Autofix uses iadd but docs recommend iconcat
@@ -30,10 +30,6 @@ _Label `documentation` added by @charliermarsh on 2024-02-23 05:10_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2024-03-30 00:19_
-
----
-
-_Referenced in [astral-sh/ruff#10666](../../astral-sh/ruff/pulls/10666.md) on 2024-03-30 00:24_
 
 ---
 

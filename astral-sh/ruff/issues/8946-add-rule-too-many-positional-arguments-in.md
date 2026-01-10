@@ -1,0 +1,159 @@
+```yaml
+number: 8946
+title: Add rule “too many positional arguments in function definition”
+type: issue
+state: closed
+author: flying-sheep
+labels:
+  - rule
+assignees: []
+created_at: 2023-12-01T10:32:36Z
+updated_at: 2024-10-25T12:47:02Z
+url: https://github.com/astral-sh/ruff/issues/8946
+synced_at: 2026-01-10T11:09:51Z
+```
+
+# Add rule “too many positional arguments in function definition”
+
+---
+
+_Issue opened by @flying-sheep on 2023-12-01 10:32_
+
+Since https://github.com/astral-sh/ruff/pull/4329, PLR0913 is useless to us. We need a rule that doesn’t restrict the number of total arguments, but the number of non-keyword-only arguments. See also https://github.com/pylint-dev/pylint/issues/9099
+
+I’m happy to do a PR, but I don’t know how I should go about the rule identifier: Should I go for a new RUFF rule, or is there a way I can reserve a new code like e.g. PLR0914 in Pylint for this even if I don’t plan to make a PR for Pylint?
+
+---
+
+_Label `rule` added by @charliermarsh on 2023-12-02 13:53_
+
+---
+
+_Comment by @charliermarsh on 2023-12-04 05:17_
+
+I'm totally fine to add a rule for this, though ideally it'd be added to Pylint so that we can use the same identifier... Or perhaps @Pierre-Sassoulas, if there's interest from the Pylint side, could reserve an identifier for it?
+
+---
+
+_Comment by @Pierre-Sassoulas on 2023-12-04 09:34_
+
+We can definitely create the msgid / symbol before someone implement it. ``too-many-positional`` seems appropriate, and the next available value for the msgid would be ``R0917``. 
+
+---
+
+_Closed by @charliermarsh on 2023-12-04 18:03_
+
+---
+
+_Comment by @buhtz on 2024-10-25 11:31_
+
+The pylint docu pointed me into this issue.
+I am sure this issue is not the right place to ask for full explanation. But maybe some of you know a blog post or technical article describing the topic.
+The pylint docu about too-many-positional-arguments is not detailed enough. I don't get it.
+But I also don't like to "ignore" pylint. I am assuming there is a good reason behind this rule. I just try to understand it.
+
+---
+
+_Comment by @flying-sheep on 2024-10-25 11:40_
+
+It’s pretty simple: Good APIs don’t have many positional parameters.
+
+Most functions take 1–2 “main objects” to operate on and a few parameters that modify how they operate, e.g. `zip(a: Iterable, b: Iterable, *, strict: bool)`. Then these main objects should be able to be specified as positional parameters and the rest as keyword-only.
+
+There are few exceptions where 4 or more positional parameters make sense, e.g. `rgba(1.0, 0.5, 0.3, 1.0)` is a very well known conventional order of 4 floats/bytes.
+
+---
+
+_Comment by @buhtz on 2024-10-25 11:43_
+
+> It’s pretty simple: Good APIs don’t have many positional parameters.
+
+But what is the difference compared to `too-many-arguments`?
+
+---
+
+_Comment by @flying-sheep on 2024-10-25 11:48_
+
+positional vs total arguments. you can configure:
+
+- maximum number of positional arguments: 3
+- maximum number of arguments: 6
+
+Then this would be legal:
+```py
+def (a, b, c, *, x, y, z): ...
+```
+
+and this wouldn‘t (because while it has <=6 arguments, it has >3 positional ones)
+```py
+def (a, b, c, x, y, z): ...
+```
+
+---
+
+_Comment by @buhtz on 2024-10-25 12:01_
+
+I played a bit around in my REPL.
+
+```python
+def foobar(a, b, c, *, x, y, z): ...
+```
+
+Do I get this correct? The `*` is not a 7th argument to allow 7 or more arguments.
+It is just a marker forcing the caller to give names to the 4th, 5th and 6th argument when calling that function?
+
+In other words the "error" `too-many-positional-arguments` means that there are to many arguments in the function signature that can be called/givin **without** a name?
+
+**EDIT**:
+So when I use the `*` in the beginning like this:
+
+    def foobar(*, a, b, c, d):
+
+This would force the caller to give every argument a name when calling the function?
+
+---
+
+_Comment by @flying-sheep on 2024-10-25 12:06_
+
+Exactly: https://docs.python.org/3/tutorial/controlflow.html#special-parameters
+
+---
+
+_Comment by @buhtz on 2024-10-25 12:08_
+
+Thank you very much with contributing to my current and future FOSS projects with teaching me such an essential Python feature. Was new to me.
+
+---
+
+_Comment by @flying-sheep on 2024-10-25 12:11_
+
+Always happy to do so!
+
+---
+
+_Comment by @Pierre-Sassoulas on 2024-10-25 12:38_
+
+@buhtz did you read pylint's[ 3.3.1's doc ](https://pylint.readthedocs.io/en/v3.3.1/user_guide/messages/refactor/too-many-positional-arguments.html)or the [latest ](https://pylint.readthedocs.io/en/latest/user_guide/messages/refactor/too-many-positional-arguments.html)? And what helped you understand the concept so we can put it in the doc ? Sorry for not removing the link to this issue, it was relevant at a time when the pylint check was not implemented yet, but not anymore.
+
+---
+
+_Comment by @buhtz on 2024-10-25 12:46_
+
+Not sure which version it was. But for myself I would say both versions you linked to wouldn't have helped me much. But he problem is more on my site not on yours.
+
+I think I lacked of basic (?) python concepts. I am not sure if a pylint-rule-docu should be responsible to explain them. But I would say a link to the [Python doc about special parameters](https://docs.python.org/3/tutorial/controlflow.html#special-parameters) would be helpful. And what also would help is to extend the example code. Maybe you can add to the "correct code" section something like this making the effect of `*` more obvious:
+
+```
+def foobar(pos_arg, *, key_arg):
+   pass
+
+# TypeError: foobar() takes 1 positional argument but 2 were given
+foobar(1, 2)
+
+# OK
+foobar(1, key_arg=2)
+```
+
+To my experience, as someone reading all the free python learning material and working with Python for nearly 20 years on a hobby level, that "special parameters" are unknown to some of the beginners or hobby Python users. No one reads the full python docu, of course. ;) I do assume that you have to study computer science or book a payed python course to learn things like this.
+
+---

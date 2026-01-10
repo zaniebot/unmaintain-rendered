@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-08-31T08:38:05Z
 updated_at: 2023-02-03T18:28:27Z
 url: https://github.com/astral-sh/ruff/issues/54
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # Crash on parenthesized with statement
@@ -56,10 +56,6 @@ _Label `bug` added by @charliermarsh on 2022-08-31 13:21_
 
 ---
 
-_Referenced in [astral-sh/ruff#69](../../astral-sh/ruff/issues/69.md) on 2022-09-01 13:10_
-
----
-
 _Added to milestone `Release 0.1.0` by @charliermarsh on 2022-09-15 13:44_
 
 ---
@@ -67,22 +63,6 @@ _Added to milestone `Release 0.1.0` by @charliermarsh on 2022-09-15 13:44_
 _Comment by @charliermarsh on 2022-09-21 16:26_
 
 (This is a blocker for 0.1.0.)
-
----
-
-_Referenced in [astral-sh/ruff#286](../../astral-sh/ruff/issues/286.md) on 2022-09-29 19:38_
-
----
-
-_Referenced in [astral-sh/ruff#680](../../astral-sh/ruff/issues/680.md) on 2022-11-11 10:59_
-
----
-
-_Referenced in [astral-sh/ruff#847](../../astral-sh/ruff/issues/847.md) on 2022-11-21 13:05_
-
----
-
-_Referenced in [astral-sh/ruff#1228](../../astral-sh/ruff/pulls/1228.md) on 2022-12-13 15:08_
 
 ---
 

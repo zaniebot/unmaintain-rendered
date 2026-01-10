@@ -1,0 +1,154 @@
+```yaml
+number: 14483
+title: "Can `offset_encoding` for Ruff be configured in Neovim?"
+type: issue
+state: closed
+author: Shinzu
+labels:
+  - question
+  - server
+assignees: []
+created_at: 2024-11-20T10:52:43Z
+updated_at: 2024-12-09T05:21:52Z
+url: https://github.com/astral-sh/ruff/issues/14483
+synced_at: 2026-01-10T11:09:56Z
+```
+
+# Can `offset_encoding` for Ruff be configured in Neovim?
+
+---
+
+_Issue opened by @Shinzu on 2024-11-20 10:52_
+
+Hello,
+
+is it possible to configure the `offset_enconding` for ruff in neovim?
+
+Background:
+
+by default ruff has configured `utf-8`, when you use it together with `pyright` which is default to `utf-16` neovim will produce a warning:
+
+```
+warning: multiple different client offset_encodings detected for buffer, this is not supported yet
+```
+
+---
+
+_Comment by @MichaReiser on 2024-11-20 11:15_
+
+I'm a bit confused by this warning because ruff isn't a client but a server. Ruff also negotiates the encoding with the client. That makes me suspect that another server doesn't support the position encoding negotiation and always enforces utf16 (in which case the previously negotiated utf8 encoding with ruff is outdated). But that seems like a neovim issue. Ideally neovim would re-negotiate with ruff if that happens 
+
+I found a related neovim issue https://github.com/neovim/nvim-lspconfig/issues/2184
+
+It seems that setting the position encoding to the one encoding supported by all servers fix the warning 
+
+
+
+---
+
+_Comment by @dhruvmanila on 2024-11-21 07:47_
+
+It seems that Neovim added support for UTF-8 and UTF-32 quite recently (last week) https://github.com/neovim/neovim/pull/31209 which means that you must be running nightly Neovim. I think this is the reason that Ruff will select UTF-8 because the client now supports it:
+
+https://github.com/astral-sh/ruff/blob/f8c20258aec5148029da904fe1ea91c1c8f1be50/crates/ruff_server/src/server.rs#L271-L283
+
+---
+
+_Comment by @dhruvmanila on 2024-11-21 07:54_
+
+@Shinzu Can you try running the latest nightly version of Neovim? I don't see any warnings on the latest `master` branch. In the buffer, Ruff is using UTF-8 and Pyright is using UTF-16.
+
+---
+
+_Label `question` added by @dhruvmanila on 2024-11-21 07:55_
+
+---
+
+_Label `server` added by @dhruvmanila on 2024-11-21 07:55_
+
+---
+
+_Renamed from "[Question] Can offset_encoding for ruff be configured in neovim?" to "Can `offset_encoding` for Ruff be configured in Neovim?" by @dhruvmanila on 2024-11-21 07:55_
+
+---
+
+_Comment by @dhruvmanila on 2024-11-21 08:00_
+
+The function has been deprecated where the warning is being raised (https://github.com/neovim/neovim/blob/01026ba47ba8a656bb5cd09afbb25b4b33c0b752/runtime/lua/vim/lsp/util.lua#L1889-L1920) and the `offset_encoding` parameter is now a required parameter to be passed in to various LSP functions (https://github.com/neovim/neovim/blob/01026ba47ba8a656bb5cd09afbb25b4b33c0b752/runtime/lua/vim/lsp/util.lua#L1876-L1882).
+
+It's marked as a breaking change (https://github.com/neovim/neovim/pull/31249), so you might want to update your dotfiles and / or wait for the ecosystem to catch up (plugins).
+
+---
+
+_Comment by @Shinzu on 2024-11-21 08:43_
+
+Thank you both for your answers.
+
+Yes i'm running nightly. I will just wait. :)
+
+---
+
+_Comment by @MichaReiser on 2024-11-22 16:09_
+
+I'll close this issue because I understand that this is an issue with neovim. Let me know if there's something that's left unanswered or if there's something we could do on our side. 
+
+---
+
+_Closed by @MichaReiser on 2024-11-22 16:09_
+
+---
+
+_Comment by @wookayin on 2024-12-09 03:10_
+
+For those one who finds this issue, this is how you can configure the `offset_encoding` **client** capabilities:
+
+```lua
+lspconfig["ruff"].setup {
+  init_options = {
+    settings = {
+      ...,
+    }
+  }
+  capabilities = {
+    general = {
+      -- positionEncodings = { "utf-8", "utf-16", "utf-32" }  <--- this is the default
+      positionEncodings = { "utf-16" }
+    },
+  }
+}
+```
+
+in order to set offset_encoding to be **utf-16** only (as pyright uses utf-16 by default). This is per the LSP 3.17 specification https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocuments
+
+> The client announces it’s supported encoding via the client capability [general.positionEncodings](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#clientCapabilities). The value is an array of position encodings the client supports, with decreasing preference (e.g. the encoding at index 0 is the most preferred one)
+
+Remark: On neovim 0.11+ (or nightly), `positionEncodings` defaults to `{ "utf-8", "utf-16", "utf-32" } ` (see https://github.com/neovim/neovim/issues/30034) whereas neovim <= 0.10 uses `utf-16` only by default.
+
+
+Note: With the following way (conventional ways of setting `capabilities.offsetEncoding`prior to LSP 3.17, which is not a standard but used to work for other LSP servers) will *NOT* work:
+
+```lua
+require"lspconfig".ruff.setup {
+  init_options = {
+    settings = {
+      fixAll = true,
+      ...
+    },
+  },
+  capabilities = {
+    offsetEncoding = 'utf-16',
+  }
+}
+```
+
+and ruff will crash: 'ruff failed\n  Cause: invalid type: string "utf-16", expected a sequence'. But @MichaReiser, I wonder if this might be a bug because this `capabilities.offsetEncoding` is read (expected a sequence, not a str) though this does not seem to be a standard LSP spec. 
+
+---
+
+_Comment by @dhruvmanila on 2024-12-09 05:21_
+
+> I wonder if this might be a bug because this `capabilities.offsetEncoding` is read (expected a sequence, not a str) though this does not seem to be a standard LSP spec.
+
+I don't think this is something that we can control on our side as the types are defined in an external crate, specifically in `lsp-types`: https://github.com/gluon-lang/lsp-types/blob/be7336e92a6ad23f214df19bcdceab17f39531a9/src/lib.rs#L1507-L1512 which specifies that it's an unofficial way to support UTF-8 encodings in clangd. There's a tracking issue (https://github.com/clangd/clangd/issues/1746) to add support for the new field in clangd.
+
+---

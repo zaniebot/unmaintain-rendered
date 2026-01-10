@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-05-26T22:54:34Z
 updated_at: 2023-05-29T02:50:37Z
 url: https://github.com/astral-sh/ruff/issues/4674
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # `isort` forgetting 1st party below sub-config
@@ -261,10 +261,6 @@ repo > ruff --no-cache --verbose .
 
 ---
 
-_Referenced in [astral-sh/ruff#4672](../../astral-sh/ruff/issues/4672.md) on 2023-05-27 13:53_
-
----
-
 _Comment by @charliermarsh on 2023-05-27 19:19_
 
 Totally, I'll try to clarify this a bit in the docs.
@@ -278,10 +274,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-05-27 19:19_
 _Comment by @jamesbraza on 2023-05-27 19:50_
 
 Feel free to tag me as a reviewer!
-
----
-
-_Referenced in [astral-sh/ruff#4697](../../astral-sh/ruff/pulls/4697.md) on 2023-05-28 23:05_
 
 ---
 

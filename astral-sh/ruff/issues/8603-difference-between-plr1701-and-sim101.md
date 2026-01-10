@@ -1,0 +1,39 @@
+```yaml
+number: 8603
+title: Difference between PLR1701 and SIM101?
+type: issue
+state: closed
+author: alanhdu
+labels: []
+assignees: []
+created_at: 2023-11-10T14:58:49Z
+updated_at: 2023-11-10T15:18:56Z
+url: https://github.com/astral-sh/ruff/issues/8603
+synced_at: 2026-01-10T11:09:50Z
+```
+
+# Difference between PLR1701 and SIM101?
+
+---
+
+_Issue opened by @alanhdu on 2023-11-10 14:58_
+
+I was browsing through the code and came across both PLR1701 https://docs.astral.sh/ruff/rules/repeated-isinstance-calls/ and SIM101 https://docs.astral.sh/ruff/rules/duplicate-isinstance-call/. To my reading, they look like they do the same thing (merge `isinstance(x, int) or isinstance(x, float)` to `isinstance(x, (int, float))`. Is there a difference in implementation that I'm missing, or is it a deliberate duplication?
+
+---
+
+_Comment by @Skylion007 on 2023-11-10 15:09_
+
+duplicate of #8122 
+
+---
+
+_Comment by @alanhdu on 2023-11-10 15:18_
+
+Huh... could've sworn I looked for duplicates. Going to close this then -- sorry for the noise!
+
+---
+
+_Closed by @alanhdu on 2023-11-10 15:18_
+
+---

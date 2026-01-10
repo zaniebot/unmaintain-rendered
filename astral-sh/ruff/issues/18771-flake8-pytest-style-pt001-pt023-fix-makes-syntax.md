@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-06-18T21:41:45Z
 updated_at: 2025-06-23T11:46:16Z
 url: https://github.com/astral-sh/ruff/issues/18771
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [flake8-pytest-style] PT001/PT023 fix makes syntax error on parenthesized decorator
@@ -111,10 +111,6 @@ _Label `fixes` added by @ntBre on 2025-06-19 00:05_
 ---
 
 _Label `help wanted` added by @ntBre on 2025-06-19 00:05_
-
----
-
-_Referenced in [astral-sh/ruff#18782](../../astral-sh/ruff/pulls/18782.md) on 2025-06-19 05:28_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-25T09:57:10Z
 updated_at: 2023-08-16T07:09:45Z
 url: https://github.com/astral-sh/ruff/issues/6059
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # Formatter: Add parentheses around too long strings
@@ -40,18 +40,6 @@ DEFAULT_FILE_STORAGE_DEPRECATED_MSG = "The DEFAULT_FILE_STORAGE setting is depre
 ---
 
 _Label `formatter` added by @konstin on 2023-07-25 09:57_
-
----
-
-_Referenced in [astral-sh/ruff#6069](../../astral-sh/ruff/issues/6069.md) on 2023-07-25 11:22_
-
----
-
-_Referenced in [astral-sh/ruff#6203](../../astral-sh/ruff/issues/6203.md) on 2023-07-31 17:12_
-
----
-
-_Referenced in [astral-sh/ruff#6271](../../astral-sh/ruff/issues/6271.md) on 2023-08-03 06:05_
 
 ---
 

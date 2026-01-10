@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-11-30T15:17:46Z
 updated_at: 2022-12-01T18:33:35Z
 url: https://github.com/astral-sh/ruff/issues/973
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # Split `linter.rs` tests and fixtures into per-plugin directories
@@ -28,10 +28,6 @@ _Label `internal` added by @charliermarsh on 2022-11-30 15:17_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2022-11-30 16:38_
-
----
-
-_Referenced in [astral-sh/ruff#985](../../astral-sh/ruff/pulls/985.md) on 2022-12-01 18:00_
 
 ---
 

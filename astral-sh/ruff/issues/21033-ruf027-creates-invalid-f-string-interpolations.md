@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-10-22T18:35:00Z
 updated_at: 2025-10-22T20:23:48Z
 url: https://github.com/astral-sh/ruff/issues/21033
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # RUF027 creates invalid f-string interpolations with backslashes before Python 3.12
@@ -53,9 +53,5 @@ _Label `bug` added by @ntBre on 2025-10-22 20:23_
 ---
 
 _Label `fixes` added by @ntBre on 2025-10-22 20:23_
-
----
-
-_Referenced in [astral-sh/ruff#21069](../../astral-sh/ruff/pulls/21069.md) on 2025-10-24 22:54_
 
 ---

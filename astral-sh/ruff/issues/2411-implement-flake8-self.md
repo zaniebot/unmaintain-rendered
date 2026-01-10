@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-31T20:25:05Z
 updated_at: 2023-02-02T12:58:16Z
 url: https://github.com/astral-sh/ruff/issues/2411
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Implement `flake8-self`
@@ -34,10 +34,6 @@ I would like to differentiate the rule between `_private` and `__private`/`_Clas
 ---
 
 _Label `plugin` added by @charliermarsh on 2023-01-31 23:05_
-
----
-
-_Referenced in [astral-sh/ruff#2470](../../astral-sh/ruff/pulls/2470.md) on 2023-02-02 11:39_
 
 ---
 

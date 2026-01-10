@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-11-28T00:10:02Z
 updated_at: 2024-12-03T03:31:59Z
 url: https://github.com/astral-sh/ruff/issues/14648
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # [red-knot] Narrowing on `s == "foo"` where `s` is of type `LiteralString`
@@ -29,10 +29,6 @@ if a == "foo":
 ```
 
 This issue is part of #13694.
-
----
-
-_Referenced in [astral-sh/ruff#14649](../../astral-sh/ruff/pulls/14649.md) on 2024-11-28 00:11_
 
 ---
 

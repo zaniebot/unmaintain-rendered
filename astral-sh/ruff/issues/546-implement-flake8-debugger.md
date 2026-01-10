@@ -11,7 +11,7 @@ assignees: []
 created_at: 2022-11-02T03:12:51Z
 updated_at: 2022-11-26T21:56:24Z
 url: https://github.com/astral-sh/ruff/issues/546
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:09:58Z
 ```
 
 # Implement flake8-debugger
@@ -51,10 +51,6 @@ _Comment by @charliermarsh on 2022-11-18 15:10_
 
 There's also the [CONTRIBUTING.md](https://github.com/charliermarsh/ruff/blob/main/CONTRIBUTING.md#example-adding-a-new-lint-rule) guide which talks through adding a new lint rule, which is a subset of what's required to add a new plugin.
 
-
----
-
-_Referenced in [astral-sh/ruff#909](../../astral-sh/ruff/pulls/909.md) on 2022-11-26 21:53_
 
 ---
 

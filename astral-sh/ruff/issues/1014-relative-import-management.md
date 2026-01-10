@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-03T19:51:10Z
 updated_at: 2025-03-15T23:35:38Z
 url: https://github.com/astral-sh/ruff/issues/1014
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Relative import management
@@ -66,19 +66,11 @@ I took a look at `flake8-tidy-imports`: it is very close to the expected behavio
 
 ---
 
-_Referenced in [superlinear-ai/substrate#144](../../superlinear-ai/substrate/pulls/144.md) on 2022-12-19 12:08_
-
----
-
 _Label `question` removed by @charliermarsh on 2022-12-31 18:16_
 
 ---
 
 _Label `plugin` added by @charliermarsh on 2022-12-31 18:16_
-
----
-
-_Referenced in [superlinear-ai/substrate#150](../../superlinear-ai/substrate/issues/150.md) on 2023-01-07 08:43_
 
 ---
 
@@ -94,17 +86,9 @@ Which cases are not covered by the `flake8-tidy-imports` autofix @sbrugman?
 
 ---
 
-_Referenced in [astral-sh/ruff#3986](../../astral-sh/ruff/pulls/3986.md) on 2023-04-16 16:49_
-
----
-
 _Comment by @noirbizarre on 2023-04-20 10:28_
 
 I submitted a PR for my missing case as well as a matching one on `flake8-tidy-import`. I will adapt the PR depending on the review and feedback on the `flake8-tidy-import` repository.
-
----
-
-_Referenced in [adamchainz/flake8-tidy-imports#441](../../adamchainz/flake8-tidy-imports/pulls/441.md) on 2023-04-20 11:30_
 
 ---
 
@@ -122,10 +106,6 @@ ban-relative-imports = "all"
 ```
 
 Is such an autofix planned/accepted in Ruff?
-
----
-
-_Referenced in [15r10nk/canonical-imports#3](../../15r10nk/canonical-imports/issues/3.md) on 2024-02-05 14:14_
 
 ---
 
@@ -162,10 +142,6 @@ I would gladly resubmit an updated version of the PR if this is OK for `ruff` ma
 - a new boolean setting `force-relative-siblings` which requires `ban-relative-imports=parents`
 
 In the process, I would gladly add any missing autofixes if any
-
----
-
-_Referenced in [astral-sh/ruff#16772](../../astral-sh/ruff/pulls/16772.md) on 2025-03-15 23:32_
 
 ---
 

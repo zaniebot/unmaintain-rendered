@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-03-31T16:26:42Z
 updated_at: 2023-03-31T18:50:36Z
 url: https://github.com/astral-sh/ruff/issues/3830
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:46Z
 ```
 
 # False positive: SIM222
@@ -82,10 +82,6 @@ _Comment by @charliermarsh on 2023-03-31 16:28_
 
 ---
 
-_Referenced in [astral-sh/ruff#3832](../../astral-sh/ruff/pulls/3832.md) on 2023-03-31 17:19_
-
----
-
 _Comment by @JonathanPlasse on 2023-03-31 17:21_
 
 Oops! Indeed! :sweat_smile: 
@@ -94,9 +90,5 @@ I am much obliged to fix this.
 ---
 
 _Closed by @charliermarsh on 2023-03-31 18:50_
-
----
-
-_Referenced in [astral-sh/ruff#4058](../../astral-sh/ruff/issues/4058.md) on 2023-04-21 11:45_
 
 ---

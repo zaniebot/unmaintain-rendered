@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-24T21:26:18Z
 updated_at: 2024-03-16T15:11:20Z
 url: https://github.com/astral-sh/ruff/issues/8185
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Consider adding an option to supress ruff format CLI warnings
@@ -102,14 +102,6 @@ I like this
 ---
 
 _Added to milestone `Formatter: Stable` by @MichaReiser on 2023-10-24 23:48_
-
----
-
-_Referenced in [astral-sh/ruff#8196](../../astral-sh/ruff/pulls/8196.md) on 2023-10-25 03:19_
-
----
-
-_Referenced in [GenericMappingTools/pygmt#2770](../../GenericMappingTools/pygmt/pulls/2770.md) on 2023-10-25 05:07_
 
 ---
 
@@ -252,10 +244,6 @@ Either way, I think we should extend the `skip-magic-trailing-comma` documentati
 
 ---
 
-_Referenced in [astral-sh/ruff#8229](../../astral-sh/ruff/issues/8229.md) on 2023-10-25 21:27_
-
----
-
 _Comment by @yakMM on 2023-10-25 21:38_
 
 > Then `isort` formats it like this:
@@ -329,10 +317,6 @@ Hm that seems really broad... I probably want different behavior depending on th
 
 ---
 
-_Referenced in [astral-sh/ruff#8244](../../astral-sh/ruff/pulls/8244.md) on 2023-10-26 06:43_
-
----
-
 _Comment by @yakMM on 2023-10-26 07:53_
 
 > Perhaps we could combine this request with a mechanism by which we automatically disable conflicting lint rules and options -- something like `formatter-compatibility = warn | ignore | force`.
@@ -356,10 +340,6 @@ _Closed by @MichaReiser on 2023-10-27 02:05_
 _Comment by @yakMM on 2023-10-27 06:50_
 
 @MichaReiser Thanks for the work this is great. I see you choose not to add `ISC001` in your PR in the end, is there a specific reason to that?
-
----
-
-_Referenced in [astral-sh/ruff#8968](../../astral-sh/ruff/issues/8968.md) on 2023-12-02 16:32_
 
 ---
 

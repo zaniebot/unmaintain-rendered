@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-18T18:06:57Z
 updated_at: 2023-02-03T01:02:11Z
 url: https://github.com/astral-sh/ruff/issues/1970
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # If autofix leads to a syntax error, revert and ask user to report an issue
@@ -25,10 +25,6 @@ Clippy does something similar.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-02-03 00:11_
-
----
-
-_Referenced in [astral-sh/ruff#2507](../../astral-sh/ruff/pulls/2507.md) on 2023-02-03 00:51_
 
 ---
 

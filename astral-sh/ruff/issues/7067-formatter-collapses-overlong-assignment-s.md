@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-09-02T18:50:37Z
 updated_at: 2023-11-02T17:01:26Z
 url: https://github.com/astral-sh/ruff/issues/7067
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Formatter collapses overlong assignment's parenthesized value
@@ -108,10 +108,6 @@ Input file: crates/ruff_python_formatter/resources/test/fixtures/ruff/expression
 
 ---
 
-_Referenced in [astral-sh/ruff#7106](../../astral-sh/ruff/pulls/7106.md) on 2023-09-03 19:34_
-
----
-
 _Comment by @MichaReiser on 2023-09-04 06:19_
 
 This is related to https://github.com/astral-sh/ruff/pull/6816 and specifically this "optimisation"
@@ -132,10 +128,6 @@ _Label `needs-decision` added by @MichaReiser on 2023-09-08 07:56_
 ---
 
 _Added to milestone `Formatter: Beta` by @MichaReiser on 2023-09-08 07:56_
-
----
-
-_Referenced in [astral-sh/ruff#7475](../../astral-sh/ruff/pulls/7475.md) on 2023-09-18 13:35_
 
 ---
 

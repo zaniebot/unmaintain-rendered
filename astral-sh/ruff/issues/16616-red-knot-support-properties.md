@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-10T23:33:24Z
 updated_at: 2025-04-02T13:31:32Z
 url: https://github.com/astral-sh/ruff/issues/16616
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [red-knot] support properties
@@ -24,10 +24,6 @@ _No description provided._
 ---
 
 _Label `red-knot` added by @carljm on 2025-03-10 23:33_
-
----
-
-_Referenced in [astral-sh/ruff#15697](../../astral-sh/ruff/issues/15697.md) on 2025-03-10 23:33_
 
 ---
 

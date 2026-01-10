@@ -12,7 +12,7 @@ assignees: []
 created_at: 2025-04-29T10:02:41Z
 updated_at: 2025-05-01T08:18:13Z
 url: https://github.com/astral-sh/ruff/issues/17701
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [red-knot] Subclasses of Any should be assignable to `Callable`
@@ -115,10 +115,6 @@ _Comment by @Kalmaegi on 2025-04-29 16:03_
 > Notice that this has an explicit test for `@final` classes, since a subclass of `Any` could not possibly be a subclass of a final class. We should carefully evaluate if there are any other exceptions to the rule (does it make sense for a subclass of any to be assignable to `Literal[1]`, for example?), but otherwise, introducing such a catch-all pattern sounds reasonable.
 
 Really appreciate your quick response. I'll go through the suggested code and work on preparing the PR.
-
----
-
-_Referenced in [astral-sh/ruff#17717](../../astral-sh/ruff/pulls/17717.md) on 2025-04-29 17:03_
 
 ---
 

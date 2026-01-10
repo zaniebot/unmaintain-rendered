@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-22T12:17:04Z
 updated_at: 2025-01-22T15:53:20Z
 url: https://github.com/astral-sh/ruff/issues/15671
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # Encourage use of `importlib.metadata.version`
@@ -26,10 +26,6 @@ I only recently found out about [importlib.metadata.version](https://docs.python
 I would love a rule that encouraged the use of the more portable & reliable importlib variant, although I have a feeling that a simple rule that detected any `from ... import __version__` would raise a bunch of false alarms on packages that export it as ways of versioning ... other things than the package itself. (maybe only trigger if importing from the top namespace of a module?) Or idk other weird stuff.
 
 Anyway, thought I'd throw out the idea anyway and see if it sticks.
-
----
-
-_Referenced in [python-trio/trio#3190](../../python-trio/trio/pulls/3190.md) on 2025-01-22 12:19_
 
 ---
 

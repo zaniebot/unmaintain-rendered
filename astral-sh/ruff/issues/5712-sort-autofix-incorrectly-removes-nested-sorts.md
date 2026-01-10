@@ -13,7 +13,7 @@ assignees: []
 created_at: 2023-07-12T13:49:58Z
 updated_at: 2023-07-14T13:43:48Z
 url: https://github.com/astral-sh/ruff/issues/5712
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:48Z
 ```
 
 # sort autofix incorrectly removes nested sorts
@@ -80,10 +80,6 @@ _Label `good first issue` added by @charliermarsh on 2023-07-12 18:22_
 ---
 
 _Label `help wanted` added by @charliermarsh on 2023-07-12 18:22_
-
----
-
-_Referenced in [astral-sh/ruff#5761](../../astral-sh/ruff/pulls/5761.md) on 2023-07-14 12:48_
 
 ---
 

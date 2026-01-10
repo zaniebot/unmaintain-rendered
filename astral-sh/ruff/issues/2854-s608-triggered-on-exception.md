@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-13T12:44:52Z
 updated_at: 2023-02-13T14:10:24Z
 url: https://github.com/astral-sh/ruff/issues/2854
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # `S608` Triggered on Exception
@@ -37,10 +37,6 @@ I think this is probably consistent with Bandit unfortunately.
 ---
 
 _Closed by @charliermarsh on 2023-02-13 13:58_
-
----
-
-_Referenced in [PyCQA/bandit#984](../../PyCQA/bandit/issues/984.md) on 2023-02-13 14:09_
 
 ---
 

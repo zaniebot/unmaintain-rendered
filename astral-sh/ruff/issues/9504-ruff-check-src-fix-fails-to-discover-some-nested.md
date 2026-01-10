@@ -1,0 +1,192 @@
+```yaml
+number: 9504
+title: ruff check src/ --fix fails to discover some nested files but works when ran directly on that file
+type: issue
+state: open
+author: ringohoffman
+labels:
+  - bug
+  - isort
+assignees: []
+created_at: 2024-01-13T09:00:58Z
+updated_at: 2024-01-26T19:33:32Z
+url: https://github.com/astral-sh/ruff/issues/9504
+synced_at: 2026-01-10T11:09:51Z
+```
+
+# ruff check src/ --fix fails to discover some nested files but works when ran directly on that file
+
+---
+
+_Issue opened by @ringohoffman on 2024-01-13 09:00_
+
+<!--
+Thank you for taking the time to report an issue! We're glad to have you involved with Ruff.
+
+If you're filing a bug report, please consider including the following information:
+
+* A minimal code snippet that reproduces the bug.
+* The command you invoked (e.g., `ruff /path/to/file.py --fix`), ideally including the `--isolated` flag.
+* The current Ruff settings (any relevant sections from your `pyproject.toml`).
+* The current Ruff version (`ruff --version`).
+-->
+
+```console
+$ ruff --version
+ruff 0.1.13
+```
+
+1. clone [`nerfstudio`](https://github.com/nerfstudio-project/nerfstudio).
+2. Use this `ruff` config:
+```toml
+[tool.ruff]
+line-length = 120
+select = [
+    "E",  # pycodestyle errors.
+    "F",  # Pyflakes rules.
+    "I",  # isort formatting.
+    "PLC",  # Pylint convention warnings.
+    "PLE",  # Pylint errors.
+    "PLR",  # Pylint refactor recommendations.
+    "PLW",  # Pylint warnings.
+]
+ignore = [
+    "E501",  # Line too long.
+    "F722",  # Forward annotation false positive from jaxtyping. Should be caught by pyright.
+    "F821",  # Forward annotation false positive from jaxtyping. Should be caught by pyright.
+    "PLR2004",  # Magic value used in comparison.
+    "PLR0915",  # Too many statements.
+    "PLR0913",  # Too many arguments.
+    "PLC0414",  # Import alias does not rename variable. (this is used for exporting names)
+    "PLC1901",  # Use falsey strings.
+    "PLR5501",  # Use `elif` instead of `else if`.
+    "PLR0911",  # Too many return statements.
+    "PLR0912",  # Too many branches.
+    "PLW0603",  # Globa statement updates are discouraged.
+    "PLW2901",  # For loop variable overwritten.
+]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+known-first-party = ["nerfstudio"]
+split-on-trailing-comma = false
+```
+3. Apply `ruff` import formatting
+```console
+$ ruff check nerfstudio/ docs/ tests/ --fix
+```
+4. Use this `isort` config:
+```toml
+[tool.isort]
+combine_as_imports = true
+line_length = 120
+known_first_party = ["nerfstudio"]
+profile = "black"
+```
+5. `isort` discovers a missed fix
+```console
+$ isort nerfstudio/ docs/ tests/
+Fixing /Users/ringo/Repositories/nerfstudio/nerfstudio/scripts/downloads/download_data.py
+```
+6. Strangely enough:
+```console
+$ ruff check nerfstudio/scripts --fix
+Found 1 error (1 fixed, 0 remaining).
+```
+or 
+```console
+$ ruff check nerfstudio/scripts/downloads/download_data.py --fix
+Found 1 error (1 fixed, 0 remaining).
+```
+
+And also, `ruff` succeeds at finding and fixing other scripts in this folder.
+
+```console
+$ tree nerfstudio/scripts/
+nerfstudio/scripts/
+├── __init__.py
+├── completions
+│   ├── __init__.py
+│   ├── install.py
+├── downloads
+│   ├── __init__.py
+│   └── download_data.py  // <- only one that is missed?
+├── process_data.py
+├── render.py
+└── viewer
+    ├── __init__.py
+    └── run_viewer.py
+```
+
+
+---
+
+_Renamed from "ruff check src/ --fix fails to discover fixes in some nested files but works when ran directly on that file" to "ruff check src/ --fix fails to discover some nested files but works when ran directly on that file" by @ringohoffman on 2024-01-13 09:02_
+
+---
+
+_Label `bug` added by @charliermarsh on 2024-01-13 12:44_
+
+---
+
+_Label `isort` added by @charliermarsh on 2024-01-13 12:44_
+
+---
+
+_Comment by @charliermarsh on 2024-01-13 12:45_
+
+Thanks, really good issue + instructions, I was able to repro.
+
+---
+
+_Assigned to @charliermarsh by @charliermarsh on 2024-01-13 12:45_
+
+---
+
+_Comment by @charliermarsh on 2024-01-13 14:39_
+
+I think the issue is that `nerfstudio/nerfstudio/scripts/downloads` is ignored by the `.gitignore`, which has this:
+
+```gitignore
+downloads/
+!nerfstudio/scripts/downloads/
+```
+
+@BurntSushi - is the `.gitignore` incorrect, or is the `ignore` crate not able to pick that up?
+
+You can add:
+
+```toml
+[tool.ruff]
+respect-gitignore = false
+```
+
+For now as a workaround. (See: https://docs.astral.sh/ruff/settings/#respect-gitignore.)
+
+---
+
+_Comment by @BurntSushi on 2024-01-14 18:38_
+
+Just from a quick look on a checkout of `nerfstudio`, it looks like the `ignore` crate is handling the rules correctly and whitelisting `nerfstudio/scripts/downloads`:
+
+```
+$ rg --files --debug 2> /tmp/log | rg nerfstudio/scripts/downloads
+nerfstudio/scripts/downloads/download_data.py
+nerfstudio/scripts/downloads/__init__.py
+$ rg nerfstudio/scripts/downloads /tmp/log
+39:rg: DEBUG|ignore::walk|crates/ignore/src/walk.rs:1802: whitelisting ./nerfstudio/scripts/downloads: Whitelist(IgnoreMatch(Gitignore(Glob { from: Some("./.gitignore"), original: "!nerfstudio/scripts/downloads/", actual: "nerfstudio/scripts/downloads", is_whitelist: true, is_only_dir: true })))
+$ fd . | rg nerfstudio/scripts/downloads
+nerfstudio/scripts/downloads/
+nerfstudio/scripts/downloads/__init__.py
+nerfstudio/scripts/downloads/download_data.py
+```
+
+Perhaps there is some interaction between ruff and the `ignore` crate that is causing the issue here. Or there is some other rule in play. I can dig more into this tomorrow.
+
+---
+
+_Comment by @charliermarsh on 2024-01-26 19:33_
+
+I think the issue is that once we exclude a directory, we don't recurse further into it (and so we never test its children). Wouldn't it be really expensive to check all children of all excluded directories?
+
+---

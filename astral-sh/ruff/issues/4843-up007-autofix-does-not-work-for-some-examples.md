@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-06-03T22:15:55Z
 updated_at: 2024-04-12T12:12:26Z
 url: https://github.com/astral-sh/ruff/issues/4843
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # UP007: autofix does not work for some examples
@@ -85,27 +85,11 @@ _Label `autofix` added by @charliermarsh on 2023-06-03 23:07_
 
 ---
 
-_Referenced in [astral-sh/ruff#4831](../../astral-sh/ruff/pulls/4831.md) on 2023-06-05 13:51_
-
----
-
 _Label `question` removed by @charliermarsh on 2023-07-10 01:12_
 
 ---
 
 _Label `needs-decision` added by @charliermarsh on 2023-07-10 01:12_
-
----
-
-_Referenced in [TheAlgorithms/Python#8868](../../TheAlgorithms/Python/pulls/8868.md) on 2023-07-29 12:41_
-
----
-
-_Referenced in [astral-sh/ruff#8698](../../astral-sh/ruff/issues/8698.md) on 2023-11-15 17:36_
-
----
-
-_Referenced in [tefra/xsdata#894](../../tefra/xsdata/issues/894.md) on 2023-12-26 07:44_
 
 ---
 

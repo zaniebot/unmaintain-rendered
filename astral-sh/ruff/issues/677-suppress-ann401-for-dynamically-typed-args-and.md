@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-11-11T05:09:55Z
 updated_at: 2024-05-25T10:12:08Z
 url: https://github.com/astral-sh/ruff/issues/677
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # Suppress ANN401 for dynamically typed *args and **kwargs.
@@ -56,17 +56,5 @@ _Closed by @charliermarsh on 2022-11-11 15:28_
 _Comment by @sanmai-NL on 2024-05-25 10:12_
 
 See: https://github.com/astral-sh/ruff/issues/5803#issuecomment-1640820274
-
----
-
-_Referenced in [ansible/event-driven-ansible#429](../../ansible/event-driven-ansible/pulls/429.md) on 2025-05-20 11:33_
-
----
-
-_Referenced in [astral-sh/ruff#19152](../../astral-sh/ruff/issues/19152.md) on 2025-07-05 01:42_
-
----
-
-_Referenced in [astral-sh/ruff#20644](../../astral-sh/ruff/issues/20644.md) on 2025-09-30 09:33_
 
 ---

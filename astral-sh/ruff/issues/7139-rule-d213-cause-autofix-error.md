@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-05T06:21:11Z
 updated_at: 2023-09-06T08:51:52Z
 url: https://github.com/astral-sh/ruff/issues/7139
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Rule D213 cause autofix error
@@ -60,10 +60,6 @@ _Label `fuzzer` added by @MichaReiser on 2023-09-05 07:00_
 ---
 
 _Assigned to @konstin by @konstin on 2023-09-05 19:30_
-
----
-
-_Referenced in [astral-sh/ruff#7173](../../astral-sh/ruff/pulls/7173.md) on 2023-09-05 19:52_
 
 ---
 

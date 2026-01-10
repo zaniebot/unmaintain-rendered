@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-01-15T16:34:39Z
 updated_at: 2025-01-16T23:48:54Z
 url: https://github.com/astral-sh/ruff/issues/15508
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [red-knot] `type & ~Literal[True] & bool` should simplify to `Never`
@@ -53,17 +53,9 @@ _Label `bug` added by @AlexWaygood on 2025-01-15 16:37_
 
 ---
 
-_Referenced in [astral-sh/ruff#15516](../../astral-sh/ruff/pulls/15516.md) on 2025-01-15 22:21_
-
----
-
 _Comment by @carljm on 2025-01-15 22:46_
 
 Good writeup! This is a consequence of the fact that in some places we have (effectively) hardcoded recognition of `bool` as final, via the fact that it is a union of `Literal[False]` and `Literal[True]`, but we don't yet consistently recognize the implications of its finality. So as you say, once we do, this should fall out correctly.
-
----
-
-_Referenced in [astral-sh/ruff#15539](../../astral-sh/ruff/pulls/15539.md) on 2025-01-16 19:54_
 
 ---
 

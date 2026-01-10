@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-12-10T12:36:13Z
 updated_at: 2024-12-16T15:09:29Z
 url: https://github.com/astral-sh/ruff/issues/14890
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:56Z
 ```
 
 # `D403` first-line-capitalized lint not alerting when the first line is after a newline
@@ -79,10 +79,6 @@ _Label `help wanted` added by @AlexWaygood on 2024-12-10 13:39_
 ---
 
 _Assigned to @dylwil3 by @dylwil3 on 2024-12-13 21:42_
-
----
-
-_Referenced in [astral-sh/ruff#14963](../../astral-sh/ruff/pulls/14963.md) on 2024-12-13 22:19_
 
 ---
 

@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-06-04T16:11:26Z
 updated_at: 2025-06-19T09:30:30Z
 url: https://github.com/astral-sh/ruff/issues/18464
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # [New rule] Octal literal for `chmod` mode bits
@@ -79,10 +79,6 @@ Awesome, thank you! Just a note if it's not too late already, I think RUF061-063
 ---
 
 _Assigned to @RazerM by @ntBre on 2025-06-05 23:38_
-
----
-
-_Referenced in [astral-sh/ruff#18541](../../astral-sh/ruff/pulls/18541.md) on 2025-06-07 22:26_
 
 ---
 

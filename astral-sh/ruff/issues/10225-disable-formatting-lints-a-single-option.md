@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-03-04T09:24:35Z
 updated_at: 2024-03-11T21:27:33Z
 url: https://github.com/astral-sh/ruff/issues/10225
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # disable formatting lints (a single option)
@@ -46,14 +46,6 @@ format = false  # ☜
 ---
 
 _Label `configuration` added by @MichaReiser on 2024-03-04 11:42_
-
----
-
-_Referenced in [astral-sh/ruff#9778](../../astral-sh/ruff/issues/9778.md) on 2024-03-04 11:43_
-
----
-
-_Referenced in [astral-sh/ruff#1774](../../astral-sh/ruff/issues/1774.md) on 2024-03-04 11:44_
 
 ---
 

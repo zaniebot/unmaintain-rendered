@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-01-14T00:57:46Z
 updated_at: 2025-01-14T01:05:46Z
 url: https://github.com/astral-sh/ruff/issues/15467
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # A006 builtin-lambda-argument-shadowing ignores exceptions
@@ -61,9 +61,5 @@ Oh, it seems like I got somehow confused. It is not A006 but A005 😕
 ---
 
 _Closed by @Zer0x00 on 2025-01-14 01:05_
-
----
-
-_Referenced in [astral-sh/ruff#15466](../../astral-sh/ruff/pulls/15466.md) on 2025-01-14 01:09_
 
 ---

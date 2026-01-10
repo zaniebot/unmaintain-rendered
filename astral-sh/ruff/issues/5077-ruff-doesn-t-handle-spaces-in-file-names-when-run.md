@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-06-14T05:38:35Z
 updated_at: 2023-06-15T18:57:02Z
 url: https://github.com/astral-sh/ruff/issues/5077
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # (🐞) Ruff doesn't handle spaces in file names when run through python
@@ -76,10 +76,6 @@ Doesn't work
 ```
 python -m ruff a` b.py
 ```
-
----
-
-_Referenced in [astral-sh/ruff#5115](../../astral-sh/ruff/pulls/5115.md) on 2023-06-15 07:48_
 
 ---
 

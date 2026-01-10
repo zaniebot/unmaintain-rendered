@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-09-01T16:35:51Z
 updated_at: 2023-05-10T21:11:00Z
 url: https://github.com/astral-sh/ruff/issues/76
-synced_at: 2026-01-10T01:56:43Z
+synced_at: 2026-01-10T11:09:42Z
 ```
 
 # Consider using hypothesmith
@@ -28,10 +28,6 @@ Example: https://github.com/wemake-services/wemake-python-styleguide/blob/master
 ---
 
 _Label `enhancement` added by @charliermarsh on 2022-09-01 16:44_
-
----
-
-_Referenced in [astral-sh/ruff#1230](../../astral-sh/ruff/issues/1230.md) on 2022-12-13 16:52_
 
 ---
 

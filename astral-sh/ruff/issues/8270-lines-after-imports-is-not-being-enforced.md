@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-10-27T06:30:27Z
 updated_at: 2023-10-28T22:54:04Z
 url: https://github.com/astral-sh/ruff/issues/8270
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # lines-after-imports is not being enforced correctly on 0.1.3
@@ -97,9 +97,5 @@ Cool, cool. I'll close this issue and keep an eye out for changes down the line.
 ---
 
 _Closed by @qbedard on 2023-10-28 22:54_
-
----
-
-_Referenced in [astral-sh/ruff#18904](../../astral-sh/ruff/issues/18904.md) on 2025-06-24 02:26_
 
 ---

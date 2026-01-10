@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-02T01:12:23Z
 updated_at: 2023-11-09T18:21:04Z
 url: https://github.com/astral-sh/ruff/issues/8427
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # `typing_extensions.TYPE_CHECKING` branch ignored and `TCH001` & `TCH002` are raised
@@ -111,10 +111,6 @@ select = [
 	"RUF", 
 ]
 ```
-
----
-
-_Referenced in [astral-sh/ruff#8429](../../astral-sh/ruff/pulls/8429.md) on 2023-11-02 01:32_
 
 ---
 

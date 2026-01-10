@@ -9,7 +9,7 @@ assignees: []
 created_at: 2022-12-22T01:30:13Z
 updated_at: 2022-12-22T02:04:27Z
 url: https://github.com/astral-sh/ruff/issues/1322
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:26Z
 ```
 
 # [feature-request] Keep error summary together at bottom of error list
@@ -35,10 +35,6 @@ IMO it's a bit confusing to have the number of fixable errors at the bottom and 
 _Comment by @charliermarsh on 2022-12-22 02:04_
 
 Yeah, agree.
-
----
-
-_Referenced in [astral-sh/ruff#1325](../../astral-sh/ruff/pulls/1325.md) on 2022-12-22 02:04_
 
 ---
 

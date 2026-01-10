@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-03T11:21:38Z
 updated_at: 2023-01-04T22:07:45Z
 url: https://github.com/astral-sh/ruff/issues/1593
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:43Z
 ```
 
 # Parity Reference
@@ -75,10 +75,6 @@ If you post your project structure, I'm happy to help with the configuration. Ru
 
 ---
 
-_Referenced in [astral-sh/ruff#1639](../../astral-sh/ruff/pulls/1639.md) on 2023-01-04 21:05_
-
----
-
 _Closed by @charliermarsh on 2023-01-04 21:05_
 
 ---
@@ -95,9 +91,5 @@ Sure - dont think I'm doing anything particularly strange
 https://github.com/danieleades/sphinx-graph
 
 By the way, it only affected the 'tests' directory. Isort and ruff didn't agree on how to group the imports in tests/ unless ruff had the additional config.
-
----
-
-_Referenced in [astral-sh/ruff#14651](../../astral-sh/ruff/issues/14651.md) on 2024-11-28 06:26_
 
 ---

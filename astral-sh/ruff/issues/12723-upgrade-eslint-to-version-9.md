@@ -12,7 +12,7 @@ assignees: []
 created_at: 2024-08-07T02:08:41Z
 updated_at: 2025-03-03T09:00:00Z
 url: https://github.com/astral-sh/ruff/issues/12723
-synced_at: 2026-01-10T01:56:53Z
+synced_at: 2026-01-10T11:09:54Z
 ```
 
 # Upgrade ESLint to version 9
@@ -52,10 +52,6 @@ Oh, I wasn't aware of that. Thanks for checking that. I'd hold the upgrade for n
 ---
 
 _Label `dependencies` added by @dhruvmanila on 2024-12-09 05:31_
-
----
-
-_Referenced in [astral-sh/ruff#16470](../../astral-sh/ruff/pulls/16470.md) on 2025-03-03 08:34_
 
 ---
 

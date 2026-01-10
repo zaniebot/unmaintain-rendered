@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-06-09T21:23:41Z
 updated_at: 2023-06-10T02:17:53Z
 url: https://github.com/astral-sh/ruff/issues/4991
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # ruff_textwrap accepts illegal Python whitespace
@@ -37,10 +37,6 @@ Here is a reproducing (illegal python syntax, don't pay attention to that) file 
 
 ---
 
-_Referenced in [astral-sh/ruff#4972](../../astral-sh/ruff/issues/4972.md) on 2023-06-09 21:27_
-
----
-
 _Label `bug` added by @charliermarsh on 2023-06-09 21:38_
 
 ---
@@ -52,10 +48,6 @@ Thank you!
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-06-10 00:49_
-
----
-
-_Referenced in [astral-sh/ruff#4994](../../astral-sh/ruff/pulls/4994.md) on 2023-06-10 01:10_
 
 ---
 

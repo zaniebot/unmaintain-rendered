@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-02-06T01:41:27Z
 updated_at: 2025-08-04T06:57:23Z
 url: https://github.com/astral-sh/ruff/issues/2600
-synced_at: 2026-01-10T01:56:46Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # Feature: Support isort multi_line_output option
@@ -48,10 +48,6 @@ _Label `isort` added by @charliermarsh on 2023-02-06 15:46_
 
 ---
 
-_Referenced in [astral-sh/ruff#2601](../../astral-sh/ruff/issues/2601.md) on 2023-02-08 12:30_
-
----
-
 _Comment by @NeilGirdhar on 2023-02-16 22:26_
 
 If we're re-engineering this, a compact grid mode would be really nice.  That is, try:
@@ -65,10 +61,6 @@ Choose the one with the fewest lines that fit within the maximum line width.  I 
 
 ---
 
-_Referenced in [teemtee/tmt#1973](../../teemtee/tmt/pulls/1973.md) on 2023-04-04 17:24_
-
----
-
 _Comment by @spaceone on 2023-04-14 04:48_
 
 We need `multi_line_output=5` (`vert-grid-grouped`).
@@ -78,18 +70,6 @@ We need `multi_line_output=5` (`vert-grid-grouped`).
 _Comment by @nicwolff on 2023-05-02 16:29_
 
 Same, we'd have moved from `isort` to `ruff` if it supported `multi_line_output=5`.
-
----
-
-_Referenced in [astral-sh/ruff#2595](../../astral-sh/ruff/issues/2595.md) on 2023-05-10 05:17_
-
----
-
-_Referenced in [astral-sh/ruff#4346](../../astral-sh/ruff/issues/4346.md) on 2023-05-10 14:53_
-
----
-
-_Referenced in [astral-sh/ruff#6190](../../astral-sh/ruff/issues/6190.md) on 2023-07-31 09:46_
 
 ---
 
@@ -148,10 +128,6 @@ Until such time... I'll continue to monitor this issue 😜
 
 ---
 
-_Referenced in [astral-sh/ruff#3206](../../astral-sh/ruff/issues/3206.md) on 2023-11-15 17:19_
-
----
-
 _Comment by @Aeron on 2023-11-24 12:30_
 
 @dhirschfeld, wait a second. The default formatting behavior is `multi_line_output=3`, right? It is the vertical hanging indent mode. Am I missing something? I briefly tested it against `isort` and saw no difference.
@@ -195,10 +171,6 @@ Ok, I put my implementation on pause then. It’ll wait until a decision.
 
 ---
 
-_Referenced in [vacanza/holidays#1671](../../vacanza/holidays/pulls/1671.md) on 2024-01-27 06:12_
-
----
-
 _Comment by @nineteendo on 2024-02-10 14:27_
 
 I believe this would also benefit [RUF022](https://docs.astral.sh/ruff/rules/unsorted-dunder-all):
@@ -220,25 +192,9 @@ Maybe it could raise a fatal error that says those modes aren't allowed in the f
 
 ---
 
-_Referenced in [commaai/openpilot#31592](../../commaai/openpilot/pulls/31592.md) on 2024-02-25 21:56_
-
----
-
-_Referenced in [zauberzeug/nicegui#2619](../../zauberzeug/nicegui/pulls/2619.md) on 2024-02-26 15:18_
-
----
-
 _Comment by @vkbo on 2024-04-24 10:09_
 
 I would love to see this feature added as well. A lack of mode 5 support is pretty much the only thing preventing me from using ruff. The current formatting option for imports is incredibly wasteful for code with a lot of short imports in few modules, like my Qt5-based project where you import a lot of GUI components in every file.
-
----
-
-_Referenced in [jazzband/django-rest-knox#344](../../jazzband/django-rest-knox/pulls/344.md) on 2024-05-06 13:40_
-
----
-
-_Referenced in [dipy/dipy#3216](../../dipy/dipy/pulls/3216.md) on 2024-05-17 01:59_
 
 ---
 
@@ -266,17 +222,9 @@ I think, for my usecase, what is missing from `ruff` is `force_grid_wrap`:
 
 ---
 
-_Referenced in [astral-sh/ruff#19078](../../astral-sh/ruff/issues/19078.md) on 2025-07-01 21:29_
-
----
-
 _Comment by @miktuy on 2025-07-29 17:04_
 
 Hi! Could you support option multi_line_output=4 like in isort?
 We have huge amount imports in our projects's tests and this option provides more readable import's section in files with tests. But isort is so slow and we would prefer to use ruff to sort the imports.
-
----
-
-_Referenced in [Unidata/MetPy#3901](../../Unidata/MetPy/pulls/3901.md) on 2025-12-04 23:59_
 
 ---

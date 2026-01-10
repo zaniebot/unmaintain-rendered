@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-03-30T22:03:59Z
 updated_at: 2025-04-21T19:38:32Z
 url: https://github.com/astral-sh/ruff/issues/17065
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Support control flow in Ruff
@@ -276,21 +276,5 @@ _Label `internal` added by @dylwil3 on 2025-03-30 22:06_
 ---
 
 _Assigned to @dylwil3 by @dylwil3 on 2025-03-30 22:06_
-
----
-
-_Referenced in [astral-sh/ruff#17064](../../astral-sh/ruff/pulls/17064.md) on 2025-03-31 13:59_
-
----
-
-_Referenced in [astral-sh/ruff#17292](../../astral-sh/ruff/issues/17292.md) on 2025-04-08 11:19_
-
----
-
-_Referenced in [astral-sh/ruff#17281](../../astral-sh/ruff/pulls/17281.md) on 2025-04-14 19:39_
-
----
-
-_Referenced in [astral-sh/ruff#16949](../../astral-sh/ruff/issues/16949.md) on 2025-04-19 22:02_
 
 ---

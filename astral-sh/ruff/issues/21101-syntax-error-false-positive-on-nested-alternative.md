@@ -10,7 +10,7 @@ assignees: []
 created_at: 2025-10-27T19:37:00Z
 updated_at: 2025-10-30T17:40:05Z
 url: https://github.com/astral-sh/ruff/issues/21101
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # Syntax error false positive on nested alternative patterns
@@ -56,10 +56,6 @@ _Label `bug` added by @ntBre on 2025-10-27 19:37_
 ---
 
 _Assigned to @ntBre by @ntBre on 2025-10-27 19:39_
-
----
-
-_Referenced in [astral-sh/ruff#21104](../../astral-sh/ruff/pulls/21104.md) on 2025-10-27 21:03_
 
 ---
 

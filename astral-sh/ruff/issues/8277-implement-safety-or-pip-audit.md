@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-10-27T10:18:44Z
 updated_at: 2026-01-06T08:46:59Z
 url: https://github.com/astral-sh/ruff/issues/8277
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:50Z
 ```
 
 # Implement `safety` or `pip-audit`
@@ -65,14 +65,6 @@ I also think ruff could add value by being much faster (pip-audit is quite slow)
 ---
 
 _Renamed from "Implement `safety`" to "Implement `safety` or `pip-audit`" by @rgeronimi on 2024-11-05 12:07_
-
----
-
-_Referenced in [microsoft/vscode-python#18115](../../microsoft/vscode-python/issues/18115.md) on 2024-12-10 05:38_
-
----
-
-_Referenced in [par-tec/python-cookiecutter#60](../../par-tec/python-cookiecutter/issues/60.md) on 2025-09-11 10:43_
 
 ---
 

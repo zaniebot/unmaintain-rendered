@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-08-27T13:06:09Z
 updated_at: 2025-09-02T15:55:25Z
 url: https://github.com/astral-sh/ruff/issues/20112
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:09:59Z
 ```
 
 # PTH119 and PTH120 should be marked unsafe
@@ -61,10 +61,6 @@ _Label `fixes` added by @ntBre on 2025-08-27 13:41_
 ---
 
 _Label `preview` added by @ntBre on 2025-08-27 13:41_
-
----
-
-_Referenced in [astral-sh/ruff#20118](../../astral-sh/ruff/pulls/20118.md) on 2025-08-27 17:49_
 
 ---
 

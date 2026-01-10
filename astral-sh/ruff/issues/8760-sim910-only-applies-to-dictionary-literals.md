@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-11-18T23:27:13Z
 updated_at: 2023-11-19T00:21:55Z
 url: https://github.com/astral-sh/ruff/issues/8760
-synced_at: 2026-01-10T01:56:50Z
+synced_at: 2026-01-10T11:09:51Z
 ```
 
 # SIM910 only applies to dictionary literals
@@ -46,10 +46,6 @@ _Label `rule` added by @charliermarsh on 2023-11-18 23:45_
 ---
 
 _Renamed from "SIM910 does not work" to "SIM910 only applies to dictionary literals" by @charliermarsh on 2023-11-18 23:45_
-
----
-
-_Referenced in [astral-sh/ruff#8762](../../astral-sh/ruff/pulls/8762.md) on 2023-11-18 23:51_
 
 ---
 

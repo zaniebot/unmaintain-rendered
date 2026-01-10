@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-07T14:25:34Z
 updated_at: 2022-12-07T15:01:26Z
 url: https://github.com/astral-sh/ruff/issues/1120
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:06:17Z
 ```
 
 # Implement B905
@@ -28,10 +28,6 @@ _Label `rule` added by @charliermarsh on 2022-12-07 14:25_
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2022-12-07 14:40_
-
----
-
-_Referenced in [astral-sh/ruff#1122](../../astral-sh/ruff/pulls/1122.md) on 2022-12-07 15:01_
 
 ---
 

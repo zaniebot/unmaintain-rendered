@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-04-21T18:36:48Z
 updated_at: 2024-04-23T00:20:44Z
 url: https://github.com/astral-sh/ruff/issues/11075
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # FURB118 bug: incorrectly replaces 1 element tuple lambdas with itemgetter
@@ -50,10 +50,6 @@ _Renamed from "FURB118 bug: does not recognize 1 element tuples" to "FURB118 bug
 
 ---
 
-_Referenced in [dosisod/refurb#335](../../dosisod/refurb/issues/335.md) on 2024-04-21 18:49_
-
----
-
 _Label `bug` added by @dhruvmanila on 2024-04-22 09:22_
 
 ---
@@ -69,10 +65,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2024-04-22 23:58_
 _Comment by @charliermarsh on 2024-04-22 23:58_
 
 I'll take a look, thanks @Skylion007.
-
----
-
-_Referenced in [astral-sh/ruff#11095](../../astral-sh/ruff/pulls/11095.md) on 2024-04-23 00:12_
 
 ---
 

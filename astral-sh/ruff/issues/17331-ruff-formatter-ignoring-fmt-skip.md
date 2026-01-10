@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-04-10T10:05:01Z
 updated_at: 2025-12-22T15:24:44Z
 url: https://github.com/astral-sh/ruff/issues/17331
-synced_at: 2026-01-10T01:56:56Z
+synced_at: 2026-01-10T11:09:58Z
 ```
 
 # Ruff formatter ignoring `fmt: skip`
@@ -375,22 +375,6 @@ with open("test.txt") as f:
 
 
 And we probably need to integrate this into `FormatSuite`
-
----
-
-_Referenced in [astral-sh/ruff#20482](../../astral-sh/ruff/issues/20482.md) on 2025-09-19 13:37_
-
----
-
-_Referenced in [astral-sh/ruff#20633](../../astral-sh/ruff/pulls/20633.md) on 2025-10-06 20:40_
-
----
-
-_Referenced in [astral-sh/ruff#21504](../../astral-sh/ruff/pulls/21504.md) on 2025-11-18 18:04_
-
----
-
-_Referenced in [astral-sh/ruff#22119](../../astral-sh/ruff/pulls/22119.md) on 2025-12-22 15:06_
 
 ---
 

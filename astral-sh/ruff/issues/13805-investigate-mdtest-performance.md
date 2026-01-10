@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-10-18T07:30:47Z
 updated_at: 2024-10-21T19:06:42Z
 url: https://github.com/astral-sh/ruff/issues/13805
-synced_at: 2026-01-10T01:56:54Z
+synced_at: 2026-01-10T11:09:55Z
 ```
 
 # Investigate mdtest performance
@@ -103,10 +103,6 @@ _Label `red-knot` added by @MichaReiser on 2024-10-18 07:30_
 ---
 
 _Label `testing` added by @AlexWaygood on 2024-10-18 09:32_
-
----
-
-_Referenced in [astral-sh/ruff#13832](../../astral-sh/ruff/pulls/13832.md) on 2024-10-20 15:16_
 
 ---
 

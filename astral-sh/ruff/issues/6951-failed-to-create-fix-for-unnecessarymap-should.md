@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-08-28T19:53:36Z
 updated_at: 2023-08-28T20:49:42Z
 url: https://github.com/astral-sh/ruff/issues/6951
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Failed to create fix for UnnecessaryMap: Should have two arguments
@@ -65,10 +65,6 @@ It seems like the fix would need to be updated to zip the arguments when there a
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-08-28 20:11_
-
----
-
-_Referenced in [astral-sh/ruff#6954](../../astral-sh/ruff/pulls/6954.md) on 2023-08-28 20:14_
 
 ---
 

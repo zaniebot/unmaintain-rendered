@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-02-02T04:28:55Z
 updated_at: 2023-02-02T05:07:45Z
 url: https://github.com/astral-sh/ruff/issues/2466
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:45Z
 ```
 
 # SIM300: Yoda condition... autofix drops left parenthesis
@@ -72,10 +72,6 @@ _Label `bug` added by @charliermarsh on 2023-02-02 04:31_
 _Comment by @charliermarsh on 2023-02-02 04:31_
 
 I have a few more minutes before bed so maybe I can fix it tonight :joy:
-
----
-
-_Referenced in [astral-sh/ruff#2468](../../astral-sh/ruff/pulls/2468.md) on 2023-02-02 04:56_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-06-23T16:31:45Z
 updated_at: 2023-06-29T06:09:28Z
 url: https://github.com/astral-sh/ruff/issues/5338
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # formatter bug with `a and not a & a` when wrapping
@@ -48,10 +48,6 @@ _Label `bug` added by @MichaReiser on 2023-06-23 16:59_
 ---
 
 _Assigned to @MichaReiser by @MichaReiser on 2023-06-23 16:59_
-
----
-
-_Referenced in [astral-sh/ruff#5370](../../astral-sh/ruff/pulls/5370.md) on 2023-06-26 15:19_
 
 ---
 

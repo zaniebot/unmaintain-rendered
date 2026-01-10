@@ -10,7 +10,7 @@ assignees: []
 created_at: 2024-02-20T06:12:44Z
 updated_at: 2025-01-27T01:27:55Z
 url: https://github.com/astral-sh/ruff/issues/10058
-synced_at: 2026-01-10T01:56:51Z
+synced_at: 2026-01-10T11:09:52Z
 ```
 
 # (🐞) Cache moment "error: Failed to create fix for MetaClassABCMeta: Unable to insert `ABC` into scope due to name conflict" failure
@@ -338,10 +338,6 @@ _Label `needs-info` removed by @MichaReiser on 2024-04-02 09:29_
 ---
 
 _Label `bug` added by @MichaReiser on 2024-04-02 09:29_
-
----
-
-_Referenced in [astral-sh/ruff#10954](../../astral-sh/ruff/issues/10954.md) on 2024-04-15 12:46_
 
 ---
 

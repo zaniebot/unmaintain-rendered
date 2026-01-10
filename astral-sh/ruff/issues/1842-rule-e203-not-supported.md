@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-01-13T01:45:12Z
 updated_at: 2023-03-23T16:58:22Z
 url: https://github.com/astral-sh/ruff/issues/1842
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # Rule E203 not supported? 
@@ -65,9 +65,5 @@ Yes, they should not be present.
 _Comment by @charliermarsh on 2023-03-23 16:58_
 
 Yeah, I think they accidentally got added when I moved from a feature flag to a debug assertion for the pycodestyle rules.
-
----
-
-_Referenced in [astral-sh/ruff#3686](../../astral-sh/ruff/issues/3686.md) on 2023-03-23 17:08_
 
 ---

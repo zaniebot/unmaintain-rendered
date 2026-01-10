@@ -10,7 +10,7 @@ assignees: []
 created_at: 2022-12-24T18:17:26Z
 updated_at: 2022-12-24T19:09:35Z
 url: https://github.com/astral-sh/ruff/issues/1362
-synced_at: 2026-01-10T01:56:44Z
+synced_at: 2026-01-10T12:05:27Z
 ```
 
 # B010 not required by ruff, but is required by flake8 bugbear.
@@ -55,10 +55,6 @@ Thanks! Will fix.
 
 ---
 
-_Referenced in [PyCQA/flake8-bugbear#326](../../PyCQA/flake8-bugbear/issues/326.md) on 2022-12-24 18:19_
-
----
-
 _Comment by @charliermarsh on 2022-12-24 18:46_
 
 This actually looks right to me -- are you enabling the `B` checks? They're not enabled by default (only `E` and `F`).
@@ -81,10 +77,6 @@ Ah, I didn't know this. The warning message gave me the impression that it was e
 _Comment by @charliermarsh on 2022-12-24 19:04_
 
 Yeah, I can improve the message there.
-
----
-
-_Referenced in [astral-sh/ruff#1364](../../astral-sh/ruff/issues/1364.md) on 2022-12-24 19:09_
 
 ---
 

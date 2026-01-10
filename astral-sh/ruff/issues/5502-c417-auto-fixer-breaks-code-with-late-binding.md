@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-07-04T13:55:38Z
 updated_at: 2023-07-05T02:11:30Z
 url: https://github.com/astral-sh/ruff/issues/5502
-synced_at: 2026-01-10T01:56:48Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # C417 auto-fixer breaks code with late-binding
@@ -119,10 +119,6 @@ Thanks, yeah, this makes sense.
 ---
 
 _Assigned to @charliermarsh by @charliermarsh on 2023-07-05 01:17_
-
----
-
-_Referenced in [astral-sh/ruff#5520](../../astral-sh/ruff/pulls/5520.md) on 2023-07-05 01:46_
 
 ---
 

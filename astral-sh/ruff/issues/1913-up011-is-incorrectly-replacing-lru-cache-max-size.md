@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-01-16T11:34:15Z
 updated_at: 2023-01-17T21:57:09Z
 url: https://github.com/astral-sh/ruff/issues/1913
-synced_at: 2026-01-10T01:56:45Z
+synced_at: 2026-01-10T11:09:44Z
 ```
 
 # UP011 is incorrectly replacing `lru_cache(max_size)=None`
@@ -36,10 +36,6 @@ _Assigned to @charliermarsh by @charliermarsh on 2023-01-16 17:27_
 _Comment by @charliermarsh on 2023-01-16 17:35_
 
 Thank you! Fixing now. Just an oversight.
-
----
-
-_Referenced in [astral-sh/ruff#1918](../../astral-sh/ruff/pulls/1918.md) on 2023-01-16 18:09_
 
 ---
 
@@ -86,10 +82,6 @@ Ah right -- I'll modify the error message.
 _Comment by @charliermarsh on 2023-01-17 13:02_
 
 (And consider splitting into two rules, too.)
-
----
-
-_Referenced in [astral-sh/ruff#1934](../../astral-sh/ruff/issues/1934.md) on 2023-01-17 16:13_
 
 ---
 

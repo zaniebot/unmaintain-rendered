@@ -10,7 +10,7 @@ assignees: []
 created_at: 2023-05-19T08:10:45Z
 updated_at: 2023-05-19T19:05:53Z
 url: https://github.com/astral-sh/ruff/issues/4520
-synced_at: 2026-01-10T01:56:47Z
+synced_at: 2026-01-10T11:09:47Z
 ```
 
 # [Autofix error] RUF010 autofix fails when the expression is in parentheses, e.g. `f"{(str(a))}"`
@@ -53,14 +53,6 @@ This version of `RUF010` using `libcst` should not have this problem.
 _Comment by @JonathanPlasse on 2023-05-19 08:37_
 
 I will make a PR soon.
-
----
-
-_Referenced in [astral-sh/ruff#4523](../../astral-sh/ruff/issues/4523.md) on 2023-05-19 09:14_
-
----
-
-_Referenced in [astral-sh/ruff#4524](../../astral-sh/ruff/pulls/4524.md) on 2023-05-19 09:30_
 
 ---
 

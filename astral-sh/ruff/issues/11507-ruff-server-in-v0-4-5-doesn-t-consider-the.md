@@ -11,7 +11,7 @@ assignees: []
 created_at: 2024-05-23T07:54:30Z
 updated_at: 2024-05-27T15:36:36Z
 url: https://github.com/astral-sh/ruff/issues/11507
-synced_at: 2026-01-10T01:56:52Z
+synced_at: 2026-01-10T11:09:53Z
 ```
 
 # `ruff server` in `v0.4.5` doesn't consider the configuration setting in Neovim
@@ -190,14 +190,6 @@ _Unassigned @snowsignal by @dhruvmanila on 2024-05-27 11:14_
 ---
 
 _Renamed from "When I updated to version 0.4.5, the E30* checks all failed and nothing changed in my configuration" to "`ruff server` in `v0.4.5` doesn't consider the configuration setting in Neovim" by @dhruvmanila on 2024-05-27 11:15_
-
----
-
-_Referenced in [astral-sh/ruff#11497](../../astral-sh/ruff/pulls/11497.md) on 2024-05-27 11:20_
-
----
-
-_Referenced in [astral-sh/ruff#11566](../../astral-sh/ruff/pulls/11566.md) on 2024-05-27 11:23_
 
 ---
 

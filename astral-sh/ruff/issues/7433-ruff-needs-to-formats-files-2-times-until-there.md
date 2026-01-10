@@ -11,7 +11,7 @@ assignees: []
 created_at: 2023-09-16T09:40:22Z
 updated_at: 2023-09-16T14:22:25Z
 url: https://github.com/astral-sh/ruff/issues/7433
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Ruff needs to formats files 2 times until there is nothing to format
@@ -91,9 +91,5 @@ Thanks. Identifying instabilities is extremely useful (and maybe something a fuz
 ---
 
 _Closed by @MichaReiser on 2023-09-16 14:22_
-
----
-
-_Referenced in [astral-sh/ruff#9169](../../astral-sh/ruff/issues/9169.md) on 2023-12-18 03:18_
 
 ---

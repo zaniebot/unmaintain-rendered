@@ -9,7 +9,7 @@ assignees: []
 created_at: 2023-08-31T12:59:02Z
 updated_at: 2023-08-31T13:09:43Z
 url: https://github.com/astral-sh/ruff/issues/7019
-synced_at: 2026-01-10T01:56:49Z
+synced_at: 2026-01-10T11:09:49Z
 ```
 
 # Auto fix for RUF015 is not safe
@@ -77,9 +77,5 @@ _Comment by @jaap3 on 2023-08-31 13:08_
 _Comment by @MichaReiser on 2023-08-31 13:09_
 
 You can track the applicability work here https://github.com/astral-sh/ruff/issues/4185 (or the parent issue)
-
----
-
-_Referenced in [astral-sh/ruff#7769](../../astral-sh/ruff/pulls/7769.md) on 2023-10-03 17:27_
 
 ---

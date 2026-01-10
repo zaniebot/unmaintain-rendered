@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-12-10T15:38:49Z
 updated_at: 2025-12-11T10:35:19Z
 url: https://github.com/astral-sh/ruff/issues/21896
-synced_at: 2026-01-10T01:56:57Z
+synced_at: 2026-01-10T11:10:00Z
 ```
 
 # Relexing logical tokens and unclosed interpolated strings
@@ -71,10 +71,6 @@ _Label `bug` added by @MichaReiser on 2025-12-10 15:38_
 ---
 
 _Label `parser` added by @MichaReiser on 2025-12-10 15:38_
-
----
-
-_Referenced in [astral-sh/ruff#21898](../../astral-sh/ruff/pulls/21898.md) on 2025-12-10 16:18_
 
 ---
 

@@ -11,7 +11,7 @@ assignees: []
 created_at: 2025-03-06T12:01:37Z
 updated_at: 2025-03-17T11:56:18Z
 url: https://github.com/astral-sh/ruff/issues/16532
-synced_at: 2026-01-10T01:56:55Z
+synced_at: 2026-01-10T11:09:57Z
 ```
 
 # [red-knot] Raise "invalid type expression" error for literal types
@@ -35,14 +35,6 @@ _Label `help wanted` added by @dhruvmanila on 2025-03-06 12:01_
 ---
 
 _Label `red-knot` added by @dhruvmanila on 2025-03-06 12:01_
-
----
-
-_Referenced in [astral-sh/ruff#16493](../../astral-sh/ruff/pulls/16493.md) on 2025-03-06 12:01_
-
----
-
-_Referenced in [astral-sh/ruff#16765](../../astral-sh/ruff/pulls/16765.md) on 2025-03-15 17:46_
 
 ---
 
