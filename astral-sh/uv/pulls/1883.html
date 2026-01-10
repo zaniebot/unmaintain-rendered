@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pep440: fix version ordering - astral-sh/uv #1883</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>pep440: fix version ordering</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1883">#1883</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-02-22 20:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-22 20:56</div>
+            <div class="timeline-body"><p>A couple moons ago, I introduced an optimization for version comparisons
+by devising a format where <em>most</em> versions would be represented by a
+single <code>u64</code>. This in turn meant most comparisons (of which many are
+done during resolution) would be extremely cheap.</p>
+<p>Unfortunately, when I did that, I screwed up the preservation of
+ordering as defined by the <a href="https://packaging.python.org/en/latest/specifications/version-specifiers/#summary-of-permitted-suffixes-and-relative-ordering">Version Specifiers spec</a>. I think I messed
+it up because I had originally devised the representation so that we
+could pack things like <code>1.2.3.dev1.post5</code>, but later realized it would
+be better to limit ourselves to a single suffix. However, I never
+updated the binary encoding to better match &quot;up to 4 release versions
+and up to precisely 1 suffix.&quot; Because of that, there were cases where
+versions weren't ordered correctly. For example, this fixes a bug where
+<code>1.0a2 &lt; 1.0dev2</code>, even though all dev releases should order before
+pre-releases.</p>
+<p>We also update a test so that it catches these kinds of bugs in the
+future. (By testing all pairs of versions in a sequence instead of just
+the adjacent versions.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-02-22 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @charliermarsh removed by @BurntSushi on 2024-02-22 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-02-22 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-02-22 20:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-22 21:06</div>
+            <div class="timeline-body"><p>Nice find. I'm too tired to review this today. Does this have any implications on perf?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-22 21:12</div>
+            <div class="timeline-body"><p>I don't think. I can check later. If anything, it will help, because it expands the set of versions that can be represented in a packed format.</p>
+<p>But also, <strong>do not merge</strong> this yet. We need a way to invalidate the cache before we can ship this. Otherwise existing versions in the cache will be interpreted incorrectly. (Which might lead to panics or even silent logic bugs.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-22 21:17</div>
+            <div class="timeline-body"><blockquote>
+<p>We need a way to invalidate the cache before we can ship this.</p>
+</blockquote>
+<p>We can bump the cache bucket suffixes (<code>-v1</code> -&gt; <code>-v2</code>). (I'll review tomorrow)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-22 21:31</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>We need a way to invalidate the cache before we can ship this.</p>
+</blockquote>
+<p>We can bump the cache bucket suffixes (<code>-v1</code> -&gt; <code>-v2</code>). (I'll review tomorrow)</p>
+</blockquote>
+<p>Done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-02-22 21:57</div>
+            <div class="timeline-body"><p>Awesome, thanks! I read it closely.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-22 21:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep440-rs/src/version.rs</code>:928 on 2024-02-22 21:58</div>
+            <div class="timeline-body"><p>Should <code>number</code> be 0 here? (Should we assert?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-22 22:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/pep440-rs/src/version.rs</code>:928 on 2024-02-22 22:10</div>
+            <div class="timeline-body"><p>Nope! If the kind isn't a pre-release, then it could be something else with a non-zero number.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-02-22 23:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-22 23:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-22 23:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2024-02-23 12:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

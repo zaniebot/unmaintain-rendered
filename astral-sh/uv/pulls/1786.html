@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use `libgit2` first then fallback to the `git` command on failure - astral-sh/uv #1786</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use <code>libgit2</code> first then fallback to the <code>git</code> command on failure</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1786">#1786</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-02-20 22:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-20 22:40</div>
+            <div class="timeline-body"><p>Some necessary context in https://github.com/astral-sh/uv/pull/1781.</p>
+<p>This should be faster in the happy path but robust to less common authentication schemes. Cargo uses an environment variable to toggle instead of this &quot;fallback&quot; approach. I'm hesitant to require that from our users.</p>
+<p>The downside of this is that we will always retry with the <code>git</code> command even if the failure is not related to authentication. This could result in confusing logs and is, of course, slower. In practice, I think the error messages from the <code>git</code> command are better as they give you something reproducible to test with and have more context, the <code>libgit2</code> errors are very opaque.</p>
+<p>I've also added a rough way to reuse the discovered correct strategy for fetching (https://github.com/astral-sh/uv/pull/1786/commits/df4382f4d1b415d3c86cd119876734b2596cb311) we could extend this to avoid unnecessary calls to <code>libgit2</code> in the future.</p>
+<p>We can definitely say this is overkill and just drop fetching with libgit2 entirely in favor of the git CLI. We could also only use the <code>git</code> command if we detect authentication via some heuristic?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-git/src/source.rs</code>:67 on 2024-02-20 22:42</div>
+            <div class="timeline-body"><p>Awkward! Ideally <code>fetch_with_strategy</code> would still return <code>Fetch</code> and update <code>self.git</code> for you, but then it unconditionally takes ownership of <code>self</code> which means <code>fetch</code> cannot use <code>self</code> again to attempt another strategy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-20 22:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-20 23:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-git/src/source.rs</code>:67 on 2024-02-20 23:19</div>
+            <div class="timeline-body"><p>Refactoring this...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-20 23:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-git/src/source.rs</code>:67 on 2024-02-20 23:30</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/1786/commits/51b38f9a871c42ac6638328718c04630b216e56f</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-git/src/git.rs</code>:1062 on 2024-02-20 23:43</div>
+            <div class="timeline-body"><p>This feels a little dubious. Is there a better way to merge these errors?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-20 23:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2024-02-21 00:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-21 00:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_install.rs</code>:958 on 2024-02-21 00:18</div>
+            <div class="timeline-body"><p>Would need to add filters to this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-21 01:21</div>
+            <div class="timeline-body"><p>Currently a big problem here is that libgit2 will retry several times before we try git.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-03-04 21:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-04 21:25</div>
+            <div class="timeline-body"><p>To be explored another day..</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

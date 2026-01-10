@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add support for Python installed from Windows Store - astral-sh/uv #2122</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add support for Python installed from Windows Store</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2122">#2122</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-01 21:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-01 21:21</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>After https://github.com/astral-sh/uv/pull/2121, the only remaining issue is that calling <code>canonicalize</code> on these Pythons returns an error.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/2105.</p>
+<h2>Test Plan</h2>
+<p>Uninstalled all python.org Pythons on my Windows machine, then created a virtualenv. The resulting config file:</p>
+<pre><code>Using Python 3.11.8 interpreter at: C:\Users\crmar\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe
+Creating virtualenv at: .venv
+Activate with: .venv\Scripts\activate
+PS C:\Users\crmar\workspace\puffin&gt; cat .\.venv\pyvenv.cfg
+home = C:\Users\crmar\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0
+implementation = CPython
+version_info = 3.11.8
+include-system-site-packages = false
+uv = 0.1.13
+prompt = puffin
+</code></pre>
+<p>Prior to this PR, it would fail with a canonicalization error.</p>
+<p>Prior to #2121, it would leave a &quot;bad&quot; Python in the config file:</p>
+<pre><code>Using Python 3.11.8 interpreter at: C:\Users\crmar\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe
+Creating virtualenv at: .venv
+Activate with: .venv\Scripts\activate
+PS C:\Users\crmar\workspace\puffin&gt; cat .\.venv\pyvenv.cfg
+home = C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2288.0_x64__qbz5n2kfra8p0
+implementation = CPython
+version_info = 3.11.8
+include-system-site-packages = false
+uv = 0.1.13
+prompt = puffin
+</code></pre>
+<p>Which, once activated, would fail with:</p>
+<pre><code>(venv) PS C:\Users\crmar\workspace\puffin&gt; python
+No Python at '&quot;C:\Users\crmar\AppData\Local\Programs\Python\Python312\python.exe'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-03-01 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-01 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-03-01 21:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-01 21:22</div>
+            <div class="timeline-body"><p>For posterity, in early iterations of this PR I had some code like:</p>
+<pre><code class="language-rust">/// Given a path, return the &quot;real&quot; path.
+///
+/// The only modifications applied here are for the Windows Store. Specifically, the Windows Store
+/// Python executable is located at a path like:
+///
+///     `C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbs5n2kfra8p0`.
+///
+/// However, users actually aren't allowed to run executables from this path directly. So, instead,
+/// we need to use a path like:
+///
+///     `C:\Users\crmar\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbs5n2kfra8p0`
+///
+/// In practice, this is achieved by replacing `%ProgramFiles%\WindowsApps` with `%LocalAppData%\Microsoft\WindowsApps`.
+///
+/// See: &lt;https://github.com/python-poetry/poetry/pull/5931&gt;
+fn real_path(path: &amp;Path) -&gt; io::Result&lt;PathBuf&gt; {
+    #[cfg(windows)]
+    if path.is_absolute() {
+        if path.components().any(|component| component.as_os_str() == &quot;Microsoft&quot;) {
+            return real_windows_path(path);
+        }
+    }
+
+    Ok(path.to_path_buf())
+}
+
+#[cfg(windows)]
+fn real_windows_path(path: &amp;Path) -&gt; io::Result&lt;PathBuf&gt; {
+    use windows_sys::Win32::UI::Shell::{CSIDL_LOCAL_APPDATA, CSIDL_PROFILE};
+
+    let program_files = windows_folder(CSIDL_PROGRAM_FILES)?;
+    let local_appdata = windows_folder(CSIDL_LOCAL_APPDATA)?;
+
+    let suffix = path.strip_prefix(&amp;program_files)?;
+    Ok(local_appdata.join(suffix))
+}
+
+#[cfg(windows)]
+fn windows_folder(csidl: u32) -&gt; Option&lt;PathBuf&gt; {
+    use std::env;
+    use std::ffi::OsString;
+    use std::os::windows::ffi::OsStringExt;
+    use std::path::PathBuf;
+
+    use windows_sys::Win32::Foundation::{MAX_PATH, S_OK};
+    use windows_sys::Win32::UI::Shell::{SHGetFolderPathW};
+
+    unsafe {
+        let mut path: Vec&lt;u16&gt; = Vec::with_capacity(MAX_PATH as usize);
+        match SHGetFolderPathW(0, csidl as i32, 0, 0, path.as_mut_ptr()) {
+            S_OK =&gt; {
+                let len = wcslen(path.as_ptr());
+                path.set_len(len);
+                let s = OsString::from_wide(&amp;path);
+                Some(PathBuf::from(s))
+            }
+            _ =&gt; None,
+        }
+    }
+}
+
+#[cfg(windows)]
+extern &quot;C&quot; {
+    fn wcslen(buf: *const u16) -&gt; usize;
+}
+</code></pre>
+<p>But this ended up not being necessary or sufficient, using <code>sys._base_executable</code> did the thing I needed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-fs/src/path.rs</code>:102 on 2024-03-03 17:40</div>
+            <div class="timeline-body"><p>nit: I'm a fan of making these <code>if !cfg!(windows) || !path.is_absolute() { return false; }</code> and getting rid of the nesting</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-03-03 17:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-03 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-03 17:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-03 17:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

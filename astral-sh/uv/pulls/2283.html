@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>uv-fs: transparently support reading UTF-16 files - astral-sh/uv #2283</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>uv-fs: transparently support reading UTF-16 files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2283">#2283</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-03-07 18:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-07 18:05</div>
+            <div class="timeline-body"><p>This PR tweaks uv to support reading <code>requirements.txt</code> regardless of
+whether it is encoded as UTF-8 or UTF-16. This is particularly relevant
+on Windows where <code>uv pip freeze &gt; requirements.txt</code> will likely write a
+UTF-16 encoded <code>requirements.txt</code> file.</p>
+<p>There is some discussion on #1666 where it's suggested that perhaps
+we should explicitly not support this. I didn't see that until I
+had already put this PR together, but even so, I think it's worth
+considering this. UTF-16 is predominant on Windows. It is very easy
+to produce a UTF-16 encoded file. Moreover, there is an easy and well
+specified way to recognize and transcode UTF-16 encoded data to UTF-8.</p>
+<p>I think the downside of this is that it could encourage the use UTF-16
+encoded <code>requirements.txt</code> files <em>in addition</em> to UTF-8 encoded
+files, and it would probably be nice to converge and standardize on
+one encoding. One possible alternative to this PR is that we provide
+a better error message. Another alternative is to ensure that a
+<code>-o/--output</code> flag exists for all commands (neither <code>uv pip freeze</code> nor
+<code>pip freeze</code> have such a flag) so that users can always write output
+to a file without relying on their environment's piping behavior.
+(Although this last alternative seems a little sad to me.)</p>
+<p>It's also worth noting the <a href="https://peps.python.org/pep-0508/">PEP-0508</a> doesn't seem to mention file
+encoding at all. So I think from a &quot;do the standards allow this&quot;
+perspective, this change is OK.</p>
+<p>Finally, <code>pip</code> itself seems to work with UTF-16 encoded
+<code>requirements.txt</code> files.</p>
+<p>I think I personally overall lean towards supporting UTF-16 for
+<code>requirements.txt</code> files. In part because I think it smoothes out the
+UX a little bit, in part because there is no obvious specification
+(that I'm aware of) that mandates that these files are UTF-8, and
+finally in part because <code>pip</code> supports it too.</p>
+<p>Fixes #1666, Fixes #2276</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-07 18:08</div>
+            <div class="timeline-body"><p>cc @zanieb @mitsuhiko given discussion in #1666 about supporting UTF-16 encoded <code>requirements.txt</code> files.</p>
+<p>cc @yashranjan1 <a href="https://github.com/astral-sh/uv/issues/2276#issuecomment-1983903059">per request</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-03-07 18:09</div>
+            <div class="timeline-body"><p>👍 I agree with your principles</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @mitsuhiko by @BurntSushi on 2024-03-07 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-03-07 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-03-07 19:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-07 19:46</div>
+            <div class="timeline-body"><p>I think it's wise to support these as long as PowerShell is going to use UTF-16 by default when piping -- that's a very common use-case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-fs/src/lib.rs</code>:19 on 2024-03-07 21:01</div>
+            <div class="timeline-body"><p>Are there call sites to this function for which we may not want to accept UTF-16?</p>
+<p>I suggest to at least document that this function supports UTF16 decoding.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>Cargo.toml</code>:44 on 2024-03-07 21:03</div>
+            <div class="timeline-body"><p>Could you expand your reasoning for using <code>encoding_rs</code> (shamelessly adding his own crates ;) ) instead of implementing a &quot;simple&quot; BOM check to determine UTF-16 and using <code>String::from_utf16</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-fs/src/lib.rs</code>:32 on 2024-03-07 21:05</div>
+            <div class="timeline-body"><p>What's your reasoning behind spawning a background task for reading the file. My understanding of the use case is that a) we read the file as input before there's much async work anyway, b) the files are small text files. That makes me wonder if it's worth to decode and read the file on another thread (scheduling overhead etc).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-07 21:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-03-07 21:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-fs/src/lib.rs</code>:19 on 2024-03-07 21:12</div>
+            <div class="timeline-body"><p>Yeah, I'll probably split this into two functions so that callers can specifically opt into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-03-07 21:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>Cargo.toml</code>:44 on 2024-03-07 21:20</div>
+            <div class="timeline-body"><p><code>encoding_rs</code> isn't mine, but <code>encoding_rs_io</code> is. The latter puts an automatic BOM sniffing streaming reader on top of the former.</p>
+<p>I suppose since we don't actually need streaming here, so this could be done more simply. Note though that <code>encoding_rs_io</code> will also seamlessly handle the UTF-8 BOM, which is not uncommon on Windows AFAIK. (Handling the UTF-8 BOM is basically just a matter of detecting it and then dropping it.)</p>
+<p>I'll consider just using <code>std</code> for this. Honestly we have so many dependencies (including a dependency on <code>encoding_rs</code>) that I don't feel too bad about adding another...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-03-07 21:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-fs/src/lib.rs</code>:32 on 2024-03-07 21:23</div>
+            <div class="timeline-body"><p>It's an <code>async</code> function and file I/O is blocking. So IMO, that means it should be spawned as a blocking task. Moreover, the code being replaced was also spawning a blocking task (it was just done inside of <code>tokio</code>), so this is maintaining that status quo. It's plausible that this isn't necessary in a holistic sense, but this particular routine isn't necessarily limited to use during startup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-07 21:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>Cargo.toml</code>:44 on 2024-03-07 21:26</div>
+            <div class="timeline-body"><p>Hmm. Have we lost when even you are saying this</p>
+<p>By the way. I'm not against the dependency. I was just wondering if it safes us like 3 branches or if more is involved (which seems to be the case)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-03-07 21:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-03-07 21:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>Cargo.toml</code>:44 on 2024-03-07 21:36</div>
+            <div class="timeline-body"><p>Yeah it's really about supporting streaming. That's the main win of <code>encoding_rs_io</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2024-03-07 21:51</div>
+            <div class="timeline-body"><p>~~I <em>believe</em> that Microsoft is slowly phasing out UTF-16 output on the console. On my machine it only outputs UTF-8 (Windows 11). Might be worthwhile figuring out if this is really something that happens regularly and will continue to do so.~~</p>
+<p>Now I realize that this is because i use <code>cmd.exe</code> and not powershell.</p>
+<p>I'm not sure what to do here. It does seem weird to me that uv would support this encoding since nothing else does, but maybe this can be useful for the user. I do fully expect that this will create questions though about why those files don't work with other tools.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-07 21:59</div>
+            <div class="timeline-body"><blockquote>
+<p>I <em>believe</em> that Microsoft is slowly phasing out UTF-16 output on the console. On my machine it only outputs UTF-8 (Windows 11). Might be worthwhile figuring out if this is really something that happens regularly and will continue to do so.</p>
+<p>//EDIT: now I realize that this is because i use <code>cmd.exe</code> and not powershell</p>
+</blockquote>
+<p>This is interesting because I think <a href="https://github.com/rust-lang/rust/blob/52f8aec14c616387c5f793687f2d9026de6c78ca/library/std/src/sys/pal/windows/stdio.rs#L175-L229">Rust is the one who is writing UTF-16 to the console</a>. Is that somehow getting transcoded back to UTF-8 for you?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2024-03-07 22:02</div>
+            <div class="timeline-body"><p>@BurntSushi this is what it does on my machine:</p>
+<pre><code>C:\Users\armin\Development\foo&gt;cargo run
+    Finished dev [unoptimized + debuginfo] target(s) in 0.00s
+     Running `target\debug\foo.exe`
+Fußball
+
+C:\Users\armin\Development\foo&gt;cargo run &gt; foo.txt
+    Finished dev [unoptimized + debuginfo] target(s) in 0.00s
+     Running `target\debug\foo.exe`
+
+C:\Users\armin\Development\foo&gt;python -c &quot;print(open('foo.txt', 'rb').read())&quot;
+b'Fu\xc3\x9fball\n'
+</code></pre>
+<p>I think on this machine the default code page is <code>65001</code> but I also just managed to get a shell running earlier that had an ISO encoding. Not sure how that happened.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-fs/src/lib.rs</code>:32 on 2024-03-08 09:53</div>
+            <div class="timeline-body"><p>In general, i agree, in this specific place we're not doing anything else in parallel (we're not a webserver where we have other clients meanwhile) and the work is tiny, so i'd go for simplicity. I'd probably do a <code>fs_err::tokio::read</code> and then convert it using the other reader, even the double read should be far to small to show up in profiles.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/pip_install.rs</code>:2431 on 2024-03-08 09:56</div>
+            <div class="timeline-body"><p>Could you use <code>tomli</code>? This should be faster</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/pip_install.rs</code>:2440 on 2024-03-08 09:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/pip_install.rs</code>:2460 on 2024-03-08 09:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-03-08 09:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2024-03-08 11:29</div>
+            <div class="timeline-body"><blockquote>
+<p>This is interesting because I think <a href="https://github.com/rust-lang/rust/blob/52f8aec14c616387c5f793687f2d9026de6c78ca/library/std/src/sys/pal/windows/stdio.rs#L175-L229">Rust is the one who is writing UTF-16 to the console</a>. Is that somehow getting transcoded back to UTF-8 for you?</p>
+</blockquote>
+<p>So this machine is a few months old and I'm really not sure how any of this works. What I can see on my machine:</p>
+<ul>
+<li>cmd.exe: code page 65001</li>
+<li>powershell.exe: code page 65001</li>
+<li>cmd.exe launched from powershell: code page 1252</li>
+</ul>
+<p>No clue why it does that. I tried on a VM and it always shows me code page 850. No matter though how, powershell always transcodes to UTF-16 but that is also reconfigurable with a flag (that probably nobody ever sets). Whatever API Python and Rust use to write, it clearly transcodes somehow somewhere.</p>
+<p>EDIT: i unticked a beta box for utf-8 support in the <code>intl.cpl</code> and now getting consistently <code>code page 850</code> in all situations. So whatever I did, that was a thing that most people probably don't have.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-03-08 11:43</div>
+            <div class="timeline-body"><blockquote>
+<p>(that probably nobody ever sets).</p>
+</blockquote>
+<p>I did :laughing:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-03-08 13:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-fs/src/lib.rs</code>:32 on 2024-03-08 13:32</div>
+            <div class="timeline-body"><p>I went with @konstin's suggestion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>Cargo.toml</code>:44 on 2024-03-08 13:34</div>
+            <div class="timeline-body"><p>I looked into this, and it turns out the <a href="https://doc.rust-lang.org/std/string/struct.String.html#method.from_utf16be">UTF-16LE and UTF-16BE APIs</a> are actually unstable. Do'h. That means doing this correctly is a fair bit more work than just checking the BOM and calling the right routine. We'd have to flip the byte order for an endian mismatch.</p>
+<p><code>encoding_rs_io</code> is a small battle tested dependency and it does the right thing for us automatically here, so I'm going to keep it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-03-08 13:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-03-08 13:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-fs/src/lib.rs</code>:19 on 2024-03-08 13:36</div>
+            <div class="timeline-body"><p>I split it into two functions. This was also being used to read <code>pyproject.toml</code>, and it's not obvious to me that we should support UTF-16 there. So that behavior remains unchanged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-08 14:10</div>
+            <div class="timeline-body"><p>I'm going to bring this in given most folks seem to be in support of it. Moreover, it addresses an easy footgun for an existing common pip workflow: <code>uv pip freeze &gt; requirements.txt</code> is likely to produce a UTF-16 file on Windows, although there are perhaps configurations and environments where that is not true. Still, it doesn't cost us much to support UTF-16 here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-03-08 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-03-08 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-08 14:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2024-03-08 15:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @BurntSushi on 2024-03-08 15:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:04 UTC
+    </footer>
+</body>
+</html>

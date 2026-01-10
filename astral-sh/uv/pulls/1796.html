@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move conflicting dependencies into PubGrub - astral-sh/uv #1796</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Move conflicting dependencies into PubGrub</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1796">#1796</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-02-21 05:39
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-21 05:39</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This revives a PR from long ago (https://github.com/astral-sh/uv/pull/383 and https://github.com/zanieb/pubgrub/pull/24) that modifies how we deal with dependencies that are declared multiple times within a single package.</p>
+<p>To quote from the originating PR:</p>
+<blockquote>
+<p>Uses an experimental pubgrub branch (#370) that allows us to handle multiple version ranges for a single dependency to the solver which results in better error messages because the derivation tree contains all of the relevant versions. Previously, the version ranges were merged (by us) in the resolver before handing them to pubgrub since only one range could be provided per package. Since we don't merge the versions anymore, we no longer give the solver an empty range for conflicting requirements; instead the solver comes to that conclusion from the provided versions. You can see the improved error message for direct dependencies in <a href="https://github.com/astral-sh/puffin/pull/383/files#diff-a0437f2c20cde5e2f15199a3bf81a102b92580063268417847ec9c793a115bd0">this snapshot</a>.</p>
+</blockquote>
+<p>The main issue with that PR was around its handling of URL dependencies, so this PR <em>also</em> refactors how we handle those. Previously, we stored URL dependencies on <code>PubGrubPackage</code>, but they were omitted from the hash and equality implementations of <code>PubGrubPackage</code>. This led to some really careful codepaths wherein we had to ensure that we always visited URLs before non-URL packages, so that the URL-inclusive versions were included in any hashmaps, etc. I considered preserving this approach, but it would require us to rely on lots of internal details of PubGrub (since we'd now be relying on PubGrub to merge those packages in the &quot;right&quot; order).</p>
+<p>So, instead, we now <em>always</em> set the URL on a given package, whenever that package was <em>given</em> a URL upfront. I think this is easier to reason about: if the user provided a URL for <code>flask</code>, then we should just always add the URL for <code>flask</code>. If we see some other URL for <code>flask</code>, we error, like before. If we see some unknown URL for <code>flask</code>, we error, like before.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/1522.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/1821.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/1615.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-21 05:40</div>
+            <div class="timeline-body"><p>(No reviews yet, this doesn't pass the test suite.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-21 05:50</div>
+            <div class="timeline-body"><p>\cc @zanieb for visibility.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-02-21 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @zanieb removed by @charliermarsh on 2024-02-21 18:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-02-21 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-02-21 19:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_install_scenarios.rs</code>:1947 on 2024-02-21 19:25</div>
+            <div class="timeline-body"><p>I believe these are generally the result of dependencies being presented to PubGrub in a different order.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-21 19:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-21 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-21 20:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_compile.rs</code>:1281 on 2024-02-21 20:19</div>
+            <div class="timeline-body"><p>Is this an improvement? Should we clarify that the URLs come from the provided requirements?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-21 20:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_compile.rs</code>:1626 on 2024-02-21 20:20</div>
+            <div class="timeline-body"><p>Nice. It'll be better once we combine clauses #1009, maybe someday we should even track the source of dependencies so we can say what file each of these came from.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-21 20:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_compile.rs</code>:3782 on 2024-02-21 20:21</div>
+            <div class="timeline-body"><p>This reads a little confusing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-21 20:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_compile.rs</code>:4030 on 2024-02-21 20:22</div>
+            <div class="timeline-body"><p>This one definitely makes me want to open an issue to display the locations of direct requirements in error messages.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-21 20:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_install_scenarios.rs</code>:1947 on 2024-02-21 20:23</div>
+            <div class="timeline-body"><p>Yeah it's a little weird but a known issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-21 20:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>Cargo.toml</code>:69 on 2024-02-21 20:26</div>
+            <div class="timeline-body"><p>Let's make sure to merge upstream and use the <code>main</code> commit before merging this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-02-21 20:26</div>
+            <div class="timeline-body"><p>Looks nice. Is there anything you wanted me to give a closer look?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-02-22 02:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-22 02:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-22 02:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

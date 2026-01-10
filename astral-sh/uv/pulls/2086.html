@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add an option to bytecode compile during installation - astral-sh/uv #2086</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add an option to bytecode compile during installation</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2086">#2086</a>
+        opened by <a href="https://github.com/konstin">@konstin</a>
+        on 2024-02-29 16:33
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/konstin">@konstin</a> on 2024-02-29 16:33</div>
+            <div class="timeline-body"><p>Add a <code>--compile</code> option to <code>pip install</code> and <code>pip sync</code>.</p>
+<p>I chose to implement this as a separate pass over the entire venv. If we wanted to compile during installation, we'd have to make sure that writing is exclusive, to avoid concurrent processes writing broken <code>.pyc</code> files. Additionally, this ensures that the entire site-packages are bytecode compiled, even if there are packages that aren't from this <code>uv</code> invocation. The disadvantage is that we do not update RECORD and rely on this comment from <a href="https://peps.python.org/pep-0491/">PEP 491</a>:</p>
+<blockquote>
+<p>Uninstallers should be smart enough to remove .pyc even if it is not mentioned in RECORD.</p>
+</blockquote>
+<p>If this is a problem we can change it to run during installation and write RECORD entries.</p>
+<p>Internally, this is implemented as an async work-stealing subprocess worker pool. The producer is a directory traversal over site-packages, sending each <code>.py</code> file to a bounded async FIFO queue/channel. Each worker has a long-running python process. It pops the queue to get a single path (or exists if the channel is closed), then sends it to stdin, waits until it's informed that the compilation is done through a line on stdout, and repeat. This is fast, e.g. installing <code>jupyter plotly</code> on Python 3.12 it processes 15876 files in 319ms with 32 threads (vs. 3.8s with a single core). The python processes internally calls <code>compileall.compile_file</code>, the same as pip.</p>
+<p>Like pip, we ignore and silence all compilation errors (https://github.com/astral-sh/uv/issues/1559). There is a 10s timeout to handle the case when the workers got stuck. For the reviewers, please check if i missed any spots where we could deadlock, this is the hardest part of this PR.</p>
+<p>I've added <code>uv-dev compile &lt;dir&gt;</code> and <code>uv-dev clear-compile &lt;dir&gt;</code> commands, mainly for my own benchmarking. I don't want to expose them in <code>uv</code>, they almost certainly not the correct workflow and we don't want to support them.</p>
+<p>Fixes #1788
+Closes #1559
+Closes #1928</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @konstin on 2024-02-29 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @konstin on 2024-02-29 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-02-29 19:30</div>
+            <div class="timeline-body"><blockquote>
+<p>The disadvantage is that we do not update RECORD and rely on this comment from <a href="https://peps.python.org/pep-0491/">PEP 491</a>:</p>
+<blockquote>
+<p>Uninstallers should be smart enough to remove .pyc even if it is not mentioned in RECORD.</p>
+</blockquote>
+<p>If this is a problem we can change it to run during installation and write RECORD entries.</p>
+</blockquote>
+<p>I would validate that pip successfully uninstalls the pyc files, because unless I am misunderstanding this issue it probably doesn't: https://github.com/pypa/pip/issues/11835</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-01 10:19</div>
+            <div class="timeline-body"><p>I ran</p>
+<pre><code>cargo run venv --seed; cargo run pip install --compile tqdm
+.\.venv\Scripts\pip uninstall -y tqdm
+</code></pre>
+<p>and the <code>tqdm</code> folder was fully removed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/commands/pip_sync.rs</code>:355 on 2024-03-01 13:54</div>
+            <div class="timeline-body"><p>Would it make sense to put this into a function instead of duplicating it for <code>pip install</code> and <code>pip sync</code>? It <em>looks</em> like they are identical?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/pip_sync.rs</code>:81 on 2024-03-01 13:55</div>
+            <div class="timeline-body"><p>I think this can be <code>pypy</code> with https://github.com/astral-sh/uv/pull/2094 merged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/pip_sync.rs</code>:91 on 2024-03-01 13:56</div>
+            <div class="timeline-body"><p>This overall looks pretty similar to code that @charliermarsh's has in https://github.com/astral-sh/uv/pull/2102. I wonder if we can reuse the logic from that PR once it's merged?</p>
+<p>(I have the same comment here as I did there: are we sure conditional compilation is the right way to determine the directory here?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/src/main.rs</code>:799 on 2024-03-01 14:33</div>
+            <div class="timeline-body"><p>If I've already installed packages to a virtualenv and I forgot to add the <code>--compile</code> switch, is there an intended workflow for &quot;compile what's in the virtualenv&quot;? I guess maybe it's just <code>uv pip sync --compile</code>? If so, perhaps adding a mention of that workflow to the docs would be good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-installer/src/compile.rs</code>:52 on 2024-03-01 14:55</div>
+            <div class="timeline-body"><p>I might just use <code>1</code> here if <code>available_parallelism</code> fails.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-installer/src/compile.rs</code>:108 on 2024-03-01 15:06</div>
+            <div class="timeline-body"><p>Usually, a channel send timing out should be regarded as a bug. That is, it should never happen. But I think I see why you're doing it here. From what I can tell, the subprocesses themselves might get stuck, and thus if all the workers get stuck, there is nobody to drain from the channel and thus the bounded send blocks when the buffer in the channel becomes full.</p>
+<p>I'll suggest some ideas below for how to deal with this.</p>
+<p>(It may be the case that we still want to put a timeout here so that we can be extra defensive. I have mixed feelings on that.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-installer/src/compile.rs</code>:54 on 2024-03-01 15:07</div>
+            <div class="timeline-body"><p>I wouldn't even bother with <code>* 10</code>.</p>
+<p>You're probably find with a rendezvous channel (a capacity of <code>0</code>). Rendezvous channels are especially nice because they manifest logic errors in the structure of your concurrency very quickly. (Although I do think there are occasions where using a capacity of <code>1</code> can lead to simplifications that you couldn't otherwise do with a capacity of <code>0</code>.)</p>
+<p>It's like how most times, we just use <code>vec![]</code> because you usually don't benefit from starting with some non-zero initial capacity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-installer/src/compile.rs</code>:159 on 2024-03-01 15:16</div>
+            <div class="timeline-body"><p>I think this means that anything written to stderr by the interpreter will get fed through to <code>uv</code>'s stderr right? If so, was that intentional? I don't think it's what I would expect. The messages could be quite confusing to users.</p>
+<p>What I'd suggest is reading stderr in a separate Tokio task. That's I think the pretty standard solution for getting around the &quot;so many things went wrong that the stderr pipe filled up and now the subprocess is blocked on writing to stderr and can't make progress&quot; failure mode.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-installer/src/compile.rs</code>:177 on 2024-03-01 15:21</div>
+            <div class="timeline-body"><p>I guess technically we'd want to use NUL terminated paths here, since a path can have a <code>\n</code> in it. (I'd also be okay with having an explicit failure mode for paths that contain a <code>\n</code> because they are kind of crazy.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-installer/src/compile.rs</code>:212 on 2024-03-01 15:23</div>
+            <div class="timeline-body"><p>If we have a timeout on reading from stdin, should we also have a timeout on writing to stdout?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-installer/src/compile.rs</code>:284 on 2024-03-01 15:28</div>
+            <div class="timeline-body"><p>So looking at this code holistically, I feel like we might be able to simplify the timeout/cancellation logic here.</p>
+<p>The way I would go about this is to think about the workers themselves controlling how long they're willing to wait for the subprocess to complete its task. You pick a timeout at that granularity. Then right before to start communicating with the subprocess, spawk a task that will kill the subprocess if it hasn't completed after N seconds. You should be able to implement this with <code>tokio::select!</code>.</p>
+<p>If you do that, then I think you should be able to get rid of the timeouts almost everywhere else. It absolves of you needing to worry about writing to stdin taking too long, because the worker will kill the subprocess if it's truly blocked. When the subprocess gets killed, your code that is blocked on stdin should become unblocked immediately and everything should gracefully terminate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-03-01 15:28</div>
+            <div class="timeline-body"><p>Nice, this is awesome! I gave some suggestions on the concurrency structure as I <em>think</em> it should be possible to simplify things.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/src/main.rs</code>:799 on 2024-03-01 15:34</div>
+            <div class="timeline-body"><p>I don't really consider this a use case; If you forgot, the first import will just take maybe a bit longer, nothing that justifies running an addional command. What i gather from the linked issues, our users will be people who create images where the startup time matters, who would use <code>--compile</code> for the last uv command in the image creation script.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-01 15:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-01 18:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-installer/src/compile.rs</code>:54 on 2024-03-01 18:46</div>
+            <div class="timeline-body"><p>A larger queue is significantly faster. I tried size 1, the number of workers, the number of workers by 10 and size 1000.</p>
+<pre><code>hyperfine --warmup 1 --prepare &quot;target/profiling/uv-dev clear-compile .venv&quot; &quot;target/profiling/uv-dev1 compile .venv&quot; &quot;target/profiling/uv-devworkers compile .venv&quot; &quot;target/profiling/uv-devworkers10 compile .venv&quot; &quot;target/profiling/uv-dev1000 compile .venv&quot;
+Benchmark 1: target/profiling/uv-dev1 compile .venv
+  Time (mean ± σ):     359.8 ms ±  11.5 ms    [User: 6757.8 ms, System: 1849.4 ms]
+  Range (min … max):   346.8 ms … 380.1 ms    10 runs
+ 
+Benchmark 2: target/profiling/uv-devworkers compile .venv
+  Time (mean ± σ):     352.6 ms ±   8.1 ms    [User: 6856.0 ms, System: 1709.1 ms]
+  Range (min … max):   337.5 ms … 368.1 ms    10 runs
+ 
+Benchmark 3: target/profiling/uv-devworkers10 compile .venv
+  Time (mean ± σ):     331.4 ms ±   5.9 ms    [User: 6723.6 ms, System: 1761.8 ms]
+  Range (min … max):   323.9 ms … 340.1 ms    10 runs
+ 
+Benchmark 4: target/profiling/uv-dev1000 compile .venv
+  Time (mean ± σ):     331.0 ms ±   6.0 ms    [User: 6735.2 ms, System: 1738.5 ms]
+  Range (min … max):   323.7 ms … 339.6 ms    10 runs
+ 
+Summary
+  target/profiling/uv-dev1000 compile .venv ran
+    1.00 ± 0.03 times faster than target/profiling/uv-devworkers10 compile .venv
+    1.07 ± 0.03 times faster than target/profiling/uv-devworkers compile .venv
+    1.09 ± 0.04 times faster than target/profiling/uv-dev1 compile .venv
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-01 18:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-installer/src/compile.rs</code>:159 on 2024-03-01 18:47</div>
+            <div class="timeline-body"><p>Anything written to stderr is a failure mode, is there a good way to say: When there's anything written to stderr at this checkout point, exit the worker with stderr as error message?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-01 19:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-installer/src/compile.rs</code>:177 on 2024-03-01 19:00</div>
+            <div class="timeline-body"><p>Good catch! Python seems to have no builtin handling for reading to null, i'll just skip newline paths. They couldn't have come from sane wheels anyway since you can't put them into RECORD files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-01 19:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-installer/src/compile.rs</code>:212 on 2024-03-01 19:00</div>
+            <div class="timeline-body"><p>I remove both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-01 19:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-installer/src/compile.rs</code>:284 on 2024-03-01 19:22</div>
+            <div class="timeline-body"><p>I've simplified the timeouts in a different way: Only the caller has a timeout for workers (or the channel) getting stuck, one when sending (due to backpressure) and one when waiting for the workers to join. This way it doesn't matter whether the python process is broken, there's a bug in the worker implementation or the tokio threadpool or the channel broke due to a panic, each case trips that timeout.</p>
+<p>Placing it at the send might be an unusual positioning, but i think it's the best place to catch stuck workers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-01 19:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-installer/src/compile.rs</code>:284 on 2024-03-01 19:27</div>
+            <div class="timeline-body"><p>Note that either case is almost certainly a bug, either a real bug in uv or a quirk python interpreter we need to special case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-03 20:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_sync.rs</code>:91 on 2024-03-03 20:10</div>
+            <div class="timeline-body"><p>Ok with this since it's just for tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-03 20:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/pip_install.rs</code>:687 on 2024-03-03 20:10</div>
+            <div class="timeline-body"><p>Let's move this above the change reporting, maybe? So that this summary comes at the end?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-03 20:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/mod.rs</code>:94 on 2024-03-03 20:10</div>
+            <div class="timeline-body"><p>Nit: let's just call this <code>compile</code>? Feels more consistent with other commands. Can you add rustdoc too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-03 20:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-installer/src/compile.rs</code>:47 on 2024-03-03 20:12</div>
+            <div class="timeline-body"><p>Nit: <code>this</code> and <code>too easily</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-03 20:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-installer/src/compile.rs</code>:61 on 2024-03-03 20:13</div>
+            <div class="timeline-body"><p>Our installer always removes <code>__pycache__</code>, so this should be ok, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-03-03 20:14</div>
+            <div class="timeline-body"><p>I'm cool with the overall approach, but I defer to Andrew to review and approve the pipeline in <code>compile.rs</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-03 23:09</div>
+            <div class="timeline-body"><p>On second thought, I’m wondering if this should just be a stand-alone command. Since it runs over the whole env, there’s no reason it needs to be coupled to install / sync.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-04 10:21</div>
+            <div class="timeline-body"><p>We can expose it as <code>uv compileall</code> (we can copy the dev command over), my only counterargument is not extending our external interface more. I'd like to keep the <code>--compile</code> flag either way to keep the install operation a single command.</p>
+<p>Fwiw there's also <code>python -m compileall</code>, it does the same thing just slower:</p>
+<pre><code>$ hyperfine --prepare &quot;uv venv &amp;&amp; uv pip install jupyter plotly&quot; &quot;python -m compileall .venv/lib/python3.12/sit
+e-packages/&quot;
+Benchmark 1: python -m compileall .venv/lib/python3.12/site-packages/
+  Time (mean ± σ):      5.407 s ±  1.026 s    [User: 4.354 s, System: 0.427 s]
+  Range (min … max):    4.668 s …  7.699 s    10 runs
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-04 10:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-installer/src/compile.rs</code>:61 on 2024-03-04 10:34</div>
+            <div class="timeline-body"><p>Yes, i tested with django and it got removed without residues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-03-04 15:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-installer/src/compile.rs</code>:54 on 2024-03-04 15:17</div>
+            <div class="timeline-body"><p>That is quite interesting. I stand corrected. It might be good to add a comment about it here (no need to include the full benchmark results though).</p>
+<p>To me I think this implies that the directory traversal isn't feeding file paths fast enough into the workers, right? And I think that would be exacerbated with a high core count. It means there are likely idle workers in the low capacity case where as those workers get work more quickly in the high capacity case. Very interesting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-03-04 15:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-installer/src/compile.rs</code>:159 on 2024-03-04 15:19</div>
+            <div class="timeline-body"><p>I would do that in a task dedicated to reading stderr. If that task reads anything, then you should be able to devise a mechanism to communicate that back to the main worker thread, have it kill the sub-process and return whatever was on stderr.</p>
+<p>I'd only do this though if you're sure that <em>anything</em> written to stderr should cause the entire enterprise to fail. e.g., What if stderr just contains a warning or something? (But maybe that can't happen here. IDK.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-04 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-installer/src/compile.rs</code>:68 on 2024-03-04 15:39</div>
+            <div class="timeline-body"><p>Can you scope this temporary directory to somewhere in the cache?</p>
+<p>See https://github.com/astral-sh/uv/pull/1628</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-04 15:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-installer/src/compile.rs</code>:177 on 2024-03-04 15:43</div>
+            <div class="timeline-body"><p>You could also just flush on the Python end when you call <code>print</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-03-04 15:52</div>
+            <div class="timeline-body"><p>I'm fine with this landing as-is, but I'm still overall skeptical of how the channel timeouts are being used here.</p>
+<p>My understanding is that if compilation takes longer than the channel timeout <em>overall</em> (~10s), then the channel timeout could trip and thus cause the entire enterprise to fail even if it would have otherwise succeeded. Whether or not that's a real problem in practice is hard to say, but it feels non-ideal to be placing bounds on things that we don't really control. That is, the channel timeout is conflating the possibility of bugs (in both our code and perhaps in how the Python interpreter behaves) with the amount of time it takes for the user's resources to bytecode-compile a set of Python files.</p>
+<p>I do think the better approach here is to deal with problems with byte-code compiling at the level of the subprocess. And specifically, only use timeouts when something you <em>know</em> could legitimately hang (like, say, killing a subprocess).</p>
+<p>With that said, without user reports, it's hard to know whether the timeouts will be an issue in practice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-installer/src/compile.rs</code>:177 on 2024-03-04 17:13</div>
+            <div class="timeline-body"><p>Yes, that would also work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-04 17:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-04 17:44</div>
+            <div class="timeline-body"><blockquote>
+<p>I do think the better approach here is to deal with problems with byte-code compiling at the level of the subprocess. And specifically, only use timeouts when something you know could legitimately hang (like, say, killing a subprocess).</p>
+</blockquote>
+<p>The problem i'm mainly thinking about is when the python process is in some regard broken, e.g. image <code>python</code> is replaced by a bash script that does <code>&gt; /dev/null</code> (this isn't the case, but i've seen <code>python</code>s that were not pythons or behaved strangely for some other reason).  I'm less worried about OS operation such as killing a subprocess.</p>
+<p>The second problem i'm thinking about is e.g. a panic in one of the threads that makes tokio behave oddly or a concurrency bug on our end, even i don't have good insight about the failure modes here.</p>
+<p>I feel this is a trade-off we have to make: We can put no timeout and expect the user to kill the process (or the CI to timeout) vs. we specify and unreasonably high limit after which we abort (similar to the timeout we put on http requests). If we want to put this in control of the user, i would remove the timeouts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-installer/src/compile.rs</code>:159 on 2024-03-04 18:11</div>
+            <div class="timeline-body"><p>I've added handling to stderr that will</p>
+<ul>
+<li>do nothing if there was no stderr,</li>
+<li>debug print if there was stderr but exit status passed,</li>
+<li>show the stderr in the error chain if there was stderr print and an error.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-04 18:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-03-04 18:19</div>
+            <div class="timeline-body"><blockquote>
+<p>The problem i'm mainly thinking about is when the python process is in some regard broken, e.g. image <code>python</code> is replaced by a bash script that does <code>&gt; /dev/null</code> (this isn't the case, but i've seen <code>python</code>s that were not pythons or behaved strangely for some other reason). I'm less worried about OS operation such as killing a subprocess.</p>
+</blockquote>
+<p>I think for cases like this, I'd be happier with a large timeout at a more granular level. e.g., a ~60 second timeout within the worker. So after 60 seconds of no output, the worker would kill the subprocess and report an error to the user. The 60 second wait isn't great, but the user will at least eventually get some kind of error message instead of a truly indefinite hang.</p>
+<p>If this were a common failure mode then this wouldn't be great. But if a Python process is as badly broken as <code>&gt; /dev/null</code>, I think I'm more-or-less okay with having to wait longer before saying something to the user.</p>
+<p>And since the timeout is applied more granularly (at the level of a single subprocess), you could feasibly decrease it.</p>
+<blockquote>
+<p>The second problem i'm thinking about is e.g. a panic in one of the threads that makes tokio behave oddly or a concurrency bug on our end, even i don't have good insight about the failure modes here.</p>
+</blockquote>
+<p>I don't have as much experience with panics in Tokio, but I think it will catch them and the task will quit and you'll get a <code>JoinError</code>. But I defer to you on this one. You probably have more practical hands-on experience than I do here.</p>
+<blockquote>
+<p>I feel this is a trade-off we have to make: We can put no timeout and expect the user to kill the process (or the CI to timeout) vs. we specify and unreasonably high limit after which we abort (similar to the timeout we put on http requests). If we want to put this in control of the user, i would remove the timeouts.</p>
+</blockquote>
+<p>Yeah to be clear, I think it's fine to have timeouts <em>somewhere</em>. I'm mostly more uneasy with having them at a higher level. But it could all be fine. I just don't know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-03-04 18:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-installer/src/compile.rs</code>:159 on 2024-03-04 18:23</div>
+            <div class="timeline-body"><p>Nice, LGTM!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-04 21:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-installer/src/compile.rs</code>:68 on 2024-03-04 21:39</div>
+            <div class="timeline-body"><p>Yeah this definitely needs to be scoped.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-05 03:06</div>
+            <div class="timeline-body"><p>This LGTM, though I'm also curious if we can move the timeout down a level?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-05 03:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-installer/src/compile.rs</code>:68 on 2024-03-05 03:30</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-05 03:32</div>
+            <div class="timeline-body"><p>I moved the temporary directory into the cache just to be safe. I'll merge this to keep it moving.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-05 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-05 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-05 03:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-05 09:48</div>
+            <div class="timeline-body"><blockquote>
+<p>I moved the temporary directory into the cache just to be safe.</p>
+</blockquote>
+<p>What's the problem we're avoiding this way?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

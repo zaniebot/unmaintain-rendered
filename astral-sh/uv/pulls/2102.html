@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Centralize virtualenv path construction - astral-sh/uv #2102</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Centralize virtualenv path construction</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2102">#2102</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-01 05:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-01 05:29</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Right now, we have virtualenv construction encoded in a few different places. Namely, it happens in both <code>gourgeist</code> and <code>virtualenv_layout.rs</code> -- <em>and</em> <code>interpreter.rs</code> also encodes some knowledge about how they work, by way of reconstructing the <code>SysconfigPaths</code>.</p>
+<p>Instead, <code>gourgeist</code> now returns the complete layout, enumerating all the directories it created. So, rather than returning a root directory, and re-creating all those paths in <code>uv-interpreter</code>, we pass the data directly back to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-03-01 05:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-03-01 05:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @charliermarsh on 2024-03-01 05:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-01 05:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/gourgeist/src/bare.rs</code>:168 on 2024-03-01 05:30</div>
+            <div class="timeline-body"><p>I assume this is right? (This is the only behavior change in the PR -- I tried to do the above TODO.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-01 05:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/python_environment.rs</code>:163 on 2024-03-01 05:31</div>
+            <div class="timeline-body"><p>This check happens at the call sites.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-01 05:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/python_environment.rs</code>:164 on 2024-03-01 05:32</div>
+            <div class="timeline-body"><p>We still encode a small amount of venv knowledge here, but I think it's ok. This method is actually <em>different</em> than anything that happens elsewhere: we're trying to find the Python in an existing venv, which we may or may not have created.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-03-01 05:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-01 05:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/gourgeist/src/bare.rs</code>:320 on 2024-03-01 05:37</div>
+            <div class="timeline-body"><p>Eventually, we should be creating these paths by using templatized paths from the base interpreter and filling them in. This isn't correct on all platforms -- but this isn't a new problem, no behavior changes. And this centralized data flow will make this problem easier to solve later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-01 05:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/gourgeist/src/bare.rs</code>:98 on 2024-03-01 05:37</div>
+            <div class="timeline-body"><p>These are just renamed to match <code>sysconfig</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-01 05:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/sysconfig.rs</code>:18 on 2024-03-01 05:41</div>
+            <div class="timeline-body"><p>(This is moved out of <code>interpreter.rs</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/gourgeist/src/bare.rs</code>:88 on 2024-03-01 09:01</div>
+            <div class="timeline-body"><p>Just saw that the comment never got removed</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/python_environment.rs</code>:173 on 2024-03-01 10:04</div>
+            <div class="timeline-body"><p>Does this fix https://github.com/astral-sh/uv/issues/1251?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-03-01 10:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/gourgeist/src/bare.rs</code>:160 on 2024-03-01 12:01</div>
+            <div class="timeline-body"><p>I'm wondering whether using conditional compilation for logic like this is the right thing to do. For example, are we sure that all <code>uv</code> binaries compiled for Windows will 100% of the time use the Windows oriented path below? Or is it possible for the Unix path (WSL?) to be used in a Windows context?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/gourgeist/src/bare.rs</code>:160 on 2024-03-01 12:01</div>
+            <div class="timeline-body"><p>Same deal for use of conditional compilation elsewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-03-01 12:03</div>
+            <div class="timeline-body"><p>Yesssssss! This makes a lot of sense. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-01 14:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/gourgeist/src/bare.rs</code>:160 on 2024-03-01 14:46</div>
+            <div class="timeline-body"><p>Yeah probably not, but I think it's ~the same as it is today. I have an idea for how to fix this properly (#2095).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-01 15:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/gourgeist/src/bare.rs</code>:160 on 2024-03-01 15:12</div>
+            <div class="timeline-body"><p>Unfortunately they don't (https://github.com/astral-sh/uv/issues/1251), but #2095 should solve either case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-01 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-01 15:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-01 15:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

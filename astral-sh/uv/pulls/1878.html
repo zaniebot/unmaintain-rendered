@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make &lt; exclusive for non-prerelease markers - astral-sh/uv #1878</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make &lt; exclusive for non-prerelease markers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1878">#1878</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-02-22 17:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 17:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Even when pre-releases are &quot;allowed&quot;, per PEP 440, <code>pydantic&lt;2.0.0</code> should <em>not</em> include pre-releases. This PR modifies the specifier translation to treat <code>pydantic&lt;2.0.0</code> as <code>pydantic&lt;2.0.0.min0</code>, where <code>min</code> is an internal-only version segment that's invisible to users.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/1641.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 17:02</div>
+            <div class="timeline-body"><p>I think (1) and (2) could be &quot;solved&quot; by only applying this logic when pre-releases are already enabled for a given package.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2024-02-22 17:22</div>
+            <div class="timeline-body"><p>What if there is a <code>PreRelease { kind: PreReleaseKind::PreReleaseHack, number: 0}`` (find a better name) that behaves as a perfect match to </code>a0<code>but is special cased in rendering. It would show up as</code>2.0.0<code>rather than</code>2.0.0.a0` maybe with an additional indicator about how it considers prerelease versions.</p>
+<pre><code>          attrs&gt;20.3.0,&lt;21.2.0 (including pre) cannot be used.
+          And because you require attrs&gt;20.3.0,&lt;21.2.0 (including pre), we can conclude that the
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-02-22 17:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-02-22 17:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 17:33</div>
+            <div class="timeline-body"><p>@mitsuhiko - That's also interesting, it could work, though I still wonder if including the pre-release info is useful in cases in which pre-releases are entirely omitted.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/prerelease_mode.rs</code>:104 on 2024-02-22 17:34</div>
+            <div class="timeline-body"><p>There's a potential bug here. If a package has <em>only</em> pre-releases, we <em>will</em> allow it in the candidate selector (e.g., how <code>black</code> behaved long ago). However... we won't know about it here (since we don't know this information in advance). I wonder if we should drop support for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-22 17:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @mitsuhiko by @charliermarsh on 2024-02-22 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-22 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 17:35</div>
+            <div class="timeline-body"><p>\cc @czaki who brought up the idea on GitHub.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2024-02-22 18:03</div>
+            <div class="timeline-body"><p>Hm. Why is pre-release even triggered by upper constraint? All time when I would like to test pre-release of some package or see such case, the lower bound is used. But my experience may be not so big.</p>
+<p>I wil ltry to check code later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/notatallshaw">@notatallshaw</a> reviewed on 2024-02-22 18:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on <code>crates/uv-resolver/src/prerelease_mode.rs</code>:104 on 2024-02-22 18:04</div>
+            <div class="timeline-body"><p>FYI, if you need a real world use case, <code>opentelemetry-exporter-prometheus</code> only has pre-releases, and <code>apache-airflow[otel]</code> depends on this (and hence also <code>apache-airflow[all]</code>).</p>
+<p>pip very much does have this behavior of including packages that only have prereleases into a regular install.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimbleby">@dimbleby</a> on 2024-02-22 18:04</div>
+            <div class="timeline-body"><p><code>.dev0</code> comes before <code>.a0</code> anyway</p>
+<blockquote>
+<p>Within a numeric release (1.0, 2.7.3), the following suffixes are permitted and MUST be ordered as shown:</p>
+<p>.devN, aN, bN, rcN, &lt;no suffix&gt;, .postN</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-22 18:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/prerelease_mode.rs</code>:104 on 2024-02-22 18:12</div>
+            <div class="timeline-body"><p>Thanks!</p>
+<blockquote>
+<p>pip very much does have this behavior of including packages that only have prereleases into a regular install.</p>
+</blockquote>
+<p>We do too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Czaki">@Czaki</a> on 2024-02-22 18:16</div>
+            <div class="timeline-body"><blockquote>
+<p><code>.dev0</code> comes before <code>.a0</code> anyway</p>
+<blockquote>
+<p>Within a numeric release (1.0, 2.7.3), the following suffixes are permitted and MUST be ordered as shown:</p>
+<p>.devN, aN, bN, rcN, &lt;no suffix&gt;, .postN</p>
+</blockquote>
+</blockquote>
+<p>And cannot by uploaded to pypi.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dimbleby">@dimbleby</a> on 2024-02-22 18:23</div>
+            <div class="timeline-body"><blockquote>
+<p>And cannot by uploaded to pypi.</p>
+</blockquote>
+<p>alas the world is complicated: pypi is not the only source of distributions</p>
+<p>either way, if the intention is to make <code>&lt;2</code> exclude pre-releases, might just as well exclude <code>.dev</code> releases too.</p>
+<p>another way might be to represent this as something like <code>&lt;=1.infinity</code>, which <em>might</em> work better as being something that you could easily recognise when writing it back: no-one could actually write that down, whereas if what you have is <code>&lt;2.0.0.dev0</code> you cannot be certain that this was not the original constraint all along</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 18:26</div>
+            <div class="timeline-body"><p>This makes sense, I'll likely change to dev.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mitsuhiko">@mitsuhiko</a> on 2024-02-22 19:37</div>
+            <div class="timeline-body"><p>I would just honestly really represent it as something that is not parsable. The <code>PreReleaseHack</code> can basically act as the <code>.infinity</code> proposal. It can only be expressed by the resolver internally and is otherwise never valid input.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-02-22 20:48</div>
+            <div class="timeline-body"><p>Have you checked that this also applies to <code>2.0.0.a0.dev0</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-22 23:04</div>
+            <div class="timeline-body"><p>I honestly don't mind representing this (even to users) as <code>&lt;2.0.0.dev</code>. If they see this, then they opted-in to pre-release handling (it doesn't get included otherwise).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mitsuhiko">@mitsuhiko</a> approved on 2024-02-23 10:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-02-23 11:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-02-23 15:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-23 15:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_compile.rs</code>:4341 on 2024-02-23 15:40</div>
+            <div class="timeline-body"><p>Is this test case correct? The comment seems to say something different.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-23 15:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_compile.rs</code>:4341 on 2024-02-23 15:53</div>
+            <div class="timeline-body"><p>Sorry, the comment is wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-23 16:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_compile.rs</code>:4341 on 2024-02-23 16:00</div>
+            <div class="timeline-body"><p>(<code>flask&lt;2.0.0rc4</code> <em>should</em> allow <code>2.0.0rc2</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-02-24 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-24 19:07</div>
+            <div class="timeline-body"><p>Okay, now using @mitsuhiko's suggested approach which I will begrudgingly admit is a better solution :)</p>
+<p>Now handles all cases correctly, even:</p>
+<pre><code class="language-txt">apache-airflow[otel]
+opentelemetry-exporter-prometheus&lt;0.44
+</code></pre>
+<p>From the brilliant @notatallshaw (thank you for that).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-02-24 19:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2024-02-24 22:25</div>
+            <div class="timeline-body"><p>This LGTM, but you'll definitely need to bump the simple cache version in order to invalidate extant caches due to the change in representation of <code>Version</code>. (Apologies if you did that and I missed it.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-02-24 22:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-02-24 22:41</div>
+            <div class="timeline-body"><p>Sweet</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-02-24 23:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-24 23:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-24 23:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

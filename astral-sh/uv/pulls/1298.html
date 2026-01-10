@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refactor incompatiblity tracking for distributions - astral-sh/uv #1298</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Refactor incompatiblity tracking for distributions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1298">#1298</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-02-14 17:37
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-14 17:37</div>
+            <div class="timeline-body"><p>Extends the &quot;compatibility&quot; types introduced in #1293 to apply to source distributions as well as wheels.</p>
+<ul>
+<li>We now track the most-relevant incompatible source distribution</li>
+<li>Exclude newer, Python requirements, and yanked versions are all tracked as incompatibilities in the new model (this lets us remove <code>DistMetadata</code>!)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/puffin/tests/pip_compile.rs</code>:224 on 2024-02-14 17:46</div>
+            <div class="timeline-body"><p>This is really obnoxious...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-14 17:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2024-02-14 18:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-19 17:47</div>
+            <div class="timeline-body"><p>This needs a serious rebase.</p>
+<p>Still important work but prioritizing bug fixes first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:345 on 2024-03-07 19:17</div>
+            <div class="timeline-body"><p>This ensures we do not regress as described in https://github.com/astral-sh/uv/pull/2066#discussion_r1506843879</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-07 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-07 19:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:390 on 2024-03-07 19:17</div>
+            <div class="timeline-body"><p>Can <code>RequiresPython</code> be refactored to avoid this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-07 19:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:72 on 2024-03-07 19:20</div>
+            <div class="timeline-body"><p>These three overlap with variants in <code>IncompatibleWheel</code>. Should we combine them into a structure like:</p>
+<pre><code>Incompatible
+    ExcludeNewer
+    RequiresPython
+    Yanked
+    Wheel
+        NoBinary
+        Tag
+    SourceDist
+        NoBuild
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-03-07 19:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-07 19:29</div>
+            <div class="timeline-body"><p>I think this can be improved further, but now that it includes the user-facing improvement from #2066 I think we may want to bias towards merging.</p>
+<p>Happy for any suggestions on different structuring.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-03-07 19:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:253 on 2024-03-08 01:22</div>
+            <div class="timeline-body"><p>Why not <code>Ord</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:290 on 2024-03-08 01:23</div>
+            <div class="timeline-body"><p>Why not <code>Ord</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/candidate_selector.rs</code>:260 on 2024-03-08 01:26</div>
+            <div class="timeline-body"><p>Nit: incomplete message here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:345 on 2024-03-08 01:28</div>
+            <div class="timeline-body"><p>The formatting here seems off.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:390 on 2024-03-08 01:30</div>
+            <div class="timeline-body"><p>You could consider putting this whole block in here instead of using the <code>continue</code> and the <code>unreachable!()</code>:</p>
+<pre><code class="language-rust">let python_version = requires_python
+    .iter()
+    .map(PubGrubSpecifier::try_from)
+    .fold_ok(Range::full(), |range, specifier| {
+        range.intersection(&amp;specifier.into())
+    })?;
+
+let package = &amp;next;
+for kind in [PubGrubPython::Installed, PubGrubPython::Target] {
+    state.add_incompatibility(Incompatibility::from_dependency(
+        package.clone(),
+        Range::singleton(version.clone()),
+        (PubGrubPackage::Python(kind), python_version.clone()),
+    ));
+}
+state.partial_solution.add_decision(next.clone(), version);
+continue;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/version_map.rs</code>:390 on 2024-03-08 01:32</div>
+            <div class="timeline-body"><p>I think the ordering of the incompatibility checks is different between this branch and the <code>DistFilename::SourceDistFilename</code> branch. Is that intentional?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/version_map.rs</code>:397 on 2024-03-08 01:34</div>
+            <div class="timeline-body"><p>Maybe collapse into <code>if yanked.is_some_and(|yanked| yanked.is_yanked())</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/version_map.rs</code>:116 on 2024-03-08 01:35</div>
+            <div class="timeline-body"><p>Maybe we should only include the versions here? <code>AllowedYanks</code> is <code>FxHashMap&lt;PackageName, FxHashSet&lt;Version&gt;&gt;</code> but we only need the versions since we're looking at a single package name.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-08 01:36</div>
+            <div class="timeline-body"><p>I think this is a big improvement.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-08 01:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:290 on 2024-03-08 01:37</div>
+            <div class="timeline-body"><p>I think my branch just made everything <code>Ord</code> and then I had, like, <code>compatibility &gt; existing</code> or something. But maybe it ends up being more complicated, the logic in here is quite nuanced. (This isn't blocking feedback.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-08 02:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:290 on 2024-03-08 02:46</div>
+            <div class="timeline-body"><p>Satisfying <code>Ord</code> is actually really challenging. For example, when comparing <code>RequiresPython</code> incompatibilities that contain version specifiers we cannot really provide strong ordering. I attempted to do <code>Ord</code> at first as well and after much discussion @BurntSushi recommended this approach instead.</p>
+<p>I believe the reason this worked on your branch is that you didn't retain information on the incompatibility enum members. Enum members themselves are trivially ordered, but once we store additional metadata about the incompatibility in them we need ordering in a larger hierarchy of types.</p>
+<p>If you have other ideas to get around this please share :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-08 03:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:290 on 2024-03-08 03:18</div>
+            <div class="timeline-body"><p>Separately.. the nuance here is a little frightening to me. Selecting the &quot;most relevant incompatible distribution&quot; feels like it could be brittle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:280 on 2024-03-08 08:50</div>
+            <div class="timeline-body"><p>Is that still deterministic, e.g. if the order we get from the index changes?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:290 on 2024-03-08 08:53</div>
+            <div class="timeline-body"><p>If there's no clear precedence, can with just stringifying the incompatibility criteria and sort based on that? It's arbitrary yet deterministic and easy to follow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/version_map.rs</code>:37 on 2024-03-08 08:57</div>
+            <div class="timeline-body"><p>I hope no index implements this, this would be quite confusing to users</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-03-08 08:58</div>
+            <div class="timeline-body"><p>This is a big improvement for the error messages</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-08 15:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:280 on 2024-03-08 15:02</div>
+            <div class="timeline-body"><p>It's not a change from the current status-quo where we take the &quot;first&quot; compatible source distribution. I think we sort the output from the index immediately though (as a guard against non-determinism).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-08 15:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:290 on 2024-03-08 15:05</div>
+            <div class="timeline-body"><p>That's actually what I did to implement <code>Ord</code> originally, but it's hard to be sure we're meeting all of the requirements for the trait and it seems brittle.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/notatallshaw">@notatallshaw</a> reviewed on 2024-03-08 15:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on <code>crates/uv-resolver/src/version_map.rs</code>:37 on 2024-03-08 15:45</div>
+            <div class="timeline-body"><p>Fun fact, the spec is about marking a particular file as yanked: https://peps.python.org/pep-0592/.</p>
+<p>PyPI has implemented it as only being able to yank an entire release, but that is a PyPI implementation detail.</p>
+<p>This has come up a few times on discussing particular behavior pip could adopt around yanking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/version_map.rs</code>:397 on 2024-03-08 15:57</div>
+            <div class="timeline-body"><p>We need the unwrapped option down a few lines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-08 15:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:290 on 2024-03-08 15:57</div>
+            <div class="timeline-body"><p>I think what you have here is totally fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-08 15:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-08 16:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/version_map.rs</code>:37 on 2024-03-08 16:35</div>
+            <div class="timeline-body"><p>I see why it needs to be like that on the API level (there are no releases in the API, just files), but i'd strongly prefer it if indexes made this an all or nothing operation per release.</p>
+<blockquote>
+<p>While this PEP implements yanking at the file level, that is largely due to the shape the simple repository API takes, not a specific decision made by this PEP.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-08 16:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:390 on 2024-03-08 16:48</div>
+            <div class="timeline-body"><p>Then we need to write that whole thing twice which I find less ideal.</p>
+<p>My concern is less about the <code>unreachable!</code> and more that it suggests a flaw in the abstraction.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-08 16:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:390 on 2024-03-08 16:53</div>
+            <div class="timeline-body"><p>Yeah, the abstraction is awkward, but I guess what I was pointing out (which maybe isn't useful) is that to the degree that the <code>unreachable!</code> itself represents a flaw in the abstraction, that's just a consequence of how the code is structured locally.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/notatallshaw">@notatallshaw</a> reviewed on 2024-03-08 16:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on <code>crates/uv-resolver/src/version_map.rs</code>:37 on 2024-03-08 16:56</div>
+            <div class="timeline-body"><p>Agreed, there has been some recent discussion about requiring behavior on indexes, not just the API, and the concern was being able to find and get buy in from non PyPI indexes (Azure, Gitlab, Artifactory, etc.). Perhaps a good case to put forth as a trial to see if it's possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-08 16:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:390 on 2024-03-08 16:56</div>
+            <div class="timeline-body"><p>👍 yeah that makes sense. This would be partially alleviated by a restructuring to avoid duplication as described in https://github.com/astral-sh/uv/pull/1298#discussion_r1516699939</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-03-08 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-03-08 17:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-08 17:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

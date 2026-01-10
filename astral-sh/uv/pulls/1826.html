@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve error message when git ref cannot be fetched - astral-sh/uv #1826</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve error message when git ref cannot be fetched</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1826">#1826</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-02-21 19:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-21 19:49</div>
+            <div class="timeline-body"><p>Follow-up to #1781 improving the error message when a ref cannot be fetched</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-02-21 20:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-02-21 20:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @snowsignal by @zanieb on 2024-02-21 20:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/uv/tests/common/mod.rs</code>:152 on 2024-02-21 22:39</div>
+            <div class="timeline-body"><p>We could simplify this function to be:</p>
+<pre><code class="language-rust">    pub fn filters(&amp;self) -&gt; Vec&lt;(&amp;str, &amp;str)&gt; {
+        // Put test context snapshots before the default filters
+        // This ensures we don't replace other patterns inside paths from the test context first
+        self.filters
+            .iter()
+            .chain(INSTA_FILTERS.into_iter())
+            .copied()
+            .collect()
+    }
+</code></pre>
+<p>which lets us avoid the repeated <code>insert</code> calls.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> approved on 2024-02-21 22:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/common/mod.rs</code>:152 on 2024-02-21 22:54</div>
+            <div class="timeline-body"><p>That fails</p>
+<pre><code>error[E0271]: type mismatch resolving `&lt;Iter&lt;'_, (&amp;str, &amp;str)&gt; as IntoIterator&gt;::Item == &amp;(String, String)`
+   --&gt; crates/uv/tests/common/mod.rs:157:20
+    |
+157 |             .chain(INSTA_FILTERS.into_iter())
+    |              ----- ^^^^^^^^^^^^^^^^^^^^^^^^^ expected `&amp;(String, ...)`, found `&amp;(&amp;str, &amp;str)`
+    |              |
+    |              required by a bound introduced by this call
+    |
+    = note: expected reference `&amp;(std::string::String, std::string::String)`
+               found reference `&amp;(&amp;str, &amp;str)`
+note: the method call chain might not have had the expected associated types
+   --&gt; crates/uv/tests/common/mod.rs:157:34
+    |
+157 |             .chain(INSTA_FILTERS.into_iter())
+    |                    ------------- ^^^^^^^^^^^ `IntoIterator::Item` is `&amp;(&amp;str, &amp;str)` here
+    |                    |
+    |                    this expression has type `&amp;[(&amp;str, &amp;str)]`
+note: required by a bound in `std::iter::Iterator::chain`
+   --&gt; /Users/mz/.rustup/toolchains/1.76-aarch64-apple-darwin/lib/rustlib/src/rust/library/core/src/iter/traits/iterator.rs:524:25
+    |
+521 |     fn chain&lt;U&gt;(self, other: U) -&gt; Chain&lt;Self, U::IntoIter&gt;
+    |        ----- required by a bound in this associated function
+...
+524 |         U: IntoIterator&lt;Item = Self::Item&gt;,
+    |                         ^^^^^^^^^^^^^^^^^ required by this bound in `Iterator::chain`
+
+error[E0599]: the method `copied` exists for struct `Chain&lt;Iter&lt;'_, (String, ...)&gt;, ...&gt;`, but its trait bounds were not satisfied
+   --&gt; crates/uv/tests/common/mod.rs:158:14
+    |
+155 | /         self.filters
+156 | |             .iter()
+157 | |             .chain(INSTA_FILTERS.into_iter())
+158 | |             .copied()
+    | |             -^^^^^^ method cannot be called on `Chain&lt;Iter&lt;'_, (String, ...)&gt;, ...&gt;` due to unsatisfied trait bounds
+    | |_____________|
+    | 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-21 22:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-02-21 23:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/uv/tests/common/mod.rs</code>:152 on 2024-02-21 23:39</div>
+            <div class="timeline-body"><p>Okay, what about this?</p>
+<pre><code class="language-rust">    pub fn filters(&amp;self) -&gt; Vec&lt;(&amp;str, &amp;str)&gt; {
+        // Put test context snapshots before the default filters
+        // This ensures we don't replace other patterns inside paths from the test context first
+        self.filters
+            .iter()
+            .map(|p, r| (p.as_str(), r.as_str()))
+            .chain(INSTA_FILTERS.into_iter().copied())
+            .collect()
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-21 23:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/common/mod.rs</code>:152 on 2024-02-21 23:46</div>
+            <div class="timeline-body"><p>I'm not sure it's any easier to read but it does work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/snowsignal">@snowsignal</a> reviewed on 2024-02-22 00:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/snowsignal">@snowsignal</a> on <code>crates/uv/tests/common/mod.rs</code>:152 on 2024-02-22 00:01</div>
+            <div class="timeline-body"><p>It's easier to read for me, but maybe I'm just accustomed to using iterators for everything 😅</p>
+<p>If you want an approach that avoids iterator chaining, what about this?</p>
+<pre><code class="language-rust">    pub fn filters(&amp;self) -&gt; Vec&lt;(&amp;str, &amp;str)&gt; {
+        let mut filters: Vec&lt;(&amp;str, &amp;str)&gt; = vec![];
+        // Put test context snapshots before the default filters
+        // This ensures we don't replace other patterns inside paths from the test context first
+        for (pattern, replacement) in &amp;self.filters {
+            filters.push((pattern, replacement));
+        }
+        filters.extend(INSTA_FILTERS.iter());
+        filters
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-02-22 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-02-22 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-22 01:22</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

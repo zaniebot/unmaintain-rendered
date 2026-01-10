@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set `.metadata` suffix on URL path - astral-sh/uv #2123</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Set <code>.metadata</code> suffix on URL path</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2123">#2123</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-01 22:54
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-01 22:54</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Ensures that we don't add the <code>.metadata</code> suffix after the fragment, if it exists.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-01 22:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @charliermarsh on 2024-03-01 22:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-01 23:48</div>
+            <div class="timeline-body"><p>@hmc-cs-mdrissi -- are you interested in testing this branch?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-01 23:49</div>
+            <div class="timeline-body"><p>@pradyunsg -- sorry to bother, it was pointed out to me that <code>pip</code> strips fragments when making HTTP requests. Do you know if this is encoded in any spec?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hmc-cs-mdrissi">@hmc-cs-mdrissi</a> on 2024-03-02 00:15</div>
+            <div class="timeline-body"><p>Yes I am happy to. First time building rust codebase and fairly smooth experience.</p>
+<p>It sadly failed though,</p>
+<details><summary>Verbose Logs</summary>
+
+<pre><code>     Running `target/debug/uv --verbose pip install '--index-url=https://AUTH@index/python/virtual/' internal-lib`
+ uv::requirements::from_source source=internal-lib
+    0.001651s DEBUG uv_interpreter::python_environment Found a virtualenv through VIRTUAL_ENV at: /Users/pa-loaner/Snapchat/Dev/.venvs/bento_uv2
+    0.002148s DEBUG uv_interpreter::interpreter Cached interpreter info for Python 3.9.16, skipping probing: /Users/pa-loaner/Snapchat/Dev/.venvs/bento_uv2/bin/python
+    0.002237s DEBUG uv::commands::pip_install Using Python 3.9.16 environment at /Users/pa-loaner/Snapchat/Dev/.venvs/bento_uv2/bin/python
+    0.010349s DEBUG uv_client::registry_client Using registry request timeout of 300s
+ uv_client::flat_index::from_entries
+ uv_resolver::resolver::solve
+      0.306961s   0ms DEBUG uv_resolver::resolver Solving with target Python version 3.9.16
+   uv_resolver::resolver::choose_version package=root
+   uv_resolver::resolver::get_dependencies package=root, version=0a0.dev0
+        0.307338s   0ms DEBUG uv_resolver::resolver Adding direct dependency: internal-lib*
+   uv_resolver::resolver::choose_version package=internal-lib
+     uv_resolver::resolver::package_wait package_name=internal-lib
+ uv_resolver::resolver::process_request request=Versions internal-lib
+   uv_client::registry_client::simple_api package=internal-lib
+     uv_client::cached_client::get_cacheable
+       uv_client::cached_client::read_and_parse_cache file=/Users/pa-loaner/Library/Caches/uv/simple-v3/28d1ce4468d5ce6b/internal-lib.rkyv
+ uv_resolver::resolver::process_request request=Prefetch internal-lib *
+ uv_client::cached_client::from_path_sync path=&quot;/Users/pa-loaner/Library/Caches/uv/simple-v3/28d1ce4468d5ce6b/internal-lib.rkyv&quot;
+          0.325625s  17ms DEBUG uv_client::cached_client Found fresh response for: https://index/python/virtual/internal-lib/
+   uv_resolver::version_map::from_metadata
+   uv_distribution::distribution_database::get_or_build_wheel_metadata dist=internal-lib==0.1.602402
+     uv_client::registry_client::wheel_metadata built_dist=internal-lib==0.1.602402
+       uv_client::cached_client::get_serde
+         uv_client::cached_client::get_cacheable
+           uv_client::cached_client::read_and_parse_cache file=/Users/pa-loaner/Library/Caches/uv/wheels-v0/index/28d1ce4468d5ce6b/internal-lib/internal-lib-0.1.602402-py3-none-any.msgpack
+        0.618904s 311ms DEBUG uv_resolver::resolver Searching for a compatible version of internal-lib (*)
+ uv_client::cached_client::from_path_sync path=&quot;/Users/pa-loaner/Library/Caches/uv/wheels-v0/index/28d1ce4468d5ce6b/internal-lib/internal-lib-0.1.602402-py3-none-any.msgpack&quot;
+        0.619005s 311ms DEBUG uv_resolver::resolver Selecting: internal-lib==0.1.602402 (internal-lib-0.1.602402-py3-none-any.whl)
+   uv_resolver::resolver::get_dependencies package=internal-lib, version=0.1.602402
+     uv_resolver::resolver::distributions_wait package_id=internal-lib-0.1.602402
+              0.619291s   0ms DEBUG uv_client::cached_client No cache entry for: index/python/virtual/internal-lib/0.1.602402/internal-lib-0.1.602402-py3-none-any.whl
+           uv_client::cached_client::fresh_request url=&quot;index/python/virtual/internal-lib/0.1.602402/internal-lib-0.1.602402-py3-none-any.whl&quot;
+error: Failed to download: internal-lib==0.1.602402
+  Caused by: HTTP status client error (404 Not Found) for url (index/python/virtual/internal-lib/0.1.602402/internal-lib-0.1.602402-py3-none-any.whl)
+</code></pre>
+</details> 
+
+<p><code>cargo run -- --verbose pip install --index-url=$INDEX_URL internal-lib</code> being exact command I used, while pip install --index-url=$INDEX_URL works fine. Unsure what remaining differences if any exist in request uv sends vs pip sends especially as uv is able to get index page successfully so I know authentication works for some requests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-02 00:22</div>
+            <div class="timeline-body"><p>Thank you! That's a bummer. So it's an <em>identical</em> URL to what pip is requesting, right? My only remaining guess then is that we're losing the auth somewhere, and the server is responding with a 404.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hmc-cs-mdrissi">@hmc-cs-mdrissi</a> on 2024-03-02 00:33</div>
+            <div class="timeline-body"><p>Yes the url is identical to pip based on breakpointing. Auth headers is my best guess and the headers being used for some requests (index fetch vs wheel fetch) are inconsistent. I see pip has PipSession object that manages auth and the wheel fetch does store the needed authentication tokens.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hmc-cs-mdrissi">@hmc-cs-mdrissi</a> on 2024-03-02 00:33</div>
+            <div class="timeline-body"><p>If we could log the headers in error message used along with url I can compare exact headers pip uses vs uv.</p>
+<p>edit: Here's pip's headers</p>
+<pre><code>{'User-Agent': 'pip/24.1.dev0 {&quot;ci&quot;:null,&quot;cpu&quot;:&quot;x86_64&quot;,&quot;distro&quot;:{&quot;name&quot;:&quot;macOS&quot;,&quot;version&quot;:&quot;14.3&quot;},&quot;implementation&quot;:{&quot;name&quot;:&quot;CPython&quot;,&quot;version&quot;:&quot;3.9.16&quot;},&quot;installer&quot;:{&quot;name&quot;:&quot;pip&quot;,&quot;version&quot;:&quot;24.1.dev0&quot;},&quot;openssl_version&quot;:&quot;OpenSSL 1.1.1t  7 Feb 2023&quot;,&quot;python&quot;:&quot;3.9.16&quot;,&quot;rustc_version&quot;:&quot;1.76.0&quot;,&quot;setuptools_version&quot;:&quot;69.0.3&quot;,&quot;system&quot;:{&quot;name&quot;:&quot;Darwin&quot;,&quot;release&quot;:&quot;23.3.0&quot;}}', 'Accept-Encoding': 'identity', 'Accept': '*/*', 'Connection': 'keep-alive', 'Authorization': 'Basic TENBdjE6ZXlKaGJHY2lPaUpGVXpJMU5pSXN...'}
+</code></pre>
+<p>I'm assuming authorization being key piece. The authorization header is same for both pip's wheel request and index request.</p>
+<p>edit 2: Error message is also same as with fragment. So it's possible that fragment being present was a red herring for my index server and only auth headers is the issue. May still be worth for pip compatibility excluding the fragment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-02 03:27</div>
+            <div class="timeline-body"><p>Are the two URLs (for index fetch vs. wheel fetch) on different domains, or do they use different schemes, or anything like that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hmc-cs-mdrissi">@hmc-cs-mdrissi</a> on 2024-03-02 04:06</div>
+            <div class="timeline-body"><p>The first url is,</p>
+<p><code>https://registry.company-dev.net/python/virtual/lib-name/</code></p>
+<p>The second url is,</p>
+<p><code>https://registry.company-dev.net/python/virtual/lib-name/0.1.602402/lib-name-0.1.602402-py3-none-any.whl</code></p>
+<p>So the url is exact same. I may take a look tomorrow at uv closer, just not confident as it'll be my first time reading rust code and figuring out how to use a rust debugger.</p>
+<p>edit: The index url if it helps looks like,</p>
+<p><code>https://LCAv1:SECURITY_TOKEN@registry.company-dev.net/python/virtual/</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-02 04:08</div>
+            <div class="timeline-body"><p>Okay, thanks. And how do you typically provide the credentials? (We have this <code>safe_copy_url_auth</code> method that copies the credentials from one URL to the next if they are on the same &quot;realm&quot;, which is why I asked about the domains.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hmc-cs-mdrissi">@hmc-cs-mdrissi</a> on 2024-03-02 04:10</div>
+            <div class="timeline-body"><p>The credentials are contained within the index-url. Not sure you saw the edit I made to show the index url.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-02 04:18</div>
+            <div class="timeline-body"><p>Okay cool, yeah, I would expect this to work. I can push a branch that adds more logging for the headers and such tomorrow if you'd like. Would love to get this working for you since if you're running into this issue, I'm sure you won't be the only one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hmc-cs-mdrissi">@hmc-cs-mdrissi</a> on 2024-03-02 04:18</div>
+            <div class="timeline-body"><p>A few other things is I am able to successfully curl the wheel fetch url with a simple command like,</p>
+<pre><code>curl -v -H &quot;authorization: basic `echo -n &quot;LCAv1:AUTH_TOKEN&quot; | base64` https://registry.company-dev.net/python/virtual/lib-name/0.1.602402/lib-name-0.1.602402-py3-none-any.whl
+</code></pre>
+<p>So I think the only important thing is header being used and that index fetching successfully finding latest version feels like a sign that uv has the right authorization header for first fetch. The pip authorization header looks same as one in that curl command.</p>
+<p>edit: More logging would be very helpful and will definitely try it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-04 19:45</div>
+            <div class="timeline-body"><p>@hmc-cs-mdrissi - What kind of logging would be most useful? Like, all headers?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/hmc-cs-mdrissi">@hmc-cs-mdrissi</a> on 2024-03-04 19:55</div>
+            <div class="timeline-body"><p>Yes headers for each request sent. Most important two requests being index fetch + wheel fetch.</p>
+<p>Alternatively if you could point me to the code where these requests are sent I could try to do some print debugging</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2024-03-04 19:59</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you know if this is encoded in any spec?</p>
+</blockquote>
+<p>I just saw this.</p>
+<p>I don't think it's written in any packaging spec but I'm pretty sure the hash fragment has to be dropped when querying the server since that's how URLs work? The fragment part is usually meant to reference something within the resource, eg anchors on HTML pages, and isn't sent to the server.</p>
+<p>From https://url.spec.whatwg.org/#concept-url-fragment:</p>
+<blockquote>
+<p>A URL’s fragment is either null or an ASCII string that can be used for further processing on the resource the URL’s other components identify.</p>
+</blockquote>
+<p>I don't think I've ever seen someone send an HTTP request with # fragment in the path segment, and I'm pretty sure it'll fail for most servers.</p>
+<p>I'm actually surprised if PyPI actually responds to a malformed request like that, if that is indeed what y'all are doing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-04 20:14</div>
+            <div class="timeline-body"><p>Honestly very possible that <code>reqwest</code> is dropping the fragments already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/pradyunsg">@pradyunsg</a> on 2024-03-04 20:37</div>
+            <div class="timeline-body"><p>Ah, yea, that makes sense! It would be a bit of a surprise if it wasn't. 😅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-04 20:46</div>
+            <div class="timeline-body"><p>Merging a minimal version of this that just fixes one erroneous site.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Drop hash fragment when downloading from registry" to "Set `.metadata` suffix on URL path" by @charliermarsh on 2024-03-04 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-04 20:47</div>
+            <div class="timeline-body"><p>@hmc-cs-mdrissi -- Merging but I don't expect this to fix the problem here -- let's continue in the linked issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-04 20:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-04 20:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-04 20:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

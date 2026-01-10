@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use the system trust store for HTTPS requests - astral-sh/uv #1512</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use the system trust store for HTTPS requests</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1512">#1512</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-02-16 16:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 16:40</div>
+            <div class="timeline-body"><p>Closes #1474</p>
+<p>Using the <code>rustls-tls-native-roots</code> feature</p>
+<blockquote>
+<p><code>rustls-tls</code>: Enables TLS functionality provided by rustls. Equivalent to rustls-tls-webpki-roots.</p>
+<p><code>rustls-tls-webpki-roots</code>: Enables TLS functionality provided by rustls, while using root certificates from the webpki-roots crate.</p>
+<p><code>rustls-tls-native-roots</code>: Enables TLS functionality provided by rustls, while using root certificates from the rustls-native-certs crate.</p>
+</blockquote>
+<p>Additional context:</p>
+<ul>
+<li>https://github.com/seanmonstar/reqwest/issues/1554</li>
+<li>https://github.com/encode/httpx/issues/302</li>
+<li><a href="https://github.com/rustls/rustls-native-certs#should-i-use-this-or-webpki-roots">Should I use the native certs or webpki-roots?</a></li>
+</ul>
+<p>Prior discussion at https://github.com/astral-sh/uv/pull/609</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-02-16 16:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">index</span> added by @zanieb on 2024-02-16 16:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-02-16 16:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-16 16:54</div>
+            <div class="timeline-body"><p>The major downsides are:</p>
+<blockquote>
+<ul>
+<li>The OS update system may, in fact, be quite poor at keeping the root certificates up-to-date if it is disabled or out-of-support.</li>
+<li>The quality of the ca-certificates package on debian-based Linux distributions is poor. At the time of writing, this ships many certificates not included in the Mozilla set, either because they <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1448506">failed an audit and were withdrawn</a> or <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1552374">were removed for mississuance</a>.</li>
+</ul>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-02-16 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @zanieb on 2024-02-16 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-02-16 19:07</div>
+            <div class="timeline-body"><p>Seems okay to me. In particular, it seems like this is the recommended approach from <a href="https://github.com/rustls">rustls</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-02-16 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-02-16 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-16 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/notatallshaw">@notatallshaw</a> on 2024-02-16 20:08</div>
+            <div class="timeline-body"><p>FYI, Pip is moving to this model via <a href="https://github.com/sethmlarson/truststore">truststore</a>: https://pip.pypa.io/en/stable/topics/https-certificates/</p>
+<p>My experience is it is massively helpful in large organization environments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carlosjourdan">@carlosjourdan</a> on 2024-02-27 16:05</div>
+            <div class="timeline-body"><p>Corporate network with ssl inspection firewall, custom ca on every site. Root certificate is trusted by windows, and environment variables REQUESTS_CA_BUNDLE and SSL_CERT_FILE are setup. Python requests work fine. Pip install as well.  uv fails with error below.</p>
+<pre><code>error: error sending request for url (https://pypi.org/simple/zeep/): error trying to connect: invalid peer certificate: UnknownIssuer
+  Caused by: error trying to connect: invalid peer certificate: UnknownIssuer
+  Caused by: invalid peer certificate: UnknownIssuer
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-27 16:10</div>
+            <div class="timeline-body"><p>Hi @carlosjourdan would you mind opening a new issue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carlosjourdan">@carlosjourdan</a> on 2024-02-27 16:10</div>
+            <div class="timeline-body"><p>Just did</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

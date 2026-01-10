@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fix 'uv pip install' handling of gzip'd response and PEP 691 - astral-sh/uv #1978</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>fix 'uv pip install' handling of gzip'd response and PEP 691</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1978">#1978</a>
+        opened by <a href="https://github.com/thundergolfer">@thundergolfer</a>
+        on 2024-02-26 03:48
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/thundergolfer">@thundergolfer</a> on 2024-02-26 03:48</div>
+            <div class="timeline-body"><p>Thank you for writing <code>uv</code>! We're already using it internally on some container image builds and finding that it's noticeably faster 💯</p>
+<h2>Summary</h2>
+<p>I was attempting to use <code>uv</code> alongside <a href="https://modal.com/">modal</a>'s internal PyPi mirror and ran into some issues. The first issue was the following error:</p>
+<pre><code>error: Failed to download: nltk==3.8.1
+  Caused by: content-length header is missing from response
+</code></pre>
+<p>This error was coming from within <code>RegistryClient::wheel_metadata_no_pep658</code>. By logging requests on the client (uv) and server (internal mirror) sides I've concluded that it's occurring because <code>uv</code> is sending a header suggesting that it can accept a gzip'd response, but decompressing the gzip'd response strips the <code>content-length</code> header: https://github.com/seanmonstar/reqwest/issues/294.</p>
+<p><strong>Logged request, client-side:</strong></p>
+<pre><code>0.981664s   0ms  INFO uv_client::registry_client JONO, REQ: Request { method: HEAD, url: Url { scheme: &quot;http&quot;, cannot_be_a_base: false, username: &quot;&quot;, password: None, host: Some(Ipv4(172.21.0.1)), port: Some(5555), path: &quot;/simple/joblib/joblib-1.3.2-py3-none-any.whl&quot;, query: None, fragment: None }, headers: {} }
+</code></pre>
+<p>No headers set explicitly by <code>uv</code>.</p>
+<p><strong>Logged request, server-side:</strong></p>
+<pre><code>2024-02-26T03:45:08.598272Z DEBUG pypi_mirror: origin request = Request { method: HEAD, uri: /simple/joblib/joblib-1.3.2-py3-none-any.whl, version: HTTP/1.1, headers: {&quot;accept&quot;: &quot;*/*&quot;, &quot;user-agent&quot;: &quot;uv&quot;, &quot;accept-encoding&quot;: &quot;gzip, br&quot;, &quot;host&quot;: &quot;172.21.0.1:5555&quot;}, body: Body(Empty) }
+</code></pre>
+<p>Server receives <code>&quot;accept-encoding&quot;: &quot;gzip, br&quot;,</code>.</p>
+<p>My change adding the header to the request fixed this issue. But our internal mirror is just passing through PyPI responses and PyPI responses do contain PEP 658 data, and so <code>wheel_metadata_no_pep658</code> shouldn't execute.</p>
+<p>The issue there is that the PyPi response field has <em>dashes</em> not <em>underscores</em> (https://peps.python.org/pep-0691/).</p>
+<img width="1261" alt="image" src="https://github.com/astral-sh/uv/assets/12058921/35230f27-441a-457a-827b-870a1a16c16a">
+
+<p>After changing the <code>alias</code> the PEP 658 codepath now runs correctly :)</p>
+<h2>Test Plan</h2>
+<p>I tested by installing against both our mirror and against PyPi:</p>
+<pre><code>RUST_LOG=&quot;uv=trace&quot; UV_NO_CACHE=true UV_INDEX_URL=&quot;http://172.21.0.1:5555/simple&quot; target/release/uv pip install -v nltk
+RUST_LOG=&quot;uv=trace&quot; UV_NO_CACHE=true UV_INDEX_URL=&quot;http://172.21.0.1:5555/simple&quot; target/release/uv pip uninstall -v nltk
+</code></pre>
+<pre><code>target/release/uv pip install -v nltk
+target/release/uv pip uninstall -v nltk
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-26 04:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/registry_client.rs</code>:464 on 2024-02-26 04:14</div>
+            <div class="timeline-body"><p>Iiinteresting, so when the server returned a gzipped response here, we effectively lost the headers that are required for the range request?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-26 04:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pypi-types/src/simple_json.rs</code>:41 on 2024-02-26 04:19</div>
+            <div class="timeline-body"><p>Wow that's a huge oversight, thank you! This could make a big difference in cold resolution time actually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-26 04:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/registry_client.rs</code>:464 on 2024-02-26 04:20</div>
+            <div class="timeline-body"><p>I wonder if this is related: https://github.com/astral-sh/uv/issues/1754.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-26 04:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-client/src/registry_client.rs</code>:464 on 2024-02-26 04:21</div>
+            <div class="timeline-body"><p>Eh, that issue suggests that <code>Content-Type</code> is preserved, nevermind.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-26 04:22</div>
+            <div class="timeline-body"><p>I'm gonna benchmark this real quick.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-26 04:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pypi-types/src/simple_json.rs</code>:41 on 2024-02-26 04:26</div>
+            <div class="timeline-body"><p>👀</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-26 04:28</div>
+            <div class="timeline-body"><p>The bad news is that we missed that typo and it's embarrassing. The good news is that it makes cold resolution like 30-40% faster for free:</p>
+<pre><code>❯ python -m scripts.bench \
+        --uv-path ./target/release/uv \
+        --uv-path ./target/release/main \
+        ./scripts/requirements/jupyter.in --benchmark resolve-cold --min-runs 20
+Benchmark 1: ./target/release/uv (resolve-cold)
+  Time (mean ± σ):     627.2 ms ±  33.8 ms    [User: 215.1 ms, System: 97.3 ms]
+  Range (min … max):   567.0 ms … 719.3 ms    20 runs
+
+Benchmark 2: ./target/release/main (resolve-cold)
+  Time (mean ± σ):     838.0 ms ±  38.9 ms    [User: 228.0 ms, System: 110.9 ms]
+  Range (min … max):   775.9 ms … 897.9 ms    20 runs
+
+Summary
+  './target/release/uv (resolve-cold)' ran
+    1.34 ± 0.10 times faster than './target/release/main (resolve-cold)'
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-02-26 04:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-26 04:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-26 04:28</div>
+            <div class="timeline-body"><p>Thanks for the great find! I'll release this in the morning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @charliermarsh on 2024-02-26 04:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">great writeup</span> added by @charliermarsh on 2024-02-26 04:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-26 04:33</div>
+            <div class="timeline-body"><p>Thank you! This is great work</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thundergolfer">@thundergolfer</a> on <code>crates/uv-client/src/registry_client.rs</code>:464 on 2024-02-26 15:58</div>
+            <div class="timeline-body"><p>Yep they get stripped because they're not accurate after decompression https://github.com/seanmonstar/reqwest/issues/294</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thundergolfer">@thundergolfer</a> reviewed on 2024-02-26 15:58</div>
+            <div class="timeline-body"></div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

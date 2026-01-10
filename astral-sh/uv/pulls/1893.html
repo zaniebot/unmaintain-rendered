@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gracefully handle virtual environments with conflicting packages - astral-sh/uv #1893</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Gracefully handle virtual environments with conflicting packages</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1893">#1893</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-02-23 02:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-23 02:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>When a virtual environment contains multiple packages with the same name, we no longer throw a hard error. Instead:</p>
+<ul>
+<li>In <code>uv pip freeze</code>, we list all versions.</li>
+<li>In <code>uv pip uninstall</code>, we uninstall all versions.</li>
+<li>In <code>uv pip install</code>, we uninstall all versions prior to installing a new version.</li>
+</ul>
+<p>Closes https://github.com/astral-sh/uv/issues/1848.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-23 02:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-02-23 02:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-02-23 02:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-installer/src/site_packages.rs</code>:104 on 2024-02-23 11:23</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Returns the versions of the given package, if it is installed.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-installer/src/site_packages.rs</code>:115 on 2024-02-23 11:24</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    /// Remove the given packages from the index, returning all installed versions, if any.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/common/mod.rs</code>:372 on 2024-02-23 11:28</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    fs_err::create_dir_all(&amp;dst)?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/common/mod.rs</code>:379 on 2024-02-23 11:28</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            fs_err::copy(entry.path(), dst.as_ref().join(entry.file_name()))?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-02-23 11:30</div>
+            <div class="timeline-body"><p>I'd leave some comments about why the versions are a vec instead of a single installed version</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-23 11:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv/tests/common/mod.rs</code>:379 on 2024-02-23 11:45</div>
+            <div class="timeline-body"><p>Is this true in all cases? Should we set up https://rust-lang.github.io/rust-clippy/master/index.html#/disallowed_methods</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-02-23 12:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/common/mod.rs</code>:379 on 2024-02-23 12:05</div>
+            <div class="timeline-body"><p>There are some cases where we need <code>std::fs</code> (e.g. there's no equivalent to <code>std::fs::Permissions</code>), otherwise i'd always use <code>fs_err</code>, it helps tremendously with debugging.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-23 12:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv/tests/common/mod.rs</code>:379 on 2024-02-23 12:27</div>
+            <div class="timeline-body"><p>It sounds like we could use <code>disallowed_methods</code> for the methods that are e.g. not <code>fs::Permission</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-23 15:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/common/mod.rs</code>:379 on 2024-02-23 15:16</div>
+            <div class="timeline-body"><p>That'd be nice to have</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-23 15:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/common/mod.rs</code>:379 on 2024-02-23 15:17</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/issues/1916</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-02-23 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-23 19:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-23 19:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>`uv pip list` - astral-sh/uv #1662</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1><code>uv pip list</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1662">#1662</a>
+        opened by <a href="https://github.com/sbrugman">@sbrugman</a>
+        on 2024-02-18 18:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-02-18 18:00</div>
+            <div class="timeline-body"><p>Hi, love your work on <code>uv</code> 👋!</p>
+<p>Opening a Draft PR early to check if there are any existing rust table formatting libs that I am unaware of (either already in <code>uv</code>/<code>ruff</code>, or the rust ecosystem) before spending much time on inventing the wheel myself and cleaning it up. Any other pointers are also welcome (e.g. on the editable filtering).</p>
+<p>Editable project locations in <code>uv pip list</code> include the file scheme (<code>file://</code>), where they are omitted in <code>pip list</code>. Is this desired, or should it replicate pip?</p>
+<h2>Summary</h2>
+<p>Implementation for #1401
+<code>--editable</code> flag is implemented.</p>
+<p><code>--outdated</code> and <code>--uptodate</code> out of scope for this PR (requires latest version information, and type wheel/sdist)</p>
+<h2>Test Plan</h2>
+<p>Not yet implemented as I couldn't locate the tests for <code>uv pip freeze</code>.
+We can compare to <code>pip</code> in <code>scripts/compare_with_pip/compare_with_pip.py</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-18 18:54</div>
+            <div class="timeline-body"><p>I think it's fine for us to write our own table-formatting logic (@MichaReiser tends to have good opinions on when we should use a crate vs. do things ourselves). I don't feel strongly about <code>file://</code> but my initial reaction is that it'd be nice to strip them.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-18 18:54</div>
+            <div class="timeline-body"><p>Great to see you on the repo @sbrugman, hi again!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @zanieb on 2024-02-18 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @zanieb on 2024-02-18 21:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @BurntSushi by @BurntSushi on 2024-02-19 16:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-02-20 08:16</div>
+            <div class="timeline-body"><p>@BurntSushi Does self-assigning mean you will take it from here or shall I still continue?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-20 12:31</div>
+            <div class="timeline-body"><p>@sbrugman Ah no sorry, I should have commented about that. Self-assigning meant I'll take ownership of reviewing.</p>
+<p>As for your question about table formatters, if you can get away with it, my <a href="https://docs.rs/tabwriter"><code>tabwriter</code></a> crate is very simple and might be enough. With that said, we probably should try to match the output format of <code>pip list</code> since it seems like some folks parse/grep it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-02-20 16:21</div>
+            <div class="timeline-body"><p>Thanks for the reply and the pointer. I'll continue with <code>tabwriter</code> (great to see the Springsteen references 😄 ) and test consistency with <code>pip list</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-02-20 18:42</div>
+            <div class="timeline-body"><p>@BurntSushi <code>tabwriter</code> misses functionality for the border below the header. We need it to replicate <code>pip list</code>:</p>
+<pre><code class="language-text">Package                    Version         Editable project location
+-------------------------- --------------- ---------------------------------------
+aiohttp                    3.8.1
+aiosignal                  1.3.1
+(...)
+</code></pre>
+<p>Assuming it's not in scope to extend <code>tabwriter</code> (correct me if wrong), I can check out some other packages, e.g.:
+https://docs.rs/cli-table/latest/cli_table/
+https://docs.rs/papergrid/latest/papergrid/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-20 19:51</div>
+            <div class="timeline-body"><p>Ah yeah, <code>tabwriter</code> is pretty basic. It really only does tab expansion.</p>
+<p>If it were me, I'd probably just hand code it:</p>
+<ol>
+<li>Build each column in a <code>Vec</code>.</li>
+<li>Find the max width of each column using <a href="https://docs.rs/unicode-width/latest/unicode_width/"><code>unicode-width</code></a>.</li>
+<li>Insert padding and the dashed lines as appropriate.</li>
+</ol>
+<p>It shouldn't be much code and shouldn't be too tricky to write.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sbrugman on 2024-02-24 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-02-24 15:36</div>
+            <div class="timeline-body"><p>@BurntSushi Took a bit longer than hoped, ready for review! The <code>--outdated</code> and <code>--uptodate</code> flags can be added later in follow-up work, as they require latest version and type (wheel/sdist) information.</p>
+<p>Thanks for all the pointers, much appreciated.</p>
+<p>(Will fix the Windows tests)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-24 15:36</div>
+            <div class="timeline-body"><p>Thanks @sbrugman!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sbrugman">@sbrugman</a> on 2024-02-25 14:26</div>
+            <div class="timeline-body"><p>Windows test fixed.</p>
+<p>Turned out that the Windows <code>file:///</code> prefix has an additional forward slash. Changed the tests to support workdir paths to be shorter than the replacement (as is the case on Windows). Finally needed to change the filter order to start with <code>INSTA_FILTERS</code> to rewrite Windows paths before replacement.</p>
+<p>There are some more args that we could implement after the basic functionality is merged.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-02-25 19:19</div>
+            <div class="timeline-body"><p>Excellent!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-02-25 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-25 19:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-25 19:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

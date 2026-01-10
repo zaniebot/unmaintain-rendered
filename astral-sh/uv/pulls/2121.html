@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adjust base Python lookup logic for Windows - astral-sh/uv #2121</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Adjust base Python lookup logic for Windows</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2121">#2121</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-01 20:47
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-01 20:47</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>When I install via the Windows Store, <code>interpreter.base_prefix</code> contains a bunch of resolved information that leads to a broken environment.</p>
+<p>Instead, we now use <code>sys._base_executable</code> on Windows by default, falling back to <code>sys.base_prefix</code> if it doesn't exist. (There are some issues with <code>sys.base_executable</code> that lead to complexity in <code>virtualenv</code>, but they only affect POSIX.) Admittedly, I don't know when <code>sys._base_executable</code> wouldn't exist. It exists in all the environments I've tested.</p>
+<p>Additionally, we use the system interpreter directly if we're outside of a virtualenv.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-03-01 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-03-01 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-01 21:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-virtualenv/src/bare.rs</code>:209 on 2024-03-01 21:02</div>
+            <div class="timeline-body"><p>@konstin - What was the original motivation for this? How would I get it to break?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-02 17:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-virtualenv/src/bare.rs</code>:209 on 2024-03-02 17:23</div>
+            <div class="timeline-body"><p>Ok I realized why this is here: when creating a virtualenv from within a virtualenv? What I have above wouldn’t work on Windows, I think. I’ll change to use _base_executable and then fall back to base_prefix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-03-02 19:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-virtualenv/src/bare.rs</code>:209 on 2024-03-02 19:37</div>
+            <div class="timeline-body"><p>Creating from within a venv seems feasible to add unit test coverage for right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2024-03-02 20:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-02 20:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-virtualenv/src/bare.rs</code>:209 on 2024-03-02 20:16</div>
+            <div class="timeline-body"><p>You ask too much of me...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-02 20:16</div>
+            <div class="timeline-body"><p>Moving to draft to (1) add tests and (2) change Windows logic a bit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-03-02 22:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Always use interpreter parent for home" to "Adjust base Python lookup logic for Windows" by @charliermarsh on 2024-03-02 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-03-02 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-02 22:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-virtualenv/src/bare.rs</code>:64 on 2024-03-03 17:38</div>
+            <div class="timeline-body"><p>Could you add a note that this more complex case is for windows store python?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-03-03 17:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-03 17:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-virtualenv/src/bare.rs</code>:64 on 2024-03-03 17:38</div>
+            <div class="timeline-body"><p>I've only now seen #2122 does this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-03 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-03 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-03 17:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-03-03 17:47</div>
+            <div class="timeline-body"><p>Linking https://github.com/python/cpython/issues/114476 for future reference</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

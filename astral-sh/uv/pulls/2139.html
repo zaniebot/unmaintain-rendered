@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>add python versions in CI - astral-sh/uv #2139</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>add python versions in CI</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2139">#2139</a>
+        opened by <a href="https://github.com/ChannyClaus">@ChannyClaus</a>
+        on 2024-03-03 17:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-03-03 17:05</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Resolves https://github.com/astral-sh/uv/issues/2126 (work in progress)</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-03 18:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.github/workflows/ci.yml</code>:56 on 2024-03-03 18:58</div>
+            <div class="timeline-body"><p>All these test should run on a single runner in our case since building uv (as a rust project) and running tests with a lot of integration test is much more expensive than for virtualenv, a small scoped python project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ChannyClaus">@ChannyClaus</a> reviewed on 2024-03-03 19:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on <code>.github/workflows/ci.yml</code>:56 on 2024-03-03 19:07</div>
+            <div class="timeline-body"><p>😭 makes sense - i'll look into that maybe later today. thanks for pointing it out early</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-03 19:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>.github/workflows/ci.yml</code>:56 on 2024-03-03 19:24</div>
+            <div class="timeline-body"><p>I believe that the Python version here is only used to bootstrap Python itself. We then have code that downloads specific pinned Python versions for the test suites.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ChannyClaus">@ChannyClaus</a> reviewed on 2024-03-03 22:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on <code>.github/workflows/ci.yml</code>:56 on 2024-03-03 22:52</div>
+            <div class="timeline-body"><p>just to clarify - so the preferred solution here is to set up all of the python versions on a single runner (for each os) and vary the versions <em>only</em> for the venv test? it does seem more common to use a runner per each runtime version in other open source projects i'm familiar with, but also i agree that it's less wasteful with a single runner for all versions if we are varying the version only for the venv tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>.github/workflows/ci.yml</code>:56 on 2024-03-04 09:39</div>
+            <div class="timeline-body"><p>We had problems where e.g. python-build-standalone would fail when creating a venv from another venv, that the paths of debian/ubuntu pythons were different than those elsewhere, windows store python failing on canonicalize, pypy has a different venv structure, etc. It would be great if we could test as many of these scenarios on CI to avoid regressions, and because we can't install them automatically for our local test suite (e.g. the <code>apt install python</code> isn't available on fedora and we can't modify a developers system by adding extra pythons to the registry). How exactly to best implement this - i'm not sure! Maybe something like installing all pythons and passing them to the venv tests as an env var, or maybe we have to run the venv tests multiple times, this requires some experimentation.</p>
+<p>For the majority of our integration tests, we run with python 3.12 from python-build-standalone from the bootstrap script, some use different versions to check we handle markers, builds and caching correctly. We don't want to them multiple times since they are slow (lots of network, decompression and io) and the snapshots expect python 3.12.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-03-04 09:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ChannyClaus">@ChannyClaus</a> reviewed on 2024-03-06 03:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on <code>.github/workflows/ci.yml</code>:56 on 2024-03-06 03:14</div>
+            <div class="timeline-body"><p>Ah the joys of supporting multiple platforms 😆 - I'll try to take a look this coming weekend, thanks for the detailed context!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ChannyClaus">@ChannyClaus</a> on 2024-03-09 21:21</div>
+            <div class="timeline-body"><p>might not be able to get to this this weekend - if anyone else is interested in taking this, feel free to take over this / close this and start a new one; sorry about that! 😭</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-03-09 23:50</div>
+            <div class="timeline-body"><p>@ChannyClaus I'll look into this one. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-03-09 23:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

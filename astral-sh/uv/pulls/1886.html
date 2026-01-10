@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ensure authentication is passed from the index url to distribution files - astral-sh/uv #1886</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ensure authentication is passed from the index url to distribution files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1886">#1886</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-02-22 22:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-22 22:19</div>
+            <div class="timeline-body"><p>Closes https://github.com/astral-sh/uv/issues/1709
+Closes https://github.com/astral-sh/uv/issues/1371</p>
+<p>Tested with the reproduction provided in #1709 which gets past the HTTP 401.</p>
+<p>Reuses the same copying logic we introduced in https://github.com/astral-sh/uv/pull/1874 to ensure authentication is attached to file URLs with a realm that matches that of the index. I had to move the authentication logic into a new crate so it could be used in <code>distribution-types</code>.</p>
+<p>We will want to something more robust in the future, like track all realms with authentication in a central store and perform lookups there. That's what <code>pip</code> does and it allows consolidation of logic like netrc lookups. That refactor feels significant though, and I'd like to get this fixed ASAP so this is a minimal fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @zanieb on 2024-02-22 22:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-02-22 22:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-02-22 22:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-22 23:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/file.rs</code>:61 on 2024-02-22 23:08</div>
+            <div class="timeline-body"><p>I think we intentionally changed this to use a string rather than a URL because we saw a huge regression due to excessive URL parsing, serialization, and deserialization. We should at least benchmark this since we're now doing an extra URL parse and serialization each time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-22 23:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/file.rs</code>:56 on 2024-02-22 23:08</div>
+            <div class="timeline-body"><p>Is it possible to skip this work if there's no username or password on the <code>base</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-22 23:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/file.rs</code>:61 on 2024-02-22 23:14</div>
+            <div class="timeline-body"><p>😬</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-22 23:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/file.rs</code>:56 on 2024-02-22 23:15</div>
+            <div class="timeline-body"><p>Yeah we should be able to avoid it in that case</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-22 23:27</div>
+            <div class="timeline-body"><p>Benches show no change</p>
+<pre><code class="language-bash">$ python -m scripts.bench \
+    --uv-path ./target/release/uv \
+    --uv-path ./target/release/baseline \
+    ./scripts/requirements/trio.in --benchmark resolve-warm
+  
+Benchmark 1: ./target/release/uv (resolve-warm)
+  Time (mean ± σ):     144.8 ms ±   1.5 ms    [User: 95.8 ms, System: 37.8 ms]
+  Range (min … max):   143.4 ms … 149.8 ms    20 runs
+ 
+Benchmark 2: ./target/release/baseline (resolve-warm)
+  Time (mean ± σ):     145.0 ms ±   2.6 ms    [User: 95.9 ms, System: 38.1 ms]
+  Range (min … max):   142.0 ms … 151.3 ms    20 runs
+ 
+Summary
+  ./target/release/uv (resolve-warm) ran
+    1.00 ± 0.02 times faster than ./target/release/baseline (resolve-warm)
+
+$ python -m scripts.bench \
+    --uv-path ./target/release/uv \
+    --uv-path ./target/release/baseline \
+    ./scripts/requirements/home-assistant.in --benchmark resolve-warm
+
+Benchmark 1: ./target/release/uv (resolve-warm)
+  Time (mean ± σ):     302.7 ms ±  10.8 ms    [User: 233.3 ms, System: 326.0 ms]
+  Range (min … max):   292.1 ms … 322.9 ms    10 runs
+ 
+Benchmark 2: ./target/release/baseline (resolve-warm)
+  Time (mean ± σ):     295.1 ms ±   7.7 ms    [User: 234.0 ms, System: 336.4 ms]
+  Range (min … max):   285.1 ms … 312.8 ms    10 runs
+ 
+Summary
+  ./target/release/baseline (resolve-warm) ran
+    1.03 ± 0.05 times faster than ./target/release/uv (resolve-warm)
+
+$ python -m scripts.bench \
+    --uv-path ./target/release/uv \
+    --uv-path ./target/release/baseline \
+    ./scripts/requirements/all-kinds.in --benchmark resolve-warm
+
+Benchmark 1: ./target/release/uv (resolve-warm)
+  Time (mean ± σ):     798.0 ms ±  24.9 ms    [User: 306.8 ms, System: 81.8 ms]
+  Range (min … max):   776.3 ms … 859.3 ms    10 runs
+ 
+Benchmark 2: ./target/release/baseline (resolve-warm)
+  Time (mean ± σ):     807.3 ms ±  55.0 ms    [User: 305.5 ms, System: 84.0 ms]
+  Range (min … max):   744.5 ms … 941.5 ms    10 runs
+ 
+Summary
+  ./target/release/uv (resolve-warm) ran
+    1.01 ± 0.08 times faster than ./target/release/baseline (resolve-warm)
+
+$ python -m scripts.bench \
+    --uv-path ./target/release/uv \
+    --uv-path ./target/release/baseline \
+    ./scripts/requirements/all-kinds.in --benchmark resolve-warm
+
+Benchmark 1: ./target/release/uv (resolve-warm)
+  Time (mean ± σ):     798.0 ms ±  24.9 ms    [User: 306.8 ms, System: 81.8 ms]
+  Range (min … max):   776.3 ms … 859.3 ms    10 runs
+ 
+Benchmark 2: ./target/release/baseline (resolve-warm)
+  Time (mean ± σ):     807.3 ms ±  55.0 ms    [User: 305.5 ms, System: 84.0 ms]
+  Range (min … max):   744.5 ms … 941.5 ms    10 runs
+ 
+Summary
+  ./target/release/uv (resolve-warm) ran
+    1.01 ± 0.08 times faster than ./target/release/baseline (resolve-warm)
+
+$ python -m scripts.bench \
+    --uv-path ./target/release/uv \
+    --uv-path ./target/release/baseline \
+    ./scripts/requirements/all-kinds.in --benchmark resolve-cold
+
+Benchmark 1: ./target/release/uv (resolve-cold)
+  Time (mean ± σ):      1.472 s ±  0.033 s    [User: 1.107 s, System: 0.572 s]
+  Range (min … max):    1.427 s …  1.526 s    10 runs
+ 
+Benchmark 2: ./target/release/baseline (resolve-cold)
+  Time (mean ± σ):      1.492 s ±  0.124 s    [User: 1.075 s, System: 0.578 s]
+  Range (min … max):    1.395 s …  1.838 s    10 runs
+ 
+Summary
+  ./target/release/uv (resolve-cold) ran
+    1.01 ± 0.09 times faster than ./target/release/baseline (resolve-cold)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-22 23:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/file.rs</code>:61 on 2024-02-22 23:44</div>
+            <div class="timeline-body"><p>Benches look fine</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-02-22 23:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/distribution-types/src/file.rs</code>:56 on 2024-02-22 23:45</div>
+            <div class="timeline-body"><p>Skipped in https://github.com/astral-sh/uv/pull/1886/commits/eb1d6a611fab61dfeedf462ae1baa3d763cdabdd</p>
+<p>No changes to integration benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-02-22 23:57</div>
+            <div class="timeline-body"><p>Rock on</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-02-23 00:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-02-23 00:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-23 00:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

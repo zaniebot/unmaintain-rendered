@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat: cmd.exe detection heuristic - astral-sh/uv #2226</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat: cmd.exe detection heuristic</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2226">#2226</a>
+        opened by <a href="https://github.com/samypr100">@samypr100</a>
+        on 2024-03-06 02:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/samypr100">@samypr100</a> on 2024-03-06 02:45</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>Follow up from discussion in https://github.com/astral-sh/uv/pull/2223</p>
+<p>Detect CMD.exe by checking if <code>PROMPT</code> env var is set on windows, otherwise assume it's PowerShell.</p>
+<p>Note, this will not work if user modifies their system env vars to include <code>PROMPT</code> by default or if they launch nested PowerShell from Command Prompt (e.g. <code>Developer PowerShell for VS 2022</code>).</p>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>Only tested locally, although we try to add some CI tests that specifically use CMD.exe</p>
+<p>Command Prompt</p>
+<pre><code>Microsoft Windows [Version 10.0.19044.3086]
+(c) Microsoft Corporation. All rights reserved.
+
+Z:\Users\samypr100\dev\uv&gt;Z:\Users\samypr100\.cargo\bin\cargo.exe +stable run --color=always -- venv &quot;Foo Bar&quot;
+    Finished dev [unoptimized + debuginfo] target(s) in 0.69s
+     Running `target\debug\uv.exe venv &quot;Foo Bar&quot;`
+Using Python 3.12.2 interpreter at: Z:\Users\samypr100\AppData\Local\Programs\Python\Python312\python.exe
+Creating virtualenv at: Foo Bar
+Activate with: &quot;Foo Bar\Scripts\activate&quot;
+</code></pre>
+<p>Power Shell</p>
+<pre><code>Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+Try the new cross-platform PowerShell https://aka.ms/pscore6
+
+PS Z:\Users\samypr100\dev\uv&gt;Z:\Users\samypr100\.cargo\bin\cargo.exe +stable run --color=always -- venv &quot;Foo Bar&quot;
+    Finished dev [unoptimized + debuginfo] target(s) in 0.63s
+     Running `target\debug\uv.exe venv &quot;Foo Bar&quot;`
+Using Python 3.12.2 interpreter at: Z:\Users\samypr100\AppData\Local\Programs\Python\Python312\python.exe
+Creating virtualenv at: Foo Bar
+Activate with: &amp; &quot;Foo Bar\Scripts\activate&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @samypr100 on 2024-03-06 02:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-06 03:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/venv.rs</code>:265 on 2024-03-06 03:01</div>
+            <div class="timeline-body"><p>Maybe we should just merge <code>shlex_posix</code> and <code>shlex_windows</code>, and pass in <code>Shell</code> to toggle the behavior -- wdyt?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/samypr100">@samypr100</a> reviewed on 2024-03-06 03:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/samypr100">@samypr100</a> on <code>crates/uv/src/commands/venv.rs</code>:265 on 2024-03-06 03:04</div>
+            <div class="timeline-body"><p>I kinda like the separation between Posix and Windows, but I'm biased 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-06 03:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/src/commands/venv.rs</code>:265 on 2024-03-06 03:16</div>
+            <div class="timeline-body"><p>Sounds good :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-03-06 03:21</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">enhancement</span> added by @charliermarsh on 2024-03-06 03:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-03-06 03:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-06 03:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-06 03:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-06 03:29</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

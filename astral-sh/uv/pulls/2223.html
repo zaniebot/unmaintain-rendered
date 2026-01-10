@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escape Windows paths with spaces in `venv` activation command - astral-sh/uv #2223</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Escape Windows paths with spaces in <code>venv</code> activation command</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2223">#2223</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-05 22:53
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-05 22:53</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Ensure that we print <code>&amp; &quot;foo bar\Scripts\activate&quot;</code> if necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-03-05 22:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-03-05 22:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-05 23:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-05 23:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-05 23:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-03-06 02:00</div>
+            <div class="timeline-body"><p>@charliermarsh In cmd.exe it would just be <code>&quot;foo bar\Scripts\activate&quot;</code> instead of <code>&amp; &quot;foo bar\Scripts\activate&quot;</code>, so maybe doing something like
+<code>format!(&quot;&amp; \&quot;{executable}\&quot; (PS) or \&quot;{executable}\&quot; (CMD)&quot;)</code> would suffice given shell detection on windows is not very friendly?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-06 02:00</div>
+            <div class="timeline-body"><p>Yeah I can't figure out how to detect if it's PowerShell or CMD... Do you know of any way to do it?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-03-06 02:25</div>
+            <div class="timeline-body"><p>From an env perspective? Not that I'm aware of unfortunately. I did see some code rely on <code>PSModulePath</code> for powershell detection by parsing it's value and checking it contains more than 3 entries (see https://stackoverflow.com/a/55598796)
+which basically does <code>is_power_shell = len(os.getenv('PSModulePath', '').split(os.pathsep)) &gt;= 3 </code>.</p>
+<p>It's heuristic because a user could potentially modify PSModulePath to their system environment variables and it would break this detection, but without modifications it would work since PowerShell itself modifies PSModulePath on launch <a href="https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_environment_variables">per docs</a> and always prefixes three or more entries on startup (regardless of system env) since it's a special PowerShell variable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-03-06 02:29</div>
+            <div class="timeline-body"><p>Thinking about the oposite angle (which might be simpler), an asnwer on the same SO also mentions cmd.exe always defines <code>PROMPT</code> where as PowerShell does not, so maybe we can rely on that to detect cmd.exe and fallback to PS? https://stackoverflow.com/a/66415037</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/samypr100">@samypr100</a> on 2024-03-06 02:46</div>
+            <div class="timeline-body"><p>Example implementation of last comment in https://github.com/astral-sh/uv/pull/2226</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

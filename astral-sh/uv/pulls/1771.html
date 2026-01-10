@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>strip trailing `+` from version number of local Python builds - astral-sh/uv #1771</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>strip trailing <code>+</code> from version number of local Python builds</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1771">#1771</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-02-20 17:35
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-02-20 17:35</div>
+            <div class="timeline-body"><p>(This PR message is mostly copied from the comment in the code.)</p>
+<p>For local builds of Python, at time of writing, the version numbers end with
+a <code>+</code>. This makes the version non-PEP-440 compatible since a <code>+</code> indicates
+the start of a local segment which must be non-empty. Thus, <code>uv</code> chokes on it
+and <a href="https://github.com/astral-sh/uv/issues/1357">spits out an error</a> when trying to create a venv using a &quot;local&quot; build
+of Python. Arguably, the right fix for this is for <a href="https://github.com/python/cpython/issues/99968">CPython to use a PEP-440
+compatible version number</a>.</p>
+<p>However, as a work-around for now, <a href="https://github.com/pypa/packaging/issues/678#issuecomment-1436033646">as suggested by pradyunsg</a> as one
+possible direction forward, we strip the <code>+</code>.</p>
+<p>This fix does unfortunately mean that one <a href="https://github.com/astral-sh/uv/issues/1357#issuecomment-1947645243">cannot specify a Python version
+constraint that specifically selects a local version</a>. But at the time of
+writing, it seems reasonable to block such functionality on this being fixed
+upstream (in some way).</p>
+<p>Another alternative would be to treat such invalid versions as strings (which
+is what PEP-508 suggests), but this leads to undesirable behavior in this
+case. For example, let's say you have a Python constraint of <code>&gt;=3.9.1</code> and
+a local build of Python with a version <code>3.11.1+</code>. Using string comparisons
+would mean the constraint wouldn't be satisfied:</p>
+<pre><code>&gt;&gt;&gt; &quot;3.9.1&quot; &lt; &quot;3.11.1+&quot;
+False</code></pre>
+<p>So in the end, we just strip the trailing <code>+</code>, as was done in the days of old
+for <a href="https://github.com/pypa/packaging/blob/085ff41692b687ae5b0772a55615b69a5b677be9/packaging/version.py#L168-L193">legacy version numbers</a>.</p>
+<p>I tested this fix by manually confirming that</p>
+<pre><code>uv venv --python local/python</code></pre>
+<p>failed before it and succeeded after it.</p>
+<p>Fixes #1357</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-02-20 17:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @BurntSushi on 2024-02-20 17:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-02-20 17:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2024-02-20 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-02-20 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-20 17:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @BurntSushi on 2024-02-23 12:30</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

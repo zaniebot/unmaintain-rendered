@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search `PATH` when `python` can't be found with `py` - astral-sh/uv #1711</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Search <code>PATH</code> when <code>python</code> can't be found with <code>py</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1711">#1711</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-02-19 17:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-19 17:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR improves uv's compatibility with PIP when discovering python installations.</p>
+<p>PIP runs the following step</p>
+<ul>
+<li>if <code>-p</code> is a path, resolve that specific instance</li>
+<li>test if the current python version <code>sys.executable</code> matches the requested version (or if no version was requested, always use it)</li>
+<li>(windows): Use PEP514 to resolve the python version</li>
+<li>Iterate over the paths and for each path test for <code>python{major}.{minor}.{patch}</code>, <code>python{major}.{minor}</code>, <code>python{major}</code>, <code>python</code></li>
+</ul>
+<p>Our existing implementation already did some of that but not all. We now</p>
+<ul>
+<li>search for executables that match the requested version name: <code>python3.9</code> <code>python3.9.3</code> for Windows and Unix</li>
+<li>Search the path on windows (rather than just relying on <code>py</code>)</li>
+<li>Support <code>pyenv</code> shims (that's a hack)</li>
+<li>Filter out the windows store python shim.</li>
+</ul>
+<p>I merged most of the implementation between windows and unix because they are the same in <code>venv</code> too. The only real difference is that Windows must support <code>py</code> (PEP514) and shims are awkward.</p>
+<p>Fixes https://github.com/astral-sh/uv/issues/1310
+Fixes https://github.com/astral-sh/uv/issues/1660
+Fixes https://github.com/astral-sh/uv/issues/1168</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Verified that running <code>uv venv</code> on Windows with no Python installed but the Windows shims activate fails with an error that Python wasn't found rather than invoking the shim</li>
+<li>Verified that running <code>uv venv</code> with a local pyenv environment activate selects that Python version (because it is the first in the path)</li>
+<li>If there's a <code>python.exe</code> on path and the <code>python.bat</code> shim, then the installation takes the <code>python.exe</code> (avoid indirection) except if the <code>python.exe</code> doesn't satisfy the requested version.</li>
+<li>Verified on MacOs that <code>uv venv</code> picks up the different python versions (including pyenv)</li>
+</ul>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">compatibility</span> added by @MichaReiser on 2024-02-20 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-20 12:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:110 on 2024-02-20 12:33</div>
+            <div class="timeline-body"><p>I intentionally removed the TEST early return. We want that as much code as possible in this function is run during tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-20 13:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-interpreter/src/interpreter.rs</code>:44 on 2024-02-20 13:01</div>
+            <div class="timeline-body"><p>It's unclear to me what the purpose of this assertion is for because <code>query</code> is called for interpreters from outside of venvs.</p>
+<p>There are tests that fail when the assertion is present https://github.com/astral-sh/uv/actions/runs/7973506396/job/21767496131?pr=1711</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-20 13:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-interpreter/src/interpreter.rs</code>:313 on 2024-02-20 13:05</div>
+            <div class="timeline-body"><p>It would be nice if we wouldn't need this but I wasn't able to find a way to make <code>pyenv</code> and <code>-c</code> work. Passing the script as file works but not when using <code>-c</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-02-20 14:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @zanieb on 2024-02-20 18:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Warchant">@Warchant</a> reviewed on 2024-02-21 07:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Warchant">@Warchant</a> on <code>crates/uv-interpreter/src/interpreter.rs</code>:308 on 2024-02-21 07:46</div>
+            <div class="timeline-body"><p>Should it be <code>extension == &quot;bat&quot;</code> or <code>extension != &quot;exe&quot;</code>?
+Are there other extensions that could be used as shims? Maybe <code>.ps1</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-21 11:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-interpreter/src/interpreter.rs</code>:308 on 2024-02-21 11:44</div>
+            <div class="timeline-body"><p>For now, we only need to support installations that can be found by <code>find_python</code> and it only tests for <code>exe</code> (preferred) or <code>bat</code>). We could consider supporting <code>ps1</code> as well if there are existing shims that don't provide a batch equivalent.</p>
+<p>The reason I went with <code>bat</code> only for now is that testing additional extensions comes at a cost and I want to avoid paying that cost if limiting us to <code>bat</code> is sufficient. Are you aware of shims that only provide a <code>ps1</code> script?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Warchant">@Warchant</a> reviewed on 2024-02-21 12:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Warchant">@Warchant</a> on <code>crates/uv-interpreter/src/interpreter.rs</code>:308 on 2024-02-21 12:00</div>
+            <div class="timeline-body"><p>Not aware. Pyenv creates a shim without extension + a .bat shim.
+<img src="https://github.com/astral-sh/uv/assets/1867551/2efb0518-7935-431c-b016-e0951741e792" alt="image" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:54 on 2024-02-21 12:53</div>
+            <div class="timeline-body"><p>Can <code>request</code> be empty? I just realized then we could hit this path</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:104 on 2024-02-21 12:55</div>
+            <div class="timeline-body"><p>Could we instrument <code>find_python</code>? (Haven't check the macro attrs are correct)</p>
+<pre><code class="language-suggestion">#[instrument(skip_all, fields(%selector))]
+fn find_python(
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:74 on 2024-02-21 12:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:101 on 2024-02-21 12:58</div>
+            <div class="timeline-body"><p>Does any of the windows code use windows specific imports and if not, could we use <code>if cfg!(windows)</code> instead here and below? I found this makes it much easier to maintain this kind of code cross-platform.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:109 on 2024-02-21 12:58</div>
+            <div class="timeline-body"><p>I think it's fine to not have <code>py</code> installed, debug should be enough</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:143 on 2024-02-21 13:02</div>
+            <div class="timeline-body"><p>Can you add a comment explaining why we're using <code>which</code> here instead of joining ourselves</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:131 on 2024-02-21 13:03</div>
+            <div class="timeline-body"><p>When do we see a path multiple times?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:292 on 2024-02-21 13:07</div>
+            <div class="timeline-body"><p>nit: import <code>std::borrow::Cow</code> so the code gets collapsed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/venv.rs</code>:338 on 2024-02-21 13:10</div>
+            <div class="timeline-body"><p>:tada:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/lib.rs</code>:53 on 2024-02-21 13:12</div>
+            <div class="timeline-body"><p>We should preserve <code>py --list-paths</code> in windows error messages, it's the most user friendly and the easiest to check</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-02-21 13:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-21 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:101 on 2024-02-21 14:13</div>
+            <div class="timeline-body"><p>What's the difference of cfg(windows) to #[windows]?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-21 14:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-interpreter/src/lib.rs</code>:53 on 2024-02-21 14:15</div>
+            <div class="timeline-body"><p>Hmm. But it doesn't strictly match the behavior. I guess we can fine tune the message a bit</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-02-21 14:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:101 on 2024-02-21 14:20</div>
+            <div class="timeline-body"><p><code>#[cfg(windows)]</code> means the code doesn't get compiled, all symbols from outside it uses look unused and compiling on unix doesn't check this code; It's easy to break clippy or compilation on the platform you're not working on. <code>if cfg!(windows)</code> gets compiled on all platforms and is considered used code, even though the optimizer we remove the dead branch. It means you can't use platform specific features such as <code>std::os::unix::fs::OpenOptionsExt</code>. I try to use <code>if cfg!(windows)</code> wherever possible and fall back to <code>#[cfg(windows)]</code> where we need platform specific symbols.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:101 on 2024-02-21 14:21</div>
+            <div class="timeline-body"><p>(Others on the team and other projects may have different opinions, this is based on my experience porting uv to windows)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-02-21 14:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-21 15:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:101 on 2024-02-21 15:51</div>
+            <div class="timeline-body"><p>Makes sense. I intentionally moved all the windows specific code into the <code>windows</code> module (gated with <code>cfg</code>) to work around the unused dependencies.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:131 on 2024-02-21 17:16</div>
+            <div class="timeline-body"><p>I copied that over from <code>virtualenv</code> but I'm not sure. Let's remove it for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-21 17:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-21 17:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:54 on 2024-02-21 17:22</div>
+            <div class="timeline-body"><pre><code>pub fn main() {
+    let versions = &quot;&quot;
+        .splitn(3, '.')
+        .map(str::parse::&lt;u8&gt;)
+        .collect::&lt;Result&lt;Vec&lt;_&gt;, _&gt;&gt;();
+
+    dbg!(versions);
+}
+</code></pre>
+<p>gives me</p>
+<pre><code>[src/main.rs:8:9] versions = Err(
+    ParseIntError {
+        kind: Empty,
+    },
+)
+</code></pre>
+<p>So we're good</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-02-22 07:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-22 07:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-22 07:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @MichaReiser on 2024-02-22 07:48</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

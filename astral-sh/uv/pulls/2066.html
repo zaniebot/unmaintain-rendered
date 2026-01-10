@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track source incompatibilities in prioritized distribution - astral-sh/uv #2066</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Track source incompatibilities in prioritized distribution</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2066">#2066</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-02-29 00:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-29 00:32</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Like with wheels, we can track the compatibility of source distributions in <code>PrioritizedDist</code> and use those to both backtrack <em>and</em> surface better error messages to users.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/2003.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @zanieb by @charliermarsh on 2024-02-29 00:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-29 00:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-02-29 00:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-29 00:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:47 on 2024-02-29 00:43</div>
+            <div class="timeline-body"><p>Interestingly, if we track <code>RequiresPython</code> here, error messages regress quite a bit, because we no longer track the Python incompatibility in the resolver:</p>
+<pre><code class="language-diff">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ Snapshot Summary ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Snapshot: compile_python_37
+Source: crates/uv/tests/pip_compile.rs:656
+────────────────────────────────────────────────────────────────────────────────
+Expression: snapshot
+────────────────────────────────────────────────────────────────────────────────
+-old snapshot
++new results
+────────────┬───────────────────────────────────────────────────────────────────
+    2     2 │ ----- stdout -----
+    3     3 │
+    4     4 │ ----- stderr -----
+    5     5 │   × No solution found when resolving dependencies:
+    6       │-  ╰─▶ Because the requested Python version (3.7) does not satisfy Python&gt;=3.8
+    7       │-      and black==23.10.1 depends on Python&gt;=3.8, we can conclude that
+    8       │-      black==23.10.1 cannot be used.
+    9       │-      And because you require black==23.10.1, we can conclude that the
+   10       │-      requirements are unsatisfiable.
+          6 │+  ╰─▶ Because black==23.10.1 is unusable because no source distributions
+          7 │+      are available that meet your required Python version and you require
+          8 │+      black==23.10.1, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>Here's the diff, for posterity:</p>
+<pre><code class="language-diff">diff --git a/crates/distribution-types/src/prioritized_distribution.rs b/crates/distribution-types/src/prioritized_distribution.rs
+index 148e82cd..13a516a8 100644
+--- a/crates/distribution-types/src/prioritized_distribution.rs
++++ b/crates/distribution-types/src/prioritized_distribution.rs
+@@ -45,6 +45,7 @@ pub enum SourceCompatibility {
+ #[derive(Debug, PartialEq, Eq, Ord, PartialOrd, Clone, Copy)]
+ pub enum IncompatibleSource {
+     NoBuild,
++    RequiresPython,
+ }
+ 
+ #[derive(Debug, PartialEq, Eq, Clone, Copy)]
+diff --git a/crates/uv-resolver/src/resolver/mod.rs b/crates/uv-resolver/src/resolver/mod.rs
+index 7bc5c710..e7e02fc1 100644
+--- a/crates/uv-resolver/src/resolver/mod.rs
++++ b/crates/uv-resolver/src/resolver/mod.rs
+@@ -18,10 +18,7 @@ use tracing::{debug, info_span, instrument, trace, warn, Instrument};
+ use url::Url;
+ 
+ use distribution_filename::WheelFilename;
+-use distribution_types::{
+-    BuiltDist, Dist, DistributionMetadata, Incompatible, IncompatibleSource, IncompatibleWheel,
+-    Name, RemoteSource, SourceDist, VersionOrUrl,
+-};
++use distribution_types::{BuiltDist, Dist, DistributionMetadata, Incompatible, IncompatibleSource, IncompatibleWheel, Name, RemoteSource, SourceDist, VersionOrUrl};
+ use pep440_rs::{Version, VersionSpecifiers, MIN_VERSION};
+ use pep508_rs::{MarkerEnvironment, Requirement};
+ use platform_tags::{IncompatibleTag, Tags};
+@@ -393,6 +390,7 @@ impl&lt;'a, Provider: ResolverProvider&gt; Resolver&lt;'a, Provider&gt; {
+                                             IncompatibleTag::Platform =&gt; &quot;no wheels are available with a matching platform&quot;.to_string(),
+                                         }
+                                     }
++                                    Incompatible::Source(IncompatibleSource::RequiresPython) =&gt; &quot;no source distributions are available that meet your required Python version&quot;.to_string(),
+                                     Incompatible::Source(IncompatibleSource::NoBuild) =&gt; &quot;building from source is disabled&quot;.to_string(),
+                                 }
+                             } else {
+@@ -663,7 +661,7 @@ impl&lt;'a, Provider: ResolverProvider&gt; Resolver&lt;'a, Provider&gt; {
+                         // If the version is incompatible because no distributions match, exit early.
+                         return Ok(Some(ResolverVersion::Unavailable(
+                             candidate.version().clone(),
+-                            UnavailableVersion::NoDistributions(*incompatibility),
++                            UnavailableVersion::NoDistributions(incompatibility.clone()),
+                         )));
+                     }
+                 };
+diff --git a/crates/uv-resolver/src/version_map.rs b/crates/uv-resolver/src/version_map.rs
+index e8a1cc02..b742daaf 100644
+--- a/crates/uv-resolver/src/version_map.rs
++++ b/crates/uv-resolver/src/version_map.rs
+@@ -391,6 +391,8 @@ impl VersionMapLazy {
+                     DistFilename::SourceDistFilename(filename) =&gt; {
+                         let compatibility = if self.no_build {
+                             SourceCompatibility::Incompatible(IncompatibleSource::NoBuild)
++                        } else if file.requires_python.as_ref().is_some_and(|requires_python| !requires_python.contains(self.python_requirement.target())) {
++                            SourceCompatibility::Incompatible(IncompatibleSource::RequiresPython)
+                         } else {
+                             SourceCompatibility::Compatible
+                         };
+@@ -400,13 +402,7 @@ impl VersionMapLazy {
+                             file,
+                             self.index.clone(),
+                         );
+-                        priority_dist.insert_source(
+-                            dist,
+-                            requires_python,
+-                            yanked,
+-                            Some(hash),
+-                            compatibility,
+-                        );
++                        priority_dist.insert_source(dist, requires_python, yanked, Some(hash), compatibility);
+                     }
+                 }
+             }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-29 00:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/distribution-types/src/prioritized_distribution.rs</code>:47 on 2024-02-29 00:44</div>
+            <div class="timeline-body"><p>This actually suggests to me that we shouldn't be tracking <code>RequiresPython</code> for wheels like we are in this file, but it's a little complicated... I've played with a few refactors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-29 02:26</div>
+            <div class="timeline-body"><p>I think this should actually be closed in favor of https://github.com/astral-sh/uv/pull/1298 which solves <em>at least</em> this problem and a few others. Gonna leave it in draft for now though until Zanie is back.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @charliermarsh on 2024-02-29 02:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-08 20:54</div>
+            <div class="timeline-body"><p>Closed in favor of https://github.com/astral-sh/uv/pull/1298.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-08 20:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-08 20:54</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

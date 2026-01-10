@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Use reparse points to detect Windows installer shims - astral-sh/uv #2284</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Use reparse points to detect Windows installer shims</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2284">#2284</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-03-07 18:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-07 18:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR enables use of the Windows Store Pythons even with <code>py</code> is not installed. Specifically, we need to ensure that the <code>python.exe</code> and <code>python3.exe</code> executables installed into the <code>C:\Users\crmar\AppData\Local\Microsoft\WindowsApp</code> directory <em>are</em> used when they're not &quot;App execution aliases&quot; (which merely open the Windows Store, to help you install Python).</p>
+<p>When <code>py</code> is installed, this isn't strictly necessary, since the &quot;resolved&quot; executables are discovered via <code>py</code>. These look like <code>C:\Users\crmar\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbs5n2kfra8p0\python.exe</code>.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/2264.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Removed all Python installations from my Windows machine.</li>
+<li>Uninstalled <code>py</code>.</li>
+<li>Enabled &quot;App execution aliases&quot;.</li>
+<li>Verified that for both <code>cargo run venv --python python.exe</code> and <code>cargo run venv --python python3.exe</code>, <code>uv</code> exited with a failure that no Python could be found.</li>
+<li>Installed Python 3.10 via the Windows Store.</li>
+<li>Verified that the above commands succeeded without error.</li>
+<li>Verified that <code>cargo run venv --python python3.10.exe</code> <em>also</em> succeeded.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @charliermarsh on 2024-03-07 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-03-07 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:549 on 2024-03-07 18:42</div>
+            <div class="timeline-body"><p>Previously, this wouldn't work for one of the two shims. But adding the null terminator seems to fix it on my machine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-07 18:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-03-07 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @charliermarsh on 2024-03-07 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-03-07 20:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:549 on 2024-03-07 20:34</div>
+            <div class="timeline-body"><p>Adding the null termination seems correct. OsStr is not null terminated https://doc.rust-lang.org/std/ffi/struct.OsString.html</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:582 on 2024-03-07 20:36</div>
+            <div class="timeline-body"><p>Nit: not a 100 sure but I think we could use mem::size_of here (or size_of_value) to avoid the * 2</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:594 on 2024-03-07 20:38</div>
+            <div class="timeline-body"><p>Should this buf be sliced to bytes returned? It might not matter because it only tests startswidth but might still be good practice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:510 on 2024-03-07 20:40</div>
+            <div class="timeline-body"><p>Can we reuse the uv-fs function instead of reimplementing the check?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-fs/src/path.rs</code>:120 on 2024-03-07 20:43</div>
+            <div class="timeline-body"><p>This can be simplified to using components.ends_with(&quot;Microsoft/WindowsApps&quot;) after having done the fuzzy python.exe check</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-03-07 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-03-07 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-03-07 20:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:133 on 2024-03-07 20:48</div>
+            <div class="timeline-body"><p>I don't know how to make code suggestions on ipad…</p>
+<p>I would add #[cfg(windows)] to the if block instead of having an empty non-windows implementation in the windows module</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2024-03-07 20:50</div>
+            <div class="timeline-body"><p>Thanks for fixing this. I should have tested this workflow when improving windows support. And nice find with the null terminator</p>
+<p>Have you considered upstreaming this back to Rye.</p>
+<p>But what about https://twitter.com/charliermarsh/status/1765750403461689701</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-03-07 20:55</div>
+            <div class="timeline-body"><blockquote>
+<p>But what about https://twitter.com/charliermarsh/status/1765750403461689701</p>
+</blockquote>
+<p>This does NOT apply to Windows Store Python.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-07 20:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:510 on 2024-03-07 20:57</div>
+            <div class="timeline-body"><p>They're actually different checks (sigh). The one in <code>uv-fs</code> needs to accept <code>python3.12.exe</code> and friends. The one here only accepts <code>python3.exe</code> and <code>python.exe</code>, since those are the only ones that get added as app redirects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-03-07 20:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-interpreter/src/python_query.rs</code>:133 on 2024-03-07 20:57</div>
+            <div class="timeline-body"><p>Sigh, I originally did this but the cross-platform Clippy warnings were so brutal.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:04 UTC
+    </footer>
+</body>
+</html>

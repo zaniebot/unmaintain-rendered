@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wrap unsafe script shebangs in `/bin/sh` - astral-sh/uv #2097</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Wrap unsafe script shebangs in <code>/bin/sh</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/2097">#2097</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-02-29 21:45
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-02-29 21:45</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is based on Pradyun's installer branch (https://github.com/pradyunsg/installer/blob/d01624e5f20963f046e67d58f5319e21a07aa03e/src/installer/scripts.py#L54), which is itself based on pip (https://github.com/pypa/pip/blob/0ad4c94be74cc24874c6feb5bb3c2152c398a18e/src/pip/_vendor/distlib/scripts.py#L136).</p>
+<p>The gist of it is: on Posix platforms, if a path contains a space (or is too long), we wrap the shebang in a <code>/bin/sh</code> invocation.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/2076.</p>
+<h2>Test Plan</h2>
+<pre><code>❯ cargo run venv &quot;foo&quot;
+    Finished dev [unoptimized + debuginfo] target(s) in 0.14s
+     Running `target/debug/uv venv foo`
+Using Python 3.12.0 interpreter at: /Users/crmarsh/.local/share/rtx/installs/python/3.12.0/bin/python3
+Creating virtualenv at: foo
+Activate with: source foo/bin/activate
+
+❯ source &quot;foo bar/bin/activate&quot;
+
+❯ which black
+black not found
+
+❯ cargo run pip install black
+Resolved 6 packages in 177ms
+Installed 6 packages in 17ms
+ + black==24.2.0
+ + click==8.1.7
+ + mypy-extensions==1.0.0
+ + packaging==23.2
+ + pathspec==0.12.1
+ + platformdirs==4.2.0
+
+❯ which black
+/Users/crmarsh/workspace/uv/foo bar/bin/black
+
+❯ black
+Usage: black [OPTIONS] SRC ...
+
+One of 'SRC' or 'code' is required.
+
+❯ cat &quot;foo bar/bin/black&quot;
+#!/bin/sh
+'''exec' '/Users/crmarsh/workspace/uv/foo bar/bin/python' &quot;$0&quot; &quot;$@&quot;
+' '''
+# -*- coding: utf-8 -*-
+import re
+import sys
+from black import patched_main
+if __name__ == &quot;__main__&quot;:
+    sys.argv[0] = re.sub(r&quot;(-script\.pyw|\.exe)?$&quot;, &quot;&quot;, sys.argv[0])
+    sys.exit(patched_main())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-02-29 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Wrap unsafe script shebangs in /bin/sh" to "Wrap unsafe script shebangs in `/bin/sh`" by @charliermarsh on 2024-02-29 21:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-02-29 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @charliermarsh on 2024-02-29 21:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-29 21:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/install-wheel-rs/src/wheel.rs</code>:138 on 2024-02-29 21:50</div>
+            <div class="timeline-body"><p>If we don't really care, we could remove the platform and OS casing. (I assume this is <em>safe</em> to do on Windows, just not required?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @charliermarsh on 2024-02-29 21:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-02-29 22:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-29 22:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/install-wheel-rs/src/wheel.rs</code>:138 on 2024-02-29 22:15</div>
+            <div class="timeline-body"><p>I would gently nudge toward using just one value at first and see if that causes any issues. I assume shebangs longer than 127 are pretty rare?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-02-29 23:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/install-wheel-rs/src/wheel.rs</code>:138 on 2024-02-29 23:14</div>
+            <div class="timeline-body"><p>Done!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-02-29 23:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-02-29 23:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-29 23:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

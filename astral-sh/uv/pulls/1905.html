@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ignore Python 2 installations when querying for interpreters - astral-sh/uv #1905</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Ignore Python 2 installations when querying for interpreters</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1905">#1905</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-02-23 08:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-23 08:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/uv/issues/1693</p>
+<p><code>uv</code> currently fails when a user has <code>python</code> 2 or older installed on their system without a <code>python3</code> or <code>python3.exe</code> on their path because
+the <code>get_interpreter_info.py</code> script fails executing (it uses some Python 3+ APIs).</p>
+<p>This PR fixes this by:</p>
+<ul>
+<li>Returning an explicit error code in <code>get_interpreter_info</code> if the Python version isn't supported</li>
+<li>Skipping over this error in <code>python_query</code> if the user requested ANY python version or a version &gt;= 3.</li>
+<li>Error if the user requested a Python 2 version.</li>
+</ul>
+<h2>Test Plan</h2>
+<p>Error if the user requests a legacy python version.</p>
+<pre><code>uv venv -p 2
+  × Python 2 or older is not supported. Please use Python 3 or newer.
+</code></pre>
+<p>Ignore any python 2 installation when querying newer python installations (using v4 here because I have python3 on the path and that takes precedence over querying python)</p>
+<pre><code> uv_interpreter::python_query::find_python selector=Major(4)
+      0.005541s   0ms DEBUG uv_interpreter::interpreter Detecting markers for: /home/micha/.pyenv/shims/python
+      0.059730s  54ms DEBUG uv_interpreter::python_query Found a Python 2 installation that isn't supported by uv, skipping.
+      0.059983s  54ms DEBUG uv_interpreter::interpreter Using cached markers for: /usr/bin/python
+  × No Python 4 In `PATH`. Is Python 4 installed?
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @MichaReiser on 2024-02-23 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-02-23 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-02-23 08:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> approved on 2024-02-23 10:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @konstin on 2024-02-23 10:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @konstin on 2024-02-23 10:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-23 10:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Win Trampoline: Use Python executable path encoded in binary - astral-sh/uv #1803</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Win Trampoline: Use Python executable path encoded in binary</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/1803">#1803</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2024-02-21 11:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-21 11:21</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to uv! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/uv/issues/1766</p>
+<p>The first commit replaces the <code>check!</code> macro with a standalone function that can be reused for non-boolean returning functions to get nice error messages in case a syscall fails.</p>
+<p>The second commit changes the python discovery to work with symlinks too. It also changes a few existing calls to use safe APIs as a surprise for @BurntSushi ;)</p>
+<p>The way this is implemented is that I changed the launcher file layout to:</p>
+<pre><code>| --------------------------------|
+|           &lt;launcher.exe&gt;        |
+| --------------------------------|
+|       &lt;zipped python scrip      |
+| --------------------------------|
+|           &lt;python_path&gt;         |
+| --------------------------------|
+|        len(&lt;python_path&gt;)       | 
+| --------------------------------|
+|              &quot;UVUV&quot;             |
+| --------------------------------|
+</code></pre>
+<p>Windows ignores any content after the executable, which is a fact that the launcher already makes use of today. Python ignores everything after the zip end, which allows us to pack additional data after the zip file. I decided to use the magic number <code>&quot;UVUV&quot;</code> at the end of the file as a &quot;safety&quot; mechanism that the file indeed has the right format rather than just assuming that the last u32 (little endian) is the length of the UTF8 encoded python path.</p>
+<h2>Alternatives</h2>
+<h3>Resolving symlinks</h3>
+<p>The downside of this approach is that we now need to read the executable which adds some complexity. An alternative to solve #1766 would be to extend our existing relative resolution to resolve symlinks before searching the python executable.
+I intended that this also addresses https://github.com/astral-sh/uv/issues/1779 where we use a global python installation instead, where simply following symlinks isn't sufficient anymore (assuming it is something we want to support). I've set up a <a href="https://github.com/MichaReiser/tox-uv/pull/1">repro PR</a> that uses the new <code>uv</code> binary (the good news, is the error messages are much better). The job still fails with</p>
+<pre><code>Failed to spawn the python child process with command '&quot;C:\hostedtoolcache\windows\Python\3.12.2\x64\Scripts\python.exe&quot; &quot;C:\hostedtoolcache\windows\Python\3.12.2\x64\Scripts\tox.exe&quot; -vvvv --notest'
+</code></pre>
+<p>The problem is that our wheel installer assumes that <code>python</code> is in <code>.\Scripts\python.exe</code> but that's not the case for a regular Python installation where the binary is in the root folder. We would need to find the python installation when running <code>uv pip install</code> and pass the instance through to the wheel building code. This feels out of scope for this PR and probably requires input from someone more familiar with <code>uv</code> than I. What I don't understand is why this works for unix where we, presumably, have the same problem (or are we just lucky because the binary in global install happens to be in a <code>bin</code> directory?)</p>
+<p>I'm open to changing the implementation to resolve symlinks instead, but this approach seemed more flexible.</p>
+<h3>Shebang parsing</h3>
+<p>The launcher used by <code>distutil</code> searches for the python script and then parses the shebang line to retrieve the Python executable name. This is kind of nice because it doesn't require a custom data format, it just works similarly to unix.</p>
+<p>The main downside that I'm seeing is that it requires a bit more parsing (and navigating) than the current approach. The launcher first needs to find the end of the zip file entry. From there, find the start of the script, and then parse the shebang.</p>
+<p>I decided against this approach (but open to changing) because it is more involved and our launcher isn't intended to be used without <code>uv</code> where the extra ergonomics of simply having to write a shebang brings us much benefit.</p>
+<h2>Binary size increase</h2>
+<p>One of the main reasons for the binary increase is that the binary now contains more static strings with possible error messages.</p>
+<h2>Test Plan</h2>
+<p>I followed the instructions in #1766 and the command now runs successfully</p>
+<pre><code class="language-pws">uv venv
+uv pip install pycowsay
+New-Item -Path .\pycatsay.exe -ItemType SymbolicLink -Value .\.venv\Scripts\pycowsay.exe
+.\pycatsay.exe
+
+
+&lt;  &gt;
+
+   \   ^__^
+    \  (oo)\_______
+       (__)\       )\/\
+           ||----w |
+           ||     ||
+
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2024-02-21 11:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">windows</span> added by @MichaReiser on 2024-02-21 11:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-21 11:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:182 on 2024-02-21 11:33</div>
+            <div class="timeline-body"><p>I tested the &quot;incremental&quot; reading by setting the capacity to 10</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2024-02-21 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @MichaReiser on 2024-02-21 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @MichaReiser on 2024-02-21 15:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Win Trampoline: Use Pyhton executable path encoded in binary" to "Win Trampoline: Use Python executable path encoded in binary" by @AlexWaygood on 2024-02-21 15:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:69 on 2024-02-21 17:02</div>
+            <div class="timeline-body"><p>Did you mean to leave this uncommented?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:109 on 2024-02-21 17:03</div>
+            <div class="timeline-body"><p>Nice. I like the reduction in <code>unsafe</code> scope. :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:109 on 2024-02-21 17:04</div>
+            <div class="timeline-body"><p>With <code>std</code>, we could probably use: https://doc.rust-lang.org/std/io/struct.Error.html#method.last_os_error</p>
+<p>And get the error messages that come with that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:546 on 2024-02-21 17:14</div>
+            <div class="timeline-body"><p>Hmmm. Since you're using <a href="https://docs.rs/windows-sys/latest/windows_sys/Win32/System/Diagnostics/Debug/fn.FormatMessageA.html"><code>FormatMessageA</code></a> and the type of <code>lpbuffer</code> is <code>PSTR = *mut u8</code>, then I think this comment should say <code>*mut 8</code> instead?</p>
+<p>In any case, I think most of this strangeness is coming from using <code>FORMAT_MESSAGE_ALLOCATE_BUFFER</code>. I'd suggest just putting a buffer on the stack and having this function read into it. And also use <code>FormatMessageW</code>. The <code>A</code> routines are legacy AFAIK.</p>
+<p>You might be able to just copy what std does: https://github.com/rust-lang/rust/blob/bf9229a2e366b4c311f059014a4aa08af16de5d8/library/std/src/sys/windows/os.rs#L26-L80</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:546 on 2024-02-21 17:15</div>
+            <div class="timeline-body"><p>Ahhhh and I just realized you didn't write this code... OK. I'll understand if you want to just keep it the way it is now because it presumably works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/install-wheel-rs/src/wheel.rs</code>:286 on 2024-02-21 17:20</div>
+            <div class="timeline-body"><p>You sure do know how to make me happy.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:275 on 2024-02-21 17:40</div>
+            <div class="timeline-body"><p>OK, so reading the above, I think it works like this:</p>
+<ul>
+<li>It first tries to read 1KB from the end of a file.</li>
+<li>If it finds the magic number, path length and path all within that 1KB, it stops.</li>
+<li>Otherwise, it resizes the buffer's capacity to whatever the decoded <code>path_len</code> is.</li>
+<li>It then goes back to the first step again, but read <code>{path_len}KB</code> instead.</li>
+</ul>
+<p>I think there might be a couple issues with this approach, both of which center around trusting <code>path_len</code>:</p>
+<ol>
+<li>If <code>path_len</code> is <code>u32::MAX</code>, then this will allocate 4GB.</li>
+<li>If the file is being mutated while we're doing this in a very specific way, then it's possible this loop isn't guaranteed to terminate.</li>
+</ol>
+<p>(2) is kind of a stretch, but (1) I think is a real enough issue.</p>
+<p>My suggestion here would be to read 4KB from the end of the file, and if you can't find the path in there, consider it malformed and give up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:69 on 2024-02-21 17:40</div>
+            <div class="timeline-body"><p>Ah this got commented again in the next commit. Whoops.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> requested changes on 2024-02-21 17:42</div>
+            <div class="timeline-body"><p>w00t! So much Windows API. Nice work.</p>
+<p>I do think there is at least one thing worth changing here before merging, which is the logic for reading the file path from the end of the binary. The main issue I <em>think</em> with the current implementation is that it trusts the path length, which could lead to the program allocating a huge amount of memory if something went wrong (whether intentional or not).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-21 18:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:275 on 2024-02-21 18:03</div>
+            <div class="timeline-body"><p>Thanks for the thorough review. I'll carefully go over the implementation again tomorrow.</p>
+<ol start="2">
+<li>shouldn't be a problem because <a href="https://github.com/astral-sh/puffin/blob/e772c05b88019319f57cd52b084666291c2b262e/crates/uv-trampoline/src/bounce.rs#L147-L155">we open the file</a> with <a href="https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilea#parameters"><code>FILE_SHARE_READ</code></a> only, prohibiting other processes from mutating or deleting the file while we're using it.</li>
+</ol>
+<p>Not trusting <code>path_len</code> makes sense as well does limiting. I'll probably go with a higher default, e.g. even URl have an <a href="https://chromium.googlesource.com/chromium/src/+/master/docs/security/url_display_guidelines/url_display_guidelines.md#URL-Length">upper limit of 2MB</a>. Agreed, URLs may contain application data which is different but I don't think it hurts to go somewhat higher than 4KB.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-21 18:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:275 on 2024-02-21 18:09</div>
+            <div class="timeline-body"><p>Ah yeah good catch on (2). Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-21 21:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:109 on 2024-02-21 21:33</div>
+            <div class="timeline-body"><p>That would be nice. I would prefer to keep this PR with no_std. I can look into using std separately</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-21 21:34</div>
+            <div class="timeline-body"><p>@charliermarsh / @zanieb If I want to add a test case as outlined in the test plan, how would I go about it? Can I install any python package with a binary script as part of the test or do we have a stub package that has a script entry point that I can use?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-02-21 21:38</div>
+            <div class="timeline-body"><p>@MichaReiser you could generate a stub package and add it to the repository or use some &quot;small&quot; real world package with a pinned version</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-02-21 21:42</div>
+            <div class="timeline-body"><p>Do you have a link with some resources on how I would do that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-22 08:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>scripts/wheels/simple_launcher-0.1.0-py3-none-any.whl</code>:1 on 2024-02-22 08:59</div>
+            <div class="timeline-body"><p>Thanks @konstin for providing me with a test wheel!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-02-22 09:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:275 on 2024-02-22 09:21</div>
+            <div class="timeline-body"><p>From https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=registry:</p>
+<blockquote>
+<p>The Windows API has many functions that also have Unicode versions to permit an extended-length path for a maximum total path length of 32,767 characters.
+The maximum path of 32,767 characters is approximate, because the &quot;\?&quot; prefix may be expanded to a longer string by the system at run time, and this expansion applies to the total length.</p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-02-22 09:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/pip_install.rs</code>:1491 on 2024-02-22 09:28</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">fn entrypoint() -&gt; Result&lt;()&gt; {
+</code></pre>
+<p>Or <code>launcher</code> maybe, i wouldn't call them scripts here since that therm is overloaded</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-22 13:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:109 on 2024-02-22 13:04</div>
+            <div class="timeline-body"><p>Oh yeah absolutely, totally cool with this PR staying with <code>no_std</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-02-22 13:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:275 on 2024-02-22 13:06</div>
+            <div class="timeline-body"><p>So my read of that doc is that there isn't a pre-defined upper bound on how long a path can be. Does that match your understanding? If that's true, I still think we need to place some kind of reasonable upper bound on what we're willing to accept. I think 4KB is probably sufficient, but 32KB would be fine with me too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-22 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:275 on 2024-02-22 13:20</div>
+            <div class="timeline-body"><p>I limited it to 32KB</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @MichaReiser on 2024-02-22 13:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-trampoline/.cargo/config.toml</code>:3 on 2024-02-22 13:32</div>
+            <div class="timeline-body"><p>Did you mean to include this in this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-trampoline/src/bounce.rs</code>:270 on 2024-02-22 13:42</div>
+            <div class="timeline-body"><p>At first I was unsure if this was limiting heap memory since <code>bytes_to_read</code> was still being calculated based on <code>path_len</code>, but I see above that <code>path_len</code> is limited to a maximum. So I think that's right.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-02-22 13:43</div>
+            <div class="timeline-body"><p>Nice, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-02-22 15:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/uv-trampoline/.cargo/config.toml</code>:3 on 2024-02-22 15:09</div>
+            <div class="timeline-body"><p>Yes that's intentional, considering that I won't land my <code>std</code> branch anytime soon. It requires me to only type <code>cargo build --release --target x86_64-pc-windows-msvc</code> instead of that plus the <code>-Z</code> compiler flags.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2024-02-22 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2024-02-22 15:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-02-22 15:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 14:55:03 UTC
+    </footer>
+</body>
+</html>
