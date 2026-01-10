@@ -1,0 +1,527 @@
+```yaml
+number: 17590
+title: "[red-knot] Assignability of class instances to Callable"
+type: pull_request
+state: merged
+author: sharkdp
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: david/instance-assignable_to-callable
+created_at: 2025-04-23T18:19:03Z
+updated_at: 2025-04-23T18:34:16Z
+url: https://github.com/astral-sh/ruff/pull/17590
+synced_at: 2026-01-10T19:33:02Z
+```
+
+# [red-knot] Assignability of class instances to Callable
+
+---
+
+_Pull request opened by @sharkdp on 2025-04-23 18:19_
+
+## Summary
+
+Model assignability of class instances with a `__call__` method to `Callable` types. This should solve some false positives related to `functools.partial` (yes, 1098 fewer diagnostics!).
+
+Reference: https://github.com/astral-sh/ty/issues/129
+
+## Test Plan
+
+New Markdown tests.
+
+---
+
+_Label `red-knot` added by @sharkdp on 2025-04-23 18:19_
+
+---
+
+_Review requested from @carljm by @sharkdp on 2025-04-23 18:19_
+
+---
+
+_Review requested from @AlexWaygood by @sharkdp on 2025-04-23 18:19_
+
+---
+
+_Review requested from @dcreager by @sharkdp on 2025-04-23 18:19_
+
+---
+
+_Comment by @github-actions[bot] on 2025-04-23 18:23_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+nionutils (https://github.com/nion-software/nionutils)
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/nionutils/nion/utils/ListModel.py:116:20: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/nionutils/nion/utils/ListModel.py:130:20: No overload of function `__new__` matches arguments
+- Found 35 diagnostics
++ Found 33 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/anyio/src/anyio/_core/_fileio.py:431:50: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/anyio/src/anyio/_core/_fileio.py:445:50: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/anyio/src/anyio/_core/_fileio.py:467:41: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/anyio/src/anyio/_core/_fileio.py:644:46: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/anyio/src/anyio/_core/_fileio.py:663:41: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/anyio/src/anyio/_backends/_asyncio.py:1016:13: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -> Unknown`, found `partial`
+- Found 154 diagnostics
++ Found 148 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/attrs/tests/test_make.py:1592:16: No overload of function `sorted` matches arguments
+- Found 680 diagnostics
++ Found 679 diagnostics
+
+async-utils (https://github.com/mikeshardmind/async-utils)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/async-utils/src/async_utils/corofunc_cache.py:108:36: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -> object`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/async-utils/src/async_utils/corofunc_cache.py:187:36: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -> object`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/async-utils/src/async_utils/task_cache.py:167:36: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -> object`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/async-utils/src/async_utils/task_cache.py:253:36: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -> object`, found `partial`
+- Found 25 diagnostics
++ Found 21 diagnostics
+
+more-itertools (https://github.com/more-itertools/more-itertools)
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/more-itertools/more_itertools/recipes.py:551:16: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/more-itertools/more_itertools/recipes.py:553:22: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/more-itertools/more_itertools/more.py:211:16: No overload of function `iter` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/more-itertools/more_itertools/more.py:1890:17: No overload of function `sorted` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/more-itertools/more_itertools/more.py:2720:15: No overload of function `__new__` matches arguments
+- Found 93 diagnostics
++ Found 88 diagnostics
+
+bandersnatch (https://github.com/pypa/bandersnatch)
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/bandersnatch/src/bandersnatch_filter_plugins/latest_name.py:82:30: No overload of function `__new__` matches arguments
+- Found 164 diagnostics
++ Found 163 diagnostics
+
+sockeye (https://github.com/awslabs/sockeye)
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/sockeye/sockeye/lexicon.py:190:30: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/sockeye/sockeye/lexicon.py:190:30: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/sockeye/sockeye/lexicon.py:190:30: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/sockeye/sockeye/lexicon.py:198:49: No overload of function `sorted` matches arguments
+- Found 371 diagnostics
++ Found 367 diagnostics
+
+kopf (https://github.com/nolar/kopf)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/kopf/kopf/_core/reactor/orchestration.py:260:49: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `ResourceWatchStreamProcessor`
+- Found 166 diagnostics
++ Found 165 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
+- error[lint:invalid-return-type] /tmp/mypy_primer/projects/porcupine/porcupine/actions.py:127:12: Return type does not match returned value: Expected `(FileTab, /) -> bool`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/matching_paren.py:75:42: Argument to this function is incorrect: Expected `(str, str, /) -> object`, found `partial`
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/rstrip.py:22:5: No overload of bound method `bind` matches arguments
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/tab_closing.py:44:46: Argument to this function is incorrect: Expected `(() -> object) | str`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/tab_closing.py:46:37: Argument to this function is incorrect: Expected `(() -> object) | str`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/tab_closing.py:49:38: Argument to this function is incorrect: Expected `(() -> object) | str`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/tab_closing.py:52:35: Argument to this function is incorrect: Expected `(() -> object) | str`, found `partial`
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/wrap.py:40:5: No overload of bound method `bind` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/wrap.py:41:5: No overload of bound method `bind` matches arguments
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/wrap.py:48:28: Argument to this function is incorrect: Expected `(str, str, str, /) -> object`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/textutils.py:227:21: Argument to this function is incorrect: Expected `(...) -> object`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:544:43: Argument to this function is incorrect: Expected `(EventWithData, /) -> str | None`, found `partial`
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/find.py:164:9: No overload of bound method `bind` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/find.py:165:9: No overload of bound method `bind` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autoindent.py:120:5: No overload of bound method `bind` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autoindent.py:121:5: No overload of bound method `bind` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autoindent.py:122:5: No overload of bound method `bind` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autoindent.py:123:5: No overload of bound method `bind` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autoindent.py:124:5: No overload of bound method `bind` matches arguments
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/jump_to_definition.py:103:17: Argument to this function is incorrect: Expected `(() -> object) | str`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/python_tools.py:69:9: Argument to this function is incorrect: Expected `(FileTab, /) -> None`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/python_tools.py:76:9: Argument to this function is incorrect: Expected `(FileTab, /) -> None`, found `partial`
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/urls.py:83:5: No overload of bound method `bind` matches arguments
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/urls.py:84:64: Argument to this function is incorrect: Expected `() -> None`, found `partial`
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/urls.py:87:5: No overload of bound method `bind` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/menubar.py:256:13: No overload of bound method `bind` matches arguments
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/menubar.py:464:48: Argument to this function is incorrect: Expected `(() -> object) | str`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/menubar.py:465:51: Argument to this function is incorrect: Expected `(() -> object) | str`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/menubar.py:490:55: Argument to this function is incorrect: Expected `(() -> object) | str`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/menubar.py:491:56: Argument to this function is incorrect: Expected `(() -> object) | str`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/menubar.py:493:34: Argument to this function is incorrect: Expected `(() -> object) | str`, found `partial`
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/filetypes.py:209:5: No overload of bound method `bind` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/editorconfig.py:356:5: No overload of bound method `bind` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/utils.py:555:5: No overload of bound method `bind` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/utils.py:556:5: No overload of bound method `bind` matches arguments
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/git_status.py:139:51: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `partial`
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/git_status.py:287:5: No overload of bound method `bind` matches arguments
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/directory_tree.py:498:33: Argument to this function is incorrect: Expected `(() -> object) | str`, found `partial`
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/directory_tree.py:509:5: No overload of bound method `bind` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/directory_tree.py:511:5: No overload of bound method `bind` matches arguments
+- error[lint:invalid-return-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/run/no_terminal.py:421:16: Return type does not match returned value: Expected `(() -> None) | None`, found `partial`
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/langserver.py:778:5: No overload of bound method `bind` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/langserver.py:779:5: No overload of bound method `bind` matches arguments
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/pastebin.py:385:9: Argument to this function is incorrect: Expected `() -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/pastebin.py:385:48: Argument to this function is incorrect: Expected `(bool, str | @Todo(Support for `typing.TypeVar` instances in type expressions), /) -> None`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/pastebin.py:395:13: Argument to this function is incorrect: Expected `(FileTab, /) -> object`, found `partial`
+- Found 309 diagnostics
++ Found 263 diagnostics
+
+starlette (https://github.com/encode/starlette)
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/starlette/tests/test__utils.py:71:45: Unused blanket `type: ignore` directive
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/starlette/tests/test__utils.py:68:33: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Async`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/starlette/tests/test__utils.py:82:40: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/starlette/starlette/concurrency.py:36:5: Object of type `partial` is not assignable to `(...) -> Unknown`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/starlette/tests/test_exceptions.py:65:46: Argument to this function is incorrect: Expected `(...) -> Any`, found `HandledExcAfterResponse`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/starlette/starlette/responses.py:270:32: Argument to this function is incorrect: Expected `() -> @Todo(specialized non-generic class)`, found `partial`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/starlette/starlette/routing.py:65:5: Object of type `((Request, /) -> @Todo(specialized non-generic class) | Response) | partial` is not assignable to `(Request, /) -> @Todo(specialized non-generic class)`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/starlette/tests/test_routing.py:134:28: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/starlette/tests/test_routing.py:137:21: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/starlette/tests/test_routing.py:139:39: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/starlette/tests/test_routing.py:142:21: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/starlette/tests/test_routing.py:351:29: Argument to this function is incorrect: Expected `(...) -> Any`, found `WebSocketEndpoint`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/starlette/tests/test_routing.py:388:42: Argument to this function is incorrect: Expected `(...) -> Any`, found `Unknown | PlainTextResponse`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/starlette/tests/test_routing.py:581:22: Argument to this function is incorrect: Expected `(...) -> Any`, found `PlainTextResponse`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/starlette/tests/test_routing.py:591:22: Argument to this function is incorrect: Expected `(...) -> Any`, found `PlainTextResponse`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/starlette/tests/test_routing.py:1240:9: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/starlette/tests/test_routing.py:1246:9: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/starlette/tests/test_routing.py:1257:17: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- Found 222 diagnostics
++ Found 206 diagnostics
+
+pip (https://github.com/pypa/pip)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pip/src/pip/_internal/self_outdated_check.py:247:9: Argument to this function is incorrect: Expected `() -> str | None`, found `partial`
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/pip/src/pip/_vendor/typing_extensions.py:353:26: No overload of bound method `__init__` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/pip/src/pip/_internal/resolution/resolvelib/resolver.py:212:24: No overload of function `sorted` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/pip/src/pip/_internal/commands/install.py:482:13: No overload of bound method `sort` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/pip/src/pip/_vendor/rich/measure.py:148:9: No overload of function `max` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/pip/src/pip/_vendor/rich/measure.py:149:9: No overload of function `max` matches arguments
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pip/src/pip/_vendor/resolvelib/resolvers/resolution.py:120:17: Argument to this function is incorrect: Expected `(Unknown, /) -> @Todo(specialized non-generic class)`, found `methodcaller`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pip/src/pip/_vendor/resolvelib/resolvers/resolution.py:125:17: Argument to this function is incorrect: Expected `(Unknown, /) -> @Todo(specialized non-generic class)`, found `attrgetter`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pip/src/pip/_vendor/resolvelib/resolvers/resolution.py:178:17: Argument to this function is incorrect: Expected `(Unknown, /) -> @Todo(specialized non-generic class)`, found `attrgetter`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pip/src/pip/_vendor/resolvelib/resolvers/resolution.py:182:17: Argument to this function is incorrect: Expected `(Unknown, /) -> @Todo(specialized non-generic class)`, found `attrgetter`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pip/src/pip/_vendor/resolvelib/resolvers/resolution.py:258:21: Argument to this function is incorrect: Expected `(Unknown, /) -> @Todo(specialized non-generic class)`, found `methodcaller`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pip/src/pip/_vendor/resolvelib/resolvers/resolution.py:262:21: Argument to this function is incorrect: Expected `(Unknown, /) -> @Todo(specialized non-generic class)`, found `attrgetter`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pip/src/pip/_vendor/resolvelib/resolvers/resolution.py:421:29: Argument to this function is incorrect: Expected `(Unknown, /) -> @Todo(specialized non-generic class)`, found `attrgetter`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pip/src/pip/_vendor/resolvelib/resolvers/resolution.py:425:29: Argument to this function is incorrect: Expected `(Unknown, /) -> @Todo(specialized non-generic class)`, found `attrgetter`
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/pip/src/pip/_vendor/rich/layout.py:362:35: No overload of function `sorted` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/pip/src/pip/_vendor/rich/text.py:247:9: No overload of bound method `sort` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/pip/src/pip/_vendor/rich/text.py:749:9: No overload of bound method `sort` matches arguments
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pip/src/pip/_internal/index/collector.py:214:22: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `ParseLinks`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pip/src/pip/_vendor/cachecontrol/adapter.py:131:21: Argument to this function is incorrect: Expected `((bytes, /) -> None) | None`, found `partial`
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/pip/src/pip/_vendor/rich/segment.py:245:20: No overload of function `__new__` matches arguments
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:122:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:131:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:143:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:155:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:168:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:176:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:183:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:193:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:202:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:211:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:225:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:235:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:246:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:256:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:269:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:278:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:287:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:297:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:324:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:338:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:349:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:377:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:461:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:542:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:601:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:622:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:638:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:687:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:727:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:736:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:772:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:786:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:794:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:805:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:890:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:904:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:913:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:923:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:931:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:940:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:948:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:958:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:992:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:1006:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:1018:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:1034:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:1045:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:1061:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/cli/cmdoptions.py:1075:1: Object of type `partial` is not assignable to `(...) -> Option`
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/pip/src/pip/_vendor/rich/markup.py:230:18: No overload of function `sorted` matches arguments
+- Found 1167 diagnostics
++ Found 1097 diagnostics
+
+nox (https://github.com/wntrblm/nox)
+- error[lint:invalid-return-type] /tmp/mypy_primer/projects/nox/nox/registry.py:85:16: Return type does not match returned value: Expected `Func | ((@Todo(Inference of subscript on special form) | Func, /) -> Func)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/nox/nox/registry.py:111:9: Argument to this function is incorrect: Expected `(...) -> Any`, found `(((...) -> Any) & ~None) | Func`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/nox/nox/registry.py:111:9: Argument to this function is incorrect: Expected `(...) -> Any`, found `(((...) -> Any) & ~None) | Func`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/nox/nox/_decorators.py:60:47: Unused blanket `type: ignore` directive
+- error[lint:invalid-return-type] /tmp/mypy_primer/projects/nox/nox/_parametrize.py:185:12: Return type does not match returned value: Expected `(Any, /) -> Any`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/nox/nox/_decorators.py:179:21: Argument to this function is incorrect: Expected `(...) -> Any`, found `Func`
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/nox/nox/manifest.py:134:33: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/nox/nox/manifest.py:139:54: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/nox/nox/manifest.py:140:17: No overload of function `sorted` matches arguments
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/nox/nox/_options.py:377:9: Argument to this function is incorrect: Expected `((Namespace, NoxOptions, /) -> Any) | None`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/nox/nox/_options.py:401:9: Argument to this function is incorrect: Expected `((Namespace, NoxOptions, /) -> Any) | None`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/nox/nox/_options.py:411:9: Argument to this function is incorrect: Expected `((Namespace, NoxOptions, /) -> Any) | None`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/nox/nox/_option_set.py:235:9: Argument to this function is incorrect: Expected `((Namespace, NoxOptions, /) -> Any) | None`, found `partial`
+- Found 59 diagnostics
++ Found 48 diagnostics
+
+black (https://github.com/psf/black)
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/black/src/black/mode.py:258:32: No overload of function `sorted` matches arguments
+- Found 152 diagnostics
++ Found 151 diagnostics
+
+mkosi (https://github.com/systemd/mkosi)
+- error[lint:invalid-return-type] /tmp/mypy_primer/projects/mkosi/mkosi/config.py:1269:12: Return type does not match returned value: Expected `(str, /) -> Path`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/mkosi/mkosi/qemu.py:497:28: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -> @Todo(specialized non-generic class)`, found `partial`
+- Found 284 diagnostics
++ Found 282 diagnostics
+
+pylint (https://github.com/pycqa/pylint)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pylint/pylint/checkers/typecheck.py:212:42: Argument to this function is incorrect: Expected `((@Todo(Support for `typing.TypeVar` instances in type expressions), /) -> @Todo(Support for `typing.TypeAlias`)) | None`, found `itemgetter`
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/pylint/pylint/checkers/symilar.py:506:23: No overload of function `sorted` matches arguments
+- Found 258 diagnostics
++ Found 256 diagnostics
+
+typeshed-stats (https://github.com/AlexWaygood/typeshed-stats)
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/typeshed-stats/src/typeshed_stats/gather.py:1392:12: No overload of function `sorted` matches arguments
+- Found 24 diagnostics
++ Found 23 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pydantic/pydantic/deprecated/class_validators.py:254:67: Argument to this function is incorrect: Expected `(((...) -> Any, /) -> (...) -> Any) | None`, found `Unknown | partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pydantic/pydantic/_internal/_dataclasses.py:150:9: Argument to this function is incorrect: Expected `() -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pydantic/pydantic/_internal/_model_construction.py:659:9: Argument to this function is incorrect: Expected `() -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- Found 926 diagnostics
++ Found 923 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/tornado/tornado/routing.py:398:17: Argument to this function is incorrect: Expected `(HTTPServerRequest, /) -> None`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/tornado/tornado/autoreload.py:128:41: Argument to this function is incorrect: Expected `() -> Awaitable | None`, found `partial`
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/tornado/tornado/tcpclient.py:129:9: No overload of function `future_add_done_callback` matches arguments
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/tornado/tornado/tcpclient.py:272:13: Argument to this function is incorrect: Expected `(AddressFamily, tuple, /) -> tuple[IOStream, @Todo(unknown type subscript)]`, found `partial`
+- Found 380 diagnostics
++ Found 376 diagnostics
+
+websockets (https://github.com/aaugustin/websockets)
+- error[lint:invalid-return-type] /tmp/mypy_primer/projects/websockets/src/websockets/legacy/auth.py:186:12: Return type does not match returned value: Expected `(...) -> BasicAuthWebSocketServerProtocol`, found `partial`
+- Found 113 diagnostics
++ Found 112 diagnostics
+
+PyGithub (https://github.com/PyGithub/PyGithub)
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/PyGithub/github/GithubObject.py:441:25: No overload of function `sorted` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/PyGithub/github/GithubObject.py:441:25: No overload of function `sorted` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/PyGithub/github/GithubObject.py:441:25: No overload of function `sorted` matches arguments
+- Found 354 diagnostics
++ Found 351 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- error[lint:invalid-return-type] /tmp/mypy_primer/projects/urllib3/test/__init__.py:110:12: Return type does not match returned value: Expected `(@Todo(Support for `typing.TypeVar` instances in type expressions), /) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Unknown | MarkDecorator`
+- error[lint:invalid-return-type] /tmp/mypy_primer/projects/urllib3/test/__init__.py:117:12: Return type does not match returned value: Expected `(@Todo(Support for `typing.TypeVar` instances in type expressions), /) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Unknown | MarkDecorator`
+- error[lint:invalid-return-type] /tmp/mypy_primer/projects/urllib3/test/__init__.py:123:12: Return type does not match returned value: Expected `(@Todo(Support for `typing.TypeVar` instances in type expressions), /) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Unknown | MarkDecorator`
+- error[lint:invalid-return-type] /tmp/mypy_primer/projects/urllib3/test/__init__.py:129:12: Return type does not match returned value: Expected `(@Todo(Support for `typing.TypeVar` instances in type expressions), /) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Unknown | MarkDecorator`
+- error[lint:invalid-return-type] /tmp/mypy_primer/projects/urllib3/test/__init__.py:135:12: Return type does not match returned value: Expected `(@Todo(Support for `typing.TypeVar` instances in type expressions), /) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Unknown | MarkDecorator`
+- error[lint:invalid-return-type] /tmp/mypy_primer/projects/urllib3/test/__init__.py:195:12: Return type does not match returned value: Expected `(@Todo(Support for `typing.TypeVar` instances in type expressions), /) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Unknown | MarkDecorator`
+- Found 448 diagnostics
++ Found 442 diagnostics
+
+paasta (https://github.com/yelp/paasta)
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/paasta/paasta_tools/utils.py:4076:60: Unused blanket `type: ignore` directive
+- Found 954 diagnostics
++ Found 955 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/psycopg/tests/test_pipeline_async.py:374:33: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/psycopg/tests/test_pipeline_async.py:396:33: No overload of function `__new__` matches arguments
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/psycopg/psycopg/psycopg/_connection_base.py:120:9: Object of type `partial` is not assignable to attribute `notice_handler` of type `((PGresult, /) -> None) | None`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/psycopg/psycopg/psycopg/_connection_base.py:121:9: Object of type `partial` is not assignable to attribute `notify_handler` of type `((PGnotify, /) -> None) | None`
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/psycopg/tests/test_pipeline.py:377:33: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/psycopg/tests/test_pipeline.py:399:33: No overload of function `__new__` matches arguments
+- Found 1299 diagnostics
++ Found 1293 diagnostics
+
+beartype (https://github.com/beartype/beartype)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/beartype/beartype/_decor/_nontype/_pep/_decorpep557.py:210:53: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `type`
+- Found 575 diagnostics
++ Found 574 diagnostics
+
+asynq (https://github.com/quora/asynq)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/asynq/asynq/tools.py:193:41: Argument to this function is incorrect: Expected `((@Todo(Support for `typing.Self`), /) -> Any) | None`, found `partial`
+- Found 251 diagnostics
++ Found 250 diagnostics
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/boostedblob/boostedblob/azure_auth.py:276:13: Argument to this function is incorrect: Expected `((Request, /) -> @Todo(specialized non-generic class)) | None`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/boostedblob/boostedblob/azure_auth.py:299:9: Argument to this function is incorrect: Expected `((Request, /) -> @Todo(specialized non-generic class)) | None`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/boostedblob/boostedblob/azure_auth.py:355:9: Argument to this function is incorrect: Expected `((Request, /) -> @Todo(specialized non-generic class)) | None`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/boostedblob/boostedblob/azure_auth.py:391:13: Argument to this function is incorrect: Expected `((Request, /) -> @Todo(specialized non-generic class)) | None`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/boostedblob/boostedblob/azure_auth.py:411:9: Argument to this function is incorrect: Expected `((Request, /) -> @Todo(specialized non-generic class)) | None`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/boostedblob/boostedblob/azure_auth.py:429:51: Argument to this function is incorrect: Expected `((Request, /) -> @Todo(specialized non-generic class)) | None`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/boostedblob/boostedblob/azure_auth.py:454:9: Argument to this function is incorrect: Expected `((Request, /) -> @Todo(specialized non-generic class)) | None`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/boostedblob/boostedblob/azure_auth.py:560:9: Argument to this function is incorrect: Expected `((Request, /) -> @Todo(specialized non-generic class)) | None`, found `partial`
+- Found 107 diagnostics
++ Found 99 diagnostics
+
+dedupe (https://github.com/dedupeio/dedupe)
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/dedupe/dedupe/branch_and_bound.py:76:24: No overload of function `max` matches arguments
+- Found 128 diagnostics
++ Found 127 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cloud-init/cloudinit/net/activators.py:23:38: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cloud-init/cloudinit/net/activators.py:294:13: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cloud-init/cloudinit/net/activators.py:307:13: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cloud-init/tests/unittests/helpers.py:253:31: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `_RmtreeType`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cloud-init/cloudinit/url_helper.py:936:13: Argument to this function is incorrect: Expected `(Any, /) -> tuple[str | None, UrlResponse | None]`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cloud-init/setup.py:72:21: Argument to this function is incorrect: Expected `(...) -> Unknown`, found `_RmtreeType`
+- Found 732 diagnostics
++ Found 726 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/mitmproxy/mitmproxy/utils/signals.py:50:9: Object of type `ReferenceType` is not assignable to `(...) -> Unknown`
+- Found 1320 diagnostics
++ Found 1319 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/local.py:296:24: Return type does not match returned value: Expected `(...) -> Any`, found `partial`
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/werkzeug/tests/test_exceptions.py:67:5: No overload of function `raises` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/werkzeug/tests/test_exceptions.py:68:5: No overload of function `raises` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/werkzeug/tests/test_exceptions.py:71:5: No overload of function `raises` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/werkzeug/tests/test_exceptions.py:72:5: No overload of function `raises` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/werkzeug/tests/test_test.py:758:5: No overload of function `raises` matches arguments
+- Found 500 diagnostics
++ Found 494 diagnostics
+
+hydra-zen (https://github.com/mit-ll-responsible-ai/hydra-zen)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/hydra-zen/src/hydra_zen/funcs.py:102:35: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `type | ((...) -> Any) | @Todo(Type::Intersection.call())`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/hydra-zen/src/hydra_zen/wrapper/_implementations.py:433:9: Object of type `@Todo(Type::Intersection.call()) | partial` is not assignable to `(...) -> Unknown`
+- Found 633 diagnostics
++ Found 631 diagnostics
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cwltool/cwltool/update.py:159:40: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cwltool/cwltool/command_line_tool.py:779:17: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cwltool/cwltool/command_line_tool.py:812:17: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cwltool/cwltool/command_line_tool.py:814:80: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cwltool/cwltool/command_line_tool.py:974:79: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cwltool/cwltool/command_line_tool.py:1211:25: Argument to this function is incorrect: Expected `(str, /) -> Any`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cwltool/cwltool/command_line_tool.py:1225:57: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cwltool/cwltool/command_line_tool.py:1231:21: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cwltool/cwltool/main.py:492:9: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cwltool/cwltool/main.py:562:46: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/cwltool/cwltool/main.py:1303:17: Object of type `partial` is not assignable to attribute `find_default_container` of type `((HasReqsHints, /) -> str | None) | None`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cwltool/cwltool/main.py:1339:25: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cwltool/cwltool/process.py:377:43: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cwltool/cwltool/process.py:761:41: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cwltool/cwltool/load_tool.py:354:17: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/cwltool/cwltool/load_tool.py:548:13: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- Found 427 diagnostics
++ Found 411 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_unique_operation_names.py:9:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_unique_input_field_names.py:9:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_scalar_leafs.py:9:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_no_unused_variables.py:9:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_unique_type_names.py:10:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_defer_stream_directive_on_valid_operations.py:42:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_lone_anonymous_operation.py:9:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_known_argument_names.py:13:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_known_argument_names.py:19:28: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_no_deprecated.py:19:28: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_fields_on_correct_type.py:46:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_known_type_names.py:10:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_known_type_names.py:14:28: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_overlapping_fields_can_be_merged.py:10:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_defer_stream_directive_label.py:9:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_unique_argument_definition_names.py:13:28: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_single_field_subscriptions.py:39:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_unique_enum_value_names.py:10:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/graphql-core/tests/language/test_predicates.py:21:17: No overload of function `sorted` matches arguments
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_no_schema_introspection.py:25:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_possible_fragment_spreads.py:62:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_unique_fragment_names.py:9:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/src/graphql/validation/rules/unique_variable_names.py:30:35: Argument to this function is incorrect: Expected `(@Todo(Support for `typing.TypeVar` instances in type expressions), /) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `attrgetter`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_unique_field_definition_names.py:12:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_values_of_correct_type.py:18:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/graphql-core/src/graphql/type/validate.py:558:35: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/graphql-core/src/graphql/type/validate.py:565:29: No overload of function `__new__` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/graphql-core/src/graphql/type/validate.py:565:57: No overload of function `__new__` matches arguments
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_lone_schema_definition.py:10:28: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_provided_required_arguments.py:13:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_provided_required_arguments.py:19:28: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_unique_directives_per_location.py:23:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_defer_stream_directive_on_root_field.py:42:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_unique_operation_types.py:10:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_unique_argument_names.py:9:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_executable_definitions.py:9:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_no_undefined_variables.py:9:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_known_fragment_names.py:9:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_no_deprecated.py:23:8: Unused blanket `type: ignore` directive
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_unique_variable_names.py:9:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_no_unused_fragments.py:9:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_variables_in_allowed_position.py:9:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/src/graphql/validation/rules/unique_argument_names.py:34:46: Argument to this function is incorrect: Expected `(@Todo(Support for `typing.TypeVar` instances in type expressions), /) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `attrgetter`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_unique_directive_names.py:10:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_fragments_on_composite_types.py:9:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/src/graphql/validation/rules/unique_argument_definition_names.py:77:46: Argument to this function is incorrect: Expected `(@Todo(Support for `typing.TypeVar` instances in type expressions), /) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `attrgetter`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_possible_type_extensions.py:10:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_variables_are_input_types.py:9:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_stream_directive_on_list_field.py:9:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_no_fragment_cycles.py:9:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_known_directives.py:45:24: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/graphql-core/tests/validation/test_known_directives.py:49:28: Argument to this function is incorrect: Expected `(...) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- Found 744 diagnostics
++ Found 694 diagnostics
+
+isort (https://github.com/pycqa/isort)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/isort/isort/main.py:1199:17: Argument to this function is incorrect: Expected `(@Todo(Support for `typing.TypeVar` instances in type expressions), /) -> @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/isort/isort/output.py:113:17: Argument to this function is incorrect: Expected `((str, /) -> Any) | None`, found `partial`
+- Found 52 diagnostics
++ Found 50 diagnostics
+
+scrapy (https://github.com/scrapy/scrapy)
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/scrapy/docs/_ext/scrapydocs.py:90:91: Unused blanket `type: ignore` directive
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/scrapy/scrapy/utils/conf.py:63:27: No overload of function `sorted` matches arguments
+- error[lint:no-matching-overload] /tmp/mypy_primer/projects/scrapy/scrapy/utils/trackref.py:68:20: No overload of function `min` matches arguments
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/scrapy/tests/test_utils_misc/test_return_with_argument_inside_generator.py:283:51: Argument to this function is incorrect: Expected `(...) -> Any`, found `partial`
+- error[lint:invalid-argument-type] ...*[Comment body truncated]*
+
+---
+
+_@AlexWaygood approved on 2025-04-23 18:25_
+
+---
+
+_@carljm approved on 2025-04-23 18:30_
+
+---
+
+_@dhruvmanila approved on 2025-04-23 18:31_
+
+Thank you!
+
+---
+
+_Merged by @sharkdp on 2025-04-23 18:34_
+
+---
+
+_Closed by @sharkdp on 2025-04-23 18:34_
+
+---
+
+_Branch deleted on 2025-04-23 18:34_
+
+---

@@ -1,0 +1,359 @@
+```yaml
+number: 15903
+title: "[`pylint`] Redefined outer names (`PLW0621`)"
+type: pull_request
+state: open
+author: InSyncWithFoo
+labels:
+  - rule
+  - preview
+assignees: []
+base: main
+head: RUF059
+created_at: 2025-02-03T06:01:39Z
+updated_at: 2025-04-25T17:30:51Z
+url: https://github.com/astral-sh/ruff/pull/15903
+synced_at: 2026-01-10T19:33:02Z
+```
+
+# [`pylint`] Redefined outer names (`PLW0621`)
+
+---
+
+_Pull request opened by @InSyncWithFoo on 2025-02-03 06:01_
+
+## Summary
+
+Part of #970 and #3040.
+
+This partial implementation of [`W0621`](https://pylint.readthedocs.io/en/latest/user_guide/messages/warning/redefined-outer-name.html) reports parameters that overshadow a variable from an outer scope. Pytest (yield) fixtures are exempted from the rule.
+
+The error message was taken from that of the upstream rule.
+
+## Test Plan
+
+`cargo nextest run` and `cargo insta test`.
+
+
+---
+
+_Converted to draft by @InSyncWithFoo on 2025-02-03 06:41_
+
+---
+
+_Comment by @InSyncWithFoo on 2025-02-03 06:44_
+
+That's weird. I'm pretty sure tests did pass when I wrote them two weeks ago.
+
+---
+
+_Marked ready for review by @InSyncWithFoo on 2025-02-11 23:05_
+
+---
+
+_Comment by @github-actions[bot] on 2025-02-11 23:11_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+6452 -12 violations, +0 -0 fixes in 21 projects; 34 projects unchanged)
+
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+89 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/DisnakeDev/disnake/blob/2ab0c535b021dd120b5a6aff67dc1c195b9913ae/disnake/abc.py#L300'>disnake/abc.py:300:34:</a> PLW0621 Redefining name `c` from outer scope (line 316)
++ <a href='https://github.com/DisnakeDev/disnake/blob/2ab0c535b021dd120b5a6aff67dc1c195b9913ae/disnake/ext/commands/core.py#L1130'>disnake/ext/commands/core.py:1130:27:</a> PLW0621 Redefining name `command` from outer scope (line 1534)
++ <a href='https://github.com/DisnakeDev/disnake/blob/2ab0c535b021dd120b5a6aff67dc1c195b9913ae/disnake/ext/commands/core.py#L140'>disnake/ext/commands/core.py:140:29:</a> PLW0621 Redefining name `command` from outer scope (line 1534)
++ <a href='https://github.com/DisnakeDev/disnake/blob/2ab0c535b021dd120b5a6aff67dc1c195b9913ae/disnake/ext/commands/core.py#L2533'>disnake/ext/commands/core.py:2533:5:</a> PLW0621 Redefining name `cooldown` from outer scope (line 2493)
++ <a href='https://github.com/DisnakeDev/disnake/blob/2ab0c535b021dd120b5a6aff67dc1c195b9913ae/disnake/ext/commands/flag_converter.py#L344'>disnake/ext/commands/flag_converter.py:344:34:</a> PLW0621 Redefining name `flag` from outer scope (line 95)
++ <a href='https://github.com/DisnakeDev/disnake/blob/2ab0c535b021dd120b5a6aff67dc1c195b9913ae/disnake/ext/commands/flag_converter.py#L371'>disnake/ext/commands/flag_converter.py:371:34:</a> PLW0621 Redefining name `flag` from outer scope (line 95)
++ <a href='https://github.com/DisnakeDev/disnake/blob/2ab0c535b021dd120b5a6aff67dc1c195b9913ae/disnake/ext/commands/flag_converter.py#L400'>disnake/ext/commands/flag_converter.py:400:53:</a> PLW0621 Redefining name `flag` from outer scope (line 95)
++ <a href='https://github.com/DisnakeDev/disnake/blob/2ab0c535b021dd120b5a6aff67dc1c195b9913ae/disnake/ext/commands/help.py#L1009'>disnake/ext/commands/help.py:1009:38:</a> PLW0621 Redefining name `no_category` from outer scope (line 1007)
++ <a href='https://github.com/DisnakeDev/disnake/blob/2ab0c535b021dd120b5a6aff67dc1c195b9913ae/disnake/ext/commands/help.py#L1256'>disnake/ext/commands/help.py:1256:38:</a> PLW0621 Redefining name `no_category` from outer scope (line 1254)
++ <a href='https://github.com/DisnakeDev/disnake/blob/2ab0c535b021dd120b5a6aff67dc1c195b9913ae/disnake/ext/commands/help.py#L554'>disnake/ext/commands/help.py:554:29:</a> PLW0621 Redefining name `cmd` from outer scope (line 561)
+... 79 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/aiven/aiven-client">aiven/aiven-client</a> (+7 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/aiven/aiven-client/blob/a1c1eebed1a26079076e9593709118e9d9931f33/aiven/client/cli.py#L951'>aiven/client/cli.py:951:23:</a> PLW0621 Redefining name `text` from outer scope (line 959)
++ <a href='https://github.com/aiven/aiven-client/blob/a1c1eebed1a26079076e9593709118e9d9931f33/tests/test_pretty.py#L149'>tests/test_pretty.py:149:9:</a> PLW0621 Redefining name `rows` from outer scope (line 128)
++ <a href='https://github.com/aiven/aiven-client/blob/a1c1eebed1a26079076e9593709118e9d9931f33/tests/test_pretty.py#L159'>tests/test_pretty.py:159:30:</a> PLW0621 Redefining name `actual` from outer scope (line 182)
++ <a href='https://github.com/aiven/aiven-client/blob/a1c1eebed1a26079076e9593709118e9d9931f33/tests/test_pretty.py#L159'>tests/test_pretty.py:159:43:</a> PLW0621 Redefining name `expected` from outer scope (line 183)
++ <a href='https://github.com/aiven/aiven-client/blob/a1c1eebed1a26079076e9593709118e9d9931f33/tests/test_pretty.py#L77'>tests/test_pretty.py:77:9:</a> PLW0621 Redefining name `rows` from outer scope (line 56)
++ <a href='https://github.com/aiven/aiven-client/blob/a1c1eebed1a26079076e9593709118e9d9931f33/tests/test_pretty.py#L87'>tests/test_pretty.py:87:30:</a> PLW0621 Redefining name `actual` from outer scope (line 110)
++ <a href='https://github.com/aiven/aiven-client/blob/a1c1eebed1a26079076e9593709118e9d9931f33/tests/test_pretty.py#L87'>tests/test_pretty.py:87:43:</a> PLW0621 Redefining name `expected` from outer scope (line 111)
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/PlasmaPy/PlasmaPy">PlasmaPy/PlasmaPy</a> (+132 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/PlasmaPy/PlasmaPy/blob/0b92054ef266973c3c791999c69d4365de2cd4b2/.github/scripts/citation_updater.py#L32'>.github/scripts/citation_updater.py:32:27:</a> PLW0621 Redefining name `args` from outer scope (line 69)
++ docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing.ipynb:cell 15:4:21: PLW0621 Redefining name `hax` from outer scope (line 151)
++ docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing.ipynb:cell 15:4:26: PLW0621 Redefining name `vax` from outer scope (line 151)
++ docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing.ipynb:cell 15:4:31: PLW0621 Redefining name `intensity` from outer scope (line 151)
++ docs/notebooks/diagnostics/charged_particle_radiography_particle_tracing_wire_mesh.ipynb:cell 16:1:20: PLW0621 Redefining name `sim` from outer scope (line 97)
++ docs/notebooks/dispersion/dispersion_function.ipynb:cell 9:1:18: PLW0621 Redefining name `X` from outer scope (line 29)
++ docs/notebooks/dispersion/dispersion_function.ipynb:cell 9:1:21: PLW0621 Redefining name `Y` from outer scope (line 29)
++ docs/notebooks/dispersion/stix_dispersion.ipynb:cell 27:7:29: PLW0621 Redefining name `mode` from outer scope (line 367)
++ docs/notebooks/dispersion/stix_dispersion.ipynb:cell 27:7:35: PLW0621 Redefining name `k_expected` from outer scope (line 296)
++ docs/notebooks/formulary/ExB_drift.ipynb:cell 6:1:32: PLW0621 Redefining name `v_d` from outer scope (line 64)
+... 122 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+1929 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/d831da84fb4c620b292f171e90c788c6ff00b7ff/airflow/api_fastapi/app.py#L129'>airflow/api_fastapi/app.py:129:23:</a> PLW0621 Redefining name `app` from outer scope (line 44)
++ <a href='https://github.com/apache/airflow/blob/d831da84fb4c620b292f171e90c788c6ff00b7ff/airflow/api_fastapi/app.py#L49'>airflow/api_fastapi/app.py:49:20:</a> PLW0621 Redefining name `app` from outer scope (line 44)
++ <a href='https://github.com/apache/airflow/blob/d831da84fb4c620b292f171e90c788c6ff00b7ff/airflow/api_fastapi/execution_api/routes/xcoms.py#L123'>airflow/api_fastapi/execution_api/routes/xcoms.py:123:5:</a> PLW0621 Redefining name `xcom_query` from outer scope (line 47)
++ <a href='https://github.com/apache/airflow/blob/d831da84fb4c620b292f171e90c788c6ff00b7ff/airflow/api_fastapi/execution_api/routes/xcoms.py#L96'>airflow/api_fastapi/execution_api/routes/xcoms.py:96:5:</a> PLW0621 Redefining name `xcom_query` from outer scope (line 47)
++ <a href='https://github.com/apache/airflow/blob/d831da84fb4c620b292f171e90c788c6ff00b7ff/airflow/assets/manager.py#L271'>airflow/assets/manager.py:271:58:</a> PLW0621 Redefining name `fileloc` from outer scope (line 283)
++ <a href='https://github.com/apache/airflow/blob/d831da84fb4c620b292f171e90c788c6ff00b7ff/airflow/auth/managers/base_auth_manager.py#L423'>airflow/auth/managers/base_auth_manager.py:423:58:</a> PLW0621 Redefining name `methods` from outer scope (line 415)
++ <a href='https://github.com/apache/airflow/blob/d831da84fb4c620b292f171e90c788c6ff00b7ff/airflow/cli/commands/local_commands/webserver_command.py#L459'>airflow/cli/commands/local_commands/webserver_command.py:459:40:</a> PLW0621 Redefining name `args` from outer scope (line 324)
++ <a href='https://github.com/apache/airflow/blob/d831da84fb4c620b292f171e90c788c6ff00b7ff/airflow/dag_processing/manager.py#L542'>airflow/dag_processing/manager.py:542:30:</a> PLW0621 Redefining name `abs_path` from outer scope (line 560)
++ <a href='https://github.com/apache/airflow/blob/d831da84fb4c620b292f171e90c788c6ff00b7ff/airflow/decorators/base.py#L140'>airflow/decorators/base.py:140:27:</a> PLW0621 Redefining name `dag` from outer scope (line 128)
++ <a href='https://github.com/apache/airflow/blob/d831da84fb4c620b292f171e90c788c6ff00b7ff/airflow/decorators/base.py#L679'>airflow/decorators/base.py:679:27:</a> PLW0621 Redefining name `python_callable` from outer scope (line 644)
++ <a href='https://github.com/apache/airflow/blob/d831da84fb4c620b292f171e90c788c6ff00b7ff/airflow/example_dags/example_asset_decorator.py#L32'>airflow/example_dags/example_asset_decorator.py:32:36:</a> PLW0621 Redefining name `asset1_producer` from outer scope (line 27)
++ <a href='https://github.com/apache/airflow/blob/d831da84fb4c620b292f171e90c788c6ff00b7ff/airflow/example_dags/example_passing_params_via_test_command.py#L34'>airflow/example_dags/example_passing_params_via_test_command.py:34:43:</a> PLW0621 Redefining name `task` from outer scope (line 28)
++ <a href='https://github.com/apache/airflow/blob/d831da84fb4c620b292f171e90c788c6ff00b7ff/airflow/jobs/scheduler_job_runner.py#L1455'>airflow/jobs/scheduler_job_runner.py:1455:27:</a> PLW0621 Redefining name `dag` from outer scope (line 1507)
++ <a href='https://github.com/apache/airflow/blob/d831da84fb4c620b292f171e90c788c6ff00b7ff/airflow/jobs/scheduler_job_runner.py#L1455'>airflow/jobs/scheduler_job_runner.py:1455:37:</a> PLW0621 Redefining name `dag_run` from outer scope (line 1502)
+... 1915 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+213 -11 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/9da30956c0628496958585d23cb6aa30abbfc693/RELEASING/verify_release.py#L110'>RELEASING/verify_release.py:110:27:</a> PLW0621 Redefining name `filename` from outer scope (line 127)
++ <a href='https://github.com/apache/superset/blob/9da30956c0628496958585d23cb6aa30abbfc693/RELEASING/verify_release.py#L29'>RELEASING/verify_release.py:29:21:</a> PLW0621 Redefining name `filename` from outer scope (line 127)
++ <a href='https://github.com/apache/superset/blob/9da30956c0628496958585d23cb6aa30abbfc693/RELEASING/verify_release.py#L36'>RELEASING/verify_release.py:36:22:</a> PLW0621 Redefining name `filename` from outer scope (line 127)
++ <a href='https://github.com/apache/superset/blob/9da30956c0628496958585d23cb6aa30abbfc693/RELEASING/verify_release.py#L45'>RELEASING/verify_release.py:45:19:</a> PLW0621 Redefining name `filename` from outer scope (line 127)
++ <a href='https://github.com/apache/superset/blob/9da30956c0628496958585d23cb6aa30abbfc693/RELEASING/verify_release.py#L59'>RELEASING/verify_release.py:59:18:</a> PLW0621 Redefining name `filename` from outer scope (line 127)
++ <a href='https://github.com/apache/superset/blob/9da30956c0628496958585d23cb6aa30abbfc693/scripts/benchmark_migration.py#L131'>scripts/benchmark_migration.py:131:28:</a> PLW0621 Redefining name `model` from outer scope (line 122)
+... 197 additional changes omitted for rule PLW0621
+- <a href='https://github.com/apache/superset/blob/9da30956c0628496958585d23cb6aa30abbfc693/scripts/benchmark_migration.py#L74'>scripts/benchmark_migration.py:74:5:</a> DOC201 `return` is not documented in docstring
++ <a href='https://github.com/apache/superset/blob/9da30956c0628496958585d23cb6aa30abbfc693/scripts/benchmark_migration.py#L74'>scripts/benchmark_migration.py:74:5:</a> DOC201 `return` is not documented in docstring
++ <a href='https://github.com/apache/superset/blob/9da30956c0628496958585d23cb6aa30abbfc693/superset/migrations/shared/native_filters.py#L287'>superset/migrations/shared/native_filters.py:287:5:</a> D202 [*] No blank lines allowed after function docstring (found 1)
+- <a href='https://github.com/apache/superset/blob/9da30956c0628496958585d23cb6aa30abbfc693/superset/migrations/shared/native_filters.py#L287'>superset/migrations/shared/native_filters.py:287:5:</a> D202 [*] No blank lines allowed after function docstring (found 1)
+... 214 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+19 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/aws/aws-sam-cli/blob/bb6190948c515e986e039db58beb0d188e526f49/samcli/commands/local/cli_common/invoke_context.py#L313'>samcli/commands/local/cli_common/invoke_context.py:313:43:</a> PLW0621 Redefining name `function` from outer scope (line 326)
++ <a href='https://github.com/aws/aws-sam-cli/blob/bb6190948c515e986e039db58beb0d188e526f49/samcli/hook_packages/terraform/copy_terraform_built_artifacts.py#L151'>samcli/hook_packages/terraform/copy_terraform_built_artifacts.py:151:24:</a> PLW0621 Redefining name `expression` from outer scope (line 348)
++ <a href='https://github.com/aws/aws-sam-cli/blob/bb6190948c515e986e039db58beb0d188e526f49/samcli/hook_packages/terraform/copy_terraform_built_artifacts.py#L221'>samcli/hook_packages/terraform/copy_terraform_built_artifacts.py:221:26:</a> PLW0621 Redefining name `directory_path` from outer scope (line 347)
++ <a href='https://github.com/aws/aws-sam-cli/blob/bb6190948c515e986e039db58beb0d188e526f49/samcli/hook_packages/terraform/copy_terraform_built_artifacts.py#L221'>samcli/hook_packages/terraform/copy_terraform_built_artifacts.py:221:42:</a> PLW0621 Redefining name `expression` from outer scope (line 348)
++ <a href='https://github.com/aws/aws-sam-cli/blob/bb6190948c515e986e039db58beb0d188e526f49/samcli/hook_packages/terraform/copy_terraform_built_artifacts.py#L221'>samcli/hook_packages/terraform/copy_terraform_built_artifacts.py:221:54:</a> PLW0621 Redefining name `data_object` from outer scope (line 381)
++ <a href='https://github.com/aws/aws-sam-cli/blob/bb6190948c515e986e039db58beb0d188e526f49/samcli/lib/samlib/wrapper.py#L93'>samcli/lib/samlib/wrapper.py:93:30:</a> PLW0621 Redefining name `self` from outer scope (line 85)
++ <a href='https://github.com/aws/aws-sam-cli/blob/bb6190948c515e986e039db58beb0d188e526f49/samcli/local/apigw/local_apigw_service.py#L556'>samcli/local/apigw/local_apigw_service.py:556:39:</a> PLW0621 Redefining name `request` from outer scope (line 11)
++ <a href='https://github.com/aws/aws-sam-cli/blob/bb6190948c515e986e039db58beb0d188e526f49/tests/smoke/download_sar_templates.py#L13'>tests/smoke/download_sar_templates.py:13:14:</a> PLW0621 Redefining name `count` from outer scope (line 63)
++ <a href='https://github.com/aws/aws-sam-cli/blob/bb6190948c515e986e039db58beb0d188e526f49/tests/unit/hook_packages/terraform/hooks/prepare/test_types.py#L17'>tests/unit/hook_packages/terraform/hooks/prepare/test_types.py:17:26:</a> PLW0621 Redefining name `self` from outer scope (line 15)
++ <a href='https://github.com/aws/aws-sam-cli/blob/bb6190948c515e986e039db58beb0d188e526f49/tests/unit/lib/build_module/test_app_builder.py#L1497'>tests/unit/lib/build_module/test_app_builder.py:1497:26:</a> PLW0621 Redefining name `self` from outer scope (line 1491)
+... 9 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+297 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/advanced/extensions/parallel_plot/parallel_plot.py#L14'>examples/advanced/extensions/parallel_plot/parallel_plot.py:14:19:</a> PLW0621 Redefining name `df` from outer scope (line 8)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/basic/annotations/colorbar_log.py#L15'>examples/basic/annotations/colorbar_log.py:15:14:</a> PLW0621 Redefining name `X` from outer scope (line 19)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/basic/annotations/colorbar_log.py#L15'>examples/basic/annotations/colorbar_log.py:15:17:</a> PLW0621 Redefining name `Y` from outer scope (line 19)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/basic/lines/lorenz.py#L22'>examples/basic/lines/lorenz.py:22:17:</a> PLW0621 Redefining name `t` from outer scope (line 30)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/integration/embed/css_grid_simple.py#L6'>examples/integration/embed/css_grid_simple.py:6:17:</a> PLW0621 Redefining name `axes` from outer scope (line 39)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/integration/embed/css_grid_simple_no_extend.py#L8'>examples/integration/embed/css_grid_simple_no_extend.py:8:17:</a> PLW0621 Redefining name `axes` from outer scope (line 50)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/integration/layout/multi_plot_layout.py#L6'>examples/integration/layout/multi_plot_layout.py:6:16:</a> PLW0621 Redefining name `row` from outer scope (line 22)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/integration/layout/multi_plot_layout.py#L6'>examples/integration/layout/multi_plot_layout.py:6:21:</a> PLW0621 Redefining name `col` from outer scope (line 21)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/integration/layout/multi_plot_layout.py#L6'>examples/integration/layout/multi_plot_layout.py:6:9:</a> PLW0621 Redefining name `color` from outer scope (line 26)
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/interaction/js_callbacks/js_on_event.py#L15'>examples/interaction/js_callbacks/js_on_event.py:15:19:</a> PLW0621 Redefining name `div` from outer scope (line 54)
+... 287 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+41 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/freedomofpress/securedrop/blob/0c6b877e47dfbf6302774f6270b94f5f8c7d780d/admin/bootstrap.py#L135'>admin/bootstrap.py:135:30:</a> PLW0621 Redefining name `args` from outer scope (line 327)
++ <a href='https://github.com/freedomofpress/securedrop/blob/0c6b877e47dfbf6302774f6270b94f5f8c7d780d/admin/bootstrap.py#L164'>admin/bootstrap.py:164:14:</a> PLW0621 Redefining name `args` from outer scope (line 327)
++ <a href='https://github.com/freedomofpress/securedrop/blob/0c6b877e47dfbf6302774f6270b94f5f8c7d780d/admin/bootstrap.py#L222'>admin/bootstrap.py:222:22:</a> PLW0621 Redefining name `args` from outer scope (line 327)
++ <a href='https://github.com/freedomofpress/securedrop/blob/0c6b877e47dfbf6302774f6270b94f5f8c7d780d/admin/bootstrap.py#L233'>admin/bootstrap.py:233:5:</a> PLW0621 Redefining name `args` from outer scope (line 327)
++ <a href='https://github.com/freedomofpress/securedrop/blob/0c6b877e47dfbf6302774f6270b94f5f8c7d780d/admin/bootstrap.py#L95'>admin/bootstrap.py:95:14:</a> PLW0621 Redefining name `args` from outer scope (line 327)
++ <a href='https://github.com/freedomofpress/securedrop/blob/0c6b877e47dfbf6302774f6270b94f5f8c7d780d/admin/securedrop_admin/__init__.py#L661'>admin/securedrop_admin/__init__.py:661:26:</a> PLW0621 Redefining name `self` from outer scope (line 653)
++ <a href='https://github.com/freedomofpress/securedrop/blob/0c6b877e47dfbf6302774f6270b94f5f8c7d780d/admin/tests/test_securedrop-admin.py#L871'>admin/tests/test_securedrop-admin.py:871:24:</a> PLW0621 Redefining name `config` from outer scope (line 903)
++ <a href='https://github.com/freedomofpress/securedrop/blob/0c6b877e47dfbf6302774f6270b94f5f8c7d780d/admin/tests/test_securedrop-admin.py#L880'>admin/tests/test_securedrop-admin.py:880:24:</a> PLW0621 Redefining name `config` from outer scope (line 903)
++ <a href='https://github.com/freedomofpress/securedrop/blob/0c6b877e47dfbf6302774f6270b94f5f8c7d780d/admin/tests/test_securedrop-admin.py#L975'>admin/tests/test_securedrop-admin.py:975:25:</a> PLW0621 Redefining name `prompt` from outer scope (line 982)
++ <a href='https://github.com/freedomofpress/securedrop/blob/0c6b877e47dfbf6302774f6270b94f5f8c7d780d/admin/tests/test_securedrop-admin.py#L975'>admin/tests/test_securedrop-admin.py:975:33:</a> PLW0621 Redefining name `default` from outer scope (line 982)
+... 31 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/fronzbot/blinkpy">fronzbot/blinkpy</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/fronzbot/blinkpy/blob/e2c747b5ad295424b08ff4fb03204129155666fc/tests/test_util.py#L105'>tests/test_util.py:105:29:</a> PLW0621 Redefining name `self` from outer scope (line 98)
++ <a href='https://github.com/fronzbot/blinkpy/blob/e2c747b5ad295424b08ff4fb03204129155666fc/tests/test_util.py#L110'>tests/test_util.py:110:29:</a> PLW0621 Redefining name `self` from outer scope (line 98)
++ <a href='https://github.com/fronzbot/blinkpy/blob/e2c747b5ad295424b08ff4fb03204129155666fc/tests/test_util.py#L66'>tests/test_util.py:66:28:</a> PLW0621 Redefining name `self` from outer scope (line 60)
++ <a href='https://github.com/fronzbot/blinkpy/blob/e2c747b5ad295424b08ff4fb03204129155666fc/tests/test_util.py#L87'>tests/test_util.py:87:22:</a> PLW0621 Redefining name `self` from outer scope (line 77)
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (7 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLW0621 | 6440 | 6440 | 0 | 0 | 0 |
+| D415 | 6 | 3 | 3 | 0 | 0 |
+| DOC201 | 4 | 2 | 2 | 0 | 0 |
+| ANN201 | 4 | 2 | 2 | 0 | 0 |
+| D400 | 4 | 2 | 2 | 0 | 0 |
+| D103 | 4 | 2 | 2 | 0 | 0 |
+| D202 | 2 | 1 | 1 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Comment by @InSyncWithFoo on 2025-02-12 00:45_
+
+Many of the violations look like this, where all `a`s refer to the same object:
+
+```python
+a = 0
+
+def foo(a):
+	...
+
+def v():
+	foo(a)
+```
+
+I'm in favor of reporting them, since such a parameter is unnecessary anyway, but the message/rule documentation could probably be improved to avoid potential confusion.
+
+---
+
+_Label `rule` added by @dhruvmanila on 2025-02-12 05:26_
+
+---
+
+_Label `preview` added by @dhruvmanila on 2025-02-12 05:26_
+
+---
+
+_Comment by @MichaReiser on 2025-02-12 09:31_
+
+Would you mind explaining what makes this rule a partial implementation of `W0621` and why you decide to make it a ruff rule?
+
+I don't think we should merge this as a ruff rule right now. It seems too opinionated. I'm okay to accept this as a pylint rule (if it is semantically close/the same)
+
+---
+
+_Comment by @InSyncWithFoo on 2025-02-12 10:09_
+
+(`RUF059` is a tentative code and subjected to change.) There are two reasons for it to be this way:
+
+* I don't know <em>exactly</em> what `W0621` does: the code is rather hard to read. The description only has one example, which shows a parameter shadowing an outer-scoped symbol, so I went with that.
+* I expected this to have a lot of violations. The first ecosystem check returned ~34k (class-scopes-related false positives), the second ~11k (collision with [`A002`](https://docs.astral.sh/ruff/rules/builtin-argument-shadowing/)) and the third ~7k. A full implementation would have even more than that, making the PR harder to review from both sides.
+
+---
+
+_Comment by @MichaReiser on 2025-02-12 11:49_
+
+Thanks for the extra context. 
+
+I don't think we should add a rule as a RUF rule that actually is a pylint rule that we later have to recode if it implements the full scope of the upstream rule. Especially if we don't understand what the differences are. I recommend to:
+
+* Implement it as a pylint rule. I'm fine if the rule doesn't implement all checks yet (but it will be a blocker for stabilization)
+* Create an issue that documents what's missing compared to the upstream rule.
+* Document the differences in the rule's description
+
+---
+
+_Renamed from "[`ruff`] Overshadowing parameters (`RUF059`)" to "[`pylint`] Redefined outer names (`PLW0621`)" by @InSyncWithFoo on 2025-02-12 23:16_
+
+---
+
+_Comment by @MichaReiser on 2025-02-13 08:14_
+
+Would you mind listing the differences to the upstream rule? Or do we still not know? 
+
+---
+
+_Comment by @InSyncWithFoo on 2025-02-13 16:52_
+
+@MichaReiser The upstream rule also reports variables and <em>seems</em> to have something to do with except handlers. Whatever I could make out of it I have already incorporated into the code.
+
+---
+
+Due to some reason, `outer_16` is a false negative. I'm not sure why.
+
+---
+
+_Comment by @qiuxiaomu on 2025-04-25 17:30_
+
+Thanks very much for the work, could you guys indicate whether this is going in or not? I found this one a very useful rule to have, but I prefer ruff way more than pylint as the linter. 
+
+---

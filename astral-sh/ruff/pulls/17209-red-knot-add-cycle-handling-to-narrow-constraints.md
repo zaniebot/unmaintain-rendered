@@ -1,0 +1,552 @@
+```yaml
+number: 17209
+title: "[red-knot] Add cycle handling to narrow constraints queries"
+type: pull_request
+state: merged
+author: cake-monotone
+labels:
+  - ty
+assignees: []
+merged: true
+base: main
+head: cake/fix-cycle-on-narrowing-functions
+created_at: 2025-04-04T16:07:11Z
+updated_at: 2025-04-15T11:52:08Z
+url: https://github.com/astral-sh/ruff/pull/17209
+synced_at: 2026-01-10T19:33:02Z
+```
+
+# [red-knot] Add cycle handling to narrow constraints queries
+
+---
+
+_Pull request opened by @cake-monotone on 2025-04-04 16:07_
+
+## Summary
+
+This PR fixes the cycle issue that was causing problems in the `support super` PR.
+
+### Affected queries
+- `all_narrowing_constraints_for_expression`
+- `all_negative_narrowing_constraints_for_expression`
+
+
+--
+
+Additionally, `bidict` and `werkzeug` have been added to the project-selection list in `mypy_primer`.
+This PR also addresses the panics that occurred while analyzing those packages:
+
+- `bidict`: panic triggered by `all_narrowing_constraints_for_expression`
+- `werkzeug`: panic triggered by `all_negative_narrowing_constraints_for_expression`
+
+I think the mypy-primer results for this PR can serve as sufficient test :)
+
+---
+
+_Review requested from @carljm by @cake-monotone on 2025-04-04 16:07_
+
+---
+
+_Review requested from @AlexWaygood by @cake-monotone on 2025-04-04 16:07_
+
+---
+
+_Review requested from @sharkdp by @cake-monotone on 2025-04-04 16:07_
+
+---
+
+_Review requested from @dcreager by @cake-monotone on 2025-04-04 16:07_
+
+---
+
+_Comment by @github-actions[bot] on 2025-04-04 16:09_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+bidict (https://github.com/jab/bidict)
+- 
+- thread '<unnamed>' panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/296a8c7/src/function/fetch.rs:152:25:
+- dependency graph cycle querying all_narrowing_constraints_for_expression(Id(14c3a)); set cycle_fn/cycle_initial to fixpoint iterate
+- note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+- Rayon: detected unexpected panic; aborting
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/conftest.py:7:6: Cannot resolve import `hypothesis`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/docs/conftest.py:14:8: Cannot resolve import `pytest`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/docs/conf.py:50:12: Cannot resolve import `sphinx_copybutton`
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/bidict/docs/conf.py:72:10: Type `<module 'bidict'>` has no attribute `metadata`
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/bidict/docs/conf.py:73:13: Type `<module 'bidict'>` has no attribute `metadata`
++ error[lint:inconsistent-mro] /tmp/mypy_primer/projects/bidict/bidict/_abc.py:72:1: Cannot create a consistent method resolution order (MRO) for class `MutableBidirectionalMapping` with bases list `[Unknown, Unknown]`
++ error[lint:non-subscriptable] /tmp/mypy_primer/projects/bidict/bidict/_typing.py:23:9: Cannot subscript object of type `Literal[Iterable]` with no `__class_getitem__` method
++ error[lint:non-subscriptable] /tmp/mypy_primer/projects/bidict/bidict/_typing.py:34:22: Cannot subscript object of type `Literal[Maplike]` with no `__class_getitem__` method
++ error[lint:non-subscriptable] /tmp/mypy_primer/projects/bidict/bidict/_typing.py:34:39: Cannot subscript object of type `Literal[Iterable]` with no `__class_getitem__` method
++ error[lint:non-subscriptable] /tmp/mypy_primer/projects/bidict/bidict/_typing.py:35:13: Cannot subscript object of type `Literal[Iterator]` with no `__class_getitem__` method
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/microbenchmarks.py:20:8: Cannot resolve import `pytest`
++ error[lint:inconsistent-mro] /tmp/mypy_primer/projects/bidict/bidict/_bidict.py:35:1: Cannot create a consistent method resolution order (MRO) for class `MutableBidict` with bases list `[Unknown, Unknown]`
++ error[lint:invalid-type-form] /tmp/mypy_primer/projects/bidict/bidict/_iter.py:34:7: Type qualifier `typing.Final` is not allowed in type expressions (only in annotation expressions)
++ error[lint:invalid-base] /tmp/mypy_primer/projects/bidict/tests/bidict_test_fixtures.py:40:30: Invalid class base with type `object` (all bases must be a class, `Any`, `Unknown` or `Todo`)
++ error[lint:invalid-base] /tmp/mypy_primer/projects/bidict/tests/bidict_test_fixtures.py:125:14: Invalid class base with type `object` (all bases must be a class, `Any`, `Unknown` or `Todo`)
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/bidict/tests/bidict_test_fixtures.py:185:42: Unused blanket `type: ignore` directive
++ error[lint:invalid-base] /tmp/mypy_primer/projects/bidict/bidict/_orderedbase.py:38:16: Invalid class base with type `object` (all bases must be a class, `Any`, `Unknown` or `Todo`)
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/bidict/_orderedbidict.py:24:29: Module `collections.abc` has no member `Set`
++ error[lint:inconsistent-mro] /tmp/mypy_primer/projects/bidict/bidict/_orderedbidict.py:33:1: Cannot create a consistent method resolution order (MRO) for class `OrderedBidict` with bases list `[Unknown, Unknown]`
++ error[lint:non-subscriptable] /tmp/mypy_primer/projects/bidict/bidict/_orderedbidict.py:112:30: Cannot subscript object of type `Literal[BidictKeysView]` with no `__class_getitem__` method
++ error[lint:non-subscriptable] /tmp/mypy_primer/projects/bidict/bidict/_orderedbidict.py:131:23: Cannot subscript object of type `Literal[_OrderedBidictKeysView]` with no `__class_getitem__` method
++ warning[lint:possibly-unresolved-reference] /tmp/mypy_primer/projects/bidict/bidict/_orderedbidict.py:157:24: Name `arg` used when possibly not defined
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:31:8: Cannot resolve import `pytest`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:32:6: Cannot resolve import `bidict_test_fixtures`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:33:6: Cannot resolve import `bidict_test_fixtures`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:34:6: Cannot resolve import `bidict_test_fixtures`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:35:6: Cannot resolve import `bidict_test_fixtures`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:36:6: Cannot resolve import `bidict_test_fixtures`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:37:6: Cannot resolve import `bidict_test_fixtures`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:38:6: Cannot resolve import `bidict_test_fixtures`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:39:6: Cannot resolve import `bidict_test_fixtures`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:40:6: Cannot resolve import `bidict_test_fixtures`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:41:6: Cannot resolve import `bidict_test_fixtures`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:42:6: Cannot resolve import `bidict_test_fixtures`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:43:6: Cannot resolve import `bidict_test_fixtures`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:44:6: Cannot resolve import `bidict_test_fixtures`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:45:6: Cannot resolve import `bidict_test_fixtures`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:46:6: Cannot resolve import `bidict_test_fixtures`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:47:6: Cannot resolve import `bidict_test_fixtures`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:48:6: Cannot resolve import `bidict_test_fixtures`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:49:6: Cannot resolve import `hypothesis`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:50:6: Cannot resolve import `hypothesis`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:51:6: Cannot resolve import `hypothesis`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:52:6: Cannot resolve import `hypothesis.stateful`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:53:6: Cannot resolve import `hypothesis.stateful`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:54:6: Cannot resolve import `hypothesis.stateful`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:55:6: Cannot resolve import `hypothesis.stateful`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:56:6: Cannot resolve import `hypothesis.stateful`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:57:6: Cannot resolve import `hypothesis.strategies`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:58:6: Cannot resolve import `hypothesis.strategies`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:59:6: Cannot resolve import `hypothesis.strategies`
++ error[lint:non-subscriptable] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:76:9: Cannot subscript object of type `Literal[Sequence]` with no `__class_getitem__` method
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:129:13: Object of type `partial` cannot be assigned to parameter 1 (`call1`) of function `assert_calls_match`; expected type `(...) -> Any`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:130:13: Object of type `partial` cannot be assigned to parameter 2 (`call2`) of function `assert_calls_match`; expected type `(...) -> Any`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:135:17: Object of type `partial` cannot be assigned to parameter 1 (`call1`) of function `assert_calls_match`; expected type `(...) -> Any`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:136:17: Object of type `partial` cannot be assigned to parameter 2 (`call2`) of function `assert_calls_match`; expected type `(...) -> Any`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:178:13: Object of type `partial` cannot be assigned to parameter 1 (`call1`) of function `assert_calls_match`; expected type `(...) -> Any`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:179:13: Object of type `partial` cannot be assigned to parameter 2 (`call2`) of function `assert_calls_match`; expected type `(...) -> Any`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:189:13: Object of type `partial` cannot be assigned to parameter 1 (`call1`) of function `assert_calls_match`; expected type `(...) -> Any`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:190:13: Object of type `partial` cannot be assigned to parameter 2 (`call2`) of function `assert_calls_match`; expected type `(...) -> Any`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:196:13: Object of type `partial` cannot be assigned to parameter 1 (`call1`) of function `assert_calls_match`; expected type `(...) -> Any`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:197:13: Object of type `partial` cannot be assigned to parameter 2 (`call2`) of function `assert_calls_match`; expected type `(...) -> Any`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:203:13: Object of type `partial` cannot be assigned to parameter 1 (`call1`) of function `assert_calls_match`; expected type `(...) -> Any`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:204:13: Object of type `partial` cannot be assigned to parameter 2 (`call2`) of function `assert_calls_match`; expected type `(...) -> Any`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:212:13: Object of type `partial` cannot be assigned to parameter 1 (`call1`) of function `assert_calls_match`; expected type `(...) -> Any`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:213:13: Object of type `partial` cannot be assigned to parameter 2 (`call2`) of function `assert_calls_match`; expected type `(...) -> Any`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:226:60: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:229:38: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:230:42: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:234:63: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:236:42: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:279:46: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:326:32: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:449:21: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:455:49: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:459:37: Unused blanket `type: ignore` directive
++ error[lint:type-assertion-failure] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:541:5: Actual type `frozenbidict` is not the same as asserted type `@Todo(generics)`
++ error[lint:non-subscriptable] /tmp/mypy_primer/projects/bidict/bidict/_base.py:59:22: Cannot subscript object of type `Literal[KeysView]` with no `__class_getitem__` method
++ error[lint:non-subscriptable] /tmp/mypy_primer/projects/bidict/bidict/_base.py:59:36: Cannot subscript object of type `Literal[ValuesView]` with no `__class_getitem__` method
++ Found 79 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- 
+- thread '<unnamed>' panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/296a8c7/src/function/fetch.rs:152:25:
+- dependency graph cycle querying all_negative_narrowing_constraints_for_expression(Id(cdd2)); set cycle_fn/cycle_initial to fixpoint iterate
+- note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+- Rayon: detected unexpected panic; aborting
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/werkzeug/examples/simplewiki/specialpages.py:13:37: Attribute `name` can only be accessed on instances, not on the class object `Literal[Page]` itself.
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/werkzeug/examples/simplewiki/specialpages.py:23:43: Type `Literal[RevisionedPage]` has no attribute `revision_id`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/shorty/models.py:3:6: Cannot resolve import `sqlalchemy`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/shorty/models.py:4:6: Cannot resolve import `sqlalchemy`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/shorty/models.py:5:6: Cannot resolve import `sqlalchemy`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/shorty/models.py:6:6: Cannot resolve import `sqlalchemy`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/shorty/models.py:7:6: Cannot resolve import `sqlalchemy`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/shorty/models.py:8:6: Cannot resolve import `sqlalchemy.orm`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-i18nurls.py:1:8: Cannot resolve import `click`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-i18nurls.py:4:6: Cannot resolve import `i18nurls`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-i18nurls.py:46:22: Cannot resolve import `IPython.frontend.terminal.embed`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-i18nurls.py:50:22: Cannot resolve import `IPython.Shell`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:36:52: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:40:43: Unused blanket `type: ignore` directive
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:42:42: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:45:41: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:48:41: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:51:56: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:54:38: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:57:38: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:60:42: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:63:51: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:66:41: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:69:33: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:72:66: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-base] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:76:26: Invalid class base with type `object` (all bases must be a class, `Any`, `Unknown` or `Todo`)
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:93:32: Operator `|` is unsupported between objects of type `typing.Any` and `None`
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:100:32: Operator `|` is unsupported between objects of type `typing.Any` and `None`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:102:54: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:106:43: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:109:30: Unused blanket `type: ignore` directive
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:117:64: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:120:57: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:123:40: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:126:57: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:129:26: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:132:56: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:135:42: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:138:24: Function can implicitly return `None`, which is not assignable to return type `Never`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:151:61: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:154:40: Unused blanket `type: ignore` directive
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:156:48: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:159:30: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:162:38: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:165:55: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:168:73: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:185:59: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:188:56: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:191:68: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:194:53: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:197:68: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:200:75: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:203:37: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:206:57: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:209:57: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:212:40: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:215:51: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:218:68: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:221:26: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:224:57: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:227:61: Function can implicitly return `None`, which is not assignable to return type `Never`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:242:40: Unused blanket `type: ignore` directive
++ error[lint:invalid-base] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:245:23: Invalid class base with type `GenericAlias` (all bases must be a class, `Any`, `Unknown` or `Todo`)
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:260:48: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:274:37: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:280:45: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:302:18: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/mixins.py:314:19: Unused blanket `type: ignore` directive
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/coolmagic/views/static.py:1:6: Cannot resolve import `coolmagic.utils`
++ error[lint:missing-argument] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wsgi.py:66:12: No arguments provided for required parameters `scheme`, `host` of function `get_current_url`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wsgi.py:281:60: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wsgi.py:388:50: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wsgi.py:389:54: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wsgi.py:520:54: Unused blanket `type: ignore` directive
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/werkzeug/tests/test_debug.py:280:9: Object of type `TypeError` is not assignable to attribute `__context__` on type `BaseException | None`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/middleware/http_proxy.py:140:69: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/exceptions.py:94:67: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/exceptions.py:208:16: Unused blanket `type: ignore` directive
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/exceptions.py:879:69: Function can implicitly return `None`, which is not assignable to return type `Never`
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/routing/exceptions.py:102:50: Operator `in` is not supported for types `Unknown` and `None`, in comparing `Unknown` with `Unknown | @Todo(generics) & None | None | @Todo(set comprehension type)`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-couchy.py:1:8: Cannot resolve import `click`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-couchy.py:6:10: Cannot resolve import `couchy.application`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-couchy.py:12:10: Cannot resolve import `couchy`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-couchy.py:12:10: Cannot resolve import `couchy`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-couchy.py:25:10: Cannot resolve import `couchy.application`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-couchy.py:64:22: Cannot resolve import `IPython.frontend.terminal.embed`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-couchy.py:68:22: Cannot resolve import `IPython.Shell`
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/tests/test_utils.py:45:12: Operator `not in` is not supported for types `bytes` and `str`, in comparing `Literal[b"<script>alert(1)</script>"]` with `bytes | str`
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/tests/test_utils.py:50:9: Operator `not in` is not supported for types `bytes` and `str`, in comparing `Literal[b'href="http://example.com/?xss="onmouseover="alert(1)"']` with `bytes | str`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/werkzeug/tests/test_utils.py:73:9: Implicit shadowing of function `prop`; annotate to make it explicit if this is intentional
++ warning[lint:unresolved-reference] /tmp/mypy_primer/projects/werkzeug/tests/test_utils.py:116:13: Name `accessed` used when not defined
++ warning[lint:possibly-unresolved-reference] /tmp/mypy_primer/projects/werkzeug/tests/test_utils.py:145:12: Name `attr` used when possibly not defined
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/werkzeug/tests/sansio/test_multipart.py:127:16: Type `Event` has no attribute `more_data`
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:25:27: Operator `|` is unsupported between objects of type `TypeVar` and `GenericAlias`
++ error[lint:invalid-base] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:57:26: Invalid class base with type `GenericAlias` (all bases must be a class, `Any`, `Unknown` or `Todo`)
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:65:18: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:75:15: Unused blanket `type: ignore` directive
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:185:31: Operator `|` is unsupported between objects of type `Unknown | TypeVar` and `GenericAlias`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:205:36: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:210:36: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:236:31: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:237:32: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:246:44: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:256:52: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:279:53: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:308:51: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:323:34: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:347:65: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:349:42: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:351:74: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:360:46: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:372:46: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:375:44: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:379:42: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:390:34: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:418:18: Unused blanket `type: ignore` directive
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:422:31: Operator `|` is unsupported between objects of type `Unknown | TypeVar` and `GenericAlias`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:446:18: Unused blanket `type: ignore` directive
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:447:38: Operator `|` is unsupported between objects of type `Unknown | TypeVar` and `GenericAlias`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:456:19: Unused blanket `type: ignore` directive
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:459:29: Operator `|` is unsupported between objects of type `Unknown | TypeVar` and `GenericAlias`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:478:37: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:496:37: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:513:39: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:530:38: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:535:39: Unused blanket `type: ignore` directive
++ error[lint:invalid-base] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:549:19: Invalid class base with type `object` (all bases must be a class, `Any`, `Unknown` or `Todo`)
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:604:31: Operator `|` is unsupported between objects of type `Unknown | TypeVar` and `GenericAlias`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:648:22: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:664:58: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:674:42: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:680:44: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:683:74: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:711:79: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:723:47: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:744:18: Unused blanket `type: ignore` directive
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:748:31: Operator `|` is unsupported between objects of type `Unknown | TypeVar` and `GenericAlias`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:756:78: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:770:37: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:775:44: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:792:48: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:806:48: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:856:18: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:866:15: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:891:46: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:900:42: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:906:18: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:922:44: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:936:41: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:951:46: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:987:41: Unused blanket `type: ignore` directive
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:1013:31: Operator `|` is unsupported between objects of type `Unknown | TypeVar` and `GenericAlias`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:1027:49: Unused blanket `type: ignore` directive
++ error[lint:invalid-base] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:1038:43: Invalid class base with type `GenericAlias` (all bases must be a class, `Any`, `Unknown` or `Todo`)
++ error[lint:non-subscriptable] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:1059:17: Cannot subscript object of type `Literal[MutableSet]` with no `__class_getitem__` method
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/structures.py:1195:51: Unused blanket `type: ignore` directive
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:65:33: Operator `|` is unsupported between objects of type `typing.Any` and `GenericAlias`
++ error[lint:non-subscriptable] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:65:75: Cannot subscript object of type `Literal[set]` with no `__getitem__` method
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:108:22: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:120:15: Unused blanket `type: ignore` directive
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:230:33: Operator `|` is unsupported between objects of type `typing.Any` and `GenericAlias`
++ error[lint:non-subscriptable] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:230:75: Cannot subscript object of type `Literal[set]` with no `__getitem__` method
++ error[lint:invalid-parameter-default] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:286:19: Default value of type `ellipsis` is not assignable to annotated parameter type `int | None`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:294:39: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:485:70: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:487:78: Unused blanket `type: ignore` directive
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:495:22: Operator `|` is unsupported between objects of type `typing.Any` and `GenericAlias`
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:495:64: Type `<module 'collections.abc'>` has no attribute `Set`
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:501:61: Type `<module 'collections.abc'>` has no attribute `Set`
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:538:18: Operator `|` is unsupported between objects of type `typing.Any` and `GenericAlias`
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:538:60: Type `<module 'collections.abc'>` has no attribute `Set`
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:551:31: Operator `|` is unsupported between objects of type `typing.Any` and `GenericAlias`
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:551:73: Type `<module 'collections.abc'>` has no attribute `Set`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:602:19: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:605:56: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:625:22: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:627:46: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:637:39: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/headers.py:639:45: Unused blanket `type: ignore` directive
++ error[lint:missing-argument] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/request.py:193:28: No argument provided for required parameter 1
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/request.py:315:59: Unused blanket `type: ignore` directive
++ error[lint:invalid-parameter-default] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/request.py:387:9: Default value of type `ellipsis` is not assignable to annotated parameter type `Literal[True]`
++ error[lint:invalid-parameter-default] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/request.py:568:15: Default value of type `ellipsis` is not assignable to annotated parameter type `bool`
++ error[lint:invalid-parameter-default] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/request.py:568:34: Default value of type `ellipsis` is not assignable to annotated parameter type `Literal[False]`
++ error[lint:invalid-parameter-default] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/request.py:568:66: Default value of type `ellipsis` is not assignable to annotated parameter type `bool`
++ error[lint:invalid-parameter-default] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/request.py:573:15: Default value of type `ellipsis` is not assignable to annotated parameter type `bool`
++ error[lint:invalid-parameter-default] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/request.py:573:34: Default value of type `ellipsis` is not assignable to annotated parameter type `bool`
++ error[lint:invalid-parameter-default] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/request.py:573:54: Default value of type `ellipsis` is not assignable to annotated parameter type `bool`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/wsecho.py:8:6: Cannot resolve import `wsproto`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/wsecho.py:9:6: Cannot resolve import `wsproto`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/wsecho.py:10:6: Cannot resolve import `wsproto.events`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/wsecho.py:11:6: Cannot resolve import `wsproto.events`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/wsecho.py:12:6: Cannot resolve import `wsproto.events`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/wsecho.py:13:6: Cannot resolve import `wsproto.events`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/wsecho.py:14:6: Cannot resolve import `wsproto.events`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/wsecho.py:15:6: Cannot resolve import `wsproto.events`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/wsecho.py:16:6: Cannot resolve import `wsproto.frame_protocol`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-simplewiki.py:3:8: Cannot resolve import `click`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-simplewiki.py:9:10: Cannot resolve import `simplewiki`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-simplewiki.py:16:10: Cannot resolve import `simplewiki`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-simplewiki.py:67:22: Cannot resolve import `IPython.frontend.terminal.embed`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-simplewiki.py:71:22: Cannot resolve import `IPython.Shell`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-plnt.py:3:8: Cannot resolve import `click`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-plnt.py:9:10: Cannot resolve import `plnt`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-plnt.py:25:10: Cannot resolve import `plnt.database`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-plnt.py:25:10: Cannot resolve import `plnt.database`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-plnt.py:104:22: Cannot resolve import `IPython.frontend.terminal.embed`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-plnt.py:108:22: Cannot resolve import `IPython.Shell`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-plnt.py:124:10: Cannot resolve import `plnt.sync`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-webpylike.py:4:8: Cannot resolve import `click`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-webpylike.py:7:6: Cannot resolve import `webpylike.example`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-webpylike.py:50:22: Cannot resolve import `IPython.frontend.terminal.embed`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-webpylike.py:54:22: Cannot resolve import `IPython.Shell`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/routing/map.py:691:37: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/routing/map.py:737:44: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/routing/map.py:738:54: Unused blanket `type: ignore` directive
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/shorty/application.py:1:6: Cannot resolve import `sqlalchemy`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/werkzeug/examples/shorty/application.py:19:9: Object of type `Unknown` is not assignable to attribute `application` on type `Unknown | Local`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/werkzeug/examples/shorty/application.py:28:9: Object of type `Unknown` is not assignable to attribute `application` on type `Unknown | Local`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/werkzeug/examples/shorty/application.py:30:9: Object of type `Unknown | MapAdapter` is not assignable to attribute `url_adapter` on type `Unknown | Local`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-shorty.py:4:8: Cannot resolve import `click`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-shorty.py:9:10: Cannot resolve import `shorty.application`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-shorty.py:16:10: Cannot resolve import `shorty`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-shorty.py:16:10: Cannot resolve import `shorty`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-shorty.py:66:22: Cannot resolve import `IPython.frontend.terminal.embed`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-shorty.py:70:22: Cannot resolve import `IPython.Shell`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/i18nurls/application.py:3:6: Cannot resolve import `jinja2`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/i18nurls/application.py:4:6: Cannot resolve import `jinja2`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/i18nurls/application.py:70:14: Cannot resolve import `i18nurls`
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/werkzeug/examples/i18nurls/application.py:87:17: Unresolved attribute `language` on type `Request`.
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-cupoftee.py:10:8: Cannot resolve import `click`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-cupoftee.py:15:10: Cannot resolve import `cupoftee`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-coolmagic.py:1:8: Cannot resolve import `click`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-coolmagic.py:4:6: Cannot resolve import `coolmagic`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-coolmagic.py:46:22: Cannot resolve import `IPython.frontend.terminal.embed`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/manage-coolmagic.py:50:22: Cannot resolve import `IPython.Shell`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/middleware/profiler.py:26:34: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/middleware/profiler.py:110:71: Unused blanket `type: ignore` directive
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/coolmagic/application.py:33:14: Cannot resolve import `coolmagic.utils`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/routing/converters.py:134:5: Object of type `Literal[int]` is not assignable to `(Any, /) -> Any`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/routing/converters.py:227:65: Unused blanket `type: ignore` directive
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/response.py:148:33: Operator `|` is unsupported between objects of type `Literal[str]` and `Literal[Iterable]`
++ error[lint:non-subscriptable] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/response.py:148:39: Cannot subscript object of type `Literal[Iterable]` with no `__class_getitem__` method
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/response.py:326:54: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/response.py:380:33: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/response.py:410:51: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/response.py:542:35: Unused blanket `type: ignore` directive
++ error[lint:invalid-parameter-default] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/response.py:596:24: Default value of type `ellipsis` is not assignable to annotated parameter type `bool`
++ error[lint:invalid-parameter-default] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/response.py:596:43: Default value of type `ellipsis` is not assignable to annotated parameter type `Literal[False]`
++ error[lint:invalid-parameter-default] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/response.py:599:24: Default value of type `ellipsis` is not assignable to annotated parameter type `bool`
++ error[lint:invalid-parameter-default] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/response.py:599:43: Default value of type `ellipsis` is not assignable to annotated parameter type `bool`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/response.py:637:74: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/response.py:700:52: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/wrappers/response.py:805:47: Unused blanket `type: ignore` directive
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/sansio/response.py:52:40: Operator `|` is unsupported between objects of type `Literal[str]` and `Literal[int]`
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/sansio/response.py:114:33: Operator `|` is unsupported between objects of type `Literal[str]` and `Literal[Iterable]`
++ error[lint:non-subscriptable] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/sansio/response.py:114:39: Cannot subscript object of type `Literal[Iterable]` with no `__class_getitem__` method
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/sansio/response.py:137:31: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/sansio/response.py:149:29: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/sansio/response.py:337:20: Unused blanket `type: ignore` directive
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/live_apps/run.py:20:30: Attribute `app` on type `Unknown | ModuleType` is possibly unbound
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/werkzeug/tests/live_apps/run.py:35:5: Implicit shadowing of function `address_string`; annotate to make it explicit if this is intentional
++ error[lint:missing-argument] /tmp/mypy_primer/projects/werkzeug/tests/live_apps/run.py:37:1: No arguments provided for required parameters `hostname`, `port`, `application` of function `run_simple`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/couchy/models.py:3:6: Cannot resolve import `couchdb.mapping`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/couchy/models.py:4:6: Cannot resolve import `couchdb.mapping`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/couchy/models.py:5:6: Cannot resolve import `couchdb.mapping`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/couchy/models.py:6:6: Cannot resolve import `couchdb.mapping`
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/examples/couchy/models.py:25:16: Attribute `query` on type `Unknown | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/examples/couchy/models.py:33:29: Attribute `resource` on type `Unknown | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/examples/couchy/models.py:40:26: Attribute `get` on type `Unknown | None` is possibly unbound
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/auth.py:46:25: Operator `|` is unsupported between objects of type `Literal[str]` and `None`
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/auth.py:172:27: Operator `|` is unsupported between objects of type `Literal[str]` and `None`
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/auth.py:176:37: Operator `|` is unsupported between objects of type `Literal[str]` and `None`
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/datastructures/auth.py:197:39: Operator `|` is unsupported between objects of type `Literal[str]` and `None`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/shorty/utils.py:6:6: Cannot resolve import `jinja2`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/shorty/utils.py:7:6: Cannot resolve import `jinja2`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/shorty/utils.py:8:6: Cannot resolve import `sqlalchemy`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/shorty/utils.py:9:6: Cannot resolve import `sqlalchemy.orm`
++ error[lint:unresolved-import] /tmp/mypy_primer/projects/werkzeug/examples/shorty/utils.py:10:6: Cannot resolve import `sqlalchemy.orm`
++ error[lint:missing-argument] /tmp/mypy_primer/projects/werkzeug/tests/test_exceptions.py:54:9: No argument provided for required parameter `status` of function `abort`
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/tests/test_exceptions.py:144:32: Unused blanket `type: ignore` directive
++ warning[lint:unused-ignore-comment] /tmp/mypy_primer/projects/werkzeug/tests/test_exceptions.py:164:32: Unused blanket `type: ignore` directive
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/werkzeug/tests/test_http.py:141:9: Object of type `float` is not assignable to attribute `max_age` of type `int | None`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/werkzeug/tests/test_http.py:144:9: Object of type `float` is not assignable to attribute `s_maxage` of type `int | None`
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_http.py:159:16: Attribute `type` on type `@Todo(Support for `typing.Self`) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_http.py:160:16: Attribute `username` on type `@Todo(Support for `typing.Self`) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_http.py:161:16: Attribute `password` on type `@Todo(Support for `typing.Self`) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_http.py:164:16: Attribute `type` on type `@Todo(Support for `typing.Self`) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_http.py:165:16: Attribute `username` on type `@Todo(Support for `typing.Self`) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_http.py:166:16: Attribute `password` on type `@Todo(Support for `typing.Self`) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_http.py:169:16: Attribute `type` on type `@Todo(Support for `typing.Self`) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_http.py:170:16: Attribute `username` on type `@Todo(Support for `typing.Self`) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_http.py:171:16: Attribute `password` on type `@Todo(Support for `typing.Self`) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_http.py:183:16: Attribute `type` on type `@Todo(Support for `typing.Self`) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_http.py:184:16: Attribute `username` on type `@Todo(Support for `typing.Self`) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_http.py:185:16: Attribute `realm` on type `@Todo(Support for `typing.Self`) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_http.py:186:16: Attribute `nonce` on type `@Todo(Support for `typing.Self`) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_http.py:187:16: Attribute `uri` on type `@Todo(Support for `typing.Self`) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_http.py:188:16: Attribute `qop` on type `@Todo(Support for `typing.Self`) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_http.py:189:16: Attribute `nc` on type `@Todo(Support for `typing.Self`) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_http.py:190:16: Attribute `cnonce` on type `@Todo(Support for `typing.Self`) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_http.py:191:16: Attribute `response` on type `@To...*[Comment body truncated]*
+
+---
+
+_Label `red-knot` added by @MichaReiser on 2025-04-04 16:10_
+
+---
+
+_@carljm approved on 2025-04-04 17:24_
+
+This is great, thank you!
+
+We discussed just today that ideally we would prefer to add minimized reproductions of the cycle to our test suite (not just add the full project in the ecosystem check) whenever we add cycle handling to a new query. This ensures we understand the cause of the cycle (and it really should be a cycle), and helps protects against regressions in a way that is easier to debug than a full ecosystem check failure.
+
+Do you feel up for doing that? I realize it's a lot of extra work to minimize the reproduction case.
+
+If not, I'm also open to merging this and creating an issue to make a minimized repro as follow-up.
+
+---
+
+_Comment by @cake-monotone on 2025-04-05 02:33_
+
+I think it makes sense to handle that as a follow-up. The main reason is that we need a test feature for cycle checking. We need a test that ignores all diagnostics and only checks for panic.
+
+If we decide to use `mdtest`, we’ll need to support an additional format like the following:
+
+````md
+#[panic_check_only]
+`filename.py`:
+```py
+something_wrong_code
+```
+````
+
+I actually wrote panic-inducing code like the one below, but adding `# error:` comments for every line doesn’t look great. More importantly, we might have to update those comments every time the related feature changes.
+
+```py
+from __future__ import annotations
+
+class CycleIssue:
+    def f(self, a: A, b: B, c: C):
+        aa: AA = self.make_aa(a, FALLBACK)
+        bb: BB = self.make_bb(b, FALLBACK)
+        cc: CC = self.make_cc(c, FALLBACK)
+
+        is_aa_not_fallback = aa is not FALLBACK
+        is_bb_not_fallback = bb is not FALLBACK
+
+        if is_aa_not_fallback and is_bb_not_fallback:
+            if aa == bb:
+                return None
+            if cc.val is RAISE:
+                raise Exception1(aa, bb)
+            if cc.val is DROP_NEW:
+                return None
+        elif is_aa_not_fallback:
+            if cc.key is RAISE:
+                raise Exception2(aa)
+            if cc.key is DROP_NEW:
+                return None
+        elif is_bb_not_fallback:
+            if cc.val is RAISE:
+                raise Exception3(bb)
+            if cc.val is DROP_NEW:
+                return None
+        return aa, bb, cc
+```
+
+---
+
+_Comment by @carljm on 2025-04-05 05:26_
+
+We actually have this test feature already, it's just not part of mdtest. We place sample test files in `crates/red_knot_project/resources/test/corpus/`, and the tests will run if you run `cargo test -p red_knot_project`. These "corpus" tests just validate that the test file checks without a panic and every expression in the file gets a type assigned to it.
+
+But I am fine merging this and adding corpus tests for these panics as a follow-up.
+
+---
+
+_Merged by @carljm on 2025-04-05 05:26_
+
+---
+
+_Closed by @carljm on 2025-04-05 05:26_
+
+---
+
+_Branch deleted on 2025-04-15 11:52_
+
+---

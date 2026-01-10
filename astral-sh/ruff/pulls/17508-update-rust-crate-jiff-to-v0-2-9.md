@@ -1,0 +1,214 @@
+```yaml
+number: 17508
+title: Update Rust crate jiff to v0.2.9
+type: pull_request
+state: merged
+author: renovate
+labels:
+  - internal
+assignees: []
+merged: true
+base: main
+head: renovate/jiff-0.x-lockfile
+created_at: 2025-04-21T01:35:32Z
+updated_at: 2025-04-21T01:51:32Z
+url: https://github.com/astral-sh/ruff/pull/17508
+synced_at: 2026-01-10T19:33:02Z
+```
+
+# Update Rust crate jiff to v0.2.9
+
+---
+
+_Pull request opened by @renovate on 2025-04-21 01:35_
+
+This PR contains the following updates:
+
+| Package | Type | Update | Change |
+|---|---|---|---|
+| [jiff](https://redirect.github.com/BurntSushi/jiff) | workspace.dependencies | patch | `0.2.4` -> `0.2.9` |
+
+---
+
+> [!WARNING]
+> Some dependencies could not be looked up. Check the Dependency Dashboard for more information.
+
+---
+
+### Release Notes
+
+<details>
+<summary>BurntSushi/jiff (jiff)</summary>
+
+### [`v0.2.9`](https://redirect.github.com/BurntSushi/jiff/blob/HEAD/CHANGELOG.md#029-2025-04-19)
+
+[Compare Source](https://redirect.github.com/BurntSushi/jiff/compare/0.2.8...0.2.9)
+
+\==================
+This release includes a bug fix that, in debug mode, could result in datetime
+types having different hashes for the same value. This could cause problems,
+for example, if you are using datetimes as keys in a hash map. This problem
+didn't exist when Jiff was compiled in release mode.
+
+This release also improves the panic message shown when the `js` feature isn't
+enabled and the current time is requested on `wasm32-unknown-unknown` targets.
+
+Enhancements:
+
+-   [#&#8203;296](https://redirect.github.com/BurntSushi/jiff/issues/296):
+    Provide a better panic message when `Zoned::now()` fails on WASM.
+
+Bug fixes:
+
+-   [#&#8203;330](https://redirect.github.com/BurntSushi/jiff/issues/330):
+    Fix bug where `Hash` on datetime types could yield different hash values for
+    the same underlying date/time.
+
+### [`v0.2.8`](https://redirect.github.com/BurntSushi/jiff/blob/HEAD/CHANGELOG.md#028-2025-04-13)
+
+[Compare Source](https://redirect.github.com/BurntSushi/jiff/compare/0.2.7...0.2.8)
+
+\==================
+This release fixes a bug where the constructors on `SignedDuration`
+for floating point durations could panic (in debug mode) or produce
+incorrect results (in release mode). This bug only impacts users of
+the `try_from_secs_{f32,f64}` and `from_secs_{f32,f64}` methods on
+`SignedDuration`.
+
+Enhancements:
+
+-   [#&#8203;326](https://redirect.github.com/BurntSushi/jiff/pull/326):
+    Add an alternate `Debug` impl for `SignedDuration` that only shows its second
+    and nanosecond components (while using only one component when the other is
+    zero).
+
+Bug fixes:
+
+-   [#&#8203;324](https://redirect.github.com/BurntSushi/jiff/issues/324):
+    Fix a bug that could produce a panic or incorrect results in
+    `SignedDuration::(try_)?from_secs_{f32,f64}`.
+
+### [`v0.2.7`](https://redirect.github.com/BurntSushi/jiff/blob/HEAD/CHANGELOG.md#027-2025-04-13)
+
+[Compare Source](https://redirect.github.com/BurntSushi/jiff/compare/0.2.6...0.2.7)
+
+\==================
+This release includes a bug fix that changes how an empty but set `TZ`
+environment variable is interpreted (as indistinguishable from `TZ=UTC`).
+This also includes a new enabled by default create feature, `perf-inline`,
+which allows toggling Jiff's use of `inline(always)`. This may help improve
+compile times or decrease binary size.
+
+Enhancements:
+
+-   [#&#8203;320](https://redirect.github.com/BurntSushi/jiff/pull/320):
+    Remove some internal uses of generics to mildly improve compile times.
+-   [#&#8203;321](https://redirect.github.com/BurntSushi/jiff/pull/321):
+    Add `perf-inline` crate feature for controlling `inline(always)` annotations.
+
+Bug fixes:
+
+-   [#&#8203;311](https://redirect.github.com/BurntSushi/jiff/issues/311):
+    Make `TZ=` indistinguishable from `TZ=UTC`.
+
+### [`v0.2.6`](https://redirect.github.com/BurntSushi/jiff/blob/HEAD/CHANGELOG.md#026-2025-04-07)
+
+[Compare Source](https://redirect.github.com/BurntSushi/jiff/compare/0.2.5...0.2.6)
+
+\==================
+This release includes a few bug fixes and support for discovering the IANA Time
+Zone Database automatically on Illumos.
+
+Enhancements:
+
+-   [#&#8203;315](https://redirect.github.com/BurntSushi/jiff/issues/315):
+    Add support for automatically finding the tzdb on Illumos.
+
+Bug fixes:
+
+-   [#&#8203;305](https://redirect.github.com/BurntSushi/jiff/issues/305):
+    Fixed `Zoned` rounding on days with DST time zone transitions.
+-   [#&#8203;309](https://redirect.github.com/BurntSushi/jiff/issues/309):
+    Fixed bug where `TimeZone::preceding` could omit historical time zone
+    transitions for time zones that have eliminated DST in the present.
+-   [#&#8203;312](https://redirect.github.com/BurntSushi/jiff/issues/312):
+    Fixed `nth_weekday_in_month`, where it would sometimes incorrectly return an
+    error.
+
+### [`v0.2.5`](https://redirect.github.com/BurntSushi/jiff/blob/HEAD/CHANGELOG.md#025-2025-03-22)
+
+[Compare Source](https://redirect.github.com/BurntSushi/jiff/compare/0.2.4...0.2.5)
+
+\==================
+This release updates Jiff's bundled copy of the \[IANA Time Zone Database] to
+`2025b`. See the [`2025b` release announcement][2025b release announcement] for more details.
+
+Enhancements:
+
+-   [#&#8203;300](https://redirect.github.com/BurntSushi/jiff/pull/300):
+    Update `jiff-tzdb` to `2025b`.
+
+[`2025b` release announcement]: https://lists.iana.org/hyperkitty/list/tz-announce@iana.org/thread/6JVHNHLB6I2WAYTQ75L6KEPEQHFXAJK3/
+
+</details>
+
+---
+
+### Configuration
+
+📅 **Schedule**: Branch creation - "before 4am on Monday" (UTC), Automerge - At any time (no schedule defined).
+
+🚦 **Automerge**: Disabled by config. Please merge this manually once you are satisfied.
+
+♻ **Rebasing**: Whenever PR becomes conflicted, or you tick the rebase/retry checkbox.
+
+🔕 **Ignore**: Close this PR and you won't be reminded about this update again.
+
+---
+
+ - [ ] <!-- rebase-check -->If you want to rebase/retry this PR, check this box
+
+---
+
+This PR was generated by [Mend Renovate](https://mend.io/renovate/). View the [repository job log](https://developer.mend.io/github/astral-sh/ruff).
+<!--renovate-debug:eyJjcmVhdGVkSW5WZXIiOiIzOS4yNDguNCIsInVwZGF0ZWRJblZlciI6IjM5LjI0OC40IiwidGFyZ2V0QnJhbmNoIjoibWFpbiIsImxhYmVscyI6WyJpbnRlcm5hbCJdfQ==-->
+
+
+---
+
+_Label `internal` added by @renovate[bot] on 2025-04-21 01:35_
+
+---
+
+_Comment by @github-actions[bot] on 2025-04-21 01:45_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+---
+
+_Merged by @charliermarsh on 2025-04-21 01:51_
+
+---
+
+_Closed by @charliermarsh on 2025-04-21 01:51_
+
+---
+
+_Branch deleted on 2025-04-21 01:51_
+
+---
