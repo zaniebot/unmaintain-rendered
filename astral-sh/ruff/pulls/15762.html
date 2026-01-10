@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`] Fix missing parens in unsafe fix for `unnecessary-dunder-call` (`PLC2801`) - astral-sh/ruff #15762</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pylint</code>] Fix missing parens in unsafe fix for <code>unnecessary-dunder-call</code> (<code>PLC2801</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15762">#15762</a>
+        opened by <a href="https://github.com/mishamsk">@mishamsk</a>
+        on 2025-01-27 03:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-01-27 03:07</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This fixes #15745</p>
+<p>Also, I haven't found a trait/helper to get expression precedence. Even though at least 3 rules check precedence when generating fixes. Generally speaking, unless/until fixes are done via AST generation - many (all?) fixes involving expression rewrites would need to consult precedence to handle parens. Unless I am mistaken.</p>
+<p>Thus, I've implemented an enum and a trait. But I didn't dare doing that in semantic/AST crates, although I believe it would be helpful to move them there.</p>
+<p>@AlexWaygood @dylwil3 you'll know the codebase better, let me know if you think it should be elevated to some core base crate. If you do, I am happy to implement this, but will need your guidance on where you'd like it to reside.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Updated test case with 2 examples from the issue + a couple of mine, including one that would generate invalid python program before this fix</li>
+<li>cargo nextest run (check updated snapshot)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-27 03:14</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dylwil3 by @dylwil3 on 2025-01-29 17:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[pylint] Fix missing parens in unsafe fix (PLC2801)" to "[`pylint`] Fix missing parens in unsafe fix for `unnecessary-dunder-call` (`PLC2801`)" by @dylwil3 on 2025-01-30 14:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_dunder_call.rs</code>:599 on 2025-02-03 07:37</div>
+            <div class="timeline-body"><p>What's the motivation for assigning fixed numbers to the different precedence values? I don't this is necessary because <code>ExprPrecedence</code> is an internal enum -- changing the values isn't user visible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_dunder_call.rs</code>:610 on 2025-02-03 07:40</div>
+            <div class="timeline-body"><p>I'd avoid a custom trait here and instead implement <code>From&lt;&amp;Expr&gt;</code> for ExprPrecedence<code>, as well as </code>From<Operator><code>, </code>From<UnaryOp><code>and</code>From<BoolOp>`</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_dunder_call.rs</code>:599 on 2025-02-03 07:43</div>
+            <div class="timeline-body"><p>Could we align the names (enum and variants) with what we have in the <a href="https://github.com/astral-sh/ruff/blob/ef85c682bdd76ed63457bdfbec72e09424ac20ab/crates/ruff_python_formatter/src/expression/mod.rs#L1141-L1155">formatter</a> and <a href="https://github.com/astral-sh/ruff/blob/138e70bd5c01d61061247c43b1bbb33d0290a18f/crates/ruff_python_parser/src/parser/expression.rs#L2366-L2397">parser</a>. It should simplify unifying the enums long-term</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-03 07:44</div>
+            <div class="timeline-body"><p>Thanks. This overall looks good. Extracting a common <code>OperatorPrecedence</code> enum into the <code>ast</code> crate seems like a good idea because this PR now adds the third version of <code>OperatorPrecedence</code> enum but I suggest that we do this as a follow up PR. For now, I recommend aligning the enum and variant names with the other <code>OperatorPrecedence</code> enums</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mishamsk">@mishamsk</a> reviewed on 2025-02-04 02:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_dunder_call.rs</code>:599 on 2025-02-04 02:43</div>
+            <div class="timeline-body"><p>Prefer being explicit (value) over implicit (position) when it doesn't have major downsides. THe thinking was - since Python precedence levels aren't likely to change these numbers would hold, and on the upside - reordering variants would break anything.</p>
+<p>But that's speculative. I removed the values and repr, added a comment similar to the parser code too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mishamsk">@mishamsk</a> reviewed on 2025-02-04 02:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_dunder_call.rs</code>:610 on 2025-02-04 02:58</div>
+            <div class="timeline-body"><p>I thought about it. The reason I went a custom trait route is that <code>From</code> either encourages to either use <code>into()</code> which is less readable outside of IDE (when types are not apparent), or would force writing <code>ExprPrecedence::from(some_node)</code> which is readable but longer. I expect compiler to emit exact same code for both.</p>
+<p>Interestingly enough, both parser and formatter code include the same method for one specific expression too</p>
+<p>https://github.com/astral-sh/ruff/blob/138e70bd5c01d61061247c43b1bbb33d0290a18f/crates/ruff_python_parser/src/parser/expression.rs#L2427-L2435</p>
+<p>but rely on <code>OperatorPrecedence::from(some_node)</code> in all other cases.</p>
+<p>I am not married to the custom trait idea, if you have a strong opinion here - I can easily change that. Either in this PR, or as a follow-up while moving the whole thing to AST module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mishamsk">@mishamsk</a> reviewed on 2025-02-04 03:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_dunder_call.rs</code>:599 on 2025-02-04 03:03</div>
+            <div class="timeline-body"><p>First of all, I do not think that having even 3 enums is necessary bad. At least two separate ones make sense:</p>
+<ul>
+<li>Formatter enum is indeed an operator precedence one, as it is purpose is to split operators</li>
+<li>The one I've created and the parser one are both expression precedence and I would keep that naming.<ul>
+<li>But unifying the parser one would go against @dhruvmanila comment, that explicitly excludes some expressions. I didn't investigate why, but I trust there were good reasons to do so</li>
+</ul>
+</li>
+</ul>
+<p>As for variant names - tbh. I like the shorter naming that aligns with Python docs better (formatter &amp; mine), but since my enum logically closer to parser I changed names to mostly match parser version, where possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-04 08:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_dunder_call.rs</code>:599 on 2025-02-04 08:47</div>
+            <div class="timeline-body"><p>For the parser, the enum only contains precedence levels for the operators and not for all expressions. The main reason is that the parser utilizes the Pratt parsing algorithm to parse binary expressions which is the main use case for this enum. While, the other expressions are parsed normally and implemented as separate methods. But, that doesn't necessarily mean that it can't be unified to include other variants as well. We'll just have to be careful that the parser starts the binary expression parsing from the correct precedence level.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dhruvmanila on 2025-02-04 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dhruvmanila on 2025-02-04 08:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-04 09:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/unnecessary_dunder_call.rs</code>:610 on 2025-02-04 09:47</div>
+            <div class="timeline-body"><p>I removed the trait for now as it isn't needed when we move to the <code>ruff_python_ast</code> crate (because we can directly implement it on <code>Expr</code>).</p>
+<p>I also renamed the enum to <code>OperatorPrecedence</code> to better match what we have in other crates.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-04 09:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-02-04 09:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-04 09:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-04 23:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:51 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Use itertools to clean up `SymbolState::merge` - astral-sh/ruff #15702</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Use itertools to clean up <code>SymbolState::merge</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15702">#15702</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-01-23 21:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-23 21:58</div>
+            <div class="timeline-body"><p><a href="https://docs.rs/itertools/latest/itertools/trait.Itertools.html#method.merge_join_by"><code>merge_join_by</code></a> handles the &quot;merge two sorted iterators&quot; bit, and <code>zip</code> handles iterating through the bindings/definitions along with their associated constraints.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @dcreager on 2025-01-23 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dcreager on 2025-01-23 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-01-23 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dcreager on 2025-01-23 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-01-23 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-01-23 21:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-23 22:00</div>
+            <div class="timeline-body"><p>I think you need @MichaReiser review on this PR :) Both because he knows Rust a lot better than I do, and because I'm aware that he has an aversion to itertools, because it has iterators that silently allocate, and arguably this is bad because allocations should be more visible than that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-23 23:22</div>
+            <div class="timeline-body"><p>Thanks for this!</p>
+<p>This definitely looks simpler and easier to understand; having the &quot;merge-join-by&quot; logic extracted as a utility is nice to separate it from the red-knot-specific logic. I'm also not sure how much to weight that here, since this is core infra that shouldn't have to change too often; eking out the best performance we can might be higher priority.</p>
+<p>On that note, CodSpeed suggests that this is a 2% regression on &quot;cold&quot; check (which is where I'd expect semantic indexing cost to be relevant, as opposed to &quot;incremental&quot; check where Salsa validation costs usually dominate): https://codspeed.io/astral-sh/ruff/branches/dcreager%2Fmerge-cleanup</p>
+<p>I'm not sure where that regression would be coming from, exactly; CodSpeed flame graph suggests it is all coming from a salsa ingredient <code>get_or_create</code> method, which doesn't make a lot of sense, so maybe it's just noise? It does seem like there would be some loss of efficiency here in that we can no longer reuse one of the declarations bitsets (via union-in-place), but instead we start from zero and add all declarations? That maybe isn't likely to make much difference?</p>
+<p>Like I said above, I'd like to hear what @MichaReiser thinks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-23 23:23</div>
+            <div class="timeline-body"><p>Might be worth running that cold benchmark a few times locally with and without this change, just to see if we can get a sense of how stable vs noisy that regression is?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-24 00:22</div>
+            <div class="timeline-body"><blockquote>
+<p>Might be worth running that cold benchmark a few times locally with and without this change, just to see if we can get a sense of how stable vs noisy that regression is?</p>
+</blockquote>
+<p>Can do</p>
+<blockquote>
+<p>we can no longer reuse one of the declarations bitsets (via union-in-place)</p>
+</blockquote>
+<p>I can also try a version that adds back the union in-place.  The union itself was OR-ing block by block, instead of bit by bit, and also had a reserve step to make sure there was at most 1 (re)allocation.  Interestingly, we were using union for <code>SymbolDeclarations</code>, but not for <code>SymbolBindings</code>!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:187 on 2025-01-24 07:37</div>
+            <div class="timeline-body"><p>I'd use the regular <code>Iterator::zip</code> method here because it's better known and we don't use the functionality that <code>izip</code> provides</p>
+<blockquote>
+<p>This is a version of the standard .zip() that’s supporting more than two iterators.</p>
+</blockquote>
+<pre><code class="language-suggestion">        let a = a.live_declarations.iter().zip(a.visibility_constraints);
+        let b = b
+            .live_declarations
+            .iter()
+            .zip(b.visibility_constraints.into_iter());
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:281 on 2025-01-24 07:38</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let mut a = std::mem::take(self);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:207 on 2025-01-24 07:44</div>
+            <div class="timeline-body"><p>Should we inline this function because there's nothing that actually guarantees the constraint of the safety comment -- the function can be called from anywhere in this module.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:177 on 2025-01-24 07:44</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        let mut a = std::mem::take(self);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:293 on 2025-01-24 07:45</div>
+            <div class="timeline-body"><p>Nit: Use regular <code>zip</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:337 on 2025-01-24 07:46</div>
+            <div class="timeline-body"><p>I think it would be nice to still preserve some of those comments. E.g .this comment could be a great comment above <code>merge_join_by</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:352 on 2025-01-24 07:47</div>
+            <div class="timeline-body"><p>Do we still need this safety documentation?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-24 07:48</div>
+            <div class="timeline-body"><p>This looks great. <code>merge_join_by</code> doesn't allocate internally. So I'm fine with this <code>itertools</code> usage. I do recommend using the regular <code>zip</code> over <code>izip</code> because we don't need its functionality and <code>zip</code> is better known (I had to read <code>izip</code>'s documentation)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:187 on 2025-01-24 14:57</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:293 on 2025-01-24 14:57</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:207 on 2025-01-24 14:58</div>
+            <div class="timeline-body"><p>Good idea, done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:337 on 2025-01-24 15:09</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:352 on 2025-01-24 15:10</div>
+            <div class="timeline-body"><p>I reworded it a bit and put it up at the definition of the fields in the struct</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-01-24 15:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-01-24 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-01-24 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-24 15:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-24 15:24</div>
+            <div class="timeline-body"><p>The latest version here still showed as a 1% regression in cold benchmark on codspeed. Were you able to reproduce that regression locally?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-01-24 18:33</div>
+            <div class="timeline-body"><blockquote>
+<p>The latest version here still showed as a 1% regression in cold benchmark on codspeed. Were you able to reproduce that regression locally?</p>
+</blockquote>
+<p>Yes — it was a 2% regression according to <code>cargo bench</code> before I went back to using <code>union</code> to combine the bitsets.  Now it's 1%, as reported by both <code>cargo bench</code> and <code>hyperfine</code> when running against black:</p>
+<pre><code>$ ./go
+Benchmark 1: ./red_knot_main --project /home/dcreager/git/code-nav/black --venv-path .venv --extra-search-path src
+  Time (mean ± σ):     209.2 ms ±  15.7 ms    [User: 873.3 ms, System: 252.1 ms]
+  Range (min … max):   185.3 ms … 240.4 ms    15 runs
+
+  Warning: Ignoring non-zero exit code.
+
+Benchmark 2: ./red_knot_feature --project /home/dcreager/git/code-nav/black --venv-path .venv --extra-search-path src
+  Time (mean ± σ):     211.6 ms ±  15.0 ms    [User: 899.7 ms, System: 254.9 ms]
+  Range (min … max):   185.9 ms … 243.5 ms    15 runs
+
+  Warning: Ignoring non-zero exit code.
+
+Summary
+  ./red_knot_main --project /home/dcreager/git/code-nav/black --venv-path .venv --extra-search-path src ran
+    1.01 ± 0.10 times faster than ./red_knot_feature --project /home/dcreager/git/code-nav/black --venv-path .venv --extra-search-path src
+</code></pre>
+<p>I felt like that was small enough to be worth it, relative to the code being easier to understand.  I can revert if folks feel strongly otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-01-24 19:23</div>
+            <div class="timeline-body"><p>I do think the new version is nicer to read, but personally I'm not sure that it is worth 1% overall regression in cold-check performance, if that regression is real and stable. I think that's a significant regression to accept in exchange for a less concrete benefit. I don't think this SymbolState merging code will require frequent changes, and it is a very hot code path, so I think it is OK to accept more complex code here if it performs better.</p>
+<p>Maybe there would be some way to claw back the regression in the new version, if we can identify the source of it? But I also don't know how much time we want to devote to that investigation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-24 20:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:302 on 2025-01-24 20:02</div>
+            <div class="timeline-body"><p>Oh, I wasn't aware that we're zipping three iterators here. It could make sense to use <code>izip</code> here ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/semantic_index/use_def/symbol_state.rs</code>:302 on 2025-01-24 20:17</div>
+            <div class="timeline-body"><p>With the extra set of parentheses around the first iterator, I don't mind how this looks, and tbh that was the only reason I reached for <code>izip</code> in the first place!  (I never like it when <code>rustfmt</code> takes <code>A.zip(B).zip(C)</code> and breaks up the <code>A</code> across multiple lines...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-01-24 20:21</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe there would be some way to claw back the regression in the new version, if we can identify the source of it? But I also don't know how much time we want to devote to that investigation.</p>
+</blockquote>
+<p>I am cautiously optimistic about https://github.com/astral-sh/ruff/pull/15731</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-24 21:24</div>
+            <div class="timeline-body"><p>I'm late to the party, but wanted to say that I talked about this function with Micha in our 1:1 some weeks ago, and we both agreed that it should be refactored. We then proceeded by doing nothing. So thanks for taking this up @dcreager!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:51 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-comprehensions`] Unnecessary `list` comprehension (rewrite as a `set` comprehension) (`C403`) - Handle extraneous parentheses around list comprehension - astral-sh/ruff #15877</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-comprehensions</code>] Unnecessary <code>list</code> comprehension (rewrite as a <code>set</code> comprehension) (<code>C403</code>) - Handle extraneous parentheses around list comprehension</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15877">#15877</a>
+        opened by <a href="https://github.com/jbramley">@jbramley</a>
+        on 2025-02-02 14:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/jbramley">@jbramley</a> on 2025-02-02 14:05</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Given the following code:</p>
+<pre><code class="language-python">set(([x for x in range(5)]))
+</code></pre>
+<p>the current implementation of C403 results in</p>
+<pre><code class="language-python">{(x for x in range(5))}
+</code></pre>
+<p>which is a set containing a generator rather than the result of the generator.</p>
+<p>This change removes the extraneous parentheses so that the resulting code is:</p>
+<pre><code class="language-python">{x for x in range(5)}
+</code></pre>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code> and <code>cargo insta test</code></p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-02 14:12</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs</code>:87 on 2025-02-02 16:16</div>
+            <div class="timeline-body"><p>It might be nice to avoid using the <code>generator</code> here to preserve comments in the comprehension like the non-parenthesized code. For example,</p>
+<pre><code class="language-python">s = set(# outer set comment
+    ( # inner paren comment - not preserved
+        (([ # comment in the comprehension
+            x for x in range(3)]))))
+</code></pre>
+<p>We'll still lose the comment in the inner parentheses, but that seems like the weirdest place to put a comment of the three. It might be good to add a test like this with the comments and also one with multiple levels of parentheses like:</p>
+<pre><code class="language-python">s = set(((([x for x in range(3)]))))
+</code></pre>
+<p>I started to suggest an approach that would <em>not</em> have worked with multiple parentheses, but your approach handles that nicely, so it would be good to capture that in a test.</p>
+<p>Back to avoiding the generator, you can slice the original source text (instead of round-tripping through the generator like <code>checker.generator().expr(argument)</code>) with code like <code>checker.source()[range].to_string()</code>. After that change, the new code started to look very similar to the old code, so I ended up with something like this. What do you think?</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs b/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs
+index c518a8b11..cd7d0901a 100644
+--- a/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs
++++ b/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs
+@@ -59,44 +59,37 @@ pub(crate) fn unnecessary_list_comprehension_set(checker: &amp;mut Checker, call: &amp;a
+     if argument.is_list_comp_expr() {
+         let diagnostic = Diagnostic::new(UnnecessaryListComprehensionSet, call.range());
+         let fix = {
++            let one = TextSize::from(1);
++
+             // Replace `set(` with `{`.
+             let call_start = Edit::replacement(
+                 pad_start(&quot;{&quot;, call.range(), checker.locator(), checker.semantic()),
+                 call.start(),
+-                call.arguments.start() + TextSize::from(1),
++                call.arguments.start() + one,
+             );
+ 
+             // Replace `)` with `}`.
+             let call_end = Edit::replacement(
+                 pad_end(&quot;}&quot;, call.range(), checker.locator(), checker.semantic()),
+-                call.arguments.end() - TextSize::from(1),
++                call.arguments.end() - one,
+                 call.end(),
+             );
+ 
+-            // If the list comprehension is parenthesized, remove the parentheses in addition to
+-            // removing the brackets.
+-            if let Some(range) = parenthesized_range(
++            // If the list comprehension is parenthesized, replace the whole parenthesized range.
++            let replacement_range = parenthesized_range(
+                 argument.into(),
+                 (&amp;call.arguments).into(),
+                 checker.comment_ranges(),
+                 checker.locator().contents(),
+-            ) {
+-                // The generator produces the brackets that need to be removed
+-                let generator = checker.generator().expr(argument);
+-                let generator = generator[1..generator.len() - 1].to_string();
+-                let replacement = Edit::range_replacement(generator, range);
+-                Fix::unsafe_edits(call_start, [call_end, replacement])
+-            } else {
+-                // Delete the open bracket (`[`).
+-                let argument_start =
+-                    Edit::deletion(argument.start(), argument.start() + TextSize::from(1));
++            )
++            .unwrap_or_else(|| argument.range());
+ 
+-                // Delete the close bracket (`]`).
+-                let argument_end =
+-                    Edit::deletion(argument.end() - TextSize::from(1), argument.end());
++            // remove the leading `[` and trailing `]`
++            let span = argument.range().add_start(one).sub_end(one);
++            let replacement =
++                Edit::range_replacement(checker.source()[span].to_string(), replacement_range);
+ 
+-                Fix::unsafe_edits(call_start, [argument_start, argument_end, call_end])
+-            }
++            Fix::unsafe_edits(call_start, [call_end, replacement])
+         };
+         checker.diagnostics.push(diagnostic.with_fix(fix));
+     }
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs</code>:87 on 2025-02-02 17:25</div>
+            <div class="timeline-body"><p>This isn't related to your changes, but while we're here, I'd probably slightly prefer to make</p>
+<p>https://github.com/astral-sh/ruff/blob/d9a1034db05ff6627323339d9395e80e78e8f47a/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs#L58-L59</p>
+<p>into an early return to avoid a level of nesting, and similarly move the code out of the <code>fix = {</code> block. The last line of the unwrapped block could just be <code>let fix = Fix::unsafe_edits(call_start, [call_end, replacement]);</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-02-02 17:46</div>
+            <div class="timeline-body"><p>Thanks for working on this! I added some suggestions, but I think the approach with <code>parenthesized_range</code> is perfect.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-02-02 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-02-02 17:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/jbramley">@jbramley</a> reviewed on 2025-02-02 23:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/jbramley">@jbramley</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs</code>:87 on 2025-02-02 23:32</div>
+            <div class="timeline-body"><p>Fantastic! Thank you. I didn't know about slicing the source like that. Makes things a lot simpler.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @MichaReiser on 2025-02-03 14:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-03 18:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs</code>:87 on 2025-02-03 18:16</div>
+            <div class="timeline-body"><p>No problem, I just learned about that trick myself!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-02-03 18:21</div>
+            <div class="timeline-body"><p>LGTM! Thanks again for your work on this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-02-03 18:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-02-03 18:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:52 UTC
+    </footer>
+</body>
+</html>

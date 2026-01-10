@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-annotations`] Correct syntax for `typing.Union` in suggested return type fixes for `ANN20x` rules - astral-sh/ruff #16025</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-annotations</code>] Correct syntax for <code>typing.Union</code> in suggested return type fixes for <code>ANN20x</code> rules</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16025">#16025</a>
+        opened by <a href="https://github.com/dylwil3">@dylwil3</a>
+        on 2025-02-07 16:05
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dylwil3">@dylwil3</a> on 2025-02-07 16:05</div>
+            <div class="timeline-body"><p>When suggesting a return type as a union in Python &lt;=3.9, we now avoid a <code>TypeError</code> by correctly suggesting syntax like <code>Union[int,str,None]</code> instead of <code>Union[int | str | None]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-02-07 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @dylwil3 on 2025-02-07 16:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-07 16:14</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1441 on 2025-02-07 16:26</div>
+            <div class="timeline-body"><p>I'm not familiar with the code so this is probably a dumb question but the the old implementation applied this function recursively. Is it correct that this is no longer needed?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-07 16:27</div>
+            <div class="timeline-body"><p>I starred at the diff for a while but I'm not entirely sure what the root cause or what the fix is. It's probably obvious but I just don't see it 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-02-07 16:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1441 on 2025-02-07 16:45</div>
+            <div class="timeline-body"><p>I was also confused by the code that was there before... At the very least this was a problem:</p>
+<pre><code class="language-rust">            [rest @ .., elt] =&gt; Expr::BinOp(ast::ExprBinOp {
+                left: Box::new(tuple(rest, binding)),
+                op: Operator::BitOr,
+                right: Box::new(elt.clone()),
+                range: TextRange::default(),
+            }),
+</code></pre>
+<p>I will try to find an MRE for the difference involving the recursion... but I can't figure out why it would be necessary.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-02-07 18:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1441 on 2025-02-07 18:46</div>
+            <div class="timeline-body"><p>Ok I think the recursion is there just because they were trying to get something like:</p>
+<pre><code>Union[int | str | float]
+</code></pre>
+<p>which is built out of binary operations, so they had to do them one at a time.</p>
+<p>But since we're doing:</p>
+<pre><code>Union[int, str, float]
+</code></pre>
+<p>we can just plop down all the elements at once.</p>
+<p>The other confusing thing is the treatment of the empty case. An empty <code>Union</code> is either a <code>SyntaxError</code> (if you do <code>Union[]</code>) or a <code>TypeError</code> (if you do <code>Union[()]</code>). So that's the other difference: the modified function will produce a <code>SyntaxError</code> where the previous produced a <code>TypeError</code>. But really the function should not be called at all when you have empty <code>elts</code>.</p>
+<p>I could:</p>
+<ul>
+<li>make that the responsibility of the caller</li>
+<li>change the return signature to <code>Result</code></li>
+<li>add a <code>debug_assert</code></li>
+<li>something else?</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-02-07 19:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1441 on 2025-02-07 19:08</div>
+            <div class="timeline-body"><p>@charliermarsh if you happen to remember you're reasoning from #8885 and see that I'm missing something, please let me know 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-07 22:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1441 on 2025-02-07 22:06</div>
+            <div class="timeline-body"><p>Sorry, it's hard to recall without digging deeper. But, yes, I'm guessing it's something to do with the recursive nature of the <code>|</code> operator. Notice that this is very similar to the <code>pep_604_union</code> version above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-02-07 22:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_python_ast/src/helpers.rs</code>:1441 on 2025-02-07 22:59</div>
+            <div class="timeline-body"><p>No worries!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dylwil3 on 2025-02-07 23:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-02-07 23:17</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:52 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[pylint] Fix PL1730: min/max auto-fix and suggestion - astral-sh/ruff #15930</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[pylint] Fix PL1730: min/max auto-fix and suggestion</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15930">#15930</a>
+        opened by <a href="https://github.com/VascoSch92">@VascoSch92</a>
+        on 2025-02-04 11:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-02-04 11:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>The PR addresses the issue #15887</p>
+<p>For two objects <code>a</code> and <code>b</code>, we ensure that the auto-fix and the suggestion is of the form <code>a = min(a, b)</code> (or <code>a = max(a, b)</code>). This is because we want to be consistent with the python implementation of the methods: <code>min</code> and <code>max</code>. See the above issue for more details.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-04 11:56</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @MichaReiser on 2025-02-04 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/if_stmt_min_max.rs</code>:178 on 2025-02-04 13:45</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">    let first_cmp_arg: &amp;str;
+    let second_cmp_arg: &amp;str;
+    let (first_cmp_arg, second_cmp_arg) = if checker.locator().slice(arg1) == cmp_target {
+      (
+    	  	checker.locator().slice(arg1),
+        	checker.locator().slice(arg2),
+    	)
+    } else {
+    	(
+        checker.locator().slice(arg2),
+        checker.locator().slice(arg1),
+      )
+    };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/if_stmt_min_max.rs</code>:172 on 2025-02-04 13:47</div>
+            <div class="timeline-body"><p>Can we reuse <code>flip_args</code> from above or the <code>left_is_target</code>/<code>right_is_target</code> variables?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-04 13:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-02-04 15:50</div>
+            <div class="timeline-body"><p>@MichaReiser I implemented your suggestion ;-) Let me know if you like it...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @VascoSch92 on 2025-02-04 16:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/if_stmt_min_max.rs</code>:151 on 2025-02-05 08:28</div>
+            <div class="timeline-body"><p>I think we can simplify this to (and also reduce the diff size):</p>
+<pre><code class="language-rust">    let min_max = match (
+        left_is_target,
+        right_is_target,
+        left_is_value,
+        right_is_value,
+    ) {
+        (true, false, false, true) =&gt; match op {
+            CmpOp::Lt | CmpOp::LtE =&gt; MinMax::Max,
+            CmpOp::Gt | CmpOp::GtE =&gt; MinMax::Min,
+            _ =&gt; return,
+        },
+        (false, true, true, false) =&gt; match op {
+            CmpOp::Lt | CmpOp::LtE =&gt; MinMax::Min,
+            CmpOp::Gt | CmpOp::GtE =&gt; MinMax::Max,
+            _ =&gt; return,
+        },
+        _ =&gt; return,
+    };
+
+		// Determine whether to use `min()` or `max()`, and make sure that the first
+    // arg of the `min()` or `max()` method is equal to the target of the comparison.
+    // This is to be consistent with the Python implementation of the methods `min()` and `max()`.
+    let (arg1, arg2) = if left_is_target {
+        (&amp;**left, right)
+    } else {
+        (right, &amp;**left)
+    };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-05 08:28</div>
+            <div class="timeline-body"><p>Thanks. I think we can simplify this further.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on <code>crates/ruff_linter/src/rules/pylint/rules/if_stmt_min_max.rs</code>:151 on 2025-02-05 09:24</div>
+            <div class="timeline-body"><p>Yes... I did the changes ;-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/VascoSch92">@VascoSch92</a> reviewed on 2025-02-05 09:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-05 09:27</div>
+            <div class="timeline-body"><p>Nice, thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-02-05 09:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-02-05 09:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-05 09:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-05 09:31</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:52 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reduce memory usage of `Docstring` struct - astral-sh/ruff #16183</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Reduce memory usage of <code>Docstring</code> struct</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16183">#16183</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-02-16 13:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-16 13:43</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I noticed that our <code>Docstring</code> struct, that we use for querying information on docstrings in various linter rules, eagerly stores a lot of information in the struct that could probably be lazily computed in methods on the struct. This PR reworks the API to store less information on the struct itself, reducing memory usage.</p>
+<p>In addition to this, it changes the struct to store an <code>ast::StringLiteral</code> node rather than an <code>ast::ExprStringLiteral</code> node. This:</p>
+<ul>
+<li>Allows us to enforce in the type system the existing invariant that we never consider an implicitly concatenated string to be a valid <code>Docstring</code> definition</li>
+<li>Allows us to use the <code>ast::StringLiteral::flags</code> attribute to query information directly from the underlying AST node, removing the need for quite a few <code>.unwrap()</code> calls (accompanied by <code>// SAFETY</code> comments) across our docstring-related rules</li>
+</ul>
+<h2>Test Plan</h2>
+<ul>
+<li><code>cargo test</code></li>
+<li>There should be 0 ecosystem hits, since this is a pure refactor</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2025-02-16 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">docstring</span> added by @AlexWaygood on 2025-02-16 13:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-16 13:52</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-02-16 13:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/definitions.rs</code>:187 on 2025-02-16 14:03</div>
+            <div class="timeline-body"><p>I found the old explicit implicit concatenated string helped with readability. I wonder if we should add a method for non-implicit concatenated strings to <code>string_literal</code>.</p>
+<p>Coming up with a good name is hard: <code>let Some(sole_string_part) = string_literal.as_non_implicit()</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/docstrings/mod.rs</code>:59 on 2025-02-16 14:05</div>
+            <div class="timeline-body"><p>Nit: <code>prefix_str</code> in case we ever want to expose <code>flags.prefix</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/docstrings/mod.rs</code>:99 on 2025-02-16 14:05</div>
+            <div class="timeline-body"><p>Nit: It would be nice if we could avoid copying this computation. Consider adding a <code>content_range</code> to <code>StringLiteral</code> similar to https://github.com/astral-sh/ruff/blob/e1781485257783d4b714a9a33c6f8fed4f1477fb/crates/ruff_python_ast/src/expression.rs#L221-L228</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/blank_before_after_class.rs</code>:200 on 2025-02-16 14:07</div>
+            <div class="timeline-body"><p>Nit: Consider a <code>indentation_len</code> method? Considering that most call sites aren't interested in the <code>indentation</code> itself (avoids going from range to string and back to range again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pydocstyle/rules/indent.rs</code>:182 on 2025-02-16 14:08</div>
+            <div class="timeline-body"><p>Nit: Consider storing the <code>indentation</code> (and maybe calling the method <code>to_indentation</code> because computing the line start isn't free.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-16 14:09</div>
+            <div class="timeline-body"><p>Nice, it helps clean up the code a lot. I only have a few nit comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-16 14:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/docstrings/mod.rs</code>:99 on 2025-02-16 14:47</div>
+            <div class="timeline-body"><p>Hehe. I was planning this for a followup, since there are a number of other places where this method would be useful ;) But I'll add it in this PR, and switch other places in the codebase to this new method as the followup!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-16 15:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/checkers/ast/analyze/definitions.rs</code>:187 on 2025-02-16 15:18</div>
+            <div class="timeline-body"><p>Yeah, good point about readability. I will defer this to another PR, though, as I think almost every current usage of the <code>StringLiteralValue::as_slice()</code> method would probably switch to using this new API -- and I agree that what we would call it isn't necessarily obvious. It seems worthy of considering as its own thing.</p>
+<p>For now I'll just add a comment here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-02-16 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-16 15:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-16 15:51</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:53 UTC
+    </footer>
+</body>
+</html>

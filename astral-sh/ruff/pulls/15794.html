@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preserve quotes in generated f-strings - astral-sh/ruff #15794</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Preserve quotes in generated f-strings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15794">#15794</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-01-28 21:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-28 21:11</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is another follow-up to #15726 and #15778, extending the quote-preserving behavior to f-strings and deleting the now-unused <code>Generator::quote</code> field.</p>
+<h2>Details</h2>
+<p>I also made one unrelated change to <code>rules/flynt/helpers.rs</code> to remove a <code>to_string</code> call for making a <code>Box&lt;str&gt;</code> and tweaked some arguments to some of the <code>Generator::unparse_f_string</code> methods to make the code easier to follow, in my opinion. Happy to revert especially the latter of these if needed.</p>
+<p>Unfortunately this still does not fix the issue in #9660, which appears to be more of an escaping issue than a quote-preservation issue. After #15726, the result is now <code>a = f'# {&quot;&quot;.join([])}' if 1 else &quot;&quot;</code> instead of <code>a = f&quot;# {''.join([])}&quot; if 1 else &quot;&quot;</code> (single quotes on the outside now), but we still don't have the desired behavior of double quotes everywhere on Python 3.12+. I added a test for this but split it off into another branch since it ended up being unaddressed here, but my <code>dbg!</code> statements showed the correct preferred quotes going into <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_literal/src/escape.rs#L54"><code>UnicodeEscape::with_preferred_quote</code></a>.</p>
+<h2>Test Plan</h2>
+<p>Existing rule and <code>Generator</code> tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-01-28 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-01-28 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-01-28 21:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flynt/helpers.rs</code>:18 on 2025-01-28 21:13</div>
+            <div class="timeline-body"><p>nit: explicit <code>from</code> calls are often more readable than <code>.into()</code> calls, as you can easily see what type the object is being converted into</p>
+<pre><code class="language-suggestion">        value: Box::from(s),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:72 on 2025-01-28 21:15</div>
+            <div class="timeline-body"><p>🥳</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1405 on 2025-01-28 21:17</div>
+            <div class="timeline-body"><p>(we'll also probably want to preserve whether an f-string or bytestring is raw or not, like you did with regular strings. But that's for another PR!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1771 on 2025-01-28 21:18</div>
+            <div class="timeline-body"><p>maybe rename the test function?</p>
+<pre><code class="language-suggestion">    fn quotes_are_preserved() {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1782 on 2025-01-28 21:19</div>
+            <div class="timeline-body"><p>I think this comment won't make sense to a future reader of the code, who might not know that there ever was a <code>Generator::quote</code> field. Can we rephrase it to say something like &quot;We preserve the quote style of the original source&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-28 21:20</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+5 -5 violations, +0 -0 fixes in 2 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+4 -4 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/api/flask_embed.py#L26'>examples/server/api/flask_embed.py:26:9:</a> SIM108 Use ternary operator `data = df if new == 0 else df.rolling(f"{new}D").mean()` instead of `if`-`else`-block
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/api/flask_embed.py#L26'>examples/server/api/flask_embed.py:26:9:</a> SIM108 Use ternary operator `data = df if new == 0 else df.rolling(f'{new}D').mean()` instead of `if`-`else`-block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/api/flask_gunicorn_embed.py#L41'>examples/server/api/flask_gunicorn_embed.py:41:9:</a> SIM108 Use ternary operator `data = df if new == 0 else df.rolling(f"{new}D").mean()` instead of `if`-`else`-block
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/api/flask_gunicorn_embed.py#L41'>examples/server/api/flask_gunicorn_embed.py:41:9:</a> SIM108 Use ternary operator `data = df if new == 0 else df.rolling(f'{new}D').mean()` instead of `if`-`else`-block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/api/standalone_embed.py#L18'>examples/server/api/standalone_embed.py:18:9:</a> SIM108 Use ternary operator `data = df if new == 0 else df.rolling(f"{new}D").mean()` instead of `if`-`else`-block
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/api/standalone_embed.py#L18'>examples/server/api/standalone_embed.py:18:9:</a> SIM108 Use ternary operator `data = df if new == 0 else df.rolling(f'{new}D').mean()` instead of `if`-`else`-block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/api/tornado_embed.py#L29'>examples/server/api/tornado_embed.py:29:9:</a> SIM108 Use ternary operator `data = df if new == 0 else df.rolling(f"{new}D").mean()` instead of `if`-`else`-block
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/api/tornado_embed.py#L29'>examples/server/api/tornado_embed.py:29:9:</a> SIM108 Use ternary operator `data = df if new == 0 else df.rolling(f'{new}D').mean()` instead of `if`-`else`-block
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+1 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/50ff629ac5e2efb69afd75378f44a02ea6003ffc/scripts/lib/sharding.py#L65'>scripts/lib/sharding.py:65:21:</a> SIM108 Use ternary operator `host = shard if "." in shard else f"{shard}.{external_host}"` instead of `if`-`else`-block
+- <a href='https://github.com/zulip/zulip/blob/50ff629ac5e2efb69afd75378f44a02ea6003ffc/scripts/lib/sharding.py#L65'>scripts/lib/sharding.py:65:21:</a> SIM108 Use ternary operator `host = shard if "." in shard else f'{shard}.{external_host}'` instead of `if`-`else`-block
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| SIM108 | 10 | 5 | 5 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+5 -5 violations, +0 -0 fixes in 2 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+4 -4 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/api/flask_embed.py#L26'>examples/server/api/flask_embed.py:26:9:</a> SIM108 Use ternary operator `data = df if new == 0 else df.rolling(f"{new}D").mean()` instead of `if`-`else`-block
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/api/flask_embed.py#L26'>examples/server/api/flask_embed.py:26:9:</a> SIM108 Use ternary operator `data = df if new == 0 else df.rolling(f'{new}D').mean()` instead of `if`-`else`-block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/api/flask_gunicorn_embed.py#L41'>examples/server/api/flask_gunicorn_embed.py:41:9:</a> SIM108 Use ternary operator `data = df if new == 0 else df.rolling(f"{new}D").mean()` instead of `if`-`else`-block
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/api/flask_gunicorn_embed.py#L41'>examples/server/api/flask_gunicorn_embed.py:41:9:</a> SIM108 Use ternary operator `data = df if new == 0 else df.rolling(f'{new}D').mean()` instead of `if`-`else`-block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/api/standalone_embed.py#L18'>examples/server/api/standalone_embed.py:18:9:</a> SIM108 Use ternary operator `data = df if new == 0 else df.rolling(f"{new}D").mean()` instead of `if`-`else`-block
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/api/standalone_embed.py#L18'>examples/server/api/standalone_embed.py:18:9:</a> SIM108 Use ternary operator `data = df if new == 0 else df.rolling(f'{new}D').mean()` instead of `if`-`else`-block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/api/tornado_embed.py#L29'>examples/server/api/tornado_embed.py:29:9:</a> SIM108 Use ternary operator `data = df if new == 0 else df.rolling(f"{new}D").mean()` instead of `if`-`else`-block
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/api/tornado_embed.py#L29'>examples/server/api/tornado_embed.py:29:9:</a> SIM108 Use ternary operator `data = df if new == 0 else df.rolling(f'{new}D').mean()` instead of `if`-`else`-block
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+1 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/50ff629ac5e2efb69afd75378f44a02ea6003ffc/scripts/lib/sharding.py#L65'>scripts/lib/sharding.py:65:21:</a> SIM108 Use ternary operator `host = shard if "." in shard else f"{shard}.{external_host}"` instead of `if`-`else`-block
+- <a href='https://github.com/zulip/zulip/blob/50ff629ac5e2efb69afd75378f44a02ea6003ffc/scripts/lib/sharding.py#L65'>scripts/lib/sharding.py:65:21:</a> SIM108 Use ternary operator `host = shard if "." in shard else f'{shard}.{external_host}'` instead of `if`-`else`-block
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| SIM108 | 10 | 5 | 5 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-01-28 21:21</div>
+            <div class="timeline-body"><p>Nice! Would it be possible to add some new lint rule test fixtures that show a behaviour change from this PR? Maybe a new snippet or two for one of the <code>flynt</code> rules?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1405 on 2025-01-28 21:26</div>
+            <div class="timeline-body"><p>Oh good call, I'll add it to my todo list next to preserving triple quotes!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-01-28 21:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-01-28 21:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1771 on 2025-01-28 21:28</div>
+            <div class="timeline-body"><p>I also thought about moving these to the existing <code>quote</code> test. Would that be better, or is it worth keeping them separate?</p>
+<p><code>quote</code> uses <code>round_trip</code> instead of <code>round_trip_with</code>, but we're not really utilizing <code>round_trip_with</code> now either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-01-28 21:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1782 on 2025-01-28 21:31</div>
+            <div class="timeline-body"><p>Will do if we don't move these into <code>quote</code> as I mentioned above. I think using <code>assert_round_trip</code> in <code>quote</code> (or here I guess) might make the comment less important?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-28 22:32</div>
+            <div class="timeline-body"><blockquote>
+<p>Maybe a new snippet or two for one of the <code>flynt</code> rules?</p>
+</blockquote>
+<p>This is trickier than I expected. For both of these rules, I just used <code>Checker::default_fstring_flags</code> instead of passing them along from an existing string. For the <code>flynt</code> rule that's reasonable since it's creating an f-string where one didn't exist before, but the RUF030 rule should actually preserve them. I think I need to restructure the rule code a bit to make this possible, though.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-29 03:45</div>
+            <div class="timeline-body"><blockquote>
+<p>but we still don't have the desired behavior of double quotes everywhere on Python 3.12+. I added a test for this but split it off into another branch since it ended up being unaddressed here, but my <code>dbg!</code> statements showed the correct preferred quotes going into <a href="https://github.com/astral-sh/ruff/blob/main/crates/ruff_python_literal/src/escape.rs#L54"><code>UnicodeEscape::with_preferred_quote</code></a>.</p>
+</blockquote>
+<p>We should make sure that this doesn't introduce any incompatibility with the f-string style in the formatter (I think it shouldn't) as the formatter prefers alternating quote style instead of using the same quotes in Python 3.12+ (https://docs.astral.sh/ruff/formatter/#f-string-formatting).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-29 03:52</div>
+            <div class="timeline-body"><blockquote>
+<p>Unfortunately this still does not fix the issue in #9660, which appears to be more of an escaping issue than a quote-preservation issue.</p>
+</blockquote>
+<p>Sorry, I think I missed this issue before but I was wondering whether that should actually be considered a bug or not because the formatter prefers using alternating quote style. I think this should not be a bug because if the issue author is running the formatter after the linter, then the quotes will be changed back which might seem confusing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-29 10:59</div>
+            <div class="timeline-body"><p>Hmm, @dhruvmanila I still would consider #9660 a bug I think. I agree that if a lint autofix is generating a new f-string completely from scratch, it should prefer to use alternating quotes like the formatter does. But that's not what is happening in #9660 -- in #9660, it's replacing an existing f-string with a new f-string, but the new f-string has a different quoting style to the old f-string. That seems like an unnecessary stylistic change for the autofix to make, considering that the user might not even have any autoformatter enabled on their code. If they're using the Ruff formatter, then the issue doesn't arise in the first place, because their existing f-string would probably already have alternating quotes. (Or, if it's an f-string that they've just added and haven't yet formatted, they can run the formatter immediately after they run the linter in order to fix it up.)</p>
+<p>Basically, my opinion is that where possible lint autofixes should aim to have no opinion at all on quoting styles, and should leave that to the formatter. Instead, they should as much as possible try to preserve quoting styles when doing autofixes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_codegen/src/generator.rs</code>:1771 on 2025-01-29 11:00</div>
+            <div class="timeline-body"><p>Yeah, I think we can merge the tests now (or delete this function entirely if it is now completely redundant). As we discussed previously, the main purpose of this function was to test that setting the <code>quote</code> field worked correctly. But the <code>quote</code> field has now gone! :-D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-29 11:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-29 11:02</div>
+            <div class="timeline-body"><blockquote>
+<p>This is trickier than I expected. For both of these rules, I just used <code>Checker::default_fstring_flags</code> instead of passing them along from an existing string. For the <code>flynt</code> rule that's reasonable since it's creating an f-string where one didn't exist before, but the RUF030 rule should actually preserve them. I think I need to restructure the rule code a bit to make this possible, though.</p>
+</blockquote>
+<p>From the ecosystem report in https://github.com/astral-sh/ruff/pull/15794#issuecomment-2620078880, it looks like there's some changes to SIM108 suggested autofixes -- you could maybe add some f-string snippets to the SIM108 fixtures, if the flynt rules are hard to add tests for?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-29 15:00</div>
+            <div class="timeline-body"><p>@AlexWaygood Thanks for the SIM108 suggestion, I added two cases for that: one with double quotes and one with single quotes. I was looking for rules that explicitly interacted with f-strings, but I see now that just about any rule that uses the <code>Generator</code> and can apply to an expression with f-strings would have worked, which is exciting on its own!</p>
+<p>@dhruvmanila What do you think about Alex's comments? I tend to agree with preserving whatever the user had and then letting the formatter clean it up afterward. We still have some time to decide either way, though. I was going to work on preserving prefixes and triple quotes before taking a stab at that issue anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-01-29 18:16</div>
+            <div class="timeline-body"><p>🎉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-01-29 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-01-29 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-29 18:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:51 UTC
+    </footer>
+</body>
+</html>

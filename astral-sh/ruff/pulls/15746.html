@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Support `--exit-zero` and `--error-on-warning` - astral-sh/ruff #15746</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Support <code>--exit-zero</code> and <code>--error-on-warning</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15746">#15746</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-01-26 00:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-26 00:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves astral-sh/ruff#15500, resolves astral-sh/ruff#15501.</p>
+<p>Red Knot now accepts <code>--exit-zero</code> and <code>--error-on-warning</code> as CLI flags. The following table summarizes their effect on the exit code:</p>
+<p>| Output               | No errors | At least one warning | At least one error | Panic |
+|----------------------|:---------:|:--------------------:|:------------------:|:-----:|
+| Default              |     0     |          0           |         1          |   2   |
+| <code>--exit-zero</code>        |     0     |          0           |         0          |   2   |
+| <code>--error-on-warning</code> |     0     |          1           |         1          |   2   |</p>
+<h2>Test Plan</h2>
+<p>Unit tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @InSyncWithFoo on 2025-01-26 00:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @InSyncWithFoo on 2025-01-26 00:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @InSyncWithFoo on 2025-01-26 00:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @InSyncWithFoo on 2025-01-26 00:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-01-26 00:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_project/src/metadata/options.rs</code>:32 on 2025-02-02 10:53</div>
+            <div class="timeline-body"><p>We should move the <code>error_on_warning</code> setting into a new <code>terminal</code> section so that it can be configured using</p>
+<pre><code class="language-toml">[terminal]
+error-on-warning = true
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/main.rs</code>:231 on 2025-02-02 10:59</div>
+            <div class="timeline-body"><p>I think I'd rewrite this to determining the lowest allowed severity and then testing if there's any such diagnostic in the <code>self.watcher.is_none</code> branch</p>
+<pre><code>    let error_severity = if self.cli_options.error_on_warnings.unwrap_or_default() {
+        Severity::Warning
+    } else {
+        Severity::Error
+    };
+
+    if results.iter().any(|diagnostic| diagnostic.severity() &gt;= error_severity) {
+        ExitStatus::Failure
+    } else {
+        ExitStatus::Success
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-02-02 11:01</div>
+            <div class="timeline-body"><p>Thanks. We can't use <code>self.cli_options</code> in <code>main_loop</code>. We instead need to use <code>project.options</code> (ideally settings) to respect the same value being set in a configuration file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-03 07:31</div>
+            <div class="timeline-body"><p>Thanks, this is great.</p>
+<p>I decided to revert the <code>Options</code> changes again and add configuration support as part of https://github.com/astral-sh/ruff/issues/15491. The reason I reverted is mainly that we shouldn't use <code>Options</code> outside the &quot;reading and merging the configuration&quot; phase. We should introduce a dedicated <code>Settings</code> struct, similar to what we have in Ruff, that stores the resolved <code>Options</code> (with defaults filled in)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-02-03 07:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-03 07:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-03 19:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:51 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve the file watching failure error message - astral-sh/ruff #15728</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve the file watching failure error message</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15728">#15728</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2025-01-24 18:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-24 18:04</div>
+            <div class="timeline-body"><p>I really misunderstood this in https://github.com/astral-sh/ruff/pull/15664#issuecomment-2613079710</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @zanieb on 2025-01-24 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @zanieb on 2025-01-24 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @zanieb on 2025-01-24 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @zanieb on 2025-01-24 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @zanieb on 2025-01-24 18:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-24 18:05</div>
+            <div class="timeline-body"><p>I looked at rendering the expected event, but.. it's a bit harder.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-24 18:28</div>
+            <div class="timeline-body"><p>I'll leave this one to @MichaReiser 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-01-24 18:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-24 18:30</div>
+            <div class="timeline-body"><p>Nice, you could do</p>
+<pre><code class="language-patch">Index: crates/red_knot/tests/file_watching.rs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+&lt;+&gt;UTF-8
+===================================================================
+diff --git a/crates/red_knot/tests/file_watching.rs b/crates/red_knot/tests/file_watching.rs
+--- a/crates/red_knot/tests/file_watching.rs	(revision 26f7e46dc8348ba17ba6db1a61e7c296e7906428)
++++ b/crates/red_knot/tests/file_watching.rs	(date 1737743417656)
+@@ -1,5 +1,8 @@
+ #![allow(clippy::disallowed_names)]
+ 
++use core::fmt;
++use std::fmt::Display;
+ use std::io::Write;
+ use std::time::{Duration, Instant};
+ 
+@@ -39,15 +42,18 @@
+     }
+ 
+     #[track_caller]
+-    fn stop_watch&lt;M&gt;(&amp;mut self, matcher: M) -&gt; Vec&lt;ChangeEvent&gt;
++    fn stop_watch&lt;M&gt;(&amp;mut self, mut matcher: M) -&gt; Vec&lt;ChangeEvent&gt;
+     where
+         M: MatchEvent,
+     {
+         // track_caller is unstable for lambdas -&gt; That's why this is a fn
+         #[track_caller]
+-        fn panic_with_formatted_events(events: Vec&lt;ChangeEvent&gt;) -&gt; Vec&lt;ChangeEvent&gt; {
++        fn panic_with_formatted_events(
++            expected: &amp;str,
++            events: Vec&lt;ChangeEvent&gt;,
++        ) -&gt; Vec&lt;ChangeEvent&gt; {
+             panic!(
+-                &quot;Didn't observe expected change:\n{}&quot;,
++                &quot;Didn't observe expected change: `{expected}`\n{}&quot;,
+                 events
+                     .into_iter()
+                     .map(|event| format!(&quot;  - {event:?}&quot;))
+@@ -56,13 +62,15 @@
+             )
+         }
+ 
+-        self.try_stop_watch(matcher, Duration::from_secs(10))
+-            .unwrap_or_else(panic_with_formatted_events)
++        self.try_stop_watch(&amp;mut matcher, Duration::from_secs(10))
++            .unwrap_or_else(|events| {
++                panic_with_formatted_events(&amp;matcher.display().to_string(), events)
++            })
+     }
+ 
+     fn try_stop_watch&lt;M&gt;(
+         &amp;mut self,
+-        mut matcher: M,
++        matcher: &amp;mut M,
+         timeout: Duration,
+     ) -&gt; Result&lt;Vec&lt;ChangeEvent&gt;, Vec&lt;ChangeEvent&gt;&gt;
+     where
+@@ -204,10 +212,26 @@
+ 
+ trait MatchEvent {
+     fn match_event(&amp;mut self, event: &amp;ChangeEvent) -&gt; bool;
++
++    fn display(&amp;self) -&gt; impl fmt::Display;
+ }
+ 
+ fn event_for_file(name: &amp;str) -&gt; impl MatchEvent + '_ {
+-    |event: &amp;ChangeEvent| event.file_name() == Some(name)
++    MatchFile { name }
++}
++
++struct MatchFile&lt;'a&gt; {
++    name: &amp;'a str,
++}
++
++impl MatchEvent for MatchFile&lt;'_&gt; {
++    fn match_event(&amp;mut self, event: &amp;ChangeEvent) -&gt; bool {
++        event.file_name() == Some(self.name)
++    }
++
++    fn display(&amp;self) -&gt; impl Display {
++        format!(&quot;file name == {name}&quot;, name = self.name)
++    }
+ }
+ 
+ impl&lt;F&gt; MatchEvent for F
+@@ -217,6 +241,10 @@
+     fn match_event(&amp;mut self, event: &amp;ChangeEvent) -&gt; bool {
+         (*self)(event)
+     }
++
++    fn display(&amp;self) -&gt; impl Display {
++        &quot;&lt;func&gt;&quot;
++    }
+ }
+ 
+ trait SetupFiles {
+@@ -874,7 +902,7 @@
+ 
+     std::fs::write(site_packages.join(&quot;a.py&quot;).as_std_path(), &quot;class A: ...&quot;)?;
+ 
+-    let changes = case.try_stop_watch(|_: &amp;ChangeEvent| true, Duration::from_millis(100));
++    let changes = case.try_stop_watch(&amp;mut |_: &amp;ChangeEvent| true, Duration::from_millis(100));
+ 
+     assert_eq!(changes, Err(vec![]));
+ 
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-24 19:28</div>
+            <div class="timeline-body"><p>That's pretty close to what I implemented! but I wasn't happy with <code>&lt;func&gt;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-24 19:42</div>
+            <div class="timeline-body"><blockquote>
+<p>That's pretty close to what I implemented! but I wasn't happy with <code>&lt;func&gt;</code></p>
+</blockquote>
+<p>Most tests use the file name matcher. So it shouldn't be that big of a Problem</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2025-01-24 21:28</div>
+            <div class="timeline-body"><p>Let's just ship this and consider that <em>next</em> :D</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2025-01-24 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2025-01-24 21:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-24 21:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:51 UTC
+    </footer>
+</body>
+</html>

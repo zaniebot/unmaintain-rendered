@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-datetime`] Ignore `.replace()` calls while looking for `.astimezone` - astral-sh/ruff #16050</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-datetime</code>] Ignore <code>.replace()</code> calls while looking for <code>.astimezone</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16050">#16050</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-02-09 00:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-09 00:43</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #15998.</p>
+<p>Previously, this would be considered an error by <code>DTZ005</code>, as <code>parent_expr_is_astimezone()</code> would only traverse up one level:</p>
+<pre><code class="language-python">datetime.now().replace(...).astimezone()
+</code></pre>
+<p>The function will now check for all expressions in the current stack, ignoring all such intermediate <code>.replace()</code> calls while looking for <code>.astimezone</code>.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code> and <code>cargo insta test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-09 00:50</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-09 00:59</div>
+            <div class="timeline-body"><p>The second commit is just a rename. All substantial changes are isolated within <a href="https://github.com/astral-sh/ruff/pull/16050/commits/f51460cf58a2a56b17d1beeb6788a92358f36ade">the first</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_datetimez/rules/helpers.rs</code>:103 on 2025-02-09 12:55</div>
+            <div class="timeline-body"><p>Could you say a little bit about what this logic branch is for? No tests fail if I apply this diff to your git branch, which makes me suspect that it's not actually reachable (or if it is reachable, that we're missing some test coverage):</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/flake8_datetimez/rules/helpers.rs b/crates/ruff_linter/src/rules/flake8_datetimez/rules/helpers.rs
+index 9a430c9e4..53f28cb34 100644
+--- a/crates/ruff_linter/src/rules/flake8_datetimez/rules/helpers.rs
++++ b/crates/ruff_linter/src/rules/flake8_datetimez/rules/helpers.rs
+@@ -1,4 +1,4 @@
+-use ruff_python_ast::{AnyNodeRef, Expr, ExprAttribute, ExprCall};
++use ruff_python_ast::{Expr, ExprAttribute};
+ 
+ use crate::checkers::ast::Checker;
+ 
+@@ -14,7 +14,6 @@ pub(super) enum DatetimeModuleAntipattern {
+ /// This assumes that the current expression is a `datetime.datetime` object.
+ pub(super) fn followed_by_astimezone(checker: &amp;Checker) -&gt; bool {
+     let semantic = checker.semantic();
+-    let mut last = None;
+ 
+     for (index, expr) in semantic.current_expressions().enumerate() {
+         if index == 0 {
+@@ -31,20 +30,15 @@ pub(super) fn followed_by_astimezone(checker: &amp;Checker) -&gt; bool {
+             };
+ 
+             match attr.as_str() {
+-                &quot;replace&quot; =&gt; last = Some(AnyNodeRef::from(expr)),
++                &quot;replace&quot; =&gt; continue,
+                 &quot;astimezone&quot; =&gt; return true,
+                 _ =&gt; return false,
+             }
+-        } else {
+-            // datetime.now(...).replace(...).astimezone
+-            //                          ^^^^^
+-            let Expr::Call(ExprCall { func, .. }) = expr else {
+-                return false;
+-            };
+-
+-            if !last.is_some_and(|it| it.ptr_eq(AnyNodeRef::from(&amp;**func))) {
+-                return false;
+-            }
++        }
++        // datetime.now(...).replace(...).astimezone
++        //                          ^^^^^
++        if !expr.is_call_expr() {
++            return false;
+         }
+     }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-09 12:56</div>
+            <div class="timeline-body"><p>Thank you, this overall looks great. Nicely done!</p>
+<p>Thank you for adding comments to the code; it made it easier to understand what was going on. It still took me some time to figure out what was going on here, though. I almost wonder if it's worth adding a comment that links to the Ruff playground showing what the AST we're dealing with here looks like, and explaining that we start at the innermost node in the AST and have to work our way upwards https://play.ruff.rs/89b67ffb-c32a-437e-aa8c-8dcfc8b7068a</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-02-09 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/flake8_datetimez/rules/helpers.rs</code>:103 on 2025-02-09 14:56</div>
+            <div class="timeline-body"><p>Fixed a test case:</p>
+<pre><code class="language-python">datetime.now().replace(     # This is not reported
+	datetime.now().replace  # But this is
+).astimezone()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-09 15:45</div>
+            <div class="timeline-body"><p>OK, I added some documentation for you.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-09 15:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-02-09 15:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-02-09 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-09 15:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-09 15:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:52 UTC
+    </footer>
+</body>
+</html>

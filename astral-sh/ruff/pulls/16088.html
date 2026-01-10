@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] `T | object == object` - astral-sh/ruff #16088</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] <code>T | object == object</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16088">#16088</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-02-10 21:52
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-10 21:52</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<ul>
+<li>Simplify unions with <code>object</code> to <code>object</code>.</li>
+<li>Add a new <code>Type::object(db)</code> constructor to abbreviate <code>KnownClass::Object.to_instance(db)</code> in some places.</li>
+<li>Add a <code>Type::is_object</code> and <code>Class::is_object</code> function to make some tests for a bit easier to read.</li>
+</ul>
+<p>Happy to revert the latter two changes if these are not desirable.</p>
+<p>closes #16084</p>
+<h2>Test Plan</h2>
+<p>New Markdown tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-02-10 21:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-02-10 21:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-02-10 21:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-02-10 21:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-10 21:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/union_types.md</code>:149 on 2025-02-10 21:54</div>
+            <div class="timeline-body"><p>The new simplified result here kind of defeats the purpose of the original test, if I correctly understand its purpose. Should this be changed to something like <code>int | Unknown | bool</code> -&gt; <code>Unknown | int</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-10 21:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:66 on 2025-02-10 21:56</div>
+            <div class="timeline-body"><p>Could also be</p>
+<pre><code class="language-suggestion">            Type::Instance(instance) if instance.class.is_object(self.db) =&gt; {
+</code></pre>
+<p>but I somehow doubt that it would be much faster(?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/union_types.md</code>:149 on 2025-02-10 21:56</div>
+            <div class="timeline-body"><p>Yes, using <code>int | Unknown | bool</code> -&gt; <code>Unknown | int</code> looks right to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-10 21:58</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-10 21:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:51 on 2025-02-10 21:59</div>
+            <div class="timeline-body"><p>I also thought about extending the <code>UnionBuilder</code> to keep track of the fact that it represented <code>object</code>. It could then short-circuit any <code>.add(…)</code> into a no-op. Not sure if it's worth the extra complexity though, as we probably don't union with <code>object</code> a lot in reality.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-10 21:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:66 on 2025-02-10 21:59</div>
+            <div class="timeline-body"><p>I wondered the same thing; I think it could be unpacked even further to match against <code>class.known</code> of the <code>InstanceType</code> and eliminate the <code>if</code> entirely? But in the absence of evidence that that is faster, it just looks more verbose.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-10 22:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:51 on 2025-02-10 22:00</div>
+            <div class="timeline-body"><p>This is the sort of thing IMO best left to testing with actual benchmarks once we ideally have a broader ecosystem check that we can also benchmark.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-02-10 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-02-10 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-10 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-10 22:21</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:52 UTC
+    </footer>
+</body>
+</html>

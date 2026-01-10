@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix unstable formatting of trailing end-of-line comments of parenthesized attribute values - astral-sh/ruff #16187</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Fix unstable formatting of trailing end-of-line comments of parenthesized attribute values</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16187">#16187</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-02-16 15:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-16 15:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ruff/issues/16151</p>
+<p>This fixes a formatter instability where it incorrectly moved a trailing end-of-line comment
+of a parenthesized attribute value was moved to the next line:</p>
+<pre><code class="language-py">result = (
+    (await query_the_thing(mypy_doesnt_understand))  # type: ignore[x]
+    .foo()
+    .bar()
+)
+</code></pre>
+<p>Got reformatted to</p>
+<pre><code class="language-py">result = (
+    (await query_the_thing(mypy_doesnt_understand))
+      # type: ignore[x]
+    .foo()
+    .bar()
+)
+</code></pre>
+<p>and then finally to:</p>
+<pre><code class="language-py">result = (
+    (await query_the_thing(mypy_doesnt_understand))
+    # type: ignore[x]
+    .foo()
+    .bar()
+)
+</code></pre>
+<p>Not only is it an instability, but it also moves the <code>type: ignore</code> comment away from the node it was attributing.</p>
+<p>This PR fixes both by preserving the input formatting. Both those examples are correct formattings now:</p>
+<pre><code class="language-py">result = (
+    (await query_the_thing(mypy_doesnt_understand))  # type: ignore[x]
+    .foo()
+    .bar()
+)
+
+
+```py
+result = (
+    (await query_the_thing(mypy_doesnt_understand))  # type: ignore[x]
+    .foo()
+    .bar()
+)
+
+result = (
+    (
+        await query_the_thing(mypy_doesnt_understand)  # type: ignore[x]
+    )  # other
+    .foo()
+    .bar()
+)
+</code></pre>
+<p>I don't expect this to change any stable formatting because the formatter always moved trailing end-of-line comments and made them leading own-line comments of the <code>.</code> token</p>
+<h2>Test Plan</h2>
+<p>Added tests, ecosystem check</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-16 15:32</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @MichaReiser on 2025-02-16 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @MichaReiser on 2025-02-16 15:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix instable formatting of trailing end-of-line comments of parenthesized attribute values" to "Fix unstable formatting of trailing end-of-line comments of parenthesized attribute values" by @AlexWaygood on 2025-02-16 22:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/huonw">@huonw</a> on 2025-02-16 23:08</div>
+            <div class="timeline-body"><p>Thanks for fixing this! (BTW, I think the code examples in the PR description aren't quite the right ones.) 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-17 13:58</div>
+            <div class="timeline-body"><p>@huonw thanks for making me aware. I was in the middle of writing the summary and then realized that the fix wasn't ideal. So I decided to push what I had.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-17 14:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/src/comments/placement.rs</code>:1396 on 2025-02-17 14:00</div>
+            <div class="timeline-body"><p>We want to fall through to the next case if the comment is after the closing parentheses</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-02-17 14:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/attribute.py</code>:171 on 2025-02-18 07:24</div>
+            <div class="timeline-body"><p>What's the significance of this test case? It seems to be working fine on <code>main</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-02-18 07:25</div>
+            <div class="timeline-body"><p>I'm a bit unfamiliar with fluent chain layout so it might good to get a second pair of eyes on this (Konsti?) but otherwise looks good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 07:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_formatter/resources/test/fixtures/ruff/expression/attribute.py</code>:171 on 2025-02-18 07:43</div>
+            <div class="timeline-body"><p>I mainly wanted to make sure that I don't break this case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-18 07:43</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm a bit unfamiliar with fluent chain layout so it might good to get a second pair of eyes on this (Konsti?) but otherwise looks good.</p>
+</blockquote>
+<p>Yeah. I don't think anyone is very familiar with this specific code at the moment :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-02-18 07:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-18 07:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-18 07:43</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:53 UTC
+    </footer>
+</body>
+</html>

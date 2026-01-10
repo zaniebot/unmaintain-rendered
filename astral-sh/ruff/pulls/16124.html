@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Outline integration point for `len` diagnostics - astral-sh/ruff #16124</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Outline integration point for <code>len</code> diagnostics</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16124">#16124</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-02-12 17:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-12 17:20</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This step continues with what the first PR started by moving out type checking operations from the <code>Type::</code> operations.</p>
+<p>I found <code>len</code> an interesting use case because it may lead to a fair amount of code duplication.</p>
+<p>I'm still not a 100% convinced by this approach because it can require performing some operations twice:</p>
+<ol>
+<li>When infering the return type of the call</li>
+<li>When checking the call itself</li>
+</ol>
+<p>We could avoid some of that by adding more information to the <code>Outcome</code> but I'm not too much a fan of that
+because it means larger return types for everyone.</p>
+<h2>Test Plan</h2>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-12 17:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3349 on 2025-02-12 17:21</div>
+            <div class="timeline-body"><p>This probably requires calling <code>__len__</code> to get the <code>CallDunderLenOutcome</code> and then verify the <code>binding</code> on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-02-12 17:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-12 17:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1910 on 2025-02-12 17:25</div>
+            <div class="timeline-body"><p>What's slightly confusing here is that <code>CallOutcome</code> also has a <code>PossiblyUnbound</code> variant which can also be in the <code>Call</code> variant. I feel like we should only have one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-13 08:04</div>
+            <div class="timeline-body"><p>Okay, this won't work because <code>len</code> won't be checked anymore if we call a union:</p>
+<pre><code class="language-py">class NotSized: ...
+
+def test(cond: bool):
+	if cond:
+		a = len
+	else:
+		a = |x| 1
+
+	a(NotSized) # should error
+</code></pre>
+<p>This makes me think that we probably want to move call validation into the <code>Binder</code> which already emits similar errors for regular methods.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-13 08:04</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:53 UTC
+    </footer>
+</body>
+</html>

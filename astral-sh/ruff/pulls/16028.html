@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Fallback to `requires-python` if no `python-version` is specified - astral-sh/ruff #16028</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Fallback to <code>requires-python</code> if no <code>python-version</code> is specified</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16028">#16028</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-02-07 18:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-07 18:58</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add support for the <code>project.requires-python</code> field in <code>pyproject.toml</code> files.</p>
+<p>Fall back to the resolved lower bound of <code>project.requires-python</code> if the <code>environment.python-version</code> field is <code>None</code> (or more accurately, initialize <code>environment.python-version with </code>requires-python`'s lower bound if left unspecified).</p>
+<h2>UX design</h2>
+<p>There are two options on how we can handle the fallback to <code>requires-python</code>'s lower bound:</p>
+<ol>
+<li>Store the resolved lower bound in <code>environment.python-version</code> if that field is <code>None</code> (Implemented in this PR)</li>
+<li>Store the <code>requires-python</code> constraint separately.</li>
+</ol>
+<p>There's no observed difference unless a user-level configuration (or any other inherited configuration is used). Let's discuss it on the given example</p>
+<p><strong>User configuration</strong></p>
+<pre><code class="language-toml">[environment]
+python-version = &quot;3.10&quot;
+</code></pre>
+<p><strong>Project configuration (<code>pyproject.toml</code>)</strong></p>
+<pre><code class="language-toml">[project]
+name = &quot;test&quot;
+requires-python = &quot;&gt;= 3.12&quot;
+
+[tool.knot]
+# No environment table
+</code></pre>
+<p>The resolved version for 1. is 3.12 because the <code>requires-python</code> constraint precedence takes precedence over the <code>python-version</code> in the user configuration. 2. resolves to 3.10 because all <code>python-version</code> constraints take precedence before falling back to <code>requires-python</code>.</p>
+<p>Ruff implements 1. It's also the easier to implement and it does seem intuitive to me that the more local <code>requires-python</code> constraint takes precedence.</p>
+<h2>Test plan</h2>
+<p>Added CLI and unit tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-08 16:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_project/src/metadata/pyproject.rs</code>:69 on 2025-02-08 16:32</div>
+            <div class="timeline-body"><p>Thanks to @konstin for pointing me toward the logic in uv. This matches what uv does. Thankfully, most of the work is done by the pep0440 crate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fallback to requires python if no python-version is specified" to "[red-knot] Fallback to requires python if no python-version is specified" by @MichaReiser on 2025-02-08 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @MichaReiser on 2025-02-08 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-02-08 16:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-02-08 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-02-08 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-02-08 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-02-08 16:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Fallback to requires python if no python-version is specified" to "[red-knot] Fallback to `requires-python` if no `python-version` is specified" by @MichaReiser on 2025-02-08 16:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_project/src/metadata.rs</code>:77 on 2025-02-11 08:43</div>
+            <div class="timeline-body"><p>Maybe something like</p>
+<pre><code class="language-suggestion">        // If the options don't specify a python version but the `project.requires-python` field is set and includes a lower bound, use that instead
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_project/src/metadata.rs</code>:87 on 2025-02-11 08:45</div>
+            <div class="timeline-body"><p>Should we do something like building the minimum between the <code>requires_python</code> lower bound and our minimum supported version here?</p>
+<p>I find it surprising that I get a Python version of 3.9 if I don't specify anything, but a Python version of 3.6 if I set <code>requires-python = &quot;&gt;= 3.6&quot;</code>.</p>
+<p>Conversely, it might be surprising that upper bounds are ignored completely. If I set <code>requires-python = &quot;&lt;3.6&quot;</code>, I still get a Python version of 3.9.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_project/src/metadata.rs</code>:593 on 2025-02-11 08:48</div>
+            <div class="timeline-body"><p>Why does this have a <code>_no_python_version</code> suffix, while the other tests below do not? Remove the suffix? Maybe call this</p>
+<pre><code class="language-suggestion">    fn requires_python_major_minor() -&gt; anyhow::Result&lt;()&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_project/src/metadata.rs</code>:610 on 2025-02-11 08:59</div>
+            <div class="timeline-body"><p>Minor: do these tests need to be snapshot tests? I would find them more readable if they would include a simple <code>assert_eq!</code>, I think. Something like</p>
+<pre><code class="language-suggestion">assert_eq!(
+            root.options
+                .environment
+                .unwrap()
+                .python_version
+                .unwrap()
+                .to_string(),
+            &quot;3.12&quot;
+        );
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-02-11 09:00</div>
+            <div class="timeline-body"><p>Thank you. A few minor comments and one higher-level question.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-11 09:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_project/src/metadata.rs</code>:87 on 2025-02-11 09:59</div>
+            <div class="timeline-body"><p>That's a great catch. I'm not sure if it's worth special casing because:</p>
+<ul>
+<li>https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#python-requires Calls it out that it is the minimum python version supported and using <code>&lt;</code> doesn't make sense</li>
+<li>https://discuss.python.org/t/requires-python-upper-limits/12663 and later https://discuss.python.org/t/requires-python-upper-limits/12663/84 both mention that the field is intended as lower bound and not an upper bound. Pip doesn't seem to support the upper bound. (Shared by @konstin )</li>
+</ul>
+<p>We could error if we see a requires python constraint without a lower bound over silently ignoring. I'd be interested in @AlexWaygood or @carljm take on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-11 10:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_project/src/metadata.rs</code>:87 on 2025-02-11 10:49</div>
+            <div class="timeline-body"><p>Interesting questions.</p>
+<p>I wondered whether it might be possible for red-knot to have users who have a pyproject.toml file (and a <code>requires-python</code> field in that pyproject.toml file) without actually ever intending their project to be built as a package while a wheel. If so, the packaging.python.org guide might not be relevant here; they might <em>only</em> be using the <code>requires-python</code> field as a configuration setting for tools such as Ruff and red-knot. But on second thought, I don't think this is worth worrying about <em>too</em> much. The <code>requires-python</code> field is part of the <code>[project]</code> table in <code>pyproject.toml</code>; it seems reasonable to assume that users who include a <code>[project]</code> table are intending their code to be built and distributed as a wheel. So I think we <em>can</em> safely assume &quot;packaging semantics&quot; for the <code>requires-python</code> field.</p>
+<p>It might be good to print a warning to the terminal if we resolve the user's configuration settings to a <code>requires-python</code> version less than typeshed's oldest supported version. Typeshed exposes this information in <a href="https://github.com/python/typeshed/blob/24c78b9e0dff457275092025a14387dac206f5d6/pyproject.toml#L173-L174">this field here</a> in its pyproject.toml file (the intention is that it could be used by tools vendoring typeshed as well as by typeshed's internal tools). It doesn't look like we currently vendor typeshed's pyproject.toml file as part of our typeshed syncs, but we could easily start doing so. The reason why I think we should print a warning is that people might think that we'll accurately understand the Python 3.7 stdlib if they put <code>requires-python = &quot;&gt;= 3.7&quot;</code> in their pyproject.toml file -- but we won't, because typeshed deleted the pre-Python-3.8 branches when it dropped support for Python 3.7. The reason why it should be a suppressible warning rather than an error is that the user might have Python &lt;3.8 branches in their own code.</p>
+<p>If we see <code>requires-python = &quot;&lt;3.6&quot;</code>, I'd prefer us to error (with a helpful error message telling them to set the red-knot <code>python-version</code> setting) rather than fallback to the default of Python 3.9. Falling back to Python 3.9 here feels too much like guesswork.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-11 17:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_project/src/metadata.rs</code>:87 on 2025-02-11 17:59</div>
+            <div class="timeline-body"><p>I think there are two separate issue raised in @sharkdp 's comment.</p>
+<p>To me the more important issue is, what happens if someone specifies a <code>requires-python</code> lower bound that is lower than our minimum supported Python version? I think in this case we have to just check with our minimum supported Python version, but maybe we should also emit a warning (which would be silenced by explicitly setting a red-knot python version), so people don't mistakenly think they are getting red-knot coverage of Python 3.6?</p>
+<p>The second issue is, what happens if someone specifies a <code>requires-python</code> with no lower bound? I agree that this is not a supported use of <code>requires-python</code> generally, but I do also think that means we should emit a warning on it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-11 18:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_project/src/metadata.rs</code>:87 on 2025-02-11 18:07</div>
+            <div class="timeline-body"><p>I created an issue for the first case (by simply citing Alex) because it's unrelated to this PR (it doesn't matter if you use requires python or python-version, the problem applies to both settings).</p>
+<p>I'll go and add an error for the &quot;no lower bound case&quot; because erroring at this stage is easier than emitting a warning and I don't feel like this edge case is worth complicating the architecture to make it a warning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_project/src/metadata/pyproject.rs</code>:114 on 2025-02-12 10:37</div>
+            <div class="timeline-body"><p>nit: I'd find it a bit easier to see what's different between the branches if we moved <code>source</code> out</p>
+<pre><code class="language-suggestion">        let python_version = PythonVersion::from((major, minor));
+        let source = requires_python.source().clone();
+
+        Ok(Some(if let Some(range) = requires_python.range() {
+            RangedValue::with_range(python_version, source, range)
+        } else {
+            RangedValue::new(python_version, source)
+        }))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_project/src/metadata.rs</code>:877 on 2025-02-12 10:40</div>
+            <div class="timeline-body"><p>It would be good to also mention in the error message (and probably most of these error messages!) that they can fix the error by providing a value for the red-knot-specific <code>python-version</code> setting in the <code>tool.knot</code> table. They <em>might</em> have good reason for using a <code>requires-python</code> setting with an upper bound but no lower bound because of how other tools use the field (even though the packaging guide tells you not to do this!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-12 10:41</div>
+            <div class="timeline-body"><p>Nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-02-12 11:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-12 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-12 11:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-12 11:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_project/src/metadata/pyproject.rs</code>:122 on 2025-02-12 11:48</div>
+            <div class="timeline-body"><p>They might not have a <code>tool.knot</code> table at all, right? This could be quite confusing if they aren't familiar with how to provide this red-knot-specific setting</p>
+<pre><code class="language-suggestion">    #[error(&quot;value `{0}` does not contain a lower bound. Add a lower bound to indicate the minimum compatible Python version (e.g., `&gt;=3.13`) or specify a version in `tool.knot.environment.python-version`.&quot;)]
+</code></pre>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:52 UTC
+    </footer>
+</body>
+</html>

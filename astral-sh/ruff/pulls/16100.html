@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove `Hash` and `Eq` from `AstNodeRef` for types not implementing `Eq` or `Hash` - astral-sh/ruff #16100</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove <code>Hash</code> and <code>Eq</code> from <code>AstNodeRef</code> for types not implementing <code>Eq</code> or <code>Hash</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16100">#16100</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-02-11 18:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-11 18:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is a follow up to https://github.com/astral-sh/ruff/pull/15763#discussion_r1949681336</p>
+<p>It reverts the change to using ptr equality for <code>AstNodeRef</code>s, which in turn removes the <code>Eq</code>, <code>PartialEq</code>, and <code>Hash</code> implementations for <code>AstNodeRef</code>s parametrized with AST nodes.
+Cheap comparisons shouldn't be needed because the node field is generally marked as <code>[#tracked]</code> and <code>#[no_eq]</code> and removing the implementations even enforces that those
+attributes are set on all <code>AstNodeRef</code> fields (which is good).</p>
+<p>The only downside this has is that we technically wouldn't have to mark the <code>Unpack::target</code> as <code>#[tracked]</code> because
+the <code>target</code> field is accessed in every query accepting <code>Unpack</code> as an argument.</p>
+<p>Overall, enforcing the use of <code>#[tracked]</code> seems like a good trade off, espacially considering that it's very likely that
+we'd probably forget to mark the <code>Unpack::target</code> field as tracked if we add a new <code>Unpack</code> query that doesn't access the target.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-02-11 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-02-11 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-02-11 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-02-11 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-02-11 18:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/ast_node_ref.rs</code>:93 on 2025-02-11 18:16</div>
+            <div class="timeline-body"><p>What is the cost of this comparison? It doesn't seem like <code>ParsedModule</code> implements <code>Eq</code> -- does this comparison work because it implements <code>Deref</code> to <code>Parsed&lt;ModModule&gt;</code>? In that case it seems like it might be doing a deep compare of the entire AST? But I'm probably missing something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-11 18:17</div>
+            <div class="timeline-body"><p>Looks good, modulo the one inline question.</p>
+<p>To be clear, my comment wasn't intended to suggest that I think it's important we make this change; I was just curious what the tradeoffs are and if there was anything we should document for future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-11 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/ast_node_ref.rs</code>:93 on 2025-02-11 18:24</div>
+            <div class="timeline-body"><p><code>ParsedModule</code> does a shallow compare</p>
+<p>https://github.com/astral-sh/ruff/blob/69d86d1d69f3ef48f691b626595a7d0c056b9e66/crates/ruff_db/src/parsed.rs#L76-L80</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-11 18:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/ast_node_ref.rs</code>:93 on 2025-02-11 18:27</div>
+            <div class="timeline-body"><p>Oh oops, I was looking at my local copy without the latest changes from the coarse-grained structs PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-11 18:29</div>
+            <div class="timeline-body"><p>Hmm, it does seem that this regresses performance slightly (2%) for the cold case. Let me re-run to verify that it is real. It might just be the cost of tracking the <code>Unpack::target</code> field.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-02-11 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-11 18:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-11 18:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:53 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`refurb`] Also report non-name expressions (`FURB169`) - astral-sh/ruff #15905</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>refurb</code>] Also report non-name expressions (<code>FURB169</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15905">#15905</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-02-03 06:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-03 06:15</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Follow-up to #15779.</p>
+<p>Prior to this change, non-name expressions are not reported at all:</p>
+<pre><code class="language-python">type(a.b) is type(None)  # no error
+</code></pre>
+<p>This change enhances the rule so that such cases are also reported in preview. Additionally:</p>
+<ul>
+<li>The fix will now be marked as unsafe if there are any comments within its range.</li>
+<li>Error messages are slightly modified.</li>
+</ul>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code> and <code>cargo insta test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-03 06:21</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2025-02-03 11:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-03 11:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/isinstance_type_none.rs</code>:72 on 2025-02-03 11:40</div>
+            <div class="timeline-body"><p>Nit: IDE's can show the argument names inline</p>
+<pre><code class="language-suggestion">    let fix = replace_with_identity_check(expr, call.range, false, checker);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-03 11:50</div>
+            <div class="timeline-body"><blockquote>
+<p>None of the aforementioned changes are preview-gated, as they are considered bugfixes/non-breaking, similar to that of #15779.</p>
+</blockquote>
+<p>We discussed this internally and, while it's quite borderline, we think this unfortunately does need to be gated behind preview. It's similar to #15579, and it's true that #15579 increased the scope a little bit, but it felt like #15579 was mainly a bugfix (expanding the scope of the rule was sort-of incidental). The line here is a bit fuzzy, and it's true that this <em>could</em> also be considered a bugfix of sorts. However, Ruff arguably isn't doing anything <em>wrong</em> here right now (it could just be doing a bit better). To us this feels like it's a significant enough expansion of the rule that it should be a preview-only change first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-03 16:52</div>
+            <div class="timeline-body"><blockquote>
+<p>[...] this feels like it's a significant enough expansion of the rule that it should be a preview-only change first.</p>
+</blockquote>
+<p>Preview-gated the first change. The other two are fine, I suppose?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-03 16:59</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>[...] this feels like it's a significant enough expansion of the rule that it should be a preview-only change first.</p>
+</blockquote>
+<p>Preview-gated the first change. The other two are fine, I suppose?</p>
+</blockquote>
+<p>yup! Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-03 18:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/type_none_comparison.rs</code>:86 on 2025-02-03 18:18</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        &amp;&amp; !matches!(other, Expr::Name(_) | Expr::NoneLiteral(_))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/helpers.rs</code>:46 on 2025-02-04 10:20</div>
+            <div class="timeline-body"><p>Is my understanding correct that this was mainly moved from <code>isinstance_type_none</code> with the exception that you added the comments check?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-04 10:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-04 10:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/refurb/FURB169.py</code>:40 on 2025-02-04 10:25</div>
+            <div class="timeline-body"><p>It doesn't seem those get reported in the snapshot. Would you mind taking a look?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-02-05 00:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/refurb/helpers.rs</code>:46 on 2025-02-05 00:30</div>
+            <div class="timeline-body"><p>It was the <code>negate</code> parameter/<code>let op</code> block that were added, but, yes, that's correct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/snapshots/ruff_linter__rules__refurb__tests__preview__FURB169_FURB169.py.snap</code>:326 on 2025-02-05 07:28</div>
+            <div class="timeline-body"><p>Is it correct that we remove the <code>type</code> around the <code>a := 1</code> here? same for the next diagnostic. Shouldn't this be <code>type(a := 1) is None</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-05 07:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-02-05 07:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/refurb/snapshots/ruff_linter__rules__refurb__tests__preview__FURB169_FURB169.py.snap</code>:326 on 2025-02-05 07:33</div>
+            <div class="timeline-body"><p><code>type(a) is type(None)</code> is true if and only if <code>a</code> is <code>None</code>. This is the case with existing tests as well. To be pedantic, <code>type(a) == type(None)</code> isn't entirely safe due to operator overloading, but it is reported and fixed the same regardless.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-05 07:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/snapshots/ruff_linter__rules__refurb__tests__preview__FURB169_FURB169.py.snap</code>:326 on 2025-02-05 07:45</div>
+            <div class="timeline-body"><p>oh dang sorry, I got confused what the rule does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-05 07:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2025-02-05 07:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-02-05 07:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-05 07:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-05 08:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:52 UTC
+    </footer>
+</body>
+</html>

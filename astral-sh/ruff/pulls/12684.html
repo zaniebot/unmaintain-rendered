@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Eagerly validate search paths before constructing `Program`s - astral-sh/ruff #12684</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Eagerly validate search paths before constructing <code>Program</code>s</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/12684">#12684</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2024-08-05 10:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-05 10:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is a prototype for <em>a</em> way by which we could move settings resolution for search paths out of the module resolver. It may not be the <em>best</em> way; I'm not wedded to it necessarily!</p>
+<p>Moving settings resolution for search paths out of the module resolver enables us to validate that these settings are correct before constructing <code>Program</code> instances, which is desirable because <code>Program</code> instances should ideally store validated, normalized settings on them rather than unvalidated, unnormalized settings.</p>
+<p>The way this PR works is that in <code>crates/ruff_db/src/program.rs</code>, new <code>SearchPathInner</code> and <code>SearchPath</code> types are added. These are extremely minimal, but in terms of the data they hold they have 1:1 correspondence with the <code>SearchPathInner</code> and <code>SearchPath</code> types in <code>crates/red_knot_module_resolver/path.rs</code>. Having public types in <code>ruff_db</code> that can be cheaply and easily converted to and from the private types in <code>red_knot_module_resolver</code> means that the <code>Program</code> struct can use a <code>SearchPath</code> type in its fields (representing a validated, normalized search path) without depending on anything from the module-resolver crate.</p>
+<p>The module resolver, meanwhile, exposes a new public function for creating a <code>Program</code> instance from the raw, unvalidated search-path settings. This function uses internals of the module resolver to attempt to construct validated <code>red_knot_module_resolver::SearchPath</code>s, and then cheaply converts those search paths to <code>ruff_db::SearchPath</code>s in order to construct a <code>Program</code> instance.</p>
+<p>I initially experimented with simply moving the <code>SearchPathInner</code> and <code>SearchPath</code> types out of the module resolver crate entirely and into <code>ruff_db</code>. While this is doable, it is quite painful, because validating search paths requires knowledge of the internals of the module resolver. For example: one of the validation steps we need to perform is to check that the file at <code>stdlib/VERSIONS</code> parses as a valid <code>VERSIONS</code> file if the user has given us a custom typeshed directory. Attempting to parse <code>VERSIONS</code> requires knowledge of the structure of the <code>VERSIONS</code> file, which in turn requires knowledge of the <code>ModuleName</code> type, etc. etc.</p>
+<h2>Guide to reviewing</h2>
+<p>I would recommend looking at the changes to <code>ruff_db</code> first, then the changes to <code>red_knot_module_resolver</code>, and everything else after that.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2024-08-05 10:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2024-08-05 10:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2024-08-05 10:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-08-05 10:59</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2024-08-05 20:42</div>
+            <div class="timeline-body"><blockquote>
+<p>I initially experimented with simply moving the SearchPathInner and SearchPath types out of the module resolver crate entirely and into ruff_db. While this is doable, it is quite painful, because validating search paths requires knowledge of the internals of the module resolver.</p>
+</blockquote>
+<p>It seems to me that a lot of the pain here arises from the fact that <code>Program</code> depends on module resolver, but module resolver must depend on <code>ruff_db</code> crate for the basic Salsa setup. But this seems like a constraint we've artificially placed on ourselves by having <code>Program</code> defined in <code>ruff_db</code>. As far as I can see nothing else in <code>ruff_db</code> depends on <code>Program</code>, so can't we just move <code>Program</code> out to <code>ruff_workspace</code> crate instead? Then <code>Program</code> can simply depend directly on the module resolver, and module resolver can depend on <code>ruff_db</code>, and we eliminate these issues.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-05 20:44</div>
+            <div class="timeline-body"><blockquote>
+<p>As far as I can see nothing else in <code>ruff_db</code> depends on <code>Program</code>, so can't we just move <code>Program</code> out to <code>ruff_workspace</code> crate instead? Then <code>Program</code> can simply depend directly on the module resolver, and module resolver can depend on <code>ruff_db</code>, and we eliminate these issues.</p>
+</blockquote>
+<p>That <em>sounds</em> reasonable to me, but I'll defer to @MichaReiser on this :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-06 06:00</div>
+            <div class="timeline-body"><blockquote>
+<p>Then Program can simply depend directly on the module resolver, and module resolver can depend on ruff_db, and we eliminate these issues.</p>
+</blockquote>
+<p>I don't think this will work because the module resolver depends on <code>Program</code> to resolve the module resolution settings. I also suspect that some of the semantic model may require access to <code>Program</code>.</p>
+<p>I haven't looked at the specific implementation here and it may be worth thinking this through more carefully and re-reading through https://github.com/astral-sh/ruff/pull/12318.</p>
+<p>To me, the most natural place for <code>Program</code> is in the semantic model. That leaves the problem that the module resolver needs access to the search path settings and target version. We can either:</p>
+<ul>
+<li>Move the module resolver into the semantic model crate (as a sub module) and be done with it</li>
+<li>Expose a method on the module-resolver's <code>Db</code> trait to access the search paths settings. This leads to some boilerplate for all higher Db traits but would allow us to keep the two crates separated.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-07 10:18</div>
+            <div class="timeline-body"><p>I plan to look at this once I start working on validation. Sorry for the delay. Let me know if you want feedback earlier</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-07 10:19</div>
+            <div class="timeline-body"><p>No worries; I don't see that as urgent. It's a pain that it touches so many files as merge conflicts keep cropping up, but it is what it is 😄</p>
+<p>Please take your time!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-08-08 06:00</div>
+            <div class="timeline-body"><p>I thought more about this and I'm leaning towards merging <code>red_knot_module_resolver</code> into <code>red_knot_python_semantic</code> because the module resolver is small(ish) and I don't see strong reasons that they have to be separate crates. Having both in a single crate greatly simplifies the problem because we can move <code>Program</code> into the semantic crate and be &quot;done&quot; with it.</p>
+<p>@AlexWaygood what do you think of unifying the two crates?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2024-08-08 11:31</div>
+            <div class="timeline-body"><p>Yeah I think combining the two crates could definitely make sense. I wasn't 100% sure it made sense for them to be separate crates to begin with. In theory it's nice to have a clean separation of concerns between the semantic-model crate and the module resolver but in practice it doesn't really work:</p>
+<ul>
+<li>The module resolver is only used by the semantic-model crate, so exactly what the return type of functions like <code>resolve_module()</code> is depends heavily on the implementation details of exactly what information the semantic-model crate needs from the module resolver</li>
+<li>There are already certain types, like <code>ModuleName</code>, which are included in (and exposed by) the module-resolver crate, but probably should really belong in the semantic-model crate. <code>ModuleName</code> isn't an implementation detail of the module resolver, it's a type that both the module resolver and the semantic model need to make use of. Arguably it would make more &quot;sense&quot; for it to be in the semantic-model crate, but it needs to be in the module-resolver crate currently betcause the module resolver needs access to it, and the module-resolver crate is lower level.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2024-08-08 14:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-31 15:05</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:51 UTC
+    </footer>
+</body>
+</html>

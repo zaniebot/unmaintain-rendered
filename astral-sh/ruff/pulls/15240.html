@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feat(AIR302): check whether removed context key &quot;conf&quot; is access through context.get(...) - astral-sh/ruff #15240</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>feat(AIR302): check whether removed context key &quot;conf&quot; is access through context.get(...)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15240">#15240</a>
+        opened by <a href="https://github.com/Lee-W">@Lee-W</a>
+        on 2025-01-03 15:32
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Lee-W">@Lee-W</a> on 2025-01-03 15:32</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+<p>context key <code>conf</code> is removed in Airflow3. This PR handle the case that these keys are accessed through <code>context.get(...)</code></p>
+<p>e.g.,</p>
+<pre><code class="language-python">@task
+def func(**context):
+    context.get(&quot;conf&quot;)
+
+@task()
+def func(**context):
+    context.get(&quot;conf&quot;)
+</code></pre>
+<h2>Test Plan</h2>
+<!-- How was it tested? -->
+
+<p>A test fixture is included in the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lee-W">@Lee-W</a> on 2025-01-03 15:35</div>
+            <div class="timeline-body"><p>This PR also adds a utility function and works as an example to check whether this kind of access is from taskflow. for https://github.com/astral-sh/ruff/pull/15144</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lee-W">@Lee-W</a> on 2025-01-03 15:37</div>
+            <div class="timeline-body"><p>@sunank200 As I'll be out traveling for the following week and will have almost no access to laptop, if there're comments to be resolved, please feel free to push to this branch directly and this PR should help https://github.com/astral-sh/ruff/pull/15144 moving forward as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-03 15:39</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/airflow/rules/removal_in_3.rs</code>:228 on 2025-01-03 15:39</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    // Ensure the method called is on `context`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lee-W">@Lee-W</a> on 2025-01-03 15:40</div>
+            <div class="timeline-body"><p>I'm not able to finish the python_callable part in time but that part should be checked as well as discussed in https://github.com/astral-sh/ruff/pull/15144#discussion_r1900608421</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/airflow/rules/removal_in_3.rs</code>:218 on 2025-01-03 15:41</div>
+            <div class="timeline-body"><p>How many arguments are you planning to deprecate for this to be a list?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-03 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-03 15:42</div>
+            <div class="timeline-body"><blockquote>
+<p>As I'll be out traveling for the following week and will have almost no access to laptop,</p>
+</blockquote>
+<p>Safe and good travels! Enjoy your time without a laptop ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-06 10:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/airflow/rules/removal_in_3.rs</code>:914 on 2025-01-06 10:35</div>
+            <div class="timeline-body"><p>We can possible make this generic as I suspect it's going to be used for other decorators as well. Ignore if it's not going to be used for any other decorators other than <code>@task</code>.</p>
+<pre><code class="language-rs">fn is_decorated_with(checker: &amp;mut Checker, decorator: &amp;str) -&gt; bool {
+    let mut parents = checker.semantic().current_statements();
+    if let Some(Stmt::FunctionDef(StmtFunctionDef { decorator_list, .. })) =
+        parents.find(|stmt| stmt.is_function_def_stmt())
+    {
+        for decorator in decorator_list {
+            if checker
+                .semantic()
+                .resolve_qualified_name(map_callable(&amp;decorator.expression))
+                .is_some_and(|qualified_name| {
+                    matches!(qualified_name.segments(), [&quot;airflow&quot;, &quot;decorators&quot;, decorator])
+                })
+            {
+                return true;
+            }
+        }
+    }
+    false
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @dhruvmanila on 2025-01-06 10:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dhruvmanila on 2025-01-06 10:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Lee-W">@Lee-W</a> on <code>crates/ruff_linter/src/rules/airflow/rules/removal_in_3.rs</code>:914 on 2025-01-06 12:58</div>
+            <div class="timeline-body"><p>@task is probably the only case I can think of for now 🤔　I can do the refactoring once we have another case in the future</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Lee-W">@Lee-W</a> reviewed on 2025-01-06 12:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sunank200">@sunank200</a> on 2025-01-06 14:20</div>
+            <div class="timeline-body"><p>@Lee-W I have made the generic change here: https://github.com/astral-sh/ruff/pull/15144</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-07 11:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/airflow/rules/removal_in_3.rs</code>:218 on 2025-01-07 11:37</div>
+            <div class="timeline-body"><p>I think there are multiple as stated in this PR description: https://github.com/astral-sh/ruff/pull/15144#issue-2759448217</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-07 11:38</div>
+            <div class="timeline-body"><p>@sunank200 This PR and the one that you've opened (#15144) seems very familiar. Does your PR supersedes this? If not, can / should they be merged?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sunank200">@sunank200</a> on 2025-01-08 06:14</div>
+            <div class="timeline-body"><p>@dhruvmanila this PR <a href="https://github.com/astral-sh/ruff/pull/15144">#15144</a> supersedes this. We could keep <a href="https://github.com/astral-sh/ruff/pull/15144">#15144</a>. I can make @Lee-W coauthor on my PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-08 10:05</div>
+            <div class="timeline-body"><p>Sounds good @sunank200, thanks. I'll close this PR then.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-01-08 10:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Lee-W">@Lee-W</a> on 2025-01-13 23:30</div>
+            <div class="timeline-body"><p>Thanks all for helping out! Yep, the intention of this PR was just to help #15144.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-23 08:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:51 UTC
+    </footer>
+</body>
+</html>

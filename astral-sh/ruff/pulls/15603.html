@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implement tab autocomplete for `ruff config` - astral-sh/ruff #15603</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Implement tab autocomplete for <code>ruff config</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15603">#15603</a>
+        opened by <a href="https://github.com/mishamsk">@mishamsk</a>
+        on 2025-01-20 03:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-01-20 03:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Not the most important feature, but hey... was marked as the good first issue ;-) fixes #4551</p>
+<p>Unfortunately, looks like clap only generates proper completions for zsh, so this would not make any difference for bash/fish.</p>
+<h2>Test Plan</h2>
+<ul>
+<li>cargo nextest run</li>
+<li>manual test by sourcing completions and then triggering autocomplete:</li>
+</ul>
+<pre><code class="language-shell">misha@PandaBook ruff % source &lt;(target/debug/ruff generate-shell-completion zsh)
+misha@PandaBook ruff % target/debug/ruff config lin
+line-length                                                         -- The line length to use when enforcing long-lines violations
+lint                                                                -- Configures how Ruff checks your code.
+lint.allowed-confusables                                            -- A list of allowed 'confusable' Unicode characters to ignore
+lint.dummy-variable-rgx                                             -- A regular expression used to identify 'dummy' variables, or
+lint.exclude                                                        -- A list of file patterns to exclude from linting in addition
+lint.explicit-preview-rules                                         -- Whether to require exact codes to select preview rules. Whe
+lint.extend-fixable                                                 -- A list of rule codes or prefixes to consider fixable, in ad
+lint.extend-ignore                                                  -- A list of rule codes or prefixes to ignore, in addition to
+lint.extend-per-file-ignores                                        -- A list of mappings from file pattern to rule codes or prefi
+lint.extend-safe-fixes                                              -- A list of rule codes or prefixes for which unsafe fixes sho
+lint.extend-select                                                  -- A list of rule codes or prefixes to enable, in addition to
+lint.extend-unsafe-fixes                                            -- A list of rule codes or prefixes for which safe fixes shoul
+lint.external                                                       -- A list of rule codes or prefixes that are unsupported by Ru
+lint.fixable                                                        -- A list of rule codes or prefixes to consider fixable. By de
+lint.flake8-annotations                                             -- Print a list of available options
+lint.flake8-annotations.allow-star-arg-any                          -- Whether to suppress `ANN401` for dynamically typed `*args`
+
+...
+</code></pre>
+<ul>
+<li>check command help</li>
+</ul>
+<pre><code class="language-shell">❯ target/debug/ruff config -h
+List or describe the available configuration options
+
+Usage: ruff config [OPTIONS] [OPTION]
+
+Arguments:
+  [OPTION]  Config key to show
+
+Options:
+      --output-format &lt;OUTPUT_FORMAT&gt;  Output format [default: text] [possible values: text, json]
+  -h, --help                           Print help
+
+Log levels:
+  -v, --verbose  Enable verbose logging
+  -q, --quiet    Print diagnostics, but nothing else
+  -s, --silent   Disable all logging (but still exit with status code &quot;1&quot; upon detecting diagnostics)
+
+Global options:
+      --config &lt;CONFIG_OPTION&gt;  Either a path to a TOML configuration file (`pyproject.toml` or `ruff.toml`), or a TOML `&lt;KEY&gt; =
+                                &lt;VALUE&gt;` pair (such as you might find in a `ruff.toml` configuration file) overriding a specific
+                                configuration option. Overrides of individual settings using this option always take precedence over
+                                all configuration files, including configuration files that were also specified using `--config`
+      --isolated                Ignore all configuration files
+</code></pre>
+<ul>
+<li>running original command</li>
+</ul>
+<pre><code class="language-shell">❯ target/debug/ruff config
+cache-dir
+extend
+output-format
+fix
+unsafe-fixes
+fix-only
+show-fixes
+required-version
+preview
+exclude
+extend-exclude
+extend-include
+force-exclude
+include
+respect-gitignore
+builtins
+namespace-packages
+target-version
+src
+line-length
+indent-width
+lint
+format
+analyze
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-20 03:55</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_workspace/src/cli.rs</code>:150 on 2025-01-20 04:36</div>
+            <div class="timeline-body"><p>What's the reason for limiting this? This makes the short description a bit awkward to read because it ends in the middle of sentences.</p>
+<p><img width="1284" alt="Screenshot 2025-01-20 at 10 02 14 AM" src="https://github.com/user-attachments/assets/75f5b8a4-344c-4185-98e3-f1ea3ed24d61" /></p>
+<p>Should we instead take the first paragraph from the documentation? For example, for the <a href="https://docs.astral.sh/ruff/settings/#lint_task-tags"><code>lint.task-tags</code></a> setting, we would consider &quot;A list of task tags to recognize (e.g., &quot;TODO&quot;, &quot;FIXME&quot;, &quot;XXX&quot;).&quot; as the description. If so, you'll need to split the documentation at the first double newline occurence (<code>\n\n</code>) and take the first part of it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-20 04:37</div>
+            <div class="timeline-body"><p>Thank you for working on this!</p>
+<p>I'm seeing this entry at the end of the completion list after I press <kbd>Tab</kbd> at the end of <code>ruff config </code>:</p>
+<p><img width="1262" alt="Screenshot 2025-01-20 at 9 57 00 AM" src="https://github.com/user-attachments/assets/ad86a968-ebed-4e55-aad5-116a445dd5d8" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">cli</span> added by @dhruvmanila on 2025-01-20 04:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mishamsk">@mishamsk</a> reviewed on 2025-01-20 14:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/ruff_workspace/src/cli.rs</code>:150 on 2025-01-20 14:39</div>
+            <div class="timeline-body"><p>@dhruvmanila thanks for looking into this. I decided to truncate based on clap's doc suggestion:
+<img src="https://github.com/user-attachments/assets/6516d352-fd90-426c-b33c-92f6866bc907" alt="CleanShot 2025-01-20 at 09 36 04@2x" /></p>
+<p>I've just made a local change to expand to the entire paragraph (also replacing any single newlines with a space). See below:
+<img src="https://github.com/user-attachments/assets/6d2e927f-f7f0-4b18-a05b-6f41de8e025b" alt="CleanShot 2025-01-20 at 09 34 54@2x" /></p>
+<p>You can see that completions now include the full first paragraph, but at least in my terminal (ghostty, &quot;stock&quot; zsh 5.9.0) on MacOS - they are still truncated...</p>
+<p>I'll probably push the change regardless, since the truncated string will then depend on the terminal width, but overall I am not sure if there is a way to &quot;solve&quot; this and show entire paragraphs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-20 14:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_workspace/src/cli.rs</code>:150 on 2025-01-20 14:43</div>
+            <div class="timeline-body"><blockquote>
+<p>I'll probably push the change regardless, since the truncated string will then depend on the terminal width, but overall I am not sure if there is a way to &quot;solve&quot; this and show entire paragraphs.</p>
+</blockquote>
+<p>Yeah, this is fine, thanks you. I only meant to say that Ruff shouldn't handle this as terminals are probably going to truncate them as per screen width. This is useful because users with more screen width should be able to see more content regarding the option but at the same time someone on a laptop shouldn't be affected either.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-01-20 14:59</div>
+            <div class="timeline-body"><p>@dhruvmanila</p>
+<p>updates:</p>
+<ul>
+<li>fixes the erroneous strings at the end of completions (apparently clap has issues with double quotes in help strings, fails to properly escape them =&gt; I replaced with single quotes)</li>
+<li>removed sets from completions that do not have doc. Even though it would be valid to call config with them, I do not see additional value in polluting the completion. In real-life zsh would &quot;stop&quot; at them anyway, albeit with a trailing dot</li>
+<li>as described above, I've switched to passing the entire first paragraph as help string. Doesn't fix the fact that zsh truncates the help to screen width, but probably better than hard-truncation I had before</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-20 15:06</div>
+            <div class="timeline-body"><blockquote>
+<ul>
+<li>removed sets from completions that do not have doc. Even though it would be valid to call config with them, I do not see additional value in polluting the completion. In real-life zsh would &quot;stop&quot; at them anyway, albeit with a trailing dot</li>
+</ul>
+</blockquote>
+<p>Are you referring to the header like <code>lint.pyupgrade</code>, <code>lint.ruff</code>, etc. as is in my screenshot above? If so, we should include them even though they don't have documentation because <code>ruff config lint.ruff</code> will list out all the config options:</p>
+<pre><code class="language-console">$ ruff config lint.ruff
+parenthesize-tuple-in-subscript
+extend-markup-names
+allowed-markup-calls
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-01-20 18:03</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<ul>
+<li>removed sets from completions that do not have doc. Even though it would be valid to call config with them, I do not see additional value in polluting the completion. In real-life zsh would &quot;stop&quot; at them anyway, albeit with a trailing dot</li>
+</ul>
+</blockquote>
+<p>Are you referring to the header like <code>lint.pyupgrade</code>, <code>lint.ruff</code>, etc. as is in my screenshot above? If so, we should include them even though they don't have documentation because <code>ruff config lint.ruff</code> will list out all the config options:</p>
+<pre><code>$ ruff config lint.ruff
+parenthesize-tuple-in-subscript
+extend-markup-names
+allowed-markup-calls
+</code></pre>
+</blockquote>
+<p>Yes. Here is why I think there is no point in including them. The whole purpose of completion is to allow a user to get to detailed configuration field description without guessing its name.</p>
+<p>Configuration field groups, like <code>lint.isort</code> do not have any associated documentation, and <code>ruff config</code> just falls back to showing list of possible subkeys/fields. But with auto-completion, there is now no need to run <code>ruff config lint.isort</code>, pressing the tab gives even better output than running the command.</p>
+<p>See, how the flow looks at the current commit. I first run <code>ruff config lint.isort</code>, and then do double-tab instead:
+<img src="https://github.com/user-attachments/assets/0b47a752-f757-4e38-b5c5-f5aa278ea758" alt="CleanShot 2025-01-20 at 12 51 18" /></p>
+<p>Now, here is how tab completion will look if I remove the filter:
+<img src="https://github.com/user-attachments/assets/5505b791-288a-49a2-bb41-ab21496ede2d" alt="CleanShot 2025-01-20 at 12 55 24@2x" /></p>
+<p>I am not sure if the first line is helpful. Even if I add something like <code>Lists all available config fields or subconfig keys</code> - why would anyone care auto-completing to that name if they already have the full list with available on screen?</p>
+<p>An important note - if <code>lint.isort</code> would get a doc of its own, it will appear in the list. So not all of the config groups are skipped.</p>
+<p>tl;dr; I am happy to remove the filter if you think this is how it is supposed to be, but imho the current behavior gets users to where they actually want with slightly less confusion.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-21 03:37</div>
+            <div class="timeline-body"><p>Thanks for providing your thoughts on this. I agree that it might be quicker for a user to get to a specific config key if we skip the plugin header but those are the possible values that can be passed to the <code>ruff config</code> command and I don't think completion list should filter out certain values based on usages. This logic also seems to rely on the fact that the plugin headers doesn't have documentation but it might in the future which means that the suggestions would start including them. It might be that you and I don't use or find it useful but there might be valid use cases that we aren't seeing and users might find it confusing that a possible value is not being suggested. Does that make sense?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-21 07:55</div>
+            <div class="timeline-body"><p>I think it's fine to ignore tables as long as we ignore all table entries because you can't set the table itself (I guess you can, but it's somewhat useless).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-21 12:05</div>
+            <div class="timeline-body"><blockquote>
+<p>I think it's fine to ignore tables as long as we ignore all table entries because you can't set the table itself (I guess you can, but it's somewhat useless).</p>
+</blockquote>
+<p>I see, I'm not sure if that kind of heuristics exists, maybe it does within the OptionsMetadata? Regardless, I'm not sure I follow what you mean by &quot;you can't set the table itself&quot; as, from what I understand, <code>ruff config</code> is mainly to display the documentation of the option or list down all available options for a plugin. Are you referring to a possible future extension of <code>ruff config set</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-21 12:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_workspace/src/cli.rs</code>:2 on 2025-01-21 12:07</div>
+            <div class="timeline-body"><p>What's the reason for having a nested module within the module itself? Should we instead rename this file to <code>completion.rs</code> instead? This will involve updating the <code>lib.rs</code> and <code>args.rs</code> to use the correct name as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mishamsk">@mishamsk</a> reviewed on 2025-01-21 13:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/ruff_workspace/src/cli.rs</code>:2 on 2025-01-21 13:22</div>
+            <div class="timeline-body"><p>oh, yes, my bad. I originally copied the inner module from RuleSelector, but you are totally right this doesn't make sense here as there is nothing else in the module. I'll fix that alongside the OptionsSet completions as soon as we'll align on what we are doing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-01-21 13:25</div>
+            <div class="timeline-body"><p>@MichaReiser as per my logic above - when an OptionSet has some documentation, it is kinda helpful to see it among completions...but tbh only when the set is small and this option even fits on the screen.</p>
+<p>So there are two viable alternatives to resolve this:</p>
+<ol>
+<li><p>As @dhruvmanila suggested, show all valid values for the command. In that case, I suggest keeping doc for OptionSet's that have them AND adding &quot;Show all available subconfig keys&quot; for those that do not</p>
+</li>
+<li><p>As @MichaReiser suggest filter all OptionSet's from the result and keep only the fields</p>
+</li>
+</ol>
+<p>I'll follow your lead folks, let me know.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/cli.rs</code>:13 on 2025-01-23 07:24</div>
+            <div class="timeline-body"><p>Could we move this entire file to the <code>ruff</code> crate or what's the reason that it has to be in the <code>ruff_workspace</code> crate?</p>
+<p>The <code>ruff</code> crate is ruff's CLI interface whereas <code>ruff_workspace</code> is (mostly) interface independent (can be WASM, CLI, LSP, ...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/cli.rs</code>:29 on 2025-01-23 07:26</div>
+            <div class="timeline-body"><p>Can we use a more self explanatory name than <code>fqn</code>. I've no idea what it stands for (maybe full qualified name)? How about just <code>full_option_name</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/cli.rs</code>:15 on 2025-01-23 07:27</div>
+            <div class="timeline-body"><p>Not too important but we can avoid some allocations by using <code>&amp;'static str</code></p>
+<pre><code class="language-suggestion">        values: Vec&lt;(String, &amp;'static str)&gt;,
+        parents: Vec&lt;&amp;'static str&gt;,
+</code></pre>
+<p>This does require changing the signature of the <code>Visit</code> methods to <code>&amp;'static str</code> but I think that should be easily possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/cli.rs</code>:19 on 2025-01-23 07:28</div>
+            <div class="timeline-body"><p>Nit</p>
+<pre><code class="language-suggestion">        type IntoIter = std::vec::IntoIter&lt;Self::Item&gt;;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/cli.rs</code>:150 on 2025-01-23 07:32</div>
+            <div class="timeline-body"><p>Can you explain why replacing all <code>&quot;</code> with <code>'</code> is necessary? It does seem dangerous to me in the case the doc contains any code examples</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/cli.rs</code>:133 on 2025-01-23 07:34</div>
+            <div class="timeline-body"><p>Doesn't this result in two errors with we have an argument? Should this be a <code>match</code>? Can you extend your test plan with an example that exercises this code path</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/cli.rs</code>:60 on 2025-01-23 07:35</div>
+            <div class="timeline-body"><p>I think it would be helpful to mention that this type mainly exists to provide autocompletion by implementing <code>PossibleValues</code>.</p>
+<p>Can you add the help output for the <code>config</code> command to your test plan. I want to make sure  that clap doesn't render all possible values</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-01-23 07:37</div>
+            <div class="timeline-body"><p>@dhruvmanila convinced me. I think showing all values is a great starting point.</p>
+<p>Can you add an integration test similar to the tests we have in https://github.com/astral-sh/ruff/blob/c847cad389f202edae868765e690cb7042e88264/crates/ruff/tests/config.rs#L5-L4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/ruff_workspace/src/cli.rs</code>:150 on 2025-01-24 01:43</div>
+            <div class="timeline-body"><p>@MichaReiser first of all thanks a LOT for such a thorough review. I almost feel sorry that such a minor change caused so much trouble.</p>
+<p>Back to your question: I added it because apparently clap doesn't escape double quotes when generating zsh completions, which breaks them. @dhruvmanila commented about it: https://github.com/astral-sh/ruff/pull/15603#pullrequestreview-2561307123</p>
+<p>Also, found clap PR that fixed other escapes: https://github.com/clap-rs/clap/pull/4848 but if you look into the change here: https://github.com/clap-rs/clap/pull/4848/files - you'll see that (a) they effectively do the same, just replace characters (b) PR author forgot double quotes</p>
+<p>I do not see any risks, neither security no user friendliness. This would only affect completion help, which most likely be truncated anyway + it is unlikely that the first paragraph of the doc contains code snippets.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mishamsk">@mishamsk</a> reviewed on 2025-01-24 01:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mishamsk">@mishamsk</a> reviewed on 2025-01-24 01:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/ruff_workspace/src/cli.rs</code>:133 on 2025-01-24 01:48</div>
+            <div class="timeline-body"><p>this code was copy-pasted verbatim from the existing completion for rules... it gives this:
+<img src="https://github.com/user-attachments/assets/14f94870-7f0e-4ac3-b027-af5b91c8aebe" alt="CleanShot 2025-01-23 at 20 46 55@2x" /></p>
+<p>I believe without the arg, the <code>for '[OPTION]'</code> will be missing.</p>
+<p>I am not a fan of this specific output, but I was trying to stick to whatever was in the code base already.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mishamsk">@mishamsk</a> reviewed on 2025-01-24 02:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/ruff_workspace/src/cli.rs</code>:2 on 2025-01-24 02:36</div>
+            <div class="timeline-body"><p>this is fixed, I'll close this one as there is a more recent comment below</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mishamsk">@mishamsk</a> reviewed on 2025-01-24 02:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/ruff_workspace/src/cli.rs</code>:13 on 2025-01-24 02:37</div>
+            <div class="timeline-body"><p>I followed the way it was done for <code>RuleSelector</code>. I moved it into a new module inside ruff crate. I'd argue, that RuleSelector should move there too, as the same argument is applicable to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mishamsk">@mishamsk</a> reviewed on 2025-01-24 02:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/ruff_workspace/src/cli.rs</code>:29 on 2025-01-24 02:37</div>
+            <div class="timeline-body"><p>yes, that's <code>fully_qualified_name</code>. I expanded the acronym, but kept &quot;qualified&quot;, I believe that's the appropriate term here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/ruff_workspace/src/cli.rs</code>:15 on 2025-01-24 02:39</div>
+            <div class="timeline-body"><p>There are 4 structs implementing this Trait, so I didn't make the change to limit the scope of this PR. If you'd like me to go ahead and change all of them I can. But, tbh, this code is ran once per ruff install/update, I am pretty sure the difference is negligible</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mishamsk">@mishamsk</a> reviewed on 2025-01-24 02:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mishamsk">@mishamsk</a> reviewed on 2025-01-24 02:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/ruff_workspace/src/cli.rs</code>:60 on 2025-01-24 02:43</div>
+            <div class="timeline-body"><p>added!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-01-24 02:44</div>
+            <div class="timeline-body"><blockquote>
+<p>@dhruvmanila convinced me. I think showing all values is a great starting point.</p>
+</blockquote>
+<p>Made the change</p>
+<blockquote>
+<p>Can you add an integration test similar to the tests we have</p>
+</blockquote>
+<p>doing a true completion integration test seems cumbersome, it would involve generating the completion script, sourcing it, and then executing with some magic env vars inside zsh. I can add such a test, but sounds overcomplicated for the task.</p>
+<p>A somewhat easier way is to commit the completion script itself as a snapshot. That's easy.</p>
+<p>But whatever path we choose will cause snapshot changes every time anyone changes any option... As a contributor I would have been surprised by this ;-)</p>
+<p>Fwiw the other args with autocompletion do not have snapshot tests if I am not mistaken</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @mishamsk on 2025-01-24 03:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-01-24 04:58</div>
+            <div class="timeline-body"><blockquote>
+<p>Unfortunately, looks like clap only generates proper completions for zsh, so this would not make any difference for bash/fish.</p>
+</blockquote>
+<p>Sorry I missed this. Can you tell me why is that so?</p>
+<p>In my testing, I can at least see that the Bash completions are being produced correctly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-24 05:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/commands/completions/config.rs</code>:41 on 2025-01-24 05:07</div>
+            <div class="timeline-body"><p>I don't think this is the correct fix. The fix would be to update the actual documentation in the codebase. For example, the <code>ruff config lint</code> option has the following as documentation:</p>
+<p>https://github.com/astral-sh/ruff/blob/98fccec2e7c20be9a5b99907e912a678a8f29900/crates/ruff_workspace/src/options.rs#L436-L446</p>
+<p>The first line will be used as the description for the completion. This is what should be done as well for other options and I'd recommend that this be done in a follow-up PR and not in this PR.</p>
+<p>So, for example, considering <code>lint.pydoclint</code>, the following comment:</p>
+<p>https://github.com/astral-sh/ruff/blob/98fccec2e7c20be9a5b99907e912a678a8f29900/crates/ruff_workspace/src/options.rs#L472-L474</p>
+<p>should be copied on top of <code>PydoclintOptions</code> which will then be used as the completion description.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-24 05:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/commands/completions/config.rs</code>:76 on 2025-01-24 05:08</div>
+            <div class="timeline-body"><p>nit: <code>o</code> as a single letter is confusing</p>
+<pre><code class="language-suggestion">    fn from(value: OptionString) -&gt; Self {
+        value.0
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-01-24 05:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff/src/commands/completions/config.rs</code>:151 on 2025-01-24 05:08</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                .take_while(|line| !line.trim_end().is_empty())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-01-24 05:09</div>
+            <div class="timeline-body"><p>Looks good, thanks for working on this. I'll let @MichaReiser do the final review.</p>
+<p>We should revert the default documentation value and use empty string for now. A follow-up work would be to copy the documentation to the relevant struct.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-24 08:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/cli.rs</code>:150 on 2025-01-24 08:23</div>
+            <div class="timeline-body"><p>It would be great if you could add an inline comment that summarises what you wrote in this comment. It will help future readers to understand (without guessing) of what's happening here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-24 08:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_workspace/src/cli.rs</code>:133 on 2025-01-24 08:24</div>
+            <div class="timeline-body"><p>I see. I'm still not sure if it is correct because we'll end up inserting two errors in case <code>arg</code> is some. So maybe this should just be an <code>if...else</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-01-24 08:25</div>
+            <div class="timeline-body"><p>This is great, thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mishamsk">@mishamsk</a> on <code>crates/ruff_workspace/src/cli.rs</code>:133 on 2025-01-25 15:03</div>
+            <div class="timeline-body"><p>No, I believe this code (which btw Charlie wrote originally) is correct. Clap uses each piece to create one single error. Notice that one part pushes <code>clap::error::ContextKind::InvalidArg</code> and another <code>clap::error::ContextKind::InvalidValue</code>, hence we get one error:</p>
+<pre><code>error: invalid value 'blabla' for '[OPTION]'
+                      ^^^^^ &lt;--- clap::error::ContextKind::InvalidValue
+                                   ^^^^^^^^ &lt;--- clap::error::ContextKind::InvalidArg
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mishamsk">@mishamsk</a> reviewed on 2025-01-25 15:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mishamsk">@mishamsk</a> on 2025-01-25 20:45</div>
+            <div class="timeline-body"><p>@MichaReiser</p>
+<ul>
+<li>removed default doc text per @dhruvmanila ask, I will open a follow-up and fill in the missing docs as soon as this one is merged</li>
+<li>answered your question rgd error message</li>
+<li>applied two nit's from @dhruvmanila</li>
+</ul>
+<p>should be ok to merge</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-01-27 15:08</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-01-27 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-01-27 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-27 15:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:51 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert `.md` links in rule documentation to full URLs - astral-sh/ruff #15904</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Convert <code>.md</code> links in rule documentation to full URLs</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15904">#15904</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-02-03 06:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-03 06:08</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Related to <a href="https://github.com/astral-sh/ruff/pull/15862#discussion_r1938044515">these</a> <a href="https://github.com/astral-sh/ruff/pull/15889#discussion_r1938765623">comments</a> at #15862 and #15889.</p>
+<p>Markdown links of the following format are an anti-pattern:</p>
+<pre><code class="language-markdown">[`rule-name`](rule-name.md)
+</code></pre>
+<p>Only Mkdocs can resolve such links. When rendered by a client, typically an editor, they lead to nowhere. This might cause some frustration. Additionally, documentation for other rules (e.g., <a href="https://github.com/astral-sh/ruff/blob/b58f2c399e87c11def59bd55f75f7ef8148c84f0/crates/ruff_linter/src/rules/pydocstyle/rules/blank_before_after_class.rs#L123"><code>D211</code></a> and <a href="https://github.com/astral-sh/ruff/blob/b58f2c399e87c11def59bd55f75f7ef8148c84f0/crates/ruff_linter/src/rules/flake8_bandit/rules/shell_injection.rs#L197"><code>S606</code></a>) uses the full URL form.</p>
+<p>All such instances have thus been converted to full URLs:</p>
+<pre><code class="language-markdown">[`rule-name`][A123]
+
+[A123]: https://docs.astral.sh/ruff/rules/rule-name/
+</code></pre>
+<h2>Test Plan</h2>
+<p>None.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-03 06:14</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2025-02-03 09:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-03 11:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Only Mkdocs can resolve such links. When rendered by a client, typically an editor, they lead to nowhere. This might cause some frustration.</p>
+</blockquote>
+<p>I generally view the doc-comments for the diagnostic structs themselves as external, user-facing documentation rather than internal, developer-facing documentation. So for these doc-comments, it's much more important to me how they're rendered on our website than it is how they're rendered in a tooltip by an editor. (This is the opposite from most other doc-comments we have in the codebase, which are generally just for internal documentation.) We also have lots of other special links in these doc-comments that are understood by mkdocs but that I doubt will be rendered well in an editor tooltip -- e.g. <code>[`preview`]</code> will link to https://docs.astral.sh/ruff/preview/ even if <code>[preview]: https://docs.astral.sh/ruff/preview/</code> is not at the bottom of the diagnostic struct's doc-comment.</p>
+<p>However, I don't think these changes do any harm (other than maybe hardcoding our website domain in a few more places). I'm okay with them if others are.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-02-03 11:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-03 14:18</div>
+            <div class="timeline-body"><blockquote>
+<p>I generally view the doc-comments for the diagnostic structs themselves as external, user-facing documentation rather than internal, developer-facing documentation.</p>
+</blockquote>
+<p>It is precisely due to them being user-facing that the links must be made accessible. <code>ruff rule</code> exists, and, as someone who uses the docs very often (IDE popups, command line, even rendered documentation view in RustRover), I want a better experience.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-03 14:32</div>
+            <div class="timeline-body"><p>I sort of agree with @AlexWaygood but I also see @InSyncWithFoo's point.</p>
+<p>My preferred solution would be to move the link generation to the <code>mkdocs</code> script. E.g., could the script automatically detect rule codes in <code>[]</code> and replace them with the full URL, similar to what we already do with options?</p>
+<p>I'm okay landing this as a separate PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-02-03 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-03 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-03 14:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-03 14:54</div>
+            <div class="timeline-body"><p>Yeah, I admit I hadn't considered what the output of <code>ruff rule</code> would look like. Ideally I feel like we'd have &quot;clean&quot; doc-comments with links generated by mkdocs, but that we'd also &quot;fixup&quot; the doc-comment before printing it to the terminal in the <code>ruff rule</code> output. Then links like the ones that mkdocs generates for <code>[`preview`]</code> would also be clickable from the terminal if you ran <code>ruff rule</code>. This might be an unreasonable amount of complexity to add to <code>ruff rule</code>, though</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:52 UTC
+    </footer>
+</body>
+</html>

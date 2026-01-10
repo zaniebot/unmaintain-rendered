@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] fix unresolvable import range - astral-sh/ruff #15976</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] fix unresolvable import range</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15976">#15976</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-02-05 18:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-05 18:10</div>
+            <div class="timeline-body"><p>This causes the diagnostic to highlight the actual unresovable import
+instead of the entire <code>from ... import ...</code> statement.</p>
+<p>While we're here, we expand the test coverage to cover all of the
+possible ways that an <code>import</code> or a <code>from ... import</code> can fail.</p>
+<p>Some considerations:</p>
+<ul>
+<li>The first commit in this PR adds a regression test for the current
+behavior.</li>
+<li>This creates a new <code>mdtest/diagnostics</code> directory. Are folks cool
+with this? I guess the idea is to put tests more devoted to diagnostics
+than semantics in this directory. (Although I'm guessing there will
+be some overlap.)</li>
+</ul>
+<p>Fixes astral-sh/ruff#15866</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-02-05 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-02-05 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-02-05 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-02-05 18:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-05 18:11</div>
+            <div class="timeline-body"><p>I am already pining for inline snapshots. The external snapshot approach completely kills the amazing locality that mdtests otherwise benefit from. Sigh.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-05 18:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unresolved-import.md_-_Unresolved_import_diagnostics_-_Using_`from`_with_an_unknown_current_module.snap</code>:27 on 2025-02-05 18:20</div>
+            <div class="timeline-body"><p>Minor: It looks like we might want to highlight the full module path here (it seems to not include the leading <code>.</code>)? Maybe we can test this with a <code>longer.module.path</code>?</p>
+<p>Edit: I guess ideally, we would only highlight the part of the module path that does not exist. But that might be much more difficult to implement (I'm not at all familiar with that part of the code base).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-02-05 18:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unresolved-import.md_-_Unresolved_import_diagnostics_-_Using_`from`_with_an_unknown_current_module.snap</code>:27 on 2025-02-05 18:24</div>
+            <div class="timeline-body"><p>I added a test with submodules and the range does include them. It looks like it's just the leading <code>.</code>. I'll investigate and see if I can cover that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-05 18:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unresolved-import.md_-_Unresolved_import_diagnostics_-_Using_`from`_with_a_resolvable_module_but_unresolvable_item.snap</code>:30 on 2025-02-05 18:25</div>
+            <div class="timeline-body"><p>Can we extend this to include one existing symbol? Such that it would read:</p>
+<pre><code class="language-suggestion">1 | from a import does_exist, does_not_exist  # error: [unresolved-import]
+  |                           ^^^^^^^^^^^^^^ Module `a` has no member `does_not_exist`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-02-05 18:26</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unresolved-import.md_-_Unresolved_import_diagnostics_-_Using_`from`_with_a_resolvable_module_but_unresolvable_item.snap</code>:30 on 2025-02-05 18:27</div>
+            <div class="timeline-body"><p>Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 18:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/diagnostics/unresolved-import.md</code>:1 on 2025-02-05 18:28</div>
+            <div class="timeline-body"><p>tiny nit: our naming convention for mdtests is to use snake_case rather than kebab-case. So this should probably be <code>unresolved_import.md</code> rather than <code>unresolved-import.md</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-05 18:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 18:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unresolved-import.md_-_Unresolved_import_diagnostics_-_Using_`from`_with_an_unknown_current_module.snap</code>:27 on 2025-02-05 18:32</div>
+            <div class="timeline-body"><p>Yeah this one looks trickier because it looks like the AST normalizes the dots to a <code>level</code> number:</p>
+<pre><code>[crates/red_knot_python_semantic/src/types/infer.rs:748:17] &amp;import_from = ImportFromDefinitionKind {
+    node: AstNodeRef(
+        StmtImportFrom {
+            range: 0..24,
+            module: Some(
+                Identifier {
+                    id: Name(&quot;zqzqzqzq&quot;),
+                    range: 6..14,
+                },
+            ),
+            names: [
+                Alias {
+                    range: 22..24,
+                    name: Identifier {
+                        id: Name(&quot;hi&quot;),
+                        range: 22..24,
+                    },
+                    asname: None,
+                },
+            ],
+            level: 1,
+        },
+    ),
+    alias_index: 0,
+}
+</code></pre>
+<p>So it's not totally clear (to me) how to fix this particular problem without changes to the AST. (Or working backwards to try and figure out the range by looking at the level and the actual source code. But that feels kinda bad.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 18:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unresolved-import.md_-_Unresolved_import_diagnostics_-_Using_`from`_with_an_unknown_current_module.snap</code>:27 on 2025-02-05 18:35</div>
+            <div class="timeline-body"><p>Yeah the &quot;cannot resolve import <code>.foo</code>&quot; in the diagnostic message is being re-constituted here:</p>
+<p>https://github.com/astral-sh/ruff/blob/3cf9cd5d475c475adee40fc05443a5fe2f6a3494/crates/red_knot_python_semantic/src/types/diagnostic.rs#L971-L975</p>
+<p>And you wind up with source code in the diagnostic that isn't actually in the source program. For example:</p>
+<pre><code>[andrew@duff play]$ cat test.py
+from . . . zqzqzqzq import hi
+[andrew@duff play]$ run-red-knot pr1 -- check
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.08s
+error: lint:unresolved-import
+ --&gt; /home/andrew/astral/ruff/play/diags/play/test.py:1:12
+  |
+1 | from . . . zqzqzqzq import hi
+  |            ^^^^^^^^ Cannot resolve import `...zqzqzqzq`
+  |
+
+</code></pre>
+<p>I'll file a bug for this one but punt on it here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unresolved-import.md_-_Unresolved_import_diagnostics_-_Using_`from`_with_an_unknown_current_module.snap</code>:27 on 2025-02-05 18:35</div>
+            <div class="timeline-body"><p>I think it wouldn't be too <em>hard</em> to fix if we changed <code>InferContext::report_diagnostic</code> and <code>InferContext::report_lint</code> to take a <code>TextRange</code> rather than an <code>AnyNodeRef</code>:</p>
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/types/context.rs b/crates/red_knot_python_semantic/src/types/context.rs
+index 00e63192b..3077a63a9 100644
+--- a/crates/red_knot_python_semantic/src/types/context.rs
++++ b/crates/red_knot_python_semantic/src/types/context.rs
+@@ -6,7 +6,7 @@ use ruff_db::{
+     files::File,
+ };
+ use ruff_python_ast::AnyNodeRef;
+-use ruff_text_size::Ranged;
++use ruff_text_size::{Ranged, TextRange};
+ 
+ use super::{binding_type, KnownFunction, TypeCheckDiagnostic, TypeCheckDiagnostics};
+ 
+@@ -71,7 +71,7 @@ impl&lt;'db&gt; InferContext&lt;'db&gt; {
+     pub(super) fn report_lint(
+         &amp;self,
+         lint: &amp;'static LintMetadata,
+-        node: AnyNodeRef,
++        range: TextRange,
+         message: fmt::Arguments,
+     ) {
+         if !self.db.is_file_open(self.file) {
+@@ -89,12 +89,12 @@ impl&lt;'db&gt; InferContext&lt;'db&gt; {
+ 
+         let suppressions = suppressions(self.db, self.file);
+ 
+-        if let Some(suppression) = suppressions.find_suppression(node.range(), LintId::of(lint)) {
++        if let Some(suppression) = suppressions.find_suppression(range, LintId::of(lint)) {
+             self.diagnostics.borrow_mut().mark_used(suppression.id());
+             return;
+         }
+ 
+-        self.report_diagnostic(node, DiagnosticId::Lint(lint.name()), severity, message);
++        self.report_diagnostic(range, DiagnosticId::Lint(lint.name()), severity, message);
+     }
+ 
+     /// Adds a new diagnostic.
+@@ -102,7 +102,7 @@ impl&lt;'db&gt; InferContext&lt;'db&gt; {
+     /// The diagnostic does not get added if the rule isn't enabled for this file.
+     pub(super) fn report_diagnostic(
+         &amp;self,
+-        node: AnyNodeRef,
++        range: TextRange,
+         id: DiagnosticId,
+         severity: Severity,
+         message: fmt::Arguments,
+@@ -121,7 +121,7 @@ impl&lt;'db&gt; InferContext&lt;'db&gt; {
+             file: self.file,
+             id,
+             message: message.to_string(),
+-            range: node.range(),
++            range,
+             severity,
+         });
+     }
+</code></pre>
+<p>And then we could just fixup the <code>TextRange</code> passed to <code>InferContext</code> here by subtracting <code>level</code> from the start of the <code>import_node</code> range here:</p>
+<p>https://github.com/astral-sh/ruff/blob/a84b27e679137697bdb994e9c5f79d366fb4a945/crates/red_knot_python_semantic/src/types/diagnostic.rs#L962-L977</p>
+<p>But changing the signatures of <code>InferContext::report_diagnostic</code> and <code>InferContext::report_lint</code> requires updating many callsites</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-05 18:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-05 18:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 18:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unresolved-import.md_-_Unresolved_import_diagnostics_-_Using_`from`_with_an_unknown_current_module.snap</code>:27 on 2025-02-05 18:38</div>
+            <div class="timeline-body"><p>(TL;DR: punting on this for now sounds like the correct decision to me)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/diagnostics/unresolved-import.md</code>:1 on 2025-02-05 18:38</div>
+            <div class="timeline-body"><p>Booo okay, fixed haha.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 18:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unresolved-import.md_-_Unresolved_import_diagnostics_-_Using_`from`_with_an_unknown_current_module.snap</code>:27 on 2025-02-05 18:41</div>
+            <div class="timeline-body"><p>Yeah but if you subtract <code>level</code> then you're assuming there isn't any whitespace between the dots right? See above where I did <code>from . . . foo import wat</code>, and it looks like the parsed level is still <code>3</code>, but tweaking a range by assuming 3 characters would be wrong there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-05 18:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unresolved-import.md_-_Unresolved_import_diagnostics_-_Using_`from`_with_an_unknown_current_module.snap</code>:27 on 2025-02-05 18:46</div>
+            <div class="timeline-body"><p>Oh wow, I didn't even know you were allowed to have whitespace there :-( Yup, that wrecks everything...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unresolved-import.md_-_Unresolved_import_diagnostics_-_Using_`from`_with_an_unknown_current_module.snap</code>:27 on 2025-02-05 18:46</div>
+            <div class="timeline-body"><p>Filed here https://github.com/astral-sh/ruff/issues/15977</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 18:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 18:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unresolved-import.md_-_Unresolved_import_diagnostics_-_Using_`from`_with_an_unknown_current_module.snap</code>:27 on 2025-02-05 18:47</div>
+            <div class="timeline-body"><p>Yeah I didn't either. But I'm used to these sorts of problems with ASTs which made me try it haha.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-05 18:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/unresolved-import.md_-_Unresolved_import_diagnostics_-_Using_`from`_with_an_unknown_current_module.snap</code>:27 on 2025-02-05 18:49</div>
+            <div class="timeline-body"><p>whitespace: it's significant in Python! except when it isn't 🙃</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-05 18:55</div>
+            <div class="timeline-body"><p>LGTM</p>
+<blockquote>
+<p>This creates a new mdtest/diagnostics directory. Are folks cool with this? I guess the idea is to put tests more devoted to diagnostics than semantics in this directory. (Although I'm guessing there will be some overlap.)</p>
+</blockquote>
+<p>I feel like my preference is for tests to be organised in terms of the Python semantics they're covering (so all the import-related tests would be together, even if some are specifically testing our type inference and some are specifically testing what the diagnostics actually look like). But this is a <em>very</em> weakly held opinion, in part because I already find it quite hard to figure out where the test for something or other will be found in our many mdtest (sub)directories 😄</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-05 18:57</div>
+            <div class="timeline-body"><p>Yeah I hear that. What I was going for, at least initially here, was to organize diagnostic tests by their diagnostic ID.</p>
+<p>(Whenever I've done stuff like this in the past, I almost always discover later that my initial instincts for organization were wrong and end up revising them. So I'm very happy to adjust as we learn more here.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @AlexWaygood on 2025-02-05 18:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-02-05 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-02-05 19:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-05 19:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:52 UTC
+    </footer>
+</body>
+</html>

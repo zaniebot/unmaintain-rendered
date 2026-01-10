@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add convenience helper methods for AST nodes representing function parameters - astral-sh/ruff #15871</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add convenience helper methods for AST nodes representing function parameters</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15871">#15871</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-02-01 15:25
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-01 15:25</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Currently retrieving information from our AST nodes representing parameters can be annoyingly tedious/verbose:</p>
+<ul>
+<li>To obtain the annotation of a <code>ruff_python_ast::nodes::Parameter</code> variable <code>param</code>, you have to use <code>param.annotation.as_deref()</code> to get an <code>Option&lt;&amp;Expr&gt;</code></li>
+<li>To obtain the annotation of an <code>ast::ParameterWithDefault</code>, you have to use <code>param.parameter.annotation.as_deref()</code> to get an <code>Option&lt;&amp;Expr&gt;</code></li>
+<li>To obtain the name of an <code>ast::ParameterWithDefault</code>, you have to use <code>&amp;param.parameter.name</code></li>
+<li>To obtain the default of an <code>ast::ParameterWithDefault</code>, you have to use <code>parame.default.as_deref()</code></li>
+</ul>
+<p>This PR introduces several convenience methods on <code>ast::Parameter</code> and <code>ast::ParameterWithDefault</code> to make life more ergonomic:</p>
+<ul>
+<li><code>Parameter::annotation()</code> and <code>ParameterWithDefault::annotation()</code>, both of which return <code>Option&lt;&amp;Expr&gt;</code></li>
+<li><code>Parameter::name()</code> and <code>ParameterWithDefault::name()</code>, both of which return <code>&amp;Identifier</code></li>
+<li><code>ParameterWithDefault::default()</code>, which returns <code>Option&lt;&amp;Expr&gt;</code></li>
+</ul>
+<p>The addition of these methods allows us to write a lot of code more concisely and elegantly.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2025-02-01 15:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-01 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_python_ast/src/nodes.rs</code>:3171 on 2025-02-01 15:28</div>
+            <div class="timeline-body"><p>I considered implementing <code>Deref&lt;Target = Parameter&gt;</code> for <code>ParameterWithDefault</code> so that these methods would be implemented &quot;for free&quot;, but decided against it. A <code>ParameterWithDefault</code> does more than simply wrap a <code>Parameter</code>: for example, if its <code>default</code> field is not <code>None</code>, it will have a different <code>range</code> value to the <code>range</code> of its inner <code>parameter</code> field.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-01 15:36</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @AlexWaygood on 2025-02-01 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-02-01 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-02-01 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-02-01 15:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-01 17:12</div>
+            <div class="timeline-body"><p>These methods definitely make it nicer to work with parameters; in particular, de-referencing the Box around the <code>annotation</code> expr.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-02-01 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-01 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-01 17:26</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:52 UTC
+    </footer>
+</body>
+</html>

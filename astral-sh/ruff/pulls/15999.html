@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[flake8-pyi] Add autofix for unused-private-type-var (PYI018) - astral-sh/ruff #15999</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[flake8-pyi] Add autofix for unused-private-type-var (PYI018)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15999">#15999</a>
+        opened by <a href="https://github.com/ayushbaweja">@ayushbaweja</a>
+        on 2025-02-06 17:16
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ayushbaweja">@ayushbaweja</a> on 2025-02-06 17:16</div>
+            <div class="timeline-body"><p>Resolves <a href="https://github.com/astral-sh/ruff/issues/15940">#15940</a></p>
+<h2>Summary</h2>
+<p>This pull request adds an autofix for the <code>flake8-pyi</code> rule PYI018 (Unused private type variable).  Currently, Ruff detects and reports unused private type variables, but it doesn't offer a way to automatically remove them. This change addresses this by providing an autofix that deletes the unused type variable definition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ayushbaweja on 2025-02-06 17:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/unused_private_type_definition.rs</code>:237 on 2025-02-06 17:28</div>
+            <div class="timeline-body"><p>a couple of small things:</p>
+<ol>
+<li>Let's first make this fix <a href="https://docs.astral.sh/ruff/preview/">preview</a>-only. If it's been a few months and we haven't had any bug reports about it, we can promote it so that it's also available in stable mode</li>
+<li>I think this fix has to be marked as unsafe, unfortunately. There's always a chance that somebody is importing the TypeVar from another module, even if it's marked as private, and this fix would break your code if you're doing that.</li>
+</ol>
+<pre><code class="language-suggestion">        if checker.settings.preview.is_enabled() {
+	        let edit = fix::edits::delete_stmt(stmt, None, checker.locator(), checker.indexer());
+	        diagnostic.set_fix(Fix::unsafe_edit(edit));
+	    }
+
+        diagnostics.push(diagnostic);
+</code></pre>
+<p>This might mean that you have to change the <code>FIX_AVAILABILITY</code> constant on line 34 to <code>FIX_AVAILABILITY::SOMETIMES</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI018.py</code>:1 on 2025-02-06 17:28</div>
+            <div class="timeline-body"><p>hmm, were the changes to this file deliberate?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-06 17:29</div>
+            <div class="timeline-body"><p>Thanks, this looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2025-02-06 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ayushbaweja">@ayushbaweja</a> reviewed on 2025-02-06 17:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ayushbaweja">@ayushbaweja</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_pyi/PYI018.py</code>:1 on 2025-02-06 17:43</div>
+            <div class="timeline-body"><p>Autodeleted unused type variables, fixing this now</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-06 17:46</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-06 17:54</div>
+            <div class="timeline-body"><p>Thank you! I'll push a few small fixups and then land 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @AlexWaygood on 2025-02-06 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-02-06 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-06 18:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-06 18:10</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:52 UTC
+    </footer>
+</body>
+</html>

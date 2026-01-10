@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Invalid assignments to attributes - astral-sh/ruff #15613</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Invalid assignments to attributes</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15613">#15613</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-01-20 10:46
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-01-20 10:46</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Raise &quot;invalid-assignment&quot; diagnostics for incorrect assignments to attributes, for example:</p>
+<pre><code class="language-py">class C:
+    var: str = &quot;a&quot;
+
+C.var = 1  # error: &quot;Object of type `Literal[1]` is not assignable to `str`&quot;
+</code></pre>
+<p>closes #15456</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Updated test assertions</li>
+<li>New test for assignments to module-attributes</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-01-20 10:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-20 10:53</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-01-20 12:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-01-20 12:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-01-20 12:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-01-20 12:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @sharkdp on 2025-01-20 12:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-20 12:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1991 on 2025-01-20 12:48</div>
+            <div class="timeline-body"><p>I went through three or four different iterations of this API here. I'm still not satisfied. If we want to pass in the <code>assigned_ty</code> directly, we need to call <code>infer_standalone_expression</code> at the call site. But we are only allowed to do that if the <code>target</code> is not a <code>ast::Expr::Name(_)</code>, so we need to basically copy the whole <code>match</code> statement below to the call site. The duplication maybe not so bad, but I could some expression types are not yet handled here (see pre-existing TODO), and then we would need to remember to update it everywhere.</p>
+<p>Maybe my struggle to incorporate this here is also a sign that I'm doing something wrong?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-20 12:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3433 on 2025-01-20 12:50</div>
+            <div class="timeline-body"><p>Is it important that we return <code>Never</code> here? I wasn't able to construct a Python example that would get access to this type...?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-01-20 12:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1991 on 2025-01-20 13:21</div>
+            <div class="timeline-body"><p>I think it's fine. An altenrative, to avoid monomorphization is to have a <code>Target</code> enum with a <code>Name</code>, and another variant but naming kind of gets awkward.</p>
+<p>What's the reason that we only infer the value's type for name? Is it because the inference for non-names happens elsewhere and it, therefore, avoids doubl-inference?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-20 13:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-20 14:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:1991 on 2025-01-20 14:34</div>
+            <div class="timeline-body"><blockquote>
+<p>What's the reason that we only infer the value's type for name? Is it because the inference for non-names happens elsewhere and it, therefore, avoids doubl-inference?</p>
+</blockquote>
+<p>We only call <code>infer_standalone_expression(value)</code> for <em>non</em>-<code>Name</code>s. For <code>Name</code>s, we call <code>infer_definition</code>, which (somewhere down the line) calls <code>infer_standalone_expression(value)</code> itself.</p>
+<p>So yes, if we would call <code>infer_standalone_expression(value)</code> for all targets, we would get double-inference (results e.g. in duplicated diagnostics).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-20 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3433 on 2025-01-20 15:00</div>
+            <div class="timeline-body"><p>It was changed to use <code>Never</code> in https://github.com/astral-sh/ruff/commit/b1ce8a39495918d1b7421317b8b8e63d0653d3df, which was prompted by https://github.com/astral-sh/ruff/pull/13981#issuecomment-2445472433</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:105 on 2025-01-21 12:06</div>
+            <div class="timeline-body"><p>I wonder if this might be a slightly friendlier error message for users?</p>
+<pre><code class="language-suggestion"># error: [invalid-assignment] &quot;Object of type `Literal[1]` is not assignable to attribute with public type `str`&quot;
+</code></pre>
+<p>looks like a pre-existing issue, though, so feel free to ignore this for this PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:470 on 2025-01-21 12:07</div>
+            <div class="timeline-body"><p>very nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-01-21 12:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-22 00:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3433 on 2025-01-22 00:20</div>
+            <div class="timeline-body"><p>You can't get access to this type in Python, the only reason we need a type for it is the &quot;type pulling&quot; test, which is a proxy for &quot;what should we show if you hover over this expression in an IDE&quot;. <code>Never</code> is my best answer for that (I think it's a better answer than <code>None</code>), but I don't think it matters much.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-22 08:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3433 on 2025-01-22 08:11</div>
+            <div class="timeline-body"><blockquote>
+<p>You can't get access to this type in Python, the only reason we need a type for it is the &quot;type pulling&quot; test, which is a proxy for &quot;what should we show if you hover over this expression in an IDE&quot;. <code>Never</code> is my best answer for that (I think it's a better answer than <code>None</code>), but I don't think it matters much.</p>
+</blockquote>
+<p>Sorry, I should have phrased my question better: <em>given</em> that we &quot;don't think it matters much&quot;, is it okay if we change the type of the <code>obj.attr</code> expression in an assignment like <code>obj.attr = value</code> from <code>Never</code> to the type that we would get for <code>obj.attr</code> in a <code>Load</code> context? I'm inclined to say that this is much more helpful for a user in the IDE, which is why I thought there must have been a reason why <code>Never</code> was chosen instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-22 09:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:105 on 2025-01-22 09:41</div>
+            <div class="timeline-body"><p>I'll open a follow up PR to discuss this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-22 09:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3433 on 2025-01-22 09:42</div>
+            <div class="timeline-body"><p>To get this merged, I'm going to assume that it's okay to do this (let me know if not!).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-01-22 09:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-01-22 09:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-22 09:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-22 15:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3433 on 2025-01-22 15:44</div>
+            <div class="timeline-body"><p>In a case like <code>obj.attr = value</code>, I think it's fine if hover on <code>obj.attr</code> shows the type of <code>value</code>. If it shows the type of <code>obj.attr</code> prior to the assignment, I think that's not good. (I haven't had a chance to fully review this PR yet so I don't know yet which it is.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-22 16:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3433 on 2025-01-22 16:13</div>
+            <div class="timeline-body"><blockquote>
+<p>In a case like <code>obj.attr = value</code>, I think it's fine if hover on <code>obj.attr</code> shows the type of <code>value</code>. If it shows the type of <code>obj.attr</code> prior to the assignment, I think that's not good.</p>
+</blockquote>
+<p>Okay. In that case, this will need another iteration (it's the latter).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-22 16:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3433 on 2025-01-22 16:15</div>
+            <div class="timeline-body"><p>I just realized that until we add narrowing on assignments to attributes, there's no difference in the <code>obj.attr = value</code> case. But in the <code>obj = value</code>, or particularly the <code>obj: annotation = value</code> case, it could be a totally different type, and I don't think it's sensible for hover on that assignment target to show its type prior to the assignment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3464 on 2025-01-22 16:23</div>
+            <div class="timeline-body"><p>note for future: I suspect that we should allow member access to signal error conditions, rather than doing this special-casing based on the specific type out here in type inference</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2026 on 2025-01-22 16:35</div>
+            <div class="timeline-body"><p>In future, if we add narrowing of attribute types, there could be a distinction between &quot;infer the local type of this attribute expression&quot; and &quot;get the declared type of this attribute&quot;, and we would want the latter here, not the former. Which might also obsolete the change in this PR to the inferred type of <code>Store</code> attribute expressions. But for now, there is no difference, so it's convenient to just use <code>infer_attribute_expression</code> for both.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3433 on 2025-01-22 16:37</div>
+            <div class="timeline-body"><p>But this change only applies to attribute expressions, so for now at least I think it's fine as-is.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:439 on 2025-01-22 16:39</div>
+            <div class="timeline-body"><p>Should we also have a test for multi-level attribute assignment, either <code>mod.Class.attr = ...</code> or <code>Class.NestedClass.attr = ...</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-22 16:39</div>
+            <div class="timeline-body"><p>Very nice! A few thoughts, but nothing that I think requires immediate follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-23 09:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:439 on 2025-01-23 09:20</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/15684</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:51 UTC
+    </footer>
+</body>
+</html>

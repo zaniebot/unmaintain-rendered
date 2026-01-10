@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-comprehensions`] Do not emit `unnecessary-map` diagnostic when lambda has different arity (`C417`) - astral-sh/ruff #15802</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-comprehensions</code>] Do not emit <code>unnecessary-map</code> diagnostic when lambda has different arity (<code>C417</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15802">#15802</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-01-29 01:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-29 01:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #15796.</p>
+<p>The cases discussed in the aforementioned issue are no longer reported.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code> and <code>cargo insta test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-29 01:37</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-29 12:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C417.py</code>:22 on 2025-01-29 12:07</div>
+            <div class="timeline-body"><p>this one actually doesn't raise an exception at runtime (possibly because multiple iterables are being passed in after the function?). It would be great if we could keep emitting a diagnostic for this one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-01-29 12:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-01-29 13:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C417.py</code>:22 on 2025-01-29 13:53</div>
+            <div class="timeline-body"><p><code>map()</code> calls with multiple iterables aren't currently reported. Enhancing the rule is perhaps out of scope for this PR. I filed #15809 instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-29 18:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C417.py</code>:22 on 2025-01-29 18:09</div>
+            <div class="timeline-body"><p>I see. In that case, I probably wouldn't have moved this line in the fixture, since it's already under a line that says <code># false negatives</code>. But it's not the biggest issue in the world.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-29 18:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C417.py</code>:22 on 2025-01-29 18:11</div>
+            <div class="timeline-body"><p>Actually, could you possibly move it back? It doesn't belong under the <code># https://github.com/astral-sh/ruff/issues/15796</code> comment you've moved it under, because that issue is specifically about <code>map()</code> calls that would raise exceptions which Ruff erroneously replaces with code that doesn't. But that doesn't apply to this line.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-29 18:14</div>
+            <div class="timeline-body"><p>You can do this to fix the Clippy error:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_map.rs b/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_map.rs
+index 2b21e1806..8cb0a08f3 100644
+--- a/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_map.rs
++++ b/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_map.rs
+@@ -111,7 +111,7 @@ pub(crate) fn unnecessary_map(
+                 return;
+             }
+ 
+-            if !lambda_has_expected_arity(parameters.as_ref(), body) {
++            if !lambda_has_expected_arity(parameters.as_deref(), body) {
+                 return;
+             }
+         }
+@@ -146,7 +146,7 @@ pub(crate) fn unnecessary_map(
+                 return;
+             };
+ 
+-            if !lambda_has_expected_arity(parameters.as_ref(), body) {
++            if !lambda_has_expected_arity(parameters.as_deref(), body) {
+                 return;
+             }
+         }
+@@ -191,7 +191,7 @@ pub(crate) fn unnecessary_map(
+                 return;
+             }
+ 
+-            if !lambda_has_expected_arity(parameters.as_ref(), body) {
++            if !lambda_has_expected_arity(parameters.as_deref(), body) {
+                 return;
+             }
+         }
+@@ -216,11 +216,10 @@ pub(crate) fn unnecessary_map(
+ /// * It has exactly one parameter
+ /// * That parameter is not variadic
+ /// * That parameter does not have a default value
+-fn lambda_has_expected_arity(parameters: Option&lt;&amp;Box&lt;Parameters&gt;&gt;, body: &amp;Expr) -&gt; bool {
++fn lambda_has_expected_arity(parameters: Option&lt;&amp;Parameters&gt;, body: &amp;Expr) -&gt; bool {
+     let Some(parameters) = parameters else {
+         return false;
+     };
+-    let parameters = parameters.as_ref();
+ 
+     let [parameter] = &amp;parameters.args[..] else {
+         return false;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-01-29 18:43</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-comprehensions`] Do not emit diagnostic when lambda has different arity (`C417`)" to "[`flake8-comprehensions`] Do not emit `unnecessary-map` diagnostic when lambda has different arity (`C417`)" by @AlexWaygood on 2025-01-29 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-01-29 18:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-01-29 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-29 18:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-29 19:00</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:51 UTC
+    </footer>
+</body>
+</html>

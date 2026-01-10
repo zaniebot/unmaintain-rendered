@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-comprehensions`]: Handle trailing comma in `C403` fix - astral-sh/ruff #16110</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-comprehensions</code>]: Handle trailing comma in <code>C403</code> fix</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16110">#16110</a>
+        opened by <a href="https://github.com/ayushbaweja">@ayushbaweja</a>
+        on 2025-02-12 01:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ayushbaweja">@ayushbaweja</a> on 2025-02-12 01:04</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves <a href="https://github.com/astral-sh/ruff/issues/16099">#16099 </a> based on <a href="https://github.com/astral-sh/ruff/pull/15929">#15929 </a></p>
+<h2>Test Plan</h2>
+<p>Added test case <code>s = set([x for x in range(3)],)</code> and updated snapshot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-12 01:10</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-02-12 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @ntBre on 2025-02-12 02:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "fix(flake8-comprehensions): Handle trailing comma in C403 fix" to "[flake8-comprehensions]: Handle trailing comma in C403 fix" by @ayushbaweja on 2025-02-12 04:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-12 04:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs</code>:82 on 2025-02-12 04:36</div>
+            <div class="timeline-body"><p>I think we should use <code>checker.tokens().in_range(...)</code> here as we already have access to the parsed tokens. I think the range would be <code>TextRange::new(argument.end(), call.end())</code>. You can refer to other references of <code>in_range</code> method to check how it's being used.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-02-12 16:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs</code>:82 on 2025-02-12 16:24</div>
+            <div class="timeline-body"><p>Good call @dhruvmanila ! Do you (@ayushbaweja) want to also make the same changes to <code>unnecessary_generator_list.rs</code> and <code>unnecessary_generator_set.rs</code>? Here's the patch for the first of those, for example:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_generator_list.rs b/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_generator_list.rs
+index cc389e1f4..2e3b7fbc9 100644
+--- a/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_generator_list.rs
++++ b/crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_generator_list.rs
+@@ -4,7 +4,7 @@ use ruff_python_ast as ast;
+ use ruff_python_ast::comparable::ComparableExpr;
+ use ruff_python_ast::parenthesize::parenthesized_range;
+ use ruff_python_ast::ExprGenerator;
+-use ruff_python_trivia::{SimpleTokenKind, SimpleTokenizer};
++use ruff_python_parser::TokenKind;
+ use ruff_text_size::{Ranged, TextRange, TextSize};
+ 
+ use crate::checkers::ast::Checker;
+@@ -125,10 +125,12 @@ pub(crate) fn unnecessary_generator_list(checker: &amp;Checker, call: &amp;ast::ExprCall
+ 
+         // Replace `)` with `]`.
+         // Place `]` at argument's end or at trailing comma if present
+-        let mut tokenizer =
+-            SimpleTokenizer::new(checker.source(), TextRange::new(argument.end(), call.end()));
+-        let right_bracket_loc = tokenizer
+-            .find(|token| token.kind == SimpleTokenKind::Comma)
++        let after_arg_tokens = checker
++            .tokens()
++            .in_range(TextRange::new(argument.end(), call.end()));
++        let right_bracket_loc = after_arg_tokens
++            .iter()
++            .find(|token| token.kind() == TokenKind::Comma)
+             .map_or(call.arguments.end(), |comma| comma.end())
+             - TextSize::from(1);
+         let call_end = Edit::replacement(&quot;]&quot;.to_string(), right_bracket_loc, call.end());
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ayushbaweja">@ayushbaweja</a> on <code>crates/ruff_linter/src/rules/flake8_comprehensions/rules/unnecessary_list_comprehension_set.rs</code>:82 on 2025-02-12 16:47</div>
+            <div class="timeline-body"><p>Sure! Will make the change and also update the unnecessary_generator files</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ayushbaweja">@ayushbaweja</a> reviewed on 2025-02-12 16:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @dylwil3 by @dylwil3 on 2025-02-15 14:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> approved on 2025-02-15 17:39</div>
+            <div class="timeline-body"><p>Thanks so much, this is great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dylwil3 on 2025-02-15 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dylwil3 on 2025-02-15 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[flake8-comprehensions]: Handle trailing comma in C403 fix" to "[`flake8-comprehensions`]: Handle trailing comma in `C403` fix" by @dylwil3 on 2025-02-15 17:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-16 01:33</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:53 UTC
+    </footer>
+</body>
+</html>

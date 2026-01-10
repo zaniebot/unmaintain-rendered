@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `rules` table to configuration - astral-sh/ruff #15645</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>rules</code> table to configuration</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15645">#15645</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-01-21 15:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-21 15:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds support for enabling or disabling a rule or change its severity to warning by using a configuration file.</p>
+<pre><code class="language-toml">[tool.knot.rules]
+division-by-zero = &quot;error&quot;
+</code></pre>
+<p>This PR doesn't yet add support for the <code>rule = { severity=&quot;level&quot; }</code> format simply because we don't support any per-rule configurations other than <code>severity</code> just yet (like fixability). We should add support once for a sub-table once we add support for it. This PR also does not yet add support for configuring rules over the CLI.</p>
+<p>The &quot;hardest&quot; part of this PR was to make the diagnostics propagate. The approach
+I've taken for now is to simply collect them when calling <code>project.check</code> or <code>project.check_file</code>.
+I don't love this approach because it's somewhat easy to get wrong and we have to repeat it in
+every entry function that may return diagnostics (e.g. <code>format</code>?). However,
+we currently only exactly have two, so it sort of feels okay?</p>
+<p>I considered using salsa accumulators but doing so wouldn't solve
+the problem that we have to remember collecting the diagnostics<br />
+in the <code>project.check</code> call, but we could use them if we want,
+performance isn't as much of a concern here.</p>
+<p>Overall I felt like defering the ideal design until we have
+more settings that require validation to get a better sense of
+how awkward (or good) the current design is.</p>
+<p>The diagnostics for unknown rules currently lack any source information. I plan on adding proper spans in a follow-up PR because it requires some machinery to funnel the spans through serde.</p>
+<p>CC @BurntSushi: I don't consider the &quot;how we funnel diagnostics through red knot&quot; as the main focus of your diagnostics work but I thought this might still be interesting to you.</p>
+<p>Part of https://github.com/astral-sh/ty/issues/219</p>
+<h2>Test Plan</h2>
+<p>Added CLI tests.</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-01-21 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @MichaReiser on 2025-01-21 15:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-21 15:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_project/src/lib.rs</code>:153 on 2025-01-21 15:36</div>
+            <div class="timeline-body"><p>I included the rule diagnostics in <code>check_file</code> because an API consumer (e.g., the LSP) can decide only to call <code>check_file</code> but never <code>project.check</code> and would never see the diagnostics.</p>
+<p>The counter-argument is that these diagnostics aren't related to <code>file</code> so they shouldn't be shown.</p>
+<p>I'm not sure what the right answer is, but I defaulted to including them for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-01-21 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-01-21 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-01-21 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-01-21 15:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-21 15:45</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/tests/cli.rs</code>:201 on 2025-01-22 20:56</div>
+            <div class="timeline-body"><p>Warnings are not shown by default?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/tests/cli.rs</code>:225 on 2025-01-22 20:57</div>
+            <div class="timeline-body"><p>Hmm, I'm surprised to see that we currently make <code>unresolved-reference</code> a warning by default, I would think it should be high confidence (and it is high severity, since your program will just crash).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/tests/cli.rs</code>:290 on 2025-01-22 20:58</div>
+            <div class="timeline-body"><p>I suppose including a pointer here to the config file is for a future PR/improvement?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-01-22 21:29</div>
+            <div class="timeline-body"><p>Sweet!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-22 21:46</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/tests/cli.rs</code>:290 on 2025-01-22 21:46</div>
+            <div class="timeline-body"><p>Yes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-22 21:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/tests/cli.rs</code>:201 on 2025-01-22 21:47</div>
+            <div class="timeline-body"><p>They are always shown, but knot wont exit successfully (may not be implemented yed)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-22 21:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/tests/cli.rs</code>:225 on 2025-01-22 21:49</div>
+            <div class="timeline-body"><p>Hmm let me double check this test tomorrow. This should be possibly-unresolved-reference</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/tests/cli.rs</code>:201 on 2025-01-22 22:00</div>
+            <div class="timeline-body"><p>Then I would expect a division-by-zero warning to be in the output of this test, but it isn't there?</p>
+<p>Oh, I think it isn't there because you have <code>x / 0</code> where <code>x</code> is unbound, and we only emit division-by-zero if the dividend is a literal integer type (otherwise it might have redefined <code>__div__</code> such that dividing by zero is fine).</p>
+<p>This seems pretty confusing, I wouldn't even involve <code>division-by-zero</code> rule in this test at all, if it doesn't have a case where we would actually emit that diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/tests/cli.rs</code>:225 on 2025-01-22 22:01</div>
+            <div class="timeline-body"><p>I don't think so, this is from <code>y = x / 0</code>, where <code>x</code> is definitely-unbound.</p>
+<p><code>possibly-unresolved-reference</code> is marked as <code>ignore</code> in the test config, so is not shown (even though it occurs later in the <code>print(x)</code> line).</p>
+<p>To be clear, this comment isn't suggesting that anything is wrong with the test, just that I'm surprised we make <code>unresolved-reference</code> a warning by default. (Which we clearly do, in diagnostics.rs).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-22 22:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/tests/cli.rs</code>:201 on 2025-01-23 09:07</div>
+            <div class="timeline-body"><p>I do want to see a <code>division-by-zero</code> error to ensure that the demoting from <code>error</code> to warn works. So I have to change the test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-23 09:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-01-23 09:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-01-23 09:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-23 09:57</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:51 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Reduce the `CallOutcome` variants by removing `RevealedType`, `AssertType` and `StaticAssert` - astral-sh/ruff #16137</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Reduce the <code>CallOutcome</code> variants by removing <code>RevealedType</code>, <code>AssertType</code> and <code>StaticAssert</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16137">#16137</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-02-13 10:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-13 10:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>An alternative to https://github.com/astral-sh/ruff/pull/16116</p>
+<p>Instead of moving the checks out of <code>CallOutcome</code> entirely, move them from <code>Type::call</code> to <code>return_type_result</code>.</p>
+<p>This also allows us to avoid some extra diagnostics in the cases where <code>reveal_type</code> (or any other of the known functions) is called incorrectly.
+This matches Pyright's behavior.</p>
+<h2>Test Plan</h2>
+<p><code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-02-13 10:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-02-13 10:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-02-13 10:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:246 on 2025-02-13 12:55</div>
+            <div class="timeline-body"><p>You can reduce the nesting quite a bit here:</p>
+<pre><code class="language-suggestion">                if !binding.has_binding_errors() {
+                    match binding
+                        .callable_type()
+                        .into_function_literal()
+                        .and_then(|function| function.known(context.db()))
+                    {
+                        // TODO: Should we skip those diagnostics if there's any binding error?
+                        Some(KnownFunction::RevealType) =&gt; {
+                            if let Some(revealed_type) = binding.one_parameter_type() {
+                                context.report_diagnostic(
+                                    node,
+                                    DiagnosticId::RevealedType,
+                                    Severity::Info,
+                                    format_args!(
+                                        &quot;Revealed type is `{}`&quot;,
+                                        revealed_type.display(context.db())
+                                    ),
+                                );
+                            }
+                        }
+                        Some(KnownFunction::AssertType) =&gt; {
+                            if let [actual_ty, asserted_ty] = binding.parameter_types() {
+                                if !actual_ty.is_gradual_equivalent_to(context.db(), *asserted_ty) {
+                                    context.report_lint(
+                                        &amp;TYPE_ASSERTION_FAILURE,
+                                        node,
+                                        format_args!(
+                                            &quot;Actual type `{}` is not the same as asserted type `{}`&quot;,
+                                            actual_ty.display(context.db()),
+                                            asserted_ty.display(context.db()),
+                                        ),
+                                    );
+                                }
+                            }
+                        }
+                        Some(KnownFunction::StaticAssert) =&gt; {
+                            if let Some((parameter_ty, message)) = binding.two_parameter_types() {
+                                let truthiness = parameter_ty.bool(context.db());
+
+                                if !truthiness.is_always_true() {
+                                    if let Some(message) = message
+                                        .into_string_literal()
+                                        .map(|s| &amp;**s.value(context.db()))
+                                    {
+                                        context.report_lint(
+                                            &amp;STATIC_ASSERT_ERROR,
+                                            node,
+                                            format_args!(&quot;Static assertion error: {message}&quot;),
+                                        );
+                                    } else if parameter_ty == Type::BooleanLiteral(false) {
+                                        context.report_lint(
+                                            &amp;STATIC_ASSERT_ERROR,
+                                            node,
+                                            format_args!(&quot;Static assertion error: argument evaluates to `False`&quot;),
+                                        );
+                                    } else if truthiness.is_always_false() {
+                                        context.report_lint(
+                                            &amp;STATIC_ASSERT_ERROR,
+                                            node,
+                                            format_args!(
+                                                &quot;Static assertion error: argument of type `{parameter_ty}` is statically known to be falsy&quot;,
+                                                parameter_ty=parameter_ty.display(context.db())
+                                            ),
+                                        );
+                                    } else {
+                                        context.report_lint(
+                                            &amp;STATIC_ASSERT_ERROR,
+                                            node,
+                                            format_args!(
+                                                &quot;Static assertion error: argument of type `{parameter_ty}` has an ambiguous static truthiness&quot;,
+                                                parameter_ty=parameter_ty.display(context.db())
+                                            ),
+                                        );
+                                    }
+                                }
+                            }
+                        }
+                        _ =&gt; {}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-13 12:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-02-13 18:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:168 on 2025-02-14 00:31</div>
+            <div class="timeline-body"><p>Yes, I think it's fine to do that, would be fine to remove this TODO IMO. It's not always clear what the right reveal/assert diagnostic would even be if we had an error binding the call, and the binding error should tell the user what they need to fix in order to get the desired diagnostic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-14 00:32</div>
+            <div class="timeline-body"><p>I like this a lot!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-14 14:40</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:53 UTC
+    </footer>
+</body>
+</html>

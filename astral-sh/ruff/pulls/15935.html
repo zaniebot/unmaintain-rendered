@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make `Binding::range()` point to the range of a type parameter's name, not the full type parameter - astral-sh/ruff #15935</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Make <code>Binding::range()</code> point to the range of a type parameter's name, not the full type parameter</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15935">#15935</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-02-04 14:02
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-04 14:02</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>A PEP-695 type parameter creates a binding that is tracked by Ruff's semantic model:</p>
+<pre><code class="language-py">def f[S](): ...
+    # ^ `S` symbol bound here
+</code></pre>
+<p>But if the type parameter has a bound or constraint, the range of the <code>Binding</code> recorded by Ruff's semantic model includes the bounds or constraints of the type parameter:</p>
+<pre><code class="language-py">def f[T: int](): ...
+    # ^^^^^^ Semantic model's `Binding` for `T` has this range
+
+def g[U: (int, str)](): ...
+    # ^^^^^^^^^^^^^ Semantic models' binding for `U` has this range
+</code></pre>
+<p>This is problematic, as <code>S: int</code> is not a valid Python identifier, and nor is <code>T: (int, str)</code>. All other bindings in Ruff's semantic model have their range point to the <em>name</em> that is bound, not the full expression/statement that creates the binding. A specific effect that this has is that if you have a <code>Binding</code> <code>x</code> that points to a PEP-695 type parameter, calling <code>x.name(source)</code> does not actually return the name of the PEP-695 type parameter. Instead, if <code>x</code> pointed to the binding for <code>T</code> in the example above, calling <code>x.name(source)</code> would return <code>&quot;T: int&quot;</code>, and if <code>x</code> pointed to the binding for <code>U</code>, calling <code>x.name(source)</code> would return <code>&quot;U: (int, str)&quot;</code>.</p>
+<p>This PR changes the range for PEP-695 bindings so that it points to the name that is bound by the type parameter. This makes these <code>Binding</code>s consistent with other bindings, makes <code>Binding::name()</code> work as expected in all situations, allows us to simplify some code in the implementation of the PYI019 rule, and unblocks #15862</p>
+<h2>Test Plan</h2>
+<p><code>cargo test -p ruff_linter --lib</code></p>
+<p>Co-authored-by: Brent Westbrook <a href="mailto:36778786+ntBre@users.noreply.github.com">36778786+ntBre@users.noreply.github.com</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @AlexWaygood on 2025-02-04 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">linter</span> added by @AlexWaygood on 2025-02-04 14:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-04 14:06</div>
+            <div class="timeline-body"><p>Haha nice find.</p>
+<p>Do you expect that this breaks any diagnostic range? E.g. do you know if the binding range is used in any diagnostic / fix code? I know, this is probably hard to figure out, just something that I'm slightly worried about but relying on our tests/user reports might be fine to catch this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-04 14:09</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-04 14:13</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you expect that this breaks any diagnostic range?</p>
+</blockquote>
+<p>It's very hard to tell... :(</p>
+<blockquote>
+<p>E.g. do you know if the binding range is used in any diagnostic / fix code? I know, this is probably hard to figure out, just something that I'm slightly worried about but relying on our tests/user reports might be fine to catch this.</p>
+</blockquote>
+<p>Agreed, and this is partly why I wanted to separate this out as a separate PR from #15862 (see my comment in https://github.com/astral-sh/ruff/pull/15862#discussion_r1940982081). This is also why I worked around the bug in https://github.com/astral-sh/ruff/pull/15888 rather than fixing it prior to making that PR... but then @ntBre ran into exactly the same bug the next day in #15862! And I don't think it'll be so easy to workaround the bug in his PR. Plus, <code>Binding::name()</code> not working consistently for all bindings is a massive footgun. So I think it's time to fix the bug.</p>
+<p>The fact that none of our snapshots change and the ecosystem check is clean gives me confidence that, if this <em>does</em> change our user-facing behaviour in some cases, they're at least rare/edge cases. And PEP-695 type parameters are anyway new syntax that are still rarely used in the real world. So I <em>think</em> we're good here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-02-04 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-04 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-04 14:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:52 UTC
+    </footer>
+</body>
+</html>

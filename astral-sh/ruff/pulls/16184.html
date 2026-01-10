@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Recognize `...` as a singleton - astral-sh/ruff #16184</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Recognize <code>...</code> as a singleton</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16184">#16184</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-02-16 14:22
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-16 14:22</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds some special-casing for <code>types.EllipsisType</code> (and, on Python &lt;=3.9, the fictional <code>builtins.ellipsis</code> class) so that red-knot recognises it as a singleton class. Once this is recognised, we are able to narrow unions involving <code>EllipsisType</code> using <code>if x is ...</code>, which is a pattern supported by both <a href="https://mypy-play.net/?mypy=latest&amp;python=3.12&amp;gist=7cc5f1f77f16a34e4dabcb9fc74fb0c6">mypy</a> and <a href="https://pyright-play.net/?code=GYJw9gtgBALgngBwKYGcoEsILCGUCiANoegiuigCqJIBQtAJksFMABQAeAXAcaeVRpQAPhgB2MAJRdaUORhYcMaAHRqZ8zVBBIAbkgCGhAPrxknSbPlJCKJBq1yd%2Bo6ZoXaQA">pyright</a>.</p>
+<p>I hoped to add support for <code>NotImplementedType</code> as part of the same PR, but this is requires a little more thought due to the fact that, according to typeshed, <a href="https://github.com/python/typeshed/blob/654d8c245766663379b69e89631d8ae665b63e48/stdlib/builtins.pyi#L1285-L1289"><code>NotImplemented</code> is not an instance of <code>types.NotImplementedType</code> even on Python 3.10+</a>.</p>
+<h2>Test Plan</h2>
+<p>Mdtests added that fail on <code>main</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-02-16 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-02-16 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @AlexWaygood on 2025-02-16 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-02-16 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals/is.md</code>:85 on 2025-02-16 19:41</div>
+            <div class="timeline-body"><p>Maybe</p>
+<pre><code class="language-suggestion">## `is` for `EllipsisType` (Python 3.9 and below)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals/is.md</code>:1 on 2025-02-16 19:44</div>
+            <div class="timeline-body"><p>Could we also add tests for <code>EllipsisType</code> (and <code>ellipsis</code>) to <code>type_properties/is_singleton.md</code>? It has a similar version-split test for <code>NoDefault</code> as well.</p>
+<p>I think I would be in favor of moving the version-dependent behavior there, while keeping this file free of this by making setting the version to 3.10 for the full file? But I'm also okay with having the <code>&lt;=3.9 / &gt;= 3.10</code> split in both files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-02-16 19:44</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/conditionals/is.md</code>:1 on 2025-02-16 21:47</div>
+            <div class="timeline-body"><p>I'd weakly prefer to keep tests for both <code>&lt;=3.9</code> and <code>&gt;=3.10</code> here, since the important behaviour for users is the type narrowing behaviour rather than whether we internally consider <code>EllipsisType</code> to be a singleton class, and that's only tested here. But I will definitely add the tests to <code>is_singleton.md</code> too!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-16 21:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-02-16 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-16 22:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-16 22:01</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:53 UTC
+    </footer>
+</body>
+</html>

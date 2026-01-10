@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`] Correct ordering of arguments in fix for `if-stmt-min-max` (`PLR1730`) - astral-sh/ruff #16080</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pylint</code>] Correct ordering of arguments in fix for <code>if-stmt-min-max</code> (<code>PLR1730</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16080">#16080</a>
+        opened by <a href="https://github.com/VascoSch92">@VascoSch92</a>
+        on 2025-02-10 15:07
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/VascoSch92">@VascoSch92</a> on 2025-02-10 15:07</div>
+            <div class="timeline-body"><p>The PR addresses the issue #16040 .</p>
+<hr />
+<p>The logic used into the rule is the following:</p>
+<p>Suppose to have an expression of the form</p>
+<pre><code class="language-python">if a cmp b:
+    c = d
+</code></pre>
+<p>where <code>a</code>,<code> b</code>, <code>c</code> and <code>d</code> are Python obj and <code>cmp</code>  one of <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>.</p>
+<p>Then:</p>
+<ul>
+<li><p><code>if a=c and b=d</code></p>
+<ul>
+<li>if <code>&lt;=</code> fix with <code>a = max(b, a)</code></li>
+<li>if <code>&gt;=</code>  fix with <code>a = min(b, a)</code></li>
+<li>if <code>&gt;</code> fix with <code>a = min(a, b)</code></li>
+<li>if <code>&lt;</code> fix with <code>a = max(a, b)</code></li>
+</ul>
+</li>
+<li><p><code>if a=d and b=c</code></p>
+<ul>
+<li>if <code>&lt;=</code> fix with <code>b = min(a, b)</code></li>
+<li>if <code>&gt;=</code>  fix with <code>b = max(a, b)</code></li>
+<li>if <code>&gt;</code> fix with <code>b = max(b, a)</code></li>
+<li>if <code>&lt;</code> fix with <code>b = min(b, a)</code></li>
+</ul>
+</li>
+<li><p>do nothing, i.e., we cannot fix this case.</p>
+</li>
+</ul>
+<hr />
+<p>In total we have 8 different and possible cases.</p>
+<pre><code>
+| Case  | Expression       | Fix           |
+|-------|------------------|---------------|
+| 1     | if a &gt;= b: a = b | a = min(b, a) |
+| 2     | if a &lt;= b: a = b | a = max(b, a) |
+| 3     | if a &lt;= b: b = a | b = min(a, b) |
+| 4     | if a &gt;= b: b = a | b = max(a, b) |
+| 5     | if a &gt; b: a = b  | a = min(a, b) |
+| 6     | if a &lt; b: a = b  | a = max(a, b) |
+| 7     | if a &lt; b: b = a  | b = min(b, a) |
+| 8     | if a &gt; b: b = a  | b = max(b, a) |
+</code></pre>
+<p>I added them in the tests.</p>
+<p>Please double-check that I didn't make any mistakes. It's quite easy to mix up &gt; and &lt;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-10 15:13</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @dylwil3 on 2025-02-10 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @dylwil3 on 2025-02-10 19:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[pylint] Fix rule PLR17130" to "[`pylint`] Correct ordering of arguments in fix for `if-stmt-min-max` (`PLR1730`)" by @dylwil3 on 2025-02-10 19:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-11 09:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/if_stmt_min_max.rs</code>:134 on 2025-02-11 09:00</div>
+            <div class="timeline-body"><p>I think this is incorrect and should instead be <code>false</code> to match your table from the PR summary.</p>
+<p>Please also carefully review the snapshot changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/VascoSch92">@VascoSch92</a> reviewed on 2025-02-11 10:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/VascoSch92">@VascoSch92</a> on <code>crates/ruff_linter/src/rules/pylint/rules/if_stmt_min_max.rs</code>:134 on 2025-02-11 10:23</div>
+            <div class="timeline-body"><p>In this case where are in the situation:</p>
+<pre><code class="language-python">if a &lt;= b:
+    b = a
+</code></pre>
+<p>which is fixed by <code>b = min(a, b)</code>.</p>
+<p>So you are right ;-)</p>
+<blockquote>
+<p>Please also carefully review the snapshot changes.</p>
+</blockquote>
+<p>I corrected the snapshot and I double-checked all the other changes I did. Everything follow the table posted in the description of the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-12 09:24</div>
+            <div class="timeline-body"><p>Thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-02-12 09:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-12 09:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:52 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recognize all symbols named `TYPE_CHECKING` for `in_type_checking_block` - astral-sh/ruff #15719</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Recognize all symbols named <code>TYPE_CHECKING</code> for <code>in_type_checking_block</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15719">#15719</a>
+        opened by <a href="https://github.com/Daverball">@Daverball</a>
+        on 2025-01-24 14:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-24 14:56</div>
+            <div class="timeline-body"><p>Closes #15681</p>
+<h2>Summary</h2>
+<p>This changes <code>analyze::typing::is_type_checking_block</code> to recognize all symbols named &quot;TYPE_CHECKING&quot;.
+This matches the current behavior of mypy and pyright as well as <code>flake8-type-checking</code>.</p>
+<p>It also drops support for detecting <code>if False:</code> and <code>if 0:</code> as type checking blocks. This used to be an option for
+providing backwards compatibility with Python versions that did not have a <code>typing</code> module, but has since
+been removed from the typing spec and is no longer supported by any of the mainstream type checkers.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-24 15:02</div>
+            <div class="timeline-body"><p>I will add more test cases, since I'm worried some of the TC fixes will not be able to deal with these new kinds of type checking blocks without additional changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-24 15:07</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+1 -0 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/scikit-build/scikit-build-core">scikit-build/scikit-build-core</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/54f9a8989cf20fc0cace4537702acf57ae8502ec/src/scikit_build_core/resources/_editable_redirect.py#L11'>src/scikit_build_core/resources/_editable_redirect.py:11:12:</a> TC004 Move import `importlib.machinery` out of type-checking block. Import is used for more than type hinting.
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| TC004 | 1 | 1 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-24 15:09</div>
+            <div class="timeline-body"><p>That was quick, thanks. I'm leaning towards making this a preview change because it's technically breaking. The counterargument is that there's barely any ecosystem change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-01-24 15:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-24 15:16</div>
+            <div class="timeline-body"><p>I'm a little confused by the scikit ecosystem change. If anything I would've expected a previous TC003 error to disappear, not a new TC004 to appear, especially since there is no runtime use of <code>importlib.machinery</code> in that file...</p>
+<p>So it seems like there's a different bug at play here, that was previously obscured  by not recognizing the <code>TYPE_CHECKING</code> block in that file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-24 15:23</div>
+            <div class="timeline-body"><p>@MichaReiser If we're going to treat it as a breaking change anyways and put it behind the preview flag, I would suggest to also stop treating <code>if False</code> and <code>if 0</code> as type checking blocks in the same change, since that hasn't been a thing since type checkers dropped support for Python 2.7/3.5.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-24 16:04</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm a little confused by the scikit ecosystem change. If anything I would've expected a previous TC003 error to disappear, not a new TC004 to appear, especially since there is no runtime use of <code>importlib.machinery</code> in that file...</p>
+<p>So it seems like there's a different bug at play here, that was previously obscured by not recognizing the <code>TYPE_CHECKING</code> block in that file.</p>
+</blockquote>
+<p>Looks like references to bindings don't really try to find their matching import beyond the first level, so since there are multiple <code>importlib</code> bindings, the references to <code>importlib.abc</code> and <code>importlib.util</code> will bind to the most recent <code>importlib</code> import, which happens to be <code>importlib.machinery</code> in the type checking block.</p>
+<p>So it looks like <code>TC001-004</code> will need to do something more sophisticated than simply looking at import bindings and their references, when that import binding came from a dotted import and it's shadowing another import. I will open a separate issue for this problem.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-01-25 15:09</div>
+            <div class="timeline-body"><p>@MichaReiser I wonder if it would be alright to copy the preview flag to the <code>SemanticModel</code>. <code>in_type_checking_block</code> is used in quite a few places, so adding a new argument for the preview behavior only to remove it again later when we stabilize this, would end up introducing quite a bit of churn. Adding the flag to the <code>SemanticModel</code> would be a much smaller change and I would've found it quite useful in the past, just like <code>checker.source_type</code> is duplicated into a semantic flag for stub files.</p>
+<p>I will also need to make some structural changes to <code>Importer::typing_import_edit</code> so it can still emit a fix for these new type checking blocks, since it currently always assumes it will need an import of <code>TYPE_CHECKING</code> from one of the typing modules, but we know for sure it will not need that if we have a preceding type checking block. If we want to gate this change behind a preview flag as well, that would be another place where having the preview flag on the <code>SemanticModel</code> would be useful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2025-01-26 14:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/importer/mod.rs</code>:170 on 2025-01-26 14:16</div>
+            <div class="timeline-body"><p>By restructuring the logic, this no-op edit would now only happen if we don't have an existing preceding type checking block. I'm not sure whether this is problematic or why we're adding a no-op edit to begin with (maybe to ensure no other edit is allowed to remove the import?).</p>
+<p>If this no-op edit indeed accomplishes something useful, we may need a more sophisticated change, which allows <code>find_type_checking</code> to return a name based on an assignment target in addition to an import. This would allow us to write separate fix logic for when it's imported and when it's defined in the same file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-02-04 10:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @MichaReiser on 2025-02-04 10:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-02-04 10:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-02-04 10:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @AlexWaygood on 2025-02-04 10:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @AlexWaygood on 2025-02-04 10:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-02-04 10:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:353 on 2025-02-04 10:16</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">            id == &quot;TYPE_CHECKING&quot;
+            // Ex) `if TC:` with `from typing import TYPE_CHECKING as TC`
+            || semantic.match_typing_expr(test, &quot;TYPE_CHECKING&quot;)
+        }
+        // Ex) `if typing.TYPE_CHECKING:`
+        Expr::Attribute(ast::ExprAttribute { attr, .. }) =&gt; attr == &quot;TYPE_CHECKING&quot;,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/importer/mod.rs</code>:151 on 2025-02-04 10:17</div>
+            <div class="timeline-body"><p>Hmm, yeah this is interesting. Not having an option seems fine to me for now, we can introduce one later if it is being asked for.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-04 10:17</div>
+            <div class="timeline-body"><p>This looks great. However, this is a somewhat significant change. I think i'd feel better if we gate this behind the preview mode and release it as part of 0.10.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-02-04 10:59</div>
+            <div class="timeline-body"><blockquote>
+<p>This looks great. However, this is a somewhat significant change. I think i'd feel better if we gate this behind the preview mode and release it as part of 0.10.</p>
+</blockquote>
+<p>The only problematic part of that is adding a preview flag check will add quite the rat tail to the diff, since the function is used in so many places. One way to get around this would be to add the preview flag to the semantic model. Which I would've found useful in the past anyways. (Either as a <code>SemanticModelFlag</code> or its own thing)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-04 11:02</div>
+            <div class="timeline-body"><p>Ah right, sorry. I forgot about our previous conversation while I was on PTO. Let me have a quick look</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-04 11:05</div>
+            <div class="timeline-body"><p>Adding a preview option to <code>SemanticModel</code> or to <code>SemanticModelFlag</code> sounds reasonable to me. The alternative is to add a flag specific for this feature to <code>SemanticModelFlag</code>. The advantage of a feature-specific flag is that it's easier to promote all changes because we can simply remove the flag and then fix all compile errors.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2025-02-04 13:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-02-04 13:27</div>
+            <div class="timeline-body"><p>@MichaReiser Since we're now gating the change I also removed special casing for <code>if False:</code> and <code>if 0:</code> in preview mode.
+I think support for this compatibility shim has been dropped 4+ years ago.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/analyze/typing.rs</code>:385 on 2025-02-04 13:28</div>
+            <div class="timeline-body"><p>I think this version is now slightly different to what you had before as it removes support for <code>if False:</code> and <code>if 0:</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/importer/mod.rs</code>:138 on 2025-02-04 13:30</div>
+            <div class="timeline-body"><p>Do we need to cate this behind preview? I understood that this was mainly a refactor that moved the <code>preceding_type_checking_block</code> to the top to avoid unnecessarily going through the <code>Import the TYPE_CHECKING symbol</code> when it isn't necessary</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-04 13:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-04 13:31</div>
+            <div class="timeline-body"><blockquote>
+<p>@MichaReiser Since we're now gating the change I also removed special casing for <code>if False:</code> and <code>if 0:</code> in preview mode. I think support for this compatibility shim has been dropped 4+ years ago.</p>
+</blockquote>
+<p>Sounds reasonable. Would you mind updating your PR summary to reflect this change?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2025-02-04 13:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/importer/mod.rs</code>:138 on 2025-02-04 13:35</div>
+            <div class="timeline-body"><p>Look at my previous comment here: https://github.com/astral-sh/ruff/pull/15719#discussion_r1929786168</p>
+<p>Refactoring has the side effect of never emitting a no-op fix for that branch. So I feel more safe doing it this way, until I know what the purpose of the no-op fix was.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-04 13:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/importer/mod.rs</code>:170 on 2025-02-04 13:51</div>
+            <div class="timeline-body"><p>Oh yeah, the no-op edit is important. It's a &quot;hack&quot; to prevent any other fix to remove the import. At least, I remember something along those lines from @charliermarsh</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2025-02-04 14:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/importer/mod.rs</code>:170 on 2025-02-04 14:09</div>
+            <div class="timeline-body"><p>I assumed that was the case, but then was surprised that none of the tests were failing. Seems kind of important to have at least one regression test for this case. In the absence of a failing test the other possibility is that this since has been fixed in a different way and is now essentially doing nothing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2025-02-04 14:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/importer/mod.rs</code>:170 on 2025-02-04 14:17</div>
+            <div class="timeline-body"><p>The other thing that bothered me, is that this hack does not seem very reliable, since the type checking block we're moving the imports to might not correspond to the <code>typing</code>/<code>TYPE_CHECKING</code> import we find in the first step...</p>
+<p>Maybe we revert it back to my earlier refactored version, but when we have an existing type checking block we lookup the relevant statement from the binding that's referenced by the condition in the type checking block and emit a no-op edit for that specific statement if it doesn't overlap with one of the import edits. That seems a lot more robust to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2025-02-05 13:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/importer/mod.rs</code>:170 on 2025-02-05 13:04</div>
+            <div class="timeline-body"><p>I had another little think about this. I don't think we have to worry about the no-op edit when we find a preceding type checking block. If another edit would remove the binding we're referencing, it would necessarily also have to remove the type checking block itself (otherwise there would still be a reference to the binding), but then the edit that removes the type checking block would overlap with our edit to add a new import to it, so we don't need to artificially create another overlap.</p>
+<p>In the case where there isn't a type checking block, but there is a unused <code>TYPE_CHECKING</code> import, it makes sense, since we don't want to let F401 remove the import when our edit adds a new reference to it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2025-02-05 15:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/ruff_linter/src/importer/mod.rs</code>:170 on 2025-02-05 15:26</div>
+            <div class="timeline-body"><p>Yeah, I believe this is to prevent things like:</p>
+<pre><code class="language-python">from typing import TYPE_CHECKING
+
+from foo import Bar
+
+def func() -&gt; Bar: ...
+</code></pre>
+<p>If we don't add the no-op edit, <code>TYPE_CHECKING</code> might be removed, leaving us with:</p>
+<pre><code class="language-python">if TYPE_CHECKING:
+  from foo import Bar
+
+def func() -&gt; &quot;Bar&quot;: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Daverball">@Daverball</a> reviewed on 2025-02-06 08:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Daverball">@Daverball</a> on <code>crates/ruff_linter/src/importer/mod.rs</code>:164 on 2025-02-06 08:14</div>
+            <div class="timeline-body"><p>This should retain the no-op edit in the most common case (the top-most <code>TYPE_CHECKING</code> block is defined in global scope). Although this brought up a question about the implementation of <code>Importer</code>:</p>
+<p>Why are we adding both the if statement and the body AST node to <code>type_checking_blocks</code> in global scope but only the body AST node elsewhere? I don't really see an obvious reason. Shouldn't we just always pass the body or always the entire if statement? Or at least either one or the other, but never both. Either way it is pretty confusing and it would seem more consistent to pass in something like a struct that contains the condition, the body and the scope. That would also make it flexible enough to support a non-idiomatic <code>if not TYPE_CHECKING</code> with an <code>else</code> clause.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-06 13:45</div>
+            <div class="timeline-body"><p>This is great. Thank you. Also thanks for reviewing the ecosytem checks so carefully.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-02-06 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-06 13:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-06 14:03</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:51 UTC
+    </footer>
+</body>
+</html>

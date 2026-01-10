@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-type-checking`] Avoid `TC004` false positive where the runtime definition is provided by `__getattr__` - astral-sh/ruff #16052</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-type-checking</code>] Avoid <code>TC004</code> false positive where the runtime definition is provided by <code>__getattr__</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16052">#16052</a>
+        opened by <a href="https://github.com/Daverball">@Daverball</a>
+        on 2025-02-09 13:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Daverball">@Daverball</a> on 2025-02-09 13:42</div>
+            <div class="timeline-body"><p>Fixes #16045</p>
+<h2>Summary</h2>
+<p>Module-level <code>__getattr__</code> is too dynamic for us to understand, so if our only runtime reference to a typing only import happens inside <code>__all__</code>, we should assume a module-level <code>__getattr__</code> will provide a runtime accessible fallback, since we can't prove that it doesn't.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-09 13:48</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-09 16:09</div>
+            <div class="timeline-body"><p>Just to double-check I understand the current behaviour of this rule correctly. This kind of thing currently triggers <code>TC004</code>, because the <em>only</em> definition of <code>Any</code> is in a <code>TYPE_CHECKING</code> block, but <code>Any</code> is used at runtime:</p>
+<pre><code class="language-py">import typing
+
+if typing.TYPE_CHECKING:
+    from typing import Any
+
+X: typing.TypeAlias = Any
+</code></pre>
+<p>But this kind of thing does <em>not</em> trigger <code>TC004</code>, because it is <em>also</em> defined in a non-<code>TYPE_CHECKING</code> branch:</p>
+<pre><code class="language-py">import typing
+
+if typing.TYPE_CHECKING:
+    from typing import Any
+else:
+    from typing import Any
+
+X: typing.TypeAlias = Any
+</code></pre>
+<p>Is that correct? If so, it might be good to adjust the rule's documentation to clarify this. The behaviour makes sense to me, but I assumed from the docs that all definitions in <code>TYPE_CHECKING</code> blocks were prohibited if the definition was used at runtime; it wasn't clear to me that conditional declarations like this (where there were also runtime definitions alongside the <code>TYPE_CHECKING</code> definitions) were also permitted.</p>
+<p>Something like this might do the trick:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_import_in_type_checking_block.rs b/crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_import_in_type_checking_block.rs
+index 3fe243cdc..d5fea43cb 100644
+--- a/crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_import_in_type_checking_block.rs
++++ b/crates/ruff_linter/src/rules/flake8_type_checking/rules/runtime_import_in_type_checking_block.rs
+@@ -16,11 +16,12 @@ use crate::rules::flake8_type_checking::helpers::{filter_contained, quote_annota
+ use crate::rules::flake8_type_checking::imports::ImportBinding;
+ 
+ /// ## What it does
+-/// Checks for runtime imports defined in a type-checking block.
++/// Checks for imports that are required at runtime but are only defined in
++/// type-checking blocks.
+ ///
+ /// ## Why is this bad?
+-/// The type-checking block is not executed at runtime, so the import will not
+-/// be available at runtime.
++/// The type-checking block is not executed at runtime, so if the only definition
++/// of a symbol is in a type-checking block, it will not be available at runtime.
+ ///
+ /// If [`lint.flake8-type-checking.quote-annotations`] is set to `true`,
+ /// annotations will be wrapped in quotes if doing so would enable the
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-09 16:09</div>
+            <div class="timeline-body"><p>LGTM other than my suggested improvement to the docs</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Daverball">@Daverball</a> on 2025-02-09 16:24</div>
+            <div class="timeline-body"><p>@AlexWaygood Correct, I updated the docs accordingly</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-09 16:24</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-02-09 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-type-checking`] Avoid `TC004` false positive with `__getattr__`" to "[`flake8-type-checking`] Avoid `TC004` false positive where the runtime definition is provided by `__getattr__`" by @AlexWaygood on 2025-02-09 16:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-02-09 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-02-09 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-09 16:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:52 UTC
+    </footer>
+</body>
+</html>

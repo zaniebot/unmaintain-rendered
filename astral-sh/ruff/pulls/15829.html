@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pyflakes`] Visit forward annotations in `TypeAliasType` as types (`F401`) - astral-sh/ruff #15829</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pyflakes</code>] Visit forward annotations in <code>TypeAliasType</code> as types (<code>F401</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15829">#15829</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-01-30 15:17
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-30 15:17</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Fixes https://github.com/astral-sh/ruff/issues/15812 by visiting the second argument as a type definition.</p>
+<h2>Test Plan</h2>
+<p>New F401 tests based on the report.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-01-30 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-01-30 15:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-30 15:24</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/resources/test/fixtures/pyflakes/F401_34.py</code>:1 on 2025-01-30 15:34</div>
+            <div class="timeline-body"><p>Can you add a test like this, in case folks use the kwargs?</p>
+<pre><code>Json = TypeAliasType(
+    value='Union[dict[str, Json], list[Json], str, int, float, bool, None]',
+    name='Json',
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1380 on 2025-01-30 15:39</div>
+            <div class="timeline-body"><p>You're probably right, and I might just not be tracing the logic correctly, but is it possible that:</p>
+<pre><code># `value` gets visited as &quot;non type definition&quot;
+Json = TypeAliasType(
+    value='Union[dict[str, Json], list[Json], str, int, float, bool, None]',
+    name='Json',
+)  
+
+# whereas here it gets visited as a type definition
+Json = TypeAliasType(
+    'Json',
+    'Union[dict[str, Json], list[Json], str, int, float, bool, None]',
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-01-30 15:39</div>
+            <div class="timeline-body"><p>This is great! I have a question about the treatement of kwargs vs positional args</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-01-30 16:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1380 on 2025-01-30 16:31</div>
+            <div class="timeline-body"><p>Also probably good to make sure no errors or anything occur if someone does something egregious:</p>
+<pre><code>args = [
+    'Json',
+    'Union[dict[str, Json], list[Json], str, int, float, bool, None]',
+]
+
+kwargs = {
+    'name':'Json',
+    'value':'Union[dict[str, Json], list[Json], str, int, float, bool, None]',
+}
+
+Json = TypeAliasType(*args)
+Json = TypeAliasType(**kwargs)
+</code></pre>
+<p>(I don't think it matters what the actual lint rule does in these cases, but it'd be bad if the visitor panicked, for example).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-01-30 16:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/pyflakes/F401_34.py</code>:1 on 2025-01-30 16:36</div>
+            <div class="timeline-body"><p>Oh good catch, this test gives the original import error. Do you think the other cases above the new code (I pretty much copied and updated the <code>TypeVar</code> case, in particular) are also susceptible to this? I can't come up with a reason why they aren't but could be missing something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-01-30 16:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:1380 on 2025-01-30 16:40</div>
+            <div class="timeline-body"><p>Added! We don't detect the import as used here, but at least it doesn't panic, as you said.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> reviewed on 2025-01-30 16:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dylwil3">@dylwil3</a> on <code>crates/ruff_linter/resources/test/fixtures/pyflakes/F401_34.py</code>:1 on 2025-01-30 16:48</div>
+            <div class="timeline-body"><p>I <em>think</em> the <code>TypeVar</code> logic looks okay to me. The function signature (which things are positional + keyword vs keyword only) is working in your favor then https://docs.python.org/3/library/typing.html#typing.TypeVar</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-30 16:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/pyflakes/F401_34.py</code>:1 on 2025-01-30 16:54</div>
+            <div class="timeline-body"><p>Yeah, @dylwil3's right -- it's not possible to specify the first argument to the <code>TypeVar</code> constructor (<code>name</code>) by keyword if you also specify other arguments. That means that the first argument must always be the <code>name</code> argument, which means it must be interpreted as a value expression. All other valid arguments to the <code>TypeVar</code> constructor are expected to be type expressions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/pyflakes/F401_34.py</code>:1 on 2025-01-30 16:56</div>
+            <div class="timeline-body"><p>nit: you could probably isolate these snippets by putting them all in separate functions rather than putting each snippet in a different fixture file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-01-30 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/pyflakes/F401_34.py</code>:1 on 2025-01-30 16:57</div>
+            <div class="timeline-body"><p>Ahhh, I see. Thank you both!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/pyflakes/F401_37.py</code>:3 on 2025-01-30 16:59</div>
+            <div class="timeline-body"><p>You could possibly add a comment next to this import and the one in <code>F401_38.py</code> saying that <em>strictly speaking</em> it's a false positive to emit F401 here, but we can't really be expected to reasonably understand that the strings here need to be understood as type expressions (and type checkers probably wouldn't understand them as type expressions either!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-01-30 17:00</div>
+            <div class="timeline-body"><p>nice!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-01-30 17:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/pyflakes/F401_34.py</code>:1 on 2025-01-30 17:11</div>
+            <div class="timeline-body"><p>Ah of course, that's a lot better. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dylwil3">@dylwil3</a> approved on 2025-01-30 17:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-01-30 17:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-30 18:00</div>
+            <div class="timeline-body"><p>Thank you both again for the reviews! I'll hold off merging until after the release.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-01-30 23:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-01-30 23:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-30 23:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:51 UTC
+    </footer>
+</body>
+</html>

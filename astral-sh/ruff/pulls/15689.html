@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add `--ignore`, `--warn`, and `--error` CLI arguments - astral-sh/ruff #15689</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add <code>--ignore</code>, <code>--warn</code>, and <code>--error</code> CLI arguments</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15689">#15689</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-01-23 13:09
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-23 13:09</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Add support for enabling rules from the CLI and changing the rule's severity by adding
+the <code>--warn</code>, <code>--error</code> and <code>--ignore</code> CLI arguments.</p>
+<p>The &quot;tricky&quot; part of this PR was that we need to preserve the order in which
+the arguments were specified so that e.g. <code>--ignore division-by-zero --error division-by-zero</code> resolves
+to enabling the rule with an <code>error</code> severity because the <code>--error </code>argument comes last.</p>
+<p>The way this is solved is by manually implementing <code>Args</code> as <a href="https://docs.rs/clap/latest/clap/_derive/index.html#flattening-hand-implemented-args-into-a-derived-application">described here</a></p>
+<h2>Test Plan</h2>
+<p>Added CLI tests, I did some manual testing as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-01-23 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-01-23 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-01-23 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-01-23 13:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-23 13:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.gitignore</code>:33 on 2025-01-23 13:10</div>
+            <div class="timeline-body"><p>doh!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-23 13:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/args.rs</code>:94 on 2025-01-23 13:10</div>
+            <div class="timeline-body"><p>I moved this code from <code>main.rs</code>. The only difference is the added <code>rules</code> field and the <code>let rules = ...</code> in <code>to_options</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot/src/args.rs</code>:129 on 2025-01-23 14:43</div>
+            <div class="timeline-body"><p>style nit: I think this will be easier to follow with some carefully named intermediate variables:</p>
+<pre><code class="language-suggestion">            let indices = matches.indices_of(arg_id).into_iter().flatten();
+            let args = matches.get_many::&lt;String&gt;(arg_id).into_iter().flatten();
+            rules.extend(indices.zip(args).map(|(index, rule)| (index, rule, level)));
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> approved on 2025-01-23 14:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/args.rs</code>:35 on 2025-01-23 17:29</div>
+            <div class="timeline-body"><p>I assume we still plan to rename this to <code>--python</code>, since it doesn't have to be a virtualenv?</p>
+<p>But I see all this code was just moved from <code>main.rs</code>, so makes sense not to modify it in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/src/args.rs</code>:132 on 2025-01-23 17:32</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        // Sort by their index so that values specified later override earlier ones.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/tests/cli.rs</code>:259 on 2025-01-23 17:42</div>
+            <div class="timeline-body"><p>Why is this included, when there's no unresolved-import diagnostic in the code? Is it just to verify that it's fine to specify a level for a diagnostic that doesn't occur?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/tests/cli.rs</code>:304 on 2025-01-23 17:43</div>
+            <div class="timeline-body"><p>This comment seems misplaced?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-01-23 17:44</div>
+            <div class="timeline-body"><p>Nice, exciting to see this start coming together!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-23 17:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/tests/cli.rs</code>:259 on 2025-01-23 17:51</div>
+            <div class="timeline-body"><p>it's mainly to assert that you can specify multiple <code>--warn</code> arguments. I admit, I was too lazy to write another test (just so much boilerplate)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-01-23 17:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/tests/cli.rs</code>:259 on 2025-01-23 17:52</div>
+            <div class="timeline-body"><p>Maybe add something in the code in this test that would emit this, so we aren't just asserting you can give the option twice, but also that it does something?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-23 17:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/args.rs</code>:35 on 2025-01-23 17:53</div>
+            <div class="timeline-body"><p>Yeah, there's an issue for that, somewhere.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-24 09:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot/tests/cli.rs</code>:359 on 2025-01-24 09:49</div>
+            <div class="timeline-body"><p>I played around with the CLI for a bit and one thing I tried initially was to silence this error</p>
+<pre><code>error[lint:invalid-assignment] /home/shark/playground/test.py:4:1 Object of type `tuple[Literal[&quot;bar&quot;]]` is not assignable to attribute `__slots__` of type `tuple[Literal[&quot;foo&quot;]]`
+</code></pre>
+<p>by copying (what I thought was) the rule name, and then added <code>--ignore lint:invalid-assignment</code>.</p>
+<p>This leads to</p>
+<pre><code>warning[unknown-rule] Unknown lint rule `lint:invalid-assignment`
+</code></pre>
+<p>It would be nice if we could show a better error message for this specific case (by checking if the rule exists after stripping <code>lint:</code> from the start of the argument?):</p>
+<pre><code>warning[unknown-rule] Unknown lint rule `lint:invalid-assignment`. Did you mean `invalid-assignment`?
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-24 09:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot/tests/cli.rs</code>:365 on 2025-01-24 09:50</div>
+            <div class="timeline-body"><p>Is it intended that we want to fail with exit code 1 in case of warnings?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-24 09:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/tests/cli.rs</code>:365 on 2025-01-24 09:51</div>
+            <div class="timeline-body"><p>No, there's another issue that looks into changing this behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-01-24 09:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot/src/args.rs</code>:157 on 2025-01-24 09:58</div>
+            <div class="timeline-body"><p>Minor: If I read &quot;list of rules&quot;, I'm thinking of something like <code>--error=invalid-assignment,divison-by-zero</code>. If we don't want to support this, I think we might want to clarify this here with something like</p>
+<pre><code class="language-suggestion">                .help(&quot;Treat the given rule as having severity 'error'. Can be specified multiple times.&quot;)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-24 14:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/tests/cli.rs</code>:359 on 2025-01-24 14:34</div>
+            <div class="timeline-body"><p>Nice find. I was pretty sure it's something I called out in the CLI proposal but it seems I didn't.</p>
+<p>A general concern around using <code>lint:&lt;name&gt;</code> in diagnostics is that it prevents copy-pasting the diagnostic code into a configuration or even a suppression comment. It's something that bothers me about clippy where the diagnostic uses <code>-</code> but <code>allow</code> and <code>deny</code> require <code>_</code>.</p>
+<p>We could change the diagnostic code or always accept <code>lint:</code>. But I'm not yet sure what the best design is here. Adding an improved message seems a good first step.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-24 15:12</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-01-24 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-01-24 15:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-24 15:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:51 UTC
+    </footer>
+</body>
+</html>

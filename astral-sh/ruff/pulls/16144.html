@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replace is-macro with implementation in enums - astral-sh/ruff #16144</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Replace is-macro with implementation in enums</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16144">#16144</a>
+        opened by <a href="https://github.com/Glyphack">@Glyphack</a>
+        on 2025-02-13 20:10
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Glyphack">@Glyphack</a> on 2025-02-13 20:10</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Replace usage of is_macro in generated AST models with implementation of those methods.
+Addresses this comment: https://github.com/astral-sh/ruff/pull/15544/files#r1919735841</p>
+<p>The implementation is straightforward, there are just two decisions:</p>
+<ol>
+<li>For enums with one variant we emit the catch all cases in the match. Otherwise there is a clippy warning.</li>
+<li>All <code>impl</code> blocks have allow <code>dead_code</code> and <a href="https://rust-lang.github.io/rust-clippy/master/index.html#match_wildcard_for_single_variants"><code>match_wildcard_for_single_variants</code></a>. Some of the methods are unused. Also I don't think we need to care about catch all case since the methods are obviously matching for one thing. I can also make this per function but I decided do it on the <code>impl</code> to generate smaller file.</li>
+</ol>
+<p>Sadly we cannot remove the dependency yet, but we can if we replace more of the ast files with auto generated code.</p>
+<h2>Test Plan</h2>
+<p>No other file has changed. And the compilation and tests pass.</p>
+<!-- How was it tested? -->
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-13 20:31</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -1 violations, +0 -0 fixes in 1 projects; 54 projects unchanged)</p>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/rotki/rotki/blob/c6a192bb461d0bc317b61659254ef76582b4ce9c/rotkehlchen/utils/mixins/enums.py#L12'>rotkehlchen/utils/mixins/enums.py:12:16:</a> PYI019 [*] Use `Self` instead of custom TypeVar `T`
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PYI019 | 1 | 0 | 1 | 0 | 0 |</p>
+</p>
+</details>
+
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @Glyphack on 2025-02-13 20:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>.github/workflows/ci.yaml</code>:715 on 2025-02-13 21:55</div>
+            <div class="timeline-body"><p>This change seems unrelated ;)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-13 21:55</div>
+            <div class="timeline-body"><p>Thanks. This is great. Fewer usages of the <code>is_macro</code> makes me very happy</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-02-13 21:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Glyphack">@Glyphack</a> reviewed on 2025-02-13 22:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Glyphack">@Glyphack</a> on <code>.github/workflows/ci.yaml</code>:715 on 2025-02-13 22:06</div>
+            <div class="timeline-body"><p>It's resolved now after merging main.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-02-13 22:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-13 22:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-14 05:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:53 UTC
+    </footer>
+</body>
+</html>

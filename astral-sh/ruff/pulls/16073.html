@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Support re-export conventions for stub files - astral-sh/ruff #16073</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Support re-export conventions for stub files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16073">#16073</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-02-10 12:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-10 12:00</div>
+            <div class="timeline-body"><p>This is an alternative implementation to #15848.</p>
+<h2>Summary</h2>
+<p>This PR adds support for re-export conventions for imports for stub files.</p>
+<p><strong>How does this work?</strong></p>
+<ul>
+<li>Add a new flag on the <code>Import</code> and <code>ImportFrom</code> definitions to indicate whether they're being exported or not</li>
+<li>Add a new enum to indicate whether the symbol lookup is happening within the same file or is being queried from another file (e.g., an import statement)</li>
+<li>When a <code>Symbol</code> is being queried, we'll skip the definitions that are (a) coming from a stub file (b) external lookup and (c) check the re-export flag on the definition</li>
+</ul>
+<p>This implementation does not yet support <code>__all__</code> and <code>*</code> imports as both are features that needs to be implemented independently.</p>
+<p>closes: #14099
+closes: #15476</p>
+<h2>Test Plan</h2>
+<p>Add test cases, update existing ones if required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2025-02-10 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-10 12:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:375 on 2025-02-10 12:05</div>
+            <div class="timeline-body"><p>We need to know here whether the binding is in the same file as the caller i.e., the querying file. To do that we'd need to pass this information via a ton of functions:</p>
+<ul>
+<li><code>symbol_from_bindings</code></li>
+<li><code>symbol_from_declaration</code></li>
+<li><code>symbol</code></li>
+<li><code>global_symbol</code></li>
+<li><code>builtins_symbol</code></li>
+<li><code>known_module_symbol</code></li>
+<li><code>typing_symbol</code></li>
+<li><code>typing_extensions_symbol</code></li>
+<li><code>Type::member</code></li>
+<li><code>ModuleLiteralType::member</code></li>
+</ul>
+<p>Why <code>member</code> methods? The <code>from builtins import Iterable</code> call will try to find the symbol via <code>ModuleLiteralType::member</code> which is one of the main point where we need to pass this information.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-02-10 12:05</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv%2Fre-export-2">CodSpeed Performance Report</a></h2>
+<h3>Merging #16073 will <strong>degrade performances by 4.21%</strong></h3>
+<p><sub>Comparing <code>dhruv/re-export-2</code> (929cf75) with <code>main</code> (3d0a58e)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1 (👁 1)</code> regressions<br />
+<code>✅ 31</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| 👁 | <code>red_knot_check_file[incremental]</code> | 4.5 ms | 4.7 ms | -4.21% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "WIP: Implement re-export via semantic index builder" to "Implement re-export via semantic index builder" by @dhruvmanila on 2025-02-11 07:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Implement re-export via semantic index builder" to "[red-knot] Add support for re-export conventions for imports" by @dhruvmanila on 2025-02-11 07:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Add support for re-export conventions for imports" to "[red-knot] Support re-export conventions for stub files" by @dhruvmanila on 2025-02-11 07:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:135 on 2025-02-11 08:13</div>
+            <div class="timeline-body"><p>Hmm, I must have overlooked this when this query was introduced. Salsa queries that have more than one argument (other than <code>db</code>) aren't very performant because salsa has to intern all arguments. It's the same as</p>
+<pre><code class="language-rust">#[salsa::interned]
+struct SymbolByIdArgs&lt;'db&gt; {
+	lookup: SymbolLookup,
+	scope: ScopeId&lt;'db&gt;,
+	is_dunder_slots: bool,
+	symbol_id: ScopedSymbolId,
+}
+
+#[salsa::tracked]
+fn symbol_by_id(db: &amp;dyn Db, args: SymboLByIdArgs) { ... }
+</code></pre>
+<p>I wonder if this is the reason for the perf regression.</p>
+<p>We could try if splitting the query into a <code>internal_symbol_by_id</code> and <code>external_symbol_by_id</code> query reduces the perf regression (and possibly <code>external_dunder_slots</code>). But we can wait with this until the PR is close to finish.</p>
+<p>I don't there's a way to get to a single argumet function because we don't have a <code>SymbolId</code> salsa ingredient</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:115 on 2025-02-11 08:18</div>
+            <div class="timeline-body"><p>I wonder if the <code>internal</code> and <code>external</code> should be an internal type only to simplify the implementation but that we otherwise use <code>internal_global_symbol</code>, <code>external_global_symbol</code> methods instead (internal global symbol seems weird :)).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-11 08:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:135 on 2025-02-11 08:39</div>
+            <div class="timeline-body"><p>Yeah, that could be. Thanks for the suggestions, I can try that out.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-11 08:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:115 on 2025-02-11 08:40</div>
+            <div class="timeline-body"><p>I thought of doing that but quickly realize the <code>internal_global_symbol</code> name issue. For now, I just went with it to complete it and finish the implementation. I'll do some name / structural changes now with the benchmarking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-11 08:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-11 11:49</div>
+            <div class="timeline-body"><h2>Performance notes (on-going)</h2>
+<p>Tried removing the <code>lookup: SymbolLookup</code> field and instead have two salsa query but that doesn’t improve the performance (at least locally) (https://github.com/astral-sh/ruff/pull/16073/commits/e8ca8831d28b0bd126fa2be8edac859eac2b3db9 - going to check if Codspeed yields the same results).</p>
+<details><summary>Patch:</summary>
+<p>
+
+<pre><code class="language-diff">diff --git a/crates/red_knot_python_semantic/src/types.rs b/crates/red_knot_python_semantic/src/types.rs
+index 390675f32..a4c68ea63 100644
+--- a/crates/red_knot_python_semantic/src/types.rs
++++ b/crates/red_knot_python_semantic/src/types.rs
+@@ -126,6 +126,37 @@ fn symbol&lt;'db&gt;(
+     name: &amp;str,
+ ) -&gt; Symbol&lt;'db&gt; {
+     #[salsa::tracked]
++    fn internal_symbol_by_id&lt;'db&gt;(
++        db: &amp;'db dyn Db,
++        scope: ScopeId&lt;'db&gt;,
++        is_dunder_slots: bool,
++        symbol_id: ScopedSymbolId,
++    ) -&gt; Symbol&lt;'db&gt; {
++        symbol_by_id(
++            db,
++            SymbolLookup::Internal,
++            scope,
++            is_dunder_slots,
++            symbol_id,
++        )
++    }
++
++    #[salsa::tracked]
++    fn external_symbol_by_id&lt;'db&gt;(
++        db: &amp;'db dyn Db,
++        scope: ScopeId&lt;'db&gt;,
++        is_dunder_slots: bool,
++        symbol_id: ScopedSymbolId,
++    ) -&gt; Symbol&lt;'db&gt; {
++        symbol_by_id(
++            db,
++            SymbolLookup::External,
++            scope,
++            is_dunder_slots,
++            symbol_id,
++        )
++    }
++
+     fn symbol_by_id&lt;'db&gt;(
+         db: &amp;'db dyn Db,
+         lookup: SymbolLookup,
+@@ -233,7 +264,10 @@ fn symbol&lt;'db&gt;(
+     let is_dunder_slots = name == &quot;__slots__&quot;;
+     table
+         .symbol_id_by_name(name)
+-        .map(|symbol| symbol_by_id(db, lookup, scope, is_dunder_slots, symbol))
++        .map(|symbol| match lookup {
++            SymbolLookup::Internal =&gt; internal_symbol_by_id(db, scope, is_dunder_slots, symbol),
++            SymbolLookup::External =&gt; external_symbol_by_id(db, scope, is_dunder_slots, symbol),
++        })
+         .unwrap_or(Symbol::Unbound)
+ }
+ 
+</code></pre>
+</p>
+</details> 
+
+<hr />
+<p>I compared the trace logs between <code>main</code> and <code>re-export-2</code> using the debug build on <code>tomllib</code> with the following command (includes the now merged coarse-grained commit):</p>
+<pre><code class="language-sh">RED_KNOT_PROFILE_LOG=1 RAYON_NUM_THREADS=1 red_knot check -vvv
+</code></pre>
+<p>Cold: https://www.diffchecker.com/JqHRR99N/</p>
+<ul>
+<li>There are more calls to <code>symbol(&quot;object&quot;)</code> compared to before</li>
+<li>The number of ingredients are the same (as expected)</li>
+<li>Reduced number of <code>symbol(&quot;__getitem__&quot;)</code> calls</li>
+<li>Increased number of <code>symbol_by_id</code> salsa query</li>
+</ul>
+<p>Incremental: https://www.diffchecker.com/KqLUCdie/</p>
+<ul>
+<li>Similar observations as in the cold benchmark</li>
+<li>For the incremental part, I’m seeing a lot of <code>DidValidateMemoizedValue</code> salsa events. As per the docs (mentioned below), is it that now the incremental benchmark is going through more number of queries as compared to on <code>main</code> and that a lot of time is spent on validating whether salsa can re-use the cached value or not.</li>
+</ul>
+<pre><code class="language-rs">    /// Occurs when we found that all inputs to a memoized value are
+    /// up-to-date and hence the value can be re-used without
+    /// executing the closure.
+    ///
+    /// Executes before the &quot;re-used&quot; value is returned.
+</code></pre>
+<hr />
+<p>NOTE: There's still a 4% regression on the incremental benchmark which I want to look into.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-11 12:42</div>
+            <div class="timeline-body"><p>Thanks for the analysis. Calling more salsa queries is probably the culprit because we pay an overhead for every salsa that requires &quot;checking&quot; if it's still green during the incremental benchmark.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-02-12 08:25</div>
+            <div class="timeline-body"><p>There's still a 4% regression which I want to look into but I'd find it useful to get some initial feedback on the implementation itself which is why I'm marking this as ready for review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-02-12 08:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-02-12 08:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-02-12 08:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-02-12 08:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-12 08:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4983 on 2025-02-12 08:36</div>
+            <div class="timeline-body"><p>Looking through the usages of <code>global_symbol</code> and <code>symbol</code> it does seem to me that the majority of call sites use <code>Internal</code>. Requiring the parameter for all call sites makes the API significantly more verbose. I think it could be useful to expose two methods instead of making this a parameter. I'm not familiar enough with the subject to propose good names.</p>
+<p>I'd probably use <code>symbol</code> and <code>global_symbol</code> for the <code>SymbolLookup</code> variant that's most commonly used (which is the right default in most cases) and have a method with a more explicit name for the other variant.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-12 12:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:115 on 2025-02-12 12:24</div>
+            <div class="timeline-body"><p>Another idea:</p>
+<pre><code class="language-rs">pub(crate) enum SymbolResolution {
+	/// Resolve the symbol as seen from within the current module
+    Local,
+	/// Resolve the symbol as it would be seen when imported from another module
+    Imported,
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:115 on 2025-02-12 12:27</div>
+            <div class="timeline-body"><p>This could lead to the following functions:</p>
+<ol>
+<li><code>global_symbol</code></li>
+<li><code>imported_global_symbol</code></li>
+<li><code>symbol</code></li>
+<li><code>imported_symbol</code></li>
+</ol>
+<p>where, (1) and (3) defaults to <code>Local</code> and (2) and (4) defaults to <code>Imported</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-12 12:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-02-12 19:24</div>
+            <div class="timeline-body"><blockquote>
+<p>There's still a 4% regression</p>
+</blockquote>
+<p>Bummer, I thought there was a reasonable chance this approach would eliminate the regression. I guess it is coming from somewhere that both approaches have in common...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/conventions.md</code>:48 on 2025-02-12 20:46</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">When a symbol is re-exported, importing it should not raise an error. This tests both `import ...`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:115 on 2025-02-12 21:00</div>
+            <div class="timeline-body"><p>It's not possible to import a non-global symbol, so I think item 4 in that table is unnecessary? It should just be the first three possibilities.</p>
+<p>As far as the naming of this enum, I think I weakly prefer &quot;Lookup&quot; over &quot;Resolution&quot;. I think for the enum values my main concern is that it's easy to confuse &quot;internal to a scope&quot; and &quot;external to a scope&quot; vs &quot;internal to a file&quot; and &quot;external to a file&quot;. Scope internal/external is our existing distinction of local vs &quot;public&quot; symbol types; all of these functions are for &quot;public&quot; types, since for local types we just <code>symbol_from_bindings</code> with the bindings for that particular use. So for that reason I think I would prefer being extra explicit about that part in the variant names, not just in the docstrings, e.g. <code>SameFile</code> and <code>OtherFile</code>? Or <code>SameFile</code> and <code>Imported</code>? Or <code>FileInternal</code> and <code>Imported</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:135 on 2025-02-12 21:11</div>
+            <div class="timeline-body"><p>It does seem plausible that adding this argument increases incremental re-validation cost, since now there will be two cached memos for this query instead of one, for every global symbol that is both imported and referenced inside its file.</p>
+<p>If this is the case, I suspect that splitting into multiple queries may not help? I would expect it to result in exactly the same increase in the total number of memos that need validating, those memos will just be split across two queries instead of being all instances of the same query.</p>
+<p>We could reconsider whether this needs to be a query at all? I think we made it one because empirically it was a perf win to do so (despite the multiple-arguments issue), but we could check whether that is still the case after this PR. (I don't think we need it to be a query for isolation reasons, because the cross-module calls to this should all already have gone through an <code>infer_definition_types</code> query on the import statement.)</p>
+<p>Another thing that could help is to check whether the target of an import is a stub file much earlier (before calling this query), and modify the semantics of the enum so that it's not &quot;internal&quot; vs &quot;external&quot; but rather &quot;ImportFromStub&quot; vs &quot;Normal&quot;. That way we would only double the number of cached values for global symbols in stub files, not for global symbols in all modules. (The effect of this might be understated by our tomllib benchmark, since it's small and probably over-indexes on typeshed, relative to a checking a larger project.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4983 on 2025-02-12 21:33</div>
+            <div class="timeline-body"><p>I agree with this, for clarity/ergonomic reasons. I think we can just add a new <code>imported_symbol</code> function (same as <code>global_symbol</code> but with external lookup).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:350 on 2025-02-12 21:41</div>
+            <div class="timeline-body"><p>May not matter much, but <code>in_stub()</code> is something we could check just once for the entire lookup (based on the file) and update the <code>lookup</code> value we pass in here based on that, instead of re-checking <code>in_stub</code> for every binding (and below for every declaration), when it will be the same for all of them. (This is related to another comment above about reducing the number of cached memos to re-validate in the incremental benchmark.)</p>
+<p>Similarly, I don't know how smart the Rust compiler is here or whether it would make any difference, but it seems like we could define the closure function conditionally based on <code>lookup.is_external()</code>, so that if it's not external the closure is a no-op, instead of re-checking <code>lookup.is_external()</code> for every binding/declaration.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-12 21:52</div>
+            <div class="timeline-body"><p>Nice, I think this approach looks really good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4983 on 2025-02-13 05:05</div>
+            <div class="timeline-body"><p>There's one subtle difference which I noticed when trying out this appraoch - <code>known_module_symbol</code> uses <code>global_symbol</code> which is a more limited version of the logic that's present on <code>ModuleLiteralType::member</code> in that the former skips <code>__init__</code> and <code>__dict__</code> while the later does not.</p>
+<p><strong><code>ModuleLiteralType::member</code>:</strong></p>
+<p>https://github.com/astral-sh/ruff/blob/f8093b65ea88eb11a0d0f4ffdbf7c6f007043238/crates/red_knot_python_semantic/src/types.rs#L3798-L3819</p>
+<p><strong><code>global_symbol</code>:</strong></p>
+<p>https://github.com/astral-sh/ruff/blob/f8093b65ea88eb11a0d0f4ffdbf7c6f007043238/crates/red_knot_python_semantic/src/types.rs#L255-L269</p>
+<p>Now, this PR also resolves https://github.com/astral-sh/ruff/issues/15476 by way of using the re-export conventions when looking up for a symbol in the builtins scope (via the fallback logic in <code>infer_name_load</code>). But, this should still use the logic from <code>global_symbol</code> when falling back to <code>ModuleType</code> such that the following throws an error:</p>
+<pre><code class="language-py">reveal_type(__init__)
+</code></pre>
+<p>This means that there's only one place where <em>both</em> <code>SymbolLookup::External</code> and only ignoring <code>__getattr__</code> from <code>ModuleType</code> logic needs to happen which is in <code>ModuleTypeLiteral::member</code> but there are multiple places where <em>only</em> SymbolLookup::External<code> needs to happen (</code>global_symbol<code>, </code>known_module_symbol`).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-13 05:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4983 on 2025-02-13 05:11</div>
+            <div class="timeline-body"><p><strong>tl;dr</strong> of the above comment:</p>
+<p>| Function / Method | <code>SymbolLookup</code> | Ignore from <code>ModuleType</code> |
+|--------|--------|--------|
+| <code>ModuleTypeLiteral::member</code> | <code>Imported</code> | <code>__getattr__</code> |
+| <code>known_module_symbol</code> | <code>Imported</code> | <code>__init__</code>, <code>__dict__</code>, <code>__getattr__</code> |
+| <code>global_symbol</code> | <code>SameFile</code> | <code>__init__</code>, <code>__dict__</code>, <code>__getattr__</code> |</p>
+<p>which doesn't allow us to create a function that defaults to <code>External</code> without repeating the logic for <code>ModuleType</code> fallback logic in multiple places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-13 05:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-13 05:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:115 on 2025-02-13 05:13</div>
+            <div class="timeline-body"><p>Yeah, that makes sense. I'm in favor of using <code>SameFile</code> and <code>Imported</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-13 05:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:350 on 2025-02-13 05:38</div>
+            <div class="timeline-body"><blockquote>
+<p>May not matter much, but <code>in_stub()</code> is something we could check just once for the entire lookup (based on the file) and update the <code>lookup</code> value we pass in here based on that, instead of re-checking <code>in_stub</code> for every binding (and below for every declaration), when it will be the same for all of them. (This is related to another comment above about reducing the number of cached memos to re-validate in the incremental benchmark.)</p>
+</blockquote>
+<p>I don't think the <code>in_stub</code> check is tied with the <code>lookup</code> value but we can include the source type of the imported file such that the enum becomes:</p>
+<pre><code class="language-rs">enum SymbolLookup {
+	SameFile,
+	Imported(PySourceType),
+}
+
+impl SymbolLookup {
+	fn is_imported_from_stub(self) -&gt; bool
+}
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-13 05:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:350 on 2025-02-13 05:47</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think the <code>in_stub</code> check is tied with the <code>lookup</code> value</p>
+</blockquote>
+<p>I wasn't suggesting it's tied to the <code>lookup</code> value, but it is tied to the <em>lookup</em>, as in a single call to <code>symbol</code> is always in a single scope which is in a single file which is either a stub or not. We don't have to check it individually for each binding/declaration.</p>
+<p>We could add a <code>PySourceType</code> to the <code>Imported</code> variant, but this seems more complex than necessary, since the behavior for <code>SameFile</code> and <code>Imported(not-stub)</code> would always be identical? If we are able to use multiple functions to make the enum an internal implementation detail, it could just be <code>RequireExplicitReExports {Yes/No}</code> and the <code>imported_symbol</code> function would set it to <code>Yes</code> conditionally based on whether the symbol is being looked up in a stub or not.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-13 05:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4983 on 2025-02-13 05:47</div>
+            <div class="timeline-body"><p>The special case is only the builtins here, maybe we could add a variant <code>SymbolLookup::Builtin</code> to explicitly clarify here.</p>
+<p>I'll put a follow-up PR to make the review process easier and keep this PR limited to only performance related changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4983 on 2025-02-13 05:54</div>
+            <div class="timeline-body"><p>(Related to https://github.com/astral-sh/ruff/pull/16073#discussion_r1953849717, ignore this for now.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-13 05:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-13 05:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:350 on 2025-02-13 05:54</div>
+            <div class="timeline-body"><p>I see, thanks for clarifying. The <code>RequireExplicitReExports</code> suggestion is interesting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-13 06:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4983 on 2025-02-13 06:01</div>
+            <div class="timeline-body"><p>Great catch! This doesn't seem like an issue? The handling of these extra <code>ModuleType</code> names is always a <code>.or_fall_back_to(...)</code> call on the result of calling <code>symbol</code>, so it seems like we can easily wrap up any version of that logic that we want to avoid repeating into an orthogonal function that takes a <code>Symbol</code> and returns a <code>Symbol</code> with the fallback to a <code>ModuleType</code> name, and then we can call these orthogonal functions wherever we need to without repeating any actual logic. I think it's fine if we have a separate <code>builtin_symbol</code> function as well as <code>imported_symbol</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-13 09:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:135 on 2025-02-13 09:52</div>
+            <div class="timeline-body"><blockquote>
+<p>If this is the case, I suspect that splitting into multiple queries may not help? I would expect it to result in exactly the same increase in the total number of memos that need validating, those memos will just be split across two queries instead of being all instances of the same query.</p>
+</blockquote>
+<p>For reference, I tried it in <a href="https://github.com/astral-sh/ruff/pull/16073/commits/dafc135fd84d181afe46983ec41029341c5e67c1"><code>dafc135</code> (#16073)</a> and it didn't improve the regression and I suspect it's due to the same reasons that you've outlined.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-13 10:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:135 on 2025-02-13 10:12</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think we need it to be a query for isolation reasons, because the cross-module calls to this should all already have gone through an infer_definition_types query on the import statement.)</p>
+</blockquote>
+<p>It does have to be a query because evaluating visibility constraints requires accessing the AST nodes but we could consider moving the query elsewhere. E.g. make evaluating the visibility constraints a query (and only if there are any non trivial constraints)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-02-14 09:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:350 on 2025-02-14 09:37</div>
+            <div class="timeline-body"><p>The <code>in_stub</code> check was pulled out of the query and is only checked once along with using <code>RequireExplicitReExport</code> in https://github.com/astral-sh/ruff/pull/16133.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-02-14 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-02-14 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-14 09:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-14 09:50</div>
+            <div class="timeline-body"><p>🥳 Great to see this get over the line — thanks @dhruvmanila! 😃</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:52 UTC
+    </footer>
+</body>
+</html>

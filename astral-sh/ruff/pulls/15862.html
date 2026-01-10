@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pyupgrade`] Rename private type parameters in PEP 695 generics (`UP049`) - astral-sh/ruff #15862</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pyupgrade</code>] Rename private type parameters in PEP 695 generics (<code>UP049</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15862">#15862</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-01-31 22:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-31 22:04</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is a new rule to implement the renaming of PEP 695 type parameters with leading underscores after they have (presumably) been converted from standalone type variables by either UP046 or UP047. Part of #15642.</p>
+<p>I'm not 100% sure the fix is always safe, but I haven't come up with any counterexamples yet. <code>Renamer</code> seems pretty precise, so I don't think the usual issues with comments apply.</p>
+<p>I initially tried writing this as a rule that receives a <code>Stmt</code> rather than a <code>Binding</code>, but in that case the <code>checker.semantic().current_scope()</code> was the global scope, rather than the scope of the type parameters as I needed. Most of the other rules using <code>Renamer</code> also used <code>Binding</code>s, but it does have the downside of offering separate diagnostics for each parameter to rename.</p>
+<h2>Test Plan</h2>
+<p>New snapshot tests for UP049 alone and the combination of UP046, UP049, and PYI018.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-01-31 22:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @ntBre on 2025-01-31 22:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-31 22:11</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-01-31 22:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:47 on 2025-01-31 22:19</div>
+            <div class="timeline-body"><p>These <code>.md</code> links won't work when rendered in an editor. Typically, links between rules take the full form <code>https://docs.astral.sh/ruff/rules/rule-name/</code>. Examples include <a href="https://github.com/astral-sh/ruff/blob/b58f2c399e87c11def59bd55f75f7ef8148c84f0/crates/ruff_linter/src/rules/pydocstyle/rules/blank_before_after_class.rs#L123"><code>D211</code></a> and <a href="https://github.com/astral-sh/ruff/blob/b58f2c399e87c11def59bd55f75f7ef8148c84f0/crates/ruff_linter/src/rules/flake8_bandit/rules/shell_injection.rs#L197"><code>S606</code></a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/resources/test/fixtures/pyupgrade/UP051.py</code>:20 on 2025-01-31 22:26</div>
+            <div class="timeline-body"><p>Are references within stringified type expressions renamed?</p>
+<pre><code class="language-python">def f[_T](v):
+	cast('_T', v)             # This should be renamed
+	cast(&quot;Literal['_T']&quot;, v)  # This should not
+	cast('list[_\x54]', v)    # Weird, but...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-01-31 22:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-01-31 22:33</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/pyupgrade/UP051.py</code>:20 on 2025-01-31 22:33</div>
+            <div class="timeline-body"><p>No the <code>Renamer</code> does not catch these, I guess that's enough to make the fix unsafe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-01-31 22:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/pyupgrade/UP051.py</code>:20 on 2025-01-31 22:36</div>
+            <div class="timeline-body"><p>Never mind, they <em>both</em> get renamed when <code>cast</code> is actually imported. Why should the second one not get renamed? Is it supposed to be outside of the function? I &quot;fixed&quot; the indentation by putting them both inside.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-01-31 22:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/resources/test/fixtures/pyupgrade/UP051.py</code>:20 on 2025-01-31 22:39</div>
+            <div class="timeline-body"><p>The second one, when unquoted, is <code>Literal['_T']</code> (i.e., a string containing the two characters <code>_</code> and <code>T</code>). It does not refer to <code>_T</code> the type parameter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-01-31 22:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/pyupgrade/UP051.py</code>:20 on 2025-01-31 22:42</div>
+            <div class="timeline-body"><p>Ah right, thanks. I guess I spoke too soon again. If <code>Literal</code> is also imported, I think we get the correct behavior for your original example (the first one replaced, the second not). I will throw the <code>\x54</code> case in as well just for fun. Thanks for these additional cases!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/pyupgrade/UP051.py</code>:20 on 2025-01-31 22:47</div>
+            <div class="timeline-body"><p>Well this isn't good. <code>cast('list[_\x54]', v) </code> gets replaced with <code>cast(T, v)</code>, while <code>cast(&quot;list[_T]&quot;, v)</code> gets replaced correctly with <code>cast(&quot;list[T]&quot;, v)</code>. I'm not sure why the hex version is deleting the <code>list[]</code> part. Is this something you've run into before?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-01-31 22:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-01-31 22:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/resources/test/fixtures/pyupgrade/UP051.py</code>:20 on 2025-01-31 22:58</div>
+            <div class="timeline-body"><p>I don't think so. I wonder if such cases can be detected somehow so that the fix can be marked unsafe/display-only. Another approach is to use different fix applicability for stub and source files; fixes for the former are most likely safe, since it should have no stringified type expressions and very few <code>cast()</code>s.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-03 13:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyupgrade/snapshots/ruff_linter__rules__pyupgrade__tests__UP051_1.py.snap</code>:1 on 2025-02-03 13:11</div>
+            <div class="timeline-body"><p>I'm not exactly sure why the UP051 errors aren't being shown in this snapshot. I don't think this indicates a bug in the logic for your rule, though, as everything seems to work correctly if I run the rules manually together on this fixture with your branch:</p>
+<pre><code>~/dev/ruff (brent/rename-typevars) [1] % cargo run -- check --no-cache --preview --diff --select=&quot;PYI018,UP051,UP046,F401&quot; --target-version=py313 --unsafe-fixes crates/ruff_linter/resources/test/fixtures/pyupgrade/UP051_1.py
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.11s
+     Running `target/debug/ruff check --no-cache --preview --diff --select=PYI018,UP051,UP046,F401 --target-version=py313 --unsafe-fixes crates/ruff_linter/resources/test/fixtures/pyupgrade/UP051_1.py`
+--- crates/ruff_linter/resources/test/fixtures/pyupgrade/UP051_1.py
++++ crates/ruff_linter/resources/test/fixtures/pyupgrade/UP051_1.py
+@@ -1,4 +1,4 @@
+-from typing import Generic, TypeVar
++from typing import TypeVar
+ 
+ # this case should not be affected by UP051 alone, but with UP046 and PYI018,
+ # the old-style generics should be replaced with type parameters, the private
+@@ -7,5 +7,5 @@
+ _T = TypeVar(&quot;_T&quot;)
+ 
+ 
+-class OldStyle(Generic[_T]):
+-    var: _T
++class OldStyle[T]:
++    var: T
+
+Would fix 3 errors.
+</code></pre>
+<p>The only thing that surprises me there is that the PYI018 violation introduced by the UP046 change introduces is not autofixed. Apparently we don't have an autofix for PYI018 right now; I suppose I assumed that we did!</p>
+<p>My guess is that the <code>assert_messages!()</code> macro we use in our tests maybe doesn't run Ruff in a loop in the same way as <code>ruff check</code> does when it's run from the command line? Not sure. @MichaReiser, any ideas?</p>
+<p>One solution might be to write this as a CLI integration test, if our standard testing infrastructure isn't up to the task here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-03 13:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/pyupgrade/UP051.py</code>:20 on 2025-02-03 13:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Well this isn't good. <code>cast('list[_\x54]', v) </code> gets replaced with <code>cast(T, v)</code>, while <code>cast(&quot;list[_T]&quot;, v)</code> gets replaced correctly with <code>cast(&quot;list[T]&quot;, v)</code>. I'm not sure why the hex version is deleting the <code>list[]</code> part. Is this something you've run into before?</p>
+</blockquote>
+<p>This sounds like it could be a bug in the <code>Renamer</code>. It also seems like an extreme edge case, however, that's unlikely to actually come up in either handwritten or generated code -- so personally I think the fix could still be marked as safe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-03 13:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:71 on 2025-02-03 13:18</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+enum ParamKind {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-03 13:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:114 on 2025-02-03 13:20</div>
+            <div class="timeline-body"><p>I came across this the other day -- unfortunately I think <code>binding.name()</code> does the wrong thing here for PEP-695 type parameters with bounds or constraints. E.g. for <code>_T</code> here:</p>
+<pre><code class="language-py">class Foo[_T: str]: ...
+</code></pre>
+<p>I believe <code>binding.name()</code> will return <code>&quot;_T: str&quot;</code> rather than <code>&quot;_T&quot;</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-03 13:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:114 on 2025-02-03 13:21</div>
+            <div class="timeline-body"><p>This sort of feels like a footgun in our <code>Binding</code> API that I don't really like; we should possibly try to fix that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:100 on 2025-02-03 13:33</div>
+            <div class="timeline-body"><p>What happens here if we have a PEP-695 variable named <code>_</code> or <code>__</code>?</p>
+<p>I think this will also flag e.g. <code>class Foo[_T_]: ...</code> and <code>class Foo[__T__]: ...</code> (&quot;sunder&quot; and &quot;dunder&quot; variables, which are arguably not &quot;private&quot;). Do we want to skip the rule if the name also ends in <code>_</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:136 on 2025-02-03 13:37</div>
+            <div class="timeline-body"><p>we probably want to check various thinsg before doing the rename, such as:</p>
+<ul>
+<li>whether the new name would be a keyword (changing <code>class F[_async]: ...</code> to <code>class F[async]: ...</code> would introduce invalid syntax)</li>
+<li>whether the new name would shadow an existing variable in an outer scope</li>
+</ul>
+<p>A lot of this logic is already done in this function for RUF052:</p>
+<p>https://github.com/astral-sh/ruff/blob/83243de93de6b63ab6de3a6b77113416c3eb51d9/crates/ruff_linter/src/rules/ruff/rules/used_dummy_variable.rs#L239-L271</p>
+<p>We could possibly move that function to <code>renamer.rs</code> if it would also be helpful here</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-03 13:38</div>
+            <div class="timeline-body"><p>Overall this looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-03 20:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:47 on 2025-02-03 20:15</div>
+            <div class="timeline-body"><p>Thanks, and I see you already updated the related rules in https://github.com/astral-sh/ruff/pull/15904.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-03 20:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/pyupgrade/UP051.py</code>:20 on 2025-02-03 20:18</div>
+            <div class="timeline-body"><p>Sounds good. For now I've included the other three cases and left the rule as safe. I'll try to add a <code>Renamer</code> test for the hex case and debug that separately.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-03 20:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:114 on 2025-02-03 20:27</div>
+            <div class="timeline-body"><p>Ah good catch, that's what I get for only testing the simplest cases. Somewhat fortunately this causes an <code>Err</code> return from the <code>Renamer</code>, so we get a diagnostic without a fix (or would if I hadn't marked the fix as always available). But I'll try to do better than that still.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-03 20:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:100 on 2025-02-03 20:29</div>
+            <div class="timeline-body"><p>Ah great catches again. I think it makes sense to skip variables that also end in <code>_</code> and obviously if the new name is empty :facepalm:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-03 20:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:114 on 2025-02-03 20:35</div>
+            <div class="timeline-body"><p>This also completely skips <code>TypeVarTuple</code>s and <code>ParamSpec</code>s because they &quot;start with&quot; <code>*</code> and <code>**</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-03 21:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:114 on 2025-02-03 21:22</div>
+            <div class="timeline-body"><p>I think I will have to do some work on either <code>Binding</code> or <code>Renamer</code>. I tried looping over the <code>type_params</code> directly to get just the <code>_T</code> part of the name, but <code>Renamer</code> finds the <code>Binding</code> for the name I'm giving it and replaces the whole <code>Binding::range</code> anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-03 22:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:114 on 2025-02-03 22:02</div>
+            <div class="timeline-body"><p>I think I have the <code>Binding</code> range fix. I was considering a separate PR, but it's a one-line change in the semantic model and two one-line changes in PYI019, so I think I'll just include it here. This rule would have to be reverted with it anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-03 23:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:136 on 2025-02-03 23:20</div>
+            <div class="timeline-body"><p>Nice, thanks for this suggestion! It's kind of a shame to do the <code>name.starts_with</code> and <code>trim_start_matches</code> calls twice in both the new rule here and in <code>used_dummy_variable</code>. I might try to tweak the API a bit, but the current version passes new tests I added based on your comment!</p>
+<p>Do you think we should offer a diagnostic and not a fix here, or bail out entirely? I'm currently bailing out, but it seems fairly reasonable to have a diagnostic, at least without thinking too hard.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-04 02:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/snapshots/ruff_linter__rules__pyupgrade__tests__UP051_1.py.snap</code>:1 on 2025-02-04 02:22</div>
+            <div class="timeline-body"><p>I poked around a bit more and from what I can tell, <code>test_contents</code> returns the first <a href="https://github.com/astral-sh/ruff/blob/brent%2Frename-typevars/crates/ruff_linter/src/test.rs#L123"><code>diagnostics</code></a> assignment, even though it does run the fixes in a loop and see the <a href="https://github.com/astral-sh/ruff/blob/brent%2Frename-typevars/crates/ruff_linter/src/test.rs#L188">other</a> diagnostics. I went ahead and converted to an integration test for now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:114 on 2025-02-04 11:19</div>
+            <div class="timeline-body"><blockquote>
+<p>I was considering a separate PR, but it's a one-line change in the semantic model and two one-line changes in PYI019, so I think I'll just include it here.</p>
+</blockquote>
+<p>Hmm, I think I <em>would</em> prefer this as a separate PR for a couple of reasons:</p>
+<ol>
+<li>I think we can actually simplify the code in PYI019 further with this fix</li>
+<li>Changing the range of <code>Binding</code> makes me a <em>little</em> nervous that we might actually change the range of some diagnostics, which would be a breaking change. I'm <em>pretty</em> confident from the ecosystem report and the fact that no snapshots in other rules need to change that we're not changing any diagnostic ranges... but I'm not <em>100%</em> confident. If we move it to an isolated change, it will be easy to bisect it (if necessary) and see exactly what caused the breaking change.</li>
+</ol>
+<p>I know exactly what I'd like to do for point (1) here, so I'll file a new PR and list you as a co-author -- hope that's okay!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-04 11:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-04 13:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:114 on 2025-02-04 13:26</div>
+            <div class="timeline-body"><p>That makes sense, it definitely makes me nervous too! I was surprised only one test changed as a result.</p>
+<p>Sounds good about the the separate PR!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-04 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:114 on 2025-02-04 14:03</div>
+            <div class="timeline-body"><ul>
+<li>https://github.com/astral-sh/ruff/pull/15935</li>
+</ul>
+<p>Sorry for the delay, got distracted by things I thought would take a little less time than they did!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-04 14:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:136 on 2025-02-04 14:06</div>
+            <div class="timeline-body"><p>I think having a diagnostic (but not offering a fix) makes sense!</p>
+<p>RUF052 also does some stuff to try to find other names it could use instead if the name-sans-leading-underscore is shadowed/keyword/not-an-identifier. I don't think it makes sense to do the same here, though; I think we should just have a diagnostic-without-fix if it's shadowed/keyword/not-an-identifier</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-04 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:114 on 2025-02-04 14:24</div>
+            <div class="timeline-body"><p>No worries at all! I'll merge main again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:136 on 2025-02-04 14:26</div>
+            <div class="timeline-body"><p>I agree, I'll update this and add a test showing just a diagnostic.</p>
+<p>Are we safe to handle <code>default</code> here? With the <code>Binding</code> change we're just replacing the name, so I was thinking about adding a test with a <code>default</code> type parameter too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-04 14:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-04 14:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:136 on 2025-02-04 14:34</div>
+            <div class="timeline-body"><blockquote>
+<p>Are we safe to handle <code>default</code> here? With the <code>Binding</code> change we're just replacing the name, so I was thinking about adding a test with a <code>default</code> type parameter too.</p>
+</blockquote>
+<p>Yeah, I don't think TypeVars with defaults need any special treatment here! We should be good to handle those in this rule 👍</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-04 14:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:114 on 2025-02-04 14:35</div>
+            <div class="timeline-body"><p>...and also this one 😆</p>
+<ul>
+<li>https://github.com/astral-sh/ruff/pull/15938</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-04 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:114 on 2025-02-04 14:38</div>
+            <div class="timeline-body"><p>Ahh I thought I had to add <code>.name()</code> in two places! Good catch!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/snapshots/ruff_linter__rules__pyupgrade__tests__UP051_1.py.snap</code>:1 on 2025-02-04 14:52</div>
+            <div class="timeline-body"><p>Should we open an issue to add a PYI018 autofix? It might be a good <code>help-wanted</code> or <code>first-issue</code>, unless I'm underestimating it of course.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-04 14:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-04 14:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyupgrade/snapshots/ruff_linter__rules__pyupgrade__tests__UP051_1.py.snap</code>:1 on 2025-02-04 14:53</div>
+            <div class="timeline-body"><p>that would be great, yeah. I think it would be very useful</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/tests/lint.rs</code>:2186 on 2025-02-04 15:14</div>
+            <div class="timeline-body"><p>Is it worth throwing F401 into the mix as well, so that the import of <code>Generic</code> is removed once it becomes unsued?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff/tests/snapshots/lint__pep695_generic_rename.snap</code>:1 on 2025-02-04 15:15</div>
+            <div class="timeline-body"><p>nit: I find it much easier to read these integration tests if we use inline snapshots, like this test does:</p>
+<p>https://github.com/astral-sh/ruff/blob/5bf0e2e95ed4c9ef3e063c6e3876c59d827cb9cf/crates/ruff/tests/lint.rs#L22-L63</p>
+<p>(<code>cargo insta</code> can still update the snapshot contents interactively, just like with separate-file snapshots)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/renamer.rs</code>:416 on 2025-02-04 15:17</div>
+            <div class="timeline-body"><p>This feels too specific to RUF052 and UP051 to be included in the generic utility in this module (not all potential users of the <code>Renamer</code> will be renaming names that start with underscores). I think we should be checking whether it starts with an underscore (and trimming leading underscores) in RUF052/UP051, and then passing the trimmed name into <code>try_shadowed_kind()</code>. This would also allow <code>try_shadowed_kind()</code> to return <code>ShadowedKind</code> rather than <code>Option&lt;ShadowedKind&gt;</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:46 on 2025-02-04 15:20</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// If the name without an underscore would shadow a builtin or another variable,
+/// would be a keyword, or would otherwise be an invalid identifier, a fix will not
+/// be available. In these situations, you can consider using a trailing underscore
+/// or a different name entirely to satisfy the lint rule.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:59 on 2025-02-04 15:21</div>
+            <div class="timeline-body"><p>I can never remember whether mkdocs will create links correctly if backticks are included in the <code>[]</code> names for the footnotes...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:107 on 2025-02-04 15:23</div>
+            <div class="timeline-body"><p>nit: I'd find this a bit more readable; these feel like different conditions</p>
+<pre><code class="language-suggestion">    if !old_name.starts_with('_') {
+        return None;
+    }
+     
+    // Sunder `_T_`, dunder `__T__`, and all all-under `_` or `__` cases
+    // should all be skipped, as these are not &quot;private&quot; names
+    if old_name.ends_with('_') {
+        return None;
+    }
+</code></pre>
+<p>It would also be good to mention this logic explicitly in the docs for the rule!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-04 15:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-04 15:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/renamer.rs</code>:391 on 2025-02-04 15:24</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    pub(crate) const fn shadows_any(self) -&gt; bool {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-04 15:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:79 on 2025-02-04 15:25</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">}
+
+impl ParamKind {
+    const fn as_str(self) -&gt; &amp;'static str {
+        match self {
+            Self::Class =&gt; &quot;class&quot;,
+            Self::Function =&gt; &quot;function&quot;,
+        }
+    }
+}
+
+impl Violation for PrivateTypeParameter {
+    const FIX_AVAILABILITY: FixAvailability = FixAvailability::Sometimes;
+    #[derive_message_formats]
+    fn message(&amp;self) -&gt; String {
+        format!(&quot;Generic {} uses private type parameters&quot;, self.kind.as_str())
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/pyupgrade/UP051_1.py</code>:49 on 2025-02-04 15:28</div>
+            <div class="timeline-body"><p>it might be more realistic if <code>X</code> is an actual type that it would be valid to annotate <code>x</code> with?</p>
+<pre><code class="language-suggestion">    type X = int
+
+    class ScopeConflict[_X]:
+        var: _X
+        x: X
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-04 15:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/resources/test/fixtures/pyupgrade/UP051_1.py</code>:1 on 2025-02-04 15:29</div>
+            <div class="timeline-body"><p>Could you possibly add these tests, just for completeness? I think none of them should cause us to emit diagnostics:</p>
+<pre><code class="language-py">def f[_](x: _) -&gt; _: ...
+def g[__](x: __) -&gt; __: ...
+def h[_T_](x: _T_) -&gt; _T_: ...
+def i[__T__](x: __T__) -&gt; __T__: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-04 15:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-04 15:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff/tests/snapshots/lint__pep695_generic_rename.snap</code>:1 on 2025-02-04 15:37</div>
+            <div class="timeline-body"><p>Good call, I copied my (poor) example from the test above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-04 16:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/renamer.rs</code>:416 on 2025-02-04 16:24</div>
+            <div class="timeline-body"><p>oh good idea! I also moved <code>try_shadowed_kind</code> to an associated function <code>ShadowedKind::new</code>. Definitely open to a better name there or reverting to a standalone function!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-04 16:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:59 on 2025-02-04 16:36</div>
+            <div class="timeline-body"><p>Oh good to know. The S606 example linked above does not have the quotes and renders correctly on the website, so I'll remove these to be safe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-04 16:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:79 on 2025-02-04 16:38</div>
+            <div class="timeline-body"><p>Do you ever make the <code>Violation</code> type an enum itself? I just tried that locally and it seems to be working:</p>
+<pre><code class="language-rust">#[derive(ViolationMetadata, Debug, Copy, Clone, PartialEq, Eq)]
+pub(crate) enum PrivateTypeParameter {
+    Class,
+    Function,
+}
+</code></pre>
+<p>but I'm not sure if that will cause problems somewhere.</p>
+<p>I'll just go with your suggestion here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-04 16:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:79 on 2025-02-04 16:41</div>
+            <div class="timeline-body"><p>hmm, dunno! That could work! @MichaReiser redesigned our <code>ViolationMetadata</code> macro recently; it's possible that it wasn't possible to do that before, but it now is. Not sure!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/ruff/rules/used_dummy_variable.rs</code>:193 on 2025-02-04 17:03</div>
+            <div class="timeline-body"><p>I know it's not an issue that you're introducing here, but I'd expect a function with the name <code>get_possible_fix</code> to return a <code>Fix</code> rather than <code>Option&lt;String&gt;</code>. Maybe we could rename it to <code>get_possible_new_name</code> or similar?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-02-04 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:51 on 2025-02-04 17:05</div>
+            <div class="timeline-body"><p>I would maybe move this up and make it a second paragraph in the &quot;Why is this bad?&quot; section, since it's also relevant for users who don't opt into autofixes</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-04 17:05</div>
+            <div class="timeline-body"><p>Great work!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-04 17:11</div>
+            <div class="timeline-body"><p>Awesome, thanks for all of your help! Is UP051 an acceptable code to use? I just searched issues and PRs again, and the highest number I see now is UP048 (#15625). I think #15841 was previously UP050, which is probably where I got UP051. I'm happy to switch to UP049 to avoid leaving a gap, if you want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-04 17:15</div>
+            <div class="timeline-body"><p>It's nice to avoid leaving a gap where possible with the rule codes, but I don't think it matters too much in cases like this where there's no corresponding &quot;upstream&quot; rule! It <em>is</em> quite important to make sure we don't use the same code as a rule that we used to have but has since been deprecated or removed, however.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-04 17:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/used_dummy_variable.rs</code>:193 on 2025-02-04 17:29</div>
+            <div class="timeline-body"><p>I came up with <code>get_candidate_name</code> and <code>try_get_name</code> too, but I like <code>get_possible_new_name</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-02-04 17:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/pep695/private_type_parameter.rs</code>:51 on 2025-02-04 17:31</div>
+            <div class="timeline-body"><p>Ah makes sense, I wasn't sure where to put it, but near the top does seem better.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-04 18:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`pyupgrade`] Rename private type parameters in PEP 695 generics (`UP051`)" to "[`pyupgrade`] Rename private type parameters in PEP 695 generics (`UP049`)" by @ntBre on 2025-02-04 18:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-02-04 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-02-04 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-04 18:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-02-04 18:35</div>
+            <div class="timeline-body"><p>Oh shoot, I forgot to say. Can we add a mention of this rule to the <code>## See also</code> sections in the docs for UP046, UP047 and UP040? The autofixes for those rules will work really well if this one is enabled as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-04 18:37</div>
+            <div class="timeline-body"><p>Ahhh, good catch. I meant to do that the whole time but forgot. I'll open a follow-up!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:52 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`refurb`] Do not emit diagnostic when loop variables are used outside loop body (`FURB122`) - astral-sh/ruff #15757</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>refurb</code>] Do not emit diagnostic when loop variables are used outside loop body (<code>FURB122</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15757">#15757</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-01-27 01:42
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-27 01:42</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Resolves #15725.</p>
+<p>Previously, <code>FURB122</code> analyzes <code>for</code> loops only at AST level, resulting in false positives, as shown in the linked issue.</p>
+<p>With this change, now <code>FURB122</code> will also analyze <code>for</code> loops at binding level. If a loop variable is used outside of the loop or shadows another variable, no diagnostic will be emitted.</p>
+<p>Two-step analysis is necessary since it's possible for <code>for</code> loops not to have any bindings:</p>
+<pre><code class="language-python">with open('file.txt', 'w') as f:
+	for () in range(10):
+		f.write('line')
+</code></pre>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code> and <code>cargo insta test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-01-27 01:43</div>
+            <div class="timeline-body"><p>As the rule is now binding-sensitive, existing tests need to be rescoped. This leads to a rather big change, which I have isolated to the first commit.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-27 01:49</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+0 -2 violations, +0 -0 fixes in 2 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/15d2e200d8651cf5dbc55d5f06bc01f5457fe9a9/docs/exts/extra_files_with_substitutions.py#L51'>docs/exts/extra_files_with_substitutions.py:51:13:</a> FURB122 [*] Use of `output_file.write` in a for loop
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/latchbio/latch/blob/5493f7e481a656ea98619f98bcd2acd4139f8536/src/latch_cli/services/get_params.py#L180'>src/latch_cli/services/get_params.py:180:9:</a> FURB122 [*] Use of `f.write` in a for loop
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| FURB122 | 2 | 0 | 2 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`refurb`] Do not emit diagnostic when loop variables are used outside of the loop (`FURB122`)" to "[`refurb`] Do not emit diagnostic when loop variables are used outside loop body (`FURB122`)" by @InSyncWithFoo on 2025-01-27 02:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/for_loop_writes.rs</code>:65 on 2025-01-27 14:06</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let for_stmt = binding.statement(semantic)?.as_for_stmt()?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/for_loop_writes.rs</code>:116 on 2025-01-27 14:16</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            Expr::List(ExprList { elts, .. }) | Expr::Tuple(ExprTuple { elts, .. }) =&gt; elts
+                .iter()
+                .for_each(|element| collect_names(element, names)),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/for_loop_writes.rs</code>:122 on 2025-01-27 15:04</div>
+            <div class="timeline-body"><p>Since this now returns <code>None</code>, you can simplify several things in the body of this function using the <code>?</code> operator (the diff is relative to your branch):</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/refurb/rules/for_loop_writes.rs b/crates/ruff_linter/src/rules/refurb/rules/for_loop_writes.rs
+index a1308bbc0..03c84dd21 100644
+--- a/crates/ruff_linter/src/rules/refurb/rules/for_loop_writes.rs
++++ b/crates/ruff_linter/src/rules/refurb/rules/for_loop_writes.rs
+@@ -136,12 +136,8 @@ fn for_loop_writes(
+     let [Stmt::Expr(stmt_expr)] = for_stmt.body.as_slice() else {
+         return None;
+     };
+-    let Expr::Call(call_expr) = stmt_expr.value.as_ref() else {
+-        return None;
+-    };
+-    let Expr::Attribute(expr_attr) = call_expr.func.as_ref() else {
+-        return None;
+-    };
++    let call_expr = stmt_expr.value.as_ref().as_call_expr()?;
++    let expr_attr = call_expr.func.as_ref().as_attribute_expr()?;
+     if expr_attr.attr.as_str() != &quot;write&quot; {
+         return None;
+     }
+@@ -151,19 +147,13 @@ fn for_loop_writes(
+     let [write_arg] = call_expr.arguments.args.as_ref() else {
+         return None;
+     };
+-
+-    let Expr::Name(io_object_name) = expr_attr.value.as_ref() else {
+-        return None;
+-    };
++    let io_object_name = expr_attr.value.as_ref().as_name_expr()?;
+ 
+     let semantic = checker.semantic();
+ 
+     // Determine whether `f` in `f.write()` was bound to a file object.
+-    if !semantic
+-        .resolve_name(io_object_name)
+-        .map(|id| semantic.binding(id))
+-        .is_some_and(|binding| typing::is_io_base(binding, semantic))
+-    {
++    let binding = semantic.binding(semantic.resolve_name(io_object_name)?);
++    if !typing::is_io_base(binding, semantic) {
+         return None;
+     }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-27 15:05</div>
+            <div class="timeline-body"><p>Not a full review yet, just a couple of style nitpicks :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/for_loop_writes.rs</code>:57 on 2025-01-28 10:42</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    if !binding.kind.is_loop_var() {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/for_loop_writes.rs</code>:215 on 2025-01-28 10:55</div>
+            <div class="timeline-body"><p>Could you add some comments here that explain what these steps do. I think I understand what's going on, but it's not trivial to understand for a new reader of the code</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/for_loop_writes.rs</code>:104 on 2025-01-28 10:55</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            Expr::Starred(starred) =&gt; collect_names(&amp;starred.value, names),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/for_loop_writes.rs</code>:133 on 2025-01-28 10:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let call_expr = stmt_expr.value.as_call_expr()?;
+    let expr_attr = call_expr.func.as_attribute_expr()?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/for_loop_writes.rs</code>:135 on 2025-01-28 10:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    if &amp;expr_attr.attr != &quot;write&quot; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/refurb/rules/for_loop_writes.rs</code>:146 on 2025-01-28 10:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    let io_object_name = expr_attr.value.as_name_expr()?;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-28 10:57</div>
+            <div class="timeline-body"><p>This looks good, thanks. A couple more points below, but nothing major</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @AlexWaygood by @AlexWaygood on 2025-01-28 10:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-01-28 19:10</div>
+            <div class="timeline-body"><p>Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-01-28 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-28 19:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-28 21:12</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:51 UTC
+    </footer>
+</body>
+</html>

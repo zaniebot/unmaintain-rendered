@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`ruff`] Add support for more `re` patterns (`RUF055`) - astral-sh/ruff #15764</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>ruff</code>] Add support for more <code>re</code> patterns (<code>RUF055</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15764">#15764</a>
+        opened by <a href="https://github.com/Garrett-R">@Garrett-R</a>
+        on 2025-01-27 05:57
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Garrett-R">@Garrett-R</a> on 2025-01-27 05:57</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Implements some of #14738, by adding support for 6 new patterns:</p>
+<pre><code class="language-py">re.search(&quot;abc&quot;, s) is None       # ⇒ &quot;abc&quot; not in s
+re.search(&quot;abc&quot;, s) is not None   # ⇒ &quot;abc&quot; in s
+
+re.match(&quot;abc&quot;, s) is None       # ⇒ not s.startswith(&quot;abc&quot;)  
+re.match(&quot;abc&quot;, s) is not None   # ⇒ s.startswith(&quot;abc&quot;)
+
+re.fullmatch(&quot;abc&quot;, s) is None       # ⇒ s != &quot;abc&quot;
+re.fullmatch(&quot;abc&quot;, s) is not None   # ⇒ s == &quot;abc&quot;
+</code></pre>
+<h2>Test Plan</h2>
+<pre><code class="language-shell">cargo nextest run
+cargo insta review
+</code></pre>
+<p>And ran the fix on my startup's repo.</p>
+<h2>Note</h2>
+<p>One minor limitation here:</p>
+<pre><code class="language-py">if not re.match('abc', s) is None:
+    pass
+</code></pre>
+<p>will get fixed to this (technically correct, just not nice):</p>
+<pre><code class="language-py">if not not s.startswith('abc'):
+    pass
+</code></pre>
+<p>This seems fine given that Ruff has this covered: the initial code should be caught by <a href="https://docs.astral.sh/ruff/rules/not-is-test/">E714</a> and the fixed code should be caught by <a href="https://docs.astral.sh/ruff/rules/double-negation/">SIM208</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Garrett-R">@Garrett-R</a> reviewed on 2025-01-27 05:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Garrett-R">@Garrett-R</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF055_0.py</code>:5 on 2025-01-27 05:57</div>
+            <div class="timeline-body"><p>(found this more readable)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Garrett-R">@Garrett-R</a> reviewed on 2025-01-27 06:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Garrett-R">@Garrett-R</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:233 on 2025-01-27 06:02</div>
+            <div class="timeline-body"><p>(this got renamed to <code>get_call_replacement</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-27 06:04</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+2 -0 violations, +2 -0 fixes in 2 projects; 53 projects unchanged)</p>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/697a272532a0ddd158b60e6100ea2a393c8d422b/ibis/backends/tests/test_client.py#L1080'>ibis/backends/tests/test_client.py:1080:9:</a> RUF055 [*] Plain string pattern passed to `re` function
++ <a href='https://github.com/ibis-project/ibis/blob/697a272532a0ddd158b60e6100ea2a393c8d422b/ibis/backends/tests/test_client.py#L1101'>ibis/backends/tests/test_client.py:1101:9:</a> RUF055 [*] Plain string pattern passed to `re` function
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/astropy/astropy">astropy/astropy</a> (+0 -0 violations, +2 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/astropy/astropy/blob/f6bce0502bf514d73f0ba93a2877b871836703c7/astropy/coordinates/tests/test_frames.py#L352'>astropy/coordinates/tests/test_frames.py:352:11:</a> RUF055 Plain string pattern passed to `re` function
++ <a href='https://github.com/astropy/astropy/blob/f6bce0502bf514d73f0ba93a2877b871836703c7/astropy/coordinates/tests/test_frames.py#L352'>astropy/coordinates/tests/test_frames.py:352:11:</a> RUF055 [*] Plain string pattern passed to `re` function
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF055 | 4 | 2 | 0 | 2 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @Garrett-R on 2025-01-27 06:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @AlexWaygood on 2025-01-27 07:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2025-01-27 07:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @AlexWaygood on 2025-01-27 07:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/resources/test/fixtures/ruff/RUF055_2.py</code>:10 on 2025-01-27 15:15</div>
+            <div class="timeline-body"><pre><code class="language-suggestion"># this should be replaced with `&quot;abc&quot; in s`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:127 on 2025-01-27 15:43</div>
+            <div class="timeline-body"><p>Can this be combined with the <code>None</code> match arm? It looks like it could to me, and then the variables wouldn't have to be <code>mut</code>. Something like this:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs b/crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs
+index 894935012..1b17ae897 100644
+--- a/crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs
++++ b/crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs
+@@ -116,15 +116,10 @@ pub(crate) fn unnecessary_regular_expression(checker: &amp;mut Checker, call: &amp;ExprC
+     //
+     // We first check the cases where we replace the parent expression rather than just the call.
+     //    Example: `re.search(&quot;abc&quot;, s) is None`  =&gt; `&quot;abc&quot; not in s`
+-    let (mut new_expr, mut call_range) = match re_func.get_parent_replacement(semantic) {
++    let (new_expr, call_range) = match re_func.get_parent_replacement(semantic) {
+         Some((expr, range)) =&gt; (Some(expr), range),
+-        None =&gt; (None, TextRange::default()),
++        None =&gt; (re_func.get_call_replacement(), call.range),
+     };
+-    // Second, we check the case where only the call needs replacing
+-    if new_expr.is_none() {
+-        new_expr = re_func.get_call_replacement();
+-        call_range = call.range;
+-    }
+
+     let repl = new_expr.map(|expr| checker.generator().expr(&amp;expr));
+     let mut diagnostic = Diagnostic::new(
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:225 on 2025-01-27 15:53</div>
+            <div class="timeline-body"><p>Is <code>get_comparison_to_none</code> always used in the same place as <code>in_if_context</code>? If so, I'd be tempted to move the <code>get_comparison_to_none</code> call into the <code>in_if_context</code> binding and then rename it. For example,</p>
+<pre><code class="language-rust">let in_if_context = semantic.in_boolean_test() || get_comparison_to_none(semantic);
+</code></pre>
+<p>Not sure on the name, though. Maybe something like <code>in_truthy_context</code> or <code>in_nonvalue_context</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:357 on 2025-01-27 17:38</div>
+            <div class="timeline-body"><p>I don't feel <em>too</em> strongly about this, but I'd prefer something closer to this:</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs b/crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs
+index 894935012..ecb970b91 100644
+--- a/crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs
++++ b/crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs
+@@ -7,7 +7,7 @@ use ruff_python_ast::{
+ };
+ use ruff_python_semantic::analyze::typing::find_binding_value;
+ use ruff_python_semantic::{Modules, SemanticModel};
+-use ruff_text_size::{Ranged, TextRange};
++use ruff_text_size::TextRange;
+
+ use crate::checkers::ast::Checker;
+
+@@ -378,22 +378,22 @@ fn get_comparison_to_none(semantic: &amp;SemanticModel) -&gt; Option&lt;(ComparisonToNone,
+     let parent_expr = semantic.current_expression_parent()?;
+
+     let Expr::Compare(ExprCompare {
+-        ops, comparators, ..
++        ops,
++        comparators,
++        range,
++        ..
+     }) = parent_expr
+     else {
+         return None;
+     };
+
+-    if ops.len() != 1 {
++    let Some(Expr::NoneLiteral(_)) = comparators.first() else {
+         return None;
++    };
++
++    match ops.as_ref() {
++        [CmpOp::Is] =&gt; Some((ComparisonToNone::Is, *range)),
++        [CmpOp::IsNot] =&gt; Some((ComparisonToNone::IsNot, *range)),
++        _ =&gt; None,
+     }
+-    let right = comparators.first()?;
+-    if right.is_none_literal_expr() {
+-        return match ops[0] {
+-            CmpOp::Is =&gt; Some((ComparisonToNone::Is, parent_expr.range())),
+-            CmpOp::IsNot =&gt; Some((ComparisonToNone::IsNot, parent_expr.range())),
+-            _ =&gt; None,
+-        };
+-    }
+-    None
+</code></pre>
+<p>I think we should definitely use the <code>range</code> from the <code>parent_expr</code> destructuring above, but I also like how this flattens out the final <code>match</code> and return.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:303 on 2025-01-27 18:45</div>
+            <div class="timeline-body"><p>I'm not sure about these changes. I think I'd prefer just moving this to a free function with the signature <code>fn compare_expr(left: Expr, op: CmpOp, right: Expr) -&gt; Expr</code> and calling it explicitly with <code>left</code> and <code>right</code> each time instead of this implicit ordering behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:321 on 2025-01-27 19:24</div>
+            <div class="timeline-body"><p>Similarly, I'd probably just inline the negation in the one place this is called with <code>negate</code> as <code>true</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:127 on 2025-01-27 19:34</div>
+            <div class="timeline-body"><p>Actually on second thought, I think we can fuse <code>get_call_replacement</code> and <code>get_parent_replacement</code> back together by storing the <code>range</code> and <code>comparison_to_none</code> on the <code>ReFunc</code> itself. This has the added benefit of not having to call <code>get_comparison_to_none</code> twice. I was a bit on the fence about <code>match (&amp;self.kind, self.comparison_to_none)</code> compared to first matching on <code>self.kind</code> and then on <code>self.comparison_to_none</code>, but I like having this logic back together in any case. What do you think?</p>
+<pre><code class="language-diff">diff --git a/crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs b/crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs
+index 28465fbb6..8df60ce5d 100644
+--- a/crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs
++++ b/crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs
+@@ -113,25 +113,19 @@ pub(crate) fn unnecessary_regular_expression(checker: &amp;mut Checker, call: &amp;ExprC
+ 
+     // Now we know the pattern is a string literal with no metacharacters, so
+     // we can proceed with the str method replacement.
+-    //
+-    // We first check the cases where we replace the parent expression rather than just the call.
+-    //    Example: `re.search(&quot;abc&quot;, s) is None`  =&gt; `&quot;abc&quot; not in s`
+-    let (new_expr, call_range) = match re_func.get_parent_replacement(semantic) {
+-        Some((expr, range)) =&gt; (Some(expr), range),
+-        None =&gt; (re_func.get_call_replacement(), call.range),
+-    };
++    let new_expr = re_func.replacement();
+ 
+     let repl = new_expr.map(|expr| checker.generator().expr(&amp;expr));
+     let mut diagnostic = Diagnostic::new(
+         UnnecessaryRegularExpression {
+             replacement: repl.clone(),
+         },
+-        call_range,
++        re_func.range,
+     );
+ 
+     if let Some(repl) = repl {
+         diagnostic.set_fix(Fix::applicable_edit(
+-            Edit::range_replacement(repl, call_range),
++            Edit::range_replacement(repl, re_func.range),
+             if checker
+                 .comment_ranges()
+                 .has_comments(call, checker.source())
+@@ -162,6 +156,8 @@ struct ReFunc&lt;'a&gt; {
+     kind: ReFuncKind&lt;'a&gt;,
+     pattern: &amp;'a Expr,
+     string: &amp;'a Expr,
++    comparison_to_none: Option&lt;ComparisonToNone&gt;,
++    range: TextRange,
+ }
+ 
+ impl&lt;'a&gt; ReFunc&lt;'a&gt; {
+@@ -172,8 +168,13 @@ impl&lt;'a&gt; ReFunc&lt;'a&gt; {
+     ) -&gt; Option&lt;Self&gt; {
+         // the proposed fixes for match, search, and fullmatch rely on the
+         // return value only being used for its truth value
+-        let in_truthy_context =
+-            semantic.in_boolean_test() || get_comparison_to_none(semantic).is_some();
++        let comparison_to_none = get_comparison_to_none(semantic);
++        let in_truthy_context = semantic.in_boolean_test() || comparison_to_none.is_some();
++
++        let (comparison_to_none, range) = match comparison_to_none {
++            Some((cmp, range)) =&gt; (Some(cmp), range),
++            None =&gt; (None, call.range),
++        };
+ 
+         match (func_name, call.arguments.len()) {
+             // `split` is the safest of these to fix, as long as metacharacters
+@@ -182,6 +183,8 @@ impl&lt;'a&gt; ReFunc&lt;'a&gt; {
+                 kind: ReFuncKind::Split,
+                 pattern: call.arguments.find_argument_value(&quot;pattern&quot;, 0)?,
+                 string: call.arguments.find_argument_value(&quot;string&quot;, 1)?,
++                comparison_to_none,
++                range,
+             }),
+             // `sub` is only safe to fix if `repl` is a string. `re.sub` also
+             // allows it to be a function, which will *not* work in the str
+@@ -216,22 +219,30 @@ impl&lt;'a&gt; ReFunc&lt;'a&gt; {
+                     },
+                     pattern: call.arguments.find_argument_value(&quot;pattern&quot;, 0)?,
+                     string: call.arguments.find_argument_value(&quot;string&quot;, 2)?,
++                    comparison_to_none,
++                    range,
+                 })
+             }
+             (&quot;match&quot;, 2) if in_truthy_context =&gt; Some(ReFunc {
+                 kind: ReFuncKind::Match,
+                 pattern: call.arguments.find_argument_value(&quot;pattern&quot;, 0)?,
+                 string: call.arguments.find_argument_value(&quot;string&quot;, 1)?,
++                comparison_to_none,
++                range,
+             }),
+             (&quot;search&quot;, 2) if in_truthy_context =&gt; Some(ReFunc {
+                 kind: ReFuncKind::Search,
+                 pattern: call.arguments.find_argument_value(&quot;pattern&quot;, 0)?,
+                 string: call.arguments.find_argument_value(&quot;string&quot;, 1)?,
++                comparison_to_none,
++                range,
+             }),
+             (&quot;fullmatch&quot;, 2) if in_truthy_context =&gt; Some(ReFunc {
+                 kind: ReFuncKind::Fullmatch,
+                 pattern: call.arguments.find_argument_value(&quot;pattern&quot;, 0)?,
+                 string: call.arguments.find_argument_value(&quot;string&quot;, 1)?,
++                comparison_to_none,
++                range,
+             }),
+             _ =&gt; None,
+         }
+@@ -239,50 +250,48 @@ impl&lt;'a&gt; ReFunc&lt;'a&gt; {
+ 
+     /// Get replacement for the parent expression.
+     ///     Example: `re.search(&quot;abc&quot;, s) is None` =&gt; `&quot;abc&quot; not in s`
+-    fn get_parent_replacement(&amp;self, semantic: &amp;'a SemanticModel) -&gt; Option&lt;(Expr, TextRange)&gt; {
+-        let (comparison, range) = get_comparison_to_none(semantic)?;
+-        match self.kind {
+-            // pattern in string / pattern not in string
+-            ReFuncKind::Search =&gt; match comparison {
+-                ComparisonToNone::Is =&gt; Some((self.compare_expr(CmpOp::NotIn), range)),
+-                ComparisonToNone::IsNot =&gt; Some((self.compare_expr(CmpOp::In), range)),
+-            },
+-            // string.startswith(pattern) / not string.startswith(pattern)
+-            ReFuncKind::Match =&gt; match comparison {
+-                ComparisonToNone::Is =&gt; Some((
+-                    self.method_expr(&quot;startswith&quot;, vec![self.pattern.clone()], true),
+-                    range,
+-                )),
+-                ComparisonToNone::IsNot =&gt; Some((
+-                    self.method_expr(&quot;startswith&quot;, vec![self.pattern.clone()], false),
+-                    range,
+-                )),
+-            },
+-            // string == pattern / string != pattern
+-            ReFuncKind::Fullmatch =&gt; match comparison {
+-                ComparisonToNone::Is =&gt; Some((self.compare_expr(CmpOp::NotEq), range)),
+-                ComparisonToNone::IsNot =&gt; Some((self.compare_expr(CmpOp::Eq), range)),
+-            },
+-            _ =&gt; None,
+-        }
+-    }
+-
+-    fn get_call_replacement(&amp;self) -&gt; Option&lt;Expr&gt; {
+-        match self.kind {
++    fn replacement(&amp;self) -&gt; Option&lt;Expr&gt; {
++        match (&amp;self.kind, self.comparison_to_none) {
+             // string.replace(pattern, repl)
+-            ReFuncKind::Sub { repl } =&gt; repl
++            (ReFuncKind::Sub { repl }, _) =&gt; repl
+                 .cloned()
+                 .map(|repl| self.method_expr(&quot;replace&quot;, vec![self.pattern.clone(), repl], false)),
++            // string.split(pattern)
++            (ReFuncKind::Split, _) =&gt; {
++                Some(self.method_expr(&quot;split&quot;, vec![self.pattern.clone()], false))
++            }
++            // string.startswith(pattern)
++            (ReFuncKind::Match, None) =&gt; {
++                Some(self.method_expr(&quot;startswith&quot;, vec![self.pattern.clone()], false))
++            }
++            // not string.startswith(pattern)
++            (ReFuncKind::Match, Some(ComparisonToNone::Is)) =&gt; {
++                Some(self.method_expr(&quot;startswith&quot;, vec![self.pattern.clone()], true))
++            }
+             // string.startswith(pattern)
+-            ReFuncKind::Match =&gt; {
++            (ReFuncKind::Match, Some(ComparisonToNone::IsNot)) =&gt; {
+                 Some(self.method_expr(&quot;startswith&quot;, vec![self.pattern.clone()], false))
+             }
+             // pattern in string
+-            ReFuncKind::Search =&gt; Some(self.compare_expr(CmpOp::In)),
++            (ReFuncKind::Search, None) =&gt; Some(self.compare_expr(CmpOp::In)),
++            // pattern not in string
++            (ReFuncKind::Search, Some(ComparisonToNone::Is)) =&gt; {
++                Some(self.compare_expr(CmpOp::NotIn))
++            }
++            // pattern in string
++            (ReFuncKind::Search, Some(ComparisonToNone::IsNot)) =&gt; {
++                Some(self.compare_expr(CmpOp::In))
++            }
+             // string == pattern
+-            ReFuncKind::Fullmatch =&gt; Some(self.compare_expr(CmpOp::Eq)),
+-            // string.split(pattern)
+-            ReFuncKind::Split =&gt; Some(self.method_expr(&quot;split&quot;, vec![self.pattern.clone()], false)),
++            (ReFuncKind::Fullmatch, None) =&gt; Some(self.compare_expr(CmpOp::Eq)),
++            // string != pattern
++            (ReFuncKind::Fullmatch, Some(ComparisonToNone::Is)) =&gt; {
++                Some(self.compare_expr(CmpOp::NotEq))
++            }
++            // string == pattern
++            (ReFuncKind::Fullmatch, Some(ComparisonToNone::IsNot)) =&gt; {
++                Some(self.compare_expr(CmpOp::Eq))
++            }
+         }
+     }
+ 
+@@ -357,6 +366,7 @@ fn resolve_string_literal&lt;'a&gt;(
+     None
+ }
+ 
++#[derive(Clone, Copy, Debug)]
+ enum ComparisonToNone {
+     Is,
+     IsNot,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:142 on 2025-01-27 19:53</div>
+            <div class="timeline-body"><p>This is not covered in my patch above, but I think there's a potential issue here with the <code>has_comments</code> check. It only checks the <code>call</code> for comments, but in the case of a comparison to <code>None</code>, it would really need to check the <code>parent_expr</code>. Adding a test like below gives a safe fix, when it should be unsafe since it deletes the comment.</p>
+<pre><code class="language-python">if (
+    re.fullmatch(
+        &quot;a really really really really long string&quot;,
+        a_long_variable_name,
+    )
+    # with a comment here
+    is None
+):
+    pass
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> requested changes on 2025-01-27 19:53</div>
+            <div class="timeline-body"><p>Thanks for doing this! I suggested some changes, but I think the overall approach is spot-on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Garrett-R">@Garrett-R</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:127 on 2025-01-28 06:22</div>
+            <div class="timeline-body"><p>Ah yeah, good call!  That's definitely cleaner.  Applied that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Garrett-R">@Garrett-R</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:225 on 2025-01-28 06:30</div>
+            <div class="timeline-body"><p>Ah right, I had a feeling I might be prematurely optimizing there.  Doing this way saved having to call <code>get_comparison_to_none(semantic)</code> in situations where an above case matched, but yeah, I'm sure it makes no noticeable difference.</p>
+<p>Yeah, concise naming is tough here.  I don't think <code>in_if_context</code> works since the code might look like:</p>
+<pre><code class="language-py">x = re.search('abc', s)
+</code></pre>
+<p>which has nothing to do with <code>if</code>.</p>
+<blockquote>
+<p><code>in_truthy_context</code></p>
+</blockquote>
+<p>Yeah, I can't think of anything closer without having a very long var name.   I understand <code>in_nonvalue_context</code> because I know what we're describing, but I don't think I'd get it if reading code for first time.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Garrett-R">@Garrett-R</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:303 on 2025-01-28 06:31</div>
+            <div class="timeline-body"><p>Yeah, that makes sense.  My thinking was - if this function can already know what to do, then it might as well do it's thing and simplify the signature (knowing that <code>s == 'abc'</code> looks better than <code>'abc' == s</code>), but OTOH, it's more magical / opaque, so definitely not opposed to making more transparent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Garrett-R">@Garrett-R</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:303 on 2025-01-28 06:37</div>
+            <div class="timeline-body"><p>Ok, yeah seeing it, it's definitely faster to read these new calls.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Garrett-R">@Garrett-R</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:321 on 2025-01-28 06:42</div>
+            <div class="timeline-body"><p>Ah yup, good call, hadn't realized I only ended up using it once</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Garrett-R">@Garrett-R</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:357 on 2025-01-28 06:48</div>
+            <div class="timeline-body"><p>Ah yes, nice trick, TIL!  Much cleaner</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Garrett-R">@Garrett-R</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:142 on 2025-01-28 07:53</div>
+            <div class="timeline-body"><p>Ah whoops, thanks for catching that!</p>
+<p>Ok, I got a solution.  Gets the job, but it's not the cleanest.  You can see the commit here: https://github.com/astral-sh/ruff/pull/15764/commits/3d2591852fa4eea528dca6aae7db848eb395cb14</p>
+<p>An alternative option is storing another field on <code>ReFunc</code> called <code>comparison_to_none_expr</code> with type <code>Option&lt;&amp;'a Expr&gt;</code>.  I'm thinking that's perhaps cleaner.  Do you have an opinion there?</p>
+<p>(EDIT: good pattern was suggest and applied -- resolving this one)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Garrett-R">@Garrett-R</a> reviewed on 2025-01-28 07:55</div>
+            <div class="timeline-body"><p>Thanks for the thorough review!  I've applied all suggestions in this commit:  https://github.com/astral-sh/ruff/pull/15764/commits/92e84ee8dfdba0e1eb60baeca34c6a67f0b3ab58</p>
+<p>Then I came up with solution to the unsafe fix issue you found in this commit:  https://github.com/astral-sh/ruff/pull/15764/commits/3d2591852fa4eea528dca6aae7db848eb395cb14</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:184 on 2025-01-28 13:56</div>
+            <div class="timeline-body"><p>I think this was from my suggestion, but I always forget that you can just use the <code>call.range</code> field instead of calling <code>call.range()</code> here. Then we can also remove the <code>ruff_text_size::Ranged</code> import.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:285 on 2025-01-28 14:02</div>
+            <div class="timeline-body"><p>One last thing I thought of last night: the <code>None</code> and <code>Some(IsNot)</code> cases are actually the same, and I think this holds for each of the <code>ReFuncKind</code>s with <code>None</code> comparison logic. I wasn't sure we'd want to handle this with a placeholder <code>_</code> since I thought it would be less readable, but you can actually nest the pattern like this:</p>
+<pre><code class="language-rust">            // pattern in string
+            (ReFuncKind::Search, None | Some(ComparisonToNone::IsNot)) =&gt; {
+                Some(ReFunc::compare_expr(self.pattern, CmpOp::In, self.string))
+            }
+</code></pre>
+<p>which I think <em>is</em> nicer than the separate arms.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:137 on 2025-01-28 14:52</div>
+            <div class="timeline-body"><p>I think it should be safe to replace the old code from <code>has_comments(...)</code> to <code>intersects(re_func.range)</code>. Then we can just reuse the range we already have for both cases. The only potentially tricky point is that <code>has_comments</code> does some additional checking for &quot;leading&quot; and &quot;trailing&quot; content. So we may also want to add a test like this:</p>
+<pre><code class="language-python">if (  # leading
+    re.fullmatch(
+        &quot;a really really really really long string&quot;,
+        s,
+    )
+    is None  # trailing
+):
+    pass
+</code></pre>
+<p>Your current code marks this unsafe, which follows the original code, while my suggestion marks it safe, which I think is actually okay since neither of the comments is deleted by the fix.</p>
+<p>Actually the original code marks more basic examples like <code>re.split(&quot;abc&quot;, s) # trailing</code> as unsafe too, so <code>intersects</code> might have been the way to go from the beginning.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-01-28 14:53</div>
+            <div class="timeline-body"><p>Thanks, this looks great! Just a couple more much smaller changes, and I think this is good to merge.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-01-28 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:137 on 2025-01-28 14:56</div>
+            <div class="timeline-body"><p>To be more concrete on the code suggestion:</p>
+<pre><code class="language-rust">    if let Some(repl) = repl {
+        diagnostic.set_fix(Fix::applicable_edit(
+            Edit::range_replacement(repl, call.range),
+            if checker.comment_ranges().intersects(re_func.range) // new
+            {
+                Applicability::Unsafe
+            } else {
+                Applicability::Safe
+            },
+        ));
+    }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Garrett-R">@Garrett-R</a> reviewed on 2025-01-29 02:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Garrett-R">@Garrett-R</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:184 on 2025-01-29 02:22</div>
+            <div class="timeline-body"><p>Ah good to know!  Applied.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Garrett-R">@Garrett-R</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:285 on 2025-01-29 02:27</div>
+            <div class="timeline-body"><p>Ah cool, didn't think of that, but yeah, definitely nicer!   Consolidated to this in the 3 relevant places.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Garrett-R">@Garrett-R</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:137 on 2025-01-29 02:57</div>
+            <div class="timeline-body"><p>Ah cool!  Didn't realize that was an option, updated to that and added that new test case.  You can see commit here: https://github.com/astral-sh/ruff/pull/15764/commits/b5ebcc24c89f07a58eb6420b3e4fd78796d1665e</p>
+<p>Lmk if I should squash the commits into 1.  They can stand on their own, but not sure if Ruff prefers keeping git history more concise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Garrett-R">@Garrett-R</a> reviewed on 2025-01-29 03:09</div>
+            <div class="timeline-body"><p>Thanks, good ideas!  Implemented all those :sunglasses:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-01-29 15:09</div>
+            <div class="timeline-body"><p>This looks great. Thanks again for your work on this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-01-29 15:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/ruff/rules/unnecessary_regular_expression.rs</code>:137 on 2025-01-29 15:11</div>
+            <div class="timeline-body"><p>Perfect, thanks! And no worries about squashing, we always squash and merge through GitHub.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-01-29 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-01-29 15:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-01-29 15:18</div>
+            <div class="timeline-body"><p>Oh and just to acknowledge the <code>not not</code> case, I agree that it's unfortunate, but your observation that the original code should be caught by E714, which I believe is enabled by default, is good enough for me. I think we'd have to look at the grandparent expression to detect this anyway, and I think it's reasonable to draw the line at the first parent, especially in light of the other rules.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Garrett-R">@Garrett-R</a> on 2025-01-29 19:16</div>
+            <div class="timeline-body"><p>For sure, thanks for the super helpful review, learned a bunch!  :sunglasses:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-29 19:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:51 UTC
+    </footer>
+</body>
+</html>

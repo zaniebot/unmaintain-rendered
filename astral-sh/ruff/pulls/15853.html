@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-pyi`] Fix incorrect behaviour of `custom-typevar-return-type` preview-mode autofix if `typing` was already imported (`PYI019`) - astral-sh/ruff #15853</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-pyi</code>] Fix incorrect behaviour of <code>custom-typevar-return-type</code> preview-mode autofix if <code>typing</code> was already imported (<code>PYI019</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15853">#15853</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-01-31 15:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-31 15:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p><code>Importer::get_or_import_symbol</code> can fail, and if it does it returns a useful <code>ResolutionError</code> that tells you why it failed. The message from this error is printed to the terminal if you run Ruff with enough <code>-v</code> arguments on the command line. However, we're currently throwing away this useful information in the implementation of this rule by calling <code>.ok()</code> on the value returned by <code>get_or_import_symbol</code>. There's no reason to do this, as it doesn't really simplify the code; we already have a <code>Diagnostic::try_set_optional_fix()</code> method that's designed exactly for this situation.</p>
+<p>The fix also makes an incorrect edit if <code>typing</code> is already imported in the scope being edited -- here, it makes a fix that would introduce a <code>NameError</code> (because <code>Self</code> is not imported anywhere in the file):</p>
+<pre><code>~/dev/ruff (main)⚡ [2] % cargo run -- check --no-cache --preview --diff --fix --select=PYI019 --target-version=py313 foo.pyi
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.11s
+     Running `target/debug/ruff check --no-cache --preview --diff --fix --select=PYI019 --target-version=py313 foo.pyi`
+--- foo.pyi
++++ foo.pyi
+@@ -1,5 +1,5 @@
+ import typing
+ 
+ class F:
+-    def m[S](self: S) -&gt; S: ...
++    def m(self) -&gt; Self: ...
+</code></pre>
+<p>This is because we throw away the second element of the tuple returned by <code>get_or_import_symbol_here</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/f1418be81ca4dc3a198d06095b75c83d21088461/crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs#L335-L337</p>
+<p>In this case, the second element would be the string <code>&quot;typing.Self&quot;</code>, which is what we should use in the <code>Edit</code>. But instead we just pass in the string <code>&quot;Self&quot;</code>, assuming the at the import edit would have added <code>from typing import Self</code> at the top of the module (it only does that if both <code>typing</code> nor <code>Self</code> are currently not imported):</p>
+<p>https://github.com/astral-sh/ruff/blob/f1418be81ca4dc3a198d06095b75c83d21088461/crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs#L354-L356</p>
+<h2>Test Plan</h2>
+<p>I added some fixtures that exhibit incorrect behaviour on <code>main</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-01-31 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">fixes</span> added by @AlexWaygood on 2025-01-31 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @AlexWaygood on 2025-01-31 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`flake8-pyi`] Fix incorrect behaviour of `custom-typevar-return-type` autofix if `typing` was already imported (`PYI019`)" to "[`flake8-pyi`] Fix incorrect behaviour of `custom-typevar-return-type` preview-mode autofix if `typing` was already imported (`PYI019`)" by @AlexWaygood on 2025-01-31 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/snapshots/ruff_linter__rules__flake8_pyi__tests__PYI019_PYI019_1.pyi.snap</code>:1 on 2025-01-31 15:01</div>
+            <div class="timeline-body"><p>This is the snapshot for if preview mode is not enabled (the autofix is only availabe with <code>--preview</code> currently)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/snapshots/ruff_linter__rules__flake8_pyi__tests__preview_PYI019_PYI019_1.pyi.snap</code>:1 on 2025-01-31 15:02</div>
+            <div class="timeline-body"><p>this is the snapshot for if <code>--preview</code> mode is enabled</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-31 15:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:278 on 2025-01-31 15:03</div>
+            <div class="timeline-body"><p>I moved the check for whether or not it's a stub file inside the body of <code>replace_custom_typevar_with_self()</code>, since that function already returns an <code>Option</code>. This means we don't have to have comments in two places :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-31 15:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @AlexWaygood on 2025-01-31 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dylwil3 by @AlexWaygood on 2025-01-31 15:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-31 15:07</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-01-31 16:45</div>
+            <div class="timeline-body"><p>This looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-01-31 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-31 16:46</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-31 16:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:52 UTC
+    </footer>
+</body>
+</html>

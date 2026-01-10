@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Document 'public type of undeclared symbols' behavior - astral-sh/ruff #16096</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Document 'public type of undeclared symbols' behavior</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16096">#16096</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-02-11 11:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-02-11 11:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>After I was asked twice within the same day, I thought it would be a good idea to write some <em>user facing</em> documentation that explains our reasoning behind inferring <code>Unknown | T_inferred</code> for public uses of undeclared symbols. This is a major deviation from the behavior of other type checkers and it seems like a good practice to defend our choice like this. Please let me know if I missed something or if you see a chance to explain this more clearly.</p>
+<p><a href="https://github.com/astral-sh/ruff/blob/david/public-type-undeclared/crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md">Rendered version</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-02-11 11:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-02-11 11:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @sharkdp on 2025-02-11 11:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-02-11 11:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:24 on 2025-02-11 11:30</div>
+            <div class="timeline-body"><p>nit: &quot;raising an error&quot; to me makes it sound to me like we'll panic; I prefer to talk about &quot;emitting an error&quot;/&quot;issuing a diagnostic&quot;.</p>
+<p>(This might just be because I'm used to the Python context where there's a <code>raise</code> keyword, though</p>
+<p>)</p>
+<pre><code class="language-suggestion">Mypy and Pyright both infer a type of `None` for the type of `wrapper.value`. Consequently, both
+tools emit an error when trying to assign `1` to `wrapper.value`. But there is nothing wrong with
+this program. Emitting an error here violates the [gradual guarantee] which states that *&quot;Removing
+type annotations (making the program more dynamic) should not result in additional static type
+errors.&quot;*: If `value` were annotated with `int | None` here, Mypy and Pyright would not emit any
+errors.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:43 on 2025-02-11 11:32</div>
+            <div class="timeline-body"><p>You could also use this as an additional example, which might be slightly more &quot;realistic&quot; since users often leave local variables unannotated:</p>
+<pre><code class="language-suggestion">    y: int = w.value
+
+    z = w.value + 42  # error
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:48 on 2025-02-11 11:33</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">In the first example, we demonstrated how our behavior prevents false positives. However, it can also
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:50 on 2025-02-11 11:33</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">To make this a bit more realistic, imagine that `OptionalInt` is imported from an external, untyped
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-11 11:34</div>
+            <div class="timeline-body"><p>Thank you, this is great</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-11 11:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:43 on 2025-02-11 11:37</div>
+            <div class="timeline-body"><p>That's similar to what I wanted to demonstrate here at first, but unfortunately, we don't detect that <code>None + 42</code> is an error, yet.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-11 11:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:43 on 2025-02-11 11:38</div>
+            <div class="timeline-body"><p>ah, we should probably fix that 🙃</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:102 on 2025-02-11 11:44</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">Red-knot models all symbols as having two types: a &quot;public type&quot; and a &quot;local type&quot;. The &quot;local type&quot;
+is the type the symbol has from the perspective of code that exists in the same scope the symbol
+was originally defined in. We try to infer as precise as possible a type for the local type, as we
+can statically enumerate all assignments to the symbol within that scope. The &quot;public type&quot; of
+a symbol, on the other hand, is the type the symbol has from the perspective of code in external scopes. For example:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-11 11:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-11 12:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:102 on 2025-02-11 12:28</div>
+            <div class="timeline-body"><blockquote>
+<p>Red-knot models all symbols as having two types: a &quot;public type&quot; and a &quot;local type&quot;.</p>
+</blockquote>
+<p>Hm. This might be how it looks like from the perspective of a user, but I'm not sure if that's the most helpful mental model. I think it might be better to think in terms of the inferred type and the declared type, and then to understand how those are used to construct &quot;local&quot; and &quot;public&quot; types (https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/resources/mdtest/boundness_declaredness/public.md)?</p>
+<p>I think the suggested description also seems to imply that there are only two types for each symbol. The public and the local type. In reality, it really depends on the <em>use</em> of a symbol. Two &quot;local&quot; uses of <code>x</code> could see completely different types due to narrowing, for example.</p>
+<blockquote>
+<p>The &quot;public type&quot; of a symbol, on the other hand, is the type the symbol has from the perspective of code in external scopes.</p>
+</blockquote>
+<p>Here, it might be good to explain <em>why</em> we need a (seemingly!) less precise type for this case. This is what I tried to achieve with the &quot;coud have been reassigned&quot; explanation above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-11 13:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:102 on 2025-02-11 13:31</div>
+            <div class="timeline-body"><blockquote>
+<p>Hm. This might be how it looks like from the perspective of a user, but I'm not sure if that's the most helpful mental model. I think it might be better to think in terms of the inferred type and the declared type, and then to understand how those are used to construct &quot;local&quot; and &quot;public&quot; types (<a href="https://github.com/astral-sh/ruff/blob/main/crates/red_knot_python_semantic/resources/mdtest/boundness_declaredness/public.md?rgh-link-date=2025-02-11T12%3A28%3A07Z"><code>main</code>/crates/red_knot_python_semantic/resources/mdtest/boundness_declaredness/public.md</a>)?</p>
+</blockquote>
+<p>Heh. And I think I'll throw that right back at you and say that, while this mental model is the most accurate in terms of our <em>implementation</em> (and therefore probably a better mental model for us to have), I'm not sure it's so helpful for users!</p>
+<blockquote>
+<p>I think the suggested description also seems to imply that there are only two types for each symbol. The public and the local type. In reality, it really depends on the <em>use</em> of a symbol. Two &quot;local&quot; uses of <code>x</code> could see completely different types due to narrowing, for example.</p>
+</blockquote>
+<p>Thanks, this is a great point.</p>
+<p>What about something like this?</p>
+<pre><code class="language-suggestion">Red-knot applies different semantics depending on whether a symbol is accessed from the same scope
+in which it was originally defined, or whether it is accessed from an external scope. External
+scopes will see the symbol's &quot;public type&quot;, which has been discussed above. But within the same
+scope the symbol was defined in, we use a narrower type of `T_inferred` for undeclared symbols.
+This is because, from the perspective of this scope, there is no way that the value of the symbol
+could have been reassigned from external scopes. For example:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-11 14:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:102 on 2025-02-11 14:35</div>
+            <div class="timeline-body"><blockquote>
+<p>Red-knot</p>
+</blockquote>
+<p>I see what you did there. You thought I wouldn't notice.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:32 on 2025-02-11 17:36</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">knowledge about this type. In the example above, we don't know what values `wrapper.value` could
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:43 on 2025-02-11 17:37</div>
+            <div class="timeline-body"><p>I think it could also be OK to still use the more realistic example, with a TODO for us to add the binop checking.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:82 on 2025-02-11 17:51</div>
+            <div class="timeline-body"><p>This is the weakest section, and I think that's because it is asserting something that kind of isn't true :) The core behavior of the dynamic type is that it avoids false positives but allows false negatives, because it is permissive. So I don't think that inferring dynamic types in unannotated code can really be said to prevent false negatives.</p>
+<p>I think a better framing is that it prevents type checkers from inferring confident-but-wrong types from untyped code. Neither we nor mypy nor pyright will catch the bug in this usage of an untyped API. But mypy and pyright will claim to be confident about types that they are simply wrong about, whereas we will accurately reflect our lack of knowledge.</p>
+<p>One concrete way this can benefit users is if we also provide tooling to detect the prevalance of dynamic types in your code. In this example, pyright and mypy will tell you that your code is typed, but they'll just be wrong about the types. We will tell you, accurately, that there are dynamic types here, due to the untyped API you are using.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-11 17:51</div>
+            <div class="timeline-body"><p>This is excellent, thanks for writing it up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-11 17:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:95 on 2025-02-11 17:53</div>
+            <div class="timeline-body"><p>Instead of (or in addition to) using a <code>reveal_type</code> here, we could explicitly demonstrate an assignment of some incompatible type failing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-11 22:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:82 on 2025-02-11 22:03</div>
+            <div class="timeline-body"><p>Yes, fully agreed; thanks for the suggestion with the dynamic-type-detection mode. I rephrased this section now. Please let me know if I'm using &quot;unsoundness&quot; incorrectly here, or if it sounds overly dramatic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-11 22:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:95 on 2025-02-11 22:03</div>
+            <div class="timeline-body"><p>Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-11 22:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:43 on 2025-02-11 22:09</div>
+            <div class="timeline-body"><p>I really wanted this document to be user-facing, so I would prefer if it were free of TODOs. I now used a <code>chr(w.value)</code> call to demonstrate that we would emit a <em>&quot;<code>Unknown | None</code> cannot be assigned to parameter 1 (<code>i</code>) of function <code>chr</code>; expected type <code>int</code>&quot;</em> diagnostic.</p>
+<p>I used <code>chr</code> (as opposed to something more prominent) because it is one of very few functions in <code>builtins</code> that &quot;just takes an <code>int</code>&quot; as a parameter, and not some complicated generic protocol :upside_down_face:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:79 on 2025-02-11 22:11</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">`o.value`. Together with a possible future type-checker mode that would detect the prevalence of
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-11 22:11</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-11 22:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:43 on 2025-02-11 22:36</div>
+            <div class="timeline-body"><blockquote>
+<p>I used <code>chr</code> (as opposed to something more prominent) because it is one of very few functions in <code>builtins</code> that &quot;just takes an <code>int</code>&quot; as a parameter, and not some complicated generic protocol 🙃</p>
+</blockquote>
+<p>Oh no, that... Seems like it might be a typeshed bug 😆</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; class NotAnInt:
+...   def __index__(self): return 42
+...   
+&gt;&gt;&gt; chr(NotAnInt())
+'*'
+</code></pre>
+<p>I can keep quiet about it until red-knot's implemented generics and protocols, though 😉</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-11 22:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:43 on 2025-02-11 22:49</div>
+            <div class="timeline-body"><p>Couldn't you just as well define your own function that &quot;just takes an int&quot; instead of needing to use something from builtins?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-02-12 05:34</div>
+            <div class="timeline-body"><p>This is excellent, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-02-12 07:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/doc/public_type_undeclared_symbols.md</code>:43 on 2025-02-12 07:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Couldn't you just as well define your own function that &quot;just takes an int&quot;</p>
+</blockquote>
+<p>Yes, I did that now. I wanted to keep it short, but I shouldn't trade brevity for clarity.</p>
+<blockquote>
+<p>Seems like it might be a typeshed bug 😆</p>
+</blockquote>
+<p>Oh :smile:</p>
+<p>https://github.com/python/typeshed/pull/13494</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-02-12 07:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-02-12 07:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-12 07:52</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:53 UTC
+    </footer>
+</body>
+</html>

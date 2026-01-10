@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`flake8-pyi`] Fix several correctness issues with `custom-type-var-return-type` (`PYI019`) - astral-sh/ruff #15851</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>flake8-pyi</code>] Fix several correctness issues with <code>custom-type-var-return-type</code> (<code>PYI019</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15851">#15851</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-01-31 13:34
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-01-31 13:34</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR fixes several correctness issues in our <code>PYI019</code> rule:</p>
+<ul>
+<li>The rule would panic on this snippet. There shouldn't even be a diagnostic on this snippet, since it's not a valid use of the <code>S</code> type variable:<pre><code class="language-py">class F:
+    @classmethod
+    def m[S](cls: type[S], /) -&gt; S[int]: ...
+</code></pre>
+</li>
+<li>The rule would panic on this snippet. Again, there shouldn't even be a diagnostic emitted here; it's an invalid use of a type variable:<pre><code class="language-py">class F:
+    def m[S](self: S) -&gt; S[int]: ...
+</code></pre>
+</li>
+<li>The rule had a false positive on this snippet, where <code>type</code> is shadowed locally:<pre><code class="language-py">def shadowed_type():
+    type = 1
+    class A:
+        @classmethod
+        def m[S](cls: type[S]) -&gt; S: ...
+</code></pre>
+</li>
+<li>The rule had a false negative on this snippet, where the fully qualified version of <code>builtins.type</code> rather than the implicit builtin binding:<pre><code class="language-py">import builtins
+
+class UsesFullyQualifiedType:
+    @classmethod
+    def m[S](cls: builtins.type[S]) -&gt; S: ...  # PYI019
+</code></pre>
+</li>
+<li>The rule had a false negative on this snippet, where the return annotation is <code>type[S]</code> rather than simply <code>S</code>:<pre><code class="language-py">class Foo:
+    @classmethod
+    def f[S](cls: type[S]) -&gt; type[S]: ...
+</code></pre>
+</li>
+</ul>
+<p>Fixes #15849</p>
+<h2>Test Plan</h2>
+<p>I've added new fixtures added that trigger panics and/or incorrect behaviour on <code>main</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @AlexWaygood on 2025-01-31 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @AlexWaygood on 2025-01-31 13:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ntBre by @AlexWaygood on 2025-01-31 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dylwil3 by @AlexWaygood on 2025-01-31 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-31 13:40</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:7 on 2025-01-31 14:10</div>
+            <div class="timeline-body"><p>nit: do you want to combine these?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-01-31 14:12</div>
+            <div class="timeline-body"><p>This looks great! I had to throw in one nit, but the changes were easy to follow, especially with the new variable names, and the tests made it clear what was going on.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-01-31 14:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/rules/flake8_pyi/rules/custom_type_var_return_type.rs</code>:7 on 2025-01-31 14:12</div>
+            <div class="timeline-body"><p>ohh, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-01-31 14:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-01-31 14:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-31 14:19</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:52 UTC
+    </footer>
+</body>
+</html>

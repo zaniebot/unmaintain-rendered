@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`refurb`] Manual timezone monkeypatching (`FURB162`) - astral-sh/ruff #16113</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>refurb</code>] Manual timezone monkeypatching (<code>FURB162</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16113">#16113</a>
+        opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a>
+        on 2025-02-12 05:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on 2025-02-12 05:36</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Part of #1348.</p>
+<p><a href="https://github.com/dosisod/refurb/blob/7649900948c8a65296ae6efc9d8ced0bc1a54a7f/refurb/checks/datetime/simplify_fromisoformat.py"><code>FURB162</code></a> reports <code>datetime.fromisoformat()</code> calls where the lone argument is of one of the following forms:</p>
+<ul>
+<li><code>date.replace(&quot;Z&quot;, &lt;zero_offset&gt;)</code></li>
+<li><code>date[:-1] + &lt;zero_offset&gt;</code></li>
+<li><code>date.strip(&quot;Z&quot;) + &lt;zero_offset&gt;</code>/<code>date.rstrip(&quot;Z&quot;) + &lt;zero_offset&gt;</code></li>
+</ul>
+<p>...and where <code>&lt;zero_offset&gt;</code> is a string literal whose content is one of <code>00:00</code>, <code>0000</code> or <code>00</code> prefixed with <code>+</code> or <code>-</code>.</p>
+<p>Before Python 3.11, this was necessary, as <code>.fromisoformat()</code> wasn't able to handle strings with <code>Z</code> as the affix. Now it can.</p>
+<p>The logic was taken from that of the upstream rule.</p>
+<h2>Test Plan</h2>
+<p><code>cargo nextest run</code> and <code>cargo insta test</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-12 05:43</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2025-02-12 09:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @MichaReiser on 2025-02-12 09:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/fromisoformat_replace_z.rs</code>:22 on 2025-02-17 10:06</div>
+            <div class="timeline-body"><p>It might be worth to include this sentence as well: <em>(barring only those that support fractional hours and minutes)</em>. It otherwise is unclear what &quot;most&quot; means.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/fromisoformat_replace_z.rs</code>:51 on 2025-02-17 10:09</div>
+            <div class="timeline-body"><p>I think we have to mark the fix as always unsafe, considering that <code>fromisoformat</code> isn't correct for all timezones and we can't know if the date uses one of those time zones.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/fromisoformat_replace_z.rs</code>:63 on 2025-02-17 10:12</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        r#&quot;Unnecessary timezone monkeypatching&quot;#.to_string()
+</code></pre>
+<p>I'm not sure if monkeypatching is the right term here. I did find one reference that uses monkeypatching in the context of time zones (<a href="https://goral.net.pl/changelog/monkeypatching-timezones/">source</a>) but the more common use is in the context of patching methods/functions etc.</p>
+<p>How about <em>Unnecessary timezone replacement with zero offset</em>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-17 11:25</div>
+            <div class="timeline-body"><p>Nice, thank you</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-17 11:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/codes.rs</code>:1113 on 2025-02-17 11:25</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        (Refurb, &quot;162&quot;) =&gt; (RuleGroup::Preview, rules::refurb::rules::FromisoformatReplaceZ),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-02-17 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/refurb/rules/fromisoformat_replace_z.rs</code>:51 on 2025-02-17 14:13</div>
+            <div class="timeline-body"><p>What timezones are you referring to? <a href="https://docs.python.org/3/library/datetime.html#datetime.date.fromisoformat">The documentation</a> mentions no such limitation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-17 14:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/fromisoformat_replace_z.rs</code>:51 on 2025-02-17 14:20</div>
+            <div class="timeline-body"><p>I'm referring to the <em>most</em> in the rule's documentation:</p>
+<blockquote>
+<p>On Python 3.11 and later, <code>datetime.fromisoformat()</code> can handle most [ISO 8601][iso-8601] formats, including ones affixed with <code>Z</code></p>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @InSyncWithFoo on 2025-02-17 14:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @InSyncWithFoo on 2025-02-17 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-02-17 14:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/refurb/rules/fromisoformat_replace_z.rs</code>:51 on 2025-02-17 14:27</div>
+            <div class="timeline-body"><p>By &quot;most&quot; I mean &quot;most formats&quot;, not &quot;most timezones&quot;:</p>
+<blockquote>
+<p>Return a <a href="https://docs.python.org/3/library/datetime.html#datetime.date"><code>date</code></a> corresponding to a <code>date_string</code> given in any valid ISO 8601 format, with the following exceptions:</p>
+<ul>
+<li>Reduced precision dates are not currently supported (<code>YYYY-MM</code>, <code>YYYY</code>).</li>
+<li>Extended date representations are not currently supported (<code>±YYYYYY-MM-DD</code>).</li>
+<li>Ordinal dates are not currently supported (<code>YYYY-OOO</code>).</li>
+</ul>
+</blockquote>
+<p>Regardless, marking the fix as unsafe is necessary, since there are edge cases like this:</p>
+<pre><code class="language-python">d = 'Z2025-01-01T00:00:00Z'
+
+datetime.fromisoformat(d.strip('Z') + '+00:00')  # fine
+datetime.fromisoformat(d)                        # error
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 08:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/fromisoformat_replace_z.rs</code>:53 on 2025-02-18 08:27</div>
+            <div class="timeline-body"><p>Can we be more specific about how it could change program behavior? Ideally, the explanation would be detailed enough for users to decide if it's okay to mark the fix as safe in their project because they know this situation can't apply to their project.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-18 08:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-02-18 08:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/refurb/rules/fromisoformat_replace_z.rs</code>:53 on 2025-02-18 08:36</div>
+            <div class="timeline-body"><p>I'm pretty sure I added a snippet right below to demonstrate this point. Is it unclear?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-18 08:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/refurb/rules/fromisoformat_replace_z.rs</code>:53 on 2025-02-18 08:57</div>
+            <div class="timeline-body"><p>Oh I missed that, sorry.</p>
+<p>I'm still not entirely sure what the <em>barring only</em> part means. To me, it suggests that there are some cases where this operation isn't &quot;safe&quot;. Do you have more context on what it means specifically?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> reviewed on 2025-02-18 09:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/InSyncWithFoo">@InSyncWithFoo</a> on <code>crates/ruff_linter/src/rules/refurb/rules/fromisoformat_replace_z.rs</code>:53 on 2025-02-18 09:11</div>
+            <div class="timeline-body"><p>There's already a link to <a href="https://docs.python.org/3/library/datetime.html#datetime.date.fromisoformat"><code>fromisoformat</code>'s documentation</a> in the &quot;References&quot; section. I added another one.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-02-18 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-18 13:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-18 13:46</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:53 UTC
+    </footer>
+</body>
+</html>

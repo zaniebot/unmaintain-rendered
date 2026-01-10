@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] add opt-in external diagnostic snapshotting to mdtest - astral-sh/ruff #15945</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] add opt-in external diagnostic snapshotting to mdtest</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15945">#15945</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-02-04 19:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-04 19:59</div>
+            <div class="timeline-body"><p>This PR makes it possible to opt into diagnostic snappshotting
+in mdtests. To opt in, add <code>snapshot-diagnostic</code> to the info string
+on at least one of the code blocks in a single test. Like this:</p>
+<pre><code class="language-markdown">## Unresolvable module import
+
+```py snapshot-diagnostic
+import zqzqzqzqzqzqzq
+```
+</code></pre>
+<p>This integrates with <code>insta</code> via external file snapshotting, so
+one can just use <code>cargo insta</code> to manage the snapshots like you
+would anywhere else.</p>
+<p>While highly desirable, this doesn't support inline snapshotting.
+I don't see an easy way to make this work with <code>insta</code>, so I think
+we'd have to roll our own snapshotting system. I actually do think
+that's probably worth doing, but this at least gets us some integration
+with mdtests and full diagnostic output without too much effort.</p>
+<p>Reviewers are encouraged to go commit-by-commit!</p>
+<p>Closes astral-sh/ruff#15867</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-02-04 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-02-04 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-02-04 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-02-04 19:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-02-04 20:07</div>
+            <div class="timeline-body"><p>Yessss. My favorite kind of problem. /s</p>
+<p><img src="https://github.com/user-attachments/assets/74aa00bb-7a3f-4d48-bb0b-65a5f635b24a" alt="windows-slashes" /></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-04 20:08</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/src/parser.rs</code>:339 on 2025-02-04 21:10</div>
+            <div class="timeline-body"><p>Will this include a leading <code>=</code> in the <code>value</code>? Should we use <code>eat_char</code> instead of <code>first</code> to avoid that?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/README.md</code>:151 on 2025-02-04 21:20</div>
+            <div class="timeline-body"><p>This worries me, particularly in combination with non-rendered info string being used to mark a code block as snapshotted. I think it will be confusing to have code blocks in our mdtest files that look like they are asserting a particular code example is diagnostic-free when it isn't. In source form, this is somewhat mitigated by the presence of the <code>snapshot-diagnostic</code> tag (though I still think it's not ideal); in rendered form it could be very confusing.</p>
+<p>I'm inclined to instead try without this special case, and just require the inline assertions too. I realize this could seem redundant, but I'm not sure it really is. I think out-of-file full snapshots are a pretty inconvenient way to make any kind of semantic assertions (I mean mostly for the reader here; snapshotting makes it pretty convenient for the <em>writer</em>. But I think readability of tests is very important!), so I don't think we want to be relying on out-of-file snapshots for testing semantics, only for testing diagnostic display.</p>
+<p>So maybe this partly depends how we use the out-of-file snapshot feature. If we mostly just take existing semantic tests that we wanted to have anyway, add a snapshot-diagnostic tag to some of them, and then also have full diagnostic snapshotting, then I think it's fine (and preferable) if we still require the inline comment assertions. But if we end up needing a lot of edge-case tests of diagnostic rendering that aren't really doubling as semantic tests, I could see it getting irritating to have to still provide the inline comments.</p>
+<p>If we envision mostly the latter case, then I would rather segregate our diagnostic-snapshot tests entirely into separate files, that are clearly marked as solely testing diagnostic output, not semantics. In this case I think not requiring inline comments is OK. But if we are going to have intermixed tests in the same file, or tests serving double duty as both tests of semantics and diagnostic rendering, then I don't want to permit leaving out the inline assertions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/README.md</code>:145 on 2025-02-04 21:26</div>
+            <div class="timeline-body"><p>I'm wondering about the rationale or need for this. It seems confusing. Is it difficult to implement snapshotting for some files in a test and not others? If so, then I wonder if we should find a different way to signal the need for snapshotting, that is scoped to the markdown heading and not to the code block. If not, then it seems less confusing to me to only snapshot the code blocks explicitly marked for snapshotting.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/basic.md</code>:127 on 2025-02-04 21:28</div>
+            <div class="timeline-body"><p>Depending how we resolve my other comment about inline assertions vs snapshots, and how we intend to use snapshotting, I might prefer to have a dedicated file demonstrating snapshotting, rather than a couple random tests in the import semantics test.</p>
+<p>If these stay here, then I don't want to omit the inline assertion comment on the &quot;Unresolvable module import&quot; test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-04 21:30</div>
+            <div class="timeline-body"><p>Thank you, this is awesome!</p>
+<p>I didn't carefully review the code changes yet, my comments are more on the feature design first.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-04 21:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/README.md</code>:151 on 2025-02-04 21:54</div>
+            <div class="timeline-body"><p>Have you considered using an inline marker for diagnostics instead of enabling snapshoting for all diagnostics in a file. E.g something like # error[snapshot] &quot;expected error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-04 22:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_test/README.md</code>:151 on 2025-02-04 22:07</div>
+            <div class="timeline-body"><p>Just a quick (not full) response for now:</p>
+<p>The main reason I went with this approach is because I perceive needing to write inline assertions for tests specifically for diagnostics to be pretty annoying. Like, just thinking about my recent work on ruff when I upgraded <code>annotate-snippets</code>, I had to go through something 1000+ snapshots. If I didn't have tooling to let me automatically update snapshots, that would have taken me way longer. So I guess where I'm going with this is that I perceive the inline assertions to be very manual, and I worry about the work required to update them when diagnostics change.</p>
+<p>With all that said, the inline assertions also contain a lot less information. And are probably less susceptible to churn. So maybe this is fine. But there's definitely still some work involved in creating them in the first place that I can imagine being annoying if I want to write a test for diagnostics and not semantics.</p>
+<p>I was also thinking that it would be nice for the semantic tests to also double as diagnostic tests. But maybe that's not a good idea?</p>
+<blockquote>
+<p>If we envision mostly the latter case, then I would rather segregate our diagnostic-snapshot tests entirely into separate files</p>
+</blockquote>
+<p>Do you have a sense of how to enforce this?</p>
+<blockquote>
+<p>Have you considered using an inline marker for diagnostics instead of enabling snapshoting for all diagnostics in a file. E.g something like # error[snapshot] &quot;expected error</p>
+</blockquote>
+<p>I thought about this, and it felt really confusing to me to enable diagnostics for only one file instead of just everything in the test. I guess &quot;snapshot diagnostics from everything that would be emitted by <code>red-knot check</code>&quot; makes more sense to me than &quot;snapshot diagnostics only from this file.&quot; I see the former as more holistic and the thing we most want to test.</p>
+<p>But I don't have nearly as much experience as you @MichaReiser in working on diagnostics and testing them. Do you have different instincts here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-04 22:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_test/README.md</code>:145 on 2025-02-04 22:10</div>
+            <div class="timeline-body"><p>I think it's pretty easy to implement. See my other comment above for why I went this direction. But I agree that if I keep this direction, then it probably makes more sense to use something scoped to a section and not to a code block. Do you have any opinions on what that might look like? I was unsure of that direction since I don't think there are any section-scoped options right now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-04 22:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/README.md</code>:151 on 2025-02-04 22:22</div>
+            <div class="timeline-body"><blockquote>
+<p>I perceive the inline assertions to be very manual, and I worry about the work required to update them when diagnostics change.</p>
+<p>With all that said, the inline assertions also contain a lot less information. And are probably less susceptible to churn. So maybe this is fine. But there's definitely still some work involved in creating them in the first place that I can imagine being annoying if I want to write a test for diagnostics and not semantics.</p>
+</blockquote>
+<p>Yeah, makes sense. For inline assertions that just assert an error code (the majority), I don't think changes to diagnostic rendering will cause churn; those assertions should only need to change if semantics or rule codes change. We do sometimes use the inline assertions to assert that some semantic information is present and clearly worded in a diagnostic message; these might be more likely to churn with changes to diagnostic rendering, if the rendering change also implies a different way of wording the message.</p>
+<blockquote>
+<blockquote>
+<p>If we envision mostly the latter case, then I would rather segregate our diagnostic-snapshot tests entirely into separate files</p>
+</blockquote>
+<p>Do you have a sense of how to enforce this?</p>
+</blockquote>
+<p>If we want to go in this direction (segregate snapshot tests, don't have tests doing double duty) then I think perhaps just using a file-wide marker (rather than section-wide or per-code-block) to choose snapshotting would both enforce this separation and also address the other question of scoping of the <code>snapshot-diagnostics</code> option?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-04 22:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/README.md</code>:145 on 2025-02-04 22:25</div>
+            <div class="timeline-body"><p>I don't think there's existing markdown syntax that lends itself naturally to this. One way to leverage existing mdtest syntax would be to make it an option in the toml config that can be optionally provided (as its own code block), but this is pretty verbose, and I'm not sure I like having mdtest-specific (as opposed to red-knot) configuration in those toml blocks.</p>
+<p>So beyond that, I guess it could be something like adding <code>[snapshot]</code> to the end of the header line? Or on the next non-empty line after the header?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-04 23:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_test/README.md</code>:151 on 2025-02-04 23:11</div>
+            <div class="timeline-body"><p>I thought a little more about this, and maybe it's premature to have this split between inline assertions and diagnostics. If I roll that part back and still require the inline assertions (with the snapshot essentially just being an opt-in add-on at that point), are you okay with diagnostic tests being inter-mingled here? Or do you think it's still worth separating them out and using a file-scoped option?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-04 23:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_test/README.md</code>:151 on 2025-02-04 23:12</div>
+            <div class="timeline-body"><p>I say premature because I don't really have a ton of experience writing these inline assertions. I can believe it's not as annoying as I thought it would be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-02-04 23:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_test/README.md</code>:151 on 2025-02-04 23:23</div>
+            <div class="timeline-body"><p>If we continue to require the inline assertions for now, I'm fine with intermingling; in that case the tests still serve just as well as semantic tests. Trying that out and seeing how we like it seems fine to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-05 07:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/README.md</code>:151 on 2025-02-05 07:41</div>
+            <div class="timeline-body"><p>I'm okay with test-level opt-in to snapshotting. The only drawback is that I could see it being useful to only select a single (or few) diagnostics to be snapshotted to avoid having to write extra diagnostic tests (we might still want to do that for complex diagnostics):</p>
+<p>https://github.com/astral-sh/ruff/blob/d082c1b2026afdc0fda0d90553f0d71157877242/crates/red_knot_python_semantic/resources/mdtest/binary/custom.md#L81-L107</p>
+<p>The syntax I've in mind is:</p>
+<pre><code class="language-python">a / 0 # error[snapshot]: [division-by-zero]
+
+# or 
+a / 0 # snapshot: [division-by-zero]
+</code></pre>
+<p>It would be nice if we could just snapshot one diagnostic as an example instead of writing an extra test for the diagnostic that otherwise duplicates that test case.</p>
+<p>Or a similar one https://github.com/astral-sh/ruff/blob/5e9259c96c910fe9031b7781867c8b82bffa0b26/crates/red_knot_python_semantic/resources/mdtest/binary/integers.md#L73-L102</p>
+<p>The mdtest framework would collect all diagnostics for all assertions marked as <code>[snapshot</code>] for a single test and write them to the same snapshot file.</p>
+<p>The counterargument why having a separate test is useful is that it provides better isolation and prevents otherwise unrelated changes (e.g. adding a new expression to one such test) to change the diagnostic output because the line numbers change.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-02-05 09:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:446 on 2025-02-05 10:46</div>
+            <div class="timeline-body"><p>nit: is it worth creating an <code>Item</code> struct?</p>
+<pre><code class="language-rs">struct Item&lt;'s&gt; {
+    key: &amp;'s str,
+    value: Option&lt;&amp;'s str&gt;
+}
+</code></pre>
+<p>then this could be</p>
+<pre><code class="language-rs">        keyvals: &amp;[Item&lt;'s&gt;],
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/parser.rs</code>:493 on 2025-02-05 10:47</div>
+            <div class="timeline-body"><p>hrm, it feels like we'll probably forget to update this error message at some point if we do end up adding more supported keyvals. Not that I have a better suggestion :/</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-05 10:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-05 11:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/README.md</code>:145 on 2025-02-05 11:17</div>
+            <div class="timeline-body"><p>We could use an HTML comment at the top of the file? I think they're hidden by GitHub's MarkDown rendering?</p>
+<pre><code class="language-md">&lt;!-- snapshot-diagnostics --&gt;
+
+# This is my mdtest
+
+Tests for the `foo` Python feature
+
+```py
+foo()
+```
+</code></pre>
+<p>Rendered, this looks like:</p>
+<!-- snapshot-diagnostics -->
+
+<h1>This is my mdtest</h1>
+<p>Tests for the <code>foo</code> Python feature</p>
+<pre><code class="language-py">foo()
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/README.md</code>:150 on 2025-02-05 11:19</div>
+            <div class="timeline-body"><p>grammar nit: &quot;one of the need&quot;</p>
+<pre><code class="language-suggestion">one of the needs to label each diagnostic manually when it ought to be covered by
+</code></pre>
+<p>Though &quot;absolves one of the needs&quot; also sounds a bit strange to my ears -- I'd either go with &quot;absolves the need&quot; or &quot;partially absolves the need&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/lib.rs</code>:307 on 2025-02-05 11:38</div>
+            <div class="timeline-body"><p>(see also: https://github.com/astral-sh/ruff/issues/13939)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/red_knot_test__basic.md_-_Structures_-_Unresolvable_submodule_imports.snap</code>:18 on 2025-02-05 11:43</div>
+            <div class="timeline-body"><p>since it seems like we're manually writing the original source code into the snapshot anyway... I wonder if we could add line numbers? That would make it really easy to cross-reference between the line numbers in the diagnostic and the line numbers in the original source code</p>
+<pre><code class="language-snap">1 | # Topmost component resolvable, submodule not resolvable:
+2 | import a.foo  # error: [unresolved-import] &quot;Cannot resolve import `a.foo`&quot;
+3 |
+4 | # Topmost component unresolvable:
+5 | import b.foo  # error: [unresolved-import] &quot;Cannot resolve import `b.foo`&quot;
+</code></pre>
+<p>I don't think this costs us much in terms of how the snapshot is rendered by GitHub -- it already does not apply MarkDown rendering to this file, due to the <code>.snap</code> file extension:</p>
+<details>
+<summary>Screenshot of current rendering of snapshot</summary>
+
+<p><img src="https://github.com/user-attachments/assets/bd530746-d309-46bd-a25d-abafa2349c4e" alt="image" /></p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_test/src/matcher.rs</code>:96 on 2025-02-05 11:45</div>
+            <div class="timeline-body"><p>nit: add a <code>MatchFileMode::should_skip_unmatched_diagnostics_without_assertions()</code> method?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-05 11:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-05 11:51</div>
+            <div class="timeline-body"><p>Overall this is awesome!</p>
+<p>I have similar concerns to @carljm:</p>
+<ul>
+<li>To me it's pretty counter-intuitive that adding <code>snapshot-diagnostics</code> to one code fence would enable snapshotting for all embedded files in the mdtest suite. I would prefer a mechanism that makes it more obvious that it toggles the setting for the whole mdtest (if that's the way we want to enable snapshotting), such as an HTML comment at the top of the file (https://github.com/astral-sh/ruff/pull/15945/files#r1942686379)</li>
+<li>I'm also not sure I'm keen on having mdtest automatically ignore unmatched diagnostics if there are no inline assertions and diagnostic snapshotting is enabled. It feels too implicit and error-prone to me, and I don't find adding an inline assertion to be particularly arduous if you only assert the error code (omitting the error message). One of the reasons I'm most excited about snapshotting is I think we can assert the full error message much less in our inline assertions; the full error message feels like something that's much better covered by our snapshots, enabling us to keep our inline assertions concise, readable, and focussed on whether we capture Python's semantics correctly.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-05 11:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/README.md</code>:151 on 2025-02-05 11:53</div>
+            <div class="timeline-body"><p>Another consideration is how we'd envision inline snapshots to work.</p>
+<ul>
+<li>With <code>error[snapshot]</code>: I'd expect that the md test framework is in full control of the ``` code block and it adds it if there's any <code>error[snapshot]</code> and otherwise removes it. It isn't something a user ever has to write.</li>
+<li>With a test-level marker: It's up to users if they want an inline snapshot or out of bound snapshot. Out of bound snapshots use the test level marker (e.g. what Alex suggested with a <code>&lt;!-- snapshot-diagnostics --&gt;</code>) and inline snapshots use <code>output</code>.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-05 11:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/README.md</code>:145 on 2025-02-05 11:54</div>
+            <div class="timeline-body"><p>What would be neat long term if output snapshots would be a link to the snapshot file. Should we use</p>
+<pre><code>- [Snapshots]: 
+</code></pre>
+<p>or similar to enable this in the future?</p>
+<p>Either way. I'm fine with whatever marker you pick :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_test/README.md</code>:151 on 2025-02-05 13:35</div>
+            <div class="timeline-body"><p>In out-of-band discussion, we (Carl hasn't weighed in yet, but based on discussion here I think he'll be fine with this) decided to simplify here and just permit enabling of snapshots at the level of the section. But we agreed that annotated snapshots for more granular testing will likely be useful and probably something we should add in the future after we get some more experience.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 13:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 13:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/basic.md</code>:127 on 2025-02-05 13:36</div>
+            <div class="timeline-body"><p>I ended up rolling back the change that ignores unmatched diagnostics when there aren't any inline assertions. And I moved this config to be a section-level config.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 13:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_test/src/parser.rs</code>:446 on 2025-02-05 13:37</div>
+            <div class="timeline-body"><p>Ended up deleting this code.</p>
+<p>I'm not a huge fan of anonymous tuples myself, but I tend not to mind them so much when their use is &quot;local.&quot; And especially, when we aren't storing them anywhere. But I also don't feel strongly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 13:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_test/README.md</code>:150 on 2025-02-05 13:39</div>
+            <div class="timeline-body"><p>Yeah &quot;needs&quot; sounds weird to me too. I ended up deleting this, but getting rid of &quot;one of&quot; would be a good change here!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 13:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_test/src/lib.rs</code>:307 on 2025-02-05 13:40</div>
+            <div class="timeline-body"><p>Blech, yeah. I think we need more fine grained color configuration than just a global switch. The global switch makes it very easy to abuse.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_test/src/matcher.rs</code>:96 on 2025-02-05 13:40</div>
+            <div class="timeline-body"><p>I could go either way here to be honest. But I ended up deleting this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 13:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-05 13:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/red_knot_test__basic.md_-_Structures_-_Unresolvable_submodule_imports.snap</code>:18 on 2025-02-05 13:49</div>
+            <div class="timeline-body"><p>Some markdown viewers support <code>py=</code> (note the <code>=</code>) to enable line numbers. Unfortunately, GitHub doesn't</p>
+<blockquote>
+<p>it already does not apply MarkDown rendering to this file, due to the .snap file extension:</p>
+</blockquote>
+<p>We can enable markdown rendering by using <code>.md.snap</code> and adding it to <code>.gitattributes</code> https://github.com/astral-sh/ruff/blob/8e3633f55ac8e3768df7d2e51619f37e6a8580c8/.gitattributes#L20</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/red_knot_test__basic.md_-_Structures_-_Unresolvable_submodule_imports.snap</code>:18 on 2025-02-05 14:03</div>
+            <div class="timeline-body"><p>I like this</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-05 14:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/red_knot_test__basic.md_-_Structures_-_Unresolvable_submodule_imports.md.snap</code>:1 on 2025-02-05 14:30</div>
+            <div class="timeline-body"><p>unfortunately GitHub's MarkDown rendering for these snapshots seems to have disastrous consequences :( it seems to think you're trying to create an HTML table</p>
+<p><a href="https://github.com/astral-sh/ruff/blob/ag/diagnostic-tests/crates/red_knot_python_semantic/resources/mdtest/snapshots/red_knot_test__basic.md_-_Structures_-_Unresolvable_submodule_imports.md.snap">https://github.com/astral-sh/ruff/blob/ag/diagnostic-tests/crates/red_knot_python_semantic/resources/mdtest/snapshots/red_knot_test__basic.md_-_Structures_-_Unresolvable_submodule_imports.md.snap</a></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-05 14:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/red_knot_test__basic.md_-_Structures_-_Unresolvable_submodule_imports.md.snap</code>:1 on 2025-02-05 14:31</div>
+            <div class="timeline-body"><p>we may want to go back to using just <code>.snap</code> as the extension rather than <code>.md.snap</code>, if this is the result. Or adjust the contents of the snapshot so that GitHub doesn't think we're trying to create a table 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 14:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/red_knot_test__basic.md_-_Structures_-_Unresolvable_submodule_imports.md.snap</code>:1 on 2025-02-05 14:37</div>
+            <div class="timeline-body"><p>Yeah it looks like it's the same for our other <code>.md.snap</code> files: https://github.com/astral-sh/ruff/blob/e760bc2d60cb6e72b0c0f86fe9cc054df09f9014/crates/ruff_linter/src/rules/pylint/rules/snapshots/ruff_linter__rules__pylint__rules__unreachable__tests__while.py.md.snap#L1</p>
+<p>I'm going to give up on this one for now, since I don't think making the snapshots render will in GitHub is a high priority goal for me.</p>
+<p>This might also just be hard to fix, since <code>cargo insta</code> adds its own little header to snapshots and I'm not sure that can be customized.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 14:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_test/src/parser.rs</code>:493 on 2025-02-05 14:38</div>
+            <div class="timeline-body"><p>Yup, definitely a downside. I ended up deleting this code anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 14:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/red_knot_test__basic.md_-_Structures_-_Unresolvable_submodule_imports.snap</code>:18 on 2025-02-05 14:39</div>
+            <div class="timeline-body"><p>I added line numbers, and make the file names be <code>.md.snap</code>, but the GitHub rendering is busted. It looks busted for our other <code>.md.snap</code> files too. Since the priority here IMO is the snapshot file itself in dev workflows, I'm going to keep the line numbers but abandon trying to get GitHub rendering nice for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-05 14:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/red_knot_test__basic.md_-_Structures_-_Unresolvable_submodule_imports.md.snap</code>:1 on 2025-02-05 14:42</div>
+            <div class="timeline-body"><p>I agree that beautiful syntax highlighting in GitHub's rendering shouldn't be a priority, but I do tend to use GitHub for browsing through code quite a lot -- it would be quite nice for me if they were at least legible when viewed on GitHub :-) Could we just go back to using <code>.snap</code> for the extension rather than <code>.md.snap</code>? That would be good enough for me</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-02-05 14:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-02-05 14:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-02-05 14:48</div>
+            <div class="timeline-body"><p>LGTM other than https://github.com/astral-sh/ruff/pull/15945#discussion_r1943070593. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/red_knot_test__basic.md_-_Structures_-_Unresolvable_submodule_imports.md.snap</code>:1 on 2025-02-05 14:54</div>
+            <div class="timeline-body"><p>Ooooo, yes, no problem!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/red_knot_test__basic.md_-_Structures_-_Unresolvable_submodule_imports.md.snap</code>:1 on 2025-02-05 14:56</div>
+            <div class="timeline-body"><p>Thank you ❤️</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-05 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/red_knot_test__basic.md_-_Structures_-_Unresolvable_submodule_imports.md.snap</code>:1 on 2025-02-05 15:00</div>
+            <div class="timeline-body"><p>OK, yes, now it's at least readable hah: https://github.com/astral-sh/ruff/blob/98745f8d39d8c531ccde052ad19659221eefe297/crates/red_knot_python_semantic/resources/mdtest/snapshots/basic.md_-<em>Structures</em>-_Unresolvable_submodule_imports.snap</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/basic.md_-_Structures_-_Unresolvable_submodule_imports.snap</code>:1 on 2025-02-05 16:15</div>
+            <div class="timeline-body"><p>Is it possible to change the snapshot extension to <code>md.snap</code> so that we get markdown rendering on Github? (you might also have to insert an artificial newline at the start of the file to have the title separated from <code>---</code>)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/lib.rs</code>:247 on 2025-02-05 16:16</div>
+            <div class="timeline-body"><p>Nit: Should we avoid collecting the diagnostic if <code>should_snapshot_diagnostics</code> is false?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_test/src/lib.rs</code>:312 on 2025-02-05 16:17</div>
+            <div class="timeline-body"><p>Should/could we insert a link to the mdtest file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-02-05 16:18</div>
+            <div class="timeline-body"><p>This is great! Thanks for taking the time to integrate diagnostic snapshoting into mdtests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-02-05 16:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/basic.md_-_Structures_-_Unresolvable_submodule_imports.snap</code>:1 on 2025-02-05 16:21</div>
+            <div class="timeline-body"><p>Andrew tried that, but unfortunately the MarkDown rendering made it completely unreadable, as GitHub thought we were trying to make an HMTL table. See discussion in https://github.com/astral-sh/ruff/pull/15945#discussion_r1943048249 :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-02-05 16:27</div>
+            <div class="timeline-body"><p>This approach looks great to me as a starting point to experiment with and see how we like it! Thanks for considering my comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 17:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/basic.md_-_Structures_-_Unresolvable_submodule_imports.snap</code>:1 on 2025-02-05 17:37</div>
+            <div class="timeline-body"><p>Yeah I think for now I'd prefer not to spend more time fiddling with this. The existing <code>.md.snap</code> files don't render well either: https://github.com/astral-sh/ruff/blob/a3f802acb4aacb7a6ff3d8daaae4dd9cf3620f8d/crates/ruff_linter/src/rules/pylint/rules/snapshots/ruff_linter__rules__pylint__rules__unreachable__tests__if.py.md.snap#L4</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 17:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_test/src/lib.rs</code>:247 on 2025-02-05 17:38</div>
+            <div class="timeline-body"><p>Yeah that's fair. Done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-05 17:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/snapshots/basic.md_-_Structures_-_Unresolvable_submodule_imports.snap</code>:1 on 2025-02-05 17:51</div>
+            <div class="timeline-body"><p>Yeah, we might need a few newlines after the table but we can follow up on that separately</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-02-05 17:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_test/src/lib.rs</code>:312 on 2025-02-05 17:54</div>
+            <div class="timeline-body"><p>OK, so I've at least put the full path to the mdtest file here.</p>
+<p>I'm not sure about a link. Since this already isn't rendering well as Markdown on GitHub. But if we get that working then I think just turning it into a relative link that GitHub understands should be straight-forward.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-02-05 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-02-05 18:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-05 18:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:52 UTC
+    </footer>
+</body>
+</html>

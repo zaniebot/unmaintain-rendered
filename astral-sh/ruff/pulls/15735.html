@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add knot.toml schema - astral-sh/ruff #15735</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add knot.toml schema</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15735">#15735</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-01-24 23:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-24 23:55</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Adds a JSON schema generation step for Red Knot. This PR doesn't yet add a publishing step because it's still a bit early for that</p>
+<h2>Test plan</h2>
+<p>I tested the schema in Zed, VS Code and PyCharm:</p>
+<ul>
+<li>PyCharm: You have to manually add a schema mapping (settings JSON Schema Mappings)</li>
+<li>Zed and VS code support the inline schema specification</li>
+</ul>
+<pre><code class="language-toml">#:schema /Users/micha/astral/ruff/knot.schema.json
+
+
+[environment]
+extra-paths = []
+
+
+[rules]
+call-possibly-unbound-method = &quot;error&quot;
+unknown-rule = &quot;error&quot;
+
+# duplicate-base = &quot;error&quot;
+</code></pre>
+<pre><code class="language-json">{
+    &quot;$schema&quot;: &quot;file:///Users/micha/astral/ruff/knot.schema.json&quot;,
+
+    &quot;environment&quot;: {
+        &quot;python-version&quot;: &quot;3.13&quot;,
+        &quot;python-platform&quot;: &quot;linux2&quot;
+    },
+
+    &quot;rules&quot;: {
+        &quot;unknown-rule&quot;: &quot;error&quot;
+    }
+}
+</code></pre>
+<p>https://github.com/user-attachments/assets/a18fcd96-7cbe-4110-985b-9f1935584411</p>
+<p>The Schema overall works but all editors have their own quirks:</p>
+<ul>
+<li>PyCharm: Hovering a name always shows the section description instead of the description of the specific setting. But it's the same for other settings in <code>pyproject.toml</code> files 🤷</li>
+<li>VS Code (JSON): Using the generated schema in a JSON file gives exactly the experience I want</li>
+<li>VS Code (TOML):<ul>
+<li>Properties with multiple possible values are repeated during auto-completion without giving any hint how they're different. <img src="https://github.com/user-attachments/assets/d7f3c2a9-2351-4226-9fc1-b91aa192a237" alt="Screen Shot 2025-02-06 at 14 05 35 PM" /></li>
+<li>The property description mushes together the description of the property and the value, which looks sort of ridiculous.  <img src="https://github.com/user-attachments/assets/8b72f04a-c62a-49b5-810f-7ddd472884d0" alt="Screen Shot 2025-02-06 at 14 04 40 PM" /></li>
+<li>Autocompletion and documentation hovering works (except the limitations mentioned above)</li>
+</ul>
+</li>
+<li>Zed:<ul>
+<li>Very similar to VS Code with the exception that it uses the description attribute to distinguish settings with multiple possible values <img src="https://github.com/user-attachments/assets/78a7f849-ff4e-44ff-8317-708eaf02dc1f" alt="Screen Shot 2025-02-06 at 14 08 19 PM" /></li>
+</ul>
+</li>
+</ul>
+<p>I don't think there's much we can do here other than hope (or help) editors improve their auto completion. The same short comings also apply to ruff, so this isn't something new. For now, I think this is good enough</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-01-24 23:57</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-25 00:11</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-06 13:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_dev/src/generate_knot_schema.rs</code>:15 on 2025-02-06 13:10</div>
+            <div class="timeline-body"><p>This is mostly copied over from what we have for ruff. I don't think it's worth abstracting it in any form.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-02-06 13:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_macros/src/combine.rs</code>:9 on 2025-02-06 13:10</div>
+            <div class="timeline-body"><p>I added support for struct with unnamed fields.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-02-06 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-02-06 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-02-06 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-02-06 13:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-02-07 09:42</div>
+            <div class="timeline-body"><p>Thank you for testing it out in various editors and providing video/screenshots of the same.</p>
+<p>It's unfortunate that each editor has their own quirks and I wonder if it would be worthwhile to use editor specific schema fields (https://github.com/SchemaStore/schemastore/blob/master/CONTRIBUTING.md#language-server-features) and generate multiple schemas. This is not a priority and could be looked into in the future if we receive multiple complains or we decide that it would be useful for the editor to provide a fix and we work with them instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-02-07 09:59</div>
+            <div class="timeline-body"><p>I like the idea with editor specific schemas but agree, that's polish we can do a bit later :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-02-07 09:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-02-07 09:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-02-07 09:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:51 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Unknown rule diagnostics with a source range - astral-sh/ruff #15648</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Create Unknown rule diagnostics with a source range</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/15648">#15648</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-01-21 15:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-01-21 15:59</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Track the source range of values deserialized from the TOML configuration and use the source range to create unknown-rule diagnostics that point to the right location in the configuration file.</p>
+<pre><code>────────────┬───────────────────────────────────────────────────────────────────
+    0     0 │ success: false
+    1     1 │ exit_code: 1
+    2     2 │ ----- stdout -----
+    3       │-warning[unknown-rule] Unknown lint rule `division-by-zer`
+          3 │+warning[unknown-rule] &lt;temp_dir&gt;/pyproject.toml:3:1 Unknown lint rule `division-by-zer`
+    4     4 │ 
+    5     5 │ ----- stderr -----
+</code></pre>
+<p>This PR makes use of <a href="https://docs.rs/toml/latest/toml/struct.Spanned.html"><code>toml</code>'s spanned</a> functionality to get a text range for every deserialized value in combination with the <code>ValueSource</code> that I introduced in <a href="https://github.com/astral-sh/ruff/pull/15634">previ</a>.</p>
+<p>Toml's spanned feature has one significant drawback: It doesn't support <code>flatten</code> or <code>untagged</code>, at least when using the derived deserializer. The <a href="https://crates.io/crates/toml-span"><code>toml-span</code></a> crate explains why in more detail.</p>
+<p>I considered using <code>toml-span</code> instead, but it requires you to write all <code>Deserializer</code>s manually. I ultimately decided to go with <code>toml</code>'s span because:</p>
+<ul>
+<li>We can always migrate to <code>toml-span</code> if we <strong>have</strong> to use <code>flatten</code> or similar (either for the entire configuration or only the problematic values)</li>
+<li>Writing deserializer's manually brings the risk that the JSON schema and <code>Deserializer</code> diverge</li>
+<li>We want to avoid <code>flatten</code> as much as possible because it leads to very unhelpful error messages when the configuration can't be deserialized because of an unknown field or invalid type.</li>
+<li>It's simply easier :)</li>
+</ul>
+<p>I do expect that using this approach will require some hackery to support e.g. a <code>string | vec&lt;string&gt;</code> value but this has been solved by <a href="https://github.com/Gankra/cargo-vet/blob/989b65b0d63bb3dfd974d737fce0ef7397825b00/src/serialization.rs#L26-L39">cargo-vet</a>.</p>
+<p>This PR is inspired by https://github.com/mozilla/cargo-vet/pull/230</p>
+<p>Part of https://github.com/astral-sh/ty/issues/219</p>
+<h2>Test Plan</h2>
+<p>See the changes in the CLI test</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-01-21 15:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-01-21 16:09</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-22 16:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_project/src/metadata.rs</code>:58 on 2025-01-22 16:36</div>
+            <div class="timeline-body"><p>How long before it becomes <code>&amp;*********</code> 😆</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/lint.rs</code>:417 on 2025-01-22 16:38</div>
+            <div class="timeline-body"><p>This is not strictly necessary for what we need today but the intent here is that we show a note in diagnostics similar to clippy, telling users why a check was reported (you enabled this rule in the configuration, you enabled it in the cli, it's enabled by default, etc)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-22 16:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-22 16:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_project/src/metadata/options.rs</code>:172 on 2025-01-22 16:40</div>
+            <div class="timeline-body"><p>For now, it would be sufficient to only make the key in the <code>Rules</code> table ranged because we don't use the range or source for any other value. I instead opted to make all values <code>Ranged</code> because the overhead should be small and having the range will make it easier to write good diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-01-22 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-01-22 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-01-22 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-01-22 16:59</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_project/src/metadata.rs</code>:58 on 2025-01-22 21:40</div>
+            <div class="timeline-body"><p>all I see is <code>&amp;hunter2</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_project/src/metadata/value.rs</code>:82 on 2025-01-22 23:04</div>
+            <div class="timeline-body"><p>This allows representing the invalid states where a value with CLI source has Some range, or a value with file source has None range. What would be the tradeoffs of instead recording the range as part of the <code>ValueSource</code>? (I realize this would mean splitting the <code>ValueSource</code> type used here from the <code>ValueSource</code> type stored in thread-locals, but that doesn't necessarily seem like a problem).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_project/src/metadata/value.rs</code>:142 on 2025-01-22 23:06</div>
+            <div class="timeline-body"><p>This comment doesn't make sense to me, because we are defining the <code>into_iter</code> method for the <code>RangedValue</code> type here. Did you mean to say that it already has an <code>iter</code> method?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-01-22 23:10</div>
+            <div class="timeline-body"><p>Cool!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "WIP: Create Unknown rule diagnostics with a source range" to "Create Unknown rule diagnostics with a source range" by @MichaReiser on 2025-01-23 06:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-01-23 10:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_project/src/metadata/value.rs</code>:82 on 2025-01-23 10:53</div>
+            <div class="timeline-body"><p>I considered that but decided against it for two reasons:</p>
+<ol>
+<li>It doesn't simplify downstream code because no code depends on the enforced constraint. However, enforcing it here does require more code because we'd need a <code>ValueSourceKind</code> (which is what we set in the thread local) and <code> ValueSource</code>.</li>
+<li>We'll need to deserialize a <code>serde::Value</code> when supporting more complex types from the CLI using <code>--config complex.key = &quot;{ sub = [... ] }&quot;</code> and the <code>toml</code> crate can't emit text ranges in that case. I'm not sure if we have a similar case for configurations coming from a file, but maybe when working on the uv integration?</li>
+</ol>
+<p>Overall, there are too many unknowns for cases where we might not have a range even if the value comes from a file and there are no &quot;downstream&quot; improvements to enforce the constraint which is why I'd prefer to keep it as is for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-01-23 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-01-23 11:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-01-23 11:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:57:51 UTC
+    </footer>
+</body>
+</html>
