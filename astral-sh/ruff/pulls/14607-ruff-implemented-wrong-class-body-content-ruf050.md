@@ -1,0 +1,337 @@
+```yaml
+number: 14607
+title: "[`ruff`] Implemented `wrong-class-body-content` (`RUF050`)"
+type: pull_request
+state: closed
+author: Lokejoke
+labels:
+  - rule
+  - needs-decision
+assignees: []
+base: main
+head: ruf/wrong-class-body-content
+created_at: 2024-11-26T12:51:24Z
+updated_at: 2024-11-27T13:03:00Z
+url: https://github.com/astral-sh/ruff/pull/14607
+synced_at: 2026-01-10T20:50:57Z
+```
+
+# [`ruff`] Implemented `wrong-class-body-content` (`RUF050`)
+
+---
+
+_Pull request opened by @Lokejoke on 2024-11-26 12:51_
+
+<!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+## Summary
+
+This PR implement `wps` rule [`wrong-class-body-content`](https://wemake-python-styleguide.readthedocs.io/en/0.19.2/pages/usage/violations/oop.html#wemake_python_styleguide.violations.oop.WrongClassBodyContentViolation) rule. After discussion [here](https://github.com/astral-sh/ruff/discussions/14437)
+
+<!-- What's the purpose of the change? What does it do, and why? -->
+
+## Test Plan
+
+`cargo test`
+
+<!-- How was it tested? -->
+
+
+---
+
+_Comment by @github-actions[bot] on 2024-11-26 12:58_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+245 -0 violations, +0 -0 fixes in 14 projects; 41 projects unchanged)
+
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+38 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/DisnakeDev/disnake/blob/2d0f91ad7042d4b331d448678fc6f88b74973947/disnake/abc.py#L268'>disnake/abc.py:268:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/DisnakeDev/disnake/blob/2d0f91ad7042d4b331d448678fc6f88b74973947/disnake/audit_logs.py#L304'>disnake/audit_logs.py:304:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/DisnakeDev/disnake/blob/2d0f91ad7042d4b331d448678fc6f88b74973947/disnake/components.py#L414'>disnake/components.py:414:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/DisnakeDev/disnake/blob/2d0f91ad7042d4b331d448678fc6f88b74973947/disnake/components.py#L454'>disnake/components.py:454:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/DisnakeDev/disnake/blob/2d0f91ad7042d4b331d448678fc6f88b74973947/disnake/components.py#L494'>disnake/components.py:494:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/DisnakeDev/disnake/blob/2d0f91ad7042d4b331d448678fc6f88b74973947/disnake/embeds.py#L227'>disnake/embeds.py:227:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/DisnakeDev/disnake/blob/2d0f91ad7042d4b331d448678fc6f88b74973947/disnake/enums.py#L113'>disnake/enums.py:113:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/DisnakeDev/disnake/blob/2d0f91ad7042d4b331d448678fc6f88b74973947/disnake/enums.py#L81'>disnake/enums.py:81:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/DisnakeDev/disnake/blob/2d0f91ad7042d4b331d448678fc6f88b74973947/disnake/enums.py#L872'>disnake/enums.py:872:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/DisnakeDev/disnake/blob/2d0f91ad7042d4b331d448678fc6f88b74973947/disnake/ext/commands/bot.py#L220'>disnake/ext/commands/bot.py:220:5:</a> RUF050 Wrong statement inside class definition
+... 28 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+12 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/a238d06b8a1e631dfee58e53e9349f7a0c0fa880/airflow/cli/commands/info_command.py#L66'>airflow/cli/commands/info_command.py:66:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/apache/airflow/blob/a238d06b8a1e631dfee58e53e9349f7a0c0fa880/airflow/models/baseoperator.py#L642'>airflow/models/baseoperator.py:642:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/apache/airflow/blob/a238d06b8a1e631dfee58e53e9349f7a0c0fa880/airflow/models/dagrun.py#L173'>airflow/models/dagrun.py:173:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/apache/airflow/blob/a238d06b8a1e631dfee58e53e9349f7a0c0fa880/airflow/serialization/serialized_objects.py#L1612'>airflow/serialization/serialized_objects.py:1612:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/apache/airflow/blob/a238d06b8a1e631dfee58e53e9349f7a0c0fa880/airflow/www/views.py#L706'>airflow/www/views.py:706:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/apache/airflow/blob/a238d06b8a1e631dfee58e53e9349f7a0c0fa880/airflow/www/views.py#L716'>airflow/www/views.py:716:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/apache/airflow/blob/a238d06b8a1e631dfee58e53e9349f7a0c0fa880/providers/src/airflow/providers/edge/plugins/edge_executor_plugin.py#L134'>providers/src/airflow/providers/edge/plugins/edge_executor_plugin.py:134:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/apache/airflow/blob/a238d06b8a1e631dfee58e53e9349f7a0c0fa880/providers/src/airflow/providers/hashicorp/secrets/vault.py#L212'>providers/src/airflow/providers/hashicorp/secrets/vault.py:212:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/apache/airflow/blob/a238d06b8a1e631dfee58e53e9349f7a0c0fa880/providers/src/airflow/providers/openlineage/plugins/listener.py#L274'>providers/src/airflow/providers/openlineage/plugins/listener.py:274:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/apache/airflow/blob/a238d06b8a1e631dfee58e53e9349f7a0c0fa880/providers/src/airflow/providers/openlineage/plugins/openlineage.py#L40'>providers/src/airflow/providers/openlineage/plugins/openlineage.py:40:5:</a> RUF050 Wrong statement inside class definition
+... 2 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/7f2e75279694835a32bb1f33cd33b8c4693670da/superset/db_engine_specs/ascend.py#L27'>superset/db_engine_specs/ascend.py:27:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/apache/superset/blob/7f2e75279694835a32bb1f33cd33b8c4693670da/superset/db_engine_specs/sqlite.py#L99'>superset/db_engine_specs/sqlite.py:99:5:</a> RUF050 Wrong statement inside class definition
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+4 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokehjs_content.py#L126'>src/bokeh/sphinxext/bokehjs_content.py:126:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokehjs_content.py#L127'>src/bokeh/sphinxext/bokehjs_content.py:127:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokehjs_content.py#L128'>src/bokeh/sphinxext/bokehjs_content.py:128:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/sphinxext/bokehjs_content.py#L129'>src/bokeh/sphinxext/bokehjs_content.py:129:5:</a> RUF050 Wrong statement inside class definition
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/bb40a50e1fff102f5e0bd951888b23e4f93a879f/ibis/backends/sql/dialects.py#L246'>ibis/backends/sql/dialects.py:246:9:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/ibis-project/ibis/blob/bb40a50e1fff102f5e0bd951888b23e4f93a879f/ibis/backends/sql/dialects.py#L29'>ibis/backends/sql/dialects.py:29:9:</a> RUF050 Wrong statement inside class definition
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+105 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/asv_bench/benchmarks/dtypes.py#L55'>asv_bench/benchmarks/dtypes.py:55:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/pandas/io/excel/_base.py#L1544'>pandas/io/excel/_base.py:1544:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/pandas/io/excel/_base.py#L1545'>pandas/io/excel/_base.py:1545:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/pandas/io/excel/_base.py#L1546'>pandas/io/excel/_base.py:1546:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/pandas/io/excel/_base.py#L1547'>pandas/io/excel/_base.py:1547:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/pandas/io/excel/_base.py#L1548'>pandas/io/excel/_base.py:1548:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/pandas/io/formats/css.py#L147'>pandas/io/formats/css.py:147:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/pandas/io/formats/css.py#L164'>pandas/io/formats/css.py:164:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/pandas/io/formats/css.py#L167'>pandas/io/formats/css.py:167:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/pandas/io/formats/format.py#L424'>pandas/io/formats/format.py:424:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/pandas/io/formats/style.py#L3706'>pandas/io/formats/style.py:3706:13:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/pandas/io/formats/style.py#L3708'>pandas/io/formats/style.py:3708:13:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/pandas/io/stata.py#L825'>pandas/io/stata.py:825:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/pandas/io/stata.py#L833'>pandas/io/stata.py:833:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/pandas/io/stata.py#L843'>pandas/io/stata.py:843:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/pandas/tests/api/test_api.py#L194'>pandas/tests/api/test_api.py:194:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/pandas/tests/dtypes/test_inference.py#L358'>pandas/tests/dtypes/test_inference.py:358:9:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/pandas/tests/dtypes/test_inference.py#L363'>pandas/tests/dtypes/test_inference.py:363:9:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/pandas/tests/dtypes/test_inference.py#L368'>pandas/tests/dtypes/test_inference.py:368:9:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/pandas/tests/indexing/test_coercion.py#L756'>pandas/tests/indexing/test_coercion.py:756:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pandas-dev/pandas/blob/b1c2ba793bb1f3d7001de41ca4c73377006b9e4d/pandas/tests/series/test_arithmetic.py#L109'>pandas/tests/series/test_arithmetic.py:109:5:</a> RUF050 Wrong statement inside class definition
+... 84 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python/typeshed">python/typeshed</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select E,F,FA,I,PYI,RUF,UP,W</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/python/typeshed/blob/02533d13ea43423fab76f6e8d2decf1350fcc302/stubs/mysqlclient/MySQLdb/cursors.pyi#L13'>stubs/mysqlclient/MySQLdb/cursors.pyi:13:5:</a> RUF050 Wrong statement inside class definition
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/rotki/rotki/blob/8bcd61cdeae1b3604a35e9224344258defbf6ffe/rotkehlchen/api/rest.py#L1671'>rotkehlchen/api/rest.py:1671:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/rotki/rotki/blob/8bcd61cdeae1b3604a35e9224344258defbf6ffe/rotkehlchen/api/v1/resources.py#L1548'>rotkehlchen/api/v1/resources.py:1548:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/rotki/rotki/blob/8bcd61cdeae1b3604a35e9224344258defbf6ffe/rotkehlchen/chain/evm/decoding/decoder.py#L1167'>rotkehlchen/chain/evm/decoding/decoder.py:1167:5:</a> RUF050 Wrong statement inside class definition
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+5 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/c4c1edfa6e7a9dfd1f7bb85e5481d89492bb1e8c/zerver/management/commands/makemessages.py#L82'>zerver/management/commands/makemessages.py:82:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/zulip/zulip/blob/c4c1edfa6e7a9dfd1f7bb85e5481d89492bb1e8c/zerver/migrations/0001_initial.py#L24'>zerver/migrations/0001_initial.py:24:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/zulip/zulip/blob/c4c1edfa6e7a9dfd1f7bb85e5481d89492bb1e8c/zerver/migrations/0001_initial.py#L38'>zerver/migrations/0001_initial.py:38:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/zulip/zulip/blob/c4c1edfa6e7a9dfd1f7bb85e5481d89492bb1e8c/zerver/models/realms.py#L564'>zerver/models/realms.py:564:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/zulip/zulip/blob/c4c1edfa6e7a9dfd1f7bb85e5481d89492bb1e8c/zerver/models/realms.py#L570'>zerver/models/realms.py:570:5:</a> RUF050 Wrong statement inside class definition
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/indico/indico">indico/indico</a> (+12 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/indico/indico/blob/8220773b15be8bd07988445ec34bdf4551e4afd1/indico/core/marshmallow.py#L34'>indico/core/marshmallow.py:34:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/indico/indico/blob/8220773b15be8bd07988445ec34bdf4551e4afd1/indico/modules/auth/controllers.py#L475'>indico/modules/auth/controllers.py:475:13:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/indico/indico/blob/8220773b15be8bd07988445ec34bdf4551e4afd1/indico/modules/auth/controllers.py#L482'>indico/modules/auth/controllers.py:482:13:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/indico/indico/blob/8220773b15be8bd07988445ec34bdf4551e4afd1/indico/modules/auth/controllers.py#L485'>indico/modules/auth/controllers.py:485:13:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/indico/indico/blob/8220773b15be8bd07988445ec34bdf4551e4afd1/indico/modules/events/abstracts/models/abstracts.py#L50'>indico/modules/events/abstracts/models/abstracts.py:50:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/indico/indico/blob/8220773b15be8bd07988445ec34bdf4551e4afd1/indico/modules/events/abstracts/models/abstracts.py#L52'>indico/modules/events/abstracts/models/abstracts.py:52:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/indico/indico/blob/8220773b15be8bd07988445ec34bdf4551e4afd1/indico/modules/events/registration/models/registrations.py#L915'>indico/modules/events/registration/models/registrations.py:915:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/indico/indico/blob/8220773b15be8bd07988445ec34bdf4551e4afd1/indico/modules/rb/models/reservation_occurrences.py#L77'>indico/modules/rb/models/reservation_occurrences.py:77:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/indico/indico/blob/8220773b15be8bd07988445ec34bdf4551e4afd1/indico/modules/rb/models/reservation_occurrences.py#L78'>indico/modules/rb/models/reservation_occurrences.py:78:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/indico/indico/blob/8220773b15be8bd07988445ec34bdf4551e4afd1/indico/modules/users/export_schemas.py#L288'>indico/modules/users/export_schemas.py:288:5:</a> RUF050 Wrong statement inside class definition
+... 2 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/python-trio/trio">python-trio/trio</a> (+27 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/python-trio/trio/blob/7d9c4a6488dd61b3f3502529d00a6eda8e8b7dff/src/trio/_core/_run.py#L1048'>src/trio/_core/_run.py:1048:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/python-trio/trio/blob/7d9c4a6488dd61b3f3502529d00a6eda8e8b7dff/src/trio/_file_io.py#L237'>src/trio/_file_io.py:237:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/python-trio/trio/blob/7d9c4a6488dd61b3f3502529d00a6eda8e8b7dff/src/trio/_file_io.py#L300'>src/trio/_file_io.py:300:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/python-trio/trio/blob/7d9c4a6488dd61b3f3502529d00a6eda8e8b7dff/src/trio/_path.py#L215'>src/trio/_path.py:215:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/python-trio/trio/blob/7d9c4a6488dd61b3f3502529d00a6eda8e8b7dff/src/trio/_path.py#L221'>src/trio/_path.py:221:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/python-trio/trio/blob/7d9c4a6488dd61b3f3502529d00a6eda8e8b7dff/src/trio/_path.py#L224'>src/trio/_path.py:224:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/python-trio/trio/blob/7d9c4a6488dd61b3f3502529d00a6eda8e8b7dff/src/trio/_path.py#L232'>src/trio/_path.py:232:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/python-trio/trio/blob/7d9c4a6488dd61b3f3502529d00a6eda8e8b7dff/src/trio/_path.py#L243'>src/trio/_path.py:243:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/python-trio/trio/blob/7d9c4a6488dd61b3f3502529d00a6eda8e8b7dff/src/trio/_path.py#L245'>src/trio/_path.py:245:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/python-trio/trio/blob/7d9c4a6488dd61b3f3502529d00a6eda8e8b7dff/src/trio/_socket.py#L1119'>src/trio/_socket.py:1119:5:</a> RUF050 Wrong statement inside class definition
+... 17 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pytest-dev/pytest">pytest-dev/pytest</a> (+12 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/pytest-dev/pytest/blob/acf130311806cb1a627ea0e21369c7d6f586663a/src/_pytest/_py/path.py#L204'>src/_pytest/_py/path.py:204:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pytest-dev/pytest/blob/acf130311806cb1a627ea0e21369c7d6f586663a/src/_pytest/_py/path.py#L299'>src/_pytest/_py/path.py:299:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pytest-dev/pytest/blob/acf130311806cb1a627ea0e21369c7d6f586663a/src/_pytest/assertion/rewrite.py#L292'>src/_pytest/assertion/rewrite.py:292:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pytest-dev/pytest/blob/acf130311806cb1a627ea0e21369c7d6f586663a/src/_pytest/config/argparsing.py#L450'>src/_pytest/config/argparsing.py:450:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pytest-dev/pytest/blob/acf130311806cb1a627ea0e21369c7d6f586663a/src/_pytest/doctest.py#L511'>src/_pytest/doctest.py:511:13:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pytest-dev/pytest/blob/acf130311806cb1a627ea0e21369c7d6f586663a/src/_pytest/doctest.py#L533'>src/_pytest/doctest.py:533:13:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pytest-dev/pytest/blob/acf130311806cb1a627ea0e21369c7d6f586663a/src/_pytest/doctest.py#L551'>src/_pytest/doctest.py:551:13:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pytest-dev/pytest/blob/acf130311806cb1a627ea0e21369c7d6f586663a/src/_pytest/mark/structures.py#L505'>src/_pytest/mark/structures.py:505:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pytest-dev/pytest/blob/acf130311806cb1a627ea0e21369c7d6f586663a/src/_pytest/pytester.py#L243'>src/_pytest/pytester.py:243:5:</a> RUF050 Wrong statement inside class definition
++ <a href='https://github.com/pytest-dev/pytest/blob/acf130311806cb1a627ea0e21369c7d6f586663a/src/_pytest/reports.py#L69'>src/_pytest/reports.py:69:5:</a> RUF050 Wrong statement inside class definition
+... 2 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF050 | 245 | 245 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Marked ready for review by @Lokejoke on 2024-11-26 13:43_
+
+---
+
+_Comment by @MichaReiser on 2024-11-26 15:18_
+
+This seems more common than I expected: A few findings from clicking through the ecosystem results:
+
+* I'm unsure if we should disallow `pass` and `...` in class bodies. They are harmless on their own. They might be useless if the class has a docstring
+* It's important to allow if statements in typing stubs, e.g. this is a common pattern https://github.com/python/typeshed/blob/02533d13ea43423fab76f6e8d2decf1350fcc302/stdlib/_ctypes.pyi#L221
+
+---
+
+_Label `rule` added by @MichaReiser on 2024-11-26 15:18_
+
+---
+
+_Label `needs-decision` added by @MichaReiser on 2024-11-26 15:18_
+
+---
+
+_Comment by @AlexWaygood on 2024-11-26 22:34_
+
+I'm not sure we should accept this right now :/ I just don't really agree with the premise of the rule. There are lots of reasons why you might need to use a wider range of syntax than the very small selection this rule permits. To me, it seems like a very opinionated restriction rule that would be very noisy for a lot of our users and would have to be entirely disabled on many codebases.
+
+---
+
+_Comment by @MichaReiser on 2024-11-27 08:55_
+
+Thanks @AlexWaygood. This makes sense to me. Sorry @Lokejoke. We can reconsider adding this rule once we have a better framework for more opinionated rules, see #1774 
+
+---
+
+_Closed by @MichaReiser on 2024-11-27 08:55_
+
+---

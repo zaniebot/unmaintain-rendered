@@ -1,0 +1,397 @@
+```yaml
+number: 14144
+title: "[`flake8-builtins`] Skip lambda expressions in `builtin-argument-shadowing (A002)`"
+type: pull_request
+state: merged
+author: dylwil3
+labels:
+  - bug
+assignees: []
+merged: true
+base: main
+head: argument-shadow
+created_at: 2024-11-07T01:39:17Z
+updated_at: 2024-11-17T14:28:07Z
+url: https://github.com/astral-sh/ruff/pull/14144
+synced_at: 2026-01-10T20:50:57Z
+```
+
+# [`flake8-builtins`] Skip lambda expressions in `builtin-argument-shadowing (A002)`
+
+---
+
+_Pull request opened by @dylwil3 on 2024-11-07 01:39_
+
+Flake8-builtins provides two checks for arguments (really, parameters) of a function shadowing builtins: A002 checks function definitions, and A006 checks lambda expressions. This PR ensures that A002 is restricted to functions rather than lambda expressions.
+
+Closes #14135 .
+
+
+---
+
+_Comment by @github-actions[bot] on 2024-11-07 01:53_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+276 -278 violations, +0 -0 fixes in 7 projects; 47 projects unchanged)
+
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+79 -79 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/cli/cli_config.py#L82'>airflow/cli/cli_config.py:82:9:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/cli/cli_config.py#L82'>airflow/cli/cli_config.py:82:9:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/cli/cli_config.py#L86'>airflow/cli/cli_config.py:86:9:</a> A002 Argument `type` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/cli/cli_config.py#L86'>airflow/cli/cli_config.py:86:9:</a> A002 Function argument `type` is shadowing a Python builtin
+- <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/models/pool.py#L96'>airflow/models/pool.py:96:25:</a> A002 Argument `id` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/models/pool.py#L96'>airflow/models/pool.py:96:25:</a> A002 Function argument `id` is shadowing a Python builtin
+- <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/models/taskinstance.py#L229'>airflow/models/taskinstance.py:229:26:</a> A002 Argument `id` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/models/taskinstance.py#L229'>airflow/models/taskinstance.py:229:26:</a> A002 Function argument `id` is shadowing a Python builtin
+- <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/traces/tracer.py#L38'>airflow/traces/tracer.py:38:28:</a> A002 Argument `list` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/traces/tracer.py#L38'>airflow/traces/tracer.py:38:28:</a> A002 Function argument `list` is shadowing a Python builtin
+- <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/traces/utils.py#L36'>airflow/traces/utils.py:36:53:</a> A002 Argument `type` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/traces/utils.py#L36'>airflow/traces/utils.py:36:53:</a> A002 Function argument `type` is shadowing a Python builtin
+- <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/dev/assign_cherry_picked_prs_with_milestone.py#L381'>dev/assign_cherry_picked_prs_with_milestone.py:381:27:</a> A002 Argument `type` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/dev/assign_cherry_picked_prs_with_milestone.py#L381'>dev/assign_cherry_picked_prs_with_milestone.py:381:27:</a> A002 Function argument `type` is shadowing a Python builtin
+... 144 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+12 -13 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/de8282cea0d36c41ce2b780cc5f13ce9d5d3f0ee/superset/migrations/versions/2018-07-22_11-59_bebcf3fed1fe_convert_dashboard_v1_positions.py#L228'>superset/migrations/versions/2018-07-22_11-59_bebcf3fed1fe_convert_dashboard_v1_positions.py:228:27:</a> A002 Argument `sum` is shadowing a Python builtin
+- <a href='https://github.com/apache/superset/blob/de8282cea0d36c41ce2b780cc5f13ce9d5d3f0ee/superset/models/helpers.py#L1429'>superset/models/helpers.py:1429:9:</a> A002 Argument `filter` is shadowing a Python builtin
++ <a href='https://github.com/apache/superset/blob/de8282cea0d36c41ce2b780cc5f13ce9d5d3f0ee/superset/models/helpers.py#L1429'>superset/models/helpers.py:1429:9:</a> A002 Function argument `filter` is shadowing a Python builtin
+- <a href='https://github.com/apache/superset/blob/de8282cea0d36c41ce2b780cc5f13ce9d5d3f0ee/superset/utils/core.py#L590'>superset/utils/core.py:590:15:</a> A002 Argument `type` is shadowing a Python builtin
++ <a href='https://github.com/apache/superset/blob/de8282cea0d36c41ce2b780cc5f13ce9d5d3f0ee/superset/utils/core.py#L590'>superset/utils/core.py:590:15:</a> A002 Function argument `type` is shadowing a Python builtin
+- <a href='https://github.com/apache/superset/blob/de8282cea0d36c41ce2b780cc5f13ce9d5d3f0ee/superset/utils/core.py#L609'>superset/utils/core.py:609:15:</a> A002 Argument `type` is shadowing a Python builtin
++ <a href='https://github.com/apache/superset/blob/de8282cea0d36c41ce2b780cc5f13ce9d5d3f0ee/superset/utils/core.py#L609'>superset/utils/core.py:609:15:</a> A002 Function argument `type` is shadowing a Python builtin
+- <a href='https://github.com/apache/superset/blob/de8282cea0d36c41ce2b780cc5f13ce9d5d3f0ee/tests/integration_tests/base_tests.py#L598'>tests/integration_tests/base_tests.py:598:9:</a> A002 Argument `filter` is shadowing a Python builtin
++ <a href='https://github.com/apache/superset/blob/de8282cea0d36c41ce2b780cc5f13ce9d5d3f0ee/tests/integration_tests/base_tests.py#L598'>tests/integration_tests/base_tests.py:598:9:</a> A002 Function argument `filter` is shadowing a Python builtin
+- <a href='https://github.com/apache/superset/blob/de8282cea0d36c41ce2b780cc5f13ce9d5d3f0ee/tests/integration_tests/celery_tests.py#L64'>tests/integration_tests/celery_tests.py:64:21:</a> A002 Argument `id` is shadowing a Python builtin
+... 15 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+117 -117 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/alias.py#L83'>src/bokeh/core/property/alias.py:83:46:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/alias.py#L83'>src/bokeh/core/property/alias.py:83:46:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/alias.py#L98'>src/bokeh/core/property/alias.py:98:39:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/alias.py#L98'>src/bokeh/core/property/alias.py:98:39:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/any.py#L83'>src/bokeh/core/property/any.py:83:58:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/any.py#L83'>src/bokeh/core/property/any.py:83:58:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L110'>src/bokeh/core/property/bases.py:110:57:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L110'>src/bokeh/core/property/bases.py:110:57:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L139'>src/bokeh/core/property/bases.py:139:57:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L139'>src/bokeh/core/property/bases.py:139:57:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L449'>src/bokeh/core/property/bases.py:449:93:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L449'>src/bokeh/core/property/bases.py:449:93:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L460'>src/bokeh/core/property/bases.py:460:57:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L460'>src/bokeh/core/property/bases.py:460:57:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L516'>src/bokeh/core/property/bases.py:516:96:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L516'>src/bokeh/core/property/bases.py:516:96:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/color.py#L124'>src/bokeh/core/property/color.py:124:112:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/color.py#L124'>src/bokeh/core/property/color.py:124:112:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/color.py#L176'>src/bokeh/core/property/color.py:176:55:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/color.py#L176'>src/bokeh/core/property/color.py:176:55:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/constraints.py#L60'>src/bokeh/core/property/constraints.py:60:9:</a> A002 Argument `type` is shadowing a Python builtin
+... 213 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+0 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+52 -53 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/zulip/zulip/blob/bd10923f131b64e6e84db3fa60a3bf946e83499e/analytics/lib/counts.py#L418'>analytics/lib/counts.py:418:25:</a> A002 Argument `property` is shadowing a Python builtin
++ <a href='https://github.com/zulip/zulip/blob/bd10923f131b64e6e84db3fa60a3bf946e83499e/analytics/lib/counts.py#L418'>analytics/lib/counts.py:418:25:</a> A002 Function argument `property` is shadowing a Python builtin
+- <a href='https://github.com/zulip/zulip/blob/bd10923f131b64e6e84db3fa60a3bf946e83499e/analytics/lib/counts.py#L432'>analytics/lib/counts.py:432:5:</a> A002 Argument `property` is shadowing a Python builtin
++ <a href='https://github.com/zulip/zulip/blob/bd10923f131b64e6e84db3fa60a3bf946e83499e/analytics/lib/counts.py#L432'>analytics/lib/counts.py:432:5:</a> A002 Function argument `property` is shadowing a Python builtin
+- <a href='https://github.com/zulip/zulip/blob/bd10923f131b64e6e84db3fa60a3bf946e83499e/analytics/lib/counts.py#L475'>analytics/lib/counts.py:475:9:</a> A002 Argument `property` is shadowing a Python builtin
++ <a href='https://github.com/zulip/zulip/blob/bd10923f131b64e6e84db3fa60a3bf946e83499e/analytics/lib/counts.py#L475'>analytics/lib/counts.py:475:9:</a> A002 Function argument `property` is shadowing a Python builtin
+- <a href='https://github.com/zulip/zulip/blob/bd10923f131b64e6e84db3fa60a3bf946e83499e/analytics/lib/counts.py#L523'>analytics/lib/counts.py:523:5:</a> A002 Argument `property` is shadowing a Python builtin
++ <a href='https://github.com/zulip/zulip/blob/bd10923f131b64e6e84db3fa60a3bf946e83499e/analytics/lib/counts.py#L523'>analytics/lib/counts.py:523:5:</a> A002 Function argument `property` is shadowing a Python builtin
+- <a href='https://github.com/zulip/zulip/blob/bd10923f131b64e6e84db3fa60a3bf946e83499e/analytics/lib/counts.py#L57'>analytics/lib/counts.py:57:9:</a> A002 Argument `property` is shadowing a Python builtin
++ <a href='https://github.com/zulip/zulip/blob/bd10923f131b64e6e84db3fa60a3bf946e83499e/analytics/lib/counts.py#L57'>analytics/lib/counts.py:57:9:</a> A002 Function argument `property` is shadowing a Python builtin
+... 95 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zanieb/huggingface-notebooks">zanieb/huggingface-notebooks</a> (+8 -8 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select A,E703,F704,B015,B018,D100</pre>
+</p>
+<p>
+
+<pre>
+- course/fr/chapter9/section4.ipynb:cell 5:17:13: A002 Argument `input` is shadowing a Python builtin
++ course/fr/chapter9/section4.ipynb:cell 5:17:13: A002 Function argument `input` is shadowing a Python builtin
+- diffusers/exploring_simple optimizations_for_sdxl.ipynb:cell 6:10:25: A002 Argument `bytes` is shadowing a Python builtin
++ diffusers/exploring_simple optimizations_for_sdxl.ipynb:cell 6:10:25: A002 Function argument `bytes` is shadowing a Python builtin
+- diffusers/in_painting_with_stable_diffusion_using_diffusers.ipynb:cell 15:1:13: A002 Argument `dict` is shadowing a Python builtin
++ diffusers/in_painting_with_stable_diffusion_using_diffusers.ipynb:cell 15:1:13: A002 Function argument `dict` is shadowing a Python builtin
+- diffusers/sd_textual_inversion_training.ipynb:cell 22:12:9: A002 Argument `set` is shadowing a Python builtin
++ diffusers/sd_textual_inversion_training.ipynb:cell 22:12:9: A002 Function argument `set` is shadowing a Python builtin
+- diffusers/stable_diffusion_textual_inversion_library_navigator.ipynb:cell 7:6:24: A002 Argument `id` is shadowing a Python builtin
++ diffusers/stable_diffusion_textual_inversion_library_navigator.ipynb:cell 7:6:24: A002 Function argument `id` is shadowing a Python builtin
+... 6 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (+8 -8 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select A,E703,F704,B015,B018,D100</pre>
+</p>
+<p>
+
+<pre>
+- examples/Custom-LLM-as-a-Judge.ipynb:cell 13:21:25: A002 Argument `input` is shadowing a Python builtin
++ examples/Custom-LLM-as-a-Judge.ipynb:cell 13:21:25: A002 Function argument `input` is shadowing a Python builtin
+- examples/Custom-LLM-as-a-Judge.ipynb:cell 15:13:16: A002 Argument `input` is shadowing a Python builtin
++ examples/Custom-LLM-as-a-Judge.ipynb:cell 15:13:16: A002 Function argument `input` is shadowing a Python builtin
+- examples/Custom-LLM-as-a-Judge.ipynb:cell 18:2:25: A002 Argument `input` is shadowing a Python builtin
++ examples/Custom-LLM-as-a-Judge.ipynb:cell 18:2:25: A002 Function argument `input` is shadowing a Python builtin
+- examples/Custom-LLM-as-a-Judge.ipynb:cell 23:37:22: A002 Argument `input` is shadowing a Python builtin
++ examples/Custom-LLM-as-a-Judge.ipynb:cell 23:37:22: A002 Function argument `input` is shadowing a Python builtin
+- examples/Custom-LLM-as-a-Judge.ipynb:cell 24:1:16: A002 Argument `input` is shadowing a Python builtin
++ examples/Custom-LLM-as-a-Judge.ipynb:cell 24:1:16: A002 Function argument `input` is shadowing a Python builtin
+... 6 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| A002 | 554 | 276 | 278 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+276 -278 violations, +0 -0 fixes in 6 projects; 48 projects unchanged)
+
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+79 -79 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/cli/cli_config.py#L82'>airflow/cli/cli_config.py:82:9:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/cli/cli_config.py#L82'>airflow/cli/cli_config.py:82:9:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/cli/cli_config.py#L86'>airflow/cli/cli_config.py:86:9:</a> A002 Argument `type` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/cli/cli_config.py#L86'>airflow/cli/cli_config.py:86:9:</a> A002 Function argument `type` is shadowing a Python builtin
+- <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/models/pool.py#L96'>airflow/models/pool.py:96:25:</a> A002 Argument `id` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/models/pool.py#L96'>airflow/models/pool.py:96:25:</a> A002 Function argument `id` is shadowing a Python builtin
+- <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/models/taskinstance.py#L229'>airflow/models/taskinstance.py:229:26:</a> A002 Argument `id` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/models/taskinstance.py#L229'>airflow/models/taskinstance.py:229:26:</a> A002 Function argument `id` is shadowing a Python builtin
+- <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/traces/tracer.py#L38'>airflow/traces/tracer.py:38:28:</a> A002 Argument `list` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/traces/tracer.py#L38'>airflow/traces/tracer.py:38:28:</a> A002 Function argument `list` is shadowing a Python builtin
+- <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/traces/utils.py#L36'>airflow/traces/utils.py:36:53:</a> A002 Argument `type` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/airflow/traces/utils.py#L36'>airflow/traces/utils.py:36:53:</a> A002 Function argument `type` is shadowing a Python builtin
+- <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/dev/assign_cherry_picked_prs_with_milestone.py#L381'>dev/assign_cherry_picked_prs_with_milestone.py:381:27:</a> A002 Argument `type` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/845a16057625127490ba8d655b3fe1114373ff7b/dev/assign_cherry_picked_prs_with_milestone.py#L381'>dev/assign_cherry_picked_prs_with_milestone.py:381:27:</a> A002 Function argument `type` is shadowing a Python builtin
+... 144 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+12 -13 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/apache/superset/blob/de8282cea0d36c41ce2b780cc5f13ce9d5d3f0ee/superset/migrations/versions/2018-07-22_11-59_bebcf3fed1fe_convert_dashboard_v1_positions.py#L228'>superset/migrations/versions/2018-07-22_11-59_bebcf3fed1fe_convert_dashboard_v1_positions.py:228:27:</a> A002 Argument `sum` is shadowing a Python builtin
+- <a href='https://github.com/apache/superset/blob/de8282cea0d36c41ce2b780cc5f13ce9d5d3f0ee/superset/models/helpers.py#L1429'>superset/models/helpers.py:1429:9:</a> A002 Argument `filter` is shadowing a Python builtin
++ <a href='https://github.com/apache/superset/blob/de8282cea0d36c41ce2b780cc5f13ce9d5d3f0ee/superset/models/helpers.py#L1429'>superset/models/helpers.py:1429:9:</a> A002 Function argument `filter` is shadowing a Python builtin
+- <a href='https://github.com/apache/superset/blob/de8282cea0d36c41ce2b780cc5f13ce9d5d3f0ee/superset/utils/core.py#L590'>superset/utils/core.py:590:15:</a> A002 Argument `type` is shadowing a Python builtin
++ <a href='https://github.com/apache/superset/blob/de8282cea0d36c41ce2b780cc5f13ce9d5d3f0ee/superset/utils/core.py#L590'>superset/utils/core.py:590:15:</a> A002 Function argument `type` is shadowing a Python builtin
+- <a href='https://github.com/apache/superset/blob/de8282cea0d36c41ce2b780cc5f13ce9d5d3f0ee/superset/utils/core.py#L609'>superset/utils/core.py:609:15:</a> A002 Argument `type` is shadowing a Python builtin
++ <a href='https://github.com/apache/superset/blob/de8282cea0d36c41ce2b780cc5f13ce9d5d3f0ee/superset/utils/core.py#L609'>superset/utils/core.py:609:15:</a> A002 Function argument `type` is shadowing a Python builtin
+- <a href='https://github.com/apache/superset/blob/de8282cea0d36c41ce2b780cc5f13ce9d5d3f0ee/tests/integration_tests/base_tests.py#L598'>tests/integration_tests/base_tests.py:598:9:</a> A002 Argument `filter` is shadowing a Python builtin
++ <a href='https://github.com/apache/superset/blob/de8282cea0d36c41ce2b780cc5f13ce9d5d3f0ee/tests/integration_tests/base_tests.py#L598'>tests/integration_tests/base_tests.py:598:9:</a> A002 Function argument `filter` is shadowing a Python builtin
+- <a href='https://github.com/apache/superset/blob/de8282cea0d36c41ce2b780cc5f13ce9d5d3f0ee/tests/integration_tests/celery_tests.py#L64'>tests/integration_tests/celery_tests.py:64:21:</a> A002 Argument `id` is shadowing a Python builtin
+... 15 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+117 -117 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/alias.py#L83'>src/bokeh/core/property/alias.py:83:46:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/alias.py#L83'>src/bokeh/core/property/alias.py:83:46:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/alias.py#L98'>src/bokeh/core/property/alias.py:98:39:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/alias.py#L98'>src/bokeh/core/property/alias.py:98:39:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/any.py#L83'>src/bokeh/core/property/any.py:83:58:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/any.py#L83'>src/bokeh/core/property/any.py:83:58:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L110'>src/bokeh/core/property/bases.py:110:57:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L110'>src/bokeh/core/property/bases.py:110:57:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L139'>src/bokeh/core/property/bases.py:139:57:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L139'>src/bokeh/core/property/bases.py:139:57:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L449'>src/bokeh/core/property/bases.py:449:93:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L449'>src/bokeh/core/property/bases.py:449:93:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L460'>src/bokeh/core/property/bases.py:460:57:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L460'>src/bokeh/core/property/bases.py:460:57:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L516'>src/bokeh/core/property/bases.py:516:96:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/bases.py#L516'>src/bokeh/core/property/bases.py:516:96:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/color.py#L124'>src/bokeh/core/property/color.py:124:112:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/color.py#L124'>src/bokeh/core/property/color.py:124:112:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/color.py#L176'>src/bokeh/core/property/color.py:176:55:</a> A002 Argument `help` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/color.py#L176'>src/bokeh/core/property/color.py:176:55:</a> A002 Function argument `help` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/constraints.py#L60'>src/bokeh/core/property/constraints.py:60:9:</a> A002 Argument `type` is shadowing a Python builtin
+... 213 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+52 -53 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/zulip/zulip/blob/bd10923f131b64e6e84db3fa60a3bf946e83499e/analytics/lib/counts.py#L418'>analytics/lib/counts.py:418:25:</a> A002 Argument `property` is shadowing a Python builtin
++ <a href='https://github.com/zulip/zulip/blob/bd10923f131b64e6e84db3fa60a3bf946e83499e/analytics/lib/counts.py#L418'>analytics/lib/counts.py:418:25:</a> A002 Function argument `property` is shadowing a Python builtin
+- <a href='https://github.com/zulip/zulip/blob/bd10923f131b64e6e84db3fa60a3bf946e83499e/analytics/lib/counts.py#L432'>analytics/lib/counts.py:432:5:</a> A002 Argument `property` is shadowing a Python builtin
++ <a href='https://github.com/zulip/zulip/blob/bd10923f131b64e6e84db3fa60a3bf946e83499e/analytics/lib/counts.py#L432'>analytics/lib/counts.py:432:5:</a> A002 Function argument `property` is shadowing a Python builtin
+- <a href='https://github.com/zulip/zulip/blob/bd10923f131b64e6e84db3fa60a3bf946e83499e/analytics/lib/counts.py#L475'>analytics/lib/counts.py:475:9:</a> A002 Argument `property` is shadowing a Python builtin
++ <a href='https://github.com/zulip/zulip/blob/bd10923f131b64e6e84db3fa60a3bf946e83499e/analytics/lib/counts.py#L475'>analytics/lib/counts.py:475:9:</a> A002 Function argument `property` is shadowing a Python builtin
+- <a href='https://github.com/zulip/zulip/blob/bd10923f131b64e6e84db3fa60a3bf946e83499e/analytics/lib/counts.py#L523'>analytics/lib/counts.py:523:5:</a> A002 Argument `property` is shadowing a Python builtin
++ <a href='https://github.com/zulip/zulip/blob/bd10923f131b64e6e84db3fa60a3bf946e83499e/analytics/lib/counts.py#L523'>analytics/lib/counts.py:523:5:</a> A002 Function argument `property` is shadowing a Python builtin
+- <a href='https://github.com/zulip/zulip/blob/bd10923f131b64e6e84db3fa60a3bf946e83499e/analytics/lib/counts.py#L57'>analytics/lib/counts.py:57:9:</a> A002 Argument `property` is shadowing a Python builtin
++ <a href='https://github.com/zulip/zulip/blob/bd10923f131b64e6e84db3fa60a3bf946e83499e/analytics/lib/counts.py#L57'>analytics/lib/counts.py:57:9:</a> A002 Function argument `property` is shadowing a Python builtin
+... 95 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zanieb/huggingface-notebooks">zanieb/huggingface-notebooks</a> (+8 -8 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select A,E703,F704,B015,B018,D100</pre>
+</p>
+<p>
+
+<pre>
+- course/fr/chapter9/section4.ipynb:cell 5:17:13: A002 Argument `input` is shadowing a Python builtin
++ course/fr/chapter9/section4.ipynb:cell 5:17:13: A002 Function argument `input` is shadowing a Python builtin
+- diffusers/exploring_simple optimizations_for_sdxl.ipynb:cell 6:10:25: A002 Argument `bytes` is shadowing a Python builtin
++ diffusers/exploring_simple optimizations_for_sdxl.ipynb:cell 6:10:25: A002 Function argument `bytes` is shadowing a Python builtin
+- diffusers/in_painting_with_stable_diffusion_using_diffusers.ipynb:cell 15:1:13: A002 Argument `dict` is shadowing a Python builtin
++ diffusers/in_painting_with_stable_diffusion_using_diffusers.ipynb:cell 15:1:13: A002 Function argument `dict` is shadowing a Python builtin
+- diffusers/sd_textual_inversion_training.ipynb:cell 22:12:9: A002 Argument `set` is shadowing a Python builtin
++ diffusers/sd_textual_inversion_training.ipynb:cell 22:12:9: A002 Function argument `set` is shadowing a Python builtin
+- diffusers/stable_diffusion_textual_inversion_library_navigator.ipynb:cell 7:6:24: A002 Argument `id` is shadowing a Python builtin
++ diffusers/stable_diffusion_textual_inversion_library_navigator.ipynb:cell 7:6:24: A002 Function argument `id` is shadowing a Python builtin
+... 6 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (+8 -8 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select A,E703,F704,B015,B018,D100</pre>
+</p>
+<p>
+
+<pre>
+- examples/Custom-LLM-as-a-Judge.ipynb:cell 13:21:25: A002 Argument `input` is shadowing a Python builtin
++ examples/Custom-LLM-as-a-Judge.ipynb:cell 13:21:25: A002 Function argument `input` is shadowing a Python builtin
+- examples/Custom-LLM-as-a-Judge.ipynb:cell 15:13:16: A002 Argument `input` is shadowing a Python builtin
++ examples/Custom-LLM-as-a-Judge.ipynb:cell 15:13:16: A002 Function argument `input` is shadowing a Python builtin
+- examples/Custom-LLM-as-a-Judge.ipynb:cell 18:2:25: A002 Argument `input` is shadowing a Python builtin
++ examples/Custom-LLM-as-a-Judge.ipynb:cell 18:2:25: A002 Function argument `input` is shadowing a Python builtin
+- examples/Custom-LLM-as-a-Judge.ipynb:cell 23:37:22: A002 Argument `input` is shadowing a Python builtin
++ examples/Custom-LLM-as-a-Judge.ipynb:cell 23:37:22: A002 Function argument `input` is shadowing a Python builtin
+- examples/Custom-LLM-as-a-Judge.ipynb:cell 24:1:16: A002 Argument `input` is shadowing a Python builtin
++ examples/Custom-LLM-as-a-Judge.ipynb:cell 24:1:16: A002 Function argument `input` is shadowing a Python builtin
+... 6 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| A002 | 554 | 276 | 278 | 0 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Label `bug` added by @dhruvmanila on 2024-11-07 04:07_
+
+---
+
+_@dhruvmanila approved on 2024-11-07 04:09_
+
+---
+
+_Comment by @dhruvmanila on 2024-11-07 04:11_
+
+Should we update the diagnostic message to be more explicit similar to `A006`? Like "Function argument ..." instead of just "Argument ..."
+
+---
+
+_Merged by @dylwil3 on 2024-11-07 05:34_
+
+---
+
+_Closed by @dylwil3 on 2024-11-07 05:34_
+
+---
+
+_Branch deleted on 2024-11-07 05:56_
+
+---
+
+_Branch restored on 2024-11-17 14:28_
+
+---

@@ -1,0 +1,256 @@
+```yaml
+number: 14480
+title: "Stabilize `A004`"
+type: pull_request
+state: merged
+author: MichaReiser
+labels:
+  - rule
+  - breaking
+assignees: []
+merged: true
+base: ruff-0.8
+head: stabilize-a004
+created_at: 2024-11-20T08:34:21Z
+updated_at: 2024-11-20T12:06:53Z
+url: https://github.com/astral-sh/ruff/pull/14480
+synced_at: 2026-01-10T20:50:57Z
+```
+
+# Stabilize `A004`
+
+---
+
+_Pull request opened by @MichaReiser on 2024-11-20 08:34_
+
+## Summary
+
+Stabilize `A004`. 
+
+Stabilizing `A004` requires a breaking change to `A001` (see https://github.com/astral-sh/ruff/pull/12546/)
+Before, `A001` used to flag shadowed builtins for `import` and `from ... import` statements. 
+Keep doing so now would overlap with `A004`. That's why this PR also stabilizes the behavior change to stop flaging `import` and `from ... import` builtin shadowing in `A001`. 
+
+## Test Plan
+
+I reviewed the test changes and verified that the no-longer flagged violations by `A001` are now flagged by `A004`
+
+
+---
+
+_Label `rule` added by @MichaReiser on 2024-11-20 08:34_
+
+---
+
+_Label `breaking` added by @MichaReiser on 2024-11-20 08:34_
+
+---
+
+_Added to milestone `v0.8` by @MichaReiser on 2024-11-20 08:34_
+
+---
+
+_@MichaReiser reviewed on 2024-11-20 08:34_
+
+---
+
+_Review comment by @MichaReiser on `crates/ruff_linter/src/checkers/ast/analyze/statement.rs`:594 on 2024-11-20 08:34_
+
+Thanks @charliermarsh for adding the TODO comments. I would have missed this otherwise! 
+
+---
+
+_Review requested from @AlexWaygood by @MichaReiser on 2024-11-20 08:35_
+
+---
+
+_Comment by @github-actions[bot] on 2024-11-20 08:49_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+66 -1 violations, +0 -0 fixes in 7 projects; 47 projects unchanged)
+
+<details><summary><a href="https://github.com/Snowflake-Labs/snowcli">Snowflake-Labs/snowcli</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/Snowflake-Labs/snowcli/blob/fec22bb2845b438913c013681e5b3e4f85f7af02/performance_history_analysis.py#L24'>performance_history_analysis.py:24:18:</a> A004 Import `print` is shadowing a Python builtin
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+8 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/8440016d3e8c50056cad5da346ac24289a52670d/airflow/api_internal/internal_api_call.py#L115'>airflow/api_internal/internal_api_call.py:115:37:</a> A004 Import `ConnectionError` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/8440016d3e8c50056cad5da346ac24289a52670d/clients/python/test_python_client.py#L36'>clients/python/test_python_client.py:36:22:</a> A004 Import `print` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/8440016d3e8c50056cad5da346ac24289a52670d/dev/check_files.py#L24'>dev/check_files.py:24:18:</a> A004 Import `print` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/8440016d3e8c50056cad5da346ac24289a52670d/providers/src/airflow/providers/cncf/kubernetes/utils/pod_manager.py#L39'>providers/src/airflow/providers/cncf/kubernetes/utils/pod_manager.py:39:43:</a> A004 Import `TimeoutError` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/8440016d3e8c50056cad5da346ac24289a52670d/providers/src/airflow/providers/databricks/hooks/databricks_base.py#L31'>providers/src/airflow/providers/databricks/hooks/databricks_base.py:31:32:</a> A004 Import `TimeoutError` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/8440016d3e8c50056cad5da346ac24289a52670d/providers/tests/databricks/hooks/test_databricks.py#L24'>providers/tests/databricks/hooks/test_databricks.py:24:32:</a> A004 Import `TimeoutError` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/8440016d3e8c50056cad5da346ac24289a52670d/scripts/ci/pre_commit/check_order_dockerfile_extras.py#L28'>scripts/ci/pre_commit/check_order_dockerfile_extras.py:28:18:</a> A004 Import `print` is shadowing a Python builtin
++ <a href='https://github.com/apache/airflow/blob/8440016d3e8c50056cad5da346ac24289a52670d/scripts/ci/pre_commit/check_order_hatch_build.py#L28'>scripts/ci/pre_commit/check_order_hatch_build.py:28:18:</a> A004 Import `print` is shadowing a Python builtin
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+7 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/validation/check.py#L36'>src/bokeh/core/validation/check.py:36:20:</a> A004 Import `Warning` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/validation/decorators.py#L34'>src/bokeh/core/validation/decorators.py:34:34:</a> A004 Import `Warning` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/validation/warnings.py#L37'>src/bokeh/core/validation/warnings.py:37:20:</a> A004 Import `Warning` is shadowing a Python builtin
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/models/callbacks.py#L25'>src/bokeh/models/callbacks.py:25:42:</a> A001 Variable `any` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/models/callbacks.py#L25'>src/bokeh/models/callbacks.py:25:42:</a> A004 Import `any` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/support/plugins/bokeh_server.py#L33'>tests/support/plugins/bokeh_server.py:33:33:</a> A004 Import `ConnectionError` is shadowing a Python builtin
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/tests/support/plugins/jupyter_notebook.py#L39'>tests/support/plugins/jupyter_notebook.py:39:33:</a> A004 Import `ConnectionError` is shadowing a Python builtin
+... 2 additional changes omitted for rule A004
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch_cli/main.py#L440'>src/latch_cli/main.py:440:48:</a> A004 Import `exec` is shadowing a Python builtin
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/6c981d938590c0029ce4975fc352967fdd9e749c/zerver/tests/test_link_embed.py#L11'>zerver/tests/test_link_embed.py:11:33:</a> A004 Import `ConnectionError` is shadowing a Python builtin
++ <a href='https://github.com/zulip/zulip/blob/6c981d938590c0029ce4975fc352967fdd9e749c/zerver/tests/test_push_notifications.py#L24'>zerver/tests/test_push_notifications.py:24:33:</a> A004 Import `ConnectionError` is shadowing a Python builtin
++ <a href='https://github.com/zulip/zulip/blob/6c981d938590c0029ce4975fc352967fdd9e749c/zerver/tornado/django_api.py#L11'>zerver/tornado/django_api.py:11:31:</a> A004 Import `ConnectionError` is shadowing a Python builtin
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zanieb/huggingface-notebooks">zanieb/huggingface-notebooks</a> (+25 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select A,E703,F704,B015,B018,D100</pre>
+</p>
+<p>
+
+<pre>
++ diffusers/SDXL_DreamBooth_LoRA_.ipynb:cell 40:1:29: A004 Import `display` is shadowing a Python builtin
++ diffusers/geodiff_molecule_conformation.ipynb:cell 63:4:34: A004 Import `display` is shadowing a Python builtin
++ examples/accelerate_examples/simple_nlp_example.ipynb:cell 16:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/audio_classification.ipynb:cell 32:2:36: A004 Import `display` is shadowing a Python builtin
++ examples/language_modeling-tf.ipynb:cell 23:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/language_modeling.ipynb:cell 23:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/language_modeling_from_scratch-tf.ipynb:cell 23:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/language_modeling_from_scratch.ipynb:cell 23:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/multi_lingual_speech_recognition.ipynb:cell 25:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/multiple_choice-tf.ipynb:cell 24:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/multiple_choice.ipynb:cell 24:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/question_answering-tf.ipynb:cell 28:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/question_answering.ipynb:cell 28:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/speech_recognition.ipynb:cell 25:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/summarization-tf.ipynb:cell 24:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/summarization.ipynb:cell 24:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/summarization_ort.ipynb:cell 20:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/text_classification-tf.ipynb:cell 27:4:29: A004 Import `display` is shadowing a Python builtin
+... 7 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/openai/openai-cookbook">openai/openai-cookbook</a> (+21 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select A,E703,F704,B015,B018,D100</pre>
+</p>
+<p>
+
+<pre>
++ examples/Creating_slides_with_Assistants_API_and_DALL-E3.ipynb:cell 3:1:29: A004 Import `display` is shadowing a Python builtin
++ examples/Developing_hallucination_guardrails.ipynb:cell 2:2:29: A004 Import `display` is shadowing a Python builtin
++ examples/Fine_tuning_for_function_calling.ipynb:cell 10:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/GPT_with_vision_for_video_understanding.ipynb:cell 2:1:29: A004 Import `display` is shadowing a Python builtin
++ examples/How_to_call_functions_for_knowledge_retrieval.ipynb:cell 3:10:29: A004 Import `display` is shadowing a Python builtin
++ examples/How_to_combine_GPT4o_with_RAG_Outfit_Assistant.ipynb:cell 5:10:36: A004 Import `display` is shadowing a Python builtin
++ examples/Named_Entity_Recognition_to_enrich_text.ipynb:cell 9:9:29: A004 Import `display` is shadowing a Python builtin
++ examples/Parse_PDF_docs_for_RAG.ipynb:cell 5:20:18: A004 Import `print` is shadowing a Python builtin
++ examples/Question_answering_using_a_search_API.ipynb:cell 3:3:21: A004 Import `display` is shadowing a Python builtin
++ examples/Reproducible_outputs_with_the_seed_parameter.ipynb:cell 6:3:29: A004 Import `display` is shadowing a Python builtin
++ examples/Structured_Outputs_Intro.ipynb:cell 9:1:35: A004 Import `display` is shadowing a Python builtin
++ examples/Tag_caption_images_with_GPT4V.ipynb:cell 4:1:36: A004 Import `display` is shadowing a Python builtin
++ examples/Using_logprobs.ipynb:cell 3:4:29: A004 Import `display` is shadowing a Python builtin
++ examples/batch_processing.ipynb:cell 4:4:36: A004 Import `display` is shadowing a Python builtin
++ examples/evaluation/Getting_Started_with_OpenAI_Evals.ipynb:cell 28:35:33: A004 Import `display` is shadowing a Python builtin
+... 6 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (2 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| A004 | 66 | 66 | 0 | 0 | 0 |
+| A001 | 1 | 0 | 1 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+---
+
+_Closed by @MichaReiser on 2024-11-20 09:58_
+
+---
+
+_Reopened by @MichaReiser on 2024-11-20 09:58_
+
+---
+
+_Comment by @MichaReiser on 2024-11-20 10:07_
+
+The ecosystem checks look correct to me and they also highlight why it's important that A001 and A004 are different rules. A004 seems slightly more annoying because it requires changes on the user side where A001 prevents naming conflicts on the definition side (which seems preferrable in my view)
+
+---
+
+_Review comment by @AlexWaygood on `crates/ruff_linter/src/rules/flake8_builtins/rules/builtin_import_shadowing.rs`:1 on 2024-11-20 10:28_
+
+Could you add a short `## Examples` section to the docs for this rule?
+
+---
+
+_@AlexWaygood approved on 2024-11-20 10:28_
+
+Thank you!
+
+---
+
+_Merged by @MichaReiser on 2024-11-20 12:06_
+
+---
+
+_Closed by @MichaReiser on 2024-11-20 12:06_
+
+---
+
+_Branch deleted on 2024-11-20 12:06_
+
+---

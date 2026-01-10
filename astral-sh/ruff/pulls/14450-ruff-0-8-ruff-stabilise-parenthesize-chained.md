@@ -1,0 +1,238 @@
+```yaml
+number: 14450
+title: "[ruff-0.8] [`ruff`] Stabilise `parenthesize-chained-operators` (`RUF021`)"
+type: pull_request
+state: merged
+author: AlexWaygood
+labels:
+  - rule
+assignees: []
+merged: true
+base: ruff-0.8
+head: alex/stabilise-ruf021
+created_at: 2024-11-19T13:25:17Z
+updated_at: 2024-11-19T15:10:13Z
+url: https://github.com/astral-sh/ruff/pull/14450
+synced_at: 2026-01-10T20:50:57Z
+```
+
+# [ruff-0.8] [`ruff`] Stabilise `parenthesize-chained-operators` (`RUF021`)
+
+---
+
+_Pull request opened by @AlexWaygood on 2024-11-19 13:25_
+
+## Summary
+
+This rule has been in preview for a long time and its implementation has been stable for a long time. There are no open issues about the rule and no known issues in the implementation. The documentation seems clear.
+
+It's an opinionated stylistic rule, but also probably a change that most people would agree with (in our subjective opinion).
+
+## Test Plan
+
+We'll wait to see what the ecosystem check says!
+
+
+---
+
+_Label `rule` added by @AlexWaygood on 2024-11-19 13:25_
+
+---
+
+_Comment by @github-actions[bot] on 2024-11-19 13:40_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+63 -0 violations, +0 -0 fixes in 9 projects; 45 projects unchanged)
+
+<details><summary><a href="https://github.com/DisnakeDev/disnake">DisnakeDev/disnake</a> (+5 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/DisnakeDev/disnake/blob/ac5a936d187ff89d6756e5f33bf0b2965e7b7685/disnake/ext/commands/converter.py#L1190'>disnake/ext/commands/converter.py:1190:12:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/DisnakeDev/disnake/blob/ac5a936d187ff89d6756e5f33bf0b2965e7b7685/disnake/ext/tasks/__init__.py#L278'>disnake/ext/tasks/__init__.py:278:14:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/DisnakeDev/disnake/blob/ac5a936d187ff89d6756e5f33bf0b2965e7b7685/disnake/interactions/base.py#L1919'>disnake/interactions/base.py:1919:21:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/DisnakeDev/disnake/blob/ac5a936d187ff89d6756e5f33bf0b2965e7b7685/disnake/interactions/base.py#L224'>disnake/interactions/base.py:224:17:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/DisnakeDev/disnake/blob/ac5a936d187ff89d6756e5f33bf0b2965e7b7685/disnake/state.py#L2104'>disnake/state.py:2104:13:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/RasaHQ/rasa">RasaHQ/rasa</a> (+6 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/cli/utils.py#L74'>rasa/cli/utils.py:74:27:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/core/processor.py#L587'>rasa/core/processor.py:587:17:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/core/training_data/structures.py#L619'>rasa/shared/core/training_data/structures.py:619:17:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/shared/core/training_data/structures.py#L621'>rasa/shared/core/training_data/structures.py:621:20:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/utils/train_utils.py#L534'>rasa/utils/train_utils.py:534:9:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/RasaHQ/rasa/blob/7807b19ad5fffab73ca1a04dc710f812115a9288/rasa/utils/train_utils.py#L536'>rasa/utils/train_utils.py:536:12:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+20 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/e964c640cf2ac038307a6e78d87bf370b152ccc9/airflow/api_internal/internal_api_call.py#L129'>airflow/api_internal/internal_api_call.py:129:13:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/apache/airflow/blob/e964c640cf2ac038307a6e78d87bf370b152ccc9/airflow/metrics/validators.py#L241'>airflow/metrics/validators.py:241:16:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/apache/airflow/blob/e964c640cf2ac038307a6e78d87bf370b152ccc9/airflow/models/dagrun.py#L1327'>airflow/models/dagrun.py:1327:20:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/apache/airflow/blob/e964c640cf2ac038307a6e78d87bf370b152ccc9/airflow/serialization/serde.py#L230'>airflow/serialization/serde.py:230:8:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/apache/airflow/blob/e964c640cf2ac038307a6e78d87bf370b152ccc9/airflow/www/utils.py#L818'>airflow/www/utils.py:818:20:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/apache/airflow/blob/e964c640cf2ac038307a6e78d87bf370b152ccc9/airflow/www/utils.py#L831'>airflow/www/utils.py:831:20:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/apache/airflow/blob/e964c640cf2ac038307a6e78d87bf370b152ccc9/airflow/www/validators.py#L52'>airflow/www/validators.py:52:32:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/apache/airflow/blob/e964c640cf2ac038307a6e78d87bf370b152ccc9/dev/breeze/src/airflow_breeze/commands/developer_commands.py#L372'>dev/breeze/src/airflow_breeze/commands/developer_commands.py:372:25:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/apache/airflow/blob/e964c640cf2ac038307a6e78d87bf370b152ccc9/dev/breeze/src/airflow_breeze/utils/kubernetes_utils.py#L272'>dev/breeze/src/airflow_breeze/utils/kubernetes_utils.py:272:25:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/apache/airflow/blob/e964c640cf2ac038307a6e78d87bf370b152ccc9/providers/src/airflow/providers/amazon/aws/auth_manager/aws_auth_manager.py#L359'>providers/src/airflow/providers/amazon/aws/auth_manager/aws_auth_manager.py:359:17:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/apache/airflow/blob/e964c640cf2ac038307a6e78d87bf370b152ccc9/providers/src/airflow/providers/amazon/aws/auth_manager/aws_auth_manager.py#L361'>providers/src/airflow/providers/amazon/aws/auth_manager/aws_auth_manager.py:361:20:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/apache/airflow/blob/e964c640cf2ac038307a6e78d87bf370b152ccc9/providers/src/airflow/providers/cncf/kubernetes/operators/job.py#L127'>providers/src/airflow/providers/cncf/kubernetes/operators/job.py:127:16:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/apache/airflow/blob/e964c640cf2ac038307a6e78d87bf370b152ccc9/providers/src/airflow/providers/cncf/kubernetes/operators/pod.py#L414'>providers/src/airflow/providers/cncf/kubernetes/operators/pod.py:414:16:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/apache/airflow/blob/e964c640cf2ac038307a6e78d87bf370b152ccc9/providers/src/airflow/providers/cncf/kubernetes/triggers/pod.py#L192'>providers/src/airflow/providers/cncf/kubernetes/triggers/pod.py:192:19:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/apache/airflow/blob/e964c640cf2ac038307a6e78d87bf370b152ccc9/providers/src/airflow/providers/google/common/hooks/base_google.py#L411'>providers/src/airflow/providers/google/common/hooks/base_google.py:411:16:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
+... 5 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/migrations/shared/utils.py#L167'>superset/migrations/shared/utils.py:167:16:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/security/manager.py#L2195'>superset/security/manager.py:2195:12:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/sql_parse.py#L835'>superset/sql_parse.py:835:21:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/core/property/dataspec.py#L334'>src/bokeh/core/property/dataspec.py:334:35:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/plotting/_graph.py#L74'>src/bokeh/plotting/_graph.py:74:8:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/milvus-io/pymilvus/blob/24cba21ea49f75bbcfd3e85a261412329345e8ea/pymilvus/client/check.py#L226'>pymilvus/client/check.py:226:26:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/scikit-build/scikit-build-core">scikit-build/scikit-build-core</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/scikit-build/scikit-build-core/blob/6862c651d8a235af8c5d514ea5c12b2ea1f6e4fc/src/scikit_build_core/builder/get_requires.py#L108'>src/scikit_build_core/builder/get_requires.py:108:16:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pytest-dev/pytest">pytest-dev/pytest</a> (+13 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/pytest-dev/pytest/blob/72f17d10d76e5260906c17f279c5fa6bd29b5a8d/src/_pytest/_code/code.py#L1174'>src/_pytest/_code/code.py:1174:24:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/pytest-dev/pytest/blob/72f17d10d76e5260906c17f279c5fa6bd29b5a8d/src/_pytest/_code/code.py#L1353'>src/_pytest/_code/code.py:1353:18:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/pytest-dev/pytest/blob/72f17d10d76e5260906c17f279c5fa6bd29b5a8d/src/_pytest/_code/code.py#L943'>src/_pytest/_code/code.py:943:27:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/pytest-dev/pytest/blob/72f17d10d76e5260906c17f279c5fa6bd29b5a8d/src/_pytest/assertion/rewrite.py#L484'>src/_pytest/assertion/rewrite.py:484:26:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/pytest-dev/pytest/blob/72f17d10d76e5260906c17f279c5fa6bd29b5a8d/src/_pytest/assertion/rewrite.py#L56'>src/_pytest/assertion/rewrite.py:56:20:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/pytest-dev/pytest/blob/72f17d10d76e5260906c17f279c5fa6bd29b5a8d/src/_pytest/capture.py#L363'>src/_pytest/capture.py:363:13:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/pytest-dev/pytest/blob/72f17d10d76e5260906c17f279c5fa6bd29b5a8d/src/_pytest/capture.py#L372'>src/_pytest/capture.py:372:13:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/pytest-dev/pytest/blob/72f17d10d76e5260906c17f279c5fa6bd29b5a8d/src/_pytest/mark/expression.py#L243'>src/_pytest/mark/expression.py:243:16:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/pytest-dev/pytest/blob/72f17d10d76e5260906c17f279c5fa6bd29b5a8d/src/_pytest/mark/structures.py#L589'>src/_pytest/mark/structures.py:589:16:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/pytest-dev/pytest/blob/72f17d10d76e5260906c17f279c5fa6bd29b5a8d/src/_pytest/python.py#L435'>src/_pytest/python.py:435:15:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
+... 3 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pdm-project/pdm">pdm-project/pdm</a> (+12 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/pdm-project/pdm/blob/d1dc03d282fa5d47e8d5935eb7d85c98c2e5ed12/src/pdm/cli/commands/add.py#L125'>src/pdm/cli/commands/add.py:125:34:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/pdm-project/pdm/blob/d1dc03d282fa5d47e8d5935eb7d85c98c2e5ed12/src/pdm/cli/commands/list.py#L341'>src/pdm/cli/commands/list.py:341:24:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/pdm-project/pdm/blob/d1dc03d282fa5d47e8d5935eb7d85c98c2e5ed12/src/pdm/cli/commands/venv/backends.py#L44'>src/pdm/cli/commands/venv/backends.py:44:20:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/pdm-project/pdm/blob/d1dc03d282fa5d47e8d5935eb7d85c98c2e5ed12/src/pdm/environments/local.py#L21'>src/pdm/environments/local.py:21:23:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/pdm-project/pdm/blob/d1dc03d282fa5d47e8d5935eb7d85c98c2e5ed12/src/pdm/installers/base.py#L184'>src/pdm/installers/base.py:184:36:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/pdm-project/pdm/blob/d1dc03d282fa5d47e8d5935eb7d85c98c2e5ed12/src/pdm/installers/synchronizers.py#L211'>src/pdm/installers/synchronizers.py:211:24:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/pdm-project/pdm/blob/d1dc03d282fa5d47e8d5935eb7d85c98c2e5ed12/src/pdm/models/candidates.py#L430'>src/pdm/models/candidates.py:430:33:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/pdm-project/pdm/blob/d1dc03d282fa5d47e8d5935eb7d85c98c2e5ed12/src/pdm/models/repositories/base.py#L290'>src/pdm/models/repositories/base.py:290:37:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/pdm-project/pdm/blob/d1dc03d282fa5d47e8d5935eb7d85c98c2e5ed12/src/pdm/models/repositories/base.py#L313'>src/pdm/models/repositories/base.py:313:43:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
++ <a href='https://github.com/pdm-project/pdm/blob/d1dc03d282fa5d47e8d5935eb7d85c98c2e5ed12/src/pdm/models/requirements.py#L105'>src/pdm/models/requirements.py:105:40:</a> RUF021 [*] Parenthesize `a and b` expressions when chaining `and` and `or` together, to make the precedence clear
+... 2 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| RUF021 | 63 | 63 | 0 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+
+
+
+---
+
+_Comment by @AlexWaygood on 2024-11-19 13:43_
+
+> ### Linter (stable)
+> 
+> ℹ️ ecosystem check **detected linter changes**. (+63 -0 violations, +0 -0 fixes in 9 projects; 45 projects unchanged)
+
+As expected, this impacts quite a few projects. But from a quick skim, these all look like "true positives", and I think changing the code to conform to the rule would result in more readable code in all places.
+
+---
+
+_Review requested from @MichaReiser by @AlexWaygood on 2024-11-19 13:43_
+
+---
+
+_@MichaReiser approved on 2024-11-19 14:43_
+
+I'm not concerned that it impacts *many* projects, considering that there are only very few violations for each project
+
+---
+
+_Merged by @AlexWaygood on 2024-11-19 14:43_
+
+---
+
+_Closed by @AlexWaygood on 2024-11-19 14:43_
+
+---
+
+_Branch deleted on 2024-11-19 14:43_
+
+---
+
+_Added to milestone `v0.8` by @AlexWaygood on 2024-11-19 15:10_
+
+---

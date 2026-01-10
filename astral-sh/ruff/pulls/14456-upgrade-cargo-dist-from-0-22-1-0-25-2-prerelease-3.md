@@ -1,0 +1,854 @@
+```yaml
+number: 14456
+title: "Upgrade cargo-dist from 0.22.1 => 0.25.2-prerelease.3"
+type: pull_request
+state: merged
+author: zanieb
+labels:
+  - ci
+assignees: []
+merged: true
+base: ruff-0.8
+head: zb/cargo-dist
+created_at: 2024-11-19T13:56:18Z
+updated_at: 2024-11-19T15:10:27Z
+url: https://github.com/astral-sh/ruff/pull/14456
+synced_at: 2026-01-10T20:50:57Z
+```
+
+# Upgrade cargo-dist from 0.22.1 => 0.25.2-prerelease.3
+
+---
+
+_Pull request opened by @zanieb on 2024-11-19 13:56_
+
+Needed to prevent updater failures when doing https://github.com/astral-sh/ruff/issues/13927
+
+See 
+
+- https://github.com/axodotdev/axoupdater/issues/210
+- https://github.com/axodotdev/cargo-dist/pull/1538
+- https://github.com/astral-sh/uv/pull/8958
+
+---
+
+_Label `internal` added by @zanieb on 2024-11-19 13:56_
+
+---
+
+_Review requested from @MichaReiser by @zanieb on 2024-11-19 14:01_
+
+---
+
+_Comment by @github-actions[bot] on 2024-11-19 14:23_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+ℹ️ ecosystem check **detected linter changes**. (+1027 -704 violations, +0 -0 fixes in 14 projects; 40 projects unchanged)
+
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+117 -111 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/24811f729f0e20dfff1be9afa8bf4a60b44fe628/airflow/__main__.py#L25'>airflow/__main__.py:25:22:</a> TC003 Move standard library import `argparse.Namespace` into a type-checking block
+- <a href='https://github.com/apache/airflow/blob/24811f729f0e20dfff1be9afa8bf4a60b44fe628/airflow/__main__.py#L25'>airflow/__main__.py:25:22:</a> TCH003 Move standard library import `argparse.Namespace` into a type-checking block
++ <a href='https://github.com/apache/airflow/blob/24811f729f0e20dfff1be9afa8bf4a60b44fe628/airflow/api_connexion/schemas/asset_schema.py#L19'>airflow/api_connexion/schemas/asset_schema.py:19:22:</a> TC003 Move standard library import `datetime.datetime` into a type-checking block
+- <a href='https://github.com/apache/airflow/blob/24811f729f0e20dfff1be9afa8bf4a60b44fe628/airflow/api_connexion/schemas/asset_schema.py#L19'>airflow/api_connexion/schemas/asset_schema.py:19:22:</a> TCH003 Move standard library import `datetime.datetime` into a type-checking block
++ <a href='https://github.com/apache/airflow/blob/24811f729f0e20dfff1be9afa8bf4a60b44fe628/airflow/api_fastapi/common/parameters.py#L21'>airflow/api_fastapi/common/parameters.py:21:22:</a> TC003 Move standard library import `datetime.datetime` into a type-checking block
+- <a href='https://github.com/apache/airflow/blob/24811f729f0e20dfff1be9afa8bf4a60b44fe628/airflow/api_fastapi/common/parameters.py#L21'>airflow/api_fastapi/common/parameters.py:21:22:</a> TCH003 Move standard library import `datetime.datetime` into a type-checking block
++ <a href='https://github.com/apache/airflow/blob/24811f729f0e20dfff1be9afa8bf4a60b44fe628/airflow/api_fastapi/common/router.py#L20'>airflow/api_fastapi/common/router.py:20:18:</a> TC003 Move standard library import `enum.Enum` into a type-checking block
+- <a href='https://github.com/apache/airflow/blob/24811f729f0e20dfff1be9afa8bf4a60b44fe628/airflow/api_fastapi/common/router.py#L20'>airflow/api_fastapi/common/router.py:20:18:</a> TCH003 Move standard library import `enum.Enum` into a type-checking block
++ <a href='https://github.com/apache/airflow/blob/24811f729f0e20dfff1be9afa8bf4a60b44fe628/airflow/api_fastapi/common/types.py#L19'>airflow/api_fastapi/common/types.py:19:22:</a> TC003 Move standard library import `datetime.timedelta` into a type-checking block
+- <a href='https://github.com/apache/airflow/blob/24811f729f0e20dfff1be9afa8bf4a60b44fe628/airflow/api_fastapi/common/types.py#L19'>airflow/api_fastapi/common/types.py:19:22:</a> TCH003 Move standard library import `datetime.timedelta` into a type-checking block
+... 218 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+321 -321 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/advanced_data_type/api.py#L28'>superset/advanced_data_type/api.py:28:47:</a> TC001 Move application import `superset.advanced_data_type.types.AdvancedDataTypeResponse` into a type-checking block
+- <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/advanced_data_type/api.py#L28'>superset/advanced_data_type/api.py:28:47:</a> TCH001 Move application import `superset.advanced_data_type.types.AdvancedDataTypeResponse` into a type-checking block
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/async_events/async_query_manager.py#L26'>superset/async_events/async_query_manager.py:26:41:</a> TC002 Move third-party import `flask_caching.backends.base.BaseCache` into a type-checking block
+- <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/async_events/async_query_manager.py#L26'>superset/async_events/async_query_manager.py:26:41:</a> TCH002 Move third-party import `flask_caching.backends.base.BaseCache` into a type-checking block
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/charts/data/api.py#L43'>superset/charts/data/api.py:43:45:</a> TC001 Move application import `superset.connectors.sqla.models.BaseDatasource` into a type-checking block
+- <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/charts/data/api.py#L43'>superset/charts/data/api.py:43:45:</a> TCH001 Move application import `superset.connectors.sqla.models.BaseDatasource` into a type-checking block
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/charts/data/api.py#L47'>superset/charts/data/api.py:47:37:</a> TC001 Move application import `superset.models.sql_lab.Query` into a type-checking block
+- <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/charts/data/api.py#L47'>superset/charts/data/api.py:47:37:</a> TCH001 Move application import `superset.models.sql_lab.Query` into a type-checking block
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/cli/test_db.py#L45'>superset/cli/test_db.py:45:43:</a> TC001 Move application import `superset.db_engine_specs.base.BaseEngineSpec` into a type-checking block
+- <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/cli/test_db.py#L45'>superset/cli/test_db.py:45:43:</a> TCH001 Move application import `superset.db_engine_specs.base.BaseEngineSpec` into a type-checking block
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/commands/annotation_layer/annotation/create.py#L18'>superset/commands/annotation_layer/annotation/create.py:18:22:</a> TC003 Move standard library import `datetime.datetime` into a type-checking block
+- <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/commands/annotation_layer/annotation/create.py#L18'>superset/commands/annotation_layer/annotation/create.py:18:22:</a> TCH003 Move standard library import `datetime.datetime` into a type-checking block
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/commands/annotation_layer/annotation/create.py#L23'>superset/commands/annotation_layer/annotation/create.py:23:25:</a> TC002 Move third-party import `marshmallow.ValidationError` into a type-checking block
+- <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/commands/annotation_layer/annotation/create.py#L23'>superset/commands/annotation_layer/annotation/create.py:23:25:</a> TCH002 Move third-party import `marshmallow.ValidationError` into a type-checking block
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/commands/annotation_layer/annotation/delete.py#L27'>superset/commands/annotation_layer/annotation/delete.py:27:41:</a> TC001 Move application import `superset.models.annotations.Annotation` into a type-checking block
+- <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/commands/annotation_layer/annotation/delete.py#L27'>superset/commands/annotation_layer/annotation/delete.py:27:41:</a> TCH001 Move application import `superset.models.annotations.Annotation` into a type-checking block
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/commands/annotation_layer/annotation/update.py#L18'>superset/commands/annotation_layer/annotation/update.py:18:22:</a> TC003 Move standard library import `datetime.datetime` into a type-checking block
+- <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/commands/annotation_layer/annotation/update.py#L18'>superset/commands/annotation_layer/annotation/update.py:18:22:</a> TCH003 Move standard library import `datetime.datetime` into a type-checking block
+... 624 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+241 -232 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --no-preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/models/widgets.py#L84'>examples/models/widgets.py:84:37:</a> UP031 Use format specifiers instead of percent format
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/models/widgets.py#L86'>examples/models/widgets.py:86:37:</a> UP031 Use format specifiers instead of percent format
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/build.py#L18'>release/build.py:18:21:</a> TC001 Move application import `.config.Config` into a type-checking block
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/build.py#L18'>release/build.py:18:21:</a> TCH001 Move application import `.config.Config` into a type-checking block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/build.py#L19'>release/build.py:19:21:</a> TC001 Move application import `.system.System` into a type-checking block
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/build.py#L19'>release/build.py:19:21:</a> TCH001 Move application import `.system.System` into a type-checking block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/checks.py#L19'>release/checks.py:19:21:</a> TC001 Move application import `.config.Config` into a type-checking block
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/checks.py#L19'>release/checks.py:19:21:</a> TCH001 Move application import `.config.Config` into a type-checking block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/checks.py#L20'>release/checks.py:20:23:</a> TC001 Move application import `.pipeline.StepType` into a type-checking block
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/checks.py#L20'>release/checks.py:20:23:</a> TCH001 Move application import `.pipeline.StepType` into a type-checking block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/checks.py#L21'>release/checks.py:21:21:</a> TC001 Move application import `.system.System` into a type-checking block
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/checks.py#L21'>release/checks.py:21:21:</a> TCH001 Move application import `.system.System` into a type-checking block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/credentials.py#L24'>release/credentials.py:24:21:</a> TC001 Move application import `.config.Config` into a type-checking block
+... 189 additional changes omitted for rule TC001
+... 460 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/freedomofpress/securedrop">freedomofpress/securedrop</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/freedomofpress/securedrop/blob/4c9062b078d11c99c85923f93872cffc37548f27/molecule/testinfra/ossec/test_journalist_mail.py#L14'>molecule/testinfra/ossec/test_journalist_mail.py:14:45:</a> RUF100 [*] Unused `noqa` directive (non-enabled: `PT004`)
++ <a href='https://github.com/freedomofpress/securedrop/blob/4c9062b078d11c99c85923f93872cffc37548f27/securedrop/source_app/utils.py#L86'>securedrop/source_app/utils.py:86:17:</a> UP031 Use format specifiers instead of percent format
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+47 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/db8af10a30fb204dd1dff25134e88a5d7433f4e0/ibis/backends/impala/tests/test_exprs.py#L135'>ibis/backends/impala/tests/test_exprs.py:135:29:</a> UP031 Use format specifiers instead of percent format
++ <a href='https://github.com/ibis-project/ibis/blob/db8af10a30fb204dd1dff25134e88a5d7433f4e0/ibis/backends/impala/tests/test_exprs.py#L421'>ibis/backends/impala/tests/test_exprs.py:421:29:</a> UP031 Use format specifiers instead of percent format
++ <a href='https://github.com/ibis-project/ibis/blob/db8af10a30fb204dd1dff25134e88a5d7433f4e0/ibis/backends/impala/tests/test_exprs.py#L477'>ibis/backends/impala/tests/test_exprs.py:477:26:</a> UP031 Use format specifiers instead of percent format
++ <a href='https://github.com/ibis-project/ibis/blob/db8af10a30fb204dd1dff25134e88a5d7433f4e0/ibis/backends/impala/tests/test_exprs.py#L514'>ibis/backends/impala/tests/test_exprs.py:514:29:</a> UP031 Use format specifiers instead of percent format
++ <a href='https://github.com/ibis-project/ibis/blob/db8af10a30fb204dd1dff25134e88a5d7433f4e0/ibis/backends/oracle/tests/test_client.py#L3'>ibis/backends/oracle/tests/test_client.py:3:36:</a> RUF101 [*] `TCH003` is a redirect to `TC003`
++ <a href='https://github.com/ibis-project/ibis/blob/db8af10a30fb204dd1dff25134e88a5d7433f4e0/ibis/backends/polars/rewrites.py#L10'>ibis/backends/polars/rewrites.py:10:50:</a> RUF101 [*] `TCH001` is a redirect to `TC001`
++ <a href='https://github.com/ibis-project/ibis/blob/db8af10a30fb204dd1dff25134e88a5d7433f4e0/ibis/backends/sql/rewrites.py#L17'>ibis/backends/sql/rewrites.py:17:57:</a> RUF101 [*] `TCH001` is a redirect to `TC001`
++ <a href='https://github.com/ibis-project/ibis/blob/db8af10a30fb204dd1dff25134e88a5d7433f4e0/ibis/backends/sql/rewrites.py#L21'>ibis/backends/sql/rewrites.py:21:50:</a> RUF101 [*] `TCH001` is a redirect to `TC001`
++ <a href='https://github.com/ibis-project/ibis/blob/db8af10a30fb204dd1dff25134e88a5d7433f4e0/ibis/common/grounds.py#L29'>ibis/common/grounds.py:29:57:</a> RUF101 [*] `TCH001` is a redirect to `TC001`
++ <a href='https://github.com/ibis-project/ibis/blob/db8af10a30fb204dd1dff25134e88a5d7433f4e0/ibis/common/selectors.py#L8'>ibis/common/selectors.py:8:50:</a> RUF101 [*] `TCH001` is a redirect to `TC001`
+... 37 additional changes omitted for rule RUF101
+... 37 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+6 -6 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch/ldata/_transfer/upload.py#L10'>src/latch/ldata/_transfer/upload.py:10:38:</a> TC003 Move standard library import `multiprocessing.managers.DictProxy` into a type-checking block
+- <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch/ldata/_transfer/upload.py#L10'>src/latch/ldata/_transfer/upload.py:10:38:</a> TCH003 Move standard library import `multiprocessing.managers.DictProxy` into a type-checking block
++ <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch/ldata/_transfer/upload.py#L10'>src/latch/ldata/_transfer/upload.py:10:49:</a> TC003 Move standard library import `multiprocessing.managers.ListProxy` into a type-checking block
+- <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch/ldata/_transfer/upload.py#L10'>src/latch/ldata/_transfer/upload.py:10:49:</a> TCH003 Move standard library import `multiprocessing.managers.ListProxy` into a type-checking block
++ <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch/ldata/_transfer/upload.py#L12'>src/latch/ldata/_transfer/upload.py:12:19:</a> TC003 Move standard library import `queue.Queue` into a type-checking block
+- <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch/ldata/_transfer/upload.py#L12'>src/latch/ldata/_transfer/upload.py:12:19:</a> TCH003 Move standard library import `queue.Queue` into a type-checking block
++ <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch/registry/record.py#L18'>src/latch/registry/record.py:18:49:</a> TC001 Move application import `latch.registry.upstream_types.types.DBType` into a type-checking block
+- <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch/registry/record.py#L18'>src/latch/registry/record.py:18:49:</a> TCH001 Move application import `latch.registry.upstream_types.types.DBType` into a type-checking block
++ <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch_cli/services/register/utils.py#L5'>src/latch_cli/services/register/utils.py:5:8:</a> TC003 Move standard library import `io` into a type-checking block
+- <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch_cli/services/register/utils.py#L5'>src/latch_cli/services/register/utils.py:5:8:</a> TCH003 Move standard library import `io` into a type-checking block
+... 2 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/lnbits/lnbits">lnbits/lnbits</a> (+216 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/app.py#L257'>lnbits/app.py:257:6:</a> UP006 Use `list` instead of `List` for type annotation
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/app.py#L9'>lnbits/app.py:9:1:</a> UP035 `typing.List` is deprecated, use `list` instead
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/commands.py#L235'>lnbits/commands.py:235:23:</a> UP006 Use `list` instead of `List` for type annotation
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/commands.py#L465'>lnbits/commands.py:465:6:</a> UP006 Use `tuple` instead of `Tuple` for type annotation
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/commands.py#L494'>lnbits/commands.py:494:6:</a> UP006 Use `tuple` instead of `Tuple` for type annotation
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/commands.py#L6'>lnbits/commands.py:6:1:</a> UP035 `typing.List` is deprecated, use `list` instead
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/commands.py#L6'>lnbits/commands.py:6:1:</a> UP035 `typing.Tuple` is deprecated, use `tuple` instead
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/core/crud.py#L1018'>lnbits/core/crud.py:1018:6:</a> UP006 Use `list` instead of `List` for type annotation
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/core/crud.py#L1235'>lnbits/core/crud.py:1235:43:</a> UP006 Use `list` instead of `List` for type annotation
+... 140 additional changes omitted for rule UP006
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/core/crud.py#L4'>lnbits/core/crud.py:4:1:</a> UP035 `typing.Dict` is deprecated, use `dict` instead
+... 206 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/mlflow/mlflow">mlflow/mlflow</a> (+3 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/mlflow/mlflow/blob/27d457388052db07d1eb933ac724d4bb97542f1f/mlflow/cli.py#L609'>mlflow/cli.py:609:17:</a> UP031 Use format specifiers instead of percent format
++ <a href='https://github.com/mlflow/mlflow/blob/27d457388052db07d1eb933ac724d4bb97542f1f/mlflow/store/tracking/file_store.py#L506'>mlflow/store/tracking/file_store.py:506:17:</a> UP031 Use format specifiers instead of percent format
++ <a href='https://github.com/mlflow/mlflow/blob/27d457388052db07d1eb933ac724d4bb97542f1f/mlflow/utils/autologging_utils/events.py#L66'>mlflow/utils/autologging_utils/events.py:66:17:</a> UP031 Use format specifiers instead of percent format
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/pandas-dev/pandas/blob/6a7685faf104f8582e0e75f1fae58e09ae97e2fe/pandas/core/dtypes/dtypes.py#L76'>pandas/core/dtypes/dtypes.py:76:23:</a> TCH004 Move import `pyarrow` out of type-checking block. Import is used for more than type hinting.
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pypa/pip">pypa/pip</a> (+1 -0 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
++ <a href='https://github.com/pypa/pip/blob/fe0925b3c00bf8956a0d33408df692ac364217d4/src/pip/_internal/cli/progress_bars.py#L66'>src/pip/_internal/cli/progress_bars.py:66:26:</a> UP031 Use format specifiers instead of percent format
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/rotki/rotki">rotki/rotki</a> (+0 -3 violations, +0 -0 fixes)</summary>
+<p>
+
+<pre>
+- <a href='https://github.com/rotki/rotki/blob/e583793a16ebe806b1fffcea1e2689d754f6425d/rotkehlchen/tests/fixtures/globaldb.py#L207'>rotkehlchen/tests/fixtures/globaldb.py:207:5:</a> PT004 Fixture `fixture_historical_price_test_data` does not return anything, add leading underscore
+- <a href='https://github.com/rotki/rotki/blob/e583793a16ebe806b1fffcea1e2689d754f6425d/rotkehlchen/tests/fixtures/oracles.py#L20'>rotkehlchen/tests/fixtures/oracles.py:20:5:</a> PT004 Fixture `fixture_cache_coinlist` does not return anything, add leading underscore
+- <a href='https://github.com/rotki/rotki/blob/e583793a16ebe806b1fffcea1e2689d754f6425d/rotkehlchen/tests/fixtures/thegraph.py#L13'>rotkehlchen/tests/fixtures/thegraph.py:13:5:</a> PT004 Fixture `fixture_add_subgraph_api_key` does not return anything, add leading underscore
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (17 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| TC001 | 352 | 352 | 0 | 0 | 0 |
+| TCH001 | 352 | 0 | 352 | 0 | 0 |
+| TC003 | 198 | 198 | 0 | 0 | 0 |
+| TCH003 | 198 | 0 | 198 | 0 | 0 |
+| TC002 | 147 | 147 | 0 | 0 | 0 |
+| TCH002 | 147 | 0 | 147 | 0 | 0 |
+| UP006 | 145 | 145 | 0 | 0 | 0 |
+| UP035 | 71 | 71 | 0 | 0 | 0 |
+| UP031 | 62 | 62 | 0 | 0 | 0 |
+| RUF101 | 46 | 46 | 0 | 0 | 0 |
+| PT004 | 3 | 0 | 3 | 0 | 0 |
+| RUF200 | 2 | 2 | 0 | 0 | 0 |
+| D212 | 2 | 1 | 1 | 0 | 0 |
+| TC005 | 2 | 2 | 0 | 0 | 0 |
+| TCH005 | 2 | 0 | 2 | 0 | 0 |
+| RUF100 | 1 | 1 | 0 | 0 | 0 |
+| TCH004 | 1 | 0 | 1 | 0 | 0 |
+
+</p>
+</details>
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+963 -700 violations, +0 -0 fixes in 8 projects; 46 projects unchanged)
+
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+116 -110 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/24811f729f0e20dfff1be9afa8bf4a60b44fe628/airflow/__main__.py#L25'>airflow/__main__.py:25:22:</a> TC003 Move standard library import `argparse.Namespace` into a type-checking block
+- <a href='https://github.com/apache/airflow/blob/24811f729f0e20dfff1be9afa8bf4a60b44fe628/airflow/__main__.py#L25'>airflow/__main__.py:25:22:</a> TCH003 Move standard library import `argparse.Namespace` into a type-checking block
++ <a href='https://github.com/apache/airflow/blob/24811f729f0e20dfff1be9afa8bf4a60b44fe628/airflow/api_connexion/schemas/asset_schema.py#L19'>airflow/api_connexion/schemas/asset_schema.py:19:22:</a> TC003 Move standard library import `datetime.datetime` into a type-checking block
+- <a href='https://github.com/apache/airflow/blob/24811f729f0e20dfff1be9afa8bf4a60b44fe628/airflow/api_connexion/schemas/asset_schema.py#L19'>airflow/api_connexion/schemas/asset_schema.py:19:22:</a> TCH003 Move standard library import `datetime.datetime` into a type-checking block
++ <a href='https://github.com/apache/airflow/blob/24811f729f0e20dfff1be9afa8bf4a60b44fe628/airflow/api_fastapi/common/parameters.py#L21'>airflow/api_fastapi/common/parameters.py:21:22:</a> TC003 Move standard library import `datetime.datetime` into a type-checking block
+- <a href='https://github.com/apache/airflow/blob/24811f729f0e20dfff1be9afa8bf4a60b44fe628/airflow/api_fastapi/common/parameters.py#L21'>airflow/api_fastapi/common/parameters.py:21:22:</a> TCH003 Move standard library import `datetime.datetime` into a type-checking block
++ <a href='https://github.com/apache/airflow/blob/24811f729f0e20dfff1be9afa8bf4a60b44fe628/airflow/api_fastapi/common/router.py#L20'>airflow/api_fastapi/common/router.py:20:18:</a> TC003 Move standard library import `enum.Enum` into a type-checking block
+- <a href='https://github.com/apache/airflow/blob/24811f729f0e20dfff1be9afa8bf4a60b44fe628/airflow/api_fastapi/common/router.py#L20'>airflow/api_fastapi/common/router.py:20:18:</a> TCH003 Move standard library import `enum.Enum` into a type-checking block
++ <a href='https://github.com/apache/airflow/blob/24811f729f0e20dfff1be9afa8bf4a60b44fe628/airflow/api_fastapi/common/types.py#L19'>airflow/api_fastapi/common/types.py:19:22:</a> TC003 Move standard library import `datetime.timedelta` into a type-checking block
+- <a href='https://github.com/apache/airflow/blob/24811f729f0e20dfff1be9afa8bf4a60b44fe628/airflow/api_fastapi/common/types.py#L19'>airflow/api_fastapi/common/types.py:19:22:</a> TCH003 Move standard library import `datetime.timedelta` into a type-checking block
+... 216 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+321 -321 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/advanced_data_type/api.py#L28'>superset/advanced_data_type/api.py:28:47:</a> TC001 Move application import `superset.advanced_data_type.types.AdvancedDataTypeResponse` into a type-checking block
+- <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/advanced_data_type/api.py#L28'>superset/advanced_data_type/api.py:28:47:</a> TCH001 Move application import `superset.advanced_data_type.types.AdvancedDataTypeResponse` into a type-checking block
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/async_events/async_query_manager.py#L26'>superset/async_events/async_query_manager.py:26:41:</a> TC002 Move third-party import `flask_caching.backends.base.BaseCache` into a type-checking block
+- <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/async_events/async_query_manager.py#L26'>superset/async_events/async_query_manager.py:26:41:</a> TCH002 Move third-party import `flask_caching.backends.base.BaseCache` into a type-checking block
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/charts/data/api.py#L43'>superset/charts/data/api.py:43:45:</a> TC001 Move application import `superset.connectors.sqla.models.BaseDatasource` into a type-checking block
+- <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/charts/data/api.py#L43'>superset/charts/data/api.py:43:45:</a> TCH001 Move application import `superset.connectors.sqla.models.BaseDatasource` into a type-checking block
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/charts/data/api.py#L47'>superset/charts/data/api.py:47:37:</a> TC001 Move application import `superset.models.sql_lab.Query` into a type-checking block
+- <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/charts/data/api.py#L47'>superset/charts/data/api.py:47:37:</a> TCH001 Move application import `superset.models.sql_lab.Query` into a type-checking block
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/cli/test_db.py#L45'>superset/cli/test_db.py:45:43:</a> TC001 Move application import `superset.db_engine_specs.base.BaseEngineSpec` into a type-checking block
+- <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/cli/test_db.py#L45'>superset/cli/test_db.py:45:43:</a> TCH001 Move application import `superset.db_engine_specs.base.BaseEngineSpec` into a type-checking block
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/commands/annotation_layer/annotation/create.py#L18'>superset/commands/annotation_layer/annotation/create.py:18:22:</a> TC003 Move standard library import `datetime.datetime` into a type-checking block
+- <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/commands/annotation_layer/annotation/create.py#L18'>superset/commands/annotation_layer/annotation/create.py:18:22:</a> TCH003 Move standard library import `datetime.datetime` into a type-checking block
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/commands/annotation_layer/annotation/create.py#L23'>superset/commands/annotation_layer/annotation/create.py:23:25:</a> TC002 Move third-party import `marshmallow.ValidationError` into a type-checking block
+- <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/commands/annotation_layer/annotation/create.py#L23'>superset/commands/annotation_layer/annotation/create.py:23:25:</a> TCH002 Move third-party import `marshmallow.ValidationError` into a type-checking block
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/commands/annotation_layer/annotation/delete.py#L27'>superset/commands/annotation_layer/annotation/delete.py:27:41:</a> TC001 Move application import `superset.models.annotations.Annotation` into a type-checking block
+- <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/commands/annotation_layer/annotation/delete.py#L27'>superset/commands/annotation_layer/annotation/delete.py:27:41:</a> TCH001 Move application import `superset.models.annotations.Annotation` into a type-checking block
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/commands/annotation_layer/annotation/update.py#L18'>superset/commands/annotation_layer/annotation/update.py:18:22:</a> TC003 Move standard library import `datetime.datetime` into a type-checking block
+- <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/commands/annotation_layer/annotation/update.py#L18'>superset/commands/annotation_layer/annotation/update.py:18:22:</a> TCH003 Move standard library import `datetime.datetime` into a type-checking block
++ <a href='https://github.com/apache/superset/blob/d22b7860a47de0950df82de7a67ec7d3dbd324ff/superset/commands/annotation_layer/annotation/update.py#L23'>superset/commands/annotation_layer/annotation/update.py:23:25:</a> TC002 Move third-party import `marshmallow.ValidationError` into a type-checking block
+... 623 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+232 -232 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/build.py#L18'>release/build.py:18:21:</a> TC001 Move application import `.config.Config` into a type-checking block
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/build.py#L18'>release/build.py:18:21:</a> TCH001 Move application import `.config.Config` into a type-checking block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/build.py#L19'>release/build.py:19:21:</a> TC001 Move application import `.system.System` into a type-checking block
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/build.py#L19'>release/build.py:19:21:</a> TCH001 Move application import `.system.System` into a type-checking block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/checks.py#L19'>release/checks.py:19:21:</a> TC001 Move application import `.config.Config` into a type-checking block
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/checks.py#L19'>release/checks.py:19:21:</a> TCH001 Move application import `.config.Config` into a type-checking block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/checks.py#L20'>release/checks.py:20:23:</a> TC001 Move application import `.pipeline.StepType` into a type-checking block
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/checks.py#L20'>release/checks.py:20:23:</a> TCH001 Move application import `.pipeline.StepType` into a type-checking block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/checks.py#L21'>release/checks.py:21:21:</a> TC001 Move application import `.system.System` into a type-checking block
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/checks.py#L21'>release/checks.py:21:21:</a> TCH001 Move application import `.system.System` into a type-checking block
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/credentials.py#L24'>release/credentials.py:24:21:</a> TC001 Move application import `.config.Config` into a type-checking block
+... 189 additional changes omitted for rule TC001
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/credentials.py#L24'>release/credentials.py:24:21:</a> TCH001 Move application import `.config.Config` into a type-checking block
+... 189 additional changes omitted for rule TCH001
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/src/bokeh/application/handlers/code.py#L41'>src/bokeh/application/handlers/code.py:41:19:</a> TC003 Move standard library import `types.ModuleType` into a type-checking block
+... 451 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/ibis-project/ibis">ibis-project/ibis</a> (+42 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/ibis-project/ibis/blob/db8af10a30fb204dd1dff25134e88a5d7433f4e0/ibis/backends/oracle/tests/test_client.py#L3'>ibis/backends/oracle/tests/test_client.py:3:36:</a> RUF101 [*] `TCH003` is a redirect to `TC003`
++ <a href='https://github.com/ibis-project/ibis/blob/db8af10a30fb204dd1dff25134e88a5d7433f4e0/ibis/backends/polars/rewrites.py#L10'>ibis/backends/polars/rewrites.py:10:50:</a> RUF101 [*] `TCH001` is a redirect to `TC001`
++ <a href='https://github.com/ibis-project/ibis/blob/db8af10a30fb204dd1dff25134e88a5d7433f4e0/ibis/backends/sql/rewrites.py#L17'>ibis/backends/sql/rewrites.py:17:57:</a> RUF101 [*] `TCH001` is a redirect to `TC001`
++ <a href='https://github.com/ibis-project/ibis/blob/db8af10a30fb204dd1dff25134e88a5d7433f4e0/ibis/backends/sql/rewrites.py#L21'>ibis/backends/sql/rewrites.py:21:50:</a> RUF101 [*] `TCH001` is a redirect to `TC001`
++ <a href='https://github.com/ibis-project/ibis/blob/db8af10a30fb204dd1dff25134e88a5d7433f4e0/ibis/common/grounds.py#L29'>ibis/common/grounds.py:29:57:</a> RUF101 [*] `TCH001` is a redirect to `TC001`
++ <a href='https://github.com/ibis-project/ibis/blob/db8af10a30fb204dd1dff25134e88a5d7433f4e0/ibis/common/selectors.py#L8'>ibis/common/selectors.py:8:50:</a> RUF101 [*] `TCH001` is a redirect to `TC001`
++ <a href='https://github.com/ibis-project/ibis/blob/db8af10a30fb204dd1dff25134e88a5d7433f4e0/ibis/config.py#L3'>ibis/config.py:3:47:</a> RUF101 [*] `TCH003` is a redirect to `TC003`
++ <a href='https://github.com/ibis-project/ibis/blob/db8af10a30fb204dd1dff25134e88a5d7433f4e0/ibis/expr/builders.py#L16'>ibis/expr/builders.py:16:53:</a> RUF101 [*] `TCH001` is a redirect to `TC001`
++ <a href='https://github.com/ibis-project/ibis/blob/db8af10a30fb204dd1dff25134e88a5d7433f4e0/ibis/expr/builders.py#L17'>ibis/expr/builders.py:17:50:</a> RUF101 [*] `TCH001` is a redirect to `TC001`
++ <a href='https://github.com/ibis-project/ibis/blob/db8af10a30fb204dd1dff25134e88a5d7433f4e0/ibis/expr/datatypes/tests/test_core.py#L3'>ibis/expr/datatypes/tests/test_core.py:3:26:</a> RUF101 [*] `TCH003` is a redirect to `TC003`
+... 32 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+6 -6 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch/ldata/_transfer/upload.py#L10'>src/latch/ldata/_transfer/upload.py:10:38:</a> TC003 Move standard library import `multiprocessing.managers.DictProxy` into a type-checking block
+- <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch/ldata/_transfer/upload.py#L10'>src/latch/ldata/_transfer/upload.py:10:38:</a> TCH003 Move standard library import `multiprocessing.managers.DictProxy` into a type-checking block
++ <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch/ldata/_transfer/upload.py#L10'>src/latch/ldata/_transfer/upload.py:10:49:</a> TC003 Move standard library import `multiprocessing.managers.ListProxy` into a type-checking block
+- <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch/ldata/_transfer/upload.py#L10'>src/latch/ldata/_transfer/upload.py:10:49:</a> TCH003 Move standard library import `multiprocessing.managers.ListProxy` into a type-checking block
++ <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch/ldata/_transfer/upload.py#L12'>src/latch/ldata/_transfer/upload.py:12:19:</a> TC003 Move standard library import `queue.Queue` into a type-checking block
+- <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch/ldata/_transfer/upload.py#L12'>src/latch/ldata/_transfer/upload.py:12:19:</a> TCH003 Move standard library import `queue.Queue` into a type-checking block
++ <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch/registry/record.py#L18'>src/latch/registry/record.py:18:49:</a> TC001 Move application import `latch.registry.upstream_types.types.DBType` into a type-checking block
+- <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch/registry/record.py#L18'>src/latch/registry/record.py:18:49:</a> TCH001 Move application import `latch.registry.upstream_types.types.DBType` into a type-checking block
++ <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch_cli/services/register/utils.py#L5'>src/latch_cli/services/register/utils.py:5:8:</a> TC003 Move standard library import `io` into a type-checking block
+- <a href='https://github.com/latchbio/latch/blob/2c739ac73730d9e6de8b075e8c2c9bae26eca5c2/src/latch_cli/services/register/utils.py#L5'>src/latch_cli/services/register/utils.py:5:8:</a> TCH003 Move standard library import `io` into a type-checking block
+... 2 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/lnbits/lnbits">lnbits/lnbits</a> (+216 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/app.py#L257'>lnbits/app.py:257:6:</a> UP006 Use `list` instead of `List` for type annotation
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/app.py#L9'>lnbits/app.py:9:1:</a> UP035 `typing.List` is deprecated, use `list` instead
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/commands.py#L235'>lnbits/commands.py:235:23:</a> UP006 Use `list` instead of `List` for type annotation
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/commands.py#L465'>lnbits/commands.py:465:6:</a> UP006 Use `tuple` instead of `Tuple` for type annotation
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/commands.py#L494'>lnbits/commands.py:494:6:</a> UP006 Use `tuple` instead of `Tuple` for type annotation
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/commands.py#L6'>lnbits/commands.py:6:1:</a> UP035 `typing.List` is deprecated, use `list` instead
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/commands.py#L6'>lnbits/commands.py:6:1:</a> UP035 `typing.Tuple` is deprecated, use `tuple` instead
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/core/crud.py#L1018'>lnbits/core/crud.py:1018:6:</a> UP006 Use `list` instead of `List` for type annotation
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/core/crud.py#L1235'>lnbits/core/crud.py:1235:43:</a> UP006 Use `list` instead of `List` for type annotation
+... 140 additional changes omitted for rule UP006
++ <a href='https://github.com/lnbits/lnbits/blob/51c9d294cdb40c777b1048bbee267b49cdaf7a34/lnbits/core/crud.py#L4'>lnbits/core/crud.py:4:1:</a> UP035 `typing.Dict` is deprecated, use `dict` instead
+... 206 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/pandas-dev/pandas">pandas-dev/pandas</a> (+0 -1 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
+- <a href='https://github.com/pandas-dev/pandas/blob/6a7685faf104f8582e0e75f1fae58e09ae97e2fe/pandas/core/dtypes/dtypes.py#L76'>pandas/core/dtypes/dtypes.py:76:23:</a> TCH004 Move import `pyarrow` out of type-checking block. Import is used for more than type hinting.
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+30 -30 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/666c1e1d951e995cbf2432860840cfcb30284b36/confirmation/models.py#L36'>confirmation/models.py:36:9:</a> TC001 Move application import `zilencer.models.PreregistrationRemoteRealmBillingUser` into a type-checking block
+- <a href='https://github.com/zulip/zulip/blob/666c1e1d951e995cbf2432860840cfcb30284b36/confirmation/models.py#L36'>confirmation/models.py:36:9:</a> TCH001 Move application import `zilencer.models.PreregistrationRemoteRealmBillingUser` into a type-checking block
++ <a href='https://github.com/zulip/zulip/blob/666c1e1d951e995cbf2432860840cfcb30284b36/confirmation/models.py#L37'>confirmation/models.py:37:9:</a> TC001 Move application import `zilencer.models.PreregistrationRemoteServerBillingUser` into a type-checking block
+- <a href='https://github.com/zulip/zulip/blob/666c1e1d951e995cbf2432860840cfcb30284b36/confirmation/models.py#L37'>confirmation/models.py:37:9:</a> TCH001 Move application import `zilencer.models.PreregistrationRemoteServerBillingUser` into a type-checking block
++ <a href='https://github.com/zulip/zulip/blob/666c1e1d951e995cbf2432860840cfcb30284b36/zerver/actions/message_edit.py#L68'>zerver/actions/message_edit.py:68:30:</a> TC001 Move application import `zerver.lib.types.EditHistoryEvent` into a type-checking block
+- <a href='https://github.com/zulip/zulip/blob/666c1e1d951e995cbf2432860840cfcb30284b36/zerver/actions/message_edit.py#L68'>zerver/actions/message_edit.py:68:30:</a> TCH001 Move application import `zerver.lib.types.EditHistoryEvent` into a type-checking block
++ <a href='https://github.com/zulip/zulip/blob/666c1e1d951e995cbf2432860840cfcb30284b36/zerver/lib/bot_lib.py#L3'>zerver/lib/bot_lib.py:3:29:</a> TC003 Move standard library import `collections.abc.Callable` into a type-checking block
+- <a href='https://github.com/zulip/zulip/blob/666c1e1d951e995cbf2432860840cfcb30284b36/zerver/lib/bot_lib.py#L3'>zerver/lib/bot_lib.py:3:29:</a> TCH003 Move standard library import `collections.abc.Callable` into a type-checking block
++ <a href='https://github.com/zulip/zulip/blob/666c1e1d951e995cbf2432860840cfcb30284b36/zerver/lib/logging_util.py#L13'>zerver/lib/logging_util.py:13:25:</a> TC002 Move third-party import `django.http.HttpRequest` into a type-checking block
+- <a href='https://github.com/zulip/zulip/blob/666c1e1d951e995cbf2432860840cfcb30284b36/zerver/lib/logging_util.py#L13'>zerver/lib/logging_util.py:13:25:</a> TCH002 Move third-party import `django.http.HttpRequest` into a type-checking block
+... 50 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+
+_... Truncated remaining completed project reports due to GitHub comment length restrictions_
+
+<details><summary>Changes by rule (13 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| TC001 | 352 | 352 | 0 | 0 | 0 |
+| TCH001 | 352 | 0 | 352 | 0 | 0 |
+| TC003 | 198 | 198 | 0 | 0 | 0 |
+| TCH003 | 198 | 0 | 198 | 0 | 0 |
+| TC002 | 147 | 147 | 0 | 0 | 0 |
+| TCH002 | 147 | 0 | 147 | 0 | 0 |
+| UP006 | 145 | 145 | 0 | 0 | 0 |
+| UP035 | 71 | 71 | 0 | 0 | 0 |
+| RUF101 | 46 | 46 | 0 | 0 | 0 |
+| RUF200 | 2 | 2 | 0 | 0 | 0 |
+| TC005 | 2 | 2 | 0 | 0 | 0 |
+| TCH005 | 2 | 0 | 2 | 0 | 0 |
+| TCH004 | 1 | 0 | 1 | 0 | 0 |
+
+</p>
+</details>
+
+### Formatter (stable)
+ℹ️ ecosystem check **detected format changes**. (+111 -85 lines in 16 files in 4 projects; 50 projects unchanged)
+
+<details><summary><a href="https://github.com/aws/aws-sam-cli">aws/aws-sam-cli</a> (+34 -30 lines across 4 files)</summary>
+<p>
+
+<a href='https://github.com/aws/aws-sam-cli/blob/4d0e244565c253002cbad8232679b1d1573a8276/tests/integration/pipeline/test_init_command.py#L98'>tests/integration/pipeline/test_init_command.py~L98</a>
+```diff
+ 
+         self.assertEqual(init_process_execute.process.returncode, 0)
+ 
+-        with open(EXPECTED_JENKINS_FILE_PATH, "r") as expected, open(
+-            os.path.join(".aws-sam", "pipeline", "generated-files", "Jenkinsfile"), "r"
+-        ) as output:
++        with (
++            open(EXPECTED_JENKINS_FILE_PATH, "r") as expected,
++            open(os.path.join(".aws-sam", "pipeline", "generated-files", "Jenkinsfile"), "r") as output,
++        ):
+             self.assertEqual(expected.read(), output.read())
+ 
+         # also check the Jenkinsfile is not overridden
+```
+<a href='https://github.com/aws/aws-sam-cli/blob/4d0e244565c253002cbad8232679b1d1573a8276/tests/unit/commands/samconfig/test_samconfig.py#L1066'>tests/unit/commands/samconfig/test_samconfig.py~L1066</a>
+```diff
+         }
+ 
+         # NOTE: Because we don't load the full Click BaseCommand here, this is mounted as top-level command
+-        with samconfig_parameters(
+-            ["start-lambda"], self.scratch_dir, **config_values
+-        ) as config_path, tempfile.NamedTemporaryFile() as key_file, tempfile.NamedTemporaryFile() as cert_file:
++        with (
++            samconfig_parameters(["start-lambda"], self.scratch_dir, **config_values) as config_path,
++            tempfile.NamedTemporaryFile() as key_file,
++            tempfile.NamedTemporaryFile() as cert_file,
++        ):
+             from samcli.commands.local.start_lambda.cli import cli
+ 
+             LOG.debug(Path(config_path).read_text())
+```
+<a href='https://github.com/aws/aws-sam-cli/blob/4d0e244565c253002cbad8232679b1d1573a8276/tests/unit/commands/samconfig/test_samconfig.py#L1171'>tests/unit/commands/samconfig/test_samconfig.py~L1171</a>
+```diff
+         }
+ 
+         # NOTE: Because we don't load the full Click BaseCommand here, this is mounted as top-level command
+-        with samconfig_parameters(
+-            ["start-lambda"], self.scratch_dir, **config_values
+-        ) as config_path, tempfile.NamedTemporaryFile() as key_file, tempfile.NamedTemporaryFile() as cert_file:
++        with (
++            samconfig_parameters(["start-lambda"], self.scratch_dir, **config_values) as config_path,
++            tempfile.NamedTemporaryFile() as key_file,
++            tempfile.NamedTemporaryFile() as cert_file,
++        ):
+             from samcli.commands.local.start_lambda.cli import cli
+ 
+             LOG.debug(Path(config_path).read_text())
+```
+<a href='https://github.com/aws/aws-sam-cli/blob/4d0e244565c253002cbad8232679b1d1573a8276/tests/unit/lib/build_module/test_build_strategy.py#L747'>tests/unit/lib/build_module/test_build_strategy.py~L747</a>
+```diff
+     def test_will_call_incremental_build_strategy(self, mocked_read, mocked_write, runtime):
+         build_definition = FunctionBuildDefinition(runtime, "codeuri", None, "package_type", X86_64, {}, "handler")
+         self.build_graph.put_function_build_definition(build_definition, Mock(full_path="function_full_path"))
+-        with patch.object(
+-            self.build_strategy, "_incremental_build_strategy"
+-        ) as patched_incremental_build_strategy, patch.object(
+-            self.build_strategy, "_cached_build_strategy"
+-        ) as patched_cached_build_strategy:
++        with (
++            patch.object(self.build_strategy, "_incremental_build_strategy") as patched_incremental_build_strategy,
++            patch.object(self.build_strategy, "_cached_build_strategy") as patched_cached_build_strategy,
++        ):
+             self.build_strategy.build()
+ 
+             patched_incremental_build_strategy.build_single_function_definition.assert_called_with(build_definition)
+```
+<a href='https://github.com/aws/aws-sam-cli/blob/4d0e244565c253002cbad8232679b1d1573a8276/tests/unit/lib/build_module/test_build_strategy.py#L767'>tests/unit/lib/build_module/test_build_strategy.py~L767</a>
+```diff
+     def test_will_call_cached_build_strategy(self, mocked_read, mocked_write, runtime):
+         build_definition = FunctionBuildDefinition(runtime, "codeuri", None, "package_type", X86_64, {}, "handler")
+         self.build_graph.put_function_build_definition(build_definition, Mock(full_path="function_full_path"))
+-        with patch.object(
+-            self.build_strategy, "_incremental_build_strategy"
+-        ) as patched_incremental_build_strategy, patch.object(
+-            self.build_strategy, "_cached_build_strategy"
+-        ) as patched_cached_build_strategy:
++        with (
++            patch.object(self.build_strategy, "_incremental_build_strategy") as patched_incremental_build_strategy,
++            patch.object(self.build_strategy, "_cached_build_strategy") as patched_cached_build_strategy,
++        ):
+             self.build_strategy.build()
+ 
+             patched_cached_build_strategy.build_single_function_definition.assert_called_with(build_definition)
+```
+<a href='https://github.com/aws/aws-sam-cli/blob/4d0e244565c253002cbad8232679b1d1573a8276/tests/unit/lib/build_module/test_build_strategy.py#L841'>tests/unit/lib/build_module/test_build_strategy.py~L841</a>
+```diff
+ 
+         build_definition = FunctionBuildDefinition(runtime, "codeuri", None, "package_type", X86_64, {}, "handler")
+         self.build_graph.put_function_build_definition(build_definition, Mock(full_path="function_full_path"))
+-        with patch.object(
+-            build_strategy, "_incremental_build_strategy"
+-        ) as patched_incremental_build_strategy, patch.object(
+-            build_strategy, "_cached_build_strategy"
+-        ) as patched_cached_build_strategy:
++        with (
++            patch.object(build_strategy, "_incremental_build_strategy") as patched_incremental_build_strategy,
++            patch.object(build_strategy, "_cached_build_strategy") as patched_cached_build_strategy,
++        ):
+             build_strategy.build()
+ 
+             if not use_container:
+```
+<a href='https://github.com/aws/aws-sam-cli/blob/4d0e244565c253002cbad8232679b1d1573a8276/tests/unit/lib/remote_invoke/test_remote_invoke_executors.py#L79'>tests/unit/lib/remote_invoke/test_remote_invoke_executors.py~L79</a>
+```diff
+         given_output_format = "text"
+         test_execution_info = RemoteInvokeExecutionInfo(given_payload, None, given_parameters, given_output_format)
+ 
+-        with patch.object(self.boto_action_executor, "_execute_action") as patched_execute_action, patch.object(
+-            self.boto_action_executor, "_execute_action_file"
+-        ) as patched_execute_action_file:
++        with (
++            patch.object(self.boto_action_executor, "_execute_action") as patched_execute_action,
++            patch.object(self.boto_action_executor, "_execute_action_file") as patched_execute_action_file,
++        ):
+             given_result = Mock()
+             patched_execute_action.return_value = given_result
+ 
+```
+<a href='https://github.com/aws/aws-sam-cli/blob/4d0e244565c253002cbad8232679b1d1573a8276/tests/unit/lib/remote_invoke/test_remote_invoke_executors.py#L96'>tests/unit/lib/remote_invoke/test_remote_invoke_executors.py~L96</a>
+```diff
+         given_output_format = "json"
+         test_execution_info = RemoteInvokeExecutionInfo(None, given_payload_file, given_parameters, given_output_format)
+ 
+-        with patch.object(self.boto_action_executor, "_execute_action") as patched_execute_action, patch.object(
+-            self.boto_action_executor, "_execute_action_file"
+-        ) as patched_execute_action_file:
++        with (
++            patch.object(self.boto_action_executor, "_execute_action") as patched_execute_action,
++            patch.object(self.boto_action_executor, "_execute_action_file") as patched_execute_action_file,
++        ):
+             given_result = Mock()
+             patched_execute_action_file.return_value = given_result
+ 
+```
+
+</p>
+</details>
+<details><summary><a href="https://github.com/langchain-ai/langchain">langchain-ai/langchain</a> (+32 -23 lines across 5 files)</summary>
+<p>
+
+<a href='https://github.com/langchain-ai/langchain/blob/97f752c92d431d69fcee26cc28e14a775ff2e396/libs/community/tests/unit_tests/document_loaders/test_mongodb.py#L50'>libs/community/tests/unit_tests/document_loaders/test_mongodb.py~L50</a>
+```diff
+     mock_collection.find = mock_find
+     mock_collection.count_documents = mock_count_documents
+ 
+-    with patch(
+-        "motor.motor_asyncio.AsyncIOMotorClient", return_value=MagicMock()
+-    ), patch(
+-        "langchain_community.document_loaders.mongodb.MongodbLoader.aload",
+-        new=mock_async_load,
++    with (
++        patch("motor.motor_asyncio.AsyncIOMotorClient", return_value=MagicMock()),
++        patch(
++            "langchain_community.document_loaders.mongodb.MongodbLoader.aload",
++            new=mock_async_load,
++        ),
+     ):
+         loader = MongodbLoader(
+             "mongodb://localhost:27017",
+```
+<a href='https://github.com/langchain-ai/langchain/blob/97f752c92d431d69fcee26cc28e14a775ff2e396/libs/community/tests/unit_tests/tools/audio/test_tools.py#L44'>libs/community/tests/unit_tests/tools/audio/test_tools.py~L44</a>
+```diff
+ def test_huggingface_tts_run_with_requests_mock() -> None:
+     os.environ["HUGGINGFACE_API_KEY"] = "foo"
+ 
+-    with tempfile.TemporaryDirectory() as tmp_dir, patch(
+-        "uuid.uuid4"
+-    ) as mock_uuid, patch("requests.post") as mock_inference, patch(
+-        "builtins.open", mock_open()
+-    ) as mock_file:
++    with (
++        tempfile.TemporaryDirectory() as tmp_dir,
++        patch("uuid.uuid4") as mock_uuid,
++        patch("requests.post") as mock_inference,
++        patch("builtins.open", mock_open()) as mock_file,
++    ):
+         input_query = "Dummy input"
+ 
+         mock_uuid_value = uuid.UUID("00000000-0000-0000-0000-000000000000")
+```
+<a href='https://github.com/langchain-ai/langchain/blob/97f752c92d431d69fcee26cc28e14a775ff2e396/libs/community/tests/unit_tests/vectorstores/test_azure_search.py#L220'>libs/community/tests/unit_tests/vectorstores/test_azure_search.py~L220</a>
+```diff
+     ]
+     ids_provided = [i.metadata.get("id") for i in documents]
+ 
+-    with patch.object(
+-        SearchClient, "upload_documents", mock_upload_documents
+-    ), patch.object(SearchIndexClient, "get_index", mock_default_index):
++    with (
++        patch.object(SearchClient, "upload_documents", mock_upload_documents),
++        patch.object(SearchIndexClient, "get_index", mock_default_index),
++    ):
+         vector_store = create_vector_store()
+         ids_used_at_upload = vector_store.add_documents(documents, ids=ids_provided)
+         assert len(ids_provided) == len(ids_used_at_upload)
+```
+<a href='https://github.com/langchain-ai/langchain/blob/97f752c92d431d69fcee26cc28e14a775ff2e396/libs/langchain/tests/unit_tests/smith/evaluation/test_runner_utils.py#L316'>libs/langchain/tests/unit_tests/smith/evaluation/test_runner_utils.py~L316</a>
+```diff
+         proj.id = "123"
+         return proj
+ 
+-    with mock.patch.object(
+-        Client, "read_dataset", new=mock_read_dataset
+-    ), mock.patch.object(Client, "list_examples", new=mock_list_examples), mock.patch(
+-        "langchain.smith.evaluation.runner_utils._arun_llm_or_chain",
+-        new=mock_arun_chain,
+-    ), mock.patch.object(Client, "create_project", new=mock_create_project):
++    with (
++        mock.patch.object(Client, "read_dataset", new=mock_read_dataset),
++        mock.patch.object(Client, "list_examples", new=mock_list_examples),
++        mock.patch(
++            "langchain.smith.evaluation.runner_utils._arun_llm_or_chain",
++            new=mock_arun_chain,
++        ),
++        mock.patch.object(Client, "create_project", new=mock_create_project),
++    ):
+         client = Client(api_url="http://localhost:1984", api_key="123")
+         chain = mock.MagicMock()
+         chain.input_keys = ["foothing"]
+```
+<a href='https://github.com/langchain-ai/langchain/blob/97f752c92d431d69fcee26cc28e14a775ff2e396/libs/partners/huggingface/tests/unit_tests/test_chat_models.py#L231'>libs/partners/huggingface/tests/unit_tests/test_chat_models.py~L231</a>
+```diff
+ 
+ def test_bind_tools(chat_hugging_face: Any) -> None:
+     tools = [MagicMock(spec=BaseTool)]
+-    with patch(
+-        "langchain_huggingface.chat_models.huggingface.convert_to_openai_tool",
+-        side_effect=lambda x: x,
+-    ), patch("langchain_core.runnables.base.Runnable.bind") as mock_super_bind:
++    with (
++        patch(
++            "langchain_huggingface.chat_models.huggingface.convert_to_openai_tool",
++            side_effect=lambda x: x,
++        ),
++        patch("langchain_core.runnables.base.Runnable.bind") as mock_super_bind,
++    ):
+         chat_hugging_face.bind_tools(tools, tool_choice="auto")
+         mock_super_bind.assert_called_once()
+         _, kwargs = mock_super_bind.call_args
+```
+
+</p>
+</details>
+<details><summary><a href="https://github.com/prefecthq/prefect">prefecthq/prefect</a> (+38 -27 lines across 5 files)</summary>
+<p>
+
+<a href='https://github.com/prefecthq/prefect/blob/ce75a5e39331208b93a79f7362f8a36ffa85c74e/src/integrations/prefect-dbt/prefect_dbt/cloud/jobs.py#L752'>src/integrations/prefect-dbt/prefect_dbt/cloud/jobs.py~L752</a>
+```diff
+         run_status = DbtCloudJobRunStatus(run_data.get("status"))
+         if run_status == DbtCloudJobRunStatus.SUCCESS:
+             try:
+-                async with self._dbt_cloud_credentials.get_administrative_client() as client:  # noqa
++                async with (
++                    self._dbt_cloud_credentials.get_administrative_client() as client
++                ):  # noqa
+                     response = await client.list_run_artifacts(
+                         run_id=self.run_id, step=step
+                     )
+```
+<a href='https://github.com/prefecthq/prefect/blob/ce75a5e39331208b93a79f7362f8a36ffa85c74e/tests/runner/test_webserver.py#L151'>tests/runner/test_webserver.py~L151</a>
+```diff
+             webserver = await build_server(runner)
+             client = TestClient(webserver)
+ 
+-            with mock.patch(
+-                "prefect.runner.server.get_client", new=mock_get_client
+-            ), mock.patch.object(runner, "execute_in_background"):
++            with (
++                mock.patch("prefect.runner.server.get_client", new=mock_get_client),
++                mock.patch.object(runner, "execute_in_background"),
++            ):
+                 with client:
+                     response = client.post(f"/deployment/{deployment_id}/run")
+                 assert response.status_code == 201, response.json()
+```
+<a href='https://github.com/prefecthq/prefect/blob/ce75a5e39331208b93a79f7362f8a36ffa85c74e/tests/server/orchestration/api/test_task_run_subscriptions.py#L326'>tests/server/orchestration/api/test_task_run_subscriptions.py~L326</a>
+```diff
+             )
+             await queue.put(task_run)
+ 
+-        with patch("asyncio.sleep", return_value=None), pytest.raises(
+-            asyncio.TimeoutError
++        with (
++            patch("asyncio.sleep", return_value=None),
++            pytest.raises(asyncio.TimeoutError),
+         ):
+             extra_task_run = ServerTaskRun(
+                 id=uuid4(),
+```
+<a href='https://github.com/prefecthq/prefect/blob/ce75a5e39331208b93a79f7362f8a36ffa85c74e/tests/server/orchestration/api/test_task_run_subscriptions.py#L356'>tests/server/orchestration/api/test_task_run_subscriptions.py~L356</a>
+```diff
+         )
+         await queue.retry(task_run)
+ 
+-        with patch("asyncio.sleep", return_value=None), pytest.raises(
+-            asyncio.TimeoutError
++        with (
++            patch("asyncio.sleep", return_value=None),
++            pytest.raises(asyncio.TimeoutError),
+         ):
+             extra_task_run = ServerTaskRun(
+                 id=uuid4(),
+```
+<a href='https://github.com/prefecthq/prefect/blob/ce75a5e39331208b93a79f7362f8a36ffa85c74e/tests/test_task_worker.py#L106'>tests/test_task_worker.py~L106</a>
+```diff
+ async def test_handle_sigterm(mock_create_subscription):
+     task_worker = TaskWorker(...)
+ 
+-    with patch("sys.exit") as mock_exit, patch.object(
+-        task_worker, "stop", new_callable=AsyncMock
+-    ) as mock_stop:
++    with (
++        patch("sys.exit") as mock_exit,
++        patch.object(task_worker, "stop", new_callable=AsyncMock) as mock_stop,
++    ):
+         await task_worker.start()
+ 
+         mock_create_subscription.assert_called_once()
+```
+<a href='https://github.com/prefecthq/prefect/blob/ce75a5e39331208b93a79f7362f8a36ffa85c74e/tests/test_task_worker.py#L120'>tests/test_task_worker.py~L120</a>
+```diff
+ 
+ 
+ async def test_task_worker_client_id_is_set():
+-    with patch("socket.gethostname", return_value="foo"), patch(
+-        "os.getpid", return_value=42
++    with (
++        patch("socket.gethostname", return_value="foo"),
++        patch("os.getpid", return_value=42),
+     ):
+         task_worker = TaskWorker(...)
+         task_worker._client = MagicMock(api_url="http://localhost:4200")
+```
+<a href='https://github.com/prefecthq/prefect/blob/ce75a5e39331208b93a79f7362f8a36ffa85c74e/tests/workers/test_base_worker.py#L1912'>tests/workers/test_base_worker.py~L1912</a>
+```diff
+     ):
+         async with WorkerTestImpl(work_pool_name=work_pool.name) as worker:
+             await worker.start(run_once=True)
+-            with mock.patch(
+-                "prefect.workers.base.load_prefect_collections"
+-            ) as mock_load_prefect_collections, mock.patch(
+-    ...*[Comment body truncated]*
+
+---
+
+_@MichaReiser approved on 2024-11-19 14:41_
+
+---
+
+_Label `internal` removed by @MichaReiser on 2024-11-19 14:41_
+
+---
+
+_Label `ci` added by @MichaReiser on 2024-11-19 14:41_
+
+---
+
+_Merged by @zanieb on 2024-11-19 14:49_
+
+---
+
+_Closed by @zanieb on 2024-11-19 14:49_
+
+---
+
+_Branch deleted on 2024-11-19 14:49_
+
+---
+
+_Added to milestone `v0.8` by @AlexWaygood on 2024-11-19 15:10_
+
+---
