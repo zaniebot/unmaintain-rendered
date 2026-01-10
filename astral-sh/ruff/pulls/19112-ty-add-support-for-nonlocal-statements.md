@@ -1,0 +1,1649 @@
+```yaml
+number: 19112
+title: "[ty] add support for `nonlocal` statements"
+type: pull_request
+state: merged
+author: oconnor663
+labels:
+  - ty
+  - ecosystem-analyzer
+assignees: []
+merged: true
+base: main
+head: jack/nonlocal
+created_at: 2025-07-03T02:18:17Z
+updated_at: 2025-07-11T16:44:56Z
+url: https://github.com/astral-sh/ruff/pull/19112
+synced_at: 2026-01-10T18:33:12Z
+```
+
+# [ty] add support for `nonlocal` statements
+
+---
+
+_Pull request opened by @oconnor663 on 2025-07-03 02:18_
+
+Related to: https://github.com/astral-sh/ty/issues/220
+
+~~Putting up a draft PR so I can ask questions about it. Comments below.~~
+
+This PR is now plausibly ready for a proper review.
+
+**After landing:**
+- [ ] Open a new issue linking to [these TODOs](https://github.com/astral-sh/ruff/pull/19112#discussion_r2191008262)
+- [ ] Decide what to do about https://github.com/astral-sh/ruff/pull/19271 and maybe open another issue to track it
+
+---
+
+_Review requested from @carljm by @oconnor663 on 2025-07-03 02:18_
+
+---
+
+_Review requested from @AlexWaygood by @oconnor663 on 2025-07-03 02:18_
+
+---
+
+_Review requested from @sharkdp by @oconnor663 on 2025-07-03 02:18_
+
+---
+
+_Review requested from @dcreager by @oconnor663 on 2025-07-03 02:18_
+
+---
+
+_Converted to draft by @oconnor663 on 2025-07-03 02:18_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/resources/mdtest/scopes/global.md`:86 on 2025-07-03 02:20_
+
+This `error:` assert should start passing when I fill in some other TODOs below.
+
+---
+
+_@oconnor663 reviewed on 2025-07-03 02:20_
+
+---
+
+_@oconnor663 reviewed on 2025-07-03 02:20_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:47 on 2025-07-03 02:20_
+
+This new test is currently passing. Yay.
+
+---
+
+_@oconnor663 reviewed on 2025-07-03 02:20_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:68 on 2025-07-03 02:20_
+
+From here on down, it's not currently passing. These are the bits I need help with.
+
+---
+
+_Comment by @github-actions[bot] on 2025-07-03 02:22_
+
+<!-- generated-comment mypy_primer -->
+## `mypy_primer` results
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+```diff
+pytest-robotframework (https://github.com/detachhead/pytest-robotframework)
++ warning[unused-ignore-comment] pytest_robotframework/_internal/utils.py:38:34: Unused `ty: ignore` directive: 'unresolved-reference'
++ warning[unused-ignore-comment] pytest_robotframework/_internal/utils.py:44:41: Unused `ty: ignore` directive: 'possibly-unresolved-reference'
++ warning[unused-ignore-comment] pytest_robotframework/_internal/utils.py:51:44: Unused `ty: ignore` directive: 'possibly-unresolved-reference'
+- Found 176 diagnostics
++ Found 179 diagnostics
+
+more-itertools (https://github.com/more-itertools/more-itertools)
+- error[unresolved-reference] more_itertools/more.py:3826:23: Name `remaining` used when not defined
+- error[unresolved-reference] more_itertools/more.py:3827:21: Name `remaining` used when not defined
+- warning[possibly-unresolved-reference] more_itertools/more.py:3830:9: Name `remaining` used when possibly not defined
+- warning[possibly-unresolved-reference] more_itertools/more.py:3831:16: Name `element` used when possibly not defined
+- Found 46 diagnostics
++ Found 42 diagnostics
+
+pyp (https://github.com/hauntsaninja/pyp)
+- error[unresolved-reference] tests/test_pyp.py:187:16: Name `count` used when not defined
+- error[unresolved-reference] tests/test_pyp.py:189:17: Name `count` used when not defined
+- Found 8 diagnostics
++ Found 6 diagnostics
+
+nionutils (https://github.com/nion-software/nionutils)
+- error[unresolved-reference] nion/utils/test/ListModel_test.py:218:13: Name `begin_changes_count` used when not defined
+- error[unresolved-reference] nion/utils/test/ListModel_test.py:222:13: Name `end_changes_count` used when not defined
+- error[unresolved-reference] nion/utils/test/ListModel_test.py:245:13: Name `begin_changes_count` used when not defined
+- error[unresolved-reference] nion/utils/test/ListModel_test.py:249:13: Name `end_changes_count` used when not defined
+- error[unresolved-reference] nion/utils/test/ListModel_test.py:368:13: Name `begin_changes_count` used when not defined
+- error[unresolved-reference] nion/utils/test/ListModel_test.py:372:13: Name `end_changes_count` used when not defined
+- error[unresolved-reference] nion/utils/test/ListModel_test.py:396:13: Name `begin_changes_count` used when not defined
+- error[unresolved-reference] nion/utils/test/ListModel_test.py:400:13: Name `end_changes_count` used when not defined
+- error[unresolved-reference] nion/utils/test/Process_test.py:27:13: Name `a` used when not defined
+- error[unresolved-reference] nion/utils/test/Process_test.py:31:13: Name `b` used when not defined
+- Found 15 diagnostics
++ Found 5 diagnostics
+
+Expression (https://github.com/cognitedata/Expression)
+- error[unresolved-reference] tests/test_asyncseq.py:26:13: Name `acc` used when not defined
+- error[unresolved-reference] tests/test_asyncseq.py:40:13: Name `acc` used when not defined
+- Found 232 diagnostics
++ Found 230 diagnostics
+
+attrs (https://github.com/python-attrs/attrs)
+- error[unresolved-reference] src/attr/_next_gen.py:379:26: Name `on_setattr` used when not defined
+- error[unresolved-reference] src/attr/_next_gen.py:382:32: Name `on_setattr` used when not defined
+- error[unresolved-reference] tests/test_slots.py:1058:13: Name `call_count` used when not defined
+- error[unresolved-reference] tests/test_slots.py:1078:13: Name `call_count` used when not defined
+- Found 640 diagnostics
++ Found 636 diagnostics
+
+speedrun.com_global_scoreboard_webapp (https://github.com/Avasam/speedrun.com_global_scoreboard_webapp)
+- error[unresolved-reference] backend/services/user_updater_helpers.py:224:12: Name `position` used when not defined
+- error[unresolved-reference] backend/services/user_updater_helpers.py:225:13: Name `position` used when not defined
+- error[unresolved-reference] backend/services/utils.py:184:30: Name `next_params` used when not defined
+- error[unresolved-reference] backend/services/utils.py:188:25: Name `next_params` used when not defined
+- warning[possibly-unresolved-reference] backend/services/utils.py:189:37: Name `next_params` used when possibly not defined
+- warning[possibly-unresolved-reference] backend/services/utils.py:191:13: Name `next_params` used when possibly not defined
+- Found 66 diagnostics
++ Found 60 diagnostics
+
+anyio (https://github.com/agronholm/anyio)
+- error[unresolved-reference] src/anyio/_core/_sockets.py:187:16: Name `connected_stream` used when not defined
+- Found 94 diagnostics
++ Found 93 diagnostics
+
+werkzeug (https://github.com/pallets/werkzeug)
+- error[unresolved-reference] src/werkzeug/serving.py:263:16: Name `status_sent` used when not defined
+- warning[possibly-unresolved-reference] src/werkzeug/serving.py:305:20: Name `chunk_response` used when possibly not defined
+- warning[possibly-unresolved-reference] src/werkzeug/serving.py:311:20: Name `chunk_response` used when possibly not defined
+- error[unresolved-reference] src/werkzeug/serving.py:324:18: Name `headers_set` used when not defined
+- error[unresolved-reference] src/werkzeug/test.py:80:16: Name `on_disk` used when not defined
+- error[unresolved-reference] src/werkzeug/test.py:81:24: Name `stream` used when not defined
+- error[unresolved-reference] src/werkzeug/test.py:85:29: Name `total_length` used when not defined
+- error[unresolved-reference] src/werkzeug/test.py:86:21: Name `stream` used when not defined
+- error[unresolved-reference] src/werkzeug/test.py:94:17: Name `total_length` used when not defined
+- error[unresolved-reference] tests/test_utils.py:116:13: Name `accessed` used when not defined
+- Found 386 diagnostics
++ Found 376 diagnostics
+
+aiortc (https://github.com/aiortc/aiortc)
+- error[unresolved-reference] src/aiortc/codecs/__init__.py:78:29: Name `dynamic_pt` used when not defined
+- error[unresolved-reference] src/aiortc/codecs/__init__.py:89:29: Name `dynamic_pt` used when not defined
+- error[unresolved-reference] src/aiortc/codecs/__init__.py:90:36: Name `dynamic_pt` used when not defined
+- error[unresolved-reference] src/aiortc/codecs/__init__.py:93:9: Name `dynamic_pt` used when not defined
+- Found 98 diagnostics
++ Found 94 diagnostics
+
+black (https://github.com/psf/black)
+- error[unresolved-reference] src/black/linegen.py:1284:13: Name `current_line` used when not defined
+- error[unresolved-reference] src/black/linegen.py:1286:19: Name `current_line` used when not defined
+- error[unresolved-reference] src/black/linegen.py:1355:13: Name `current_line` used when not defined
+- error[unresolved-reference] src/black/linegen.py:1357:19: Name `current_line` used when not defined
+- error[unresolved-reference] src/black/trans.py:2477:16: Name `string_child_idx` used when not defined
+- error[unresolved-reference] src/black/trans.py:2479:36: Name `string_child_idx` used when not defined
+- error[unresolved-reference] src/black/trans.py:2480:9: Name `string_child_idx` used when not defined
+- Found 69 diagnostics
++ Found 62 diagnostics
+
+graphql-core (https://github.com/graphql-python/graphql-core)
+- error[unresolved-reference] tests/type/test_definition.py:367:13: Name `calls` used when not defined
+- error[unresolved-reference] tests/type/test_definition.py:414:13: Name `calls` used when not defined
+- error[unresolved-reference] tests/type/test_definition.py:567:13: Name `calls` used when not defined
+- error[unresolved-reference] tests/type/test_definition.py:593:13: Name `calls` used when not defined
+- Found 371 diagnostics
++ Found 367 diagnostics
+
+psycopg (https://github.com/psycopg/psycopg)
+- error[unresolved-reference] psycopg/psycopg/waiting.py:127:9: Name `ready` used when not defined
+- error[unresolved-reference] tests/_test_cursor.py:47:18: Name `n` used when not defined
+- error[unresolved-reference] tests/_test_cursor.py:48:9: Name `n` used when not defined
+- error[unresolved-reference] tests/pool/test_pool.py:177:9: Name `inits` used when not defined
+- error[unresolved-reference] tests/pool/test_pool.py:209:9: Name `resets` used when not defined
+- error[unresolved-reference] tests/pool/test_pool_async.py:178:9: Name `inits` used when not defined
+- error[unresolved-reference] tests/pool/test_pool_async.py:210:9: Name `resets` used when not defined
+- error[unresolved-reference] tests/pool/test_pool_null.py:134:9: Name `inits` used when not defined
+- error[unresolved-reference] tests/pool/test_pool_null.py:166:9: Name `resets` used when not defined
+- error[unresolved-reference] tests/pool/test_pool_null_async.py:133:9: Name `inits` used when not defined
+- error[unresolved-reference] tests/pool/test_pool_null_async.py:165:9: Name `resets` used when not defined
+- error[unresolved-reference] tests/test_capabilities.py:86:9: Name `called` used when not defined
+- error[unresolved-reference] tests/test_cursor_server.py:382:9: Name `n` used when not defined
+- error[unresolved-reference] tests/test_cursor_server_async.py:388:9: Name `n` used when not defined
+- Found 669 diagnostics
++ Found 655 diagnostics
+
+dulwich (https://github.com/dulwich/dulwich)
+- error[unresolved-reference] dulwich/client.py:2502:24: Name `ref_prefix` used when not defined
+- warning[possibly-unresolved-reference] dulwich/client.py:2509:35: Name `ref_prefix` used when possibly not defined
+- Found 155 diagnostics
++ Found 153 diagnostics
+
+starlette (https://github.com/encode/starlette)
+- error[unresolved-reference] starlette/testclient.py:301:16: Name `request_complete` used when not defined
+- error[unresolved-reference] starlette/testclient.py:330:28: Name `response_started` used when not defined
+- error[unresolved-reference] starlette/testclient.py:335:24: Name `response_started` used when not defined
+- error[unresolved-reference] tests/test_background.py:52:9: Name `TASK_COUNTER` used when not defined
+- error[unresolved-reference] tests/test_background.py:75:9: Name `TASK_COUNTER` used when not defined
+- error[unresolved-reference] tests/test_responses.py:113:37: Name `filled_by_bg_task` used when not defined
+- error[unresolved-reference] tests/test_responses.py:228:33: Name `filled_by_bg_task` used when not defined
+- error[unresolved-reference] tests/test_responses.py:608:13: Name `streamed` used when not defined
+- error[unresolved-reference] tests/test_responses.py:637:20: Name `streamed` used when not defined
+- Found 169 diagnostics
++ Found 160 diagnostics
+
+rich (https://github.com/Textualize/rich)
+- error[unresolved-reference] rich/traceback.py:180:24: Name `tb_data` used when not defined
+- error[unresolved-reference] rich/traceback.py:181:25: Name `tb_data` used when not defined
+- error[unresolved-reference] tests/test_progress.py:184:20: Name `_time` used when not defined
+- error[unresolved-reference] tests/test_progress.py:497:20: Name `time` used when not defined
+- Found 325 diagnostics
++ Found 321 diagnostics
+
+kopf (https://github.com/nolar/kopf)
+- error[unresolved-reference] kopf/_core/engines/probing.py:51:12: Name `probing_timestamp` used when not defined
+- error[unresolved-reference] kopf/_core/engines/probing.py:51:47: Name `probing_timestamp` used when not defined
+- error[unresolved-reference] kopf/_core/engines/probing.py:54:20: Name `probing_timestamp` used when not defined
+- error[unresolved-reference] kopf/_core/engines/probing.py:54:55: Name `probing_timestamp` used when not defined
+- error[unresolved-reference] kopf/_core/reactor/queueing.py:154:12: Name `worker_error` used when not defined
+- error[unresolved-reference] kopf/on.py:177:52: Name `operations` used when not defined
+- error[unresolved-reference] kopf/on.py:237:52: Name `operations` used when not defined
+- Found 130 diagnostics
++ Found 123 diagnostics
+
+trio (https://github.com/python-trio/trio)
+- warning[possibly-unresolved-reference] src/trio/_core/_tests/test_guest_mode.py:499:42: Name `run_sync_soon_not_threadsafe` used when possibly not defined
+- error[unresolved-reference] src/trio/_core/_tests/test_run.py:1443:9: Name `cb_counter` used when not defined
+- error[unresolved-reference] src/trio/_deprecate.py:104:12: Name `thing` used when not defined
+- error[unresolved-reference] src/trio/_tests/test_dtls.py:565:20: Name `first_time` used when not defined
+- error[unresolved-reference] src/trio/_tests/test_dtls.py:690:12: Name `blackholed` used when not defined
+- error[unresolved-reference] src/trio/_tests/test_ssl.py:597:13: Name `sent` used when not defined
+- error[unresolved-reference] src/trio/_tests/test_ssl.py:602:19: Name `received` used when not defined
+- error[unresolved-reference] src/trio/_tests/test_ssl.py:604:13: Name `received` used when not defined
+- error[unresolved-reference] src/trio/_tests/test_ssl.py:1038:9: Name `closed` used when not defined
+- error[unresolved-reference] src/trio/_tests/test_ssl.py:1149:9: Name `transport_close_count` used when not defined
+- error[unresolved-reference] src/trio/_tests/test_sync.py:531:17: Name `acquires` used when not defined
+- error[unresolved-reference] src/trio/_tests/test_sync.py:532:28: Name `in_critical_section` used when not defined
+- error[unresolved-reference] src/trio/_tests/test_testing.py:360:13: Name `resource_busy_count` used when not defined
+- Found 798 diagnostics
++ Found 785 diagnostics
+
+pydantic (https://github.com/pydantic/pydantic)
+- error[unresolved-reference] pydantic/fields.py:1699:12: Name `description` used when not defined
+- error[unresolved-reference] pydantic/fields.py:1702:12: Name `deprecated` used when not defined
+- error[unresolved-reference] pydantic/fields.py:1707:27: Name `alias_priority` used when not defined
+- warning[possibly-unresolved-reference] pydantic/fields.py:1721:13: Name `description` used when possibly not defined
+- warning[possibly-unresolved-reference] pydantic/fields.py:1722:13: Name `deprecated` used when possibly not defined
+- Found 764 diagnostics
++ Found 759 diagnostics
+
+optuna (https://github.com/optuna/optuna)
+- error[unresolved-reference] tests/samplers_tests/test_gp.py:59:9: Name `constraints_func_call_count` used when not defined
+- error[unresolved-reference] tests/samplers_tests/test_nsgaii.py:175:9: Name `constraints_func_call_count` used when not defined
+- error[unresolved-reference] tests/samplers_tests/test_nsgaiii.py:139:9: Name `constraints_func_call_count` used when not defined
+- error[unresolved-reference] tests/samplers_tests/test_samplers.py:648:13: Name `n_calls` used when not defined
+- error[unresolved-reference] tests/samplers_tests/test_samplers.py:678:13: Name `n_calls` used when not defined
+- error[unresolved-reference] tests/samplers_tests/test_samplers.py:706:13: Name `n_calls` used when not defined
+- error[unresolved-reference] tests/samplers_tests/test_samplers.py:734:13: Name `n_calls` used when not defined
+- error[unresolved-reference] tests/samplers_tests/test_samplers.py:759:13: Name `n_calls` used when not defined
+- error[unresolved-reference] tests/samplers_tests/test_samplers.py:796:13: Name `n_calls` used when not defined
+- error[unresolved-reference] tests/storages_tests/rdb_tests/test_storage.py:337:9: Name `n_retries` used when not defined
+- Found 581 diagnostics
++ Found 571 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
+- error[unresolved-reference] porcupine/plugins/aboutdialog.py:65:26: Name `fall_speed` used when not defined
+- error[unresolved-reference] porcupine/plugins/aboutdialog.py:66:13: Name `fall_speed` used when not defined
+- warning[possibly-unresolved-reference] porcupine/plugins/aboutdialog.py:110:27: Name `dx` used when possibly not defined
+- warning[possibly-unresolved-reference] porcupine/plugins/aboutdialog.py:110:35: Name `dy` used when possibly not defined
+- error[unresolved-reference] porcupine/plugins/highlight/__init__.py:73:16: Name `timeout_scheduled` used when not defined
+- error[unresolved-reference] porcupine/plugins/highlight/__init__.py:74:12: Name `running_requested` used when not defined
+- error[unresolved-reference] porcupine/plugins/highlight/__init__.py:83:12: Name `timeout_scheduled` used when not defined
+- error[unresolved-reference] porcupine/plugins/highlight/__init__.py:86:24: Name `running_requested` used when not defined
+- error[unresolved-reference] porcupine/plugins/tab_order.py:81:13: Name `accumulator` used when not defined
+- error[unresolved-reference] porcupine/textutils.py:102:27: Name `old_cursor_pos` used when not defined
+- Found 44 diagnostics
++ Found 34 diagnostics
+
+cloud-init (https://github.com/canonical/cloud-init)
+- error[unresolved-reference] cloudinit/config/schema.py:202:16: Name `message` used when not defined
+- error[unresolved-reference] cloudinit/config/schema.py:203:17: Name `message` used when not defined
+- warning[possibly-unresolved-reference] cloudinit/config/schema.py:205:13: Name `message` used when possibly not defined
+- error[unresolved-reference] tests/unittests/cmd/test_status.py:808:13: Name `sleep_calls` used when not defined
+- error[unresolved-reference] tests/unittests/cmd/test_status.py:866:13: Name `sleep_calls` used when not defined
+- error[unresolved-reference] tests/unittests/sources/test_scaleway.py:603:13: Name `call_count` used when not defined
+- Found 667 diagnostics
++ Found 661 diagnostics
+
+websockets (https://github.com/aaugustin/websockets)
+- error[unresolved-reference] src/websockets/legacy/protocol.py:1049:39: Name `max_size` used when not defined
+- error[unresolved-reference] src/websockets/legacy/protocol.py:1050:21: Name `max_size` used when not defined
+- error[unresolved-reference] src/websockets/legacy/protocol.py:1064:39: Name `max_size` used when not defined
+- error[unresolved-reference] src/websockets/legacy/protocol.py:1065:21: Name `max_size` used when not defined
+- Found 55 diagnostics
++ Found 51 diagnostics
+
+mkdocs (https://github.com/mkdocs/mkdocs)
+- error[unresolved-reference] mkdocs/tests/livereload_tests.py:279:13: Name `build_count` used when not defined
+- Found 190 diagnostics
++ Found 189 diagnostics
+
+ignite (https://github.com/pytorch/ignite)
+- error[unresolved-reference] tests/ignite/conftest.py:106:9: Name `path` used when not defined
+- error[unresolved-reference] tests/ignite/engine/test_custom_events.py:389:9: Name `num_calls` used when not defined
+- error[unresolved-reference] tests/ignite/engine/test_custom_events.py:416:9: Name `num_calls` used when not defined
+- error[unresolved-reference] tests/ignite/engine/test_custom_events.py:436:9: Name `num_calls` used when not defined
+- error[unresolved-reference] tests/ignite/engine/test_custom_events.py:459:9: Name `num_calls` used when not defined
+- error[unresolved-reference] tests/ignite/engine/test_engine.py:173:17: Name `expected_iter` used when not defined
+- error[unresolved-reference] tests/ignite/engine/test_engine.py:177:55: Name `expected_data_iter` used when not defined
+- error[unresolved-reference] tests/ignite/engine/test_engine.py:223:13: Name `num_calls_check_iter_epoch` used when not defined
+- error[unresolved-reference] tests/ignite/engine/test_engine.py:232:17: Name `expected_iter` used when not defined
+- error[unresolved-reference] tests/ignite/engine/test_engine.py:350:16: Name `call_count` used when not defined
+- error[unresolved-reference] tests/ignite/engine/test_engine.py:357:13: Name `call_count` used when not defined
+- error[unresolved-reference] tests/ignite/engine/test_engine.py:1437:9: Name `num_calls_check_iter_epoch` used when not defined
+- error[unresolved-reference] tests/ignite/engine/test_engine.py:1484:9: Name `num_calls_check_iter_epoch` used when not defined
+- Found 2138 diagnostics
++ Found 2125 diagnostics
+
+boostedblob (https://github.com/hauntsaninja/boostedblob)
+- error[unresolved-reference] boostedblob/cli.py:167:13: Name `total_count` used when not defined
+- error[unresolved-reference] boostedblob/cli.py:173:17: Name `total_count` used when not defined
+- error[unresolved-reference] boostedblob/copying.py:221:31: Name `max_block_index` used when not defined
+- error[unresolved-reference] boostedblob/write.py:154:31: Name `max_block_index` used when not defined
+- Found 30 diagnostics
++ Found 26 diagnostics
+
+schemathesis (https://github.com/schemathesis/schemathesis)
+- error[unresolved-reference] src/schemathesis/specs/openapi/expressions/lexer.py:96:9: Name `cursor` used when not defined
+- Found 289 diagnostics
++ Found 288 diagnostics
+
+pwndbg (https://github.com/pwndbg/pwndbg)
+- error[unresolved-reference] pwndbg/aglib/dynamic.py:84:16: Name `skip_this` used when not defined
+- error[unresolved-reference] pwndbg/aglib/dynamic.py:89:25: Name `skip_this` used when not defined
+- error[unresolved-reference] pwndbg/aglib/heap/mallocng.py:573:39: Name `cur_offset` used when not defined
+- error[unresolved-reference] pwndbg/aglib/heap/mallocng.py:573:53: Name `cur_offset` used when not defined
+- error[unresolved-reference] pwndbg/aglib/heap/mallocng.py:574:13: Name `cur_offset` used when not defined
+- error[unresolved-reference] pwndbg/aglib/heap/mallocng.py:802:39: Name `cur_offset` used when not defined
+- error[unresolved-reference] pwndbg/aglib/heap/mallocng.py:802:53: Name `cur_offset` used when not defined
+- error[unresolved-reference] pwndbg/aglib/heap/mallocng.py:803:13: Name `cur_offset` used when not defined
+- error[unresolved-reference] pwndbg/aglib/heap/mallocng.py:898:39: Name `cur_offset` used when not defined
+- error[unresolved-reference] pwndbg/aglib/heap/mallocng.py:898:53: Name `cur_offset` used when not defined
+- error[unresolved-reference] pwndbg/aglib/heap/mallocng.py:899:13: Name `cur_offset` used when not defined
+- Found 2275 diagnostics
++ Found 2264 diagnostics
+
+asynq (https://github.com/quora/asynq)
+- error[unresolved-reference] asynq/tests/test_asynq_to_async.py:67:9: Name `call_count` used when not defined
+- error[unresolved-reference] asynq/tests/test_asynq_to_async.py:76:9: Name `call_count` used when not defined
+- Found 188 diagnostics
++ Found 186 diagnostics
+
+tornado (https://github.com/tornadoweb/tornado)
+- error[unresolved-reference] tornado/test/ioloop_test.py:730:13: Name `count` used when not defined
+- Found 244 diagnostics
++ Found 243 diagnostics
+
+urllib3 (https://github.com/urllib3/urllib3)
+- error[unresolved-reference] test/contrib/emscripten/test_emscripten.py:935:13: Name `count` used when not defined
+- error[unresolved-reference] test/with_dummyserver/test_https.py:1065:27: Name `last_action` used when not defined
+- error[unresolved-reference] test/with_dummyserver/test_https.py:1069:24: Name `state` used when not defined
+- error[unresolved-reference] test/with_dummyserver/test_https.py:1071:24: Name `current_thread` used when not defined
+- error[unresolved-reference] test/with_dummyserver/test_https.py:1074:24: Name `state` used when not defined
+- error[unresolved-reference] test/with_dummyserver/test_https.py:1075:24: Name `current_thread` used when not defined
+- error[unresolved-reference] test/with_dummyserver/test_socketlevel.py:2138:35: Name `buffer` used when not defined
+- error[unresolved-reference] test/with_dummyserver/test_socketlevel.py:2140:21: Name `buffer` used when not defined
+- error[unresolved-reference] test/with_dummyserver/test_socketlevel.py:2539:23: Name `buffer` used when not defined
+- error[unresolved-reference] test/with_dummyserver/test_socketlevel.py:2540:17: Name `buffer` used when not defined
+- error[unresolved-reference] test/with_dummyserver/test_socketlevel.py:2586:41: Name `buffer` used when not defined
+- error[unresolved-reference] test/with_dummyserver/test_socketlevel.py:2590:21: Name `buffer` used when not defined
+- error[unresolved-reference] test/with_dummyserver/test_socketlevel.py:2672:41: Name `buffer` used when not defined
+- error[unresolved-reference] test/with_dummyserver/test_socketlevel.py:2674:21: Name `buffer` used when not defined
+- error[unresolved-reference] test/with_dummyserver/test_socketlevel.py:2736:35: Name `buffer` used when not defined
+- error[unresolved-reference] test/with_dummyserver/test_socketlevel.py:2738:21: Name `buffer` used when not defined
+- Found 433 diagnostics
++ Found 417 diagnostics
+
+vision (https://github.com/pytorch/vision)
+- error[unresolved-reference] test/builtin_dataset_mocks.py:158:12: Name `name` used when not defined
+- warning[possibly-unresolved-reference] test/builtin_dataset_mocks.py:160:23: Name `name` used when possibly not defined
+- warning[possibly-unresolved-reference] test/builtin_dataset_mocks.py:160:43: Name `name` used when possibly not defined
+- Found 1475 diagnostics
++ Found 1472 diagnostics
+
+cwltool (https://github.com/common-workflow-language/cwltool)
+- warning[possibly-unresolved-reference] cwltool/job.py:533:20: Name `mem_tm` used when possibly not defined
+- warning[possibly-unresolved-reference] cwltool/job.py:534:21: Name `mem_tm` used when possibly not defined
+- Found 137 diagnostics
++ Found 135 diagnostics
+
+pytest (https://github.com/pytest-dev/pytest)
+- error[unresolved-reference] src/_pytest/assertion/rewrite.py:572:16: Name `assert_lineno` used when not defined
+- error[unresolved-reference] src/_pytest/assertion/rewrite.py:573:13: Name `assert_lineno` used when not defined
+- error[unresolved-reference] src/_pytest/assertion/rewrite.py:573:38: Name `lines` used when not defined
+- error[unresolved-reference] testing/code/test_excinfo.py:1034:17: Name `raised` used when not defined
+- error[unresolved-reference] testing/test_compat.py:132:13: Name `ncalls` used when not defined
+- Found 525 diagnostics
++ Found 520 diagnostics
+
+bokeh (https://github.com/bokeh/bokeh)
+- error[unresolved-reference] src/bokeh/model/model.py:575:17: Name `dirty_count` used when not defined
+- Found 856 diagnostics
++ Found 855 diagnostics
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- error[unresolved-reference] mitmproxy/addons/asgiapp.py:109:16: Name `received_body` used when not defined
+- error[unresolved-reference] mitmproxy/contentviews/_view_xml_html.py:114:20: Name `i` used when not defined
+- error[unresolved-reference] mitmproxy/dns.py:412:25: Name `offset` used when not defined
+- error[unresolved-reference] mitmproxy/dns.py:414:13: Name `offset` used when not defined
+- error[unresolved-reference] mitmproxy/dns.py:434:33: Name `offset` used when not defined
+- error[unresolved-reference] mitmproxy/dns.py:436:21: Name `offset` used when not defined
+- Found 1802 diagnostics
++ Found 1796 diagnostics
+
+static-frame (https://github.com/static-frame/static-frame)
+- error[unresolved-reference] static_frame/core/axis_map.py:74:12: Name `opposite` used when not defined
+- error[unresolved-reference] static_frame/core/axis_map.py:77:20: Name `opposite` used when not defined
++ warning[unused-ignore-comment] static_frame/core/container_util.py:315:28: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] static_frame/core/container_util.py:319:37: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] static_frame/core/container_util.py:325:33: Unused blanket `type: ignore` directive
+- error[unresolved-reference] static_frame/core/container_util.py:266:20: Name `fill_value` used when not defined
+- error[unresolved-reference] static_frame/core/container_util.py:272:20: Name `fill_value` used when not defined
+- error[unresolved-reference] static_frame/core/container_util.py:276:24: Name `fill_value` used when not defined
+- error[unresolved-reference] static_frame/core/container_util.py:280:38: Name `fill_value` used when not defined
+- error[unresolved-reference] static_frame/core/container_util.py:281:42: Name `fill_value` used when not defined
+- warning[possibly-unresolved-reference] static_frame/core/container_util.py:282:16: Name `fill_value` used when possibly not defined
+- error[invalid-argument-type] static_frame/core/container_util.py:324:38: Argument to bound method `__init__` is incorrect: Expected `Iterable[Unknown]`, found `def format(value: object, format_spec: str = Literal[""], /) -> str`
+- error[unresolved-reference] static_frame/core/quilt.py:166:24: Name `opposite` used when not defined
+- error[unresolved-reference] static_frame/core/quilt.py:172:24: Name `opposite` used when not defined
+- error[unresolved-reference] static_frame/profile/__main__.py:2600:33: Name `name_root_last` used when not defined
+- error[unresolved-reference] static_frame/profile/__main__.py:2602:21: Name `name_root_count` used when not defined
+- warning[possibly-unresolved-reference] static_frame/profile/__main__.py:2603:20: Name `name_root_count` used when possibly not defined
+- Found 1803 diagnostics
++ Found 1792 diagnostics
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- error[unresolved-reference] openlibrary/conftest.py:58:9: Name `cur_time` used when not defined
+- Found 698 diagnostics
++ Found 697 diagnostics
+
+streamlit (https://github.com/streamlit/streamlit)
+- error[unresolved-reference] lib/streamlit/deprecation_util.py:165:16: Name `has_shown_warning` used when not defined
+- error[unresolved-reference] lib/streamlit/elements/write.py:164:16: Name `streamed_response` used when not defined
+- error[unresolved-reference] lib/streamlit/elements/write.py:164:38: Name `stream_container` used when not defined
+- error[unresolved-reference] lib/streamlit/elements/write.py:166:17: Name `stream_container` used when not defined
+- error[unresolved-reference] lib/streamlit/elements/write.py:166:43: Name `streamed_response` used when not defined
+- error[unresolved-reference] lib/streamlit/elements/write.py:167:40: Name `streamed_response` used when not defined
+- error[unresolved-reference] lib/tests/streamlit/runtime/forward_msg_queue_test.py:322:13: Name `count` used when not defined
+- error[unresolved-reference] lib/tests/streamlit/runtime/fragment_test.py:220:13: Name `call_count` used when not defined
+- Found 3303 diagnostics
++ Found 3295 diagnostics
+
+meson (https://github.com/mesonbuild/meson)
+- error[unresolved-reference] mesonbuild/cmake/generator.py:138:9: Name `i` used when not defined
+- error[unresolved-reference] mesonbuild/cmake/traceparser.py:430:16: Name `working_dir` used when not defined
+- error[unresolved-reference] mesonbuild/cmake/traceparser.py:433:17: Name `working_dir` used when not defined
+- error[unresolved-reference] mesonbuild/dependencies/boost.py:256:36: Name `cur_vers` used when not defined
+- error[unresolved-reference] mesonbuild/mformat.py:55:13: Name `index` used when not defined
+- error[unresolved-reference] mesonbuild/mtest.py:2162:16: Name `interrupted` used when not defined
+- Found 932 diagnostics
++ Found 926 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- error[unresolved-reference] ddtrace/appsec/_iast/taint_sinks/utils.py:20:12: Name `_is_patched` used when not defined
+- error[unresolved-reference] tests/contrib/google_genai/conftest.py:143:9: Name `call_count` used when not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions.py:44:35: Name `value` used when not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions.py:238:21: Name `value` used when not defined
++ warning[unused-ignore-comment] tests/errortracking/test_handled_exceptions.py:242:58: Unused blanket `type: ignore` directive
++ warning[unused-ignore-comment] tests/errortracking/test_handled_exceptions.py:248:49: Unused blanket `type: ignore` directive
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:30:9: Name `value` used when not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:35:13: Name `value` used when not defined
+- warning[possibly-unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:38:13: Name `value` used when possibly not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:52:9: Name `value` used when not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:57:13: Name `value` used when not defined
+- warning[possibly-unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:60:13: Name `value` used when possibly not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:77:9: Name `value` used when not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:85:17: Name `value` used when not defined
+- warning[possibly-unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:88:17: Name `value` used when possibly not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:91:13: Name `value` used when not defined
+- warning[possibly-unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:94:13: Name `value` used when possibly not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:111:9: Name `value` used when not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:116:13: Name `value` used when not defined
+- warning[possibly-unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:119:13: Name `value` used when possibly not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:134:9: Name `value` used when not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:139:13: Name `value` used when not defined
+- warning[possibly-unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:142:13: Name `value` used when possibly not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:157:9: Name `value` used when not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:162:13: Name `value` used when not defined
+- warning[possibly-unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:165:13: Name `value` used when possibly not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:180:9: Name `value` used when not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:186:13: Name `value` used when not defined
+- warning[possibly-unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:189:13: Name `value` used when possibly not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:211:9: Name `value` used when not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:216:13: Name `value` used when not defined
+- warning[possibly-unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:219:13: Name `value` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:221:13: Name `value` used when possibly not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:235:9: Name `value` used when not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:240:13: Name `value` used when not defined
+- warning[possibly-unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:243:13: Name `value` used when possibly not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:260:9: Name `value` used when not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:265:13: Name `value` used when not defined
+- warning[possibly-unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:269:17: Name `value` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:272:17: Name `value` used when possibly not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:288:9: Name `value` used when not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:293:13: Name `value` used when not defined
+- warning[possibly-unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:296:13: Name `value` used when possibly not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:311:9: Name `value` used when not defined
+- error[unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:316:13: Name `value` used when not defined
+- warning[possibly-unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:324:13: Name `value` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:326:13: Name `value` used when possibly not defined
+- warning[possibly-unresolved-reference] tests/errortracking/test_handled_exceptions_by_bytecode.py:328:13: Name `value` used when possibly not defined
+- error[unresolved-reference] tests/internal/bytecode_injection/test_core.py:253:9: Name `value` used when not defined
+- error[unresolved-reference] tests/internal/bytecode_injection/test_core.py:259:13: Name `value` used when not defined
+- warning[possibly-unresolved-reference] tests/internal/bytecode_injection/test_core.py:263:13: Name `value` used when possibly not defined
+- error[unresolved-reference] tests/internal/bytecode_injection/test_core.py:302:9: Name `callback_invocations` used when not defined
+- error[unresolved-reference] tests/internal/bytecode_injection/test_core.py:307:13: Name `value` used when not defined
+- warning[possibly-unresolved-reference] tests/internal/bytecode_injection/test_core.py:311:13: Name `value` used when possibly not defined
+- error[unresolved-reference] tests/internal/bytecode_injection/test_core.py:353:9: Name `value` used when not defined
+- error[unresolved-reference] tests/internal/bytecode_injection/test_core.py:385:9: Name `value` used when not defined
+- error[unresolved-reference] tests/internal/bytecode_injection/test_core.py:390:9: Name `value` used when not defined
+- Found 6872 diagnostics
++ Found 6819 diagnostics
+
+zulip (https://github.com/zulip/zulip)
+- error[unresolved-reference] corporate/tests/test_stripe.py:4768:13: Name `test_realm_count` used when not defined
+- error[unresolved-reference] zerver/data_import/sequencer.py:23:9: Name `i` used when not defined
+- error[unresolved-reference] zerver/data_import/slack.py:582:25: Name `stream_id_count` used when not defined
+- error[unresolved-reference] zerver/data_import/slack.py:583:28: Name `recipient_id_count` used when not defined
+- error[unresolved-reference] zerver/data_import/slack.py:598:74: Name `defaultstream_id` used when not defined
+- error[unresolved-reference] zerver/data_import/slack.py:600:17: Name `defaultstream_id` used when not defined
+- error[unresolved-reference] zerver/data_import/slack.py:613:17: Name `subscription_id_count` used when not defined
+- error[unresolved-reference] zerver/data_import/slack.py:616:13: Name `stream_id_count` used when not defined
+- error[unresolved-reference] zerver/data_import/slack.py:617:13: Name `recipient_id_count` used when not defined
+- error[unresolved-reference] zerver/data_import/slack.py:648:17: Name `direct_message_group_id_count` used when not defined
+- error[unresolved-reference] zerver/data_import/slack.py:652:54: Name `direct_message_group_id_count` used when not defined
+- error[unresolved-reference] zerver/data_import/slack.py:655:17: Name `direct_message_group_id_count` used when not defined
+- error[unresolved-reference] zerver/data_import/slack.py:655:48: Name `recipient_id_count` used when not defined
+- error[unresolved-reference] zerver/data_import/slack.py:658:72: Name `recipient_id_count` used when not defined
+- error[unresolved-reference] zerver/data_import/slack.py:663:17: Name `recipient_id_count` used when not defined
+- error[unresolved-reference] zerver/data_import/slack.py:665:17: Name `subscription_id_count` used when not defined
+- error[unresolved-reference] zerver/data_import/slack.py:668:13: Name `direct_message_group_id_count` used when not defined
+- error[unresolved-reference] zerver/data_import/slack.py:669:13: Name `recipient_id_count` used when not defined
+- error[unresolved-reference] zerver/lib/streams.py:1717:16: Name `query_filter` used when not defined
+- error[unresolved-reference] zerver/lib/streams.py:1720:17: Name `query_filter` used when not defined
+- error[unresolved-reference] zerver/lib/subscription_info.py:56:42: Name `color_idx` used when not defined
+- error[unresolved-reference] zerver/lib/subscription_info.py:57:22: Name `color_idx` used when not defined
+- error[unresolved-reference] zerver/tests/test_auth_backends.py:8636:13: Name `call_count` used when not defined
+- error[unresolved-reference] zerver/tests/test_external.py:283:13: Name `request_count` used when not defined
+- error[unresolved-reference] zerver/tests/test_external.py:338:13: Name `request_count` used when not defined
+- error[unresolved-reference] zerver/tests/test_new_users.py:320:13: Name `user_no` used when not defined
+- error[unresolved-reference] zerver/tests/test_queue.py:65:13: Name `count` used when not defined
+- error[unresolved-reference] zerver/tests/test_slack_importer.py:188:13: Name `count` used when not defined
+- error[unresolved-reference] zerver/tests/test_upload_s3.py:608:13: Name `total_bytes_transferred` used when not defined
+- error[unresolved-reference] zerver/tests/test_zilencer_analytics.py:903:16: Name `first_call` used when not defined
+- Found 7321 diagnostics
++ Found 7291 diagnostics
+
+rotki (https://github.com/rotki/rotki)
+- error[unresolved-reference] rotkehlchen/history/manager.py:151:13: Name `empty_or_error` used when not defined
+- error[unresolved-reference] rotkehlchen/history/manager.py:156:44: Name `step` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/api/test_history.py:511:9: Name `coingecko_api_calls` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/exchanges/test_binance.py:1016:13: Name `count` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/exchanges/test_kraken.py:187:16: Name `count` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/exchanges/test_kraken.py:189:17: Name `count` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/exchanges/test_kraken.py:193:13: Name `count` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/external_apis/test_beaconchain.py:75:9: Name `requests_made` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/external_apis/test_etherscan.py:63:12: Name `count` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/external_apis/test_etherscan.py:68:9: Name `count` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/integration/test_gnosischain.py:86:12: Name `processed_queries` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/integration/test_gnosischain.py:89:9: Name `processed_queries` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/integration/test_gnosischain.py:142:9: Name `counter` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/unit/decoders/test_rainbow.py:355:9: Name `call_count` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/unit/globaldb/test_globaldb_cache.py:258:20: Name `call_count` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/unit/globaldb/test_globaldb_cache.py:263:17: Name `call_count` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/unit/test_ethereum_inquirer.py:439:9: Name `tx_or_tx_receipt_calls` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/unit/test_inquirer.py:137:9: Name `count` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/unit/test_inquirer.py:245:12: Name `call_count` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/unit/test_inquirer.py:247:14: Name `call_count` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/unit/test_inquirer.py:252:9: Name `call_count` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/unit/test_inquirer.py:629:9: Name `coingecko_api_calls` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/unit/test_inquirer.py:1357:9: Name `count` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/unit/test_price_historian.py:138:9: Name `call_count` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/unit/test_tasks_manager.py:1192:13: Name `task_runs` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/unit/test_tasks_manager.py:1367:19: Name `address_check_counter` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/unit/test_tasks_manager.py:1377:13: Name `address_check_counter` used when not defined
+- warning[possibly-unresolved-reference] rotkehlchen/tests/unit/test_tasks_manager.py:1378:75: Name `block_offset` used when possibly not defined
+- warning[possibly-unresolved-reference] rotkehlchen/tests/unit/test_tasks_manager.py:1379:9: Name `block_offset` used when possibly not defined
+- error[unresolved-reference] rotkehlchen/tests/utils/ethereum.py:504:13: Name `expected_call_count` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/utils/mock.py:119:30: Name `counter` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/utils/mock.py:120:9: Name `counter` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/utils/mock.py:189:49: Name `counter` used when not defined
+- error[unresolved-reference] rotkehlchen/tests/utils/mock.py:195:9: Name `counter` used when not defined
+- Found 1727 diagnostics
++ Found 1693 diagnostics
+
+scikit-learn (https://github.com/scikit-learn/scikit-learn)
+- error[unresolved-reference] sklearn/linear_model/tests/test_coordinate_descent.py:1198:13: Name `calls` used when not defined
+- error[unresolved-reference] sklearn/metrics/tests/test_score_objects.py:808:13: Name `predict_proba_call_cnt` used when not defined
+- error[unresolved-reference] sklearn/metrics/tests/test_score_objects.py:830:13: Name `predict_called_cnt` used when not defined
+- Found 2074 diagnostics
++ Found 2071 diagnostics
+
+prefect (https://github.com/PrefectHQ/prefect)
+- error[unresolved-reference] src/integrations/prefect-azure/tests/test_aci_worker.py:689:13: Name `run_count` used when not defined
+- error[unresolved-reference] src/integrations/prefect-azure/tests/test_aci_worker.py:780:12: Name `log_count` used when not defined
+- error[unresolved-reference] src/integrations/prefect-azure/tests/test_aci_worker.py:781:13: Name `log_count` used when not defined
+- error[unresolved-reference] src/integrations/prefect-azure/tests/test_aci_worker.py:783:14: Name `log_count` used when not defined
+- error[unresolved-reference] src/integrations/prefect-azure/tests/test_aci_worker.py:784:13: Name `log_count` used when not defined
+- error[unresolved-reference] src/integrations/prefect-azure/tests/test_aci_worker.py:795:9: Name `run_count` used when not defined
+- error[unresolved-reference] src/integrations/prefect-docker/tests/test_worker.py:1175:9: Name `event_count` used when not defined
+- error[unresolved-reference] src/prefect/cli/_prompts.py:183:26: Name `scroll_offset` used when not defined
+- error[unresolved-reference] src/prefect/cli/_prompts.py:185:29: Name `scroll_offset` used when not defined
+- warning[possibly-unresolved-reference] src/prefect/cli/_prompts.py:188:39: Name `scroll_offset` used when possibly not defined
+- warning[possibly-unresolved-reference] src/prefect/cli/_prompts.py:188:55: Name `scroll_offset` used when possibly not defined
+- warning[possibly-unresolved-reference] src/prefect/cli/_prompts.py:190:20: Name `scroll_offset` used when possibly not defined
+- error[unresolved-reference] src/prefect/testing/fixtures.py:205:9: Name `time_shift` used when not defined
+- Found 3752 diagnostics
++ Found 3739 diagnostics
+
+materialize (https://github.com/MaterializeInc/materialize)
+- error[unresolved-reference] test/sqllogictest/mzcompose.py:106:79: Name `j` used when not defined
+- error[unresolved-reference] test/sqllogictest/mzcompose.py:118:17: Name `j` used when not defined
+- Found 3223 diagnostics
++ Found 3221 diagnostics
+
+scipy (https://github.com/scipy/scipy)
+- error[unresolved-reference] scipy/integrate/tests/test__quad_vec.py:200:12: Name `count` used when not defined
+- error[unresolved-reference] scipy/integrate/tests/test__quad_vec.py:203:9: Name `count` used when not defined
+- error[unresolved-reference] scipy/optimize/_root.py:319:9: Name `nfev` used when not defined
+- Found 6620 diagnostics
++ Found 6617 diagnostics
+
+sympy (https://github.com/sympy/sympy)
+- error[unresolved-reference] sympy/core/cache.py:178:12: Name `func` used when not defined
+- warning[possibly-unresolved-reference] sympy/core/cache.py:180:16: Name `func` used when possibly not defined
+- error[unresolved-reference] sympy/core/cache.py:194:16: Name `func` used when not defined
+- warning[possibly-unresolved-reference] sympy/core/cache.py:196:20: Name `func` used when possibly not defined
+- error[unresolved-reference] sympy/core/evalf.py:1114:33: Name `max_real_term` used when not defined
+- error[unresolved-reference] sympy/core/evalf.py:1115:33: Name `max_imag_term` used when not defined
+- Found 13507 diagnostics
++ Found 13501 diagnostics
+
+```
+</details>
+No memory usage changes detected ✅
+
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/semantic_index/builder.rs`:1885 on 2025-07-03 02:22_
+
+I'm not sure how to report an error/diagnostic here, but once I figure that out (the same for its partner in the `Stmt::Nonlocal` branch immediately below) that should make the `error:` assert in `global.md` start passing.
+
+---
+
+_@oconnor663 reviewed on 2025-07-03 02:22_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/semantic_index/builder.rs`:1907 on 2025-07-03 02:22_
+
+It seems like this does nothing? Curious what's up here.
+
+---
+
+_@oconnor663 reviewed on 2025-07-03 02:22_
+
+---
+
+_@oconnor663 reviewed on 2025-07-03 02:23_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types/infer.rs`:5697 on 2025-07-03 02:23_
+
+Probably we don't want to start using let-chains immediately and bump the MSRV to 1.88? But I figured I'd ask :)
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:58 on 2025-07-03 02:26_
+
+Our typical style in mdtests is to put the prose description before the test snippet it describes (often ending the paragraph with a colon to indicate "here's the code demonstrating this"), not after the code snippet.
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-07-03 02:29_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+<!-- __CODSPEED_WALLTIME_PERFORMANCE_REPORT_COMMENT__ -->
+
+## [CodSpeed WallTime Performance Report](https://codspeed.io/astral-sh/ruff/branches/jack%2Fnonlocal?runnerMode=WallTime)
+
+### Merging #19112 will **not alter performance**
+
+<sub>Comparing <code>jack/nonlocal</code> (664a9a2) with <code>main</code> (08bc6d2)</sub>
+
+
+
+### Summary
+
+`✅ 7` untouched benchmarks  
+
+
+
+
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:179 on 2025-07-03 02:32_
+
+Once we get the below tests passing, I would probably just remove this as redundant with the next test snippet (which is the same but includes the reveals)
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:289 on 2025-07-03 02:33_
+
+Another nice thing to test would be that if there are multiple enclosing scopes defining `x`, we get the nearest one.
+
+And that `nonlocal x` fails if there is no enclosing _function-like_ scope binding `x`, even if there is a global `x` or an enclosing class scope that binds `x`.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:79 on 2025-07-03 02:39_
+
+Yes, I think this is the revealed type we should be aiming for here
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:80 on 2025-07-03 02:52_
+
+Here I think `Literal[2]` would be unsound. It's clearly wrong in this particular case, since `g` is never called, so `x` would still be `1` here. I don't think we want to get into detecting whether/when `g` is called, at least not for now, but we should aim to give a result that accurately encompasses the possibilities.
+
+One option here is that we actually try to walk all nested scopes and find their nonlocal assignments to `x`, and union those into the possible type of `x` in this scope. This will often be cyclic, in that the type assigned to `x` in the inner scope may depend on its type in the outer scope, and so if we also introduce a dependency the other direction, we have a cycle. In fact, this very example would be cyclic, and iterating the cycle would build an ever-growing union of integer literals `1, 2, 3, ...` until we hit the maximum size for such a union and fall back to `int`. (This would be accurately reflecting that we aren't trying to determine the maximum number of times `g` can be called, so we have to account for any number of possible calls.)
+
+I think this is a level of accuracy that other type checkers don't attempt, and I'd rather not get into, certainly not in this PR. Pyright seems content to totally ignore the possibility of a nonlocal write from an inner scope, even [in cases where it definitely occurs](https://pyright-play.net/?strict=true&code=CYUwZgBA9grgLiATgCgJQC4BQEcQB4QC8EAjNrqJAJYB2NSaWuzENUNANlAMYCGH%2Bci3xEIAJiERa9FKkmIQANxD8A%2BnACeABxDI8qIA).
+
+Another approach is that we just enforce that the nonlocal writes in the inner scope(s) respect the declared type (if any) of the name in the outer scope, and in the outer scope we refuse to narrow from that declared type, because we don't know where a call to the inner scope might occur and invalidate our narrowing. So in undeclared cases, like this one, the declared type would be `Unknown`. Ideally I think what we'd do is union the declared and inferred types, which would result in `Unknown | Literal[1]` here. This is saying "we know `x` is nonlocal in a nested scope, and we aren't trying to analyze what might be assigned to it there, therefore we don't know the upper bound on its possible type, but we know the lower bound is `Literal[1]`, since we've seen that assigned in this scope."
+
+In a case where `x` is declared in the outer scope (e.g. `x: int = 1`, which we'd also want to add a test for), inner scopes with `nonlocal x` would require that only things assignable to `int` can be assigned to `x`, and the outer scope would take `int | Literal[1]` as the type of `x`, which simplifies to `int`.
+
+I would be inclined to go for the latter approach in this PR, but open to other suggestions/ideas.
+
+Let me know if this doesn't make sense.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:103 on 2025-07-03 02:56_
+
+I think this is non-essential. [Pyright doesn't do it](https://pyright-play.net/?strict=true&code=CYUwZgBA9grgLiATgCgJQC4BQEcVJASwDsik0tdKIioiAbKAYwEM6IAPbKndiAXggAmLjmKkUqER34QAjFMQgAbiFYB9OAE8ADiGTtUQA), and I don't think we need to do it either, at least not yet.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:102 on 2025-07-03 02:58_
+
+This is an interesting case, because `x` is declared non-local in the inner scope, but never assigned in the inner scope. We could (without too much difficulty) detect this case and not treat `x` in the outer scope as if it might be assigned from an inner scope.
+
+But I'm also not sure if that's worth doing, considering that there's no point in declaring a name `nonlocal` without assigning to it. (Though I have seen cases of people doing it accidentally, either as documentation of the fact that they are _referring_ to the outer `x` when they use `x` in this scope, or because they wrongly think they need to declare it nonlocal to do that.)
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:105 on 2025-07-03 02:59_
+
+did you mean `reveal_type(x)` here? Because `h()` doesn't have a return annotation, so this should reveal `Unknown` (or `None` if we had return-type inference landed)
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/semantic_index/builder.rs`:1907 on 2025-07-03 03:07_
+
+It's here out of the general principle that when we have we handle a specific node kind, we always still call `walk_stmt` to ensure any AST subtrees in that node are still walked. In the particular case of `nonlocal` and `global`, there are no AST subtrees, so there's nothing to walk, so we could safely leave this out. But it's arguably better to just ensure we always call `walk_stmt`, and not make people think about it whether it's needed for a particular node kind? The cost is very low. I don't honestly have strong feelings.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/semantic_index/builder.rs`:1885 on 2025-07-03 03:07_
+
+I think you'll want to take a look at `self.report_semantic_error` a few lines above.
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/semantic_index/builder.rs`:1906 on 2025-07-03 03:08_
+
+`LoadBeforeGlobalDeclaration` doesn't seem like the right error kind here.
+
+We should add some tests for these error cases (where you have `nonlocal x` after a use of or assignment to or declaration of `x` in the scope)
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/types/infer.rs`:5697 on 2025-07-03 03:11_
+
+Our [MSRV policy](https://github.com/astral-sh/ruff/blob/main/docs/versioning.md#minimum-supported-rust-version) is stable-minus-2, so no, we can't bump MSRV to 1.88 just yet :) Can't wait for let-chains!
+
+---
+
+_@carljm reviewed on 2025-07-03 03:13_
+
+Great start! Tbh I think it would be fine to land something close to this (maybe get the easy syntax errors working) with TODOs for the impact on revealed type in outer scope, and handle that in separate follow-up.
+
+---
+
+_Review request for @sharkdp removed by @sharkdp on 2025-07-03 07:15_
+
+---
+
+_Label `ty` added by @AlexWaygood on 2025-07-03 07:31_
+
+---
+
+_@AlexWaygood reviewed on 2025-07-03 11:23_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/semantic_index/builder.rs`:1907 on 2025-07-03 11:23_
+
+sort of a similar principle in spirit to [flake8-bugbear](https://github.com/PyCQA/flake8-bugbear)'s B906 rule for Python AST visitors (not yet reimplemented in Ruff, alas)
+
+---
+
+_@oconnor663 reviewed on 2025-07-03 17:12_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/semantic_index/builder.rs`:1885 on 2025-07-03 17:12_
+
+e3fc88b94af80f5a93157384508c5ec06376c945
+
+---
+
+_@oconnor663 reviewed on 2025-07-03 17:18_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/semantic_index/builder.rs`:1906 on 2025-07-03 17:18_
+
+e3fc88b94af80f5a93157384508c5ec06376c945 fixes this and adds one test. I see that the [`Semantic syntax errors` section of `globals.md`](https://github.com/astral-sh/ruff/blob/77a5c5ac80cfe77def2397e80ed9a7d79e068b34/crates/ty_python_semantic/resources/mdtest/scopes/global.md#semantic-syntax-errors) tests like a dozen different variants of this. Should I maybe copy all of those here?
+
+---
+
+_@carljm reviewed on 2025-07-03 17:29_
+
+---
+
+_Review comment by @carljm on `crates/ty_python_semantic/src/semantic_index/builder.rs`:1906 on 2025-07-03 17:29_
+
+Wow, those are very thorough! I'd say perhaps that's more than necessary; happy to leave it to your judgment which cases seem "interesting" relative to the implementation. As a reviewer I'd have said your current test is adequate :)
+
+---
+
+_@oconnor663 reviewed on 2025-07-07 21:03_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/resources/mdtest/scopes/global.md`:225 on 2025-07-07 21:03_
+
+Since this isn't implemented for `global` either, I'm not going to try to tackle it in this PR. Should I open an issue for this TODO?
+
+---
+
+_Comment by @github-actions[bot] on 2025-07-07 21:11_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+✅ ecosystem check detected no linter changes.
+
+### Formatter (stable)
+✅ ecosystem check detected no format changes.
+
+### Formatter (preview)
+✅ ecosystem check detected no format changes.
+
+
+
+
+---
+
+_@oconnor663 reviewed on 2025-07-07 23:51_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/resources/mdtest/import/star.md`:1307 on 2025-07-07 23:51_
+
+This was actually a syntax error :)
+
+---
+
+_Renamed from "WIP: getting started on supporting `nonlocal` statements" to "[ty] add support for `nonlocal` statements" by @oconnor663 on 2025-07-08 00:03_
+
+---
+
+_Comment by @oconnor663 on 2025-07-08 00:07_
+
+@AlexWaygood this is now plausibly ready for a proper review :) I did a _lot_ of copy-pasting here, from existing `global` code in particular and from surrounding code in general, and I expect there to be a lot of cases where I'm round-tripping between e.g. `Scope` and `FileScopeId` way more than necessary, or generally doing things in un-idiomatic ways.
+
+---
+
+_@oconnor663 reviewed on 2025-07-08 00:13_
+
+---
+
+_Review comment by @oconnor663 on `crates/ruff_linter/src/checkers/ast/mod.rs`:677 on 2025-07-08 00:13_
+
+@ntBre did you mention that you'd be willing to help me fill in "proper" Ruff support for these new cases? :)
+
+---
+
+_Marked ready for review by @oconnor663 on 2025-07-08 00:13_
+
+---
+
+_Review requested from @MichaReiser by @oconnor663 on 2025-07-08 00:13_
+
+---
+
+_Review requested from @dhruvmanila by @oconnor663 on 2025-07-08 00:13_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/checkers/ast/mod.rs`:677 on 2025-07-08 02:23_
+
+Yeah, for sure! I'll either handle them myself or at least add them to [#17412](https://github.com/astral-sh/ruff/issues/17412).
+
+---
+
+_@ntBre reviewed on 2025-07-08 02:23_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/semantic_index/builder.rs`:1444 on 2025-07-08 07:00_
+
+Our approach to semantic syntax errors up to now has been to implement them in the `SemanticSyntaxChecker` that is shared between Ruff and ty and expose any semantic information necessary to perform the check via the `SemanticSyntaxContext`. Is there a specific reason that you diverged from this pattern in this PR and decided to instead implement it in the `SemanticIndexBuilder` directly?
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/diagnostic.rs`:1566 on 2025-07-08 07:01_
+
+```suggestion
+    /// Detects `nonlocal` statements that don't match a binding in any enclosing scope.
+```
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/diagnostic.rs`:1569 on 2025-07-08 07:03_
+
+I'm not sure if this should be a lint rule if it raises a syntax error at runtime. 
+
+Our current approach is that syntax errors shouldn't be suppressable and can't be disabled by users. They're, therefore, treated as syntax errors similar to parse errors and not as lint rules (which allow suppressing and disabling)
+
+---
+
+_@MichaReiser reviewed on 2025-07-08 07:03_
+
+---
+
+_@oconnor663 reviewed on 2025-07-08 15:06_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/semantic_index/builder.rs`:1444 on 2025-07-08 15:06_
+
+Hah no of course there's no reason, I just haven't noticed `SemanticSyntaxChecker` yet :)
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/scopes/global.md`:225 on 2025-07-08 15:12_
+
+Deferring it for now and opening a followup sounds great to me!
+
+---
+
+_@AlexWaygood reviewed on 2025-07-08 15:12_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:49 on 2025-07-08 15:14_
+
+"`x += 1` is not allowed in an inner scope" feels a bit confusing to me here -- this would obviously be allowed, because here `x` is unambiguously a local variable within the scope of `g`:
+
+```py
+def f():
+    x = 1
+		def g():
+		    x = 1
+		    x += 1
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:50 on 2025-07-08 15:15_
+
+```suggestion
+into multiple steps. Local variable scoping is "forward-looking" in the sense that even a _later_
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:66 on 2025-07-08 15:24_
+
+```suggestion
+With `nonlocal` these examples work, because the reassignments modify the variable from the outer scope rather than modifying a separate variable local to the inner scope.
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:108 on 2025-07-08 15:25_
+
+```suggestion
+A global `x` doesn't work either; the outer-scope binding for the variable has to originate from a function-like scope:
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:1 on 2025-07-08 15:26_
+
+these tests are fantastically thorough -- thank you!
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:182 on 2025-07-08 15:27_
+
+```suggestion
+type declarations from outer scopes don't apply to the inner one:
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:189 on 2025-07-08 15:29_
+
+I don't think the `reveal_type` call demonstrates much here, because `reveal_type` tells us the local type rather than the declared type. What _does_ demonstrate the desired semantics here is that we _don't_ emit a diagnostic telling you off for assigning a value of type `Literal["string"]`, when `Literal["string"]` is not assignable to `int`!
+
+```suggestion
+        # `Literal["string"]` is not assignable to `int`
+        # (the declared type in the outer scope),
+        # but we don't emit a diagnostic complaining about it because `x` in the inner scope
+        # is a distinct variable; the outer-scope declarations do not apply to it
+        x = "string"
+        reveal_type(x)  # revealed: Literal["string"]
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:200 on 2025-07-08 15:30_
+
+nit: maybe include the full error message for this assertion? I think it would make it clearer why we object to this assignment.
+
+(You don't need to do that for all `invalid-assignment` errors in this test suite, but I think it might make the test more readable if you included the full error message in the _first_ assertion.)
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:267 on 2025-07-08 15:33_
+
+nit: our "usual style" for things like this is to record what we actually reveal now, but put a TODO comment above the `reveal_type` call:
+
+```suggestion
+    # TODO: should be `Literal[1] | Unknown`
+    reveal_type(x)  # revealed: Literal[1]
+```
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:355 on 2025-07-08 15:34_
+
+```suggestion
+`nonlocal x` works even if `x` isn't bound in the enclosing scope until afterwards (since the function defining the inner scope might only be called after the later binding!):
+```
+
+---
+
+_@AlexWaygood reviewed on 2025-07-08 15:37_
+
+A review of the tests, which are overall fantastic!
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/semantic_index/builder.rs`:107 on 2025-07-08 15:56_
+
+Both `global` and `nonlocal` are fairly rare; most scopes don't use either keyword. Rather than having one hashmap on every `SemanticIndex` instance for `global` variables and another hashmap on every `SemanticIndex` instance for `nonlocal` variables, I wonder if it might be more efficient in terms of memory to have a single hashmap here:
+
+```suggestion
+    non_local_variables_by_scope: FxHashMap<FileScopeId, FxHashMap<ScopedPlaceId, NonLocalVariableKind>>,
+```
+
+Where `NonLocalVariableKind` is defined as an enum:
+
+```rs
+enum NonLocalVariableKind {
+    Global,
+    Nonlocal,
+}
+
+impl NonLocalVariableKind {
+    const fn is_global(self) -> bool {
+        matches!(self, Self::Global)
+    }
+
+    const fn is_nonlocal(self) -> bool {
+        matches!(self, Self::NonLocal)
+    }
+}
+```
+
+This would also reflect the fact that a symbol can only ever be `nonlocal` _or_ `global` in any given scope: it's a syntax error for them to be declared as both. (If they _are_ declared as both, don't think we need to worry too much about whether their value in the inner map is `VariableKind::Global` or `VariableKind::Nonlocal` -- though I think it would be ideal if they didn't appear in the inner map at all. Or I suppose we could have a third variant `Both`, with a doc-comment above it noting that this is specifically for representing invalid symbols?)
+
+Then querying whether a `symbol` is declared as `global` in a certain `scope` would look something like (excuse the pseudo-code):
+
+```rs
+fn is_symbol_global(&self, scope, symbol) {
+    self
+        .index
+        .non_local_variables_by_scope
+        .get(scope)
+        .and_then(|non_local_variables| non_local_variables.get(symbol))
+        .is_some_and(|symbol_kind| symbol_kind.is_global())
+}
+```
+
+and we'd have a similar method for checking if a symbol is declared as `nonlocal` in a particular scope
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer.rs`:1568 on 2025-07-08 16:45_
+
+I had no idea this was legal in Rust, so thanks for teaching me this new trick 😃 However, I do think I'd find the code slightly easier to understand if we used a `for` loop below rather than `loop` -- maybe something like this? (All your tests pass with this patch applied)
+
+```diff
+diff --git a/crates/ty_python_semantic/src/types/infer.rs b/crates/ty_python_semantic/src/types/infer.rs
+index 9f80d70b7b..9860f1d8ec 100644
+--- a/crates/ty_python_semantic/src/types/infer.rs
++++ b/crates/ty_python_semantic/src/types/infer.rs
+@@ -1565,7 +1565,7 @@ impl<'db, 'ast> TypeInferenceBuilder<'db, 'ast> {
+         let mut bound_ty = ty;
+ 
+         let global_use_def_map = self.index.use_def_map(FileScopeId::global());
+-        let nonlocal_use_def_map;
++        let mut nonlocal_use_def_map = None;
+         let place_id = binding.place(self.db());
+         let place = place_table.place_expr(place_id);
+         let skip_non_global_scopes = self.skip_non_global_scopes(file_scope_id, place_id);
+@@ -1585,47 +1585,51 @@ impl<'db, 'ast> TypeInferenceBuilder<'db, 'ast> {
+             .symbol_is_nonlocal_in_scope(place_id, file_scope_id)
+         {
+             // Walk up parent scopes looking for the enclosing scope that has definition of this
+-            // name. `ancestor_scopes` includes the current scope, so skip that one.
+-            let mut ancestor_scopes = self.index.ancestor_scopes(file_scope_id).skip(1);
+-            loop {
+-                if let Some((enclosing_scope_file_id, enclosing_scope)) = ancestor_scopes.next() {
+-                    // Ignore class scopes and the global scope.
+-                    if !enclosing_scope.kind().is_function_like() {
+-                        continue;
+-                    }
+-                    let enclosing_place_table = self.index.place_table(enclosing_scope_file_id);
+-                    let Some(enclosing_place_id) =
+-                        enclosing_place_table.place_id_by_expr(&place.expr)
+-                    else {
+-                        // This ancestor scope doesn't have a binding. Keep going.
+-                        continue;
+-                    };
+-                    if self
+-                        .index
+-                        .symbol_is_nonlocal_in_scope(enclosing_place_id, enclosing_scope_file_id)
+-                    {
+-                        // The variable is `nonlocal` in this ancestor scope. Keep going.
+-                        continue;
+-                    }
+-                    if self
+-                        .index
+-                        .symbol_is_global_in_scope(enclosing_place_id, enclosing_scope_file_id)
+-                    {
+-                        // The variable is `global` in this ancestor scope. This "breaks" the
+-                        // `nonlocal` "chain", and it's a syntax error in
+-                        // `infer_nonlocal_statement`. Ignore it here and bail out of this loop.
+-                        break use_def.declarations_at_binding(binding);
+-                    }
+-                    // We found the closest definition. Note that (unlike in `infer_place_load`)
+-                    // this does *not* need to be a binding. It could be just `x: int`.
+-                    nonlocal_use_def_map = self.index.use_def_map(enclosing_scope_file_id);
+-                    break nonlocal_use_def_map.end_of_scope_declarations(enclosing_place_id);
++            // name. If one is found, it will be saved as the `nonlocal_use_def_map` variable.
++            //
++            //`ancestor_scopes` includes the current scope, so skip that one.
++            for (enclosing_scope_file_id, enclosing_scope) in
++                self.index.ancestor_scopes(file_scope_id).skip(1)
++            {
++                // Ignore class scopes and the global scope.
++                if !enclosing_scope.kind().is_function_like() {
++                    continue;
+                 }
+-
+-                // We ran out of ancestor scopes without finding a definition. This case is a
+-                // syntax error (no binding for `nonlocal` found) but ignore that here.
+-                break use_def.declarations_at_binding(binding);
++                let enclosing_place_table = self.index.place_table(enclosing_scope_file_id);
++                let Some(enclosing_place_id) = enclosing_place_table.place_id_by_expr(&place.expr)
++                else {
++                    // This ancestor scope doesn't have a binding. Keep going.
++                    continue;
++                };
++                if self
++                    .index
++                    .symbol_is_nonlocal_in_scope(enclosing_place_id, enclosing_scope_file_id)
++                {
++                    // The variable is `nonlocal` in this ancestor scope. Keep going.
++                    continue;
++                }
++                if self
++                    .index
++                    .symbol_is_global_in_scope(enclosing_place_id, enclosing_scope_file_id)
++                {
++                    // The variable is `global` in this ancestor scope. This "breaks" the
++                    // `nonlocal` "chain", and it's a syntax error in
++                    // `infer_nonlocal_statement`. Ignore it here and bail out of this loop.
++                    break;
++                }
++                // We found the closest definition. Note that (unlike in `infer_place_load`)
++                // this does *not* need to be a binding. It could be just `x: int`.
++                nonlocal_use_def_map = Some((
++                    self.index.use_def_map(enclosing_scope_file_id),
++                    enclosing_place_id,
++                ));
++                break;
+             }
++
++            nonlocal_use_def_map
++                .as_ref()
++                .map(|(map, place_id)| map.end_of_scope_declarations(*place_id))
++                .unwrap_or_else(|| use_def.declarations_at_binding(binding))
+         } else {
+             use_def.declarations_at_binding(binding)
+         };
+```
+
+---
+
+_@AlexWaygood reviewed on 2025-07-08 16:48_
+
+The code looks fantastic. I agree with @MichaReiser's comments that it feels like some of the logic in `infer_nonlocal_statement` might ideally go in the `SemanticSyntaxChecker` rather than ty, though -- then Ruff and ty can naturally share the same code rather than us having to implement it twice for the two static-analysis tools 😃 if that would be hard to do, though, I also think it would be fine to land an initial implementation here and then work towards porting it to the `SemanticSyntaxChecker` (or adding a standalone separate implementation in Ruff!) as a followup
+
+---
+
+_@MichaReiser reviewed on 2025-07-08 16:54_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/semantic_index/builder.rs`:107 on 2025-07-08 16:54_
+
+I considered something similar but decided not to comment because I considered it out of scope for this PR. Ideally, we'd move all those rarely used fields (includes generators) into an `Option<Box<ExtraFields>>` where `ExtraFields` is only allocated when the file makes use of the extra field. 
+
+But I then came to the conclusion that the overhead is probably minimal, considering that we only create a semantic index per file (and not per scope or even more granular). That's why I'm not sure this optimization matters and we should go with what's easier.
+
+---
+
+_@oconnor663 reviewed on 2025-07-08 16:56_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/resources/mdtest/scopes/global.md`:225 on 2025-07-08 16:56_
+
+added a checkbox in the top-level PR description
+
+---
+
+_@AlexWaygood reviewed on 2025-07-08 17:01_
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/semantic_index/builder.rs`:107 on 2025-07-08 17:01_
+
+yeah, I definitely know what you mean. I think my proposed refactor would probably not _significantly_ complicate things and I do also like that it has the nice property that it more closely models the runtime semantics (a symbol can only ever be `global`, `nonlocal` or neither; it can never be both `global` _and_ `nonlocal`). But you're right that this refactor definitely wouldn't be worth a big increase in complexity.
+
+---
+
+_@oconnor663 reviewed on 2025-07-08 19:21_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types/diagnostic.rs`:1569 on 2025-07-08 19:21_
+
+I think this was originally the just first place I tried adding new error types, and eventually I moved all the others to `SemanticSyntaxErrorKind`, and probably there's no longer any good reason for this to be here :sweat_smile: 
+
+---
+
+_@oconnor663 reviewed on 2025-07-08 19:40_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/semantic_index/builder.rs`:107 on 2025-07-08 19:40_
+
+Not sure whether this is already clear, but as far as I know most Rust hash maps don't actually allocate when they're empty. So if the main performance concern is heap allocation, and these containers are usually empty, we might not need to worry about it?
+
+---
+
+_@oconnor663 reviewed on 2025-07-08 20:59_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types/diagnostic.rs`:1569 on 2025-07-08 20:59_
+
+Ah no, now I remember what it was. It's that we can't know whether a given `nonlocal` declaration is valid until after the semantic index is ~fully built, so I did it in typechecking in `infer.rs`, and this seemed to be the place where typechecking errors go. We're talking through moving this to the `SemanticSyntaxChecker`, which I think might be just what you wanted here?
+
+---
+
+_@oconnor663 reviewed on 2025-07-08 23:31_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:182 on 2025-07-08 23:31_
+
+04efabb84
+
+---
+
+_@oconnor663 reviewed on 2025-07-08 23:41_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:200 on 2025-07-08 23:41_
+
+72d5406d6b48dce334c7ef00fad14f34ae670628
+
+---
+
+_@MichaReiser reviewed on 2025-07-09 05:56_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/semantic_index/builder.rs`:107 on 2025-07-09 05:56_
+
+There's a NIT concern that each hash map (even empty once) take 48 bytes  (I think) on 64bit systems of storage in its enclosing struct. I don't think this is worth a long discussion and @oconnor663 should just pick one approach.
+
+---
+
+_Comment by @MichaReiser on 2025-07-09 05:58_
+
+I'll put this back in Draft. You can republish it when it is ready for another review. This makes it easier for reviewers to know when it's ready for another review.
+
+---
+
+_Converted to draft by @MichaReiser on 2025-07-09 05:58_
+
+---
+
+_@oconnor663 reviewed on 2025-07-10 01:01_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:49 on 2025-07-10 01:01_
+
+d473f0e1dcb27d3b4cee0f648b5cde241c762819
+
+---
+
+_@oconnor663 reviewed on 2025-07-10 01:09_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types/infer.rs`:1568 on 2025-07-10 01:09_
+
+b31102a9eea7e52b19e0bce3646f8d53510add9c
+
+---
+
+_@oconnor663 reviewed on 2025-07-10 02:34_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/semantic_index/builder.rs`:107 on 2025-07-10 02:34_
+
+I noticed that we already have `MARKED_GLOBAL` and `MARKED_NONLOCAL` defined in `PlaceFlags`, and we just weren't using them yet. I think it's cleaner to delete the maps entirely and use the flags: 27043edabdfcfb794896bf88ab785cb7513b4139
+
+---
+
+_Comment by @oconnor663 on 2025-07-10 03:16_
+
+This PR is ready for another round of review. The big remaining question is whether to move the most complicated `nonlocal` check out of `infer.rs` and into `SemanticSyntaxError`. Basically this example:
+```py
+def f():
+    def g():
+        def h():
+            # This is allowed, because of the subsequent definition of `x` two scopes up.
+            nonlocal x
+    x = 1
+```
+As it stands, I still have this check in `infer.rs`, which requires(?) declaring `INVALID_NONLOCAL` with `declare_lint!`, which we don't love. Two thoughts about that:
+1. The best way to implement this check is probably to "defer" walking function bodies until after we've walked all the statements in enclosing scopes. This is what Ruff does today. This would still be one walk of the AST, but in the example above by the time we encountered `nonlocal x` we'd already have seen `x = 1`, and we could check the `nonlocal` requirement immediately. @erictraut [mentioned in chat](https://discord.com/channels/1039017663004942429/1343690517745111081/1392652928233508977) that that's how Pyright does it. However, even if we want to do that refactoring (any objections?), I'd rather not do it in this PR.
+2. Even with that refactoring, it's not obvious to me how to move the check into `SemanticSyntaxChecker`. I see three options, but all of them look problematic:
+  - If we added a simple boolean function like e.g. `is_nonlocal_symbol_available(name)` to the `SemanticSyntaxContext` trait, then Ruff and Ty would need to duplicate the scope walking, `global`-breaks-the-chain logic (arguably the part we'd most like to share?) to implement that function.
+  - We could instead keep track of entering and exiting scopes in `SemanticSyntaxChecker`. It looks like we used to do this, but [we removed it back in April](https://github.com/astral-sh/ruff/pull/17314). I haven't read all the context there, but it makes me question adding it back.
+  - We could add methods to the `SemanticSyntaxContext` trait that let the checker query scopes and bindings. This seems tricky because the model types are totally different(?) on the Ruff and Ty sides, so we'd be looking at adding a third(?) set of ID types and converting back and forth? Existing functions like `.global(name: &str)` have avoided doing that by leaving the "current scope" implicit, but that won't be enough for this check.
+
+I think regardless of which of those three options we prefer, I'd rather leave it TODO in this PR and open a followup ticket. Let me know what you guys think?
+
+---
+
+_Marked ready for review by @oconnor663 on 2025-07-10 03:17_
+
+---
+
+_Review comment by @UnboundVariable on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:146 on 2025-07-10 04:52_
+
+Might want to add another variant of this test that nests a function within a class within a function. In this case, the class-scoped `x` should be skipped, and the `nonlocal` binding should target the `x` in the outer-scoped function.
+
+```python
+def f():
+    x = 1
+
+    class Foo:
+        x = 1
+
+        @staticmethod
+        def g():
+            nonlocal x
+```
+
+---
+
+_Review comment by @UnboundVariable on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:270 on 2025-07-10 05:04_
+
+Here's another combination of nested functions and classes with type declarations.
+
+```python
+def f():
+    x: int = 1
+
+    class Foo:
+        x: str = ""
+
+        @staticmethod
+        def g():
+            nonlocal x
+            x = 1  # not an error
+            x = ""  # error: [invalid-assignment]
+```
+
+---
+
+_Review comment by @UnboundVariable on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:1 on 2025-07-10 05:04_
+
+Yeah, nice tests!
+
+---
+
+_@UnboundVariable reviewed on 2025-07-10 05:05_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/diagnostic.rs`:1569 on 2025-07-10 06:38_
+
+The decision which error code we use shouldn't depend on where we implement the check but what kind of error it is. In this case, it's a syntax error and it should be reported as an invalid-syntax diagnostic. 
+
+You can do this by changing the code in `infer` to:
+
+
+```rust
+            if let Some(builder) = self
+                .context
+                .report_diagnostic(DiagnosticId::InvalidSyntax, Severity::Error)
+            {
+                builder
+                    .into_diagnostic(format_args!("no binding for nonlocal `{name}` found"))
+                    .annotate(Annotation::primary(
+                        Span::from(self.context.file()).with_range(*range),
+                    ));
+            }
+```
+
+This has the advantage that moving the check into the `SemanticSyntaxChecker` won't change the diagnostic for users.
+
+---
+
+_@MichaReiser reviewed on 2025-07-10 06:38_
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/semantic_index.rs`:222 on 2025-07-10 06:44_
+
+Nice!
+
+---
+
+_@MichaReiser approved on 2025-07-10 06:51_
+
+Nice job with removing the extra hash map! 
+
+This is good to go once we removed the new lint (see my inline comment on how to accomplish that). 
+
+> The best way to implement this check is probably to "defer" walking function bodies until after we've walked all the statements in enclosing scopes. This is what Ruff does today. This would still be one walk of the AST, but in the example above by the time we encountered nonlocal x we'd already have seen x = 1, and we could check the nonlocal requirement immediately. @erictraut [mentioned in chat](https://discord.com/channels/1039017663004942429/1343690517745111081/1392652928233508977) that that's how Pyright does it. However, even if we want to do that refactoring (any objections?), I'd rather not do it in this PR.
+
+I think this is worth a try (scoped to a few hours). I also think it's fine to defer integrating this into the `SemanticSyntaxChecker` for now (maybe something @ntBre could help with as well). Would you mind opening an issue and adding TODO comments in the code (above the blocks that should be moved).
+
+---
+
+_Label `ecosystem-analyzer` added by @sharkdp on 2025-07-10 07:08_
+
+---
+
+_Comment by @github-actions[bot] on 2025-07-10 07:17_
+
+<!-- generated-comment ty ecosystem-analyzer -->
+
+## `ecosystem-analyzer` results
+
+
+| Lint rule | Added | Removed | Changed |
+|-----------|------:|--------:|--------:|
+| `unresolved-reference` | 0 | 333 | 0 |
+| `possibly-unresolved-reference` | 0 | 45 | 0 |
+| `unused-ignore-comment` | 8 | 0 | 0 |
+| `invalid-argument-type` | 0 | 1 | 0 |
+| **Total** | **8** | **379** | **0** |
+
+**[Full report with detailed diff](https://jack-nonlocal.ecosystem-663.pages.dev/diff)**
+
+
+---
+
+_@oconnor663 reviewed on 2025-07-10 15:26_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types/diagnostic.rs`:1569 on 2025-07-10 15:26_
+
+Got it, makes perfect sense now, thanks for the snippet. Fixed: cb12695d9621c289dae6db986892767f783ffd5c
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/semantic_index/place.rs`:831 on 2025-07-10 15:39_
+
+oh, this is a much better approach. Nice job!
+
+---
+
+_Review comment by @AlexWaygood on `crates/ty_python_semantic/src/types/infer.rs`:4724 on 2025-07-10 15:39_
+
+```suggestion
+                        self.context.span(*range),
+```
+
+---
+
+_@AlexWaygood approved on 2025-07-10 15:41_
+
+Great work!
+
+---
+
+_Review comment by @MichaReiser on `crates/ty_python_semantic/src/types/infer.rs`:4724 on 2025-07-10 15:43_
+
+TIL
+
+---
+
+_@MichaReiser reviewed on 2025-07-10 15:43_
+
+---
+
+_@oconnor663 reviewed on 2025-07-10 15:47_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:146 on 2025-07-10 15:47_
+
+Thanks! 3aaed2385744667b3d188b1a9084802095d163f9
+
+---
+
+_@oconnor663 reviewed on 2025-07-10 15:47_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/resources/mdtest/scopes/nonlocal.md`:270 on 2025-07-10 15:47_
+
+also 3aaed2385744667b3d188b1a9084802095d163f9
+
+---
+
+_@oconnor663 reviewed on 2025-07-10 15:51_
+
+---
+
+_Review comment by @oconnor663 on `crates/ty_python_semantic/src/types/infer.rs`:4724 on 2025-07-10 15:51_
+
+Nice, 233e9bb912d71111b7bba8556a5adf54274d5939
+
+---
+
+_Comment by @oconnor663 on 2025-07-11 00:07_
+
+> I think this is worth a try (scoped to a few hours). I also think it's fine to defer integrating this into the `SemanticSyntaxChecker` for now (maybe something @ntBre could help with as well). Would you mind opening an issue and adding TODO comments in the code (above the blocks that should be moved).
+
+https://github.com/astral-sh/ruff/pull/19271 is a draft PR that tries to do this. It actually seems to work for the `nonlocal.md` tests, but it causes a lot of seemingly unrelated failures that I'm having trouble debugging. Would anyone have time to take a look at it (details in the PR description)?
+
+---
+
+_Comment by @carljm on 2025-07-11 00:54_
+
+Haven't had a chance to look at the PR, but I expect that switching to a breadth first AST walk in semantic indexing would require significant reworking of our handling of eager nested scopes (finding the right bindings in an outer scope at the point where the eager nested scope is defined). 
+
+---
+
+_Comment by @AlexWaygood on 2025-07-11 11:30_
+
+My inclination would just be to land this as-is for now, and punt on questions such as how we implement this syntax error in Ruff, whether we should try to integrate this syntax error into the `SemanticSyntaxChecker`, and whether we should attempt a significant refactor of the `SemanticIndexBuilder`. This PR gets the Python semantics correct, I don't think it matters _too_ much in which file we implement the syntax error detection, and landing it in its current state doesn't preclude us making any of those other improvements at a later date!
+
+---
+
+_Merged by @oconnor663 on 2025-07-11 16:44_
+
+---
+
+_Closed by @oconnor663 on 2025-07-11 16:44_
+
+---
+
+_Branch deleted on 2025-07-11 16:44_
+
+---

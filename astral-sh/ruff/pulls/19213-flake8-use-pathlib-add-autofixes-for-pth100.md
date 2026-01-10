@@ -1,0 +1,942 @@
+```yaml
+number: 19213
+title: "[`flake8-use-pathlib`] Add autofixes for `PTH100`, `PTH106`, `PTH107`, `PTH108`, `PTH110`, `PTH111`, `PTH112`, `PTH113`, `PTH114`, `PTH115`, `PTH117`, `PTH119`, `PTH120`"
+type: pull_request
+state: merged
+author: chirizxc
+labels:
+  - fixes
+  - preview
+assignees: []
+merged: true
+base: main
+head: feat/more-autofixes
+created_at: 2025-07-08T17:49:12Z
+updated_at: 2025-07-09T19:01:15Z
+url: https://github.com/astral-sh/ruff/pull/19213
+synced_at: 2026-01-10T18:33:12Z
+```
+
+# [`flake8-use-pathlib`] Add autofixes for `PTH100`, `PTH106`, `PTH107`, `PTH108`, `PTH110`, `PTH111`, `PTH112`, `PTH113`, `PTH114`, `PTH115`, `PTH117`, `PTH119`, `PTH120`
+
+---
+
+_Pull request opened by @chirizxc on 2025-07-08 17:49_
+
+## Summary
+
+Part of #2331
+
+## Test Plan
+
+update snapshots for preview mode
+
+---
+
+_Converted to draft by @chirizxc on 2025-07-08 17:54_
+
+---
+
+_Comment by @codspeed-hq[bot] on 2025-07-08 17:59_
+
+<!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+## [CodSpeed Instrumentation Performance Report](https://codspeed.io/astral-sh/ruff/branches/chirizxc%3Afeat%2Fmore-autofixes?runnerMode=Instrumentation)
+
+### Merging #19213 will **not alter performance**
+
+<sub>Comparing <code>chirizxc:feat/more-autofixes</code> (327cafb) with <code>main</code> (8f400bb)</sub>
+
+
+
+### Summary
+
+`✅ 40` untouched benchmarks  
+
+
+
+
+
+---
+
+_Comment by @chirizxc on 2025-07-08 18:16_
+
+@ntBre I was wondering if we need a new test, there are none for `PTH100` - `PTH200`
+
+---
+
+_Comment by @chirizxc on 2025-07-08 18:18_
+
+![изображение](https://github.com/user-attachments/assets/a1f5c135-ca11-4fbf-9273-b22977a73b6c)
+
+I mean as separate files, they are all scattered in `full_name.py`, `import_as.py`, `import_from_as.py`, `import_from_from.py`, `use_pathlib.py`
+
+---
+
+_Review requested from @ntBre by @ntBre on 2025-07-08 18:24_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_use_pathlib/helpers.rs`:38 on 2025-07-08 18:27_
+
+I think we may want to pass the `QualifiedName` or even the `segments` into each of these rule functions after computing it in `expression.rs`. Calling `resolve_qualified_name` repeatedly stood out to me in the benchmark regression.
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/preview.rs`:72 on 2025-07-08 18:28_
+
+I guess you had to open the PR to know the number 😆 but let's not forget to fill these in before merging
+
+---
+
+_Comment by @chirizxc on 2025-07-08 18:32_
+
+Since we have already done tests in [`PTH203.py`](https://github.com/astral-sh/ruff/blob/main/crates/ruff_linter/resources/test/fixtures/flake8_use_pathlib/PTH203.py) we can add new files like `PTH100` with minimal case:
+```python
+import os.path, pathlib
+from os.path import abspath
+
+path_to_file = "../path/to/file"
+
+os.path.abspath("../path/to/file")
+os.path.abspath(pathlib.Path("../path/to/file")))
+
+abspath(path=path_to_file)
+```
+
+---
+
+_@ntBre reviewed on 2025-07-08 18:36_
+
+Thanks! I gave this a quick skim and it looks reasonable to me. I also had an idea for helping with the benchmark regression.
+
+I don't think we need to move the tests around. It seems okay, if not ideal, that they are scattered in these various files. I think the existing tests, plus the new tests you added in the previous PR, should give us good enough coverage.
+
+I'll take another look at this once CI is passing to make sure all the new snapshots look reasonable.
+
+---
+
+_Comment by @chirizxc on 2025-07-08 19:31_
+
+it seems to work a little differently 😁
+
+---
+
+_Marked ready for review by @chirizxc on 2025-07-08 19:39_
+
+---
+
+_Converted to draft by @chirizxc on 2025-07-08 19:40_
+
+---
+
+_Comment by @chirizxc on 2025-07-08 19:51_
+
+it seems we will need to revise all the parameters, I found a [bug](https://github.com/python/cpython/issues/136437) in the python documentation
+
+---
+
+_Comment by @ntBre on 2025-07-08 20:08_
+
+> it seems we will need to revise all the parameters, I found a [bug](https://github.com/python/cpython/issues/136437) in the python documentation
+
+Wow, nice catch!
+
+---
+
+_Comment by @github-actions[bot] on 2025-07-08 20:13_
+
+<!-- generated-comment ecosystem -->
+## `ruff-ecosystem` results
+### Linter (stable)
+✅ ecosystem check detected no linter changes.
+
+### Linter (preview)
+ℹ️ ecosystem check **detected linter changes**. (+0 -0 violations, +2122 -0 fixes in 6 projects; 49 projects unchanged)
+
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+0 -0 violations, +842 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/docs/conf.py#L330'>airflow-core/docs/conf.py:330:29:</a> PTH100 [*] `os.path.abspath()` should be replaced by `Path.resolve()`
+- <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/docs/conf.py#L330'>airflow-core/docs/conf.py:330:29:</a> PTH100 `os.path.abspath()` should be replaced by `Path.resolve()`
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/cli/cli_config.py#L109'>airflow-core/src/airflow/cli/cli_config.py:109:16:</a> PTH112 [*] `os.path.isdir()` should be replaced by `Path.is_dir()`
+- <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/cli/cli_config.py#L109'>airflow-core/src/airflow/cli/cli_config.py:109:16:</a> PTH112 `os.path.isdir()` should be replaced by `Path.is_dir()`
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/cli/commands/api_server_command.py#L158'>airflow-core/src/airflow/cli/commands/api_server_command.py:158:16:</a> PTH113 [*] `os.path.isfile()` should be replaced by `Path.is_file()`
+- <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/cli/commands/api_server_command.py#L158'>airflow-core/src/airflow/cli/commands/api_server_command.py:158:16:</a> PTH113 `os.path.isfile()` should be replaced by `Path.is_file()`
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/cli/commands/api_server_command.py#L160'>airflow-core/src/airflow/cli/commands/api_server_command.py:160:16:</a> PTH113 [*] `os.path.isfile()` should be replaced by `Path.is_file()`
+- <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/cli/commands/api_server_command.py#L160'>airflow-core/src/airflow/cli/commands/api_server_command.py:160:16:</a> PTH113 `os.path.isfile()` should be replaced by `Path.is_file()`
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/cli/commands/connection_command.py#L324'>airflow-core/src/airflow/cli/commands/connection_command.py:324:8:</a> PTH110 [*] `os.path.exists()` should be replaced by `Path.exists()`
+- <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/cli/commands/connection_command.py#L324'>airflow-core/src/airflow/cli/commands/connection_command.py:324:8:</a> PTH110 `os.path.exists()` should be replaced by `Path.exists()`
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/cli/commands/info_command.py#L302'>airflow-core/src/airflow/cli/commands/info_command.py:302:31:</a> PTH110 [*] `os.path.exists()` should be replaced by `Path.exists()`
+- <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/cli/commands/info_command.py#L302'>airflow-core/src/airflow/cli/commands/info_command.py:302:31:</a> PTH110 `os.path.exists()` should be replaced by `Path.exists()`
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/cli/commands/info_command.py#L73'>airflow-core/src/airflow/cli/commands/info_command.py:73:21:</a> PTH111 [*] `os.path.expanduser()` should be replaced by `Path.expanduser()`
+- <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/cli/commands/info_command.py#L73'>airflow-core/src/airflow/cli/commands/info_command.py:73:21:</a> PTH111 `os.path.expanduser()` should be replaced by `Path.expanduser()`
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/cli/commands/pool_command.py#L98'>airflow-core/src/airflow/cli/commands/pool_command.py:98:12:</a> PTH110 [*] `os.path.exists()` should be replaced by `Path.exists()`
+- <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/cli/commands/pool_command.py#L98'>airflow-core/src/airflow/cli/commands/pool_command.py:98:12:</a> PTH110 `os.path.exists()` should be replaced by `Path.exists()`
+... 195 additional changes omitted for rule PTH110
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/config_templates/airflow_local_settings.py#L54'>airflow-core/src/airflow/config_templates/airflow_local_settings.py:54:24:</a> PTH111 [*] `os.path.expanduser()` should be replaced by `Path.expanduser()`
+- <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/config_templates/airflow_local_settings.py#L54'>airflow-core/src/airflow/config_templates/airflow_local_settings.py:54:24:</a> PTH111 `os.path.expanduser()` should be replaced by `Path.expanduser()`
++ <a href='https://github.com/apache/airflow/blob/f98bf389f06687abbae581f7d61c175003e0ddb9/airflow-core/src/airflow/config_templates/default_webserver_config.py#L32'>airflow-core/src/airflow/config_templates/default_webserver_config.py:32:11:</a> PTH100 [*] `os.path.abspath()` should be replaced by `Path.resolve()`
+... 823 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/apache/superset">apache/superset</a> (+0 -0 violations, +46 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/superset/blob/5efca408eb634114608cb0be43558ae6a655d632/docker/pythonpath_dev/superset_config.py#L117'>docker/pythonpath_dev/superset_config.py:117:16:</a> PTH120 [*] `os.path.dirname()` should be replaced by `Path.parent`
+- <a href='https://github.com/apache/superset/blob/5efca408eb634114608cb0be43558ae6a655d632/docker/pythonpath_dev/superset_config.py#L117'>docker/pythonpath_dev/superset_config.py:117:16:</a> PTH120 `os.path.dirname()` should be replaced by `Path.parent`
++ <a href='https://github.com/apache/superset/blob/5efca408eb634114608cb0be43558ae6a655d632/docker/pythonpath_dev/superset_config.py#L118'>docker/pythonpath_dev/superset_config.py:118:21:</a> PTH100 [*] `os.path.abspath()` should be replaced by `Path.resolve()`
+- <a href='https://github.com/apache/superset/blob/5efca408eb634114608cb0be43558ae6a655d632/docker/pythonpath_dev/superset_config.py#L118'>docker/pythonpath_dev/superset_config.py:118:21:</a> PTH100 `os.path.abspath()` should be replaced by `Path.resolve()`
++ <a href='https://github.com/apache/superset/blob/5efca408eb634114608cb0be43558ae6a655d632/scripts/cypress_run.py#L135'>scripts/cypress_run.py:135:18:</a> PTH120 [*] `os.path.dirname()` should be replaced by `Path.parent`
+- <a href='https://github.com/apache/superset/blob/5efca408eb634114608cb0be43558ae6a655d632/scripts/cypress_run.py#L135'>scripts/cypress_run.py:135:18:</a> PTH120 `os.path.dirname()` should be replaced by `Path.parent`
++ <a href='https://github.com/apache/superset/blob/5efca408eb634114608cb0be43558ae6a655d632/scripts/cypress_run.py#L135'>scripts/cypress_run.py:135:34:</a> PTH100 [*] `os.path.abspath()` should be replaced by `Path.resolve()`
+- <a href='https://github.com/apache/superset/blob/5efca408eb634114608cb0be43558ae6a655d632/scripts/cypress_run.py#L135'>scripts/cypress_run.py:135:34:</a> PTH100 `os.path.abspath()` should be replaced by `Path.resolve()`
++ <a href='https://github.com/apache/superset/blob/5efca408eb634114608cb0be43558ae6a655d632/scripts/erd/erd.py#L173'>scripts/erd/erd.py:173:22:</a> PTH120 [*] `os.path.dirname()` should be replaced by `Path.parent`
+- <a href='https://github.com/apache/superset/blob/5efca408eb634114608cb0be43558ae6a655d632/scripts/erd/erd.py#L173'>scripts/erd/erd.py:173:22:</a> PTH120 `os.path.dirname()` should be replaced by `Path.parent`
+... 15 additional changes omitted for rule PTH120
+... 36 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+0 -0 violations, +298 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/app/export_csv/main.py#L15'>examples/server/app/export_csv/main.py:15:23:</a> PTH120 [*] `os.path.dirname()` should be replaced by `Path.parent`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/app/export_csv/main.py#L15'>examples/server/app/export_csv/main.py:15:23:</a> PTH120 `os.path.dirname()` should be replaced by `Path.parent`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/app/movies/main.py#L28'>examples/server/app/movies/main.py:28:16:</a> PTH120 [*] `os.path.dirname()` should be replaced by `Path.parent`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/app/movies/main.py#L28'>examples/server/app/movies/main.py:28:16:</a> PTH120 `os.path.dirname()` should be replaced by `Path.parent`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/app/simple_hdf5/main.py#L17'>examples/server/app/simple_hdf5/main.py:17:11:</a> PTH120 [*] `os.path.dirname()` should be replaced by `Path.parent`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/examples/server/app/simple_hdf5/main.py#L17'>examples/server/app/simple_hdf5/main.py:17:11:</a> PTH120 `os.path.dirname()` should be replaced by `Path.parent`
+... 81 additional changes omitted for rule PTH120
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/checks.py#L80'>release/checks.py:80:12:</a> PTH110 [*] `os.path.exists()` should be replaced by `Path.exists()`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/release/checks.py#L80'>release/checks.py:80:12:</a> PTH110 `os.path.exists()` should be replaced by `Path.exists()`
++ <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/scripts/sri.py#L30'>scripts/sri.py:30:24:</a> PTH119 [*] `os.path.basename()` should be replaced by `Path.name`
+- <a href='https://github.com/bokeh/bokeh/blob/829b2a75c402d0d0abd7e37ff201fbdfd949d857/scripts/sri.py#L30'>scripts/sri.py:30:24:</a> PTH119 `os.path.basename()` should be replaced by `Path.name`
+... 288 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/latchbio/latch">latchbio/latch</a> (+0 -0 violations, +8 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/latchbio/latch/blob/848eccdfc5401cc674edf70c86c5512adc4b0699/docs/source/conf.py#L18'>docs/source/conf.py:18:20:</a> PTH100 [*] `os.path.abspath()` should be replaced by `Path.resolve()`
+- <a href='https://github.com/latchbio/latch/blob/848eccdfc5401cc674edf70c86c5512adc4b0699/docs/source/conf.py#L18'>docs/source/conf.py:18:20:</a> PTH100 `os.path.abspath()` should be replaced by `Path.resolve()`
++ <a href='https://github.com/latchbio/latch/blob/848eccdfc5401cc674edf70c86c5512adc4b0699/src/latch_cli/centromere/utils.py#L133'>src/latch_cli/centromere/utils.py:133:46:</a> PTH111 [*] `os.path.expanduser()` should be replaced by `Path.expanduser()`
+- <a href='https://github.com/latchbio/latch/blob/848eccdfc5401cc674edf70c86c5512adc4b0699/src/latch_cli/centromere/utils.py#L133'>src/latch_cli/centromere/utils.py:133:46:</a> PTH111 `os.path.expanduser()` should be replaced by `Path.expanduser()`
++ <a href='https://github.com/latchbio/latch/blob/848eccdfc5401cc674edf70c86c5512adc4b0699/src/latch_cli/snakemake/serialize.py#L126'>src/latch_cli/snakemake/serialize.py:126:16:</a> PTH117 [*] `os.path.isabs()` should be replaced by `Path.is_absolute()`
+- <a href='https://github.com/latchbio/latch/blob/848eccdfc5401cc674edf70c86c5512adc4b0699/src/latch_cli/snakemake/serialize.py#L126'>src/latch_cli/snakemake/serialize.py:126:16:</a> PTH117 `os.path.isabs()` should be replaced by `Path.is_absolute()`
++ <a href='https://github.com/latchbio/latch/blob/848eccdfc5401cc674edf70c86c5512adc4b0699/src/latch_cli/snakemake/workflow.py#L120'>src/latch_cli/snakemake/workflow.py:120:33:</a> PTH112 [*] `os.path.isdir()` should be replaced by `Path.is_dir()`
+- <a href='https://github.com/latchbio/latch/blob/848eccdfc5401cc674edf70c86c5512adc4b0699/src/latch_cli/snakemake/workflow.py#L120'>src/latch_cli/snakemake/workflow.py:120:33:</a> PTH112 `os.path.isdir()` should be replaced by `Path.is_dir()`
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/milvus-io/pymilvus">milvus-io/pymilvus</a> (+0 -0 violations, +18 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/milvus-io/pymilvus/blob/ec46285cf63b8cc956042359b6461b2b338e69d1/docs/source/conf.py#L15'>docs/source/conf.py:15:20:</a> PTH100 [*] `os.path.abspath()` should be replaced by `Path.resolve()`
+- <a href='https://github.com/milvus-io/pymilvus/blob/ec46285cf63b8cc956042359b6461b2b338e69d1/docs/source/conf.py#L15'>docs/source/conf.py:15:20:</a> PTH100 `os.path.abspath()` should be replaced by `Path.resolve()`
++ <a href='https://github.com/milvus-io/pymilvus/blob/ec46285cf63b8cc956042359b6461b2b338e69d1/examples/bulk_import/example_bulkinsert_csv.py#L283'>examples/bulk_import/example_bulkinsert_csv.py:283:12:</a> PTH110 [*] `os.path.exists()` should be replaced by `Path.exists()`
+- <a href='https://github.com/milvus-io/pymilvus/blob/ec46285cf63b8cc956042359b6461b2b338e69d1/examples/bulk_import/example_bulkinsert_csv.py#L283'>examples/bulk_import/example_bulkinsert_csv.py:283:12:</a> PTH110 `os.path.exists()` should be replaced by `Path.exists()`
++ <a href='https://github.com/milvus-io/pymilvus/blob/ec46285cf63b8cc956042359b6461b2b338e69d1/examples/bulk_import/example_bulkinsert_csv.py#L305'>examples/bulk_import/example_bulkinsert_csv.py:305:74:</a> PTH119 [*] `os.path.basename()` should be replaced by `Path.name`
+- <a href='https://github.com/milvus-io/pymilvus/blob/ec46285cf63b8cc956042359b6461b2b338e69d1/examples/bulk_import/example_bulkinsert_csv.py#L305'>examples/bulk_import/example_bulkinsert_csv.py:305:74:</a> PTH119 `os.path.basename()` should be replaced by `Path.name`
++ <a href='https://github.com/milvus-io/pymilvus/blob/ec46285cf63b8cc956042359b6461b2b338e69d1/examples/bulk_import/example_bulkinsert_json.py#L325'>examples/bulk_import/example_bulkinsert_json.py:325:12:</a> PTH110 [*] `os.path.exists()` should be replaced by `Path.exists()`
+- <a href='https://github.com/milvus-io/pymilvus/blob/ec46285cf63b8cc956042359b6461b2b338e69d1/examples/bulk_import/example_bulkinsert_json.py#L325'>examples/bulk_import/example_bulkinsert_json.py:325:12:</a> PTH110 `os.path.exists()` should be replaced by `Path.exists()`
++ <a href='https://github.com/milvus-io/pymilvus/blob/ec46285cf63b8cc956042359b6461b2b338e69d1/examples/bulk_import/example_bulkinsert_json.py#L347'>examples/bulk_import/example_bulkinsert_json.py:347:74:</a> PTH119 [*] `os.path.basename()` should be replaced by `Path.name`
+- <a href='https://github.com/milvus-io/pymilvus/blob/ec46285cf63b8cc956042359b6461b2b338e69d1/examples/bulk_import/example_bulkinsert_json.py#L347'>examples/bulk_import/example_bulkinsert_json.py:347:74:</a> PTH119 `os.path.basename()` should be replaced by `Path.name`
+... 8 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/zulip/zulip">zulip/zulip</a> (+0 -0 violations, +910 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --no-fix --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/corporate/tests/test_stripe.py#L202'>corporate/tests/test_stripe.py:202:9:</a> PTH107 [*] `os.remove()` should be replaced by `Path.unlink()`
+- <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/corporate/tests/test_stripe.py#L202'>corporate/tests/test_stripe.py:202:9:</a> PTH107 `os.remove()` should be replaced by `Path.unlink()`
++ <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/docs/conf.py#L11'>docs/conf.py:11:20:</a> PTH100 [*] `os.path.abspath()` should be replaced by `Path.resolve()`
+- <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/docs/conf.py#L11'>docs/conf.py:11:20:</a> PTH100 `os.path.abspath()` should be replaced by `Path.resolve()`
++ <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/docs/conf.py#L11'>docs/conf.py:11:49:</a> PTH120 [*] `os.path.dirname()` should be replaced by `Path.parent`
+- <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/docs/conf.py#L11'>docs/conf.py:11:49:</a> PTH120 `os.path.dirname()` should be replaced by `Path.parent`
++ <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/manage.py#L7'>manage.py:7:12:</a> PTH120 [*] `os.path.dirname()` should be replaced by `Path.parent`
+- <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/manage.py#L7'>manage.py:7:12:</a> PTH120 `os.path.dirname()` should be replaced by `Path.parent`
++ <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/manage.py#L7'>manage.py:7:28:</a> PTH100 [*] `os.path.abspath()` should be replaced by `Path.resolve()`
+- <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/manage.py#L7'>manage.py:7:28:</a> PTH100 `os.path.abspath()` should be replaced by `Path.resolve()`
++ <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/scripts/lib/check_rabbitmq_queue.py#L10'>scripts/lib/check_rabbitmq_queue.py:10:14:</a> PTH120 [*] `os.path.dirname()` should be replaced by `Path.parent`
+- <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/scripts/lib/check_rabbitmq_queue.py#L10'>scripts/lib/check_rabbitmq_queue.py:10:14:</a> PTH120 `os.path.dirname()` should be replaced by `Path.parent`
+... 253 additional changes omitted for rule PTH120
++ <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/scripts/lib/check_rabbitmq_queue.py#L10'>scripts/lib/check_rabbitmq_queue.py:10:62:</a> PTH100 [*] `os.path.abspath()` should be replaced by `Path.resolve()`
+- <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/scripts/lib/check_rabbitmq_queue.py#L10'>scripts/lib/check_rabbitmq_queue.py:10:62:</a> PTH100 `os.path.abspath()` should be replaced by `Path.resolve()`
+... 89 additional changes omitted for rule PTH100
++ <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/scripts/lib/check_rabbitmq_queue.py#L190'>scripts/lib/check_rabbitmq_queue.py:190:16:</a> PTH110 [*] `os.path.exists()` should be replaced by `Path.exists()`
+- <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/scripts/lib/check_rabbitmq_queue.py#L190'>scripts/lib/check_rabbitmq_queue.py:190:16:</a> PTH110 `os.path.exists()` should be replaced by `Path.exists()`
++ <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/scripts/lib/clean_emoji_cache.py#L32'>scripts/lib/clean_emoji_cache.py:32:16:</a> PTH114 [*] `os.path.islink()` should be replaced by `Path.is_symlink()`
+- <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/scripts/lib/clean_emoji_cache.py#L32'>scripts/lib/clean_emoji_cache.py:32:16:</a> PTH114 `os.path.islink()` should be replaced by `Path.is_symlink()`
++ <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/scripts/lib/clean_emoji_cache.py#L37'>scripts/lib/clean_emoji_cache.py:37:43:</a> PTH115 [*] `os.readlink()` should be replaced by `Path.readlink()`
+- <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/scripts/lib/clean_emoji_cache.py#L37'>scripts/lib/clean_emoji_cache.py:37:43:</a> PTH115 `os.readlink()` should be replaced by `Path.readlink()`
++ <a href='https://github.com/zulip/zulip/blob/4775f9673f39e1120473491dd3f9825fb7da7cab/scripts/lib/node_cache.py#L10'>scripts/lib/node_cache.py:10:9:</a> PTH108 [*] `os.unlink()` should be replaced by `Path.unlink()`
+... 889 additional changes omitted for project
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (13 rules affected)</summary>
+<p>
+
+| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PTH120 | 568 | 0 | 0 | 568 | 0 |
+| PTH110 | 546 | 0 | 0 | 546 | 0 |
+| PTH100 | 208 | 0 | 0 | 208 | 0 |
+| PTH119 | 208 | 0 | 0 | 208 | 0 |
+| PTH113 | 186 | 0 | 0 | 186 | 0 |
+| PTH107 | 170 | 0 | 0 | 170 | 0 |
+| PTH112 | 88 | 0 | 0 | 88 | 0 |
+| PTH111 | 74 | 0 | 0 | 74 | 0 |
+| PTH108 | 28 | 0 | 0 | 28 | 0 |
+| PTH114 | 22 | 0 | 0 | 22 | 0 |
+| PTH117 | 12 | 0 | 0 | 12 | 0 |
+| PTH115 | 6 | 0 | 0 | 6 | 0 |
+| PTH106 | 6 | 0 | 0 | 6 | 0 |
+
+</p>
+</details>
+
+
+
+
+---
+
+_Comment by @AA-Turner on 2025-07-08 20:28_
+
+> it seems we will need to revise all the parameters ...
+
+I would suggest treating the `os.path` functions as positional only in the general case. Using keyword arguments for them is to be avoided.
+
+---
+
+_Marked ready for review by @chirizxc on 2025-07-08 20:37_
+
+---
+
+_Comment by @chirizxc on 2025-07-08 20:43_
+
+Is such a regression acceptable? there are many autofixes for rules after all
+
+---
+
+_Label `fixes` added by @ntBre on 2025-07-08 21:19_
+
+---
+
+_Label `preview` added by @ntBre on 2025-07-08 21:19_
+
+---
+
+_@ntBre reviewed on 2025-07-08 21:35_
+
+---
+
+_Review comment by @ntBre on `crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_abspath.rs`:69 on 2025-07-08 21:35_
+
+I meant that we should call this in `expression.rs` and pass it to `os_path_abspath` in this case. This is still calling `resolve_qualified_name` once for each rule when we could call it once for all of the rules.
+
+Something like this is what I had in mind, and I think it should resolve the benchmark regression:
+
+<details><summary>Patch</summary>
+
+```diff
+diff --git a/crates/ruff_linter/src/checkers/ast/analyze/expression.rs b/crates/ruff_linter/src/checkers/ast/analyze/expression.rs
+index 04f6c831fa..8e906d9cfa 100644
+--- a/crates/ruff_linter/src/checkers/ast/analyze/expression.rs
++++ b/crates/ruff_linter/src/checkers/ast/analyze/expression.rs
+@@ -1055,59 +1055,65 @@ pub(crate) fn expression(expr: &Expr, checker: &Checker) {
+             ]) {
+                 flake8_use_pathlib::rules::replaceable_by_pathlib(checker, call);
+             }
+-            if checker.is_rule_enabled(Rule::OsPathGetsize) {
+-                flake8_use_pathlib::rules::os_path_getsize(checker, call);
+-            }
+-            if checker.is_rule_enabled(Rule::OsPathGetatime) {
+-                flake8_use_pathlib::rules::os_path_getatime(checker, call);
+-            }
+-            if checker.is_rule_enabled(Rule::OsPathGetctime) {
+-                flake8_use_pathlib::rules::os_path_getctime(checker, call);
+-            }
+-            if checker.is_rule_enabled(Rule::OsPathGetmtime) {
+-                flake8_use_pathlib::rules::os_path_getmtime(checker, call);
+-            }
+-            if checker.is_rule_enabled(Rule::OsPathAbspath) {
+-                flake8_use_pathlib::rules::os_path_abspath(checker, call);
+-            }
+-            if checker.is_rule_enabled(Rule::OsRmdir) {
+-                flake8_use_pathlib::rules::os_rmdir(checker, call);
+-            }
+-            if checker.is_rule_enabled(Rule::OsRemove) {
+-                flake8_use_pathlib::rules::os_remove(checker, call);
+-            }
+-            if checker.is_rule_enabled(Rule::OsUnlink) {
+-                flake8_use_pathlib::rules::os_unlink(checker, call);
+-            }
+-            if checker.is_rule_enabled(Rule::OsPathExists) {
+-                flake8_use_pathlib::rules::os_path_exists(checker, call);
+-            }
+-            if checker.is_rule_enabled(Rule::OsPathExpanduser) {
+-                flake8_use_pathlib::rules::os_path_expanduser(checker, call);
+-            }
+-            if checker.is_rule_enabled(Rule::OsPathBasename) {
+-                flake8_use_pathlib::rules::os_path_basename(checker, call);
+-            }
+-            if checker.is_rule_enabled(Rule::OsPathDirname) {
+-                flake8_use_pathlib::rules::os_path_dirname(checker, call);
+-            }
+-            if checker.is_rule_enabled(Rule::OsPathIsabs) {
+-                flake8_use_pathlib::rules::os_path_isabs(checker, call);
+-            }
+-            if checker.is_rule_enabled(Rule::OsPathIsdir) {
+-                flake8_use_pathlib::rules::os_path_isdir(checker, call);
+-            }
+-            if checker.is_rule_enabled(Rule::OsPathIsfile) {
+-                flake8_use_pathlib::rules::os_path_isfile(checker, call);
+-            }
+-            if checker.is_rule_enabled(Rule::OsPathIslink) {
+-                flake8_use_pathlib::rules::os_path_islink(checker, call);
+-            }
+-            if checker.is_rule_enabled(Rule::OsReadlink) {
+-                flake8_use_pathlib::rules::os_readlink(checker, call);
+-            }
+-            if checker.is_rule_enabled(Rule::PathConstructorCurrentDirectory) {
+-                flake8_use_pathlib::rules::path_constructor_current_directory(checker, call);
++
++            if let Some(qualified_name) = checker.semantic().resolve_qualified_name(&call.func) {
++                let segments = qualified_name.segments();
++                if checker.is_rule_enabled(Rule::OsPathGetsize) {
++                    flake8_use_pathlib::rules::os_path_getsize(checker, call, segments);
++                }
++                if checker.is_rule_enabled(Rule::OsPathGetatime) {
++                    flake8_use_pathlib::rules::os_path_getatime(checker, call, segments);
++                }
++                if checker.is_rule_enabled(Rule::OsPathGetctime) {
++                    flake8_use_pathlib::rules::os_path_getctime(checker, call, segments);
++                }
++                if checker.is_rule_enabled(Rule::OsPathGetmtime) {
++                    flake8_use_pathlib::rules::os_path_getmtime(checker, call, segments);
++                }
++                if checker.is_rule_enabled(Rule::OsPathAbspath) {
++                    flake8_use_pathlib::rules::os_path_abspath(checker, call, segments);
++                }
++                if checker.is_rule_enabled(Rule::OsRmdir) {
++                    flake8_use_pathlib::rules::os_rmdir(checker, call, segments);
++                }
++                if checker.is_rule_enabled(Rule::OsRemove) {
++                    flake8_use_pathlib::rules::os_remove(checker, call, segments);
++                }
++                if checker.is_rule_enabled(Rule::OsUnlink) {
++                    flake8_use_pathlib::rules::os_unlink(checker, call, segments);
++                }
++                if checker.is_rule_enabled(Rule::OsPathExists) {
++                    flake8_use_pathlib::rules::os_path_exists(checker, call, segments);
++                }
++                if checker.is_rule_enabled(Rule::OsPathExpanduser) {
++                    flake8_use_pathlib::rules::os_path_expanduser(checker, call, segments);
++                }
++                if checker.is_rule_enabled(Rule::OsPathBasename) {
++                    flake8_use_pathlib::rules::os_path_basename(checker, call, segments);
++                }
++                if checker.is_rule_enabled(Rule::OsPathDirname) {
++                    flake8_use_pathlib::rules::os_path_dirname(checker, call, segments);
++                }
++                if checker.is_rule_enabled(Rule::OsPathIsabs) {
++                    flake8_use_pathlib::rules::os_path_isabs(checker, call, segments);
++                }
++                if checker.is_rule_enabled(Rule::OsPathIsdir) {
++                    flake8_use_pathlib::rules::os_path_isdir(checker, call, segments);
++                }
++                if checker.is_rule_enabled(Rule::OsPathIsfile) {
++                    flake8_use_pathlib::rules::os_path_isfile(checker, call, segments);
++                }
++                if checker.is_rule_enabled(Rule::OsPathIslink) {
++                    flake8_use_pathlib::rules::os_path_islink(checker, call, segments);
++                }
++                if checker.is_rule_enabled(Rule::OsReadlink) {
++                    flake8_use_pathlib::rules::os_readlink(checker, call, segments);
++                }
++                if checker.is_rule_enabled(Rule::PathConstructorCurrentDirectory) {
++                    flake8_use_pathlib::rules::path_constructor_current_directory(
++                        checker, call, segments,
++                    );
++                }
+             }
+             if checker.is_rule_enabled(Rule::OsSepSplit) {
+                 flake8_use_pathlib::rules::os_sep_split(checker, call);
+diff --git a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_abspath.rs b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_abspath.rs
+index ece5d02106..a8961da959 100644
+--- a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_abspath.rs
++++ b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_abspath.rs
+@@ -59,12 +59,8 @@ impl Violation for OsPathAbspath {
+ }
+ 
+ /// PTH100
+-pub(crate) fn os_path_abspath(checker: &Checker, call: &ExprCall) {
+-    if checker
+-        .semantic()
+-        .resolve_qualified_name(&call.func)
+-        .is_none_or(|qualified_name| qualified_name.segments() != ["os", "path", "abspath"])
+-    {
++pub(crate) fn os_path_abspath(checker: &Checker, call: &ExprCall, segments: &[&str]) {
++    if segments != ["os", "path", "abspath"] {
+         return;
+     }
+     check_os_pathlib_single_arg_calls(
+diff --git a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_basename.rs b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_basename.rs
+index 788d7a10bf..f69526dd7a 100644
+--- a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_basename.rs
++++ b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_basename.rs
+@@ -58,12 +58,8 @@ impl Violation for OsPathBasename {
+ }
+ 
+ /// PTH119
+-pub(crate) fn os_path_basename(checker: &Checker, call: &ExprCall) {
+-    if checker
+-        .semantic()
+-        .resolve_qualified_name(&call.func)
+-        .is_none_or(|qualified_name| qualified_name.segments() != ["os", "path", "basename"])
+-    {
++pub(crate) fn os_path_basename(checker: &Checker, call: &ExprCall, segments: &[&str]) {
++    if segments != ["os", "path", "basename"] {
+         return;
+     }
+     check_os_pathlib_single_arg_calls(
+diff --git a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_dirname.rs b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_dirname.rs
+index 2f754ad267..a39ebc2814 100644
+--- a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_dirname.rs
++++ b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_dirname.rs
+@@ -58,12 +58,8 @@ impl Violation for OsPathDirname {
+ }
+ 
+ /// PTH120
+-pub(crate) fn os_path_dirname(checker: &Checker, call: &ExprCall) {
+-    if checker
+-        .semantic()
+-        .resolve_qualified_name(&call.func)
+-        .is_none_or(|qualified_name| qualified_name.segments() != ["os", "path", "dirname"])
+-    {
++pub(crate) fn os_path_dirname(checker: &Checker, call: &ExprCall, segments: &[&str]) {
++    if segments != ["os", "path", "dirname"] {
+         return;
+     }
+     check_os_pathlib_single_arg_calls(
+diff --git a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_exists.rs b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_exists.rs
+index d514f2c0c5..d56697b7b1 100644
+--- a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_exists.rs
++++ b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_exists.rs
+@@ -58,12 +58,8 @@ impl Violation for OsPathExists {
+ }
+ 
+ /// PTH110
+-pub(crate) fn os_path_exists(checker: &Checker, call: &ExprCall) {
+-    if checker
+-        .semantic()
+-        .resolve_qualified_name(&call.func)
+-        .is_none_or(|qualified_name| qualified_name.segments() != ["os", "path", "exists"])
+-    {
++pub(crate) fn os_path_exists(checker: &Checker, call: &ExprCall, segments: &[&str]) {
++    if segments != ["os", "path", "exists"] {
+         return;
+     }
+     check_os_pathlib_single_arg_calls(
+diff --git a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_expanduser.rs b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_expanduser.rs
+index 39360bf587..6c25e30a5f 100644
+--- a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_expanduser.rs
++++ b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_expanduser.rs
+@@ -58,12 +58,8 @@ impl Violation for OsPathExpanduser {
+ }
+ 
+ /// PTH111
+-pub(crate) fn os_path_expanduser(checker: &Checker, call: &ExprCall) {
+-    if checker
+-        .semantic()
+-        .resolve_qualified_name(&call.func)
+-        .is_none_or(|qualified_name| qualified_name.segments() != ["os", "path", "expanduser"])
+-    {
++pub(crate) fn os_path_expanduser(checker: &Checker, call: &ExprCall, segments: &[&str]) {
++    if segments != ["os", "path", "expanduser"] {
+         return;
+     }
+     check_os_pathlib_single_arg_calls(
+diff --git a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_getatime.rs b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_getatime.rs
+index 145b92c741..435ec1a939 100644
+--- a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_getatime.rs
++++ b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_getatime.rs
+@@ -61,12 +61,8 @@ impl Violation for OsPathGetatime {
+ }
+ 
+ /// PTH203
+-pub(crate) fn os_path_getatime(checker: &Checker, call: &ExprCall) {
+-    if checker
+-        .semantic()
+-        .resolve_qualified_name(&call.func)
+-        .is_none_or(|qualified_name| qualified_name.segments() != ["os", "path", "getatime"])
+-    {
++pub(crate) fn os_path_getatime(checker: &Checker, call: &ExprCall, segments: &[&str]) {
++    if segments != ["os", "path", "getatime"] {
+         return;
+     }
+     check_os_pathlib_single_arg_calls(
+diff --git a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_getctime.rs b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_getctime.rs
+index 7a13c0d0b5..7b01da2234 100644
+--- a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_getctime.rs
++++ b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_getctime.rs
+@@ -62,12 +62,8 @@ impl Violation for OsPathGetctime {
+ }
+ 
+ /// PTH205
+-pub(crate) fn os_path_getctime(checker: &Checker, call: &ExprCall) {
+-    if checker
+-        .semantic()
+-        .resolve_qualified_name(&call.func)
+-        .is_none_or(|qualified_name| qualified_name.segments() != ["os", "path", "getctime"])
+-    {
++pub(crate) fn os_path_getctime(checker: &Checker, call: &ExprCall, segments: &[&str]) {
++    if segments != ["os", "path", "getctime"] {
+         return;
+     }
+     check_os_pathlib_single_arg_calls(
+diff --git a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_getmtime.rs b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_getmtime.rs
+index 40dc8cea5b..dbcc1d44b9 100644
+--- a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_getmtime.rs
++++ b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_getmtime.rs
+@@ -62,12 +62,8 @@ impl Violation for OsPathGetmtime {
+ }
+ 
+ /// PTH204
+-pub(crate) fn os_path_getmtime(checker: &Checker, call: &ExprCall) {
+-    if checker
+-        .semantic()
+-        .resolve_qualified_name(&call.func)
+-        .is_none_or(|qualified_name| qualified_name.segments() != ["os", "path", "getmtime"])
+-    {
++pub(crate) fn os_path_getmtime(checker: &Checker, call: &ExprCall, segments: &[&str]) {
++    if segments != ["os", "path", "getmtime"] {
+         return;
+     }
+     check_os_pathlib_single_arg_calls(
+diff --git a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_getsize.rs b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_getsize.rs
+index bb31535196..9dc2606d7f 100644
+--- a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_getsize.rs
++++ b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_getsize.rs
+@@ -62,12 +62,8 @@ impl Violation for OsPathGetsize {
+ }
+ 
+ /// PTH202
+-pub(crate) fn os_path_getsize(checker: &Checker, call: &ExprCall) {
+-    if checker
+-        .semantic()
+-        .resolve_qualified_name(&call.func)
+-        .is_none_or(|qualified_name| qualified_name.segments() != ["os", "path", "getsize"])
+-    {
++pub(crate) fn os_path_getsize(checker: &Checker, call: &ExprCall, segments: &[&str]) {
++    if segments != ["os", "path", "getsize"] {
+         return;
+     }
+     check_os_pathlib_single_arg_calls(
+diff --git a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_isabs.rs b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_isabs.rs
+index 218da6e97a..482ec95f24 100644
+--- a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_isabs.rs
++++ b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_isabs.rs
+@@ -57,12 +57,8 @@ impl Violation for OsPathIsabs {
+ }
+ 
+ /// PTH117
+-pub(crate) fn os_path_isabs(checker: &Checker, call: &ExprCall) {
+-    if checker
+-        .semantic()
+-        .resolve_qualified_name(&call.func)
+-        .is_none_or(|qualified_name| qualified_name.segments() != ["os", "path", "isabs"])
+-    {
++pub(crate) fn os_path_isabs(checker: &Checker, call: &ExprCall, segments: &[&str]) {
++    if segments != ["os", "path", "isabs"] {
+         return;
+     }
+     check_os_pathlib_single_arg_calls(
+diff --git a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_isdir.rs b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_isdir.rs
+index 42dfde11a6..4c33745e52 100644
+--- a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_isdir.rs
++++ b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_isdir.rs
+@@ -59,12 +59,8 @@ impl Violation for OsPathIsdir {
+ }
+ 
+ /// PTH112
+-pub(crate) fn os_path_isdir(checker: &Checker, call: &ExprCall) {
+-    if checker
+-        .semantic()
+-        .resolve_qualified_name(&call.func)
+-        .is_none_or(|qualified_name| qualified_name.segments() != ["os", "path", "isdir"])
+-    {
++pub(crate) fn os_path_isdir(checker: &Checker, call: &ExprCall, segments: &[&str]) {
++    if segments != ["os", "path", "isdir"] {
+         return;
+     }
+ 
+diff --git a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_isfile.rs b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_isfile.rs
+index 8eda467400..0fa2bd4fd8 100644
+--- a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_isfile.rs
++++ b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_isfile.rs
+@@ -59,12 +59,8 @@ impl Violation for OsPathIsfile {
+ }
+ 
+ /// PTH113
+-pub(crate) fn os_path_isfile(checker: &Checker, call: &ExprCall) {
+-    if checker
+-        .semantic()
+-        .resolve_qualified_name(&call.func)
+-        .is_none_or(|qualified_name| qualified_name.segments() != ["os", "path", "isfile"])
+-    {
++pub(crate) fn os_path_isfile(checker: &Checker, call: &ExprCall, segments: &[&str]) {
++    if segments != ["os", "path", "isfile"] {
+         return;
+     }
+ 
+diff --git a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_islink.rs b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_islink.rs
+index fb7dce520a..db9aa3d5e9 100644
+--- a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_islink.rs
++++ b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_islink.rs
+@@ -59,12 +59,8 @@ impl Violation for OsPathIslink {
+ }
+ 
+ /// PTH114
+-pub(crate) fn os_path_islink(checker: &Checker, call: &ExprCall) {
+-    if checker
+-        .semantic()
+-        .resolve_qualified_name(&call.func)
+-        .is_none_or(|qualified_name| qualified_name.segments() != ["os", "path", "islink"])
+-    {
++pub(crate) fn os_path_islink(checker: &Checker, call: &ExprCall, segments: &[&str]) {
++    if segments != ["os", "path", "islink"] {
+         return;
+     }
+ 
+diff --git a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_readlink.rs b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_readlink.rs
+index 20fe9a1694..62526f6666 100644
+--- a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_readlink.rs
++++ b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_readlink.rs
+@@ -61,7 +61,7 @@ impl Violation for OsReadlink {
+ }
+ 
+ /// PTH115
+-pub(crate) fn os_readlink(checker: &Checker, call: &ExprCall) {
++pub(crate) fn os_readlink(checker: &Checker, call: &ExprCall, segments: &[&str]) {
+     // Python 3.9+
+     if checker.target_version() < PythonVersion::PY39 {
+         return;
+@@ -76,11 +76,7 @@ pub(crate) fn os_readlink(checker: &Checker, call: &ExprCall) {
+         return;
+     }
+ 
+-    if checker
+-        .semantic()
+-        .resolve_qualified_name(&call.func)
+-        .is_none_or(|qualified_name| qualified_name.segments() != ["os", "readlink"])
+-    {
++    if segments != ["os", "readlink"] {
+         return;
+     }
+ 
+diff --git a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_remove.rs b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_remove.rs
+index bf6d96d02c..3ec99469ea 100644
+--- a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_remove.rs
++++ b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_remove.rs
+@@ -60,7 +60,7 @@ impl Violation for OsRemove {
+ }
+ 
+ /// PTH107
+-pub(crate) fn os_remove(checker: &Checker, call: &ExprCall) {
++pub(crate) fn os_remove(checker: &Checker, call: &ExprCall, segments: &[&str]) {
+     // `dir_fd` is not supported by pathlib, so check if it's set to non-default values.
+     // Signature as of Python 3.13 (https://docs.python.org/3/library/os.html#os.remove)
+     // ```text
+@@ -71,11 +71,7 @@ pub(crate) fn os_remove(checker: &Checker, call: &ExprCall) {
+         return;
+     }
+ 
+-    if checker
+-        .semantic()
+-        .resolve_qualified_name(&call.func)
+-        .is_none_or(|qualified_name| qualified_name.segments() != ["os", "remove"])
+-    {
++    if segments != ["os", "remove"] {
+         return;
+     }
+ 
+diff --git a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_rmdir.rs b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_rmdir.rs
+index eba2c21e1f..bb85284f4e 100644
+--- a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_rmdir.rs
++++ b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_rmdir.rs
+@@ -60,7 +60,7 @@ impl Violation for OsRmdir {
+ }
+ 
+ /// PTH106
+-pub(crate) fn os_rmdir(checker: &Checker, call: &ExprCall) {
++pub(crate) fn os_rmdir(checker: &Checker, call: &ExprCall, segments: &[&str]) {
+     // `dir_fd` is not supported by pathlib, so check if it's set to non-default values.
+     // Signature as of Python 3.13 (https://docs.python.org/3/library/os.html#os.rmdir)
+     // ```text
+@@ -71,11 +71,7 @@ pub(crate) fn os_rmdir(checker: &Checker, call: &ExprCall) {
+         return;
+     }
+ 
+-    if checker
+-        .semantic()
+-        .resolve_qualified_name(&call.func)
+-        .is_none_or(|qualified_name| qualified_name.segments() != ["os", "rmdir"])
+-    {
++    if segments != ["os", "rmdir"] {
+         return;
+     }
+ 
+diff --git a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_unlink.rs b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_unlink.rs
+index bfc471874a..5d97338e88 100644
+--- a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_unlink.rs
++++ b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_unlink.rs
+@@ -60,7 +60,7 @@ impl Violation for OsUnlink {
+ }
+ 
+ /// PTH108
+-pub(crate) fn os_unlink(checker: &Checker, call: &ExprCall) {
++pub(crate) fn os_unlink(checker: &Checker, call: &ExprCall, segments: &[&str]) {
+     // `dir_fd` is not supported by pathlib, so check if it's set to non-default values.
+     // Signature as of Python 3.13 (https://docs.python.org/3/library/os.html#os.unlink)
+     // ```text
+@@ -71,11 +71,7 @@ pub(crate) fn os_unlink(checker: &Checker, call: &ExprCall) {
+         return;
+     }
+ 
+-    if checker
+-        .semantic()
+-        .resolve_qualified_name(&call.func)
+-        .is_none_or(|qualified_name| qualified_name.segments() != ["os", "unlink"])
+-    {
++    if segments != ["os", "unlink"] {
+         return;
+     }
+ 
+diff --git a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/path_constructor_current_directory.rs b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/path_constructor_current_directory.rs
+index f8d8830a59..f94fcc46f3 100644
+--- a/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/path_constructor_current_directory.rs
++++ b/crates/ruff_linter/src/rules/flake8_use_pathlib/rules/path_constructor_current_directory.rs
+@@ -54,7 +54,7 @@ impl AlwaysFixableViolation for PathConstructorCurrentDirectory {
+ }
+ 
+ /// PTH201
+-pub(crate) fn path_constructor_current_directory(checker: &Checker, call: &ExprCall) {
++pub(crate) fn path_constructor_current_directory(checker: &Checker, call: &ExprCall, segments: &[&str]) {
+     let applicability = |range| {
+         if checker.comment_ranges().intersects(range) {
+             Applicability::Unsafe
+@@ -63,15 +63,9 @@ pub(crate) fn path_constructor_current_directory(checker: &Checker, call: &ExprC
+         }
+     };
+ 
+-    let (func, arguments) = (&call.func, &call.arguments);
++    let arguments = &call.arguments;
+ 
+-    if !checker
+-        .semantic()
+-        .resolve_qualified_name(func)
+-        .is_some_and(|qualified_name| {
+-            matches!(qualified_name.segments(), ["pathlib", "Path" | "PurePath"])
+-        })
+-    {
++    if !matches!(segments, ["pathlib", "Path" | "PurePath"]) {
+         return;
+     }
+```
+
+</details>
+
+---
+
+_@chirizxc reviewed on 2025-07-08 22:17_
+
+---
+
+_Review comment by @chirizxc on `crates/ruff_linter/src/rules/flake8_use_pathlib/rules/os_path_abspath.rs`:69 on 2025-07-08 22:17_
+
+thanks
+
+---
+
+_@ntBre reviewed on 2025-07-09 16:57_
+
+Thanks, this looks good! The one thing we probably should do is add a `preview` test for these other rules on their existing files. So basically copy this test and enable preview:
+
+https://github.com/astral-sh/ruff/blob/1eff0300d3784d116a19909bf0c1a493de2aea61/crates/ruff_linter/src/rules/flake8_use_pathlib/mod.rs#L19-L24
+
+I think that should cover the preview behavior for all of these.
+
+---
+
+_Comment by @chirizxc on 2025-07-09 17:14_
+
+also, can you please update that table from #2331?
+
+---
+
+_Comment by @chirizxc on 2025-07-09 17:24_
+
+windows runner 🫡
+
+---
+
+_Renamed from "[`flake8-use-pathlib`] Add autofixes for `PTH100`, `PTH106`, `PTH107`, `PTH108`, `PTH110`, `PTH111`, `PTH112`, `PTH113`, `PTH114`, `PTH115`, `PTH117`, `PTH118`, `PTH119`" to "[`flake8-use-pathlib`] Add autofixes for `PTH100`, `PTH106`, `PTH107`, `PTH108`, `PTH110`, `PTH111`, `PTH112`, `PTH113`, `PTH114`, `PTH115`, `PTH117`, `PTH118`, `PTH119`, `PTH120`" by @chirizxc on 2025-07-09 17:31_
+
+---
+
+_Renamed from "[`flake8-use-pathlib`] Add autofixes for `PTH100`, `PTH106`, `PTH107`, `PTH108`, `PTH110`, `PTH111`, `PTH112`, `PTH113`, `PTH114`, `PTH115`, `PTH117`, `PTH118`, `PTH119`, `PTH120`" to "[`flake8-use-pathlib`] Add autofixes for `PTH100`, `PTH106`, `PTH107`, `PTH108`, `PTH110`, `PTH111`, `PTH112`, `PTH113`, `PTH114`, `PTH115`, `PTH117`, `PTH119`, `PTH120`" by @chirizxc on 2025-07-09 17:32_
+
+---
+
+_@ntBre approved on 2025-07-09 18:41_
+
+---
+
+_Merged by @ntBre on 2025-07-09 18:54_
+
+---
+
+_Closed by @ntBre on 2025-07-09 18:54_
+
+---
+
+_Branch deleted on 2025-07-09 19:01_
+
+---
