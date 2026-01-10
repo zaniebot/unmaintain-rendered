@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve display of resolution errors for workspace member conflicts with optional dependencies - astral-sh/uv #6123</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve display of resolution errors for workspace member conflicts with optional dependencies</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6123">#6123</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-08-15 17:29
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-15 17:29</div>
+            <div class="timeline-body"><p>We have bad error messages for optional (extra) dependencies and development dependencies in workspaces:</p>
+<ol>
+<li>We weren't showing the full package, so we'd drop <code>:dev</code> and <code>[extra]</code> by accident</li>
+<li>We didn't include derived packages, e.g., <code>member[extra]</code> in tree processing collapse operation, so we'd include extra clauses like the ones we removed in #6092</li>
+</ol>
+<p>Also</p>
+<ul>
+<li>Reverts https://github.com/astral-sh/uv/pull/6092/commits/f0de4f71f257132388514cbeb96a77215cf90b3b — it turns out it wasn't quite correct and it didn't seem worth using the custom incompatibility anymore.</li>
+<li>Fixes a bug in the display of <code>package:dev</code> which was not showing <code>:dev</code> for some variants (see 94d8020b589c316f193b8ae4d59430c9b1ba57e7)</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-08-15 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @zanieb on 2024-08-15 17:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "zb/optional dep err" to "Improve display of resolution errors for workspace member conflicts with optional dependencies" by @zanieb on 2024-08-15 17:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @zanieb on 2024-08-15 17:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/workspace.rs</code>:1442 on 2024-08-15 18:07</div>
+            <div class="timeline-body"><p>I cannot figure out why this doesn't say <code>bar:dev depends on</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 18:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 18:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/workspace.rs</code>:1442 on 2024-08-15 18:10</div>
+            <div class="timeline-body"><p>The tree is wrong</p>
+<pre><code>      root==0a0.dev0 depends on foo*
+        root==0a0.dev0 depends on bar*
+          foo==0.1.0 depends on anyio==4.1.0
+            bar==0.1.0 depends on anyio==4.2.0
+            bar==0.1.0 depends on bar:dev==0.1.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 18:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/workspace.rs</code>:1442 on 2024-08-15 18:11</div>
+            <div class="timeline-body"><p>And is wrong before any transformation</p>
+<pre><code>      root==0a0.dev0 depends on foo*
+        root==0a0.dev0 depends on bar*
+          no versions of foo&lt;0.1.0 | &gt;0.1.0
+            foo==0.1.0 depends on anyio==4.1.0
+              bar==0.1.0 depends on anyio==4.2.0
+                bar==0.1.0 depends on bar:dev==0.1.0
+                no versions of bar&lt;0.1.0 | &gt;0.1.0
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-08-15 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-15 18:11</div>
+            <div class="timeline-body"><p>I think we might want to merge this as an incremental improvement. The development dependencies case is weird — it seems like a bug in the resolver itself.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-08-15 18:35</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 20:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/workspace.rs</code>:1442 on 2024-08-15 20:53</div>
+            <div class="timeline-body"><p>This was a display bug https://github.com/astral-sh/uv/pull/6123/files#diff-f8891b530b9722db41a1ef9461f0c2608f639ace189f57ec00e002bf02d7bd00</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-08-16 01:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-08-16 01:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-16 01:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-16 01:50</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:10:13 UTC
+    </footer>
+</body>
+</html>

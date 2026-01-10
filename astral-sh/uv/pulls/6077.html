@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remove `same-graph` merging in resolver - astral-sh/uv #6077</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Remove <code>same-graph</code> merging in resolver</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6077">#6077</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-08-14 01:55
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-14 01:55</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This was added in https://github.com/astral-sh/uv/pull/5405 but is now the cause of an instability in <code>github_wikidata_bot</code>. Specifically, on the initial run, we fork in <code>pydantic==2.8.2</code>, via:</p>
+<pre><code>Requires-Dist: typing-extensions&gt;=4.12.2; python_version &gt;= '3.13'
+Requires-Dist: typing-extensions&gt;=4.6.1; python_version &lt; '3.13'
+</code></pre>
+<p>In the end, we resolve a single version of <code>typing-extensions</code> (<code>4.12.2</code>)... But we don't recognize the two resolutions as the &quot;same graph&quot;, because we propagate the fork markers, and so the &quot;edges&quot; have different markers on them...</p>
+<p>In the second run through, when we have the forks in advance, we don't split on Pydantic... We just try to solve from the root with the current forks. This is fundamentally different and I fear it will be the cause of many instabilities. But removing this graph check fixes the proximate issue.</p>
+<p>I don't really understand why this was added since there was no test coverage in the PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-08-14 01:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @charliermarsh on 2024-08-14 01:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-14 01:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">resolver</span> added by @charliermarsh on 2024-08-14 01:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-08-14 01:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-14 02:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_compile.rs</code>:7775 on 2024-08-14 02:56</div>
+            <div class="timeline-body"><p>I think this was wrong before...? The requirements are:</p>
+<pre><code>cffi ; os_name == 'linux'
+cffi &gt;= 1.17.0rc1 ; os_name != 'linux'
+cryptography
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-14 02:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/pip_compile.rs</code>:7775 on 2024-08-14 02:58</div>
+            <div class="timeline-body"><p>Or is it just that these are redundant...? Since <code>os_name == 'linux' or os_name != 'linux'</code> already covers the full space?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/pip_compile.rs</code>:7528 on 2024-08-14 13:18</div>
+            <div class="timeline-body"><p>This looks like a bug fix.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/pip_compile.rs</code>:7775 on 2024-08-14 13:32</div>
+            <div class="timeline-body"><p>It is definitely redundant in terms of the marker expressions. But it's not immediately obvious to me why this change dropped that part of the marker.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-08-14 13:34</div>
+            <div class="timeline-body"><p>I would say we should merge this. I <em>believe</em> the original motivation was as an optimization. Because if we <em>can</em> prune forks then we probably should. But removing this optimization results in a bug fix from what I can see, and I think is potentially confounding our instability investigation.</p>
+<p>It does seem like this class of optimization <em>ought</em> to be sound though. But I think we should chop it out for now and revisit it later. (i.e., Prioritize correctness.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-14 13:59</div>
+            <div class="timeline-body"><p>Ok this fixes two of the three instabilities that emerged after #6065.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-08-14 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-14 14:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-14 14:06</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:10:13 UTC
+    </footer>
+</body>
+</html>

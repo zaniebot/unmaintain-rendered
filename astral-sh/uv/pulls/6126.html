@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Normalize `python_version` markers to `python_full_version` - astral-sh/uv #6126</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Normalize <code>python_version</code> markers to <code>python_full_version</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6126">#6126</a>
+        opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a>
+        on 2024-08-15 19:06
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on 2024-08-15 19:06</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Normalize all <code>python_version</code> markers to their equivalent <code>python_full_version</code> form. This avoids false positives in forking because we currently cannot detect any relationships between the two forms. It also avoids subtle bugs due to the truncating semantics of <code>python_version</code>. For example, given <code>requires-python = &quot;&gt;3.12&quot;</code>, we currently simplify the marker <code>python_version &lt;= 3.12</code> to <code>false</code>. However, the version <code>3.12.1</code> will be truncated to <code>3.12</code> for <code>python_version</code> comparisons, and thus it satisfies the python requirement and evaluates to <code>true</code>.</p>
+<p>It is possible to simplify back to <code>python_version</code> when writing markers to the lockfile. However, the equivalent <code>python_full_version</code> markers are often clearer and easier to simplify, so I lean towards leaving them as <code>python_full_version</code>.</p>
+<p>There are <em>a lot</em> of snapshot updates from this change. I'd like more eyes on the transformation logic in <code>python_version_to_full_version</code> to ensure that they are all correct.</p>
+<p>Resolves https://github.com/astral-sh/uv/issues/6125.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">lock</span> added by @ibraheemdev on 2024-08-15 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @ibraheemdev on 2024-08-15 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @ibraheemdev on 2024-08-15 19:06</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-15 19:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv/tests/snapshots/ecosystem__transformers-lock-file.snap</code>:2887 on 2024-08-15 19:14</div>
+            <div class="timeline-body"><p>This change stands out.. I verified that this expression on it's own simplifies to <code>python_full_version &gt;= '3.11'</code>. I guess that it's redundant with the narrowed requires-python in the fork?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:820 on 2024-08-15 19:19</div>
+            <div class="timeline-body"><p>Hmm... should <code>python_version != 3.7</code> be: <code>python_version_full &lt;= 3.6 or python_version_full &gt;= 3.8</code>?</p>
+<p><code>python_version_full != 3.7</code> would allow <code>3.7.1</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-15 19:19</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-15 19:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/snapshots/ecosystem__transformers-lock-file.snap</code>:2887 on 2024-08-15 19:23</div>
+            <div class="timeline-body"><p>It looks like the declared metadata is:</p>
+<pre><code>Requires-Dist: numpy&gt;=1.22.4; python_version &lt; &quot;3.11&quot;
+Requires-Dist: numpy&gt;=1.23.2; python_version == &quot;3.11&quot;
+Requires-Dist: numpy&gt;=1.26.0; python_version &gt;= &quot;3.12&quot;
+</code></pre>
+<p>So I think it's <em>right</em> to remove this marker? (Was it a bug that it was omitted before on Python &lt; 3.11?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-15 19:27</div>
+            <div class="timeline-body"><p>I'm surprised that there aren't more simplifications here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-15 19:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep440-rs/src/version_specifier.rs</code>:514 on 2024-08-15 19:29</div>
+            <div class="timeline-body"><p>I think this isn't true <em>in general</em>... I think it's only true if you ignore pre-releases and such.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-15 19:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:820 on 2024-08-15 19:40</div>
+            <div class="timeline-body"><p>Yes, that happens in a branch above; <code>python_version != 3.7</code> becomes <code>python_full_version != 3.7.*</code>. The comment here is wrong, it applies to <code>~=</code> not <code>!=</code>. <code>python_version ~= 3.7</code> is equivalent to <code>python_full_version ~= 3.7</code> I believe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep440-rs/src/version_specifier.rs</code>:514 on 2024-08-15 19:51</div>
+            <div class="timeline-body"><p>Renamed this to <code>VersionSpecifier::from_release_only_bounds</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-15 19:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-15 20:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:820 on 2024-08-15 20:54</div>
+            <div class="timeline-body"><p>So <code>python_version ~= 3.7</code> means <code>python_version &gt;= 3.7, &lt; 4</code> -- is that right?</p>
+<p>I think you're right then...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 21:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:761 on 2024-08-15 21:38</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    // does not match `python_full_version == 3.9.0a0`. However, its negation,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 21:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:763 on 2024-08-15 21:39</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    // `3.9.0a0`, and always evaluates to `false`.
+</code></pre>
+<p>Is this what you're saying?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 21:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:766 on 2024-08-15 21:40</div>
+            <div class="timeline-body"><p>What does it mean to &quot;take on pre-release values&quot;? I also don't follow &quot;so this is necessary for simplifying ranges&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 21:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:772 on 2024-08-15 21:40</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    // The [`Version`] type ignores trailing `0`s for equality, but still preserves them in its
+</code></pre>
+<p>:)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 21:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:775 on 2024-08-15 21:41</div>
+            <div class="timeline-body"><p>Maybe you mean</p>
+<pre><code class="language-suggestion">    // [`Display`] output. We must normalize all versions by stripping trailing `0`s to remove the
+    // distinction between versions like `3.9` and `3.9.0`, otherwise the output would depend on which form
+    // was added to the global marker interner first.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 21:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:789 on 2024-08-15 21:44</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">/// Returns the equivalent `python_full_version` specifier for a `python_version` specifier.
+</code></pre>
+<p>Is this correct?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 21:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:793 on 2024-08-15 21:49</div>
+            <div class="timeline-body"><p>Maybe something like</p>
+<pre><code class="language-suggestion">    // Add a trailing `0` for the minor version, if previously implied
+    let major_minor = match *specifier.version().release() {
+</code></pre>
+<p>to help clarify the future comment &quot;and adding a trailing <code>0</code> would be incorrect.&quot;</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 21:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:800 on 2024-08-15 21:51</div>
+            <div class="timeline-body"><p>Maybe it'd be helpful to suggest what we'll do in this case? Its quite separated.</p>
+<pre><code class="language-suggestion">        // Specifiers including segments beyond the minor version require separate handling
+        _ =&gt; None,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 21:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:807 on 2024-08-15 21:56</div>
+            <div class="timeline-body"><p>Is there a resource describing these equivalences?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 22:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:808 on 2024-08-15 22:00</div>
+            <div class="timeline-body"><p>What was the basis for <code>===</code> meaning <code>.*</code>? Seems reasonable just not seeing clear answers online.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 22:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pep508-rs/src/marker/tree.rs</code>:1072 on 2024-08-15 22:05</div>
+            <div class="timeline-body"><p>When is it normalized? It doesn't look like it is here. Before here? later?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 22:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pep508-rs/src/marker/tree.rs</code>:1713 on 2024-08-15 22:08</div>
+            <div class="timeline-body"><p>nice</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pep508-rs/src/marker/tree.rs</code>:1819 on 2024-08-15 22:10</div>
+            <div class="timeline-body"><p>Is there a reason we prefer the latter form instead of <code>python_full_version == '3.*'</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 22:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 22:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pep508-rs/src/marker/tree.rs</code>:1960 on 2024-08-15 22:12</div>
+            <div class="timeline-body"><p>Really appreciate all this test coverage, super helpful.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 22:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pep508-rs/src/marker/tree.rs</code>:2163 on 2024-08-15 22:17</div>
+            <div class="timeline-body"><p>This one was surprising out of context (and a similar change in the transformers test). I understand this is due to the distributions Python requirement providing a lower bound?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> approved on 2024-08-15 22:18</div>
+            <div class="timeline-body"><p>Nice work. I'm not up to date on the markers work at all, but I read this pretty carefully.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 22:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pep508-rs/src/marker/tree.rs</code>:1072 on 2024-08-15 22:20</div>
+            <div class="timeline-body"><p>I guess this is a note that this only takes <code>full_python_version</code> because we perform the normalization upstream of here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-15 23:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:807 on 2024-08-15 23:00</div>
+            <div class="timeline-body"><p>I think there probably isn’t because we had to reason through them haha.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 23:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pep508-rs/src/marker/algebra.rs</code>:807 on 2024-08-15 23:07</div>
+            <div class="timeline-body"><p>(I tried to find one and failed)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-08-16 00:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-08-16 01:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-16 01:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-16 01:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-16 02:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/tree.rs</code>:2163 on 2024-08-16 02:03</div>
+            <div class="timeline-body"><p>Yes, it would have been <code>python_full_version &gt;= 3.8 and python_full_version &lt; '3.9'</code>. We could simplify this to <code>python_version == 3.8.*</code>, but this just ends up happening because of the order in which we try transformations (removing lower bounds before attempting to convert to star equality).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/pep508-rs/src/marker/tree.rs</code>:1819 on 2024-08-16 02:05</div>
+            <div class="timeline-body"><p>Mostly because I've never seen a bound like this in practice and it didn't seem worth adding a special case for. Can add it if you think it's important.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-16 02:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-16 02:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/pep508-rs/src/marker/tree.rs</code>:1819 on 2024-08-16 02:07</div>
+            <div class="timeline-body"><p>I don't, was just curious since had similar transformations for the <code>*</code> patch version case</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:10:13 UTC
+    </footer>
+</body>
+</html>

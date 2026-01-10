@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>use aggressive forking when encountering markers - astral-sh/uv #5733</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>use aggressive forking when encountering markers</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/5733">#5733</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2024-08-02 18:30
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-02 18:30</div>
+            <div class="timeline-body"><p>This PR completely rewrites forking in the resolver to follow the
+approach to dealing with overlapping markers as described in #4732.</p>
+<p>The resulting code is much simpler: forks are no longer constructed
+by looking at package names and being limited to disjoint marker
+expressions. Instead, we consider all dependencies and iteratively
+construct a partitioning of the marker environment universe from the
+marker expressions we find on dependencies.</p>
+<p>This does generally result in more aggressive forking overall. And
+importantly, because of that, puts more pressure on our marker routines
+like <code>is_disjoint</code> and <code>is_definitively_empty_set</code>.</p>
+<p>A weakness of this approach, particularly in the absence of perfect
+marker simplification, is that marker expressions can get even
+bigger than they were before. The snapshot updates will show some
+potential low hanging fruit here. I decided not to spend time on marker
+simplification given Ibraheem's ongoing work in that space.</p>
+<p>There are <em>a lot</em> of updates to the snapshot tests. I did my best to
+split &quot;uninteresting but possibly unfortunate&quot; updates into one commit.
+And then any interesting updates into a commit-by-commit breakdown
+where I looked at the specific results to see if it was correct or
+not. There is at least one test update that I am unsure of (the one
+involving cffi and pre-releases). So please review this commit by
+commit.</p>
+<p>Closes #4732, Fixes #4640, Fixes #4668</p>
+<p>But notably does not seem to address #4959.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-02 18:38</div>
+            <div class="timeline-body"><p>Performance does regress with this change in at least one example. I tried @konstin's transformers test:</p>
+<pre><code class="language-toml">[project]
+name = &quot;i5344-transformers-without-markers&quot;
+version = &quot;0.1.0&quot;
+description = &quot;Add your description here&quot;
+readme = &quot;README.md&quot;
+
+requires-python = &quot;&gt;=3.9.0&quot;
+dependencies = [
+  &quot;datasets&quot;,
+  &quot;dill&lt;0.3.5&quot;,
+  &quot;tensorboard&quot;,
+  &quot;tensorflow-text&lt;2.16&quot;,
+  &quot;tensorflow&gt;=2.6,&lt;2.16&quot;,
+  &quot;torch&quot;,
+]
+
+[build-system]
+requires = [&quot;hatchling&quot;]
+build-backend = &quot;hatchling.build&quot;
+</code></pre>
+<p>And a benchmark:</p>
+<pre><code>[andrew@duff i5344-transformers-without-markers]$ hyperfine -w10 -p 'rm -rf uv.lock' 'uv-main lock' 'uv-overlapping-markers lock'
+Benchmark 1: uv-main lock
+  Time (mean ± σ):      48.9 ms ±   3.3 ms    [User: 47.5 ms, System: 51.5 ms]
+  Range (min … max):    41.6 ms …  54.9 ms    61 runs
+
+Benchmark 2: uv-overlapping-markers lock
+  Time (mean ± σ):     154.1 ms ±   4.7 ms    [User: 156.2 ms, System: 81.4 ms]
+  Range (min … max):   145.6 ms … 165.0 ms    19 runs
+
+Summary
+  uv-main lock ran
+    3.15 ± 0.23 times faster than uv-overlapping-markers lock
+</code></pre>
+<p>Performance on Home Assistant regresses too:</p>
+<pre><code>$ git remote -v
+origin  git@github.com:home-assistant/core (fetch)
+origin  git@github.com:home-assistant/core (push)
+
+$ git rev-parse HEAD
+7c5fcec062e1d2cfaa794a169fafa629a70bbc9e
+
+$ hyperfine -w10 -p 'rm -rf uv.lock' 'uv-main lock' 'uv-overlapping-markers lock'
+Benchmark 1: uv-main lock
+  Time (mean ± σ):     165.2 ms ±   3.3 ms    [User: 136.9 ms, System: 91.9 ms]
+  Range (min … max):   157.7 ms … 173.9 ms    17 runs
+
+Benchmark 2: uv-overlapping-markers lock
+  Time (mean ± σ):     672.5 ms ±  10.0 ms    [User: 603.8 ms, System: 157.0 ms]
+  Range (min … max):   662.5 ms … 690.8 ms    10 runs
+
+Summary
+  uv-main lock ran
+    4.07 ± 0.10 times faster than uv-overlapping-markers lock
+</code></pre>
+<p>I haven't done any investigation on this yet, but to a certain extent, <em>some</em> regression is expected since we are now more aggressively forking.</p>
+<p>My hope is that there are some low hanging fruits here, but it may require better marker simplification/disjointness checks to achieve it. And it is indeed possible that there will be some regression here that is fundamentally tied to an increase in the number of forks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @konstin by @BurntSushi on 2024-08-02 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @BurntSushi on 2024-08-02 18:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/A5rocks">@A5rocks</a> reviewed on 2024-08-02 18:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/A5rocks">@A5rocks</a> on <code>crates/uv/tests/pip_compile.rs</code>:6619 on 2024-08-02 18:54</div>
+            <div class="timeline-body"><p>is <code>and ()</code> valid?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/konstin">@konstin</a> on 2024-08-03 17:58</div>
+            <div class="timeline-body"><p>I'll add a proper review later, but we need to update some packse scenario descriptions with this, such as <code>fork-marker-disjoint</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-04 22:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/lock_scenarios.rs</code>:2802 on 2024-08-04 22:03</div>
+            <div class="timeline-body"><p>Should the lockfile be included here now that it succeeds?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1451 on 2024-08-05 10:08</div>
+            <div class="timeline-body"><p>We need to remove this after we have better markers and before shipping to avoid failing in those cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv/tests/lock_scenarios.rs</code>:2730 on 2024-08-05 10:12</div>
+            <div class="timeline-body"><p>We need to update the scenario descriptions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2780 on 2024-08-05 11:29</div>
+            <div class="timeline-body"><p>This is major change from our previous design: We now always fork when we see a marker, not just when we see a package being used multiple times. Imo we should decide about this change independent from overlapping markers. This change makes fork-non-local-fork-marker-direct pass, but it's also responsible for the performance regression.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2828 on 2024-08-05 12:14</div>
+            <div class="timeline-body"><p>Haven't we guaranteed with the <code>is_disjoint(&amp;fork.markers, &amp;markers)</code> check that this can never be empty?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/konstin">@konstin</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2794 on 2024-08-05 12:22</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        for mut fork in std::mem::take(&amp;mut self.forks) {
+            // Invariant: The union of the markers of all forks is always the universe.
+            // Let
+            //   m_f := markers of the fork
+            //   m_d := the remaining markers of the dependency
+            // If `m_f ∩ m_d = ∅`, i.e. they are disjoint, we know that the dependency does not
+            // occur in this fork, and we keep the fork as it was. Otherwise, `m_d` either
+            // intersects with or covers `m_f`.
+            // Should `m_f \ m_d` be empty, `m_d` covers `m_f`, and we add `m_f` verbatim and set
+            // `m_d := m_d \ m_f`-
+            // Otherwise, we split this fork into two new forks, `m_f \ m_d` and `m_f ∩ m_d`. This
+            // is relevant if we have e.g. `python_version &gt;= &quot;3.9&quot;` and `python_version &gt;= &quot;3.10&quot;`,
+            // so that we get forks `&lt;3.9`, `&gt;=3.9,&lt;3.10` and `&gt;=3.10`. It is a sound operation
+            // since `(m_f \ m_d) ∪ (m_f ∩ m_d) = m_f` and since both new forks are either subsets
+            // of `m_f` and `m_d`, meaning we miss no overlap.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/konstin">@konstin</a> reviewed on 2024-08-05 12:26</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-08-05 13:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv/tests/lock_scenarios.rs</code>:2802 on 2024-08-05 13:39</div>
+            <div class="timeline-body"><p>Yeah. Requires a packse update.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "rewrite resolver forking to be based on overlapping markers" to "use aggressive forking when encountering markers" by @BurntSushi on 2024-08-16 12:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2024-08-16 12:14</div>
+            <div class="timeline-body"><p>I opened a new PR with this same change rebased on latest <code>main</code> (not necessarily intended to merge): #6143.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2024-08-16 12:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-16 12:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:10:13 UTC
+    </footer>
+</body>
+</html>

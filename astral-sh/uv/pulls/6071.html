@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special case &quot;only available&quot; bounds in resolver errors - astral-sh/uv #6071</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Special case &quot;only available&quot; bounds in resolver errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6071">#6071</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-08-13 23:08
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-13 23:08</div>
+            <div class="timeline-body"><p>So, this is a little nuanced, but it confused me a couple times and I'm poking around in this code so I figured I'd give it a try.</p>
+<p>In the following:</p>
+<pre><code>❯  uv pip install 'httpx&gt;9999'
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only httpx&lt;=9999 is available and you require httpx&gt;9999, we can conclude that the requirements are
+      unsatisfiable.
+</code></pre>
+<p>We say <strong><code>only httpx&lt;=9999 is available</code></strong>, which <em>suggests</em> that <code>httpx 9999</code> is available — but it's not, and we know that. The problem is that we naively take the complement of the requirement (<code>httpx&gt;9999</code>).</p>
+<p>Here, we special case inclusive bounds to check if the version in question is actually available — if not, we switch to an exclusive bound.</p>
+<p>Note this also applies to the reverse case</p>
+<pre><code>❯ uv pip install 'httpx&lt;0.000001'
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only httpx&gt;=0.1 is available and you require httpx&lt;0.1, we can conclude that the requirements are
+      unsatisfiable.
+</code></pre>
+<p>However, for simplicity, I haven't tackled the case where we display multiple version segments yet. So for more complex requests, our messaging is still confusing:</p>
+<pre><code>❯ uv pip install 'httpx&gt;99,&lt;999'
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of httpx are available:
+          httpx&lt;=99
+          httpx&gt;=999
+      and you require httpx&gt;99,&lt;999, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>This will require further refactoring, which I'll track in a new issue.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-08-13 23:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-08-13 23:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-13 23:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/pubgrub/report.rs</code>:92 on 2024-08-13 23:18</div>
+            <div class="timeline-body"><p>Suggestions welcome on the pattern here, but I'm going to open an issue to follow-up to make this reusable in the multi-segment case as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-08-14 00:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-08-14 22:25</div>
+            <div class="timeline-body"><p>Seems reasonable!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-15 16:27</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/uv/pull/6118 is more comprehensive and would conflict.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-15 16:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:10:13 UTC
+    </footer>
+</body>
+</html>

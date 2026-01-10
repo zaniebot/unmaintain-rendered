@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improve display of available package ranges - astral-sh/uv #6118</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Improve display of available package ranges</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6118">#6118</a>
+        opened by <a href="https://github.com/zanieb">@zanieb</a>
+        on 2024-08-15 16:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/zanieb">@zanieb</a> on 2024-08-15 16:03</div>
+            <div class="timeline-body"><p>Includes the changes from https://github.com/astral-sh/uv/pull/6071 but takes them way further.</p>
+<p>When we have the set of available versions for a package, we can do a much better job displaying an error.</p>
+<p>For example:</p>
+<pre><code>❯ uv add 'httpx&gt;999,&lt;9999'
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only the following versions of httpx are available:
+          httpx&lt;=999
+          httpx&gt;=9999
+      and example==0.1.0 depends on httpx&gt;999,&lt;9999, we can conclude that example==0.1.0 cannot be used.
+      And because only example==0.1.0 is available and you require example, we can conclude that the requirements are unsatisfiable.
+</code></pre>
+<p>The resolver has demonstrated that the requested range cannot be used because there are only versions in ranges <em>outside</em> the requested range. However, the display of the range of available versions is pretty bad! We say there are versions of httpx available in ranges that definitely have no versions available.</p>
+<p>With this pull request, the error becomes:</p>
+<pre><code>❯ uv add 'httpx&gt;999,&lt;9999'
+  × No solution found when resolving dependencies:
+  ╰─▶ Because only httpx&lt;=1.0.0b0 is available and example depends on httpx&gt;999,&lt;9999, we can conclude that example's
+      requirements are unsatisfiable.
+      And because your workspace requires example, we can conclude that your workspace's requirements are unsatisfiable.
+</code></pre>
+<p>We achieve this by:</p>
+<ol>
+<li>Dropping ranges disjoint with the range of available versions, e.g., this removes <code>httpx&gt;=9999</code></li>
+<li>Replacing ranges that capture the <em>entire</em> range of available versions with the smaller range, e.g., this replaces <code>httpx&lt;=999</code> with <code>&lt;=1.0.0b0</code>.</li>
+</ol>
+<p>~Note that when we perform (2), we may include an additional bound that is not relevant, e.g., we include the lower bound of <code>&gt;=0.6.7</code>. This is a bit extraneous, but I don't think it's confusing. We can consider some advanced logic to avoid that later.~ (edit: I did this, it wasn't hard)</p>
+<p>We also improve error messages when there is <em>only</em> one version available by showing that version instead of a range.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">error messages</span> added by @zanieb on 2024-08-15 16:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 16:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_install_scenarios.rs</code>:164 on 2024-08-15 16:11</div>
+            <div class="timeline-body"><p>This seems wrong and like a regression?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_install_scenarios.rs</code>:1944 on 2024-08-15 16:13</div>
+            <div class="timeline-body"><p>Here we know there is exactly one version available, so we show that instead of a range.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 16:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 16:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_install_scenarios.rs</code>:452 on 2024-08-15 16:13</div>
+            <div class="timeline-body"><p>This is the idea from https://github.com/astral-sh/uv/pull/6071, there is no <code>2.0.0</code> so we shouldn't use <code>&gt;=</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 16:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv/tests/pip_install_scenarios.rs</code>:164 on 2024-08-15 16:15</div>
+            <div class="timeline-body"><p>Oh oops, misread <code>0.1.0</code> as <code>1.0.0</code> — this is fine.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @zanieb on 2024-08-15 16:24</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @charliermarsh by @zanieb on 2024-08-15 16:42</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-15 16:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/report.rs</code>:1094 on 2024-08-15 16:58</div>
+            <div class="timeline-body"><p>Interesting... This <em>should</em> have holes in it, right? But my guess is it doesn't help / doesn't matter?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-15 17:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/report.rs</code>:1160 on 2024-08-15 17:00</div>
+            <div class="timeline-body"><p>I wonder if this is quadratic, and we should instead be collecting all the new ranges and then unioning them all at once at the end? But I don't see a way to do that in the <code>Range</code> API.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> approved on 2024-08-15 17:00</div>
+            <div class="timeline-body"><p>Makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/report.rs</code>:1117 on 2024-08-15 17:01</div>
+            <div class="timeline-body"><p>What if the range is a singleton, and it's not in available versions?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-15 17:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 17:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/pubgrub/report.rs</code>:1160 on 2024-08-15 17:03</div>
+            <div class="timeline-body"><p>I wish. I think you can't just push segments yourself because it voids some guarantees.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 17:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/pubgrub/report.rs</code>:1094 on 2024-08-15 17:03</div>
+            <div class="timeline-body"><p>It basically doesn't matter in this case, we're just using it to check if the other range is completely out of bounds.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 17:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/pubgrub/report.rs</code>:1094 on 2024-08-15 17:04</div>
+            <div class="timeline-body"><p>Maybe I should write a note for that, maybe there are some weird cases where the holes do matter?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 17:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/pubgrub/report.rs</code>:1094 on 2024-08-15 17:05</div>
+            <div class="timeline-body"><p>I wrote it this way to avoid doing something like <code>for version in available_versions { range.contains(version) }</code> to see if the range contained all or none of the versions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-15 17:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/report.rs</code>:1094 on 2024-08-15 17:07</div>
+            <div class="timeline-body"><p>Yeah I think this is cool.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-15 17:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/report.rs</code>:1160 on 2024-08-15 17:07</div>
+            <div class="timeline-body"><p>I was hoping you could pass an iterator to <code>union</code> or something.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-15 17:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/report.rs</code>:1117 on 2024-08-15 17:07</div>
+            <div class="timeline-body"><p>(Is that impossible?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 17:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/pubgrub/report.rs</code>:1117 on 2024-08-15 17:13</div>
+            <div class="timeline-body"><p>Like this?</p>
+<pre><code>❯ uv add 'httpx==9999'
+  ╰─▶ Because there is no version of httpx==9999 and example depends on httpx==9999, we can conclude that example's requirements
+      are unsatisfiable.
+      And because your workspace requires example, we can conclude that your workspace's requirements are unsatisfiable.
+</code></pre>
+<p>I think that's always handled before we get here. Otherwise, this operation is performed on the complement so I don't think it's possible.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-15 17:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/pubgrub/report.rs</code>:1117 on 2024-08-15 17:20</div>
+            <div class="timeline-body"><p>Yeah like that. Ok I figured it was somehow handled upstream.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 17:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/pubgrub/report.rs</code>:1094 on 2024-08-15 17:21</div>
+            <div class="timeline-body"><p>Added a note, we probably wont simplify some things that we could.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/zanieb">@zanieb</a> reviewed on 2024-08-15 17:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/zanieb">@zanieb</a> on <code>crates/uv-resolver/src/pubgrub/report.rs</code>:1160 on 2024-08-15 17:22</div>
+            <div class="timeline-body"><p>I added a note. We could follow-up in PubGrub. cc @konstin</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @zanieb on 2024-08-15 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @zanieb on 2024-08-15 17:28</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-15 17:28</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:10:13 UTC
+    </footer>
+</body>
+</html>

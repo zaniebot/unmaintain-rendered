@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Always narrow markers by Python version - astral-sh/uv #6076</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Always narrow markers by Python version</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/uv/pull/6076">#6076</a>
+        opened by <a href="https://github.com/charliermarsh">@charliermarsh</a>
+        on 2024-08-14 01:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-14 01:00</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Using https://github.com/astral-sh/uv/issues/6064 as a motivating example: at present, on main, we're not properly propagating the <code>Requires-Python</code> simplifications. In that case, for example, we end up solving for a branch with <code>python_version &lt; 3.11</code>, and a branch <code>&gt;= 3.11</code>, even though <code>Requires-Python</code> is <code>&gt;=3.11</code>. Later, when we get to the graph, we apply version simplification based on <code>Requires-Python</code>, which causes us to <em>remove</em> the <code>python_version &lt; 3.11</code> markers entirely, leaving us with duplicate dependencies for <code>pylint</code>.</p>
+<p>This PR instead tries to ensure that we always apply this narrowing to requirements and forks, so that we don't need to apply the same simplification when constructing the graph at all.</p>
+<p>Closes https://github.com/astral-sh/uv/issues/6064.</p>
+<p>Closes #6059.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @charliermarsh on 2024-08-14 01:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @charliermarsh on 2024-08-14 01:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @BurntSushi by @charliermarsh on 2024-08-14 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @charliermarsh on 2024-08-14 01:05</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-14 01:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2770 on 2024-08-14 01:06</div>
+            <div class="timeline-body"><p>Honestly, I can't figure out if the <code>simplify_python</code> here is necessary. It's definitely necessary on <code>not_markers</code> above... But I'm not sure about here. I don't think any tests change when I remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-14 02:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1517 on 2024-08-14 02:11</div>
+            <div class="timeline-body"><p>Hmm.. I'm surprised this works. It's important to note that calling <code>simplify_python_versions</code> creates a <em>different</em> marker tree than the same tree parsed from the lockfile. For example, if we restrict the range of <code>python_version &gt;= 3.12</code> given <code>requires-python &gt;= 3.9</code>, we now get the marker tree <code>[3.9,3.12)=&gt;false,[3.12,inf)=&gt;true</code>. If you parse that same expression from the lockfile, you get <code>[0,3.12)=&gt;false,[3.12,inf)=&gt;true</code>, which is not equal. This can cause false negatives in a <code>--locked</code> operation. Current we solve this <a href="https://github.com/astral-sh/uv/blob/main/crates/uv-resolver/src/lock.rs#L82">by reapplying the requires-python restriction after parsing the lockfile</a>. However, I believe this PR now restricts markers to the <em>narrowed</em> python requirement, which we do not reapply, so I'm surprised we aren't seeing failing test cases. Is there something I'm missing and can we remove the extra code in <code>Lock::from_toml</code> now?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-14 03:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1517 on 2024-08-14 03:00</div>
+            <div class="timeline-body"><p>That is... interesting. If I remove that code from <code>from_toml</code>, <code>lock_conditional_dependency_extra</code> fails (for one).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-14 03:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1517 on 2024-08-14 03:01</div>
+            <div class="timeline-body"><p>It may just be that this <em>doesn't</em> work (for that particular problem) and we just don't have a proper test case for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-14 03:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1517 on 2024-08-14 03:05</div>
+            <div class="timeline-body"><p>Any other ideas on how we can solve this problem?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1517 on 2024-08-14 03:05</div>
+            <div class="timeline-body"><p>I think we could fix this by removing the whole idea of a restricted range with a special &quot;rest&quot; range, and then only apply simplification when displaying a marker, using disjointness checks instead for requires-python filtering. I was hoping we could use restriction to our advantage but it seems that may not be possible with narrowing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-14 03:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-14 03:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1517 on 2024-08-14 03:07</div>
+            <div class="timeline-body"><p>I guess the other option is: try to write this to the lockfile.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-14 03:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1517 on 2024-08-14 03:40</div>
+            <div class="timeline-body"><p>Can we use <code>environment-markers</code> to try and enforce this narrowing when we deserialize the lockfile?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> reviewed on 2024-08-14 04:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ibraheemdev">@ibraheemdev</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1517 on 2024-08-14 04:18</div>
+            <div class="timeline-body"><p>Maybe.. how would we map those to requirements?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-14 14:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/lock.rs</code>:1713 on 2024-08-14 14:13</div>
+            <div class="timeline-body"><p>I guess this is a regression? I need to look at it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-14 14:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1517 on 2024-08-14 14:35</div>
+            <div class="timeline-body"><p>Could we instead just retain the lower-bound, like <code>&gt;=3.7, &lt;3.10</code> instead of using <code>&lt;3.10</code>? Does that cause other problems?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-14 14:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/lock.rs</code>:1713 on 2024-08-14 14:42</div>
+            <div class="timeline-body"><p>Fixed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-14 14:44</div>
+            <div class="timeline-body"><p>I think something like this is critical (it fixes a bunch of issues), but need some solution to the problem Ibraheem brought up. Let me try to write a test for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-14 15:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:1517 on 2024-08-14 15:04</div>
+            <div class="timeline-body"><p>Ok @ibraheemdev -- I added a failing test for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/lock.rs</code>:1924 on 2024-08-14 15:04</div>
+            <div class="timeline-body"><p>This instability is due to the problem @ibraheemdev mentioned.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-14 15:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-14 15:11</div>
+            <div class="timeline-body"><p>@ibraheemdev -- Maybe an alternative idea... Could we add <code>requires-python</code> to <code>Dependency</code>? And only set it when it differs from the top-level?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-14 15:13</div>
+            <div class="timeline-body"><p>Hmm, but that might not cover <code>fork_markers</code>, just dependency markers.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on 2024-08-14 22:27</div>
+            <div class="timeline-body"><p>I think we can safely do this if we merge https://github.com/astral-sh/uv/pull/6091?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @ibraheemdev by @charliermarsh on 2024-08-15 00:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2024-08-15 12:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/uv/tests/snapshots/ecosystem__warehouse-lock-file.snap</code>:10 on 2024-08-15 12:29</div>
+            <div class="timeline-body"><p>shouldn't this remove too? since it doesn't fill in <code>&gt;=3.11, &lt;3.12</code> required range.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-15 12:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv/tests/snapshots/ecosystem__warehouse-lock-file.snap</code>:10 on 2024-08-15 12:58</div>
+            <div class="timeline-body"><p>We don't respect upper-bounds on <code>requires-python</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-08-15 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2770 on 2024-08-15 14:57</div>
+            <div class="timeline-body"><p>Logically, I think this simplification here is right and even necessary. Because while <code>fork.markers</code>, by construction, should already be simplified, negating that here might wind up with a marker that includes (or is completely excluded by) <code>requires-python</code>. So re-doing the simplification does indeed seem correct.</p>
+<p>I think that the same simplification ought to happen to <code>markers</code> too right? Specifically, before passing it to <code>fork.intersect</code> below.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> approved on 2024-08-15 14:59</div>
+            <div class="timeline-body"><p>I think I found one possible additional simplification that should be done, but otherwise I think this LGTM assuming @ibraheemdev's concern is addressed. (I think it is now with #6102 merged?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ibraheemdev">@ibraheemdev</a> approved on 2024-08-15 15:08</div>
+            <div class="timeline-body"><p>This looks good to me now that we no longer rely on marker equality for <code>--locked</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-15 15:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2770 on 2024-08-15 15:30</div>
+            <div class="timeline-body"><p>I thought <code>markers</code> was already simplified because we simplify when generating <code>PubGrubDependency</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/charliermarsh">@charliermarsh</a> reviewed on 2024-08-15 15:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/charliermarsh">@charliermarsh</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2770 on 2024-08-15 15:30</div>
+            <div class="timeline-body"><p>I.e., here: https://github.com/astral-sh/uv/pull/6076/files#diff-6be6d80fe4821c47b70a372260f55e73b8da8182b8dcad7525d5cd3eb584532bR1523</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @charliermarsh on 2024-08-15 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @charliermarsh on 2024-08-15 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2024-08-15 15:50</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2024-08-15 15:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/uv-resolver/src/resolver/mod.rs</code>:2770 on 2024-08-15 15:53</div>
+            <div class="timeline-body"><p>Talking over DM, the markers here are already simplified.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 13:10:13 UTC
+    </footer>
+</body>
+</html>
