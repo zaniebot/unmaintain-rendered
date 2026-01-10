@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pyupgrade`] Add fix safety section to docs (`UP030`) - astral-sh/ruff #17443</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pyupgrade</code>] Add fix safety section to docs (<code>UP030</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17443">#17443</a>
+        opened by <a href="https://github.com/Kalmaegi">@Kalmaegi</a>
+        on 2025-04-17 08:23
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/Kalmaegi">@Kalmaegi</a> on 2025-04-17 08:23</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>add fix safety section to format_literals, for #15584</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "add fix safety section to docs" to "add fix safety section to format_literals docs" by @Kalmaegi on 2025-04-17 08:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">documentation</span> added by @ntBre on 2025-04-18 02:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-18 02:55</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Assigned to @ntBre by @ntBre on 2025-04-18 14:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/format_literals.rs</code>:44 on 2025-04-18 14:29</div>
+            <div class="timeline-body"><p>I don't think this second part is true, the implementation will swap the order of the <code>format</code> arguments if the string indices are out of order. You can see this when applying the quick fix here, for example: https://play.ruff.rs/d02b59f6-abb0-4a57-b5f7-e3b79597caf6</p>
+<p>I'm actually not even sure about the comment part. I  played with this on the playground too, and even in cases like this:</p>
+<pre><code class="language-py">&quot;{1}, {0}&quot;.format( # comment 1
+    &quot;Hello&quot;, # comment 2 
+    &quot;World&quot;, # comment 3
+    )
+</code></pre>
+<p>I couldn't get it to delete any comments.</p>
+<p>Ah, I think I found a reason it can be unsafe:</p>
+<pre><code class="language-py">def print2(arg):
+    print(arg)
+    return arg
+
+&quot;{1}, {0}&quot;.format( # comment 1
+    print2(&quot;Hello&quot;), # comment 2 
+    print2(&quot;World&quot;), # comment 3
+    )
+</code></pre>
+<p>If arguments to <code>format</code> have side effects (printing in this case), and the format string indices are in the wrong order, the autofix will reorder the arguments, changing the behavior of the program.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-18 14:30</div>
+            <div class="timeline-body"><p>Thanks! This was quite a tricky one, but I think I came up with a scenario where the rule is definitely unsafe. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/Kalmaegi">@Kalmaegi</a> reviewed on 2025-04-18 15:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/Kalmaegi">@Kalmaegi</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/format_literals.rs</code>:44 on 2025-04-18 15:16</div>
+            <div class="timeline-body"><p>I'm a bit embarrassed I didn't test this thoroughly. This rule doesn’t delete or modify comments.
+Not sure if we need to adjust comment reordering logic. Currently, swapping arguments leaves comments misplaced. What do you think of this warning:</p>
+<pre><code>This fix is unsafe: because:
+
+-Comments attached to arguments are not moved, which can cause comments to mismatch the actual arguments.
+-If arguments have side effects (e.g., print), reordering may change program behavior.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-18 16:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/pyupgrade/rules/format_literals.rs</code>:44 on 2025-04-18 16:57</div>
+            <div class="timeline-body"><p>No need to be embarrassed! I think fix safety is pretty tricky in general, and I'm guessing the rules you're working on don't have existing documentation because it's hard to tell why they're unsafe :slightly_smiling_face:</p>
+<p>Good catch on the comment swapping too! I think that looks good, I would just remove the colon after <code>unsafe:</code> and add spaces after the <code>-</code> at  the start of the bulleted list items (but markdown might not mind that anyway).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Kalmaegi">@Kalmaegi</a> on 2025-04-19 06:43</div>
+            <div class="timeline-body"><p>I tested it again, and currently, sometimes the annotations are swapped, while other times they are not. There might be errors in cases where swapping occurs, but I think these are rare edge cases.
+before:</p>
+<pre><code>def take_two(x: int, y: int) -&gt; int:
+    return x + y
+
+def take_one(x: int) -&gt; int:
+    return x + 1
+
+&quot;{1}, {0}&quot;.format( # comment 1
+    take_two(1, # comment 2
+    2), # comment 3 
+    take_one(1),
+)
+</code></pre>
+<p>after:</p>
+<pre><code>def take_two(x: int, y: int) -&gt; int:
+    return x + y
+
+def take_one(x: int) -&gt; int:
+    return x + 1
+
+&quot;{}, {}&quot;.format( # comment 1
+    take_one(1), # comment 3 
+take_two(1,  # comment 2
+    2), 
+)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> approved on 2025-04-21 18:14</div>
+            <div class="timeline-body"><p>Very nice, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "add fix safety section to format_literals docs" to "[`pyupgrade`] Add fix safety section to docs (`UP030`)" by @ntBre on 2025-04-21 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-04-21 18:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-21 18:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:28 UTC
+    </footer>
+</body>
+</html>

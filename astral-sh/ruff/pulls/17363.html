@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[syntax-errors] `await` outside async functions - astral-sh/ruff #17363</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[syntax-errors] <code>await</code> outside async functions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17363">#17363</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-04-11 19:26
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-11 19:26</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR implements detecting the use of <code>await</code> expressions outside of async functions. This is a reimplementation of
+<a href="https://docs.astral.sh/ruff/rules/await-outside-async/">await-outside-async (PLE1142)</a> as a semantic syntax error.</p>
+<p>Despite the rule name, PLE1142 also applies to <code>async for</code> and <code>async with</code>, so these are covered here too.</p>
+<h2>Test Plan</h2>
+<p>Existing PLE1142 tests.</p>
+<p>I also deleted more code from the <code>SemanticSyntaxCheckerVisitor</code> to avoid changes in other parser tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-04-11 19:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-04-11 19:35</div>
+            <div class="timeline-body"><p>This one might not belong in syntax-errors and might be better to remain as a disableable rule. Top level await is allowed if the module is compiled with https://docs.python.org/3/library/ast.html#ast.PyCF_ALLOW_TOP_LEVEL_AWAIT. This is useful when working with pyodide, as modules can assume an event loop is running prior to them being imported.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-11 19:36</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-11 19:42</div>
+            <div class="timeline-body"><blockquote>
+<p>This one might not belong in syntax-errors and might be better to remain as a disableable rule. Top level await is allowed if the module is compiled with https://docs.python.org/3/library/ast.html#ast.PyCF_ALLOW_TOP_LEVEL_AWAIT. This is useful when working with pyodide, as modules can assume an event loop is running prior to them being imported.</p>
+</blockquote>
+<p>Oh interesting, thank you! Is there any indication of this option in the file itself, or is this passed externally to the compiler?</p>
+<p>This doesn't <em>necessarily</em> need to block this PR because we're still converting the syntax error to a suppressible PLE1142 diagnostic, but we will definitely need to consider this before deprecating the rule or emitting this as a pure syntax error.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-04-11 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-04-11 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-04-11 19:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/mikeshardmind">@mikeshardmind</a> on 2025-04-11 19:47</div>
+            <div class="timeline-body"><blockquote>
+<p>Is there any indication of this option in the file itself, or is this passed externally to the compiler?</p>
+</blockquote>
+<p>Not visible from the file itself. It can be passed as an option to compile, which can be done in a module meta path finder. It's a little advanced use,, so I'm not sure how many projects currently or in the future will do anything with it. The builtin asyncio repl (python -m asyncio) uses it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-11 21:44</div>
+            <div class="timeline-body"><blockquote>
+<p>Despite the rule name, PLE1142 also applies to <code>async for</code> and <code>async with</code>, so these are covered here too.</p>
+</blockquote>
+<p>Interesting. I think we could improve the diagnostic message by replacing &quot;<code>await</code>&quot; with &quot;<code>async with</code>&quot; and &quot;<code>async for</code>&quot; for those cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-11 21:46</div>
+            <div class="timeline-body"><blockquote>
+<p>This doesn't <em>necessarily</em> need to block this PR because we're still converting the syntax error to a suppressible PLE1142 diagnostic, but we will definitely need to consider this before deprecating the rule or emitting this as a pure syntax error.</p>
+</blockquote>
+<p>Yeah, maybe we should label this and other PRs as &quot;internal&quot; because there are no user-facing changes except for if we decide to update the error message but that could be done in a follow-up to keep it isolated. What do you think?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:864 on 2025-04-11 21:50</div>
+            <div class="timeline-body"><p>We could use statement specific error message here as an improvement</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1646 on 2025-04-11 21:53</div>
+            <div class="timeline-body"><p>Should we instead have a <code>scope</code> method and keep this and other related checks as methods to <code>SemanticSyntaxChecker</code> or do you think it'll be an issue with <code>SemanticSyntaxCheckerVisitor</code> ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-04-11 21:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-11 22:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1646 on 2025-04-11 22:10</div>
+            <div class="timeline-body"><p>What return type are you picturing for the <code>scope</code> method?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-04-11 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> removed by @ntBre on 2025-04-11 22:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-11 22:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:864 on 2025-04-11 22:17</div>
+            <div class="timeline-body"><p>That's a good idea. This string isn't actually used yet since the error is converted to the normal ruff <code>Diagnostic</code>, which just says <code>await</code> in every case, but we might as well update it for the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-11 23:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1646 on 2025-04-11 23:44</div>
+            <div class="timeline-body"><p>Ah right, I don't think that's possible because of circular dependency. Ignore this comment.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-14 16:38</div>
+            <div class="timeline-body"><p>I added an <code>AwaitOutsideAsyncFunctionKind</code> enum for better error messages in the future, and also noticed that I forgot to wire up the check for dictionary comprehensions. I added some tests for these specifically and copied over the loop from set and list comprehensions.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-04-14 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-14 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-14 17:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-22 14:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:864 on 2025-04-22 14:44</div>
+            <div class="timeline-body"><p>@ntBre Do you mind opening an issue for this to make sure it's tracked to be updated in the future?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-22 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:864 on 2025-04-22 14:48</div>
+            <div class="timeline-body"><p>It's used now in red-knot! <a href="https://github.com/astral-sh/ruff/blob/bfbc79f5361cce361583ab0739333306f46fe0df/crates/red_knot_python_semantic/resources/mdtest/diagnostics/semantic_syntax_errors.md#await-outside-async-function">Here</a></p>
+<p>or it will be once #17463 lands at least. Do the messages look like what you had in mind?</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:28 UTC
+    </footer>
+</body>
+</html>

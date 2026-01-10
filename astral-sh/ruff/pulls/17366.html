@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add support for overloaded functions - astral-sh/ruff #17366</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add support for overloaded functions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17366">#17366</a>
+        opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a>
+        on 2025-04-12 04:44
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-12 04:44</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Part of astral-sh/ruff#15383, this PR adds support for overloaded callables.</p>
+<p>Typing spec: https://typing.python.org/en/latest/spec/overload.html</p>
+<p>Specifically, it does the following:</p>
+<ol>
+<li>Update the <code>FunctionType::signature</code> method to return signatures from a possibly overloaded callable using a new <code>FunctionSignature</code> enum</li>
+<li>Update <code>CallableType</code> to accommodate overloaded callable by updating the inner type to <code>Box&lt;[Signature]&gt;</code></li>
+<li>Update the relation methods on <code>CallableType</code> with logic specific to overloads</li>
+<li>Update the display of callable type to display a list of signatures enclosed by parenthesis</li>
+<li>Update <code>CallableTypeOf</code> special form to recognize overloaded callable</li>
+<li>Update subtyping, assignability and fully static check to account for callables (equivalence is planned to be done as a follow-up)</li>
+</ol>
+<p>For (2), it is required to be done in this PR because otherwise I'd need to add some workaround for <code>into_callable_type</code> and I though it would be best to include it in here.</p>
+<p>For (2), another possible design would be convert <code>CallableType</code> in an enum with two variants <code>CallableType::Single</code> and <code>CallableType::Overload</code> but I decided to go with <code>Box&lt;[Signature]&gt;</code> for now to (a) mirror it to be equivalent to <code>overload</code> field on <code>CallableSignature</code> and (b) to avoid any refactor in this PR. This could be done in a follow-up to better split the two kind of callables.</p>
+<h3>Design</h3>
+<p>There were two main candidates on how to represent the overloaded definition:</p>
+<ol>
+<li>To include it in the existing infrastructure which is what this PR is doing by recognizing all the signatures within the <code>FunctionType::signature</code> method</li>
+<li>To create a new <code>Overload</code> type variant</li>
+</ol>
+<details><summary>For context, this is what I had in mind with the new type variant:</summary>
+<p>
+
+<pre><code class="language-rs">pub enum Type {
+	FunctionLiteral(FunctionType),
+    Overload(OverloadType),
+    BoundMethod(BoundMethodType),
+    ...
+}
+
+pub struct OverloadType {
+	// FunctionLiteral or BoundMethod
+    overloads: Box&lt;[Type]&gt;,
+	// FunctionLiteral or BoundMethod
+    implementation: Option&lt;Type&gt;
+}
+
+pub struct BoundMethodType {
+    kind: BoundMethodKind,
+    self_instance: Type,
+}
+
+pub enum BoundMethodKind {
+    Function(FunctionType),
+    Overload(OverloadType),
+}
+</code></pre>
+</p>
+</details> 
+
+<p>The main reasons to choose (1) are the simplicity in the implementation, reusing the existing infrastructure, avoiding any complications that the new type variant has specifically around the different variants between function and methods which would require the overload type to use <code>Type</code> instead.</p>
+<h3>Implementation</h3>
+<p>The core logic is how to collect all the overloaded functions. The way this is done in this PR is by recording a <strong>use</strong> on the <code>Identifier</code> node that represents the function name in the use-def map. This is then used to fetch the previous symbol using the same name. This way the signatures are going to be propagated from top to bottom (from first overload to the final overload or the implementation) with each function / method. For example:</p>
+<pre><code class="language-py">from typing import overload
+
+@overload
+def foo(x: int) -&gt; int: ...
+@overload
+def foo(x: str) -&gt; str: ...
+def foo(x: int | str) -&gt; int | str:
+	return x
+</code></pre>
+<p>Here, each definition of <code>foo</code> knows about all the signatures that comes before itself. So, the first overload would only see itself, the second would see the first and itself and so on until the implementation or the final overload.</p>
+<p>This approach required some updates specifically recognizing <code>Identifier</code> node to record the function use because it doesn't use <code>ExprName</code>.</p>
+<h2>Test Plan</h2>
+<p>Update existing test cases which were limited by the overload support and add test cases for the following cases:</p>
+<ul>
+<li>Valid overloads as functions, methods, generics, version specific</li>
+<li>Invalid overloads as stated in https://typing.python.org/en/latest/spec/overload.html#invalid-overload-definitions (implementation will be done in a follow-up)</li>
+<li>Various relation: fully static, subtyping, and assignability (others in a follow-up)</li>
+</ul>
+<h2>Ecosystem changes</h2>
+<p><em>WIP</em></p>
+<p>After going through the ecosystem changes (there are a lot!), here's what I've found:</p>
+<p>We need assignability check between a callable type and a class literal because a lot of builtins are defined as classes in typeshed whose constructor method is overloaded e.g., <code>map</code>, <code>sorted</code>, <code>list.sort</code>, <code>max</code>, <code>min</code> with the <code>key</code> parameter, <code>collections.abc.defaultdict</code>, etc. (https://github.com/astral-sh/ty/issues/129). This makes up most of the ecosystem diff <strong>roughly 70 diagnostics</strong>. For example:</p>
+<pre><code class="language-py">from collections import defaultdict
+
+# red-knot: No overload of bound method `__init__` matches arguments [lint:no-matching-overload]
+defaultdict(int)
+# red-knot: No overload of bound method `__init__` matches arguments [lint:no-matching-overload]
+defaultdict(list)
+
+class Foo:
+    def __init__(self, x: int):
+        self.x = x
+
+# red-knot: No overload of function `__new__` matches arguments [lint:no-matching-overload]
+map(Foo, [&quot;a&quot;, &quot;b&quot;, &quot;c&quot;])
+</code></pre>
+<p>Duplicate diagnostics in unpacking (https://github.com/astral-sh/ty/issues/185) has <strong>~16 diagnostics</strong>.</p>
+<p>Support for the <code>callable</code> builtin which requires <code>TypeIs</code> support. This is <strong>5 diagnostics</strong>. For example:</p>
+<pre><code class="language-py">from typing import Any
+
+def _(x: Any | None) -&gt; None:
+    if callable(x):
+        # red-knot: `Any | None`
+        # Pyright: `(...) -&gt; object`
+        # mypy: `Any`
+        # pyrefly: `(...) -&gt; object`
+        reveal_type(x)
+</code></pre>
+<p>Narrowing on <code>assert</code> which has <strong>11 diagnostics</strong>. This is being worked on in https://github.com/astral-sh/ruff/pull/17345. For example:</p>
+<pre><code class="language-py">import re
+
+match = re.search(&quot;&quot;, &quot;&quot;)
+assert match
+match.group()  # error: [possibly-unbound-attribute]
+</code></pre>
+<p>Others:</p>
+<ul>
+<li><code>Self</code>: 2</li>
+<li>Type aliases: 6</li>
+<li>Generics: 3</li>
+<li>Protocols: 13</li>
+<li>Unpacking in comprehension: 1 (https://github.com/astral-sh/ruff/pull/17396)</li>
+</ul>
+<h2>Performance</h2>
+<p>Refer to https://github.com/astral-sh/ruff/pull/17366#issuecomment-2814053046.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dhruvmanila on 2025-04-12 04:44</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-12 04:46</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">zipp (https://github.com/jaraco/zipp)
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/zipp/zipp/glob.py:4:26: Operator `*` is unsupported between objects of type `str` and `bool`
+- Found 3 diagnostics
++ Found 4 diagnostics
+
+packaging (https://github.com/pypa/packaging)
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/packaging/src/packaging/specifiers.py:726:37: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/packaging/noxfile.py:140:20: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/packaging/noxfile.py:140:20: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/packaging/noxfile.py:140:20: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/packaging/src/packaging/tags.py:410:46: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/packaging/src/packaging/tags.py:426:50: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/packaging/src/packaging/tags.py:494:46: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/packaging/src/packaging/tags.py:633:20: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/packaging/tests/test_metadata.py:581:34: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/packaging/tasks/check.py:71:16: No overload of function `sorted` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/packaging/tasks/check.py:85:16: No overload of function `sorted` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/packaging/tasks/check.py:104:16: No overload of function `sorted` matches arguments
+- Found 324 diagnostics
++ Found 336 diagnostics
+
+bidict (https://github.com/jab/bidict)
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/bidict/bidict/_iter.py:50:34: Object of type `None` is not callable
+- Found 87 diagnostics
++ Found 88 diagnostics
+
+arrow (https://github.com/arrow-py/arrow)
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/arrow/arrow/util.py:107:12: Return type does not match returned value: Expected `date`, found `timedelta`
+- Found 34 diagnostics
++ Found 35 diagnostics
+
+python-htmlgen (https://github.com/srittau/python-htmlgen)
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-htmlgen/test_htmlgen/element.py:115:23: Attribute `group` on type `@Todo(generics) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-htmlgen/test_htmlgen/element.py:124:23: Attribute `group` on type `@Todo(generics) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-htmlgen/test_htmlgen/element.py:152:23: Attribute `group` on type `@Todo(generics) | None` is possibly unbound
+- Found 498 diagnostics
++ Found 501 diagnostics
+
+async-utils (https://github.com/mikeshardmind/async-utils)
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/async-utils/_misc/_queue_testing.py:50:30: Operator `+` is unsupported between objects of type `Literal[&quot;\u{1b}[30;1m%(asctime)s\u{1b}[0m &quot;]` and `tuple[Unknown, Literal[&quot;\u{1b}[40;1m&quot;]] | tuple[Unknown, Literal[&quot;\u{1b}[34;1m&quot;]] | tuple[Unknown, Literal[&quot;\u{1b}[33;1m&quot;]] | tuple[Unknown, Literal[&quot;\u{1b}[31m&quot;]] | tuple[Unknown, Literal[&quot;\u{1b}[41m&quot;]]`
+- Found 30 diagnostics
++ Found 31 diagnostics
+
+pyinstrument (https://github.com/joerick/pyinstrument)
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/pyinstrument/examples/demo_scripts/wikipedia_article_word_count.py:24:23: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/pyinstrument/examples/demo_scripts/wikipedia_article_word_count.py:34:17: No overload of function `sorted` matches arguments
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/renderers/html.py:104:25: Argument to this function is incorrect: Expected `str`, found `Literal[b&quot;&quot;]`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/middleware.py:50:13: Object of type `None` is not callable
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/pyinstrument/test/test_cmdline.py:274:25: Attribute `group` on type `@Todo(generics) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/pyinstrument/test/test_cmdline.py:275:20: Attribute `group` on type `@Todo(generics) | None` is possibly unbound
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/__main__.py:318:61: Argument to this function is incorrect: Expected `TextIO`, found `TextIOWrapper | TextIO | @Todo(Support for `typing.TypeAlias`)`
+- Found 269 diagnostics
++ Found 276 diagnostics
+
+isort (https://github.com/pycqa/isort)
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:81:31: Attribute `lower` on type `Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions) | None` is possibly unbound
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/isort/isort/parse.py:167:21: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/isort/isort/parse.py:168:17: No overload of bound method `__init__` matches arguments
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/isort/isort/settings.py:659:31: Attribute `lower` on type `Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions) | None` is possibly unbound
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/isort/isort/api.py:635:41: No overload of function `__new__` matches arguments
+- Found 51 diagnostics
++ Found 56 diagnostics
+
+paroxython (https://github.com/laowantong/paroxython)
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/examples/simple/programs/15_itertools_groupby.py:11:25: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/examples/simple/programs/15_itertools_groupby.py:11:25: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/examples/simple/programs/15_itertools_groupby.py:11:25: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/helpers/make_dummy_db.py:66:25: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/examples/idioms/programs/148.1829-read-list-of-integer-numbers-from-stdin.py:12:6: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/helpers/reformat_spec.py:82:20: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/helpers/reformat_spec.py:83:20: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/paroxython/parse_program.py:293:31: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/paroxython/derived_labels_db.py:180:58: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/paroxython/derived_labels_db.py:221:33: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/tests/test_parse_program.py:63:38: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/paroxython/map_taxonomy.py:170:60: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/paroxython/map_taxonomy.py:241:26: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/paroxython/map_taxonomy.py:380:42: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/paroxython/preprocess_source.py:449:36: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/paroxython/preprocess_source.py:450:50: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/tests/test_goodies.py:105:41: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/examples/idioms/programs/053.1933-join-a-list-of-strings.py:15:15: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/paroxython/recommend_programs.py:259:49: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/paroxython/make_db.py:178:38: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/paroxython/make_db.py:189:38: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/paroxython/make_db.py:255:26: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/paroxython/make_db.py:285:26: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/paroxython/filter_programs.py:439:69: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/paroxython/goodies.py:33:35: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/examples/idioms/programs_with_labels.py:457:15: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/paroxython/examples/idioms/programs_with_labels.py:1117:6: No overload of function `__new__` matches arguments
+- Found 432 diagnostics
++ Found 459 diagnostics
+
+git-revise (https://github.com/mystor/git-revise)
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/git-revise/gitrevise/utils.py:85:20: Return type does not match returned value: Expected `bytes`, found `bytearray`
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/git-revise/gitrevise/odb.py:213:25: No overload of bound method `__init__` matches arguments
+- Found 4 diagnostics
++ Found 6 diagnostics
+
+pyp (https://github.com/hauntsaninja/pyp)
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/pyp/tests/test_find_names.py:33:25: Attribute `group` on type `@Todo(generics) | None` is possibly unbound
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/pyp/pyp.py:253:51: No overload of bound method `__init__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/pyp/pyp.py:255:46: No overload of bound method `__init__` matches arguments
+- Found 19 diagnostics
++ Found 22 diagnostics
+
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/utils.py:37:16: Operator `+` is unsupported between objects of type `Literal[&quot;\&quot;&quot;]` and `Path`
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/model.py:196:31: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/model.py:391:38: No overload of bound method `__init__` matches arguments
+- Found 10 diagnostics
++ Found 13 diagnostics
+
+python-chess (https://github.com/niklasf/python-chess)
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/python-chess/examples/perft/perft.py:77:28: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/python-chess/examples/perft/perft.py:77:28: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/python-chess/examples/perft/perft.py:77:28: No overload of function `__new__` matches arguments
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/python-chess/chess/svg.py:170:19: Argument to this function is incorrect: Expected `str`, found `Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions) | None`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:682:35: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:683:35: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:686:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:687:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:829:26: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:830:26: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:833:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:834:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/polyglot.py:256:44: Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)]` is not callable on object of type `list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/polyglot.py:258:42: Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)]` is not callable on object of type `list`
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/python-chess/chess/pgn.py:1850:12: No overload of function `read_game` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/python-chess/chess/pgn.py:1857:17: No overload of function `read_game` matches arguments
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1551:46: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1553:46: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1670:16: Return type does not match returned value: Expected `BinaryIO`, found `Unknown &amp; ~None | TextIOWrapper`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1899:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1899:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1899:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1910:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1910:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1910:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/syzygy.py:446:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/syzygy.py:447:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/__init__.py:880:20: Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)]` is not callable on object of type `list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/__init__.py:1437:44: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/__init__.py:1557:27: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/__init__.py:1558:27: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/__init__.py:1577:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/__init__.py:1578:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
+- error[lint:unsupported-operator] /tmp/mypy_primer/projects/python-chess/chess/engine.py:2497:40: Operator `in` is not supported for types `@Todo(return type of overloaded function)` and `None`, in comparing `@Todo(return type of overloaded function)` with `str | None`
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/python-chess/chess/engine.py:2497:40: Operator `in` is not supported for types `@Todo(generics)` and `None`, in comparing `@Todo(generics)` with `str | None`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/test.py:919:25: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2212:26: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2213:26: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2214:26: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2216:26: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2217:26: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2219:26: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2221:26: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2223:26: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2225:26: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2226:26: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2231:22: Attribute `variation` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2245:15: Attribute `variations` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2245:39: Attribute `has_variation` on type `Game | None` is possibly unbound
++ warning[lint:call-possibly-unbound-method] /tmp/mypy_primer/projects/python-chess/test.py:2246:20: Method `__getitem__` of type `Game | None` is possibly unbound
++ warning[lint:call-possibly-unbound-method] /tmp/mypy_primer/projects/python-chess/test.py:2249:26: Method `__getitem__` of type `Game | None | ChildNode` is possibly unbound
++ warning[lint:call-possibly-unbound-method] /tmp/mypy_primer/projects/python-chess/test.py:2250:26: Method `__getitem__` of type `Game | None | ChildNode` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2286:21: Attribute `end` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2292:26: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2293:26: Attribute `end` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2298:26: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2301:13: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2303:9: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:call-possibly-unbound-method] /tmp/mypy_primer/projects/python-chess/test.py:2313:26: Method `__getitem__` of type `Game | None` is possibly unbound
++ warning[lint:call-possibly-unbound-method] /tmp/mypy_primer/projects/python-chess/test.py:2321:26: Method `__getitem__` of type `Game | None` is possibly unbound
++ warning[lint:call-possibly-unbound-method] /tmp/mypy_primer/projects/python-chess/test.py:2322:26: Method `__getitem__` of type `Game | None` is possibly unbound
++ warning[lint:call-possibly-unbound-method] /tmp/mypy_primer/projects/python-chess/test.py:2323:26: Method `__getitem__` of type `Game | None` is possibly unbound
++ warning[lint:call-possibly-unbound-method] /tmp/mypy_primer/projects/python-chess/test.py:2324:26: Method `__getitem__` of type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2325:30: Attribute `errors` on type `Game | None` is possibly unbound
++ warning[lint:call-possibly-unbound-method] /tmp/mypy_primer/projects/python-chess/test.py:2332:26: Method `__getitem__` of type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2333:30: Attribute `errors` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2338:26: Attribute `comments` on type `Game | None` is possibly unbound
++ warning[lint:call-possibly-unbound-method] /tmp/mypy_primer/projects/python-chess/test.py:2339:26: Method `__getitem__` of type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2343:26: Attribute `comments` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2351:26: Attribute `comments` on type `Game | None` is possibly unbound
++ warning[lint:call-possibly-unbound-method] /tmp/mypy_primer/projects/python-chess/test.py:2353:16: Method `__getitem__` of type `Game | None` is possibly unbound
++ warning[lint:call-possibly-unbound-method] /tmp/mypy_primer/projects/python-chess/test.py:2358:16: Method `__getitem__` of type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2367:16: Attribute `variation` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2456:30: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2457:30: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2461:30: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2462:30: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2490:26: Attribute `next` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2490:26: Attribute `move` on type `ChildNode | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2492:26: Attribute `next` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2492:26: Attribute `move` on type `ChildNode | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2494:26: Attribute `next` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2494:26: Attribute `move` on type `ChildNode | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2511:30: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:call-possibly-unbound-method] /tmp/mypy_primer/projects/python-chess/test.py:2512:30: Method `__getitem__` of type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2517:18: Attribute `time_control` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2519:63: Attribute `headers` on type `Game | None` is possibly unbound
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/python-chess/test.py:2597:33: No overload of function `read_game` matches arguments
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2600:33: Attribute `accept` on type `Game | None` is possibly unbound
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/python-chess/test.py:2603:50: No overload of function `read_game` matches arguments
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2631:26: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2653:30: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2654:35: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2657:26: Attribute `board` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2662:30: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2663:30: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2664:30: Attribute `next` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2664:30: Attribute `move` on type `ChildNode | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2691:30: Attribute `errors` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2692:26: Attribute `end` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2695:26: Attribute `end` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2728:26: Attribute `end` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2739:26: Attribute `end` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2741:9: Attribute `setup` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2742:26: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2744:9: Attribute `setup` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2745:37: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2750:21: Attribute `board` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2757:21: Attribute `end` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2763:21: Attribute `end` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2769:26: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2774:16: Attribute `next` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2775:26: Attribute `move` on type `ChildNode | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2776:25: Attribute `is_end` on type `ChildNode | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2792:26: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2794:26: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2801:16: Attribute `next` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2801:16: Attribute `variations` on type `ChildNode | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2826:16: Attribute `variation` on type `@Todo(Support for `typing.TypeVar` instances in type expressions) | None` is possibly unbound
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/python-chess/test.py:2951:16: No overload of function `read_game` matches arguments
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2955:16: Attribute `accept` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2962:30: Attribute `headers` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:2965:30: Attribute `headers` on type `Game | None` is possibly unbound
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/python-chess/test.py:3055:19: No overload of function `__new__` matches arguments
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:4573:25: Attribute `board` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:4574:26: Attribute `end` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:4575:26: Attribute `end` on type `Game | None` is possibly unbound
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/test.py:4755:26: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/test.py:4756:26: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(generics)])` is not callable on object of type `Unknown | list`
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:4838:27: Attribute `end` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:4844:30: Attribute `end` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:4939:30: Attribute `end` on type `Game | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/python-chess/test.py:4942:30: Attribute `end` on type `Game | None` is possibly unbound
+- Found 277 diagnostics
++ Found 408 diagnostics
+
+pybind11 (https://github.com/pybind/pybind11)
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/pybind11/tests/test_factory_constructors.py:323:54: Attribute `group` on type `@Todo(generics) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/pybind11/tests/test_factory_constructors.py:334:54: Attribute `group` on type `@Todo(generics) | None` is possibly unbound
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/pybind11/tests/test_buffers.py:22:19: No overload of function `getattr` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/pybind11/tests/test_buffers.py:23:21: No overload of function `getattr` matches arguments
+- Found 288 diagnostics
++ Found 292 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/drop_to_open.py:12:17: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/hover.py:91:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/hover.py:94:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/hover.py:95:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/reload.py:18:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/urls.py:83:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/urls.py:87:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/statusbar.py:129:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/statusbar.py:131:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/statusbar.py:132:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/statusbar.py:133:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/statusbar.py:134:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/statusbar.py:135:5: No overload of bound method `bind` matches arguments
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/sort.py:29:31: Attribute `group` on type `@Todo(generics) | None` is possibly unbound
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/tests/test_indent_dedent.py:75:17: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/tests/test_indent_dedent.py:90:17: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/anchors.py:132:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/mergeconflict.py:113:9: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/mergeconflict.py:114:9: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/mergeconflict.py:116:9: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/mergeconflict.py:117:9: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/mergeconflict.py:118:9: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/mergeconflict.py:119:9: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/mergeconflict.py:120:9: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/mergeconflict.py:166:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/mergeconflict.py:173:9: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:89:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:90:5: No overload of bound method `bind` matches arguments
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:268:21: Attribute `group` on type `@Todo(generics) | None` is possibly unbound
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:329:20: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:330:20: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:363:40: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:363:40: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:363:40: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:364:40: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:364:40: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:364:40: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:527:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:530:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:531:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:532:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:533:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:534:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:535:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:536:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:539:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/autocomplete.py:540:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/tests/test_textutils_changes.py:189:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/trailing_newline.py:23:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/jump_to_definition.py:106:9: No overload of bound method `bind` matches arguments
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/porcupine/tests/test_docs.py:19:64: Attribute `group` on type `@Todo(generics) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/porcupine/tests/test_docs.py:29:12: Attribute `group` on type `@Todo(generics) | None` is possibly unbound
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/geometry.py:17:27: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/geometry.py:17:27: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/geometry.py:17:27: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/geometry.py:17:27: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/geometry.py:17:27: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/update_check.py:55:24: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/update_check.py:55:24: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/update_check.py:55:24: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/update_check.py:55:24: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/highlight/__init__.py:102:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/highlight/__init__.py:103:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/highlight/__init__.py:104:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/comment_selected_lines.py:33:34: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/comment_selected_lines.py:33:34: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/comment_selected_lines.py:33:34: No overload of function `__new__` matches arguments
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/comment_selected_lines.py:42:45: Argument to this function is incorrect: Expected `str`, found `Unknown | Path`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/comment_selected_lines.py:43:68: Argument to this function is incorrect: Expected `Sized`, found `Unknown | Path`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/comment_selected_lines.py:45:55: Argument to this function is incorrect: Expected `str`, found `Unknown | Path`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/comment_selected_lines.py:61:41: Argument to this function is incorrect: Expected `str`, found `Unknown | Path`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/comment_selected_lines.py:68:70: Argument to this function is incorrect: Expected `Sized`, found `Unknown | Path`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/comment_selected_lines.py:72:54: Argument to this function is incorrect: Expected `str`, found `Unknown | Path`
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/comment_selected_lines.py:81:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/directory_tree.py:450:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/directory_tree.py:451:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/directory_tree.py:452:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/directory_tree.py:503:17: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/directory_tree.py:509:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/directory_tree.py:511:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/directory_tree.py:513:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/directory_tree.py:514:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/run/no_terminal.py:463:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/run/no_terminal.py:464:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/run/no_terminal.py:465:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/matching_paren.py:24:34: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/matching_paren.py:24:34: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/matching_paren.py:24:34: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/matching_paren.py:76:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/tests/test_highlight_plugin.py:10:21: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/indent_block.py:13:34: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/indent_block.py:13:34: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/indent_block.py:13:34: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/rightclick_menu.py:41:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/rightclick_menu.py:54:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/langserver.py:174:24: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/langserver.py:174:24: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/langserver.py:174:24: No overload of function `__new__` matches arguments
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/langserver.py:377:28: Attribute `language_id` on type `Unknown | Path` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/langserver.py:445:30: Attribute `group` on type `@Todo(generics) | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/langserver.py:678:43: Attribute `command` on type `Unknown &amp; ~None | Path` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/langserver.py:682:36: Attribute `command` on type `Unknown &amp; ~None | Path` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/langserver.py:694:73: Attribute `command` on type `Unknown &amp; ~None | Path` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/langserver.py:700:53: Attribute `command` on type `Unknown &amp; ~None | Path` is possibly unbound
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/langserver.py:706:43: Argument to this function is incorrect: Expected `LangServerConfig`, found `Unknown &amp; ~None | Path`
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/langserver.py:708:32: Attribute `command` on type `Unknown &amp; ~None | Path` is possibly unbound
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/langserver.py:776:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/langserver.py:778:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/langserver.py:779:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/highlight/tree_sitter_highlighter.py:140:32: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/highlight/tree_sitter_highlighter.py:140:32: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/highlight/tree_sitter_highlighter.py:140:32: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/highlight/tree_sitter_highlighter.py:141:28: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/highlight/tree_sitter_highlighter.py:141:28: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/highlight/tree_sitter_highlighter.py:141:28: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/filemanager.py:143:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/filemanager.py:144:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/filemanager.py:420:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/filetypes.py:209:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/highlight/pygments_highlighter.py:77:26: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/highlight/pygments_highlighter.py:77:26: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/highlight/pygments_highlighter.py:77:26: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/python_venv.py:169:9: No overload of bound method `bind` matches arguments
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/aboutdialog.py:160:40: Attribute `group` on type `@Todo(generics) | None` is possibly unbound
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/aboutdialog.py:175:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/menubar.py:132:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/menubar.py:133:5: No overload of bound method `bind_class` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/menubar.py:256:13: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/menubar.py:308:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/menubar.py:440:21: No overload of function `__new__` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/highlight/base_highlighter.py:19:23: No overload of function `__new__` matches arguments
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/porcupine/porcupine/utils.py:437:20: Attribute `group` on type `@Todo(generics) | None` is possibly unbound
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/utils.py:471:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/utils.py:555:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/utils.py:556:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/utils.py:563:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/utils.py:564:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/utils.py:565:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/utils.py:635:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/utils.py:739:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/utils.py:740:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/settings.py:495:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/settings.py:628:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/settings.py:701:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/settings.py:793:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/settings.py:814:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/settings.py:827:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/settings.py:853:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/settings.py:856:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/settings.py:881:5: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/pluginmanager.py:76:9: No overload of bound method `bind` matches arguments
++ error[lint:no-matching-overload] /tmp/mypy_primer/projects/porcupine/porcupine/p...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-04-14 20:42</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dhruv%2Foverloaded-signature">CodSpeed Performance Report</a></h2>
+<h3>Merging astral-sh/ruff#17366 will <strong>degrade performances by 7.47%</strong></h3>
+<p><sub>Comparing <code>dhruv/overloaded-signature</code> (b347ce0) with <code>main</code> (c7372d2)</sub></p>
+<h3>Summary</h3>
+<p><code>❌ 1 (👁 1)</code> regressions<br />
+<code>✅ 32</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| 👁 | <code>red_knot_micro[many_string_assignments]</code> | 52.4 ms | 56.7 ms | -7.47% |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-04-16 21:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @dhruvmanila on 2025-04-16 21:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Understand overloaded function/method" to "[red-knot] Add support for overloaded functions" by @dhruvmanila on 2025-04-17 14:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/dataclasses.md</code>:563 on 2025-04-17 14:36</div>
+            <div class="timeline-body"><p>I think this should be <code>str</code> instead of <code>Literal[&quot;&quot;]</code> looking at the overloaded definition of <code>ConvertToLength.__get__</code> above (cc @sharkdp)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:250 on 2025-04-17 14:37</div>
+            <div class="timeline-body"><p>TODO: check whether this is correct</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/bytes.md</code>:27 on 2025-04-17 14:39</div>
+            <div class="timeline-body"><p>This seems correct i.e., revealing <code>int</code> instead of <code>bytes</code> even though we don't support protocols, <code>n</code> is definitely not a <code>slice</code>. Pyright and mypy also reveals <code>int</code>.</p>
+<pre><code class="language-py">    @overload
+    def __getitem__(self, key: SupportsIndex, /) -&gt; int: ...
+    @overload
+    def __getitem__(self, key: slice, /) -&gt; bytes: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/lists.md</code>:38 on 2025-04-17 14:40</div>
+            <div class="timeline-body"><p>TODO: verify if these errors are correct</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/string.md</code>:24 on 2025-04-17 14:42</div>
+            <div class="timeline-body"><p>I think I'd need to put this <code>TODO</code> back because it should probably be <code>str</code> as <code>self</code> here would be <code>StringLiteral</code>. So,</p>
+<pre><code class="language-py">    @overload
+    def __getitem__(self: LiteralString, key: SupportsIndex | slice, /) -&gt; LiteralString: ...
+    @overload
+    def __getitem__(self, key: SupportsIndex | slice, /) -&gt; str: ...  # type: ignore[misc]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:124 on 2025-04-17 14:45</div>
+            <div class="timeline-body"><p>This is not the final way to display overloads, I went with it because this is not the main goal for this PR. I'll open a separate issue for this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:295 on 2025-04-17 14:48</div>
+            <div class="timeline-body"><p>I updated the <code>apply_specialization</code> methods for <code>Signature</code>, <code>Parameters</code>, <code>Parameter</code> to return <code>Self</code> so that it's easier to collect in <code>CallableType::apply_specialization</code> and it also matches what this method do on other types (cc @dcreager)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-17 14:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dhruvmanila on 2025-04-17 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dhruvmanila on 2025-04-17 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dhruvmanila on 2025-04-17 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dhruvmanila on 2025-04-17 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @dhruvmanila on 2025-04-17 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @dhruvmanila on 2025-04-17 14:48</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-17 14:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/dataclasses.md</code>:563 on 2025-04-17 14:54</div>
+            <div class="timeline-body"><p>Yes, you're right. Can you please change the overload above to the following (and import <code>Literal</code>)?</p>
+<pre><code class="language-oy">def __get__(self, instance: None, owner: type) -&gt; Literal[&quot;&quot;]: ...
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-17 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/dataclasses.md</code>:612 on 2025-04-17 14:56</div>
+            <div class="timeline-body"><p>This is so cool to see :star_struck:</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-17 14:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/descriptor_protocol.md</code>:464 on 2025-04-17 14:57</div>
+            <div class="timeline-body"><p>Same here. So cool to see that this is possible now!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/integers.md</code>:57 on 2025-04-17 16:32</div>
+            <div class="timeline-body"><p>hmm, I think we're selecting the wrong overload here for these last two. These are the six(!) overloads to <code>int.__pow__</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/d2ebfd6ed7855140806a7cad3e23d58fe5056c31/crates/red_knot_vendored/vendor/typeshed/stdlib/builtins.pyi#L290-L303</p>
+<p>It looks to me like we're selecting overload 3 when we should be selecting overload 5 (which would lead to us inferring <code>Any</code> rather than <code>int</code>)? The reason is that <code>x ** y</code> results in an <code>int</code> at runtime if <code>x</code> is an integer and <code>y</code> is a positive integer, but it results in a <code>float</code> at runtime if <code>x</code> is an integer and <code>y</code> is a <em>negative</em> integer:</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; 1 ** 1
+1
+&gt;&gt;&gt; -1 ** 1
+-1
+&gt;&gt;&gt; 1 ** -1
+1.0
+&gt;&gt;&gt; -1 ** -1
+-1.0
+</code></pre>
+<p>Possibly we're selecting overload 3 here because we don't properly understand the <code>_PositiveInteger</code> and <code>_NegativeInteger</code> type aliases in typeshed? We might be inferring those types as <code>Unknown</code> or <code>Todo</code>, and any type is assignable to <code>Unknown</code> or <code>Todo</code>, so I can see how that would lead us to believe that overload 3 matches these calls.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-17 16:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-17 16:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/bytes.md</code>:27 on 2025-04-17 16:36</div>
+            <div class="timeline-body"><p>We actually do have some hacky support for <code>SupportsIndex</code> specifically, because it was causing loads of false positives to not support it. So yes, this looks definitely correct!</p>
+<p>https://github.com/astral-sh/ruff/blob/d2ebfd6ed7855140806a7cad3e23d58fe5056c31/crates/red_knot_python_semantic/src/types.rs#L1329-L1346</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-17 16:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/string.md</code>:24 on 2025-04-17 16:38</div>
+            <div class="timeline-body"><p>All <code>StringLiteral</code> types are subtypes of <code>LiteralString</code>, so if we're passing in a <code>StringLiteral</code> type as <code>self</code> it seems correct to me that we should be selecting the first overload!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-17 16:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/tuple.md</code>:72 on 2025-04-17 16:41</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    # TODO: Should be `tuple[Literal[1, 'a', b&quot;b&quot;] | None, ...]`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-17 17:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:250 on 2025-04-17 17:49</div>
+            <div class="timeline-body"><p>I think that's correct since <code>type.__new__</code> takes 3 arguments. I guess we should change the return statement though, instead of adding an assertion. Or just replace it with <code>raise NotImplementedError</code> maybe.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-17 18:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/integers.md</code>:57 on 2025-04-17 18:20</div>
+            <div class="timeline-body"><p>Yeah, I think this is something that I plan to work on and try to reduce the number of false positive. Currently, the logic for call semantics is to get the first matched overload which has some downsides like the one that you've mentioned. One solution that I'll explore is to use intersection of callables which <em>should</em> reduce the number of false positives like this one but it might still not be correct.</p>
+<p>Thanks for catching this, I'll add the relevant TODOs specific to each case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-17 21:23</div>
+            <div class="timeline-body"><p>@dhruvmanila I looked at the benchmark regression, and I think this is the explanation for it:</p>
+<p>Since astral-sh/ruff#17419 we set a size limit on unions of literals. This means that a) this benchmark is now quite fast, therefore sensitive, and b) at a certain point in this benchmark, we fall back from a large union of literals to simply <code>str</code>. This means that several of the <code>+=</code> here end up looking up <code>str.__add__</code> and calling it. <code>str.__add__</code> is overloaded, so before this diff calling it was a lot cheaper than after this diff.</p>
+<p>So I think that it's fine to go ahead and land this with the regression. The extra cost is directly related to the new correct functionality.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-17 21:31</div>
+            <div class="timeline-body"><blockquote>
+<p>So I think that it's fine to go ahead and land this with the regression. The extra cost is directly related to the new correct functionality.</p>
+</blockquote>
+<p>Makes sense, thanks for looking into it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot/tests/cli.rs</code>:274 on 2025-04-17 21:33</div>
+            <div class="timeline-body"><p>I think it would keep this test better focused on its intent and easier to read and understand if we did not trigger the no-matching-overload error here. I recommend just replacing <code>y</code> in this line (above) with <code>int(y)</code>.</p>
+<p>Same in all the (many) other cases throughout this file that also use <code>range(0, y)</code> after <code>y = 4 / 0</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/instances.md</code>:313 on 2025-04-17 21:40</div>
+            <div class="timeline-body"><p>So many longstanding TODOs just disappearing! Love it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/integers.md</code>:57 on 2025-04-17 21:44</div>
+            <div class="timeline-body"><p>Yeah, I think intersecting all return values from matching overloads is not really correct when some overloads matched due to <code>Any</code>, but I think it's correct for fully-static overloads and fully-static arguments. And even in the not-fully-static cases it should be effective to reduce false positives. So I think it's a good first step.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/truthiness.md</code>:250 on 2025-04-17 21:46</div>
+            <div class="timeline-body"><p>Yeah I think replacing the wrong instantiation with just <code>raise NotImplementedError()</code> is a fine option here, it's unrelated to the purpose of the test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/overloads.md</code>:28 on 2025-04-17 21:47</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">overridden by each other.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/overloads.md</code>:30 on 2025-04-17 21:47</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">An overloaded function is overriding another overloaded function:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/overloads.md</code>:58 on 2025-04-17 21:48</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">A non-overloaded function is overriding an overloaded function:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/overloads.md</code>:67 on 2025-04-17 21:48</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">An overloaded function is overriding a non-overloaded function:
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/overloads.md</code>:84 on 2025-04-17 21:49</div>
+            <div class="timeline-body"><p>Could add another <code>reveal_type(foo)</code> at the top of this code block, just to make the test less implicitly dependent on our code-block-concatenation behavior. (Still dependent on it, but in a way that would fail loudly if this block were no longer concatenated with above blocks.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/overloads.md</code>:302 on 2025-04-17 21:57</div>
+            <div class="timeline-body"><p>Add a call to the nullary non-generic overload, too?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/overloads.md</code>:468 on 2025-04-17 21:59</div>
+            <div class="timeline-body"><p>I guess this test works because we hit the implementation and then the new overloaded function is considered separate -- but I think it would be clearer if we used different names for each method here, like the above staticmethod test does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/subscript/lists.md</code>:38 on 2025-04-17 22:06</div>
+            <div class="timeline-body"><p>It is correct to error here, but <code>call-non-callable</code> isn't the right error. Probably not much point investigating this further until support for legacy generics lands (so we understand <code>list</code> properly as a generic), but I would leave a <code>TODO: better error</code> in place on these lines.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_fully_static.md</code>:131 on 2025-04-17 22:09</div>
+            <div class="timeline-body"><p>We could also make these assertions about <code>TypeOf[gradual]</code> and <code>TypeOf[static]</code>, and those should pass as well</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md</code>:259 on 2025-04-17 22:10</div>
+            <div class="timeline-body"><p>Not that it needs to be done in this PR, but just noting here as an aside that it's always possible to implement <code>is_equivalent_to</code> for complex cases as simply <code>x.is_subtype_of(y) &amp;&amp; y.is_subtype_of(x)</code> rather than writing a full dedicated implementation of it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_gradual_equivalent_to.md</code>:160 on 2025-04-17 22:12</div>
+            <div class="timeline-body"><p>Unfortunately bidirectional assignability does not imply gradual equivalence, it's more like a static equivalence check but where <code>Any/Unknown</code> matches <code>Any/Unknown</code>. (Could still potentially be implemented via shared subtyping/assignability logic, with a third strategy for type comparison passed in as a parameter.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:1180 on 2025-04-17 22:15</div>
+            <div class="timeline-body"><p>I'm curious why we are using multiple models and an import here? The thing we are testing doesn't seem related to imports; this could all be in one file. (Same question for similar cases below.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:1308 on 2025-04-17 22:22</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">
+Order of overloads is irrelevant for subtyping.
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1122 on 2025-04-17 22:23</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                // done on the `Identifier` node as opposed to `ExprName` because that's what the
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1127 on 2025-04-17 22:24</div>
+            <div class="timeline-body"><p>Seems confusing to say &quot;this could be done&quot; and then explain why it couldn't; I'd probably just remove this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:544 on 2025-04-17 22:26</div>
+            <div class="timeline-body"><p>This whole block should become a no-op once we understand the (generic identity function) definition of <code>typing.overload</code> from typeshed? (Requires legacy generics support). Might be worth a TODO to remove this later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:408 on 2025-04-17 22:28</div>
+            <div class="timeline-body"><p>Not sure why (for now) we don't use the same <code>Overload[...]</code> syntax used above here as well?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5892 on 2025-04-17 22:39</div>
+            <div class="timeline-body"><p>We could insert a comment here</p>
+<pre><code class="language-suggestion">        // TODO maybe someday: infer union of overloaded callables if we have a maybe-bound overload?
+        if let Symbol::Type(Type::FunctionLiteral(function_literal), Boundness::Bound) =
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5915 on 2025-04-17 22:42</div>
+            <div class="timeline-body"><p>This works out pretty smoothly!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/signatures.rs</code>:295 on 2025-04-17 22:51</div>
+            <div class="timeline-body"><p>I noticed this discrepancy on the generics PR and then I vaguely recall thinking I had observed a reason for it, but I don't remember anymore what that reason was :) This change seems reasonable to me. (We were cloning anyway at the call site, so it doesn't seem to be motivated by efficiency.)</p>
+<p>Hopefully @dcreager will weigh in if we are missing a reason not to do this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-17 22:52</div>
+            <div class="timeline-body"><p>Awesome work!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-18 03:02</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/binary/integers.md</code>:57 on 2025-04-18 03:02</div>
+            <div class="timeline-body"><p>Added TODOs for the last two cases.</p>
+<blockquote>
+<p>Possibly we're selecting overload 3 here because we don't properly understand the <code>_PositiveInteger</code> and <code>_NegativeInteger</code> type aliases in typeshed?</p>
+</blockquote>
+<p>Yeah, this is the reason that we're choosing the incorrect overload.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-18 03:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot/tests/cli.rs</code>:274 on 2025-04-18 03:09</div>
+            <div class="timeline-body"><p>Yeah, good idea, done.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-18 03:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/overloads.md</code>:30 on 2025-04-18 03:10</div>
+            <div class="timeline-body"><p>Thanks for catching these!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/overloads.md</code>:84 on 2025-04-18 03:12</div>
+            <div class="timeline-body"><p>Yeah, makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-18 03:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-18 03:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/overloads.md</code>:302 on 2025-04-18 03:12</div>
+            <div class="timeline-body"><p>Yeah, I thought I added that but clearly didn't. Thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-18 03:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/overloads.md</code>:468 on 2025-04-18 03:15</div>
+            <div class="timeline-body"><p>Oh yes, good point. Updated the names similar to the above staticmethod checks.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-18 03:21</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:1180 on 2025-04-18 03:21</div>
+            <div class="timeline-body"><p>Do you mean why I've defined it in a stub file? It's mainly so that I don't need to add the implementation function and making sure that it's consistent with the overload signatures. Otherwise I'd need to make sure that they are consistent or I could use protocols which is yet to be implemented or abstract methods which would make the test setup a bit verbose (add <code>@abstractmethod</code> to all methods).</p>
+<p>Happy to answer if the query is related to something else.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/semantic_index/builder.rs</code>:1127 on 2025-04-18 03:23</div>
+            <div class="timeline-body"><p>I mainly added as a note for myself or someone else who looks at it and might think this could be done but I guess then the tests would start failing so that should catch this change. I'll remove it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-18 03:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-18 03:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:1180 on 2025-04-18 03:27</div>
+            <div class="timeline-body"><p>No makes sense! Failed to process that it was a stub file</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-18 03:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:544 on 2025-04-18 03:28</div>
+            <div class="timeline-body"><p>Added a TODO and a small test case that validates the effect of <code>bar = overload(foo)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-18 03:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:408 on 2025-04-18 03:29</div>
+            <div class="timeline-body"><p>Yeah, I think I just missed updating the ones on <code>CallableType</code>. I've updated it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-18 03:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5892 on 2025-04-18 03:41</div>
+            <div class="timeline-body"><p>Hmm, interesting. Would you be able to provide an example of where this might be possible?</p>
+<p>Would it be something like this:</p>
+<pre><code class="language-py">def _(flag: bool) -&gt; None:
+    if flag:
+
+        @overload
+        def foo() -&gt; None: ...
+        @overload
+        def foo(x: int) -&gt; int: ...
+
+	# Here, the previous `foo` overloads are possibly-unbound
+    @overload
+    def foo(x: str) -&gt; str: ...
+    @overload
+    def foo(x: bytes) -&gt; bytes: ...
+    def foo(x: int | str | bytes | None = None) -&gt; int | str | bytes | None:
+        return x
+
+	# Pyright and pyrefly includes all 4 overloads
+	# red knot and mypy only includes the 2 overloads outside the `if` branch
+    reveal_type(foo)
+</code></pre>
+<p>This actually prompted me to add some test cases to include an overload in a union.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-18 03:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_equivalent_to.md</code>:259 on 2025-04-18 03:44</div>
+            <div class="timeline-body"><p>Yeah, makes sense. Let me check this on Monday, will probably opt for delegating it to subtype check if it turns out to be complicated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-18 04:27</div>
+            <div class="timeline-body"><p>I'm going to go ahead and merge this; most of the new ecosystem changes are in the similar category as documented in the PR description but will put up any follow-up issue if I find anything new and worth prioritizing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dhruvmanila on 2025-04-18 04:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dhruvmanila on 2025-04-18 04:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-18 04:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Dataclasses: synthesize `__init__` with proper signature - astral-sh/ruff #17428</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Dataclasses: synthesize <code>__init__</code> with proper signature</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17428">#17428</a>
+        opened by <a href="https://github.com/sharkdp">@sharkdp</a>
+        on 2025-04-16 12:14
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-16 12:14</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This changeset allows us to generate the signature of synthesized <code>__init__</code> functions in dataclasses by analyzing the fields on the class (and its superclasses). There are certain things that I have not yet attempted to model in this PR, like <code>kw_only</code>, <a href="https://docs.python.org/3/library/dataclasses.html#dataclasses.KW_ONLY"><code>dataclasses.KW_ONLY</code></a> or functionality around <a href="https://docs.python.org/3/library/dataclasses.html#dataclasses.field"><code>dataclasses.field</code></a>.</p>
+<p>depends on https://github.com/astral-sh/ruff/pull/17406</p>
+<p>ticket: https://github.com/astral-sh/ruff/issues/16651</p>
+<h2>Ecosystem analysis</h2>
+<p>These two seem to depend on missing features in generics (see <a href="https://github.com/konradhalas/dacite/blob/9898ccbb783e7e6a35ae165e7deb9fa84edfe21c/tests/core/test_generics.py#L54">relevant code here</a>):</p>
+<blockquote>
+<pre><code class="language-diff">+ error[lint:unknown-argument] /tmp/mypy_primer/projects/dacite/tests/core/test_generics.py:54:24: Argument `x` does not match any known parameter
++ error[lint:unknown-argument] /tmp/mypy_primer/projects/dacite/tests/core/test_generics.py:54:38: Argument `y` does not match any known parameter
+</code></pre>
+</blockquote>
+<p>These two are true positives :partying_face:. See <a href="https://github.com/konradhalas/dacite/blob/9898ccbb783e7e6a35ae165e7deb9fa84edfe21c/tests/core/test_config.py#L154-L161">relevant code here</a>.</p>
+<blockquote>
+<pre><code class="language-diff">+ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/dacite/tests/core/test_config.py:161:24: Argument to this function is incorrect: Expected `int`, found `Literal[&quot;test&quot;]`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/dacite/tests/core/test_config.py:172:24: Argument to this function is incorrect: Expected `int | float`, found `Literal[&quot;test&quot;]`
+</code></pre>
+</blockquote>
+<p>This one depends on <code>**</code> unpacking of dictionaries, which we don't support yet:</p>
+<blockquote>
+<pre><code class="language-diff">+ error[lint:missing-argument] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/globals.py:218:11: No arguments provided for required parameters `new`, `old`, `repo`, `type_checker`, `mypyc_compile_level`, `custom_typeshed_repo`, `new_typeshed`, `old_typeshed`, `new_prepend_path`, `old_prepend_path`, `additional_flags`, `project_selector`, `known_dependency_selector`, `local_project`, `expected_success`, `project_date`, `shard_index`, `num_shards`, `output`, `old_success`, `coverage`, `bisect`, `bisect_output`, `validate_expected_success`, `measure_project_runtimes`, `concurrency`, `base_dir`, `debug`, `clear`
+</code></pre>
+</blockquote>
+<h2>Test Plan</h2>
+<p>New Markdown tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @sharkdp on 2025-04-16 12:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-16 12:16</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">dacite (https://github.com/konradhalas/dacite)
++ error[lint:unknown-argument] /tmp/mypy_primer/projects/dacite/tests/core/test_generics.py:54:24: Argument `x` does not match any known parameter
++ error[lint:unknown-argument] /tmp/mypy_primer/projects/dacite/tests/core/test_generics.py:54:38: Argument `y` does not match any known parameter
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/dacite/tests/core/test_config.py:161:24: Argument to this function is incorrect: Expected `int`, found `Literal[&quot;test&quot;]`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/dacite/tests/core/test_config.py:172:24: Argument to this function is incorrect: Expected `int | float`, found `Literal[&quot;test&quot;]`
+- Found 154 diagnostics
++ Found 158 diagnostics
+
+mypy_primer (https://github.com/hauntsaninja/mypy_primer)
++ error[lint:missing-argument] /tmp/mypy_primer/projects/mypy_primer/mypy_primer/globals.py:218:11: No arguments provided for required parameters `new`, `old`, `repo`, `type_checker`, `mypyc_compile_level`, `custom_typeshed_repo`, `new_typeshed`, `old_typeshed`, `new_prepend_path`, `old_prepend_path`, `additional_flags`, `project_selector`, `known_dependency_selector`, `local_project`, `expected_success`, `project_date`, `shard_index`, `num_shards`, `output`, `old_success`, `coverage`, `bisect`, `bisect_output`, `validate_expected_success`, `measure_project_runtimes`, `concurrency`, `base_dir`, `debug`, `clear`
+- Found 9 diagnostics
++ Found 10 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-04-16 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @sharkdp on 2025-04-16 18:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:1027 on 2025-04-16 20:12</div>
+            <div class="timeline-body"><p>This is a bit of a hack to avoid things like function definitions and nested class definitions showing up as dataclass fields. The filtering by <code>AnnotatedAssignment</code> is correct, I think, but we do not correctly handle weird things like</p>
+<pre><code class="language-py">class C:
+    if flag():
+        def attr(): ...
+    else:
+        attr: int = 1
+</code></pre>
+<p>Another option to solve this might be to pass down some kind of definition-kind-filter to <code>symbol_from_declarations</code>? Thoughts?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-16 20:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-16 20:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:1036 on 2025-04-16 20:15</div>
+            <div class="timeline-body"><p>In this PR, I did not attempt to model any sort of possibly-unbound handling. It's also possible that there are edge cases with unions of dataclasses or dataclasses with unions of attributes that we don't handle correctly yet. I would like to postpone that to a post-alpha follow up, if that sounds okay. It's certainly not a problem on any of the ecosystem projects, because it would have shown up in new diagnostics otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-16 20:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/dataclasses.md</code>:59 on 2025-04-16 20:18</div>
+            <div class="timeline-body"><p>This is still not solved. Turning <code>FunctionType</code> into an enum sounds painful :upside_down_face:, but I'll look into it eventually.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @sharkdp on 2025-04-16 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @sharkdp on 2025-04-16 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @sharkdp on 2025-04-16 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @sharkdp on 2025-04-16 20:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-16 23:58</div>
+            <div class="timeline-body"><blockquote>
+<p>These two seem to depend on missing features in generics</p>
+</blockquote>
+<p>I don't think so? It looks to me like they depend on missing support for dataclass inheritance. The dataclass <code>B</code> should inherit the fields <code>x</code> and <code>y</code> from <code>A</code>, and they should be part of its synthesized <code>__init__</code> method. I think this will result in false positives if we don't support it, so we may not want to land <code>__init__</code> synthesis for super long without supporting this inheritance feature.</p>
+<p>EDIT: sorry, ignore this! Should have read the PR first. Clearly it does support dataclass fields inheritance, so I think you're right that the issue here is support for inheriting from a generic class. I think maybe https://github.com/astral-sh/ruff/pull/17434 will fix this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:1027 on 2025-04-17 00:17</div>
+            <div class="timeline-body"><p>A filter for <code>symbol_from_declarations</code> seems reasonable -- or it could even be a filter in the use-def map fetching?</p>
+<p>The even trickier part about supporting something like this is that I think it would mean we'd have to generate a union of <code>__init__</code> methods with different signatures? It seems closely-related to the possibly-unbound handling you mention below, in that sense.</p>
+<p>I definitely think this can be a TODO for now, I don't think any other type checker supports it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:1036 on 2025-04-17 00:18</div>
+            <div class="timeline-body"><p>Yes I think it's fine for this to be post-alpha, even post-beta probably.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:919 on 2025-04-17 00:20</div>
+            <div class="timeline-body"><p>Amazing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-17 00:21</div>
+            <div class="timeline-body"><p>Impeccable work as usual.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-17 00:23</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/dataclasses.md</code>:59 on 2025-04-17 00:23</div>
+            <div class="timeline-body"><p>I think it won't be too bad? It's really more like putting a new wrapper enum around the existing <code>FunctionType</code> (though the new wrapper enum should probably get the name <code>FunctionType</code>.) Some APIs of <code>FunctionType</code> will be easy to proxy (e.g. signature), and some are easy because we can just give up (no way to provide a definition location to support goto-type-definition for a synthetic function). Not sure if there are some that may be tricky.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-17 07:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:1027 on 2025-04-17 07:18</div>
+            <div class="timeline-body"><p>I added a comment for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @sharkdp on 2025-04-17 07:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @sharkdp on 2025-04-17 07:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-17 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-17 07:49</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/dataclasses.md</code>:59 on 2025-04-17 07:49</div>
+            <div class="timeline-body"><p>Thanks. I think I will I'll postpone this until after @dhruvmanila's overload work has been merged, as it looks to me like that would introduce conflicts, that we can easily avoid by just waiting a bit.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:28 UTC
+    </footer>
+</body>
+</html>

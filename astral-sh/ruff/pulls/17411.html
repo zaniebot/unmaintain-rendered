@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[`pylint`] Detect `global` declarations in module scope (`PLE0118`) - astral-sh/ruff #17411</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[<code>pylint</code>] Detect <code>global</code> declarations in module scope (<code>PLE0118</code>)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17411">#17411</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-04-15 16:43
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-15 16:43</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>While going through the syntax errors in <a href="https://github.com/astral-sh/ruff/issues/7633#issuecomment-1740424031">this comment</a>, I was surprised to see the error <code>name 'x' is assigned to before global declaration</code>, which corresponds to <a href="https://docs.astral.sh/ruff/rules/load-before-global-declaration/#load-before-global-declaration-ple0118">load-before-global-declaration (PLE0118)</a> and has also been reimplemented as a syntax error (#17135). However, it looks like neither of the implementations consider <code>global</code> declarations in the top-level module scope, which is a syntax error in CPython:</p>
+<pre><code class="language-python"># try.py
+x = None
+global x
+</code></pre>
+<pre><code class="language-shell">&gt; python -m compileall -f try.py
+Compiling 'try.py'...
+***   File &quot;try.py&quot;, line 2
+    global x
+    ^^^^^^^^
+SyntaxError: name 'x' is assigned to before global declaration
+</code></pre>
+<p>I'm not sure this is the best or most elegant solution, but it was a quick fix that passed all of our tests.</p>
+<h2>Test Plan</h2>
+<p>New PLE0118 test case.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">bug</span> added by @ntBre on 2025-04-15 16:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-15 16:49</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1529 on 2025-04-15 17:32</div>
+            <div class="timeline-body"><p>This is the part I don't like. Without it, one F821 test fails:</p>
+<p>https://github.com/astral-sh/ruff/blob/ff420082e4517963ca7740873b7068c1619daf69/crates/ruff_linter/src/rules/pyflakes/mod.rs#L1035-L1046</p>
+<p>because <code>set_globals</code> adds a binding for <code>x</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-15 17:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-04-15 17:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-23 06:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1529 on 2025-04-23 06:44</div>
+            <div class="timeline-body"><p>I don't think I fully understand this change. Isn't <code>self.at_top_level</code> always <code>true</code> when called from <code>visit_module</code> and doesn't the gating here make the <code>set_globals</code> call in <code>visit_module</code> a no-op?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-23 13:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1529 on 2025-04-23 13:38</div>
+            <div class="timeline-body"><p>It looked like you were exactly right when I looked back at this diff, but there's one extra line in this function outside of the diff window:</p>
+<pre><code class="language-rust">self.scopes[self.scope_id].set_globals_id(self.globals.push(globals));
+</code></pre>
+<p>We still want this to run to record the <code>global</code> but not add a binding for it at the top level. It would make some sense only to inline this rather than call <code>set_globals</code> but some of these <code>SemanticModel</code> fields are private, so I think that's why I added the conditional instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-23 20:28</div>
+            <div class="timeline-body"><p>Can you tell me a bit more about the motivation for adding this error? I'm not quiet convinced that we should emit the extra error at the module level (especially considering that it results in a 1% perf regression)</p>
+<p>What's not quiet clear to me is how many errors will emit in the case where there's an assignment to a variable before its global declaration at the module level. What I understand from the PR summary is that will emit two errors:</p>
+<ol>
+<li>That the globals statement is invalid on the module level</li>
+<li>That <code>x</code> is used before the globals declaration</li>
+</ol>
+<p>If that's the case, then I'd prefer not to make this change because the only relevant error for users to fix is to <em>not</em> use the globals statement and everything will then work as expected (at least for assignments, uses are a different story).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-23 21:17</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you tell me a bit more about the motivation for adding this error? I'm not quiet convinced that we should emit the extra error at the module level (especially considering that it results in a 1% perf regression)</p>
+</blockquote>
+<p>The main motivation was just that it came up in the fuzzing results from #7633, and I noticed that we didn't raise any error for it.</p>
+<blockquote>
+<p>What's not quiet clear to me is how many errors will emit in the case where there's an assignment to a variable before its global declaration at the module level. What I understand from the PR summary is that will emit two errors:</p>
+<ol>
+<li>That the globals statement is invalid on the module level</li>
+<li>That <code>x</code> is used before the globals declaration</li>
+</ol>
+<p>If that's the case, then I'd prefer not to make this change because the only relevant error for users to fix is to <em>not</em> use the globals statement and everything will then work as expected (at least for assignments, uses are a different story).</p>
+</blockquote>
+<p>I think the summary (and title) was a bit poorly worded. <code>global</code> is valid at the module level as far as CPython is concerned, only accessing the variable before the <code>global</code> statement is an error. This snippet runs fine in Python:</p>
+<pre><code class="language-python">global x
+x = 1
+</code></pre>
+<p>What I was trying to say in the title/description was more like &quot;extend <code>PLE0118</code> to detect load-before-global-declaration in the module scope,&quot; but I see now how it sounds very different. <code>PLE0118</code> currently only applies in function and class scopes but should also apply in module scope to match CPython.</p>
+<p>Ideally this would have been a rule-specific change, but instead it looked like I needed to modify the <code>Checker</code>/<code>SemanticModel</code> like I did here.</p>
+<p>I don't feel strongly about this, though, especially with the perf hit, and am happy to close the PR. I only opened it for completeness of handling #7633. I think actual code like this would be pretty rare.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-24 06:35</div>
+            <div class="timeline-body"><p>Thanks. So there's nothing special about the module level. It's just that Ruff didn't emit the diagnostic</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1506 on 2025-04-24 06:36</div>
+            <div class="timeline-body"><p>Nit: You could reduce the diff size by</p>
+<ul>
+<li>Moving <code>self.scopes[self.scope_id].set_globals_id(self.globals.push(globals));</code> to the top</li>
+<li>Use an early return if <code>self.at_top_level()</code> is true</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1508 on 2025-04-24 06:40</div>
+            <div class="timeline-body"><p>Could you maybe add an example here of what problem would arise if we did run this code at the global level too? It's not entirely clear to me and I'm wondering if <em>not running it</em> creates different problems at the root level (you could try to comment out this code and see what tests fail for the non-global scope and then decide if this is or isn't a problem for the global scope)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-24 06:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-24 15:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1506 on 2025-04-24 15:45</div>
+            <div class="timeline-body"><p>I tried that now, and it causes several issues because we're moving <code>globals</code> here: <code>self.globals.push(globals)</code>. Even saving the index returned by <code>push</code> causes problems because then we're iterating over <code>self.globals[globals_id]</code>, while also trying to mutate <code>self.global_scope_mut()</code> at the end of the loop.</p>
+<p>It was a good idea I hadn't considered, but I don't think it works easily without cloning or swapping <code>globals</code> somehow.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-24 16:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1508 on 2025-04-24 16:05</div>
+            <div class="timeline-body"><p>Ah I did try deleting this code entirely before because that actually seemed more natural to me, but I didn't write down the results. This is the tricky F821 (<code>F821_6.py</code>) case that fails if we comment out the binding loop entirely:</p>
+<pre><code class="language-python">&quot;&quot;&quot;Test: annotated global.&quot;&quot;&quot;
+
+
+n: int
+
+
+def f():
+    print(n)  # F821 false positive here
+
+
+def g():
+    global n
+    n = 1
+
+
+g()
+f()
+</code></pre>
+<p>This shorter case also gets a false positive with the whole loop commented out:</p>
+<pre><code class="language-python">def f(): global foo; import foo
+def g(): foo.is_used()  # false positive here
+</code></pre>
+<p>I don't think we can run into something similar if the <code>global</code> is in the module scope, but this was all quite tricky, so I'm glad to get your eyes on these examples too.</p>
+<p>If we run the binding loop in the global scope too, this case, also for F821, fails:</p>
+<pre><code class="language-python">global x
+def foo():
+    print(x)  # F821 false negative
+</code></pre>
+<p>The second and third cases here look like nice additions to the docs.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-24 18:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1508 on 2025-04-24 18:57</div>
+            <div class="timeline-body"><p>Actually, the more I stare at these examples, the more I think I might have been right to consider deleting this code entirely. It's really the assignment and the import that should be adding the bindings, not the <code>global</code> statements. We can just coincidentally get the right answer by letting <code>global</code> handle it, but it's more obvious that a real binding is needed in the module scope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1508 on 2025-04-24 20:11</div>
+            <div class="timeline-body"><p>I don't think this is easily actionable though. I poked around a bit in <code>Checker::add_binding</code> and my attempts at checking for <code>global</code>s didn't work out. I've added the examples for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-24 20:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_semantic/src/model.rs</code>:1529 on 2025-04-25 06:55</div>
+            <div class="timeline-body"><p>Thanks, the comment clarifies it a lot!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-25 06:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-04-25 12:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-25 12:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-25 12:37</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:28 UTC
+    </footer>
+</body>
+</html>

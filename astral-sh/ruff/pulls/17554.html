@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] move everything to new diagnostics API - astral-sh/ruff #17554</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] move everything to new diagnostics API</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17554">#17554</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-04-22 14:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-22 14:56</div>
+            <div class="timeline-body"><p>This removes the last vestiges of the old diagnostics system. So everything in Red Knot should now have easy access to attaching sub-diagnostics, extra annotations and so on.</p>
+<p>I started out initially trying to holistically improve diagnostics as I went. But that turned out to be quite slow given the sheer volume here. So I pretty quickly switched to a more mechanical approach where I just swapped out the old API with the new API.</p>
+<p>Because the old diagnostics didn't distinguish between a message attached the diagnostic itself and a message attached to its primary annotation, and since this was a mechanical change, I had to make a choice of where to put that message: either on the main diagnostic or on the annotation. I ended up going with the former, which is a change to how diagnostics are rendered. This means that many diagnostics don't have a message attached to their primary annotation. I actually think this is okay in a lot of cases. But in some cases, there is clear room for improvement.</p>
+<p>Closes #16809</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-04-22 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-04-22 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-04-22 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @BurntSushi on 2025-04-22 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-04-22 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @BurntSushi on 2025-04-22 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @BurntSushi on 2025-04-22 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "ag/new diagnostics everywhere" to "[red knot] move everything to new diagnostics API" by @BurntSushi on 2025-04-22 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red knot] move everything to new diagnostics API" to "[red-knot] move everything to new diagnostics API" by @BurntSushi on 2025-04-22 15:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-22 15:02</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">attrs (https://github.com/python-attrs/attrs)
++ warning[lint:undefined-reveal] /tmp/mypy_primer/projects/attrs/tests/dataclass_transform_example.py:13:1: `reveal_type` used without importing it
++ warning[lint:undefined-reveal] /tmp/mypy_primer/projects/attrs/tests/dataclass_transform_example.py:21:1: `reveal_type` used without importing it
++ warning[lint:undefined-reveal] /tmp/mypy_primer/projects/attrs/tests/dataclass_transform_example.py:34:1: `reveal_type` used without importing it
++ warning[lint:undefined-reveal] /tmp/mypy_primer/projects/attrs/tests/dataclass_transform_example.py:45:1: `reveal_type` used without importing it
++ warning[lint:undefined-reveal] /tmp/mypy_primer/projects/attrs/tests/dataclass_transform_example.py:56:1: `reveal_type` used without importing it
+- warning[lint:undefined-reveal] /tmp/mypy_primer/projects/attrs/tests/dataclass_transform_example.py:13:1: `reveal_type` used without importing it; this is allowed for debugging convenience but will fail at runtime
+- warning[lint:undefined-reveal] /tmp/mypy_primer/projects/attrs/tests/dataclass_transform_example.py:21:1: `reveal_type` used without importing it; this is allowed for debugging convenience but will fail at runtime
+- warning[lint:undefined-reveal] /tmp/mypy_primer/projects/attrs/tests/dataclass_transform_example.py:34:1: `reveal_type` used without importing it; this is allowed for debugging convenience but will fail at runtime
+- warning[lint:undefined-reveal] /tmp/mypy_primer/projects/attrs/tests/dataclass_transform_example.py:45:1: `reveal_type` used without importing it; this is allowed for debugging convenience but will fail at runtime
+- warning[lint:undefined-reveal] /tmp/mypy_primer/projects/attrs/tests/dataclass_transform_example.py:56:1: `reveal_type` used without importing it; this is allowed for debugging convenience but will fail at runtime
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/attrs/tests/test_annotations.py:649:9: Implicit shadowing of class `C`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/attrs/tests/test_annotations.py:649:9: Implicit shadowing of class `C`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/attrs/tests/test_make.py:526:9: Implicit shadowing of class `C`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/attrs/tests/test_make.py:526:9: Implicit shadowing of class `C`
+
+anyio (https://github.com/agronholm/anyio)
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/anyio/src/anyio/_core/_sockets.py:756:9: Not enough values to unpack (expected 4, got 2)
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/anyio/src/anyio/_core/_sockets.py:756:9: Not enough values to unpack: Expected 4
+
+pyinstrument (https://github.com/joerick/pyinstrument)
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/vendor/decorator.py:295:5: Implicit shadowing of function `__init__`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/vendor/decorator.py:295:5: Implicit shadowing of function `__init__`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/vendor/decorator.py:301:5: Implicit shadowing of function `__init__`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/pyinstrument/pyinstrument/vendor/decorator.py:301:5: Implicit shadowing of function `__init__`
+
+kornia (https://github.com/kornia/kornia)
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/kornia/kornia/utils/draw.py:376:5: Not enough values to unpack: Expected 5
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/kornia/kornia/utils/draw.py:379:5: Not enough values to unpack: Expected 5
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/kornia/kornia/utils/draw.py:382:5: Not enough values to unpack: Expected 3
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/kornia/kornia/utils/draw.py:376:5: Not enough values to unpack (expected 5, got 2)
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/kornia/kornia/utils/draw.py:379:5: Not enough values to unpack (expected 5, got 3)
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/kornia/kornia/utils/draw.py:382:5: Not enough values to unpack (expected 3, got 2)
+
+pip (https://github.com/pypa/pip)
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_vendor/urllib3/connection.py:569:5: Implicit shadowing of class `HTTPSConnection`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/utils/deprecation.py:52:9: Implicit shadowing of function `showwarning`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_internal/utils/deprecation.py:52:9: Implicit shadowing of function `showwarning`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_vendor/urllib3/packages/six.py:623:5: Implicit shadowing of function `callable`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_vendor/urllib3/connection.py:569:5: Implicit shadowing of class `HTTPSConnection`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/pip/src/pip/_vendor/urllib3/packages/six.py:623:5: Implicit shadowing of function `callable`
+- error[lint:invalid-type-checking-constant] /tmp/mypy_primer/projects/pip/src/pip/_vendor/typing_extensions.py:428:1: The name TYPE_CHECKING is reserved for use as a flag; only False can be assigned to it.
++ error[lint:invalid-type-checking-constant] /tmp/mypy_primer/projects/pip/src/pip/_vendor/typing_extensions.py:428:1: The name TYPE_CHECKING is reserved for use as a flag; only False can be assigned to it
+
+starlette (https://github.com/encode/starlette)
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/starlette/tests/middleware/test_errors.py:24:5: Implicit shadowing of function `app`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/starlette/tests/middleware/test_errors.py:24:5: Implicit shadowing of function `app`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/starlette/tests/middleware/test_errors.py:35:5: Implicit shadowing of function `app`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/starlette/tests/middleware/test_errors.py:35:5: Implicit shadowing of function `app`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/starlette/tests/middleware/test_errors.py:47:5: Implicit shadowing of function `app`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/starlette/tests/middleware/test_errors.py:47:5: Implicit shadowing of function `app`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/starlette/tests/middleware/test_errors.py:61:5: Implicit shadowing of function `app`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/starlette/tests/middleware/test_errors.py:61:5: Implicit shadowing of function `app`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/starlette/tests/middleware/test_errors.py:75:5: Implicit shadowing of function `app`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/starlette/tests/middleware/test_errors.py:75:5: Implicit shadowing of function `app`
+
+beartype (https://github.com/beartype/beartype)
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/beartype/beartype/claw/_importlib/_clawimpload.py:377:9: Implicit shadowing of function `cache_from_source`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/beartype/beartype/claw/_importlib/_clawimpload.py:377:9: Implicit shadowing of function `cache_from_source`
+
+pydantic (https://github.com/pydantic/pydantic)
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/pydantic/pydantic/v1/decorator.py:216:17: Implicit shadowing of class `CustomConfig`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/pydantic/pydantic/dataclasses.py:298:5: Implicit shadowing of function `__call__`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pydantic/pydantic/v1/decorator.py:216:17: Implicit shadowing of class `CustomConfig`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pydantic/pydantic/dataclasses.py:298:5: Implicit shadowing of function `__call__`; annotate to make it explicit if this is intentional
+
+dragonchain (https://github.com/dragonchain/dragonchain)
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:436:9: Implicit shadowing of function `new_from_build_task`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:438:9: Implicit shadowing of function `create`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:445:9: Implicit shadowing of function `new_from_build_task`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:484:9: Implicit shadowing of function `get_contract_by_txn_type`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:485:9: Implicit shadowing of function `new_from_build_task`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:486:9: Implicit shadowing of function `create_dockerfile`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:487:9: Implicit shadowing of function `create_openfaas_secrets`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:488:9: Implicit shadowing of function `delete_contract_image`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:489:9: Implicit shadowing of function `deploy_to_openfaas`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:490:9: Implicit shadowing of function `pull_image`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:491:9: Implicit shadowing of function `schedule_contract`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:44:9: Implicit shadowing of function `cache_get`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:45:9: Implicit shadowing of function `cache_put`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:46:9: Implicit shadowing of function `cache_delete`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:58:9: Implicit shadowing of function `get`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:62:9: Implicit shadowing of function `get`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:63:9: Implicit shadowing of function `cache_get`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:64:9: Implicit shadowing of function `cache_put`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:70:9: Implicit shadowing of function `get`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:78:9: Implicit shadowing of function `put`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:90:9: Implicit shadowing of function `delete`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:98:9: Implicit shadowing of function `list_objects`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:103:9: Implicit shadowing of function `list_objects`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:111:9: Implicit shadowing of function `does_superkey_exist`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:119:9: Implicit shadowing of function `does_object_exist`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:123:9: Implicit shadowing of function `put`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:128:9: Implicit shadowing of function `get`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:133:9: Implicit shadowing of function `get`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:138:9: Implicit shadowing of function `list_objects`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:143:9: Implicit shadowing of function `list_objects`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:144:9: Implicit shadowing of function `delete`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:149:9: Implicit shadowing of function `list_objects`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:154:9: Implicit shadowing of function `list_objects`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:158:9: Implicit shadowing of function `select_transaction`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:163:9: Implicit shadowing of function `select_transaction`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:164:9: Implicit shadowing of function `cache_get`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:169:9: Implicit shadowing of function `select_transaction`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:170:9: Implicit shadowing of function `cache_get`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:174:9: Implicit shadowing of function `select_transaction`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:178:9: Implicit shadowing of function `select_transaction`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:183:9: Implicit shadowing of function `select_transaction`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:187:9: Implicit shadowing of function `select_transaction`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:192:9: Implicit shadowing of function `put`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/webserver/lib/verifications_dao_utest.py:106:9: Implicit shadowing of function `_get_redisearch_index_client`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/webserver/lib/verifications_dao_utest.py:120:9: Implicit shadowing of function `_get_redisearch_index_client`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/webserver/lib/verifications_dao_utest.py:132:9: Implicit shadowing of function `_get_redisearch_index_client`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:70:9: Implicit shadowing of function `_get_redisearch_index_client`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:78:9: Implicit shadowing of function `_get_redisearch_index_client`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:85:9: Implicit shadowing of function `_get_redisearch_index_client`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:93:9: Implicit shadowing of function `_get_redisearch_index_client`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:103:9: Implicit shadowing of function `_get_redisearch_index_client`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:110:9: Implicit shadowing of function `_get_redisearch_index_client`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:118:9: Implicit shadowing of function `_get_redisearch_index_client`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:124:9: Implicit shadowing of function `_get_redisearch_index_client`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:130:9: Implicit shadowing of function `_get_redisearch_index_client`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:135:9: Implicit shadowing of function `_get_redisearch_index_client`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:142:9: Implicit shadowing of function `_get_redisearch_index_client`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:152:9: Implicit shadowing of function `_get_redisearch_index_client`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:162:9: Implicit shadowing of function `_get_redisearch_index_client`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:175:9: Implicit shadowing of function `_get_redisearch_index_client`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:191:9: Implicit shadowing of function `_get_redisearch_index_client`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:436:9: Implicit shadowing of function `new_from_build_task`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:438:9: Implicit shadowing of function `create`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:445:9: Implicit shadowing of function `new_from_build_task`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:484:9: Implicit shadowing of function `get_contract_by_txn_type`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:485:9: Implicit shadowing of function `new_from_build_task`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:486:9: Implicit shadowing of function `create_dockerfile`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:487:9: Implicit shadowing of function `create_openfaas_secrets`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:488:9: Implicit shadowing of function `delete_contract_image`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:489:9: Implicit shadowing of function `deploy_to_openfaas`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:490:9: Implicit shadowing of function `pull_image`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/job_processor/contract_job_utest.py:491:9: Implicit shadowing of function `schedule_contract`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/webserver/lib/verifications_dao_utest.py:106:9: Implicit shadowing of function `_get_redisearch_index_client`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/webserver/lib/verifications_dao_utest.py:120:9: Implicit shadowing of function `_get_redisearch_index_client`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/webserver/lib/verifications_dao_utest.py:132:9: Implicit shadowing of function `_get_redisearch_index_client`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:70:9: Implicit shadowing of function `_get_redisearch_index_client`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:78:9: Implicit shadowing of function `_get_redisearch_index_client`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:85:9: Implicit shadowing of function `_get_redisearch_index_client`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:93:9: Implicit shadowing of function `_get_redisearch_index_client`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:103:9: Implicit shadowing of function `_get_redisearch_index_client`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:110:9: Implicit shadowing of function `_get_redisearch_index_client`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:118:9: Implicit shadowing of function `_get_redisearch_index_client`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:124:9: Implicit shadowing of function `_get_redisearch_index_client`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:130:9: Implicit shadowing of function `_get_redisearch_index_client`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:135:9: Implicit shadowing of function `_get_redisearch_index_client`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:142:9: Implicit shadowing of function `_get_redisearch_index_client`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:152:9: Implicit shadowing of function `_get_redisearch_index_client`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:162:9: Implicit shadowing of function `_get_redisearch_index_client`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:175:9: Implicit shadowing of function `_get_redisearch_index_client`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/database/redisearch_utest.py:191:9: Implicit shadowing of function `_get_redisearch_index_client`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:44:9: Implicit shadowing of function `cache_get`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:45:9: Implicit shadowing of function `cache_put`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:46:9: Implicit shadowing of function `cache_delete`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:58:9: Implicit shadowing of function `get`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:62:9: Implicit shadowing of function `get`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:63:9: Implicit shadowing of function `cache_get`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:64:9: Implicit shadowing of function `cache_put`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:70:9: Implicit shadowing of function `get`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:78:9: Implicit shadowing of function `put`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:90:9: Implicit shadowing of function `delete`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:98:9: Implicit shadowing of function `list_objects`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:103:9: Implicit shadowing of function `list_objects`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:111:9: Implicit shadowing of function `does_superkey_exist`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:119:9: Implicit shadowing of function `does_object_exist`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:123:9: Implicit shadowing of function `put`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:128:9: Implicit shadowing of function `get`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:133:9: Implicit shadowing of function `get`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:138:9: Implicit shadowing of function `list_objects`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:143:9: Implicit shadowing of function `list_objects`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:144:9: Implicit shadowing of function `delete`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:149:9: Implicit shadowing of function `list_objects`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:154:9: Implicit shadowing of function `list_objects`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:158:9: Implicit shadowing of function `select_transaction`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:163:9: Implicit shadowing of function `select_transaction`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:164:9: Implicit shadowing of function `cache_get`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:169:9: Implicit shadowing of function `select_transaction`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:170:9: Implicit shadowing of function `cache_get`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:174:9: Implicit shadowing of function `select_transaction`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:178:9: Implicit shadowing of function `select_transaction`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:183:9: Implicit shadowing of function `select_transaction`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:187:9: Implicit shadowing of function `select_transaction`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/interfaces/storage_utest.py:192:9: Implicit shadowing of function `put`
+
+cki-lib (https://gitlab.com/cki-project/cki-lib)
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/cki-lib/tests/test_psql.py:98:9: Implicit shadowing of function `_execute`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/cki-lib/tests/test_psql.py:98:9: Implicit shadowing of function `_execute`
+
+tornado (https://github.com/tornadoweb/tornado)
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/tornado/tornado/util.py:438:9: Implicit shadowing of function `websocket_mask`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/tornado/tornado/test/netutil_test.py:78:9: Implicit shadowing of function `getaddrinfo`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/tornado/tornado/test/netutil_test.py:125:9: Implicit shadowing of function `getaddrinfo`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/tornado/tornado/util.py:438:9: Implicit shadowing of function `websocket_mask`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/tornado/tornado/test/netutil_test.py:78:9: Implicit shadowing of function `getaddrinfo`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/tornado/tornado/test/netutil_test.py:125:9: Implicit shadowing of function `getaddrinfo`; annotate to make it explicit if this is intentional
+
+mkdocs (https://github.com/mkdocs/mkdocs)
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/mkdocs/mkdocs/__main__.py:58:9: Implicit shadowing of function `showwarning`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/mkdocs/mkdocs/__main__.py:58:9: Implicit shadowing of function `showwarning`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/mkdocs/mkdocs/tests/structure/file_tests.py:660:9: Implicit shadowing of function `is_modified`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/mkdocs/mkdocs/tests/structure/file_tests.py:671:9: Implicit shadowing of function `is_modified`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/mkdocs/mkdocs/tests/structure/file_tests.py:682:9: Implicit shadowing of function `is_modified`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/mkdocs/mkdocs/tests/structure/file_tests.py:660:9: Implicit shadowing of function `is_modified`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/mkdocs/mkdocs/tests/structure/file_tests.py:671:9: Implicit shadowing of function `is_modified`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/mkdocs/mkdocs/tests/structure/file_tests.py:682:9: Implicit shadowing of function `is_modified`; annotate to make it explicit if this is intentional
+
+urllib3 (https://github.com/urllib3/urllib3)
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/urllib3/test/contrib/emscripten/test_emscripten.py:385:9: Implicit shadowing of function `is_cross_origin_isolated`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/urllib3/test/contrib/emscripten/test_emscripten.py:385:9: Implicit shadowing of function `is_cross_origin_isolated`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/urllib3/test/contrib/emscripten/test_emscripten.py:1178:13: Implicit shadowing of function `_run_sync_with_timeout`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/urllib3/test/contrib/emscripten/test_emscripten.py:1178:13: Implicit shadowing of function `_run_sync_with_timeout`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/urllib3/test/contrib/emscripten/test_emscripten.py:1188:13: Implicit shadowing of function `_run_sync_with_timeout`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/urllib3/test/contrib/emscripten/test_emscripten.py:1188:13: Implicit shadowing of function `_run_sync_with_timeout`
+
+pyppeteer (https://github.com/pyppeteer/pyppeteer)
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/pyppeteer/pyppeteer/__init__.py:27:1: Implicit shadowing of function `version`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/pyppeteer/pyppeteer/__init__.py:27:1: Implicit shadowing of function `version`
+
+paasta (https://github.com/yelp/paasta)
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/paasta/paasta_tools/cli/fsm_cmd.py:44:5: Implicit shadowing of function `copyfile`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/paasta/paasta_tools/cli/fsm_cmd.py:45:5: Implicit shadowing of function `copymode`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/paasta/paasta_tools/cli/fsm_cmd.py:44:5: Implicit shadowing of function `copyfile`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/paasta/paasta_tools/cli/fsm_cmd.py:45:5: Implicit shadowing of function `copymode`
+
+mitmproxy (https://github.com/mitmproxy/mitmproxy)
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/mitmproxy/mitmproxy/platform/__init__.py:35:5: Implicit shadowing of function `init_transparent_mode`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/mitmproxy/mitmproxy/platform/__init__.py:35:5: Implicit shadowing of function `init_transparent_mode`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/mitmproxy/examples/contrib/ntlm_upstream_proxy.py:150:9: Implicit shadowing of function `start_handshake`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/mitmproxy/examples/contrib/ntlm_upstream_proxy.py:151:9: Implicit shadowing of function `receive_handshake_data`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/mitmproxy/examples/contrib/ntlm_upstream_proxy.py:150:9: Implicit shadowing of function `start_handshake`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/mitmproxy/examples/contrib/ntlm_upstream_proxy.py:151:9: Implicit shadowing of function `receive_handshake_data`; annotate to make it explicit if this is intentional
+
+operator (https://github.com/canonical/operator)
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/operator/ops/log.py:75:5: Implicit shadowing of function `showwarning`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/operator/ops/log.py:75:5: Implicit shadowing of function `showwarning`; annotate to make it explicit if this is intentional
+
+comtypes (https://github.com/enthought/comtypes)
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/comtypes/comtypes/tools/codegenerator/helpers.py:14:1: Implicit shadowing of class `lcid`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/comtypes/comtypes/logutil.py:38:5: Implicit shadowing of function `optionxform`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/comtypes/comtypes/logutil.py:38:5: Implicit shadowing of function `optionxform`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/comtypes/comtypes/tools/codegenerator/helpers.py:14:1: Implicit shadowing of class `lcid`; annotate to make it explicit if this is intentional
+
+openlibrary (https://github.com/internetarchive/openlibrary)
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/openlibrary/openlibrary/core/schema.py:108:5: Implicit shadowing of function `sql`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/openlibrary/openlibrary/plugins/openlibrary/home.py:228:1: Implicit shadowing of function `format_list_editions`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/openlibrary/openlibrary/plugins/ol_infobase.py:35:5: Implicit shadowing of class `Indexer`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/openlibrary/openlibrary/plugins/ol_infobase.py:548:1: Implicit shadowing of function `process_json`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/openlibrary/openlibrary/plugins/openlibrary/code.py:925:1: Implicit shadowing of function `can_write`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/openlibrary/openlibrary/plugins/openlibrary/dev_instance.py:19:5: Implicit shadowing of function `query`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/openlibrary/openlibrary/plugins/openlibrary/dev_instance.py:20:5: Implicit shadowing of function `withKey`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/openlibrary/openlibrary/plugins/openlibrary/dev_instance.py:27:5: Implicit shadowing of function `get_loan_status`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/openlibrary/openlibrary/conftest.py:88:5: Implicit shadowing of function `init_plugin`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/openlibrary/openlibrary/plugins/ol_infobase.py:35:5: Implicit shadowing of class `Indexer`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/openlibrary/openlibrary/plugins/ol_infobase.py:548:1: Implicit shadowing of function `process_json`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/openlibrary/openlibrary/plugins/upstream/utils.py:1662:5: Implicit shadowing of function `get_markdown`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/openlibrary/openlibrary/plugins/upstream/utils.py:1662:5: Implicit shadowing of function `get_markdown`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/openlibrary/openlibrary/core/schema.py:108:5: Implicit shadowing of function `sql`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/openlibrary/openlibrary/plugins/openlibrary/home.py:228:1: Implicit shadowing of function `format_list_editions`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/openlibrary/openlibrary/plugins/openlibrary/code.py:925:1: Implicit shadowing of function `can_write`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/openlibrary/openlibrary/conftest.py:88:5: Implicit shadowing of function `init_plugin`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/openlibrary/openlibrary/plugins/openlibrary/dev_instance.py:19:5: Implicit shadowing of function `query`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/openlibrary/openlibrary/plugins/openlibrary/dev_instance.py:20:5: Implicit shadowing of function `withKey`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/openlibrary/openlibrary/plugins/openlibrary/dev_instance.py:27:5: Implicit shadowing of function `get_loan_status`
+
+scrapy (https://github.com/scrapy/scrapy)
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/scrapy/tests/test_extension_telnet.py:16:9: Implicit shadowing of function `_get_telnet_vars`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/scrapy/tests/test_request_dict.py:154:9: Implicit shadowing of function `parse`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/scrapy/tests/test_downloadermiddleware_robotstxt.py:155:9: Implicit shadowing of function `_logerror`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/scrapy/scrapy/utils/decorators.py:43:9: Implicit shadowing of function `deco`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/scrapy/tests/test_utils_display.py:83:9: Implicit shadowing of function `__import__`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/scrapy/tests/test_utils_display.py:83:9: Implicit shadowing of function `__import__`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/scrapy/scrapy/utils/decorators.py:43:9: Implicit shadowing of function `deco`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/scrapy/tests/test_downloadermiddleware_robotstxt.py:155:9: Implicit shadowing of function `_logerror`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/scrapy/tests/test_request_dict.py:154:9: Implicit shadowing of function `parse`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/scrapy/tests/test_extension_telnet.py:16:9: Implicit shadowing of function `_get_telnet_vars`
+
+cloud-init (https://github.com/canonical/cloud-init)
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_altcloud.py:164:9: Implicit shadowing of function `user_data_rhevm`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_altcloud.py:176:9: Implicit shadowing of function `user_data_vsphere`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_altcloud.py:188:9: Implicit shadowing of function `user_data_rhevm`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_altcloud.py:197:9: Implicit shadowing of function `user_data_vsphere`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_altcloud.py:241:9: Implicit shadowing of function `user_data_rhevm`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_altcloud.py:249:9: Implicit shadowing of function `user_data_vsphere`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/early_patches.py:26:1: Implicit shadowing of function `lru_cache`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/early_patches.py:26:1: Implicit shadowing of function `lru_cache`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_configdrive.py:609:13: Implicit shadowing of function `find_devs_with`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_configdrive.py:610:13: Implicit shadowing of function `is_partition`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/runs/test_simple_run.py:73:9: Implicit shadowing of function `_find_networking_config`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_openstack.py:892:9: Implicit shadowing of function `_read_ec2_metadata`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_digitalocean.py:157:13: Implicit shadowing of function `_get_sysinfo`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/cloudinit/sources/helpers/vmware/imc/config_file.py:61:9: Implicit shadowing of function `optionxform`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_openstack.py:892:9: Implicit shadowing of function `_read_ec2_metadata`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/runs/test_simple_run.py:73:9: Implicit shadowing of function `_find_networking_config`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_digitalocean.py:157:13: Implicit shadowing of function `_get_sysinfo`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/config/test_cc_growpart.py:372:13: Implicit shadowing of function `stat`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_configdrive.py:609:13: Implicit shadowing of function `find_devs_with`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_configdrive.py:610:13: Implicit shadowing of function `is_partition`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_altcloud.py:164:9: Implicit shadowing of function `user_data_rhevm`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_altcloud.py:176:9: Implicit shadowing of function `user_data_vsphere`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_altcloud.py:188:9: Implicit shadowing of function `user_data_rhevm`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_altcloud.py:197:9: Implicit shadowing of function `user_data_vsphere`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_altcloud.py:241:9: Implicit shadowing of function `user_data_rhevm`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_altcloud.py:249:9: Implicit shadowing of function `user_data_vsphere`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/cloudinit/sources/helpers/vmware/imc/config_file.py:61:9: Implicit shadowing of function `optionxform`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/config/test_cc_growpart.py:372:13: Implicit shadowing of function `stat`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_upcloud.py:166:13: Implicit shadowing of function `_get_sysinfo`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_upcloud.py:166:13: Implicit shadowing of function `_get_sysinfo`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_upcloud.py:218:13: Implicit shadowing of function `_get_sysinfo`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_upcloud.py:218:13: Implicit shadowing of function `_get_sysinfo`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_opennebula.py:66:9: Implicit shadowing of function `switch_user_cmd`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_opennebula.py:398:13: Implicit shadowing of function `find_devs_with`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_opennebula.py:66:9: Implicit shadowing of function `switch_user_cmd`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/cloud-init/tests/unittests/sources/test_opennebula.py:398:13: Implicit shadowing of function `find_devs_with`; annotate to make it explicit if this is intentional
+
+dulwich (https://github.com/dulwich/dulwich)
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dulwich/dulwich/tests/utils.py:361:5: Implicit shadowing of function `showwarning`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dulwich/dulwich/tests/utils.py:361:5: Implicit shadowing of function `showwarning`
+
+apprise (https://github.com/caronc/apprise)
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/apprise/test/test_plugin_rocket_chat.py:341:5: Implicit shadowing of function `login`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/apprise/test/test_plugin_rocket_chat.py:341:5: Implicit shadowing of function `login`; annotate to make it explicit if this is intentional
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/flask/test_flask_patch.py:13:5: Implicit shadowing of function `unpatch`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/unittest/test_unittest_patch.py:13:5: Implicit shadowing of function `unpatch`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/mongoengine/test_mongoengine_patch.py:13:5: Implicit shadowing of function `unpatch`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/kombu/test_kombu_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/redis/test_redis_patch.py:13:5: Implicit shadowing of function `unpatch`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/debugging/mocking.py:185:9: Implicit shadowing of function `register`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/aiobotocore/test_aiobotocore_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/appsec/architectures/mini.py:40:1: Implicit shadowing of function `_flush_events_queue`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/mysql/test_mysql_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/rediscluster/test_rediscluster_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/aiohttp/test_aiohttp_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/aredis/test_aredis_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/futures/test_futures_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/appsec/contrib_appsec/utils.py:36:1: Implicit shadowing of function `finalize_asm_env`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/azure_functions/test_azure_functions_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/mako/test_mako_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/cache/conftest.py:23:1: Implicit shadowing of function `cached`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/pymysql/test_pymysql_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/dogpile_cache/test_dogpile_cache_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/mysqldb/test_mysqldb_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/pyodbc/test_pyodbc_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/benchmarks/core_api/scenario.py:9:5: Implicit shadowing of function `dispatch_with_results`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/djangorestframework/test_appsec.py:23:5: Implicit shadowing of function `finalize_asm_env`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/internal/coverage/multiprocessing_coverage.py:184:5: Implicit shadowing of function `__init__`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/internal/coverage/multiprocessing_coverage.py:185:5: Implicit shadowing of function `close`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/internal/coverage/multiprocessing_coverage.py:186:5: Implicit shadowing of function `join`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/internal/coverage/multiprocessing_coverage.py:187:5: Implicit shadowing of function `kill`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/internal/coverage/multiprocessing_coverage.py:188:5: Implicit shadowing of function `terminate`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/internal/coverage/multiprocessing_coverage.py:208:9: Implicit shadowing of function `get_preparation_data`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/yaaredis/test_yaaredis_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/mariadb/test_mariadb_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/flask/test_flask_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/httpx/test_httpx_patch.py:13:5: Implicit shadowing of function `unpatch`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/debugging/mocking.py:185:9: Implicit shadowing of function `register`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/internal/coverage/threading_coverage.py:84:5: Implicit shadowing of function `__init__`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/internal/coverage/threading_coverage.py:86:5: Implicit shadowing of function `join`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/logging/test_logging_patch.py:13:5: Implicit shadowing of function `unpatch`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/vertica/test_vertica_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/graphql/test_graphql_patch.py:13:5: Implicit shadowing of function `unpatch`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/contrib/internal/django/patch.py:116:13: Implicit shadowing of class `Psycopg3TracedCursor`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/contrib/internal/django/patch.py:123:17: Implicit shadowing of class `Psycopg2TracedCursor`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/asyncpg/test_asyncpg_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/httpx/test_httpx_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/logging/test_logging_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/subprocess/test_subprocess_patch.py:9:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/aiopg/test_aiopg_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/psycopg/test_psycopg_patch.py:14:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/datastreams/test_encoding.py:29:5: Implicit shadowing of function `on_checkpoint_creation`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/unittest/test_unittest_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/contrib/consul/test_consul_patch.py:13:5: Implicit shadowing of function `unpatch`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/ci_visibility/test_atr.py:75:9: Implicit shadowing of function `efd_is_faulty_session`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/ci_visibility/test_atr.py:170:9: Implicit shadowing of function `efd_is_faulty_session`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/dd-trace-py/tests/ci_visibility/test_atr.py:176:9: Implicit shadowing of function `get_session`; annotate to make it explicit if this is intentional
+- error[lint:invalid-assignment] /tmp/mypy_pri...*[Comment body truncated]*
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/resources/mdtest/diagnostics/unpacking.md</code>:11 on 2025-04-22 15:46</div>
+            <div class="timeline-body"><p>Is the title change here intentional?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-22 15:49</div>
+            <div class="timeline-body"><p>I mainly scrolled through the changes as they seem mostly mechanical. Looks good to me. Thanks for updating all those usages!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-22 15:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_python_semantic/resources/mdtest/diagnostics/unpacking.md</code>:11 on 2025-04-22 15:53</div>
+            <div class="timeline-body"><p>Yeah, because I added another test here to cover a diagnostic for &quot;too many values, but not exactly too many&quot; that wasn't previously covered.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-22 16:07</div>
+            <div class="timeline-body"><p>Bringing this since it's likely to conflict with other PRs.</p>
+<p>If others review this and leave feedback, I'd be happy to follow up!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-04-22 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-04-22 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-22 16:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:175 on 2025-04-22 16:13</div>
+            <div class="timeline-body"><p>I love this! It was on my radar so thank you for updating it</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/red_knot_python_semantic/src/types/unpacker.rs</code>:279 on 2025-04-22 16:14</div>
+            <div class="timeline-body"><p>And this!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-22 16:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-23 18:21</div>
+            <div class="timeline-body"><p>OMG this is so exciting!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:29 UTC
+    </footer>
+</body>
+</html>

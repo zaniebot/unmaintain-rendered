@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] simplify gradually-equivalent types out of unions and intersections - astral-sh/ruff #17467</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] simplify gradually-equivalent types out of unions and intersections</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17467">#17467</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-04-18 18:11
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-04-18 18:11</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>If two types are gradually-equivalent, that means they share the same set of possible materializations. There's no need to keep two such types in the same union or intersection; we should simplify them.</p>
+<p>Fixes https://github.com/astral-sh/ruff/issues/17465</p>
+<p>The one downside here is that now we will simplify e.g. <code>Unknown | Todo(...)</code> to just <code>Unknown</code>, if <code>Unknown</code> was added to the union first. This is correct from a type perspective (they are equivalent types), but it can mean we lose visibility into part of the cause for the type inferring as unknown. I think this is OK, but if we think it's important to avoid this, I can add a special case to try to preserve <code>Todo</code> over <code>Unknown</code>, if we see them both in the same union or intersection.</p>
+<h2>Test Plan</h2>
+<p>Added and updated mdtests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2025-04-18 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-04-18 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-04-18 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-04-18 18:11</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-18 18:13</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">bidict (https://github.com/jab/bidict)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/microbenchmarks.py:25:26: Argument to this function is incorrect: Expected `(...) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[deque]`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:88:25: Argument to this function is incorrect: Expected `(...) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[OnDup]`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/test_bidict.py:88:25: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[OnDup]`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/bidict/tests/microbenchmarks.py:25:26: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[deque]`
+
+arrow (https://github.com/arrow-py/arrow)
++ warning[lint:redundant-cast] /tmp/mypy_primer/projects/arrow/arrow/parser.py:470:35: Value is already of type `Unknown`
++ warning[lint:redundant-cast] /tmp/mypy_primer/projects/arrow/arrow/arrow.py:1280:34: Value is already of type `Unknown`
+- Found 35 diagnostics
++ Found 37 diagnostics
+
+packaging (https://github.com/pypa/packaging)
++ warning[lint:redundant-cast] /tmp/mypy_primer/projects/packaging/src/packaging/utils.py:51:12: Value is already of type `Unknown`
++ warning[lint:redundant-cast] /tmp/mypy_primer/projects/packaging/src/packaging/metadata.py:522:16: Value is already of type `Unknown`
+- Found 333 diagnostics
++ Found 335 diagnostics
+
+porcupine (https://github.com/Akuli/porcupine)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/mergeconflict.py:177:42: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -&gt; object`, found `Unknown | Any | (bound method LineNumbers.do_update(junk: object = None) -&gt; None)`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/mergeconflict.py:177:42: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -&gt; object`, found `Unknown | (bound method LineNumbers.do_update(junk: object = None) -&gt; None)`
+- warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/porcupine/tests/test_tabs.py:278:12: Attribute `settings` on type `Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions) | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/porcupine/tests/test_tabs.py:279:5: Attribute `destroy` on type `Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions) | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/langserver.py:231:16: Attribute `value` on type `@Todo(specialized non-generic class) | Unknown | str` is possibly unbound
+- error[lint:invalid-return-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/pastebin.py:192:16: Return type does not match returned value: Expected `str`, found `Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions) | None`
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/langserver.py:231:16: Attribute `value` on type `@Todo(specialized non-generic class) | str` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/porcupine/tests/test_tabs.py:278:12: Attribute `settings` on type `Unknown | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/porcupine/tests/test_tabs.py:279:5: Attribute `destroy` on type `Unknown | None` is possibly unbound
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/porcupine/porcupine/plugins/pastebin.py:192:16: Return type does not match returned value: Expected `str`, found `Unknown | None`
+
+isort (https://github.com/pycqa/isort)
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/isort/isort/exceptions.py:14:25: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `type[Unknown]`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/isort/isort/exceptions.py:14:25: Argument to this function is incorrect: Expected `(...) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `type[Unknown]`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/isort/isort/identify.py:105:17: Argument to this function is incorrect: Expected `(...) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[Import]`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/isort/isort/identify.py:105:17: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[Import]`
+- warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:81:31: Attribute `lower` on type `Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions) | None` is possibly unbound
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/isort/isort/main.py:1199:17: Argument to this function is incorrect: Expected `(Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/isort/isort/main.py:1199:17: Argument to this function is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `partial`
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/isort/isort/deprecated/finders.py:81:31: Attribute `lower` on type `Unknown | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/isort/isort/settings.py:659:31: Attribute `lower` on type `Unknown | None` is possibly unbound
+- warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/isort/isort/settings.py:659:31: Attribute `lower` on type `Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions) | None` is possibly unbound
+
+itsdangerous (https://github.com/pallets/itsdangerous)
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/itsdangerous/tests/test_itsdangerous/test_url_safe.py:14:24: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[URLSafeSerializer]`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/itsdangerous/tests/test_itsdangerous/test_url_safe.py:24:24: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[URLSafeTimedSerializer]`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/itsdangerous/tests/test_itsdangerous/test_url_safe.py:14:24: Argument to this function is incorrect: Expected `(...) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[URLSafeSerializer]`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/itsdangerous/tests/test_itsdangerous/test_url_safe.py:24:24: Argument to this function is incorrect: Expected `(...) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[URLSafeTimedSerializer]`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/itsdangerous/tests/test_itsdangerous/test_signer.py:21:24: Argument to this function is incorrect: Expected `(...) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[Signer]`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/itsdangerous/tests/test_itsdangerous/test_timed.py:32:24: Argument to this function is incorrect: Expected `(...) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[TimestampSigner]`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/itsdangerous/tests/test_itsdangerous/test_timed.py:32:24: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[TimestampSigner]`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/itsdangerous/tests/test_itsdangerous/test_timed.py:99:24: Argument to this function is incorrect: Expected `(...) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[TimedSerializer]`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/itsdangerous/tests/test_itsdangerous/test_timed.py:99:24: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[TimedSerializer]`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/itsdangerous/tests/test_itsdangerous/test_signer.py:21:24: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[Signer]`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/itsdangerous/tests/test_itsdangerous/test_serializer.py:37:49: Argument to this function is incorrect: Expected `(...) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[Serializer]`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/itsdangerous/tests/test_itsdangerous/test_serializer.py:37:49: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[Serializer]`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/itsdangerous/tests/test_itsdangerous/test_serializer.py:188:23: Argument to this function is incorrect: Expected `(...) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `Literal[Serializer]`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/itsdangerous/tests/test_itsdangerous/test_serializer.py:188:23: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `Literal[Serializer]`
+
+werkzeug (https://github.com/pallets/werkzeug)
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/werkzeug/examples/plnt/sync.py:92:13: Object of type `Unknown &amp; ~AlwaysFalsy | Unknown &amp; ~AlwaysFalsy` is not assignable to attribute `guid` on type `Unknown &amp; ~AlwaysFalsy | Entry`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/werkzeug/examples/plnt/sync.py:93:13: Object of type `Unknown &amp; ~AlwaysFalsy | Markup &amp; ~AlwaysFalsy | Unknown &amp; ~AlwaysFalsy` is not assignable to attribute `title` on type `Unknown &amp; ~AlwaysFalsy | Entry`
++ error[lint:unresolved-attribute] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/utils.py:85:33: Type `(Any, /) -&gt; Unknown` has no attribute `__name__`
+- error[lint:unresolved-attribute] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/utils.py:85:33: Type `(Any, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)` has no attribute `__name__`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/local.py:296:32: Argument to this function is incorrect: Expected `(...) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `((...) -&gt; Any) | None`
+- warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/local.py:506:23: Attribute `top` on type `@Todo(specialized non-generic class) | Local | (() -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions))` is possibly unbound
+- warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/local.py:517:27: Attribute `get` on type `@Todo(specialized non-generic class) | Local | (() -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions))` is possibly unbound
+- warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_routing.py:601:5: Attribute `add` on type `Unknown | @Todo(specialized non-generic class) &amp; None | None | @Todo(set comprehension type)` is possibly unbound
+- warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_routing.py:603:5: Attribute `discard` on type `Unknown | @Todo(specialized non-generic class) &amp; None | None | @Todo(set comprehension type)` is possibly unbound
+- warning[lint:call-possibly-unbound-method] /tmp/mypy_primer/projects/werkzeug/tests/test_routing.py:604:5: Method `__getitem__` of type `Unknown | @Todo(specialized non-generic class) | None` is possibly unbound
+- error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/routing/exceptions.py:102:50: Operator `in` is not supported for types `Unknown` and `None`, in comparing `Unknown` with `Unknown | @Todo(specialized non-generic class) &amp; None | None | @Todo(set comprehension type)`
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/routing/exceptions.py:102:50: Operator `in` is not supported for types `Unknown` and `None`, in comparing `Unknown` with `Unknown | @Todo(specialized non-generic class) &amp; None | None`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/local.py:296:32: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `((...) -&gt; Any) | None`
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/local.py:506:23: Attribute `top` on type `@Todo(specialized non-generic class) | Local | (() -&gt; Unknown)` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/src/werkzeug/local.py:517:27: Attribute `get` on type `@Todo(specialized non-generic class) | Local | (() -&gt; Unknown)` is possibly unbound
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/werkzeug/examples/plnt/sync.py:92:13: Object of type `Unknown &amp; ~AlwaysFalsy` is not assignable to attribute `guid` on type `Unknown &amp; ~AlwaysFalsy | Entry`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/werkzeug/examples/plnt/sync.py:93:13: Object of type `Unknown &amp; ~AlwaysFalsy | Markup &amp; ~AlwaysFalsy` is not assignable to attribute `title` on type `Unknown &amp; ~AlwaysFalsy | Entry`
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_routing.py:601:5: Attribute `add` on type `Unknown | @Todo(specialized non-generic class) &amp; None | None` is possibly unbound
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/werkzeug/tests/test_routing.py:603:5: Attribute `discard` on type `Unknown | @Todo(specialized non-generic class) &amp; None | None` is possibly unbound
++ warning[lint:call-possibly-unbound-method] /tmp/mypy_primer/projects/werkzeug/tests/test_routing.py:604:5: Method `__getitem__` of type `Unknown | None` is possibly unbound
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/tests/test_local.py:208:12: Operator `in` is not supported for types `str` and `None`, in comparing `Literal[&quot;int(&quot;]` with `@Todo(specialized non-generic class) &amp; str | @Todo(specialized non-generic class) &amp; None`
+- error[lint:unsupported-operator] /tmp/mypy_primer/projects/werkzeug/tests/test_local.py:208:12: Operator `in` is not supported for types `str` and `None`, in comparing `Literal[&quot;int(&quot;]` with `@Todo(specialized non-generic class) &amp; Unknown &amp; str | @Todo(specialized non-generic class) &amp; Any &amp; str | @Todo(specialized non-generic class) &amp; str | @Todo(specialized non-generic class) &amp; Unknown &amp; None | @Todo(specialized non-generic class) &amp; Any &amp; None | @Todo(specialized non-generic class) &amp; None`
+
+psycopg (https://github.com/psycopg/psycopg)
++ error[lint:invalid-exception-caught] /tmp/mypy_primer/projects/psycopg/psycopg_pool/psycopg_pool/null_pool_async.py:104:20: Cannot catch object of type `Unknown | Literal[DummyConnectionTimeout]` in an exception handler (must be a `BaseException` subclass or a tuple of `BaseException` subclasses)
+- error[lint:invalid-exception-caught] /tmp/mypy_primer/projects/psycopg/psycopg_pool/psycopg_pool/null_pool.py:109:20: Cannot catch object of type `Unknown | Literal[DummyConnectionTimeout] | @Todo(unsupported type[X] special form)` in an exception handler (must be a `BaseException` subclass or a tuple of `BaseException` subclasses)
++ error[lint:invalid-exception-caught] /tmp/mypy_primer/projects/psycopg/psycopg_pool/psycopg_pool/null_pool.py:109:20: Cannot catch object of type `Unknown | Literal[DummyConnectionTimeout]` in an exception handler (must be a `BaseException` subclass or a tuple of `BaseException` subclasses)
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/psycopg/psycopg/psycopg/waiting.py:412:5: Object of type `def wait_select(gen: @Todo(Support for `typing.TypeAlias`), fileno: int, interval: int | float | None = None) -&gt; Unknown` is not assignable to `WaitFunc`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/psycopg/psycopg/psycopg/waiting.py:417:5: Object of type `def wait_poll(gen: @Todo(Support for `typing.TypeAlias`), fileno: int, interval: int | float | None = None) -&gt; Unknown` is not assignable to `WaitFunc`
++ error[lint:invalid-assignment] /tmp/mypy_primer/projects/psycopg/psycopg/psycopg/waiting.py:420:5: Object of type `def wait_selector(gen: @Todo(Support for `typing.TypeAlias`), fileno: int, interval: int | float | None = None) -&gt; Unknown` is not assignable to `WaitFunc`
+- error[lint:invalid-exception-caught] /tmp/mypy_primer/projects/psycopg/psycopg_pool/psycopg_pool/null_pool_async.py:104:20: Cannot catch object of type `Unknown | Literal[DummyConnectionTimeout] | @Todo(unsupported type[X] special form)` in an exception handler (must be a `BaseException` subclass or a tuple of `BaseException` subclasses)
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/psycopg/psycopg/psycopg/waiting.py:412:5: Object of type `def wait_select(gen: @Todo(Support for `typing.TypeAlias`), fileno: int, interval: int | float | None = None) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)` is not assignable to `WaitFunc`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/psycopg/psycopg/psycopg/waiting.py:417:5: Object of type `def wait_poll(gen: @Todo(Support for `typing.TypeAlias`), fileno: int, interval: int | float | None = None) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)` is not assignable to `WaitFunc`
+- error[lint:invalid-assignment] /tmp/mypy_primer/projects/psycopg/psycopg/psycopg/waiting.py:420:5: Object of type `def wait_selector(gen: @Todo(Support for `typing.TypeAlias`), fileno: int, interval: int | float | None = None) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)` is not assignable to `WaitFunc`
+
+typeshed-stats (https://github.com/AlexWaygood/typeshed-stats)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/typeshed-stats/src/typeshed_stats/gather.py:994:13: Argument to this function is incorrect: Expected `str | ((Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), /) -&gt; Pattern)`, found `Literal[GitWildMatchPattern]`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/typeshed-stats/src/typeshed_stats/gather.py:994:13: Argument to this function is incorrect: Expected `str | ((Unknown, /) -&gt; Pattern)`, found `Literal[GitWildMatchPattern]`
+
+python-chess (https://github.com/niklasf/python-chess)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/python-chess/examples/perft/perft.py:46:40: Argument to this function is incorrect: Expected `(Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/python-chess/examples/perft/perft.py:46:40: Argument to this function is incorrect: Expected `(Unknown, /) -&gt; Unknown`, found `partial`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/polyglot.py:256:44: Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)]` is not callable on object of type `list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/polyglot.py:258:42: Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)]` is not callable on object of type `list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:682:35: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:683:35: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:686:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:687:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:829:26: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:830:26: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:833:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:834:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/python-chess/chess/svg.py:170:19: Argument to this function is incorrect: Expected `str`, found `Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions) | None`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/python-chess/chess/svg.py:170:19: Argument to this function is incorrect: Expected `str`, found `Unknown | None`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/syzygy.py:446:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/syzygy.py:447:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/polyglot.py:256:44: Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)]` is not callable on object of type `list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/polyglot.py:258:42: Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)]` is not callable on object of type `list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:682:35: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:683:35: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:686:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:687:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:829:26: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:830:26: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:833:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/variant.py:834:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1551:46: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1551:46: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1553:46: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1553:46: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1899:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1899:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1899:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1899:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1899:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1899:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1910:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1910:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1910:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1910:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1910:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/gaviota.py:1910:52: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/syzygy.py:446:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/syzygy.py:447:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/__init__.py:880:20: Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)]` is not callable on object of type `list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/__init__.py:880:20: Method `__getitem__` of type `Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)]` is not callable on object of type `list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/__init__.py:1437:44: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/__init__.py:1437:44: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/__init__.py:1557:27: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/__init__.py:1557:27: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/__init__.py:1558:27: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/__init__.py:1558:27: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/__init__.py:1577:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/__init__.py:1577:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/__init__.py:1578:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/chess/__init__.py:1578:9: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/test.py:919:25: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/test.py:919:25: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/test.py:4755:26: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/test.py:4755:26: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+- error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/test.py:4756:26: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
++ error[lint:call-non-callable] /tmp/mypy_primer/projects/python-chess/test.py:4756:26: Method `__getitem__` of type `Unknown | (Overload[(i: SupportsIndex, /) -&gt; Unknown, (s: slice, /) -&gt; @Todo(specialized non-generic class)])` is not callable on object of type `Unknown | list`
+
+rich (https://github.com/Textualize/rich)
++ warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/rich/rich/box.py:87:39: Attribute `ascii` on type `Unknown | None` is possibly unbound
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/rich/rich/box.py:89:16: Return type does not match returned value: Expected `Box`, found `Unknown | None | Box`
++ error[lint:invalid-return-type] /tmp/mypy_primer/projects/rich/rich/box.py:99:16: Return type does not match returned value: Expected `Box`, found `Unknown | None`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/rich/rich/table.py:359:5: Argument to this function is incorrect: Expected `(Any, Any, /) -&gt; None`, found `def padding(self, padding: Unknown) -&gt; Table`
+- warning[lint:possibly-unbound-attribute] /tmp/mypy_primer/projects/rich/rich/box.py:87:39: Attribute `ascii` on type `Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions) | None` is possibly unbound
+- error[lint:invalid-return-type] /tmp/mypy_primer/projects/rich/rich/box.py:89:16: Return type does not match returned value: Expected `Box`, found `Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions) | None | Box`
+- error[lint:invalid-return-type] /tmp/mypy_primer/projects/rich/rich/box.py:99:16: Return type does not match returned value: Expected `Box`, found `Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions) | None`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/rich/rich/table.py:359:5: Argument to this function is incorrect: Expected `(Any, Any, /) -&gt; None`, found `def padding(self, padding: Unknown | @Todo(Inference of subscript on special form)) -&gt; Table`
+
+scrapy (https://github.com/scrapy/scrapy)
++ warning[lint:redundant-cast] /tmp/mypy_primer/projects/scrapy/scrapy/spiders/crawl.py:142:13: Value is already of type `Unknown`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/scrapy/tests/test_utils_python.py:222:40: Argument to this function is incorrect: Expected `(...) -&gt; Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions)`, found `partial`
++ error[lint:unsupported-operator] /tmp/mypy_primer/projects/scrapy/scrapy/spidermiddlewares/httperror.py:62:12: Operator `in` is not supported for types `int` and `None`, in comparing `int` with `@Todo(specialized non-generic class) | None`
+- error[lint:unsupported-operator] /tmp/mypy_primer/projects/scrapy/scrapy/spidermiddlewares/httperror.py:62:12: Operator `in` is not supported for types `int` and `None`, in comparing `int` with `@Todo(specialized non-generic class) | Any | None`
+- error[lint:not-iterable] /tmp/mypy_primer/projects/scrapy/scrapy/http/response/text.py:277:24: Object of type `@Todo(specialized non-generic class) | Unknown | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/scrapy/tests/test_utils_defer.py:95:45: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -&gt; Any`, found `bound method list.append(object: Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), /) -&gt; None`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/scrapy/tests/test_utils_defer.py:107:44: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -&gt; Any`, found `bound method list.append(object: Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), /) -&gt; None`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/scrapy/tests/test_utils_defer.py:121:64: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -&gt; Any`, found `bound method list.append(object: Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), /) -&gt; None`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/scrapy/tests/test_utils_defer.py:134:63: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -&gt; Any`, found `bound method list.append(object: Unknown | @Todo(Support for `typing.TypeVar` instances in type expressions), /) -&gt; None`
++ error[lint:not-iterable] /tmp/mypy_primer/projects/scrapy/scrapy/http/response/text.py:277:24: Object of type `@Todo(specialized non-generic class) | None` may not be iterable because it may not have an `__iter__` method or a `__getitem__` method
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/scrapy/tests/test_utils_defer.py:95:45: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -&gt; Any`, found `bound method list.append(object: Unknown, /) -&gt; None`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/scrapy/tests/test_utils_defer.py:107:44: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -&gt; Any`, found `bound method list.append(object: Unknown, /) -&gt; None`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/scrapy/tests/test_utils_defer.py:121:64: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -&gt; Any`, found `bound method list.append(object: Unknown, /) -&gt; None`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/scrapy/tests/test_utils_defer.py:134:63: Argument to this function is incorrect: Expected `(*args: @Todo(todo signature *args), **kwargs: @Todo(todo signature **kwargs)) -&gt; Any`, found `bound method list.append(object: Unknown, /) -&gt; None`
++ error[lint:invalid-argument-type] /tmp/mypy_primer/projects/scrapy/tests/test_utils_python.py:222:40: Argument to this function is incorrect: Expected `(...) -&gt; Unknown`, found `partial`
++ warning[lint:redundant-cast] /tmp/mypy_primer/projects/scrapy/scrapy/core/spidermw.py:104:36: Value is already of type `Unknown`
++ warning[lint:redundant-cast] /tmp/mypy_primer/projects/scrapy/scrapy/core/spidermw.py:120:36: Value is already of type `Unknown`
+- Found 1587 diagnostics
++ Found 1590 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-18 18:32</div>
+            <div class="timeline-body"><p>Ecosystem results are mostly just changed types in existing error messages. There are a few new <code>redundant-cast</code> diagnostics that previously hit our &quot;contains todo&quot; special silencing case and no longer do.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-18 21:37</div>
+            <div class="timeline-body"><p>I think it makes sense to simplify <code>Unknown | Todo</code> to <code>Unknown</code>.</p>
+<p>As the mypy_primer hits on this PR demonstrate, it obviously isn't currently true that we infer <code>Todo</code> types for all features that are Still To Be Done. But if we <em>did</em> (and ideally we <em>would</em>), then we wouldn't be losing any information by simplifying <code>Unknown | Todo</code> to <code>Todo</code>. It would accurately reflect the fact that even if we had Done All The Typing Features, the type would still be inferred as something dynamic due to an error in the user's code somewhere.</p>
+<p>I do think we should prioritise fixing the new ecosystem hits, though: we should be inferring <code>Todo</code> rather than <code>Unknown</code> for most of those things.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-04-18 21:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-04-18 22:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-04-18 22:08</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-18 22:08</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:28 UTC
+    </footer>
+</body>
+</html>

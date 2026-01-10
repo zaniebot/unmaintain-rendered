@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] fix collapsing literal and its negation to object - astral-sh/ruff #17605</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] fix collapsing literal and its negation to object</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17605">#17605</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-04-24 12:36
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-04-24 12:36</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Another follow-up to the unions-of-large-literals optimization. Restore the behavior that e.g. <code>Literal[&quot;&quot;] | ~Literal[&quot;&quot;]</code> collapses to <code>object</code>.</p>
+<h2>Test Plan</h2>
+<p>Added mdtests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2025-04-24 12:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-04-24 12:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-04-24 12:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-04-24 12:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/union.md</code>:185 on 2025-04-24 12:39</div>
+            <div class="timeline-body"><p>nit: is there a reason why we're using the pre-PEP-604 syntax here...? I find it more readable if we can keep the bracketese to a minimum:</p>
+<pre><code class="language-suggestion">    a: Literal[&quot;a&quot;, &quot;&quot;] | Not[AlwaysFalsy],
+    b: Literal[&quot;a&quot;, &quot;&quot;] | Not[Literal[&quot;&quot;]],
+    c: Literal[&quot;&quot;] | Not[Literal[&quot;&quot;]],
+    d: Not[Literal[&quot;&quot;]] | Literal[&quot;&quot;],
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-24 12:40</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/union.md</code>:1 on 2025-04-24 12:44</div>
+            <div class="timeline-body"><p>It seems like this bug also affected the bytes-literal branches and the int-literal branches, but I don't see any tests for those, even though they're different code paths. Could we add this test too?</p>
+<pre><code class="language-py">def f(
+    a: Literal[&quot;a&quot;] | Not[Literal[&quot;a&quot;]],
+    b: Literal[b&quot;b&quot;] | Not[Literal[b&quot;b&quot;]],
+    c: Literal[42] | Not[Literal[42],
+):
+    reveal_type(a)  # revealed: object
+    reveal_type(b)  # revealed: object
+    reveal_type(c)  # revealed: object
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-04-24 12:45</div>
+            <div class="timeline-body"><p>This looks reasonable. Though I'm <em>slightly</em> concerned about the spiralling complexity here.</p>
+<p>It would be nice if we could find a way to unify the branches here so that we don't have to repeat the same somewhat complex logic three times over. But that doesn't have to be done in this PR; it can wait for a followup.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/union.md</code>:1 on 2025-04-24 13:50</div>
+            <div class="timeline-body"><p>Also added the reverse direction of each, because they are handled in different code paths.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-24 13:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-24 13:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/union.md</code>:185 on 2025-04-24 13:50</div>
+            <div class="timeline-body"><p>Once you start bracketing, it's just hard to stop.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-04-24 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-04-24 13:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-24 13:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:29 UTC
+    </footer>
+</body>
+</html>

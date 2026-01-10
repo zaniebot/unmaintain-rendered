@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add mdtests for `global` statement - astral-sh/ruff #17563</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add mdtests for <code>global</code> statement</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17563">#17563</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-04-22 19:49
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-22 19:49</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This is a first step toward <code>global</code> support in red-knot (#15385). I went through all the matches for <code>global</code> in the <code>mypy/test-data</code> directory, but I didn't find anything too interesting that wasn't already covered by @carljm's suggestions on Discord. I still pulled in a couple of cases for a little extra variety. I also included a section from the <a href="https://docs.astral.sh/ruff/rules/load-before-global-declaration/">PLE0118</a> tests in ruff that will become syntax errors once astral-sh/ruff#17463 is merged and we handle <code>global</code> statements.</p>
+<p>I don't think I figured out how to use <code>@Todo</code> properly, so please let me know if I need to fix that. I hope this is a good start to the test suite otherwise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @ntBre on 2025-04-22 19:49</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-22 19:53</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-04-22 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ntBre on 2025-04-22 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-04-22 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ntBre on 2025-04-22 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @ntBre on 2025-04-22 20:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/global.md</code>:35 on 2025-04-23 00:00</div>
+            <div class="timeline-body"><p><code>@Todo</code> is our display styling for an internal type we use to represent the result of some operation we haven't implemented yet. We don't use this for todo comments in tests, there we just use <code>TODO: </code></p>
+<pre><code class="language-suggestion">    # TODO: error: [invalid-assignment] &quot;Object of type `Literal[&quot;&quot;]` is not assignable to `int`&quot;
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/global.md</code>:51 on 2025-04-23 00:03</div>
+            <div class="timeline-body"><p>And typically (for easier reading of the later diff that fixes the TODO!) we try to put these messages as close as we can to the spot where something will change:</p>
+<pre><code class="language-suggestion">A `global` statement causes lookup to skip any bindings in intervening scopes:
+
+```py
+x = 1
+
+def outer():
+    x = &quot;&quot;
+
+    def inner():
+        global x
+        # TODO should be `Unknown | Literal[1]`
+        reveal_type(x)  # revealed: Unknown | Literal[&quot;&quot;]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/global.md</code>:47 on 2025-04-23 00:04</div>
+            <div class="timeline-body"><p>Nit: you could use declarations here (<code>x: int = 1</code> and <code>x: str = &quot;&quot;</code>) to get rid of the <code>Unknown |</code> in the types, which is not really relevant to the point of this test and kinda just noise? But it's fine either way.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/global.md</code>:58 on 2025-04-23 00:08</div>
+            <div class="timeline-body"><p>Nit: in this case I probably wouldn't call out the pyright/mypy behavior difference. The reason is that both of them do narrow the global type of <code>int | None</code> to eliminate the <code>None</code>, based on the local assignment. The fact that narrowing is done at all is the key behavior this test asserts, and it is in line with both mypy and pyright, which typically means we don't bother commenting on their behavior.</p>
+<p>The question of whether <code>x = 1</code> narrows to <code>int</code> or to <code>Literal[1]</code> is really a separate issue of how eager type checkers are to use literal types, which may be relevant for us to comment on somewhere, but probably not here.</p>
+<p>(Another way of saying this is that we could write this same test using non-literal types -- e.g. <code>x: C | None</code> at global scope and <code>x = C()</code> in the function -- and in that case we would see identical behavior from mypy and pyright, and the test would still be testing the same thing we care about here. The literal-types difference is something unrelated to <code>global</code>.)</p>
+<pre><code class="language-suggestion">assignment.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/global.md</code>:82 on 2025-04-23 00:27</div>
+            <div class="timeline-body"><p>This is a useful test case, but despite happening to use a <code>global</code> statement, it's not related to <code>global</code>. The same case could be constructed without <code>global</code>, just making <code>g</code> a local in <code>f</code> and using an <code>assert</code> (or <code>if</code> with early return, or whatever) to narrow its type instead. In other words, the test is really about how nested functions can or cannot make use of narrowed types in the outer scope. Which is a topic we do need to address, but it's not related to <code>global</code>. So I don't think we should include this test here.</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/global.md</code>:102 on 2025-04-23 00:29</div>
+            <div class="timeline-body"><p>This is a pretty basic unremarkable test for how <code>global</code> should work -- it's fine that you happened to get it from mypy, but I don't think it's useful to preserve that information here.</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/global.md</code>:117 on 2025-04-23 00:31</div>
+            <div class="timeline-body"><p>Again not sure the provenance information (from ruff tests) is useful here.</p>
+<p>Typically we would go ahead and put a TODO comment right above each and every specific line that should error, rather than a single blanket TODO comment here. That makes it much clearer to a future contributor exactly where errors should and should not appear (and on which line(s)), and makes the TODO-fixing diff much simpler to review for correctness.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-23 00:32</div>
+            <div class="timeline-body"><p>Awesome, thank you! A few comments, mostly just about adapting to our &quot;house style&quot; for TODO comments in mdtests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-23 14:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/red_knot_python_semantic/resources/mdtest/scopes/global.md</code>:35 on 2025-04-23 14:24</div>
+            <div class="timeline-body"><p>Ohhh, I see. I thought it was mdtest magic, but it's part of the actual diagnostics for now. Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-23 15:01</div>
+            <div class="timeline-body"><p>Thanks for the review, it was very helpful! I think this should be in a much better state now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-04-23 15:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-23 18:28</div>
+            <div class="timeline-body"><p>Looks great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-04-23 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-23 21:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-23 21:18</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:29 UTC
+    </footer>
+</body>
+</html>

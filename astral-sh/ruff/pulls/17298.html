@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[syntax-errors] `yield`, `yield from`, and `await` outside functions - astral-sh/ruff #17298</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[syntax-errors] <code>yield</code>, <code>yield from</code>, and <code>await</code> outside functions</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17298">#17298</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-04-08 18:03
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-08 18:03</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR reimplements <a href="https://docs.astral.sh/ruff/rules/yield-outside-function/">yield-outside-function (F704)</a> as a semantic syntax error. Despite the name, this rule covers <code>yield from</code> and <code>await</code> in addition to <code>yield</code>.</p>
+<h2>Test Plan</h2>
+<p>New linter tests, along with the existing F704 test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @ntBre on 2025-04-08 18:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-08 18:12</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-04-08 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-04-08 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @ntBre on 2025-04-08 18:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/resources/inline/ok/match_classify_as_keyword_1.py</code>:25 on 2025-04-08 20:07</div>
+            <div class="timeline-body"><p>This and other changes like this seems a bit unfortunate but I do understand the reason behind it. A potential solution would be to introduce a new <code>test_semantic_err</code> (or something like that) that is used to make sure that (a) it's a valid AST i.e., no parse errors and (b) there are semantic errors.</p>
+<p>Curious to hear others thoughts on this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:619 on 2025-04-08 20:30</div>
+            <div class="timeline-body"><p>The original implementation used inclusion instead of exclusion:</p>
+<pre><code class="language-rs">if scope.kind.is_module() || scope.kind.is_class() {
+</code></pre>
+<p>What happens when it's detected in other scopes like comprehension?</p>
+<p>Should we expose a <code>scope</code> method on <code>SemanticSyntaxContext</code> and use that instead of maintaining the state ourselves?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-08 20:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-08 20:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:619 on 2025-04-08 20:54</div>
+            <div class="timeline-body"><p>It's a good question, but based on the other available scope types, I think <code>Function</code> and <code>Lambda</code> are the only ones that actually apply, and it was only a few lines of code to track them here.</p>
+<p>It seems the current rule is actually too permissive in allowing these in comprehension and type scopes (<a href="https://play.ruff.rs/11eb1dfe-9e9d-4300-9dad-f23c390d277a">playground</a>):</p>
+<pre><code class="language-pycon">&gt;&gt;&gt; [(yield x) for x in range(3)]
+  File &quot;&lt;python-input-50&gt;&quot;, line 1
+    [(yield x) for x in range(3)]
+      ^^^^^^^
+SyntaxError: 'yield' inside list comprehension
+</code></pre>
+<p>Although we could also consider not flagging the type parameter cases since those are already handled by another syntax error. Based on our previous discussions, I think it's reasonable to flag them both, though, because even if it were valid in the type parameter/alias it would still be invalid outside of a function.</p>
+<p>https://github.com/astral-sh/ruff/blob/9327c8f1c0f161867600389b8a372c37be4727c8/crates/ruff_python_semantic/src/scope.rs#L170-L178</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-08 20:59</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/resources/inline/ok/match_classify_as_keyword_1.py</code>:25 on 2025-04-08 20:59</div>
+            <div class="timeline-body"><p>I think we discussed then when first expanding the scope of the inline tests, and it seemed preferable to test both kinds of errors at the same time. I'm happy either way, though. It would certainly focus the diffs in these PRs.</p>
+<p>We could also add more options to <code>JsonParseOptions</code> that don't necessarily have to correspond to the real <code>ParseOptions</code> type. Then we could simply set <code>skip_semantic_errors</code> or similar in the cases where it's needed. However, that would still shift all of the diff ranges and line numbers...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-08 21:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:619 on 2025-04-08 21:22</div>
+            <div class="timeline-body"><p>We may well need a more sophisticated way of tracking scopes, though. I'm trying to implement <code>await outside async function</code> and running into trouble for cases like this:</p>
+<pre><code class="language-python">async def foo():
+    @await bar
+    def baz(): ...
+</code></pre>
+<p>This should be valid, but the async context tracking from #17177 updates the <code>in_async_context</code> field on the <em>test visitor</em> when visiting the <code>baz</code> function definition before visiting its decorators, leading to a false positive.</p>
+<p>I either need to defer visiting the function itself, like in the real <code>ast::Checker</code>, or we could move to a <code>scope</code> method on the trait, or duplicate that kind of scope tracking here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-08 21:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/resources/inline/ok/match_classify_as_keyword_1.py</code>:25 on 2025-04-08 21:25</div>
+            <div class="timeline-body"><blockquote>
+<p>I think we discussed then when first expanding the scope of the inline tests, and it seemed preferable to test both kinds of errors at the same time.</p>
+</blockquote>
+<p>Ah right, I think I confused that discussion with the recent one where I suggested that we should include both parse and semantic errors.</p>
+<blockquote>
+<p>We could also add more options to <code>JsonParseOptions</code> that don't necessarily have to correspond to the real <code>ParseOptions</code> type.</p>
+</blockquote>
+<p>Yeah, using <code>JsonParseOptions</code> would still produce large diff but using a separate identifier wouldn't.</p>
+<p>This doesn't need to block this PR as it's a separate discussion. I think it's fine for now to move ahead with what you have in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-08 21:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:619 on 2025-04-08 21:32</div>
+            <div class="timeline-body"><p>I see, yeah that seems reasonable then.</p>
+<p>I'd still prefer to re-use the existing scope information from the <code>Checker</code> than to add new state here.</p>
+<blockquote>
+<p>It seems the current rule is actually too permissive in allowing these in comprehension and type scopes</p>
+</blockquote>
+<p>Oh, interesting. Do we need to gate that behind preview as it's an increase in the rule scope? I think it's fine as it's mainly a syntax error so I'd consider this a bug fix instead.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:623 on 2025-04-08 21:36</div>
+            <div class="timeline-body"><p>I think we might need to guard this against the scope check as this should only return if the <code>await</code> is being used at the module scope level.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-08 21:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-08 21:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:623 on 2025-04-08 21:38</div>
+            <div class="timeline-body"><p>For example, if we're in a class scope and not in a function scope, this would return. We should also update the test case for Jupyter Notebooks to consider this specific case which would've caught this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-08 21:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:623 on 2025-04-08 21:42</div>
+            <div class="timeline-body"><p>Ah good catch. I think I need to write another linter notebook test here, this is the second mistake I've made in this check!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-08 22:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:619 on 2025-04-08 22:08</div>
+            <div class="timeline-body"><blockquote>
+<p>I'd still prefer to re-use the existing scope information from the <code>Checker</code> than to add new state here.</p>
+</blockquote>
+<p>The one major downside of shifting responsibility to the trait is that it makes the inline tests harder to write. We have to duplicate the state-tracking logic in the test visitor/context, and the correspondence between the real use (in <code>Checker</code> and the red-knot analog) and test use breaks down. That's one reason I've leaned toward tracking state here, but relying on the trait has benefits too. And this breakdown is already happening with the deferred function bodies anyway, so it probably does make sense to move into the trait.</p>
+<blockquote>
+<p>Oh, interesting. Do we need to gate that behind preview as it's an increase in the rule scope? I think it's fine as it's mainly a syntax error so I'd consider this a bug fix instead.</p>
+</blockquote>
+<p>That's also a good question that applies to #17285 as well. I think they can both be considered bug fixes, but it also seems reasonable to preview-gate.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:604 on 2025-04-09 06:36</div>
+            <div class="timeline-body"><p>Are lambdas consider to be in a function scope or class scope or do they not change the scope?</p>
+<p>For example, the following (in module scope) shouldn't raise an error)</p>
+<pre><code>a = lambda a: yield a
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:619 on 2025-04-09 06:40</div>
+            <div class="timeline-body"><blockquote>
+<p>We have to duplicate the state-tracking logic in the test visitor/context, and the correspondence between the real use (in Checker and the red-knot analog) and test use breaks down.</p>
+</blockquote>
+<p>I agree that this is unfortunate. I still think that reusing the scope from <code>Checker</code> ultimately leads to more correct code because that scope tracking has much more extenisve test coverage.</p>
+<p>I'd suggest that we move the basic scope tracking into the context, extend the test visitor to do some basic scope tracking, and write an integration test that demonstrate that scope tracking in combination with <code>Checker</code> works as expected (we now have the infrastructure to just do this and the integration test should verify that all methods exposed on <code>Context</code> work as expected)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:28 on 2025-04-09 06:40</div>
+            <div class="timeline-body"><p>Should this be a method on <code>ctx</code> similar to <code>PythonVersion</code> because it isn't state?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-09 06:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-09 12:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:619 on 2025-04-09 12:05</div>
+            <div class="timeline-body"><p>Sounds good. I think I'll start this in a separate PR and then rebase this one. Last time I tried it, the test context changes were pretty extensive, and there were also a couple of changes to the <code>Checker'</code>s <code>SemanticModel</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-09 20:41</div>
+            <div class="timeline-body"><p>The PR is now rebased onto the context changes, and I think I addressed the other review feedback, but it's still a huge number of changes to existing snapshots. Those are mostly just noise, but I will say they alerted me to one issue in the test context (how it visited generators) at least.</p>
+<p>One other way of avoiding these snapshot diffs is just to rely on linter integration tests instead of inline tests at all. It feels a bit unreliable having to update the test context to pass these tests anyway, so fully reusing the new test infrastructure in the linter could solve several problems at once.</p>
+<p>To be more concrete, the inline tests are still great for cases that don't rely on information from the <code>Context</code>, but I'm suggesting moving the <code>Context</code>-dependent tests to the linter and restoring the <code>SemanticSyntaxCheckerVisitor</code> to a very, very simple visitor like it was before and leaving it with dummy context methods:</p>
+<pre><code class="language-rust">fn visit_stmt(&amp;mut self, stmt: &amp;ast::Stmt) {
+	self.with_semantic_checker(|semantic, context| semantic.visit_stmt(stmt, context));
+	ast::visitor::walk_stmt(self, stmt);
+}
+</code></pre>
+<p>I'm interested in hearing y'all's thoughts on that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-10 12:54</div>
+            <div class="timeline-body"><p>This PR is in my review queue, but my afternoon is rather busy. I'm not sure if I get to reviewing it today</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-10 12:58</div>
+            <div class="timeline-body"><p>No rush, I was thinking about playing with one of these test options (the one I mentioned or Dhruv's idea for a separate inline test mechanism) to make this more reviewable anyway.</p>
+<p>Oh, I also hadn't noticed the new ecosystem report. I'm guessing those are a lot of false positives, so really no rush on reviewing this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-10 17:06</div>
+            <div class="timeline-body"><p>I hope this should be much more manageable to review now. I reverted to dummy methods on the test visitor, which also reverted all of the unrelated snapshot changes. All of the tests are now in the linter and rely on the real visitor.</p>
+<p>The false positives should also be addressed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/snapshots/ruff_linter__linter__tests__await_scope_notebook.snap</code>:6 on 2025-04-10 17:10</div>
+            <div class="timeline-body"><p>This looks very suspicious, but this is covered by PLE1142, which I'm planning to handle separately. The same is true for the <code>lambda: await 1</code> case in the <code>.py</code> test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-10 17:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/snapshots/ruff_linter__linter__tests__yield_scope.py.snap</code>:31 on 2025-04-10 20:33</div>
+            <div class="timeline-body"><p>Unrelated to this PR and does not need to be done in this PR but maybe we should update the diagnostic message for <code>await</code> keyword to &quot;<code>await</code> statement outside of an async function&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/snapshots/ruff_linter__linter__tests__await_scope_notebook.snap</code>:6 on 2025-04-10 20:35</div>
+            <div class="timeline-body"><p>Can you say more about what exactly is suspicious?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/snapshots/ruff_linter__linter__tests__await_scope_notebook.snap</code>:6 on 2025-04-10 20:45</div>
+            <div class="timeline-body"><p>Regardless, the snapshots for Notebook looks off as it doesn't contain cell numbers and the line numbers are not isolated to each cell. Refer to https://github.com/astral-sh/ruff/blob/8b2727cf67ef4ed43723ff5c11ea936838e25c26/crates/ruff_linter/src/snapshots/ruff_linter__linter__tests__unused_variable.snap as an example snapshot. I think the <code>assert_messages</code> macro usage should be updated for notebook tests, refer to https://github.com/astral-sh/ruff/blob/8b2727cf67ef4ed43723ff5c11ea936838e25c26/crates/ruff_linter/src/linter.rs#L836-L851 as an example.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:622 on 2025-04-10 20:52</div>
+            <div class="timeline-body"><p>I think we should start adding some documentation for these methods. I'd find it confusing because there are both <code>in_function_scope</code> and <code>in_function_context</code> but I don't have a better suggestion for those methods. One solution would be to inline <code>in_function_scope</code> which a lot of the linter code does.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:655 on 2025-04-10 20:53</div>
+            <div class="timeline-body"><p>nit: What about the following to avoid multiple function calls?</p>
+<pre><code class="language-suggestion">		matches!(kind, ScopeKind::Function(_) | ScopeKind::Lambda(_))
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:618 on 2025-04-10 20:54</div>
+            <div class="timeline-body"><p>What's the reason for special casing the class scope? Should this be bundled with the final match arm instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1060 on 2025-04-10 20:57</div>
+            <div class="timeline-body"><p>I appreciate the examples mentioned in the documentation but should we limit them to 1 or 2 to avoid them getting outdated or that we forget updating them?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:622 on 2025-04-10 20:58</div>
+            <div class="timeline-body"><p>(I see that the documentation would be part of the trait.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1431 on 2025-04-10 20:59</div>
+            <div class="timeline-body"><p>Thank you for adding documentation for this :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1492 on 2025-04-10 20:59</div>
+            <div class="timeline-body"><p>Let's document this method especially w.r.t <code>in_function_scope</code> (mainly a follow-up from my other comment)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-10 21:01</div>
+            <div class="timeline-body"><p>This is great! I think there are couple of follow-ups and minor changes but otherwise looks good.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/snapshots/ruff_linter__linter__tests__await_scope_notebook.snap</code>:6 on 2025-04-10 21:07</div>
+            <div class="timeline-body"><blockquote>
+<p>Can you say more about what exactly is suspicious?</p>
+</blockquote>
+<p>I thought it would look suspicious in the review that I commented <code>SyntaxError</code> next to a line without an error in the snapshot, so I just wanted to call out that this was intentional up front. Related to your comment about &quot;await outside <em>async</em> function,&quot; that's handled by PLE1142, and we currently emit both of those (<a href="https://play.ruff.rs/fb6643ff-e9d1-4618-808d-47dd62fba2cc">playground</a>), so I was going to emit two syntax errors for them too: one here and one in a follow-up PR, which will add an error here in this snapshot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-10 21:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-10 21:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1492 on 2025-04-10 21:07</div>
+            <div class="timeline-body"><p>I see that there's a writeup regarding this in the trait documentation, I think it'd be more useful to have it here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-10 21:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:622 on 2025-04-10 21:13</div>
+            <div class="timeline-body"><p>Yeah I put it on the trait in case there were more of these later, but this is the only one for now, so I can just move it down.</p>
+<p>Unfortunately we can't really inline <code>in_function_scope</code> (unless I'm missing something) because it would require access to the <code>Scope</code> type, which I tried to avoid in #17314. That would actually remove the need for a lot of these little methods, but I think it would add complications of its own, especially once we integrate with red-knot.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-10 21:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/snapshots/ruff_linter__linter__tests__await_scope_notebook.snap</code>:6 on 2025-04-10 21:14</div>
+            <div class="timeline-body"><p>Understood, thanks! That makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-10 21:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:622 on 2025-04-10 21:15</div>
+            <div class="timeline-body"><blockquote>
+<p>Unfortunately we can't really inline <code>in_function_scope</code> (unless I'm missing something) because it would require access to the <code>Scope</code> type, which I tried to avoid in #17314. That would actually remove the need for a lot of these little methods, but I think it would add complications of its own, especially once we integrate with red-knot.</p>
+</blockquote>
+<p>Ah right, ofcourse. Sorry for the noise.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-10 21:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:622 on 2025-04-10 21:17</div>
+            <div class="timeline-body"><p>No worries, it <em>would</em> be nice to have!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1060 on 2025-04-10 21:18</div>
+            <div class="timeline-body"><p>Sure, I think I ended up moving most of these into the tests, so that's a good idea.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-10 21:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-10 21:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:618 on 2025-04-10 21:28</div>
+            <div class="timeline-body"><p>Yeah this is probably my least favorite part of the PR and one of the reasons that I wish we could just access the <code>Scope</code> directly. This is not really a general <code>in_function_context</code> method, it's more like an <code>await_allowed_in_this_scope</code> method, but that seemed too specific of a name. Basically, only classes break an <code>async</code> scope, unlike generators, which is also different from how <code>yield</code> and <code>yield from</code> work (they <em>are</em> broken by generators).</p>
+<p>Should I just rename it? Or do you have another suggestion here?</p>
+<p>
+<details>
+<summary>Python REPL session</summary>
+
+<pre><code class="language-pycon">&gt;&gt;&gt; async def f():
+...     [await x for x in y]
+...
+&gt;&gt;&gt; async def f():
+...     class C:
+...         [await x for x in y]
+...
+  File &quot;&lt;python-input-1&gt;&quot;, line 3
+    [await x for x in y]
+    ^^^^^^^^^^^^^^^^^^^^
+SyntaxError: asynchronous comprehension outside of an asynchronous function
+&gt;&gt;&gt; def f():
+...     yield 1
+...
+&gt;&gt;&gt; def f():
+...     [(yield 1) for x in y]
+...
+  File &quot;&lt;python-input-3&gt;&quot;, line 2
+    [(yield 1) for x in y]
+      ^^^^^^^
+SyntaxError: 'yield' inside list comprehension
+</code></pre>
+</details></p>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-10 21:29</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:618 on 2025-04-10 21:29</div>
+            <div class="timeline-body"><p>Resolving this will also help to clear up the docs and relationship between the other methods, I think.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-10 22:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/snapshots/ruff_linter__linter__tests__await_scope_notebook.snap</code>:6 on 2025-04-10 22:05</div>
+            <div class="timeline-body"><p>Good catch on the notebook too. I don't think I can use <code>assert_notebook_path</code> for the other, old notebook test because it filters out syntax errors, but it works perfectly here since this error corresponds to a ruff rule.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-10 22:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:618 on 2025-04-10 22:09</div>
+            <div class="timeline-body"><p>Oh, yeah that isn't obvious from the function name 😅</p>
+<p>In that case, it's a lot similar to <code>in_async_context</code> which is why I guess you choose the name <code>in_function_context</code>.</p>
+<p>It would be useful to rename it and add relevant documentation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:579 on 2025-04-11 06:54</div>
+            <div class="timeline-body"><p>Nit: You could implement <code>From&lt;YieldOutsideFunctionKind&gt; for DeferralKeyword</code>. You can then add a <code>new</code> function to <code>YieldOutsideFunction</code> that takes an <code>Into&lt;DeferralKeyword&gt;, so that </code>DeferralKeyword` can remain private.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:617 on 2025-04-11 06:59</div>
+            <div class="timeline-body"><p>Is your plan here to emit a different <code>SemanticSyntaxErrorKind</code> for <code>await</code> outside of <code>async</code> so that they can be re-coded to <code>PLE1142</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:618 on 2025-04-11 07:00</div>
+            <div class="timeline-body"><p>Nit: I'd prefer to have the notebook branch be its own if expression and have some documentation explaining why we skip the module scope for notebooks (as this isn't something that's very obvious why)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:1492 on 2025-04-11 07:02</div>
+            <div class="timeline-body"><p>I like the trait level documentation but I agree, that it would be useful to have a short summary of what it is. It could also refer to the trait documentation for more details.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-11 07:04</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-11 12:55</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:617 on 2025-04-11 12:55</div>
+            <div class="timeline-body"><p>Yes, exactly! It seems a bit redundant, but it will preserve the current behavior.</p>
+<p>That's the last error I'm planning to handle after this and #17300.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-11 12:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_python_parser/src/semantic_errors.rs</code>:618 on 2025-04-11 12:56</div>
+            <div class="timeline-body"><p>That's a good point. I'll bring back the comment from the deleted F704 implementation.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-04-11 13:56</div>
+            <div class="timeline-body"><p>Nice! Thanks for updating the notebook tests, I think <code>test_async_comprehension_notebook</code> would also need to be updated but can be done in a follow-up PR as well.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-11 13:58</div>
+            <div class="timeline-body"><p>Thank you both for the reviews! I think I've addressed everything.</p>
+<p>I went with <code>in_await_allowed_context</code> instead of <code>in_function_context</code> and added docs on the method itself. My other name candidate was <code>in_await_context</code>, but that seemed way too close to <code>in_async_context</code>. I also considered <code>await_allowed</code>, but I did still want to point back to the trait-level docs, which refer to the related methods as <code>in_*_context</code> methods. Happy to iterate further here if you have any suggestions.</p>
+<p>At some point in the future, we may want to get rid of the <code>await</code> behavior here and only emit <code>await</code> outside <em>async</em> function (PLE1142) anyway.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-04-11 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-11 14:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-11 14:16</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:28 UTC
+    </footer>
+</body>
+</html>

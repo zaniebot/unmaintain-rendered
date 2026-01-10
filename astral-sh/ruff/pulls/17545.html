@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Consider two instance types disjoint if the underlying classes have disjoint metaclasses - astral-sh/ruff #17545</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Consider two instance types disjoint if the underlying classes have disjoint metaclasses</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17545">#17545</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-04-22 11:58
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-22 11:58</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>I noticed we were being inconsistent between <code>type[]</code> types and instance types when it came to whether we considered disjointness of the metaclasses when determining the disjointness of two types. Consider the following example:</p>
+<pre><code class="language-py">from typing import final, reveal_type
+from knot_extensions import Intersection
+
+@final
+class Final1: ...
+
+@final
+class Final2: ...
+
+@final
+class Meta1(type): ...
+
+@final
+class Meta2(type): ...
+
+class UsesMeta1(metaclass=Meta1): ...
+class UsesMeta2(metaclass=Meta2): ...
+
+def f(
+    a: Intersection[Final1, Final2],
+    b: Intersection[type[Final1], type[Final2]],
+    c: Intersection[UsesMeta1, UsesMeta2],
+    d: Intersection[type[UsesMeta1], type[UsesMeta2]]
+):
+    reveal_type(a)  # `Never`
+    reveal_type(b)  # `Never`
+    reveal_type(c)  # `UsesMeta1 &amp; UsesMeta2` on `main`, but should also be `Never`
+    reveal_type(d)  # `Never`
+</code></pre>
+<p>https://playknot.ruff.rs/d422556b-bce6-407d-80cd-31b602fec12b</p>
+<p>If two instance types have disjoint metaclasses, the instance types must themselves be disjoint, as a class that simultaneously subclasses <code>A</code> and <code>B</code> can only exist if there could exist a metaclass that is a simultaneous subclass of <code>A</code>'s metaclass and <code>B</code>'s metaclass.</p>
+<h2>Test Plan</h2>
+<p>New mdtests added.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-22 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-04-22 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-04-22 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-04-22 11:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Consider two instance types disjoint if their metaclasses are disjoint" to "[red-knot] Consider two instance types disjoint if the underlying classes have disjoint metaclasses" by @AlexWaygood on 2025-04-22 12:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-22 12:05</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-22 12:08</div>
+            <div class="timeline-body"><p>neutral on codspeed: https://codspeed.io/astral-sh/ruff/branches/alex%2Finstance-disjointness</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-22 14:12</div>
+            <div class="timeline-body"><p>Excellent!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-04-22 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-04-22 14:14</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-22 14:14</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:29 UTC
+    </footer>
+</body>
+</html>

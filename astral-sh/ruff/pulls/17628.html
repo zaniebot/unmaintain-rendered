@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>red_knot_project: sort diagnostics from checking files - astral-sh/ruff #17628</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>red_knot_project: sort diagnostics from checking files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17628">#17628</a>
+        opened by <a href="https://github.com/BurntSushi">@BurntSushi</a>
+        on 2025-04-25 14:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/BurntSushi">@BurntSushi</a> on 2025-04-25 14:15</div>
+            <div class="timeline-body"><p>Previously, we could iterate over files in an unspecified order (via
+<code>HashSet</code> iteration) and we could accumulate diagnostics from files in
+an unspecified order (via parallelism).</p>
+<p>Here, we change the status quo so that diagnostics collected from files
+are sorted after checking is complete. For now, we sort by severity
+(with higher severity diagnostics appearing first) and then by
+diagnostic ID to give a stable ordering.</p>
+<p>I'm not sure if this is the best ordering.</p>
+<p>This is meant to address a <a href="https://github.com/astral-sh/ruff/actions/runs/14641270231/job/41084098266">flaky test failure</a>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @BurntSushi on 2025-04-25 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @BurntSushi on 2025-04-25 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @BurntSushi on 2025-04-25 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @BurntSushi on 2025-04-25 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @BurntSushi on 2025-04-25 14:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @BurntSushi on 2025-04-25 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @BurntSushi on 2025-04-25 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">diagnostics</span> added by @BurntSushi on 2025-04-25 14:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-25 14:22</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-25 15:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_project/src/lib.rs</code>:246 on 2025-04-25 15:30</div>
+            <div class="timeline-body"><p>I think we should include the file and ranges in the sort order. I would even use them first before comparing against severity and id. It guarantees that diagnostics from the same file stay together and that they preserve source order (because errors further up can result in errors further down).</p>
+<p>What's less clear to me is if the severity should take precedence over the range. For now, I'm leaning to sort by range (similar to <code>check_file_impl</code>) first, which I think is also what rustcs does (or rustc doesn't do any sorting?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-25 15:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_project/src/lib.rs</code>:246 on 2025-04-25 15:41</div>
+            <div class="timeline-body"><p>I don't think rustc does any sorting at this level. It just emits diagnostics as they are found.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-04-25 15:47</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-25 15:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_project/src/lib.rs</code>:246 on 2025-04-25 15:48</div>
+            <div class="timeline-body"><p>This is how Ruff handles this today (I'm a bit confused where it sorts by file but...)</p>
+<p>https://github.com/astral-sh/ruff/blob/a192d96880399413432a0316e24ce7982cbc3cb2/crates/ruff/src/commands/check.rs#L157-L171</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-25 16:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/red_knot_project/src/lib.rs</code>:246 on 2025-04-25 16:00</div>
+            <div class="timeline-body"><p>I think this is where the file ordering ends up coming from, last time I had to look into this:</p>
+<p>https://github.com/astral-sh/ruff/blob/fa88989ef0085610dd8ddecbd289a5fcc1d38892/crates/ruff_linter/src/message/mod.rs#L264-L268</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-25 16:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_project/src/lib.rs</code>:246 on 2025-04-25 16:05</div>
+            <div class="timeline-body"><p>and here's the file :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/BurntSushi">@BurntSushi</a> reviewed on 2025-04-25 16:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/BurntSushi">@BurntSushi</a> on <code>crates/red_knot_project/src/lib.rs</code>:246 on 2025-04-25 16:28</div>
+            <div class="timeline-body"><p>Aye. All righty, I've updated the PR to sort by file path, range, severity and ID. In that order.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-25 16:32</div>
+            <div class="timeline-body"><p>Thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @BurntSushi on 2025-04-25 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @BurntSushi on 2025-04-25 16:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-25 16:38</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:29 UTC
+    </footer>
+</body>
+</html>

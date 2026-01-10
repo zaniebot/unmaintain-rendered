@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add some knowledge of `__all__` to `*`-import machinery - astral-sh/ruff #17373</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add some knowledge of <code>__all__</code> to <code>*</code>-import machinery</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17373">#17373</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-04-13 12:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-13 12:20</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds some logic to the <code>exported_names</code> query in <code>re_exports.rs</code> so that it detects if <code>__all__</code> is defined in the file. The behaviour of the query now differs depending on whether or not <code>__all__</code> is defined:</p>
+<ul>
+<li>If so, it returns <em>all</em> names defined in the module's global scope, even underscore-prefixed names and imported names in stubs that are not explicitly re-exported.</li>
+<li>If not, the query has the same behaviour that it does on <code>main</code>: it only returns the global-scope names that are not underscore-prefixed, and it excludes imported names in stubs that are not explicitly re-exported.</li>
+</ul>
+<p>This PR is necessary because you can have situations like this, where an underscore-prefixed name is re-exported by virtue of it being included in <code>__all__</code>. On <code>main</code>, we do not even create a <code>Definition</code> for <code>_Y</code> in <code>importer.py</code> as a result of the <code>*</code> import, leading to false positives later on when <code>_Y</code> is used:</p>
+<details>
+<summary>Cases where we have false positives</summary>
+
+<p><code>exporter.py</code>:</p>
+<pre><code class="language-py">_Y = True
+
+__all__ = [&quot;_Y&quot;]
+</code></pre>
+<p><code>importer.py</code>:</p>
+<pre><code class="language-py">from exporter import *
+
+reveal_type(_Y)  # false-positive error from us here on `main`
+</code></pre>
+</details>
+
+<p>This PR is necessary but not sufficient for handling all issues relating to <code>__all__</code> and <code>*</code> imports. The immediate effect of the PR will be that it gets rid of some false positives, but at the cost of introducing some false negatives. For example, we will now not emit an error on something like this, even though it fails at runtime:</p>
+<details>
+<summary>New false negatives introduced by this PR</summary>
+
+<p><code>exporter.py</code>:</p>
+<pre><code class="language-py">_Y = True
+
+__all__ = []
+</code></pre>
+<p><code>importer.py</code>:</p>
+<pre><code class="language-py">from exporter import *
+
+reveal_type(_Y)  # We'll no longer catch the `NameError` here with this PR
+</code></pre>
+</details>
+
+<p>In order to fix this false negative, we'd need to actually understand which names are defined in <code>__all__</code> at runtime. But that's pretty hard, because of <a href="https://typing.python.org/en/latest/spec/distributing.html#library-interface-public-and-private-symbols">the various ways in which <code>__all__</code> can be conditionally defined or conditionally mutated at runtime</a>. Resolving the value of <code>__all__</code> requires us to resolve <code>sys.version_info</code> or <code>sys.platform</code> tests as always truthy or always falsy; this cannot be done from <code>re_exports.rs</code>. Instead, I think the value of <code>__all__</code> can only be finally resolved at type-inference time rather than in <code>re_exports.rs</code> or semantic indexing; therefore the proper solution to these new false negatives will be to adjust the logic here such that if the exporting module contains <code>__all__</code>, the visibility constraint applied to a certain <code>*</code>-import definition is resolved to always falsy if the symbol name is not present in the resolved value of <code>__all__</code>:</p>
+<p>https://github.com/astral-sh/ruff/blob/3aa3ee8b895d10e9c791e48f19e905ec6311e839/crates/red_knot_python_semantic/src/semantic_index/visibility_constraints.rs#L655-L667</p>
+<p>I considered adding logic to <code>re_exports.rs</code> so that the visitor kept track of an &quot;upper bound&quot; for the values of <code>__all__</code>. E.g. for something like this, you could calculate that, even though we don't know whether the <code>sys.version_info</code> test resolves to <code>true</code> or <code>false</code> in <code>re_exports.rs</code>, the &quot;upper bound&quot; of <code>__all__</code> is <code>{&quot;X&quot;, &quot;Y&quot;, &quot;Z&quot;}</code>. Therefore there would be no need to create a <code>Definition</code> for <code>Foo</code> if it saw a <code>*</code> import referencing this module; it would be able to only create <code>Definition</code>s for <code>X</code>, <code>Y</code> and <code>Z</code>:</p>
+<pre><code class="language-py">import sys
+
+X = 1
+Y = 2
+Z = 3
+Foo = 4
+
+__all__ = [&quot;X&quot;]
+
+if sys.version_info &gt;= (3, 10):
+    __all__.append(&quot;Y&quot;)
+else:
+    __all__ += [&quot;Z&quot;]
+</code></pre>
+<p>But I realised that even calculating an &quot;upper bound&quot; is not possible to do with any accuracy in <code>re_exports.rs</code>. This is because the typing spec mandates that type checkers must be able to understand an <code>__all__</code> mutation like this:</p>
+<pre><code class="language-py">import sys
+
+__all__ = []
+
+if sys.version_info &gt;= (3, 10):
+    from . import bar
+
+    __all__.extend(bar.__all__)
+</code></pre>
+<p>While it might be possible to look across the module boundary in <code>re_exports.rs</code> and retrieve the value of <code>bar.__all__</code>, I'm not at all confident that we would be able to correctly resolve the type of the <code>bar</code> symbol itself here from this query. The fact that there were serious questions about how accurate this calculation of &quot;upper bounds&quot; might be, the fact that it shouldn't be necessary to do it for correctness (it would just be an optimisation), and the fact the fact that attempting this calculation added significant complexity to <code>re_exports.rs</code>, all led me to abandon this idea. But if you're interested in it anyway, the other branch where I tried it out is here: https://github.com/astral-sh/ruff/compare/main...alex%2Fstar-imports-dunder-all</p>
+<p>Closes https://github.com/astral-sh/ruff/issues/14169.</p>
+<h2>Test Plan</h2>
+<p>Updated some assertions in mdtests, and added some new ones</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-13 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-04-13 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-04-13 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-04-13 12:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-13 12:22</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-14 23:25</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-04-15 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-04-15 11:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-15 11:56</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:28 UTC
+    </footer>
+</body>
+</html>

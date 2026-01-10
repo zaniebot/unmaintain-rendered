@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[formatter] Add pragma-tags and pragma-tags-case-insensitive settings - astral-sh/ruff #17269</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[formatter] Add pragma-tags and pragma-tags-case-insensitive settings</h1>
+
+    <div class="meta">
+        <span class="state-icon state-open"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17269">#17269</a>
+        opened by <a href="https://github.com/lukaspiatkowski">@lukaspiatkowski</a>
+        on 2025-04-07 11:04
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/lukaspiatkowski">@lukaspiatkowski</a> on 2025-04-07 11:04</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Use <code>pragma-tags</code> and <code>pragma-tags-case-insensitive</code> options instead of hardcoding pragma tags detection logic.
+Include the colon as part of the pragma tag instead of special-casing pragmas that require a trailing colon.</p>
+<p>Fixes #11941</p>
+<h2>Test Plan</h2>
+<p>Added <code>pragma_tags_*</code> tests to <code>ruff/tests/format.rs</code> to verify the default behaviour is unchanged and that customizing pragma tags works.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @lukaspiatkowski on 2025-04-07 11:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">formatter</span> added by @AlexWaygood on 2025-04-07 11:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-07 11:44</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-07 11:48</div>
+            <div class="timeline-body"><p>Thanks. I've to think about this a bit more because I don't think we want two options and the other thing we have to think about is how this option works in combination with inherited configurations (how can a pragma be removed)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lukaspiatkowski">@lukaspiatkowski</a> on 2025-04-07 16:46</div>
+            <div class="timeline-body"><p>The <a href="https://docs.astral.sh/ruff/settings/#lint_task-tags">task-tags</a> config for the linter doesn't support inheritance, but if you feel strongly about it I could look into adding <code>extend-pragma-tags</code>. An <code>ignore-pragma-tags</code> that would mimic the (extend-)select/ignore configuration feels like an overkill given how little sense it makes to remove a pragma from the list.</p>
+<p>As for reducing the 2 options into 1 I can think of the following solutions:</p>
+<ul>
+<li>Make <code>pragma-tags</code> case insensitive (I don't see much harm in this being over-permissive)</li>
+<li>Enumerate all the nNoOqQaA permutations - seems wrong, especially if people want to add their own case insensitive tToOdDoO etc</li>
+<li>Put both configurations in one config, something like</li>
+</ul>
+<pre><code class="language-python">[&quot;pyright:&quot;, (&quot;i&quot;, &quot;noqa&quot;)]
+or
+[&quot;pyright:&quot;, &quot;noqa/i&quot;] # /i like in regexes
+</code></pre>
+<p>not sure if this is possible in toml though</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-11 08:08</div>
+            <div class="timeline-body"><blockquote>
+<p>Make pragma-tags case insensitive (I don't see much harm in this being over-permissive)</p>
+</blockquote>
+<p>The main downside is that case-insensitive comparison is more expensive (comparing bytes isn't sufficient anymore). Do you have an example of pragma comments where it is common to use different casing?</p>
+<blockquote>
+<p>Put both configurations in one config, something like</p>
+</blockquote>
+<p>This is too fancy. I rather prefer using a regex in that case. But that's also not free.</p>
+<blockquote>
+<p>but if you feel strongly about it I could look into adding extend-pragma-tags</p>
+</blockquote>
+<p>We're moving away from the <code>extend</code> pattern. because it means it always requires 2 settings: One with extend and one with override behavior. I think I'd prefer to instead allow <code>!noqa</code> to remove elements from the pragma again. Or we make it a single regex, that removes the entire override problematic. Although I'm not a huge fan of users having to write regexes.</p>
+<p>The last design question is if it should be possible for users to remove the standard pragma comments. I think it should.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/lukaspiatkowski">@lukaspiatkowski</a> on 2025-04-11 09:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Do you have an example of pragma comments where it is common to use different casing?</p>
+</blockquote>
+<p>I am aware only of <code>noqa</code>, but then maybe even in that case a full case insensitive match is not really required? If you are willing to break backwards compatibility then by looking at GitHub I see that there are:</p>
+<ul>
+<li><code>/(?-i)# ?noqa/</code> - 2.3M files</li>
+<li>Cases with exactly one lower letter:<ul>
+<li><code>/(?-i)# ?NoQA/</code> - 1.7k files</li>
+<li><code>/(?-i)# ?nOQA/</code> &amp; <code>/(?-i)# ?NOqA/</code> &amp; <code>/(?-i)# ?NOQa/</code> - 0 files</li>
+</ul>
+</li>
+<li>Cases with exactly one upper letter:<ul>
+<li><code>/(?-i)# ?Noqa/</code> - 59 files</li>
+<li><code>/(?-i)# ?noQa/</code> - 12 files</li>
+<li><code>/(?-i)# ?noqA/</code> &amp; <code>/(?-i)# ?nOqa/</code> - 0 files</li>
+</ul>
+</li>
+<li>Cases when <code>O</code> is upper, rest is whatever:<ul>
+<li><code>/(?-i)# ?NOQA/</code> - 116k files</li>
+<li><code>/(?-i)# ?nO[qQ][aA]/</code> &amp; <code>/(?-i)# ?[nN]Oq[aA]/</code> &amp; <code>/(?-i)# ?[nN]O[qQ]a/</code> - 3 files (basically upper <code>O</code> and at least one lower other number, sadly GitHub doesn't support negative lookahead so I had to try all the cases)</li>
+</ul>
+</li>
+<li>Cases not covered before (<code>o</code> lower case, exactly 2 upper):<ul>
+<li><code>/(?-i)# ?NoQa/</code> - 13 files</li>
+<li><code>/(?-i)# ?NoqA/</code> - 0 files</li>
+<li><code>/(?-i)# ?noQA/</code> - 79 files</li>
+</ul>
+</li>
+</ul>
+<p>So given the numbers it should be fine to support just <code>noqa</code>, <code>NOQA</code> and <code>NoQA</code>? My example with <code>ToDo</code> is probably similar, you don't care about <code>tODo</code> just a few reasonable values.</p>
+<p>Or <code>noqa</code> can be special cased, so that if it is on the list of pragmas we check it in case-insensitive way as the only tag.</p>
+<blockquote>
+<p>The last design question is if it should be possible for users to remove the standard pragma comments. I think it should.</p>
+</blockquote>
+<p>Assuming yes, do you prefer to do this via mechanism of &quot;removal&quot; rather than just allow the users to override the list entirely? Do you want to avoid users having to list the default pragmas when they just want to extend the list? I like the <code>!noqa</code> idea, but that brings a bit of complexity to the code - you have to support config inheritance properly and probably allow escaping the <code>!</code> (maybe <code>!!noqa</code>?). I don't mind listing the default pragmas every time I want to extend their list, especially because that list is relatively short right now, but also because it makes the whole configuration less magical. If I am a dev on a large project it would make it easier for me to understand why the formatting works like that if the pragmas are listed explicitly in the config.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:28 UTC
+    </footer>
+</body>
+</html>

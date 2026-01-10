@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Super-basic generic inference at call sites - astral-sh/ruff #17301</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Super-basic generic inference at call sites</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17301">#17301</a>
+        opened by <a href="https://github.com/dcreager">@dcreager</a>
+        on 2025-04-08 21:00
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-08 21:00</div>
+            <div class="timeline-body"><p>This PR adds <strong><em>very</em></strong> basic inference of generic typevars at call sites. It does not bring in a full unification algorithm, and there are a few TODOs in the test suite that are not discharged by this. But it handles a good number of useful cases! And the PR does not add anything that would go away with a more sophisticated constraint solver.</p>
+<p>In short, we just look for typevars in the formal parameters, and assume that the inferred type of the corresponding argument is what that typevar should map to. If a typevar appears more than once, we union together the corresponding argument types.</p>
+<p>Cases we are not yet handling:</p>
+<ul>
+<li>We are not widening literals.</li>
+<li>We are not recursing into parameters that are themselves generic aliases.</li>
+<li>We are not being very clever with parameters that are union types.</li>
+</ul>
+<p>This depends on #17023.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @dcreager on 2025-04-08 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @dcreager on 2025-04-08 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @dcreager on 2025-04-08 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @dcreager on 2025-04-08 21:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-08 21:02</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:150 on 2025-04-09 04:22</div>
+            <div class="timeline-body"><p>I am not actually convinced there's a strong rationale for this TODO. I don't think there is any function body for <code>two_params</code> that would type-check and allow it to return anything other than <code>&quot;a&quot;</code> or <code>&quot;b&quot;</code>. Same for a number of similar TODOs below.</p>
+<p>But I could be wrong; not asking to have these TODOs removed in this PR, just putting it out there that I'm not convinced :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:168 on 2025-04-09 04:25</div>
+            <div class="timeline-body"><p>Interesting case not covered here: <code>param_with_union(3, 1)</code> should be a valid call, and must return <code>Literal[1]</code>, not <code>Literal[3]</code>, for the same reason discussed above.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:162 on 2025-04-09 04:30</div>
+            <div class="timeline-body"><p>This case is a bit subtle, I had to actually try to write a body for <code>param_with_union</code> in which we could return <code>1</code> from this call, before realizing it's not possible because <code>T | int</code> is not assignable to <code>T</code>, so before we can return <code>x</code> we have to exclude <code>int</code> from its type, meaning this call can't return <code>1</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-09 04:34</div>
+            <div class="timeline-body"><p>Will review the rest of this later, just looked at the tests so far. Pretty cool the TODOs it does eliminate!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-09 04:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:162 on 2025-04-09 04:36</div>
+            <div class="timeline-body"><p>(Trying to write that function also highlighted a bug that currently we don't think <code>T &amp; ~int</code> is assignable to <code>T</code>, but it should be.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:162 on 2025-04-09 16:39</div>
+            <div class="timeline-body"><p>I added some extra tests that exercise the logic I actually care about here (namely, that we try to infer the smallest specialization that satisfies all the constraints).  I went with a function with signature <code>(T | None) -&gt; T</code>.  I think there's technically no way to correctly instantiate that signature, so for now I'm accepting the <code>[invalid-return-type]</code> error.  Once we support <code>list[T]</code>, I can make it return that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:168 on 2025-04-09 16:42</div>
+            <div class="timeline-body"><p>Yep! Added</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-09 16:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-09 17:03</div>
+            <div class="timeline-body"><p>Putting this back to draft for a bit — now that basic <code>__init__</code> support has landed I want to see if I can make this work for class construction too.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @dcreager on 2025-04-09 17:03</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-04-09 20:38</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/dcreager%2Finfer-function-calls">CodSpeed Performance Report</a></h2>
+<h3>Merging #17301 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>dcreager/infer-function-calls</code> (523ddcb) with <code>main</code> (5350288)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 33</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2025-04-09 20:47</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:150 on 2025-04-09 20:47</div>
+            <div class="timeline-body"><p>if revealed type of return value of function most be <code>Literal[&quot;a&quot;] | Literal[&quot;b&quot;]</code>, then it's incorrect type checking, since there is only one type var: <code>T</code>.</p>
+<p>in other words, it should get <code>Literal[&quot;a&quot;]</code> only when calling by <code>two_params(&quot;a&quot;, &quot;a&quot;)</code>. but when calling <code>two_params(&quot;a&quot;, &quot;b&quot;)</code>, both of &quot;a&quot; and &quot;b&quot; are different shape of literal strings and it should show error. but if revealed type became <code>str</code>, the call of <code>two_params(&quot;a&quot;, &quot;b&quot;)</code> is acceptable.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:150 on 2025-04-09 22:12</div>
+            <div class="timeline-body"><p>I don't agree. There's nothing special about a union type in a set-theoretic type system. <code>Literal[&quot;a&quot;, &quot;b&quot;]</code> is a well-defined single type, just as much as <code>str</code> is, and the single typevar <code>T</code> can bind to the union type just as well as it can bind to any other type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-09 22:12</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/T-256">@T-256</a> reviewed on 2025-04-09 22:44</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/T-256">@T-256</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:150 on 2025-04-09 22:44</div>
+            <div class="timeline-body"><blockquote>
+<p>and the single typevar <code>T</code> can bind to the union type just as well as it can bind to any other type.</p>
+</blockquote>
+<p>IIUC, <code>T</code> would be <code>Literal[&quot;a&quot;, &quot;b&quot;]</code> when call it by <code>reveal_type(two_params(&quot;a&quot;, &quot;b&quot;))</code>.
+It now makes sense to me, thanks for clarification.</p>
+<p>What I was thinking is that when first parameter passed (<code>&quot;a&quot;</code>), then <code>T</code> typevar locks to <code>Literal[&quot;a&quot;]</code> and by second parameter which is <code>Literal[&quot;b&quot;]</code> it will invalidate the <code>T</code>. Actually, I had rust backgrounding of generics in my mind:</p>
+<pre><code class="language-rs">fn two_params&lt;T&gt;(a:T, b:T) -&gt; T {
+    a
+}
+
+fn main() {
+    two_params(&quot;a&quot;, 1);  // error[E0308]: mismatched types
+}
+</code></pre>
+<p>BTW, it's valid in Python generics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:150 on 2025-04-11 15:12</div>
+            <div class="timeline-body"><blockquote>
+<p>What I was thinking is that when first parameter passed (<code>&quot;a&quot;</code>), then <code>T</code> typevar locks to <code>Literal[&quot;a&quot;]</code> and by second parameter which is <code>Literal[&quot;b&quot;]</code> it will invalidate the <code>T</code>.</p>
+</blockquote>
+<p>This is a good way to think about how the implementation works here, and how it will need to grow to support some of the other mdtests that still have TODOs.</p>
+<p>Right now, the only &quot;solving&quot; that we do is to see that the param is a typevar, and the argument is &quot;some type&quot;, and add to the pending specialization that the typevar maps to the type. But if we've already seen that typevar in a different parameter, instead of replacing the previous type, or requiring the previous and new types to be the same (as you thought might be the case), we merge them together into a union. This is the only &quot;unification&quot; that the implementation in this PR does.</p>
+<p>This first example in <a href="https://github.com/astral-sh/ruff/blob/836d02cbbed6f56a78358880aba82d277e4cd833/crates/red_knot_python_semantic/resources/mdtest/generics/classes.md#inferring-generic-class-parameters">this section</a> is one that this PR doesn't addres, where we'll need to not just blindly union everything together — the type annotation is meant to be an actual restriction that we should enforce.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3846 on 2025-04-11 15:14</div>
+            <div class="timeline-body"><p>Callers must now provide the full policy that they want to use, and <code>NO_INSTANCE_FALLBACK</code> is not implicitly added. That allows us to use <code>try_call_dunder_with_policy</code> (instead of copy/pasting it) down below in <code>try_call_constructor</code>, to find and call the <code>__new__</code> class method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3848 on 2025-04-11 15:15</div>
+            <div class="timeline-body"><p>Taking in a <code>mut</code> reference here let's us use <code>with_self</code> down below, which reuses and modifies a <code>CallArgumentTypes</code> in place.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4085 on 2025-04-11 15:16</div>
+            <div class="timeline-body"><p>This the lookup policy that does <em>not</em> include <code>NO_INSTANCE_FALLBACK</code>, where we can now use <code>try_call_dunder_with_policy</code> because of the change described above</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5744 on 2025-04-11 15:26</div>
+            <div class="timeline-body"><p>One thing that this PR is not yet modeling well is nested generic contexts.  Tests are passing for a generic method inside of a generic class, but I think we might need to actually encode nesting of <code>GenericContext</code>s to be able to accurate display e.g. the still-generic method of a specialized generic class.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/call/arguments.rs</code>:114 on 2025-04-11 15:27</div>
+            <div class="timeline-body"><p>This is redundant with <code>with_self</code>, as long as you can reuse the <code>CallArgumentTypes</code> instance</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:298 on 2025-04-11 15:28</div>
+            <div class="timeline-body"><p>This is where we might consider having <em>all</em> class methods inherit the class's generic context, if we want to e.g. support inferring a specialization for a factory method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:265 on 2025-04-11 15:29</div>
+            <div class="timeline-body"><p>This isn't actually used in the PR, but I <em>was</em> using it for some <code>printf</code> debugging at one point, and it seemed worth keeping.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/generics.rs</code>:223 on 2025-04-11 15:30</div>
+            <div class="timeline-body"><p>Here is where (as discussed above) we are unioning together the mappings for a typevar that appears in multiple parameters</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-11 15:31</div>
+            <div class="timeline-body"><p>@carljm, the &quot;identity specialization&quot; worked well, and let me remove the new <code>InstanceType</code> enum variant as we discussed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-04-11 15:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:150 on 2025-04-12 00:31</div>
+            <div class="timeline-body"><p>That example will also require type context (bidirectional checking).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:163 on 2025-04-12 00:51</div>
+            <div class="timeline-body"><p>This is a valid body with the current signature, but it currently runs into the fact that we don't consider <code>T &amp; ~None</code> to be a subtype of <code>T</code> (filed https://github.com/astral-sh/ruff/issues/17364 for that):</p>
+<pre><code class="language-suggestion">def union_param[T](x: T | None) -&gt; T:
+    if x is None:
+        raise ValueError(&quot;give me none of that&quot;)
+    return x
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:160 on 2025-04-12 00:54</div>
+            <div class="timeline-body"><p>Can/should this be <code>Never</code>? (Just musing, no need for it to be more than a TODO in this PR.)</p>
+<p>I don't think it's possible to write a correct implementation of <code>union_param</code> that returns <code>None</code>? Which suggests that if you pass in <code>None</code>, the return type should be <code>Never</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:150 on 2025-04-12 00:57</div>
+            <div class="timeline-body"><p>I know I said in the first comment here that I wasn't actually saying we should remove all these TODOs asking for wider types... but I kind of think we should? Unless someone wants to argue that we definitely want this change. Having TODOs around suggests to a contributor that a PR to widen all these types would be welcomed, when I'm not sure it would/should be.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4128 on 2025-04-12 01:23</div>
+            <div class="timeline-body"><p>Should we also have a test showing specialization from <code>__new__</code>? And even some tests showing how specialization works in cases where both <code>__new__</code> and <code>__init__</code> are present?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3860 on 2025-04-12 01:23</div>
+            <div class="timeline-body"><p>This can totally be a TODO for now, but I wonder if there are cases where we'll need to specialize from <code>__init__</code> even if <code>__new__</code> exists? Like if <code>__new__</code> just has an <code>*args, **kwargs</code> signature but <code>__init__</code> actually binds some type vars?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5744 on 2025-04-12 01:24</div>
+            <div class="timeline-body"><p>Is it worth a TODO comment somewhere to capture this?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:8 on 2025-04-12 01:27</div>
+            <div class="timeline-body"><p>This doesn't seem to be used in this module?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:298 on 2025-04-12 01:33</div>
+            <div class="timeline-body"><p>I think this could be a comment in the code, for better access later.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:305 on 2025-04-12 01:38</div>
+            <div class="timeline-body"><p>I'm a bit confused by this. So we still have the specialized function, and we don't remove that specialization, but we attach the class' generic context to the function? What effect does having the specialization still attached have?</p>
+<p>I guess I'm having some trouble following the semantics of the &quot;generic context&quot; field on a function type; maybe this is also related to your comment just above. I wonder if it would be clearer to have a separate dedicated field for this special case of &quot;already-specialized method, but we want call binding to infer a specialization from it&quot;?</p>
+<p>I guess a maybe related question is, what about if the class is explicitly specialized already (e.g. <code>C[int](...)</code> constructor call)? In that case, it seems like we don't want/need to infer a specialization from the constructor, we just want to use the existing specialization and check the arguments against it. How is that handled currently?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:293 on 2025-04-12 01:47</div>
+            <div class="timeline-body"><p>Why do we have to implement the special case for <code>__init__</code> and <code>__new__</code> both here and in <code>ClassLiteralType::own_class_member</code>, when this method delegates to <code>ClassLiteralType::own_class_member</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-12 01:53</div>
+            <div class="timeline-body"><p>Fantastic.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/mtshiba">@mtshiba</a> reviewed on 2025-04-12 09:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/mtshiba">@mtshiba</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:150 on 2025-04-12 09:40</div>
+            <div class="timeline-body"><p>Here is an example, which is somewhat artificial, but demonstrates that it is not always good to infer the &quot;minimal&quot; type of function arguments.</p>
+<pre><code class="language-python">from typing import Callable
+
+def two_params[T](x: T, y: T) -&gt; T:
+    return x
+def curry_two_params[T](x: T) -&gt; Callable[[T], T]:
+    return lambda y: two_params(x, y)
+
+f = curry_two_params(&quot;a&quot;)
+reveal_type(f)  # revealed: (Literal[&quot;a&quot;], /) -&gt; Literal[&quot;a&quot;]  # but this too strict in some cases
+
+# This is OK
+reveal_type(two_params(&quot;a&quot;, &quot;b&quot;))  # revealed: Literal[&quot;a&quot;, &quot;b&quot;]
+# So, this should also be OK
+reveal_type(f(&quot;b&quot;))  # revealed: Literal[&quot;a&quot;]
+</code></pre>
+<p>This causes the following error:</p>
+<pre><code>error: lint:invalid-argument-type: Argument to this function is incorrect
+  --&gt; generic.py:14:15
+   |
+12 | reveal_type(two_params(&quot;a&quot;, &quot;b&quot;))  # revealed: Literal[&quot;a&quot;, &quot;b&quot;]
+13 | # So, this should also be OK
+14 | reveal_type(f(&quot;b&quot;))  # revealed: Literal[&quot;a&quot;]
+   |               ^^^ Expected `Literal[&quot;a&quot;]`, found `Literal[&quot;b&quot;]`
+</code></pre>
+<p>Such an error does not occur in mypy, pyright (because they simply infer the type of <code>f</code> as <code>str -&gt; str</code>).
+Therefore, it may be that red-knot should also infer the type of <code>curry_two_params(&quot;a&quot;)</code> as <code>str -&gt; str</code>. Alternatively, it might be possible to infer it as <code>Literal[&quot;a&quot;, &quot;b&quot;] -&gt; Literal[&quot;a&quot;, &quot;b&quot;]</code> by using bidirectional type checking?</p>
+<p>In any case, the current behavior may be inconvenient because users cannot intentionally widen the types of function arguments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-14 13:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:150 on 2025-04-14 13:22</div>
+            <div class="timeline-body"><p>Ooh, I like this example! I think it's not restricted to the &quot;should we widen literals to the 'real' type&quot; discussion. It would also apply to any parameters where we would infer a union when calling <code>two_params</code> directly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:150 on 2025-04-14 19:16</div>
+            <div class="timeline-body"><p>Yes, I think this is a very useful example, thank you! But (to rephrase what @dcreager already mentioned), no Python type checker actually supports the general principle that if <code>two_params(T1, T2)</code> is OK, therefore <code>f = curry_two_params(T1); f(T2)</code> should also be OK. In both mypy and pyright, <code>two_params(&quot;a&quot;, 1)</code> is fine (<code>T</code> is solved to <code>int | str</code>), but <code>f = curry_two_params(&quot;a&quot;); f(1)</code> is a type error (<code>f</code> is <code>(str) -&gt; str</code>).</p>
+<p>In other words, there's no difference in principle here, just a difference in semi-arbitrary widening heuristics, that makes the same issue appear at a different level of type granularity.</p>
+<p>Perhaps the mypy/pyright approach is the best one available, in practice! But it would certainly be satisfying if we can find a more general answer that doesn't depend on heuristics.</p>
+<p>One approach to solve this kind of issue is unification of a constraint system across the entire scope. But this is quite hard to reconcile with flow typing.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-14 19:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-14 19:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:150 on 2025-04-14 19:40</div>
+            <div class="timeline-body"><p>I think this is another form of the same problem:</p>
+<pre><code class="language-py">def f(x: T) -&gt; list[T]:
+    return [x]
+
+list_of_what = f(1)
+reveal_type(list_of_what)  # mypy/pyright say `list[int]`
+list_of_what.append(2)  # mypy/pyright are ok with this
+list_of_what.append(&quot;foo&quot;)  # but not this, which is sort of arbitrary
+</code></pre>
+<p>The common thread in the examples is that a type is returned from a generic function in which a type parameter appears in an invariant/contravariant position.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-14 19:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:150 on 2025-04-14 19:57</div>
+            <div class="timeline-body"><p>Is this another place where we'd lean on <code>OneOf</code>?  The type of <code>list_of_what</code> (and maybe the type of a literal in general?) would be <code>list[OneOf[Literal[1], int]]</code>.  i.e. <code>OneOf</code> might be shaping up to be the way that we handle &quot;cross-expression&quot; constraints in general.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-14 22:22</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:150 on 2025-04-14 22:22</div>
+            <div class="timeline-body"><p>I do think it's plausible that we can leverage gradual typing here, though I'm not sure we need <code>OneOf</code> in this case, I think &quot;union with <code>Unknown</code>&quot; suffices. (Using <code>OneOf</code> still requires us to make the arbitrary judgment that you aren't supposed to add strings to this list.) The union <code>Unknown | Literal[1]</code> expresses the gradual type &quot;some type at least as large as <code>Literal[1]</code> but possibly larger&quot;, which has the nice property that if you ever try to use it somewhere you can't use an integer, it'll error -- but it'll allow things other than <code>Literal[1]</code> to be assigned to it.</p>
+<p>I think at least two things we would need to make this approach work would be narrowing such that if you have a list <code>l</code> of type <code>list[Unknown | Literal[1]]</code> and you do <code>l.append(&quot;foo&quot;)</code>, we subsequently consider it to be of type <code>list[Unknown | Literal[1] | Literal[&quot;foo&quot;]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:150 on 2025-04-15 20:21</div>
+            <div class="timeline-body"><blockquote>
+<p>I know I said in the first comment here that I wasn't actually saying we should remove all these TODOs asking for wider types... but I kind of think we should? Unless someone wants to argue that we definitely want this change. Having TODOs around suggests to a contributor that a PR to widen all these types would be welcomed, when I'm not sure it would/should be.</p>
+</blockquote>
+<p>Removed the TODOs. If we decide to make this change, test failures will tell us all the places that need to be updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5744 on 2025-04-15 20:23</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:298 on 2025-04-15 20:26</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:163 on 2025-04-15 20:36</div>
+            <div class="timeline-body"><p>Done.  And closed #17364 so that there's no error</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/resources/mdtest/generics/functions.md</code>:160 on 2025-04-15 20:36</div>
+            <div class="timeline-body"><p>Added TODO</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-15 20:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @dcreager on 2025-04-15 20:55</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-15 20:55</div>
+            <div class="timeline-body"><p>Still working on more thorough tests of <code>__new__</code> and <code>__init__</code>.  Will move it back out of draft when ready for more review</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/call.rs</code>:8 on 2025-04-16 14:51</div>
+            <div class="timeline-body"><p>It's reexported here so that <a href="https://github.com/astral-sh/ruff/pull/17301/files#diff-42314c006689490bbdfbeeb973de64046b3e069e3d88f67520aeba375f20e655R35">this line</a> can pull it in from the <code>call</code> module instead of from <code>call::bind</code>.  I <em>think</em> that's so that we can use <code>pub(super)</code> here to limit it to the <code>types::*</code> module tree, and not let it leak to the entire crate?  (We'd need a <code>pub(grandparent)</code> to do that on its definition in <code>bind</code>.)</p>
+<p>I honestly don't <em>love</em> that pattern. (Do we really need that level of control over visibility? And if so, would it be better to use more crates to achieve it? If we don't want more crates, is that not an argument that we don't really need that level of control?) But I don't feel <em>that</em> strongly, and it's the pattern currently being used, so I didn't want to conflate an extra thing into this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:305 on 2025-04-16 15:00</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm a bit confused by this. So we still have the specialized function, and we don't remove that specialization, but we attach the class' generic context to the function? What effect does having the specialization still attached have?</p>
+</blockquote>
+<p>This is related to your <a href="https://github.com/astral-sh/ruff/pull/17301#discussion_r2040498114">question below</a>: we shouldn't be doing this special-case lookup here at all, it should only happen down in <code>ClassLiteralType</code>, where neither the generic class nor its <code>__new__</code> method have been specialized yet.  So I've removed this.</p>
+<p>I think the equivalent logic in <code>ClassLiteralType</code> (which we keep) is correct, at least for <code>__new__</code> methods that are not further specialized.  (For ones that are, we run afoul of my comment above about not handling that nested generic context especially well yet.)  You would have:</p>
+<pre><code class="language-py">class C[T]:
+    def __new__(cls, x: T) -&gt; &quot;C&quot;[T]: ...
+</code></pre>
+<p>In <code>ClassLiteralType</code>, we would looking up <code>C.__new__</code>. <code>C</code> is not yet specialized, so the method inherits the class's generic context and (via the <code>with_generic_context</code> call) becomes <code>C.__new__[T]</code>.  Then when we call it, a specialization gets inferred, and that specialization gets applied to the class as well, resulting in e.g. <code>C.__new__[int]</code> → <code>C[int]</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:293 on 2025-04-16 15:05</div>
+            <div class="timeline-body"><p>See above; we shouldn't have this logic in both places, only in <code>ClassLiteralType</code>, where the generic class has not yet been specialized</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:4128 on 2025-04-16 16:51</div>
+            <div class="timeline-body"><p>Done</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3860 on 2025-04-16 16:52</div>
+            <div class="timeline-body"><p>Added these as test cases, and added a <code>combine</code> method for specializations that handles this case.  (I had though that the <code>Option::or</code> could would handle it, but in the <code>*args, **kwargs</code> case, we do still infer a specialization — the default one!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-16 16:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @dcreager on 2025-04-16 17:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dcreager">@dcreager</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:5744 on 2025-04-16 17:11</div>
+            <div class="timeline-body"><p>I added a failing test case for this too, showing how we're not correctly modeling e.g. a generic <code>__init__</code> method inside of a generic class.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dcreager">@dcreager</a> reviewed on 2025-04-16 17:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dcreager">@dcreager</a> on 2025-04-16 19:07</div>
+            <div class="timeline-body"><p>Going to go ahead and merge this; if anyone sees anything that needs to be addressed as follow-on work, please let me know!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @dcreager on 2025-04-16 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @dcreager on 2025-04-16 19:07</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-16 19:07</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[pylint] Implement global-variable-undefined (W0601) - astral-sh/ruff #10820</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[pylint] Implement global-variable-undefined (W0601)</h1>
+
+    <div class="meta">
+        <span class="state-icon state-closed"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/10820">#10820</a>
+        opened by <a href="https://github.com/tibor-reiss">@tibor-reiss</a>
+        on 2024-04-07 19:20
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/tibor-reiss">@tibor-reiss</a> on 2024-04-07 19:20</div>
+            <div class="timeline-body"><p>Add pylint rule global-variable-undefined (W0601)</p>
+<p>See https://github.com/astral-sh/ruff/issues/970 for rules</p>
+<p>Test Plan: <code>cargo test</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2024-04-07 19:50</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>ℹ️ ecosystem check <strong>detected linter changes</strong>. (+4 -0 violations, +0 -0 fixes in 2 projects; 52 projects unchanged)</p>
+<details><summary><a href="https://github.com/apache/airflow">apache/airflow</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ <a href='https://github.com/apache/airflow/blob/6f986d2b6c518f60eab175afb4c360aea9984d50/tests/listeners/class_listener.py#L39'>tests/listeners/class_listener.py:39:13:</a> PLW0601 Global variable `stopped_component` is undefined at the module
++ <a href='https://github.com/apache/airflow/blob/6f986d2b6c518f60eab175afb4c360aea9984d50/tests/listeners/class_listener.py#L71'>tests/listeners/class_listener.py:71:13:</a> PLW0601 Global variable `stopped_component` is undefined at the module
+</pre>
+
+</p>
+</details>
+<details><summary><a href="https://github.com/bokeh/bokeh">bokeh/bokeh</a> (+2 -0 violations, +0 -0 fixes)</summary>
+<p>
+<pre>ruff check --no-cache --exit-zero --ignore RUF9 --output-format concise --preview --select ALL</pre>
+</p>
+<p>
+
+<pre>
++ examples/output/jupyter/push_notebook/Numba Image Example.ipynb:cell 18:2:5: PLW0601 Global variable `_last_kname` is undefined at the module
++ examples/output/jupyter/push_notebook/Numba Image Example.ipynb:cell 18:3:5: PLW0601 Global variable `_last_out` is undefined at the module
+</pre>
+
+</p>
+</details>
+<details><summary>Changes by rule (1 rules affected)</summary>
+<p>
+
+<p>| code | total | + violation | - violation | + fix | - fix |
+| ---- | ------- | --------- | -------- | ----- | ---- |
+| PLW0601 | 4 | 4 | 0 | 0 | 0 |</p>
+</p>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tusharsadhwani">@tusharsadhwani</a> on 2024-04-07 20:21</div>
+            <div class="timeline-body"><p>Does this break on wildcard imports?</p>
+<pre><code class="language-python">from os import *
+
+def foo():
+    global system  # W0601 should not be raised
+    system = lambda _: None
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tibor-reiss">@tibor-reiss</a> on 2024-04-14 09:16</div>
+            <div class="timeline-body"><blockquote>
+<p>Does this break on wildcard imports?</p>
+<pre><code class="language-python">from os import *
+
+def foo():
+    global system  # W0601 should not be raised
+    system = lambda _: None
+</code></pre>
+</blockquote>
+<p>Yes, it does. I have not found a function in ruff which resolves star-imports, e.g. there is F403 and F405 which are raised for star-imports and warn about &quot;...unable to detect...&quot; and &quot;...may be undefined...&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-15 07:10</div>
+            <div class="timeline-body"><p>I think there's a way to detect if there's a star import in which case you could avoid creating any diagnostics (to avoid false-positives).</p>
+<p>The main open question to me are</p>
+<ul>
+<li>how this fits into ruff long term when Ruff catches more static analyzable errors (undefined variables in general)</li>
+<li>What's the motivation that this rule is specific to globals and doesn't apply to all variables.</li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">rule</span> added by @MichaReiser on 2024-04-15 07:10</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tibor-reiss">@tibor-reiss</a> on 2024-04-15 18:57</div>
+            <div class="timeline-body"><p>@MichaReiser
+Regarding star imports: when I do <code>from os import *</code>, pylint resolves this and e.g. has <code>system</code> in the namespace. Ruff is not able to do this (yet). For now, I simply left this out in this PR. What is possible though is to add something similar to F403/F405, i.e. if there is a start import, then raise &quot;global variable undefined but maybe imported via star import&quot;. What's your preference?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-04-16 07:31</div>
+            <div class="timeline-body"><p>@tibor-reiss my preference would be that we don't flag any variables if a file contains a star import. I think there's already precedence for this in Ruff but I would need to search it to. @charliermarsh should know where to find it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tibor-reiss">@tibor-reiss</a> on 2024-05-16 09:47</div>
+            <div class="timeline-body"><p>@MichaReiser thanks for feedback, I added the check for star imports together with a new test file.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tibor-reiss">@tibor-reiss</a> on 2024-09-20 17:46</div>
+            <div class="timeline-body"><p>Hi @MichaReiser, this got lost in translation. I have updated now to the latest master, could you please have a look and let me know if something is still missing?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2024-09-23 09:48</div>
+            <div class="timeline-body"><p>Thanks @tibor-reiss</p>
+<p>I took a quick look at the ecosystem result and it's not clear why the rule raises</p>
+<ul>
+<li><a href="https://github.com/apache/airflow/blob/ee87fa0cba4d83084b4bc617d63d117101d9e069/airflow/settings.py#L441">airflow/settings.py:441:5:</a> PLW0601 Global variable <code>Session</code> is undefined at the module</li>
+</ul>
+<p>Is it because there's only a declaration of <code>Session</code></p>
+<p>https://github.com/apache/airflow/blob/ee87fa0cba4d83084b4bc617d63d117101d9e069/airflow/settings.py#L99</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/codes.rs</code>:279 on 2024-09-23 09:48</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">        (Pylint, &quot;W0601&quot;) =&gt; (RuleGroup::Preview, rules::pylint::rules::GlobalVariableUndefined),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/global_variable_undefined.rs</code>:70 on 2024-09-23 09:50</div>
+            <div class="timeline-body"><p>Do you think we could use <code>global_scope</code> here instead?</p>
+<pre><code class="language-suggestion">    let module_scope = checker
+        .semantic()
+        .global_scope();
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/global_variable_undefined.rs</code>:101 on 2024-09-23 09:51</div>
+            <div class="timeline-body"><p>Why do we only look at imports of the current scope? What about imports in the enclosing scope?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-09-23 09:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/tibor-reiss">@tibor-reiss</a> on 2024-09-29 15:06</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks @tibor-reiss</p>
+<p>I took a quick look at the ecosystem result and it's not clear why the rule raises</p>
+<pre><code>* [airflow/settings.py:441:5:](https://github.com/apache/airflow/blob/ee87fa0cba4d83084b4bc617d63d117101d9e069/airflow/settings.py#L441) PLW0601 Global variable `Session` is undefined at the module</code></pre>
+<p>Is it because there's only a declaration of <code>Session</code></p>
+<p>https://github.com/apache/airflow/blob/ee87fa0cba4d83084b4bc617d63d117101d9e069/airflow/settings.py#L99</p>
+</blockquote>
+<p>You are right: there was a case missing, i.e. the global variable was just declared (with type annotation). I have added this case now (with test).</p>
+<p>@MichaReiser what do you think about this case? I have it now covered. However, the rule reads <strong>undefined</strong>, so I think there is a strong case for raising the warning if the global was only declared.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/tibor-reiss">@tibor-reiss</a> reviewed on 2024-09-29 19:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/tibor-reiss">@tibor-reiss</a> on <code>crates/ruff_linter/src/rules/pylint/rules/global_variable_undefined.rs</code>:101 on 2024-09-29 19:20</div>
+            <div class="timeline-body"><p>This covers the case when the <code>global</code> statement is before the <code>import</code> statement - see tests. I additionally added the check for imports in <code>is_global_binding</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @tibor-reiss on 2024-09-29 19:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">preview</span> added by @dhruvmanila on 2024-10-01 03:52</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/global_variable_undefined.rs</code>:111 on 2024-10-14 10:28</div>
+            <div class="timeline-body"><p>Nit:</p>
+<pre><code class="language-suggestion">    let Some(ast::StmtFunctionDef { body, .. }) = checker
+        .semantic()
+        .current_scopes()
+        .find_map(|scope| scope.kind.as_function())
+    else {
+        return vec![];
+    };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/global_variable_undefined.rs</code>:123 on 2024-10-14 10:35</div>
+            <div class="timeline-body"><p>Should this also respect imports in conditional branches. E.g. what about:</p>
+<pre><code class="language-python">def test(a):
+	if a:
+		from b import bar
+
+	globals bar
+
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/resources/test/fixtures/pylint/global_variable_undefined.py</code>:4 on 2024-10-14 12:28</div>
+            <div class="timeline-body"><p>We can remove those comments because our tests run in isolation</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_linter/src/rules/pylint/rules/global_variable_undefined.rs</code>:70 on 2024-10-14 12:30</div>
+            <div class="timeline-body"><p>My python knowledge is too limited to understand why it is okay to ignore imports from the enclosing function's scope. Could you help me understand why it is okay to ignore imports?</p>
+<p>I read https://docs.python.org/3/reference/simple_stmts.html#the-global-statement and couldn't find any special handling of imports in the enclosing scope.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2024-10-14 12:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-04-28 07:02</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:28 UTC
+    </footer>
+</body>
+</html>

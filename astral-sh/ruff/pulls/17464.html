@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] add fixpoint iteration for Type::member_lookup_with_policy - astral-sh/ruff #17464</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] add fixpoint iteration for Type::member_lookup_with_policy</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17464">#17464</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-04-18 16:27
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-04-18 16:27</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Member lookup can be cyclic, with type inference of implicit members. A sample case is shown in the added mdtest.</p>
+<p>There's no clear way to handle such cases other than to fixpoint-iterate the cycle.</p>
+<p>Fixes #17457.</p>
+<h2>Test Plan</h2>
+<p>Added test.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2025-04-18 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-04-18 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-04-18 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-04-18 16:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-18 16:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:150 on 2025-04-18 16:28</div>
+            <div class="timeline-body"><p>This is a drive-by change, just moving the <code>impl</code> for <code>AttributeKind</code> next to the struct definition.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-18 16:29</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-18 16:50</div>
+            <div class="timeline-body"><p>Could we maybe add a few more test cases? I'd be interested in what happens for some variations of the test you've added, e.g.</p>
+<pre><code class="language-py">class C:
+    def __init__(self):
+        self.x = 1
+
+    def copy(self, other: &quot;C&quot;):
+        self.x: int = other.x
+
+reveal_type(C().x)
+</code></pre>
+<p>and</p>
+<pre><code class="language-py">class C:
+    def __init__(self):
+        self.x: int = 1
+
+    def copy(self, other: &quot;C&quot;):
+        self.x = other.x
+
+reveal_type(C().x)
+</code></pre>
+<p>and</p>
+<pre><code class="language-py">class C:
+    def copy(self, other: &quot;C&quot;):
+        self.x = other.x
+
+reveal_type(C().x)
+</code></pre>
+<p>and</p>
+<pre><code class="language-py">class C:
+    def copy(self, other: &quot;C&quot;):
+        self.x: int = other.x
+
+reveal_type(C().x)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-18 16:57</div>
+            <div class="timeline-body"><p>Sure. Three out of those four (numbers 1, 2, and 4) are pretty straightforward: if there's a declaration, we don't attempt to infer anything from the RHS, even of other assignments to the same name. So all of those work fine already on <code>main</code>, don't hit any cycle, and reveal <code>int</code> as you'd expect. I can still add them.</p>
+<p>Number three is interesting, definitely worth adding. It has the result I'd expect from fixpoint iteration: we converge on <code>Unknown</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-04-18 17:07</div>
+            <div class="timeline-body"><p>Nice. If the new panic MRE in https://github.com/astral-sh/ruff/issues/17457#issuecomment-2815848955 is the same bug, it might be worth adding that as a test case as well. But if it's a separate issue, it seems fine to defer that for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-18 17:19</div>
+            <div class="timeline-body"><p>That one's a separate issue and will have a totally separate fix. It's a case where we are already (correctly) fixpoint iterating, but iteration does not converge due to an issue in union simplification. We don't simplify <code>(Unknown &amp; ~AlwaysFalsy) | (Unknown &amp; ~AlwaysFalsy)</code>, so fixpoint iteration just keeps growing that union type with more identical elements, unboundedly (until we reach &quot;too many iterations&quot;).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-04-18 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-04-18 17:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-18 17:20</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:28 UTC
+    </footer>
+</body>
+</html>

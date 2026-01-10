@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] set a size limit on unions of literals - astral-sh/ruff #17419</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] set a size limit on unions of literals</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17419">#17419</a>
+        opened by <a href="https://github.com/carljm">@carljm</a>
+        on 2025-04-16 02:56
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/carljm">@carljm</a> on 2025-04-16 02:56</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Until we optimize our full union/intersection representation to efficiently handle large numbers of same-kind literal types &quot;as a block&quot;, set a fairly low limit on the size of unions of literals.</p>
+<p>We will want to increase this limit once we've made the broader efficiency improvement (tracked in https://github.com/astral-sh/ty/issues/124).</p>
+<h2>Test Plan</h2>
+<p><code>cargo bench --bench red_knot</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @carljm on 2025-04-16 02:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-04-16 02:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-04-16 02:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @carljm on 2025-04-16 02:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-16 02:57</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-04-16 03:02</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/cjm%2Funionlimit2">CodSpeed Performance Report</a></h2>
+<h3>Merging astral-sh/ruff#17419 will <strong>improve performances by ×110</strong></h3>
+<p><sub>Comparing <code>cjm/unionlimit2</code> (ac691ca) with <code>main</code> (5a115e7)</sub></p>
+<h3>Summary</h3>
+<p><code>⚡ 1</code> improvements<br />
+<code>✅ 32</code> untouched benchmarks</p>
+<h3>Benchmarks breakdown</h3>
+<p>|     | Benchmark | <code>BASE</code> | <code>HEAD</code> | Change |
+| --- | --------- | ----------------------- | ------------------- | ------ |
+| ⚡ | <code>red_knot_micro[many_string_assignments]</code> | 5,816.3 ms | 51.9 ms | ×110 |</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">performance</span> added by @AlexWaygood on 2025-04-16 07:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-16 07:48</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:172 on 2025-04-16 07:48</div>
+            <div class="timeline-body"><p>Returning early here seems potentially problematic, because we might miss some simplifications that would trigger below if we were to &quot;properly&quot; (remove the literals and then) add <code>int</code> to the union.</p>
+<p>For example, if <code>bool</code> is already part of the union, and we go beyond the 200 int literals limit, we could end up with <code>bool | int</code>, violating the <em>&quot;No type in a union can be a subtype of any other type in the union&quot;</em> invariant documented above:</p>
+<pre><code class="language-py">from typing import Literal
+
+def _(literals_2: Literal[0, 1], b: bool, flag: bool):
+    literals_4 = 2 * literals_2 + literals_2     # Literal[0, 1, 2, 3]
+    literals_16 = 4 * literals_4 + literals_4    # Literal[0, 1, .., 15]
+    literals_64 = 4 * literals_16 + literals_4   # Literal[0, 1, .., 63]
+    literals_128 = 2 * literals_64 + literals_2  # Literal[0, 1, .., 127]
+
+    # Going beyond the MAX_UNION_LITERALS limit:
+    literals_256 = 16 * literals_16 + literals_16
+    reveal_type(literals_256)  # revealed: int
+
+    # Going beyond the limit when another type is already part of the union
+    bool_and_literals_128 = b if flag else literals_128  # bool | Literal[0, 1, ..., 127]
+    literals_128_shifted = literals_128 + 128  # Literal[128, 129, ..., 255]
+
+    # Now union the two:
+    reveal_type(bool_and_literals_128 if flag else literals_128_shifted)  # revealed: bool | int
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:172 on 2025-04-16 14:03</div>
+            <div class="timeline-body"><p>Ah, of course, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-16 14:03</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-16 14:17</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:172 on 2025-04-16 14:17</div>
+            <div class="timeline-body"><p>And thank you for writing the test for me :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-04-16 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-04-16 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-16 14:23</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-16 14:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:107 on 2025-04-16 14:25</div>
+            <div class="timeline-body"><p>Couldn't we return here directly and get rid of the <code>too_large</code> flags?</p>
+<pre><code class="language-suggestion">                                let replace_with = KnownClass::Str.to_instance(self.db);
+                                return self.add(replace_with);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-16 15:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/builder.rs</code>:107 on 2025-04-16 15:39</div>
+            <div class="timeline-body"><p>Yes indeed, thank you. I had tried this initially (but without the <code>replace_with</code> variable) and had borrow checker issues on <code>self</code>, which I initially mistakenly thought had to with the iteration over <code>&amp;mut self.elements</code>, so I moved it out of the loop. Then I realized the borrow checker actually had a problem with accessing <code>self.db</code> inside a call to <code>self.add</code> (which takes ownership of <code>self</code>) and fixed that, but failed to realize I could move it back inside the loop.</p>
+<p>https://github.com/astral-sh/ruff/pull/17429</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Update `==` and `!=` narrowing - astral-sh/ruff #17567</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Update <code>==</code> and <code>!=</code> narrowing</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17567">#17567</a>
+        opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a>
+        on 2025-04-22 22:31
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-04-22 22:31</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>Historically we have avoided narrowing on <code>==</code> tests because in many cases it's unsound, since subclasses of a type could compare equal to who-knows-what. But there are a lot of types (literals and unions of them, as well as some known instances like <code>None</code> -- single-valued types) whose <code>__eq__</code> behavior we know, and which we can safely narrow away based on equality comparisons.</p>
+<p>This PR implements equality narrowing in the cases where it is sound. The most elegant way to do this (and the way that is most in-line with our approach up until now) would be to introduce new Type variants <code>NeverEqualTo[...]</code> and <code>AlwaysEqualTo[...]</code>, and then implement all type relations for those variants, narrow by intersection, and let union and intersection simplification sort it all out. This is analogous to our existing handling for <code>AlwaysFalse</code> and <code>AlwaysTrue</code>.</p>
+<p>But I'm reluctant to add new <code>Type</code> variants for this, mostly because they could end up un-simplified in some types and make types even more complex. So let's try this approach, where we handle more of the narrowing logic as a special case.</p>
+<h2>Test Plan</h2>
+<p>Updated and added tests.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-22 22:35</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">dragonchain (https://github.com/dragonchain/dragonchain)
+- error[lint:unsupported-operator] /tmp/mypy_primer/projects/dragonchain/dragonchain/lib/dto/eth.py:98:13: Operator `-=` is unsupported between objects of type `None` and `Literal[60]`
+- Found 341 diagnostics
++ Found 340 diagnostics
+
+dd-trace-py (https://github.com/DataDog/dd-trace-py)
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/dd-trace-py/tests/ci_visibility/test_efd.py:80:42: Argument to this function is incorrect: Expected `int`, found `int | None`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/dd-trace-py/tests/ci_visibility/test_efd.py:81:43: Argument to this function is incorrect: Expected `int`, found `int | None`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/dd-trace-py/tests/ci_visibility/test_efd.py:167:43: Argument to this function is incorrect: Expected `int`, found `int | None`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/dd-trace-py/tests/ci_visibility/test_atr.py:97:47: Argument to this function is incorrect: Expected `int`, found `int | None`
+- error[lint:invalid-argument-type] /tmp/mypy_primer/projects/dd-trace-py/tests/ci_visibility/test_atr.py:187:39: Argument to this function is incorrect: Expected `int`, found `int | None`
+- error[lint:unsupported-operator] /tmp/mypy_primer/projects/dd-trace-py/ddtrace/appsec/_iast/taint_sinks/ast_taint.py:40:54: Operator `+` is unsupported between objects of type `Literal[&quot;.&quot;] | @Todo(Intersection meta-type)` and `Any | None`
+- Found 6920 diagnostics
++ Found 6914 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-22 22:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Unsound narrowing of == and !=" to "[red-knot] Update `==` and `!=` narrowing" by @MatthewMckee4 on 2025-04-22 23:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MatthewMckee4 on 2025-04-22 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MatthewMckee4 on 2025-04-22 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MatthewMckee4 on 2025-04-22 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MatthewMckee4 on 2025-04-22 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MatthewMckee4 on 2025-04-22 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:404 on 2025-04-22 23:23</div>
+            <div class="timeline-body"><p>Both of these special cases probably should just go inside <code>is_union_of_single_valued</code>, since both <code>bool</code> and <code>LiteralString</code> are effectively a union of single-valued types. (<code>LiteralString</code> is the odd case, since it's an infinite union -- I think it should still work to consider it a union of single-valued, but if that causes breakage somewhere, maybe not.)</p>
+<p>If we do that, then we probably don't need a new <code>Type</code> method, this would reduce to simple <code>is_single_valued || is_union_of_single_valued</code>, which seems reasonable</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-22 23:26</div>
+            <div class="timeline-body"><p>This looks great! I think it remains sound and gives us much better behavior in some common cases. Thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-04-22 23:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:404 on 2025-04-22 23:32</div>
+            <div class="timeline-body"><p>Sounds good, although, to note one of the mypy primer changes that are no longer there, this will not cover <code>Any | None</code> which seemed like a good change.</p>
+<p>I also think in general we want <code>is_positively_narrowable || is_union_of_positively_narrowable</code></p>
+<p>and in this case <code>None</code> is <code>is_positively_narrowable</code> and <code>Any</code> could be <code>is_positively_narrowable</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-22 23:51</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:404 on 2025-04-22 23:51</div>
+            <div class="timeline-body"><p>Good points, this led to some further discussion in Discord, we probably want to try updating the PR so we do handle the <code>Any | None</code> case. (I still think it's true that at least <code>bool</code> could be considered always a <code>is_union_of_single_valued</code>.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2184 on 2025-04-23 00:36</div>
+            <div class="timeline-body"><p>I think we have a <code>map</code> method on <code>UnionType</code> that could be used here?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:2174 on 2025-04-23 00:39</div>
+            <div class="timeline-body"><p>This comment and function name are missing the context that this method is not really generalizable to any kind of &quot;positive narrowing&quot; -- the condition on single-valued-ness makes it specifically relevant <em>only</em> to equality narrowing.</p>
+<p>For that reason I also don't think it really makes sense to have it as a method on <code>Type</code> -- it's just too narrowly-purposed. I would probably make it a free function, possibly even nested inside <code>evaluate_expr_eq</code>, which takes an lhs and a rhs type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-23 02:43</div>
+            <div class="timeline-body"><p>Ok I took a stab at this one myself to make sure I wasn't leading you down an impossible path. And it turned out this can work, though it does require some extra fiddling with <code>bool</code> and <code>LiteralString</code> to get the right behavior in all cases.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-23 04:15</div>
+            <div class="timeline-body"><p>Would like a quick review on this from one of the other listed reviewers, since @MatthewMckee4 and I co-authored it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:441 on 2025-04-23 07:13</div>
+            <div class="timeline-body"><p>If I understand correctly, this means that we can't narrow to <code>Literal[&quot;a&quot;]</code> here, even though it looks like we could:</p>
+<pre><code class="language-py">def _(lhs: LiteralString | None):
+    if lhs == &quot;a&quot;:
+        reveal_type(lhs)  # Could be `Literal[&quot;a&quot;]`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-04-23 07:17</div>
+            <div class="timeline-body"><p>This looks great — thank you.</p>
+<p>I would find the code a bit easier to understand if we replaced all the <code>!x.is_subtype_of(y)</code> checks with <code>x.is_disjoint_from(y)</code>, but that's just a matter of preference, I guess.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-23 13:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:441 on 2025-04-23 13:09</div>
+            <div class="timeline-body"><p>and similarly for this:</p>
+<pre><code class="language-py">def _(lhs: LiteralString | None):
+    if lhs == None:
+        reveal_type(lhs)  # on this PR: `LiteralString | None`
+                          # but it could be `None`: we know no inhabitants
+                          # of `LiteralString` compare equal to `None`
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-23 13:20</div>
+            <div class="timeline-body"><p>I have nothing to add on top of what @sharkdp said! This looks like a great improvement, but the thing with <code>LiteralString | None</code> seems like it's still liable to cause confusion. We could at least note it down in an issue as something we'd like to improve in the future.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @AlexWaygood on 2025-04-23 13:20</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-23 17:35</div>
+            <div class="timeline-body"><p>Thanks for the reviews! I'll see whether we can do something about the <code>LiteralString | None</code> case with reasonable complexity.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-24 00:43</div>
+            <div class="timeline-body"><p>Found a bug in the previous implementation around boolean equality with <code>1</code> and <code>0</code>; that plus the <code>LiteralString</code> union issue led to some significant implementation changes, and a number of new tests. So re-requesting review.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @carljm on 2025-04-24 00:43</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @carljm on 2025-04-24 12:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:438 on 2025-04-24 12:06</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                    (Type::BooleanLiteral(b), Type::IntLiteral(i))
+                    | (Type::IntLiteral(i), Type::BooleanLiteral(b)) =&gt; i64::from(b) == i,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-04-24 12:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:527 on 2025-04-24 14:56</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">            (_, Type::BooleanLiteral(b)) =&gt; Some(
+                UnionType::from_elements(self.db, [rhs_ty, Type::IntLiteral(i64::from(b))])
+                    .negate(self.db),
+            ),
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-04-24 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-04-24 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-04-24 14:56</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-24 14:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:527 on 2025-04-24 14:58</div>
+            <div class="timeline-body"><p>Whoops sorry should have waited for your review. Will put this change up as a separate PR. It's always easier to spell it out the long way when trying to work through the semantics initially...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:527 on 2025-04-24 15:00</div>
+            <div class="timeline-body"><p>Eh, no need to apologise, it had been approved!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-24 15:00</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-24 15:09</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/narrow.rs</code>:527 on 2025-04-24 15:09</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/17610</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-25 20:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:29 UTC
+    </footer>
+</body>
+</html>

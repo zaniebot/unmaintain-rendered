@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Support `super` - astral-sh/ruff #17174</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Support <code>super</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17174">#17174</a>
+        opened by <a href="https://github.com/cake-monotone">@cake-monotone</a>
+        on 2025-04-03 12:51
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2025-04-03 12:51</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>closes #16615</p>
+<p>This PR includes:</p>
+<ul>
+<li>Introduces a new type: <code>Type::BoundSuper</code></li>
+<li>Implements member lookup for <code>Type::BoundSuper</code>, resolving attributes by traversing the MRO starting from the specified class</li>
+<li>Adds support for inferring appropriate arguments (<code>pivot_class</code> and <code>owner</code>) for <code>super()</code> when it is used without arguments</li>
+</ul>
+<p>When <code>super(..)</code> appears in code, it can be inferred into one of the following:</p>
+<ul>
+<li><code>Type::Unknown</code>: when a runtime error would occur (e.g. calling <code>super()</code> out of method scope, or when parameter validation inside <code>super</code> fails)</li>
+<li><code>KnownClass::Super::to_instance()</code>: when the result is an <em>unbound super object</em> or when a dynamic type is used as parameters (MRO traversing is meaningless)</li>
+<li><code>Type::BoundSuper</code>: the common case, representing a properly constructed <code>super</code> instance that is ready for MRO traversal and attribute resolution</li>
+</ul>
+<h3>Terminology</h3>
+<p>Python defines the terms <em>bound super object</em> and <em>unbound super object</em>.</p>
+<p>An <strong>unbound super object</strong> is created when <code>super</code> is called with only one argument (e.g.
+<code>super(A)</code>). This object may later be bound via the <code>super.__get__</code> method. However, this form is rarely used in practice.</p>
+<p>A <strong>bound super object</strong> is created either by calling <code>super(pivot_class, owner)</code> or by using the implicit form <code>super()</code>, where both arguments are inferred from the context. This is the most common usage.</p>
+<h3>Follow-ups</h3>
+<ul>
+<li>Add diagnostics for <code>super()</code> calls that would result in runtime errors (marked as TODO)</li>
+<li>Add property tests for <code>Type::BoundSuper</code></li>
+</ul>
+<h2>Test Plan</h2>
+<ul>
+<li>Added <code>mdtest/class/super.md</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @cake-monotone on 2025-04-03 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @cake-monotone on 2025-04-03 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @cake-monotone on 2025-04-03 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @cake-monotone on 2025-04-03 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @cake-monotone on 2025-04-03 12:51</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @MichaReiser on 2025-04-03 12:53</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-03 12:53</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2025-04-03 12:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:6001 on 2025-04-03 12:54</div>
+            <div class="timeline-body"><p>If you have better name suggestions, I'm happy to hear them. Naming things is so tricky... 😢</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2025-04-03 12:56</div>
+            <div class="timeline-body"><p>Most of the diffs in the mypy primer seem to be caused by the lack of support for <code>Self</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_ide/src/lib.rs</code>:170 on 2025-04-03 12:57</div>
+            <div class="timeline-body"><p>Interesting, pyright jumps to builtin of <code>super</code> when using <em>goto definition</em> or <em>goto type definition</em></p>
+<pre><code>class Foo:
+    pass
+
+
+class Bar:
+    def __init__(self):
+        super()
+</code></pre>
+<p>Could we navigate to <code>Foo</code> in the above case? If not, could we implement the same as pyright and jump to where <code>super</code>'s declared?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-03 12:57</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-03 12:57</div>
+            <div class="timeline-body"><blockquote>
+<p>Most of the diffs in the mypy primer seem to be caused by the lack of support for <code>Self</code></p>
+</blockquote>
+<p>This one is a crash:</p>
+<blockquote>
+<pre><code class="language-diff">itsdangerous (https://github.com/pallets/itsdangerous)
++ 
++ thread '&lt;unnamed&gt;' panicked at /home/runner/.cargo/git/checkouts/salsa-e6f3bb7c2a062968/d758691/src/function/fetch.rs:154:25:
++ dependency graph cycle querying all_negative_narrowing_constraints_for_expression(Id(c413)); set cycle_fn/cycle_initial to fixpoint iterate
++ note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
++ Rayon: detected unexpected panic; aborting
+</code></pre>
+</blockquote>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2025-04-03 13:03</div>
+            <div class="timeline-body"><p>OMG 😅 I’ll check the panic in the mypy primer first and then request review again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @cake-monotone on 2025-04-03 13:04</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2025-04-03 13:08</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_ide/src/lib.rs</code>:170 on 2025-04-03 13:08</div>
+            <div class="timeline-body"><p>That's a good point! that's doable. But since there's no guarantee that the attribute found via <code>super()</code> actually comes from a parent class, I think it might make more sense to follow what Pyright does and just treat it as <code>builtins.super</code>.</p>
+<pre><code class="language-py">class A: ...
+    a: int = 1
+class B(A): ...
+class C(B):
+    def f(self):
+        super().a  # its from A!
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-03 13:11</div>
+            <div class="timeline-body"><p>I'm not sure if the panic is due to your PR. It is the same that @carljm has seen on other mypy primer projects.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-03 13:19</div>
+            <div class="timeline-body"><blockquote>
+<p>I'm not sure if the panic is due to your PR. It is the same that @carljm has seen on other mypy primer projects.</p>
+</blockquote>
+<p>It shows that this PR causes us to panic on code that we did not previously panic on. Maybe that's acceptable if we want to defer adding cycle handling to the relevant function for now, but it's going to lead to pretty confusing diffs if we include projects we panic on in mypy_primer. I think at the very least we should remove the project from the list in the workflow file of projects we run on in CI if we're going to start panicking on that project:</p>
+<p>https://github.com/astral-sh/ruff/blob/755ece0c36ea0f1064b496f2daf4c5fd97565667/.github/workflows/mypy_primer.yaml#L71</p>
+<p>but also: adding cycle handling to a query probably isn't <em>that</em> difficult, and it's nice to at least not increase the amount of code we panic on. @cake-monotone, you can see an example of how to do it here: https://github.com/astral-sh/ruff/pull/16958 :-) I'd imagine adding cycle handling to <code>all_negative_narrowing_constraints_for_expression</code> probably won't look too different to the changes I made in that PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-03 13:27</div>
+            <div class="timeline-body"><p>Agree. @carljm might be able to prioritize the fix real quick to unblock this PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2025-04-03 13:33</div>
+            <div class="timeline-body"><blockquote>
+<p>Agree. @carljm might be able to prioritize the fix real quick to unblock this PR</p>
+</blockquote>
+<p>It's okay! I'll try to fix it soon...!</p>
+<blockquote>
+<blockquote>
+<p>I'm not sure if the panic is due to your PR. It is the same that @carljm has seen on other mypy primer projects.</p>
+</blockquote>
+<p>It shows that this PR causes us to panic on code that we did not previously panic on. Maybe that's acceptable if we want to defer adding cycle handling to the relevant function for now, but it's going to lead to pretty confusing diffs if we include projects we panic on in mypy_primer. I think at the very least we should remove the project from the list in the workflow file of projects we run on in CI if we're going to start panicking on that project:</p>
+<p>https://github.com/astral-sh/ruff/blob/755ece0c36ea0f1064b496f2daf4c5fd97565667/.github/workflows/mypy_primer.yaml#L71</p>
+<p>but also: adding cycle handling to a query probably isn't <em>that</em> difficult, and it's nice to at least not increase the amount of code we panic on. @cake-monotone, you can see an example of how to do it here: #16958 :-) I'd imagine adding cycle handling to <code>all_negative_narrowing_constraints_for_expression</code> probably won't look too different to the changes I made in that PR.</p>
+</blockquote>
+<p>I just need to define a custom <code>cycle_recover</code> function and <code>cycle_initial</code> for <code>all_negative_narrowing_constraints_for_expression</code>, right?
+If I’m understanding that correctly, it shouldn’t take too long</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-03 13:46</div>
+            <div class="timeline-body"><blockquote>
+<p>I just need to define a custom <code>cycle_recover</code> function and <code>cycle_initial</code> for <code>all_negative_narrowing_constraints_for_expression</code>, right? If I’m understanding that correctly, it shouldn’t take too long</p>
+</blockquote>
+<p>I think that's correct, yes!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2025-04-03 13:51</div>
+            <div class="timeline-body"><p>Ah... it's still not working. the mypy primer still panics 😢</p>
+<p>Here's the commit if you'd like to take a look:
+https://github.com/cake-monotone/ruff/commit/a737bfe99c5e91c4df961072388be5c4c7902f1d</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-03 13:55</div>
+            <div class="timeline-body"><p>hmm, okay, we may need @carljm's advice on how to fix this; he's the fixpoint expert :-)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2025-04-03 14:10</div>
+            <div class="timeline-body"><p>I removed the suspected part on another branch, and the panic is gone.</p>
+<p>It seems the issue was related to resolving the enclosing class when calling <code>super()</code>. So I believe this is actually a bug in this PR itself, and we probably don’t need to set a cycle_fn after all.</p>
+<p>I’m not very familiar with Salsa internals, so I’ll likely need quite a bit of help to fix it properly.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2025-04-03 14:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3978 on 2025-04-03 14:11</div>
+            <div class="timeline-body"><p>I guess it makes the panic on mypy primer.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @cake-monotone on 2025-04-03 14:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-04 01:40</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_ide/src/lib.rs</code>:170 on 2025-04-04 01:40</div>
+            <div class="timeline-body"><p>Yeah I think jumping to <code>builtins.super</code> is the best option available here. It accurately reflects the runtime type from calling <code>super()</code> is a <code>builtins.super</code> object.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/class/super.md</code>:116 on 2025-04-04 01:58</div>
+            <div class="timeline-body"><p>A <code>super</code> object with a pivot class that is <code>Any</code> should have all attributes (with type <code>Any</code>), and should not emit a diagnostic on any attribute. Same for <code>Unknown</code> (all attributes should be <code>Unknown</code>) or <code>Todo</code>.</p>
+<p>Similarly for a <code>super</code> object with a dynamic <code>self</code>; this should just result in binding the dynamic type as <code>self</code> for e.g. a bound method accessed via the super object, but it shouldn't ever cause failure to resolve an attribute.</p>
+<p>I think that fixing this should also eliminate most false positives in this PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/class/super.md</code>:95 on 2025-04-04 02:02</div>
+            <div class="timeline-body"><p>Should we have a test here showing use of unbound super that is then bound via the descriptor protocol (<code>__get__</code>)?</p>
+<p>It's fine if it is a TODO in this PR, but it would be nice to have the test in place. (Though I don't think it should be hard to implement, it's really just implementing <code>__get__</code> member on unbound super as a function with the bound-super return type.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:1729 on 2025-04-04 02:10</div>
+            <div class="timeline-body"><p>I think we can just move this section over to your new <code>super</code> test file?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2025-04-04 11:46</div>
+            <div class="timeline-body"><p>It turns out that there were actually two functions causing the panic: <code>all_narrowing_constraints_for_expression</code> and <code>all_negative_narrowing_constraints_for_expression</code>. After applying what Alex suggested to both of them, the panic was resolved.</p>
+<p>@carjim Hmm, just checking, are you planning to open a separate PR to implement <code>cycle_fn</code> to these functions?
+If not, I’d be happy to include it in this PR :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_python_semantic/src/types/display.rs</code>:184 on 2025-04-04 12:07</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">                write!(
+                		f, 
+                		&quot;&lt;super: {pivot}, {owner}&gt;&quot;,
+							 			Type::class_literal(*bound_super.pivot_class(self.db)).display(self.db),
+              			bound_super.owner(self.db).into_type().display(self.db)
+                	)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-04 12:08</div>
+            <div class="timeline-body"><p>I'd suggest fixing the cycles as a separate PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2025-04-04 12:11</div>
+            <div class="timeline-body"><p>Okay, I’ll try to make a separate PR :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/attributes.md</code>:1740 on 2025-04-04 17:29</div>
+            <div class="timeline-body"><p>I think if we correctly handle <code>super</code> with dynamic-type args (that is, follow the gradual guarantee), we will still not <em>correctly</em> handle <code>super</code> with an un-annotated self type (until we actually add self types), but we will also not emit false positives on the lack of a self type.</p>
+<p>(Also now that we have <code>Type::TypeVar</code>, I think we can go ahead and add <code>Self</code> and self types anytime.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/class/super.md</code>:233 on 2025-04-04 18:19</div>
+            <div class="timeline-body"><p>This error seems wrong?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:388 on 2025-04-04 18:22</div>
+            <div class="timeline-body"><p>I think we will need to add the capability for <code>BoundSuper</code> to contain dynamic types (as discussed in other comments), which will also add the possibility that it could contain a <code>Todo</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:433 on 2025-04-04 18:32</div>
+            <div class="timeline-body"><p>Something I notice in playing around in the pyright playground is that pyright simply infers the return type of <code>super()</code> as a regular instance type, e.g. if <code>class B(A): ...</code> then <code>reveal_type(B, B())</code> is simply the instance type <code>A</code>, not a special bound-super type.</p>
+<p>That implementation seems simpler, but also will prevent us from getting some edge-case behaviors right. For example, the <code>__getitem__</code> test you added: pyright is happy with <code>super(B, B())[1]</code> if a base class of <code>B</code> implements <code>__getitem__</code>, but this fails at runtime with &quot;<code>super</code> object is not subscriptable.&quot;</p>
+<p>Also subtyping: pyright will let you assign <code>super(B, B())</code> to <code>A</code>, but that is clearly not sound.</p>
+<p>So all in all I think your implementation strategy here is the better one! Just recording these observations :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:6709 on 2025-04-04 18:34</div>
+            <div class="timeline-body"><p>I think we will need to extend this enum also with a <code>Dynamic</code> variant</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:6713 on 2025-04-04 18:36</div>
+            <div class="timeline-body"><p>Just noting here that the thought crossed my mind whether we should support a union or intersection type for either of the members of bound-super. But I think we should not, certainly not for now. Pyright doesn't. And if we ever did support it, I think we should map over the union/intersection externally: that is, if we see the call <code>super(union_of_A_and_B, ...)</code> we would treat it as the union of <code>super(A, ...)</code> and <code>super(B, ...)</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:890 on 2025-04-04 18:40</div>
+            <div class="timeline-body"><p>This symmetric match pattern does not look right, because subtyping is not symmetric. It seems the implementation below is only correct for <code>(Type::BoundSuper(_), _)</code>; for the other arm it would need to be reversed.</p>
+<p>Should we add some tests of the subtyping behavior in <code>is_subtype_of.md</code>?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1656 on 2025-04-04 18:41</div>
+            <div class="timeline-body"><p>This will need to be more complex if we add support for bound-super wrapping dynamic types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1790 on 2025-04-04 18:43</div>
+            <div class="timeline-body"><p>This is not right, at runtime two super instances never compare equal, even if their arguments are identical:</p>
+<pre><code class="language-py">&gt;&gt;&gt; class A: pass
+...
+&gt;&gt;&gt; super(A, A()) == super(A, A())
+False
+</code></pre>
+<p>So <code>BoundSuper</code> is not a single-valued type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:3205 on 2025-04-04 18:46</div>
+            <div class="timeline-body"><p>Shouldn't this be <code>Parameters::empty()</code>? We shouldn't accept arbitrary arguments to <code>super</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:6321 on 2025-04-04 18:48</div>
+            <div class="timeline-body"><p>This will also need to be an enum with <code>Dynamic</code> as a possibility.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:6335 on 2025-04-04 18:50</div>
+            <div class="timeline-body"><p>When we add this, this function will have to change to returning a <code>Result</code> instead of just a <code>Type</code>. But that shouldn't be too bad, since there will never be many call sites to adjust?</p>
+<p>In the (recent) past we haven't usually preferred to leave diagnostics as a TODO, just because it can change the logic significantly. And I don't think the diagnostics needed here will be hard to implement. So I'm tempted to prefer that we just do it in this PR? But if you prefer I'm open to doing it as separate follow-up.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:6339 on 2025-04-04 18:57</div>
+            <div class="timeline-body"><p>As discussed above, I think this is not right, because it violates the gradual guarantee (replacing a static type with a dynamic type should not cause new type errors to appear -- in other words, a dynamic type should always be more &quot;forgiving&quot;.) And I think it probably needs to be fixed in this PR (not as a follow-up), due to the number of false positives it currently causes with the lack of self types.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:593 on 2025-04-04 19:11</div>
+            <div class="timeline-body"><p>I guess we will also need to emit a binding diagnostic here if the first argument is not a class literal type? We will need to figure out whether we can do this without needing to add new <code>CallError</code> variants, by manually adding argument-type errors into the call binding?</p>
+<p>This kind of uncertainty around how we will handle diagnostics is a reason to prefer not delaying adding diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/type_ordering.rs</code>:165 on 2025-04-04 19:13</div>
+            <div class="timeline-body"><p>I think we also need to implement a deterministic ordering between two <code>BoundSuper</code> types, by comparing their internal elements.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:2342 on 2025-04-04 19:15</div>
+            <div class="timeline-body"><p>Seems we are missing a test -- no tests fail if this line is removed.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3962 on 2025-04-04 19:55</div>
+            <div class="timeline-body"><p>Using the public bindings here is not correct. Public bindings are the bindings visible from end-of-scope, which means we will respect even a binding to <code>self</code> that comes after the <code>super()</code> call.</p>
+<p>This also increases the likelihood of cycles.</p>
+<p>One question here is, do we need to respect arbitrary bindings to <code>self</code> at all, or can we just use the annotated type on the <code>self</code> parameter (or in future the implied annotated type <code>self: Self</code>)? Using the inferred type from bindings could give us a more precise type for <code>self</code>, but reassigning <code>self</code> to a narrower type is extremely unusual, and I'm not sure it's worth providing dedicated support for this.</p>
+<p>So I would suggest that we just look at the annotated type from the function signature. This should be doable by getting the scope node and looking at its parameters? (This code will probably change anyway when we add self types.)</p>
+<p>As part of this change, this method should probably return just a Type, not a Symbol. Boundness is not relevant here, a function parameter is always definitely bound because it starts the scope bound.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3985 on 2025-04-04 20:09</div>
+            <div class="timeline-body"><p>Resolving the class symbol from <code>public_bindings</code> has a similar problem as above: if we have a class <code>A</code> in the outer scope, and later in that scope the name <code>A</code> is reassigned to something else, a use of <code>super</code> inside a method of <code>A</code> will find the wrong binding of <code>A</code> in the outer scope.</p>
+<p>What we need to do here instead is instead get the class node from the outer scope, get its Definition from the semantic index, and use <code>infer_definition_types</code> query (see <code>infer_definition</code> method for an example), then pull out the type for the definition from the resulting <code>TypeInference</code>.</p>
+<p>This function should also just return a <code>Type</code>, not a <code>Symbol</code>, as boundness is not relevant here: the class statement node definitely has a type.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:593 on 2025-04-04 20:11</div>
+            <div class="timeline-body"><p>On second look, do we even need to handle this case here, when we are handling the zero-argument form out in <code>infer_call_expression</code>? Could we put all the super-call handling together, and probably also simplify diagnostics?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-04 20:12</div>
+            <div class="timeline-body"><p>Thank you, nice work! This is quite a tricky feature.</p>
+<p>I think we need to reduce the false positives in order to land this. One way to do that would be to implement self types first. Another way (which I think we need to do anyway) is to add support for dynamic types in bound super, as discussed in inline comments.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @sharkdp on 2025-04-07 06:33</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @cake-monotone on 2025-04-08 01:45</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2025-04-08 09:53</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3962 on 2025-04-08 09:53</div>
+            <div class="timeline-body"><p>Sorry for the delay in addressing this PR. I tried a few different approaches based on your comment and ended up spending some time figuring things out, which made things take a bit longer.</p>
+<p>I haven’t finished applying all the full feedback yet, but I’ve committed a change specifically for this comment. (https://github.com/astral-sh/ruff/pull/17174/commits/64d6037c543f2d0bd027148a64da6c26ce76f84d) Could you take a look at that part first? I want to know if it’s implemented correctly and in line with what you had in mind.</p>
+<p>Once I finish addressing the rest of the review comments, I’ll mark this PR as ready for review again. Thanks for your patience!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2025-04-08 09:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3962 on 2025-04-08 09:58</div>
+            <div class="timeline-body"><blockquote>
+<p>One question here is, do we need to respect arbitrary bindings to self at all, or can we just use the annotated type on the self parameter (or in future the implied annotated type self: Self)? Using the inferred type from bindings could give us a more precise type for self, but reassigning self to a narrower type is extremely unusual, and I'm not sure it's worth providing dedicated support for this.</p>
+</blockquote>
+<p>I agree with this. Just to ensure my understanding — that means we’ll ignore the binding of the first parameter(self) and instead rely solely on the parameter’s declaration, right?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-08 17:07</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:3962 on 2025-04-08 17:07</div>
+            <div class="timeline-body"><p>That commit looks pretty good. Because both parameters and class definition statements are both bindings and declarations, you could use <code>binding_type</code> instead of <code>declaration_type</code> and avoid having to unwrap <code>TypeAndQualifiers</code>.</p>
+<blockquote>
+<p>Just to ensure my understanding — that means we’ll ignore the binding of the first parameter(self) and instead rely solely on the parameter’s declaration, right?</p>
+</blockquote>
+<p>We will ignore any subsequent bindings to <code>self</code> in the body of the function. Whether we use the &quot;binding&quot; or the &quot;declaration&quot; from the first parameter mostly doesn't make much difference, since they will typically be the same type. The &quot;binding&quot; from the parameter also is just the annotated type. The only difference is that when the annotated type is not a fully static type (including if its unknown) the inferred type will be a union with the type of the default value, if any. This should never be relevant to an actual <code>self</code> parameter.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @cake-monotone on 2025-04-13 07:38</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @cake-monotone on 2025-04-13 07:39</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2025-04-13 11:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/resources/mdtest/class/super.md</code>:233 on 2025-04-13 11:01</div>
+            <div class="timeline-body"><p>It's actually intended behavior. <code>super()</code> can't access instance members.!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:6713 on 2025-04-13 11:14</div>
+            <div class="timeline-body"><p>That's a really interesting and reasonable idea — I implemented with a limited version of this! One thing that might become a concern later is that something like super(Union[A1, A2], Union[B1, B2]) ends up producing the cartesian product of the two unions, which could cause the resulting type to grow significantly. But yes, probably not something we need to worry about for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2025-04-13 11:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on 2025-04-13 11:31</div>
+            <div class="timeline-body"><p>Sorry for the long delay on this PR. I've been pretty drained over the past two weeks due to some other things going on, and didn’t have the energy to polish it to a state I was happy with.</p>
+<p>Anyway, since the last review, a lot has changed — including improvements in handling dynamic types, fixes for incorrect enclosing class inference, and support for generic classes.</p>
+<p>I'd really appreciate it if you could take another look. :)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @cake-monotone on 2025-04-13 11:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @cake-monotone on 2025-04-13 11:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/class/super.md</code>:180 on 2025-04-15 18:04</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">differ depending on whether the second argument to `super` is a class or an instance.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:383 on 2025-04-15 18:11</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    // This type doesn't handle an unbound super object like `super(A)`; we infer just
+    // a `Type::Instance` of `builtins.super` for that case.
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1002 on 2025-04-15 18:16</div>
+            <div class="timeline-body"><p>This is true but unnecessary, as the arm below will handle this case correctly anyway. Removing this arm doesn't cause any test to fail.</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1756 on 2025-04-15 18:18</div>
+            <div class="timeline-body"><p>Same as above, this arm is true but unnecessary, because the generic fallback arm below will handle this correctly anyway. (And all tests pass with this arm removed.)</p>
+<pre><code class="language-suggestion"></code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:7045 on 2025-04-15 18:31</div>
+            <div class="timeline-body"><p>We don't need to explicitly have <code>Either</code> with both (identical) variants in this return type:</p>
+<pre><code class="language-suggestion">    ) -&gt; impl Iterator&lt;Item = ClassBase&lt;'db&gt;&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:7173 on 2025-04-15 18:52</div>
+            <div class="timeline-body"><pre><code class="language-suggestion">    ) -&gt; impl Iterator&lt;Item = ClassBase&lt;'db&gt;&gt; {
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:7146 on 2025-04-15 19:03</div>
+            <div class="timeline-body"><p>I find this version to be easier to reason about the correctness of, and I think it's simpler / more efficient as well (it passes all tests):</p>
+<pre><code class="language-suggestion">                // subclass check is not relevant if either or both of `pivot_class` and `owner` are dynamic
+                let Some(pivot_class) = pivot_class.into_class() else { return Some(owner); };
+                let Some(owner_class) = owner.into_class() else { return Some(owner); };
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:7244 on 2025-04-15 19:10</div>
+            <div class="timeline-body"><p>I'm pretty sure this assertion is not right, and the fact that it passes tests suggests only that we have inadequate tests of <code>super</code> with generic types. A specialized generic will never result in a <code>ClassType::NonGeneric</code>, but rather in a <code>ClassType::Generic</code> wrapping a <code>GenericAlias</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class_base.rs</code>:14 on 2025-04-15 19:11</div>
+            <div class="timeline-body"><p>Why do we need to make this <code>pub</code> outside the crate?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-15 19:26</div>
+            <div class="timeline-body"><p>This looks fantastic! Just a few nits. I pushed fixes for some of these since I'd already made the changes locally for testing. I think the main thing left to address is more tests for use of <code>super</code> with generics, and addressing the debug assertion that I don't think is correct. Also looks like it needs a rebase and to address a conflict in <code>types.rs</code>. Please let me know if you don't have time to address this and I can find some time! I want to get this landed and not have it accumulate more conflicts.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types/class_base.rs</code>:14 on 2025-04-16 02:54</div>
+            <div class="timeline-body"><pre><code>error[E0446]: crate-private type `types::class_base::ClassBase&lt;'a&gt;` in public interface
+    --&gt; crates/red_knot_python_semantic/src/types.rs:7102:1
+     |
+7102 | #[salsa::interned(debug)]
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^ can't leak crate-private type
+     |
+    ::: crates/red_knot_python_semantic/src/types/class_base.rs:14:1
+     |
+14   | pub(crate) enum ClassBase&lt;'db&gt; {
+     | ------------------------------ `types::class_base::ClassBase&lt;'a&gt;` declared as crate-private
+     |
+     = note: this error originates in the macro `salsa::plumbing::setup_interned_struct` which comes from the expansion of the attribute macro `salsa::interned` (in Nightly builds, run with -Z macro-backtrace for more info)
+</code></pre>
+<p>Ah, it's because the bound super type uses ClassBase as a direct member.
+Would it make sense to introduce a wrapper so that ClassBase stays pub(crate) and doesn’t leak into the public interface?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2025-04-16 02:54</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2025-04-16 03:15</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:7244 on 2025-04-16 03:15</div>
+            <div class="timeline-body"><p>Ah, I see. that was a misunderstanding on my part.
+If that's the case, then the code below the <code>debug_assert </code>likely won't work correctly for specialized generics either, right?
+Since the subtype logic for generic instances isn't fully supported yet, we can't construct bound super with specialized generic instance in mdtest, which makes it tricky to add tests for now.</p>
+<p>I'll go ahead and remove the debug assert for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2025-04-16 03:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/resources/mdtest/class/super.md</code>:95 on 2025-04-16 03:30</div>
+            <div class="timeline-body"><p>Ah, I forgot to reply to this part — it might be a bit tricky.
+The reason is that we’d need to introduce a new type to carry the pivot_class, since we need to preserve that context until <code>__get__</code> is invoked on the unbound super object, like in:</p>
+<pre><code class="language-py">s = super(A)
+...
+bound_super = s.__get__(A())
+</code></pre>
+<p>We have to carry the pivot_class all the way through until that point.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2025-04-16 07:06</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:7244 on 2025-04-16 07:06</div>
+            <div class="timeline-body"><p>I realized that supporting generics in <code>super()</code> involves a lot more challenges than I initially thought. Let me share a few issues I've been thinking about:</p>
+<ul>
+<li><code>GenericAlias.__eq__(GenericAlias)</code> doesn’t behave properly for generics. Even when two specialized types are equal, their <code>GenericAlias.specialization</code>'s Salsa IDs differ. As a result, <code>ClassType::eq</code> doesn’t behave as expected.
+This leads to failures in <code>is_subclass_of</code> for generic classes, which in turn breaks <code>BoundSuper::build</code>.</li>
+</ul>
+<pre><code class="language-py">class A[T]: ...
+
+static_assert(is_subtype_of(A[int], A[int]))  # False
+</code></pre>
+<ul>
+<li>Should we ignore specialization when resolving the pivot class?</li>
+</ul>
+<pre><code class="language-py">b_int: B[int]
+b_unknown: B
+
+super(B, b_int)       # (1)
+super(B[int], b_unknown)  # (2)
+</code></pre>
+<p>Technically, you can’t find <code>B[Unknown]</code> in the MRO of <code>b_int</code>, nor can you find <code>B[int]</code> in the MRO of <code>b_unknown</code>.
+Should we treat the pivot class as unspecialized in these cases?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/cake-monotone">@cake-monotone</a> reviewed on 2025-04-16 07:11</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/cake-monotone">@cake-monotone</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:7244 on 2025-04-16 07:11</div>
+            <div class="timeline-body"><p>How about returning a Todo type whenever a generic is involved in <code>super()</code> for now, and handling proper generic support in a follow-up PR?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-16 18:24</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:7244 on 2025-04-16 18:24</div>
+            <div class="timeline-body"><p>Makes sense! I filed https://github.com/astral-sh/ruff/issues/17432 for the first issue. For the second, I am not totally sure what the right behavior is, would need to explore a bit (and look at what other type checkers currently do.)</p>
+<p>I think given the incomplete state of generics support, returning a Todo for now and following up later makes sense!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-16 18:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class_base.rs</code>:14 on 2025-04-16 18:25</div>
+            <div class="timeline-body"><p>Nah that makes sense, I think this is OK for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-16 18:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:7244 on 2025-04-16 18:27</div>
+            <div class="timeline-body"><p>I will go ahead and add this Todo handling and land this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/carljm">@carljm</a> on 2025-04-16 18:39</div>
+            <div class="timeline-body"><p>Excellent work on this PR, thank you!!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-04-16 18:41</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-04-16 18:41</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:28 UTC
+    </footer>
+</body>
+</html>

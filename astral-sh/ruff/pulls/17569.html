@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add --respect-ignore-files flag - astral-sh/ruff #17569</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add --respect-ignore-files flag</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17569">#17569</a>
+        opened by <a href="https://github.com/thejchap">@thejchap</a>
+        on 2025-04-23 01:59
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/thejchap">@thejchap</a> on 2025-04-23 01:59</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>astral-sh/ty#219</p>
+<p>this PR adds a <code>--respect-ignore-files</code>, <code>--no-respect-ignore-files</code>, and <code>[knot.respect-ignore-files]</code> CLI/config file options that drive whether standard ignore files are respected when doing file discovery. Borrowed the CLI flag pattern (positive/negative CLI flags) from Ruff</p>
+<h2>Test Plan</h2>
+<p>Added snapshot tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">configuration</span> added by @AlexWaygood on 2025-04-23 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-23 14:56</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-23 15:05</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @thejchap on 2025-04-25 04:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @thejchap on 2025-04-25 04:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @thejchap on 2025-04-25 04:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @thejchap on 2025-04-25 04:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @thejchap on 2025-04-25 04:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @thejchap on 2025-04-25 04:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/args.rs</code>:146 on 2025-04-25 06:33</div>
+            <div class="timeline-body"><p>Nit: We prefer either of the two formatting because it makes it clearer that the comment before the <code>else if</code> comments the <code>else if</code> and isn't a trailing comment of the <code>if</code> block</p>
+<pre><code class="language-suggestion">                let mut respect_ignore_files = None;
+        // --no-respect-gitignore defaults to false and is set true by CLI flag. If passed,
+        // override config file
+        if self.no_respect_ignore_files {
+            respect_ignore_files = Some(false);
+        } 
+        // Otherwise, only pass this through if explicitly set (don't default to anything here to
+        // make sure that doesn't take precedence over an explicitly-set config file value)
+        else if self.respect_ignore_files.is_some() {
+            respect_ignore_files = Some(true);
+        }
+</code></pre>
+<p>or</p>
+<pre><code class="language-suggestion">        let mut respect_ignore_files = None;
+        // --no-respect-gitignore defaults to false and is set true by CLI flag. If passed,
+        // override config file
+        if self.no_respect_ignore_files {
+            respect_ignore_files = Some(false);
+        } else if self.respect_ignore_files.is_some() {
+     		     // Otherwise, only pass this through if explicitly set (don't default to anything here to
+	        // make sure that doesn't take precedence over an explicitly-set config file value)
+            respect_ignore_files = Some(true);
+        }
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot/src/args.rs</code>:146 on 2025-04-25 06:35</div>
+            <div class="timeline-body"><p>Nit: I prefer to avoid <code>mut</code> variables where possible</p>
+<pre><code class="language-suggestion">        let respect_ignore_files = self.no_respect_ignore_files.then_some(false).or(self.respect_ignore_files);
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_project/src/walk.rs</code>:140 on 2025-04-25 06:39</div>
+            <div class="timeline-body"><p>Red Knot has two structs related to configurations:</p>
+<ul>
+<li><code>Options</code>: The options without the defaults filled in. Options can be merged from differnt sources. Only used during the start process.</li>
+<li><code>Settings</code>: Has a very similar structure to <code>Options</code> but all defaults are filled in and the options were validated. Created by calling <code>Options::to_settings</code>. Used inside red knot when looking up a configuration value</li>
+</ul>
+<p>That's why we should add <code>respect_ignore_files: bool</code> to the <code>Settings</code> struct, initialize the field in <code>Options::to_settings</code>, and use <code>project.settings().respect_ignore_files()</code> here.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_project/src/walk.rs</code>:137 on 2025-04-25 06:39</div>
+            <div class="timeline-body"><p>We can do this in another PR but I noticed that Ruff doesn't ignore hidden files. We should do the same.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> requested changes on 2025-04-25 06:40</div>
+            <div class="timeline-body"><p>Thank you. This is good. The only thing that needs changing before landing is that we introduce the same field on <code>Settings</code> and read it from there instead of from <code>Options</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @MichaReiser on 2025-04-25 06:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @MichaReiser on 2025-04-25 06:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @MichaReiser on 2025-04-25 06:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @MichaReiser on 2025-04-25 06:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thejchap">@thejchap</a> reviewed on 2025-04-25 13:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thejchap">@thejchap</a> on <code>crates/red_knot/src/args.rs</code>:146 on 2025-04-25 13:31</div>
+            <div class="timeline-body"><p>great - had imagined there was a more idiomatic way to do this, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/thejchap">@thejchap</a> reviewed on 2025-04-25 13:34</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/thejchap">@thejchap</a> on <code>crates/red_knot_project/src/walk.rs</code>:137 on 2025-04-25 13:34</div>
+            <div class="timeline-body"><p>@MichaReiser makes sense - added a new issue for that here https://github.com/astral-sh/ruff/issues/17626</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @thejchap on 2025-04-26 01:22</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-26 09:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-04-26 10:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-04-26 10:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-26 10:27</div>
+            <div class="timeline-body"><p>I've to revert this change for now. There's an issue with the path escaping on windows.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/thejchap">@thejchap</a> on 2025-04-26 19:39</div>
+            <div class="timeline-body"><p>opened up a new pr <a href="https://github.com/astral-sh/ruff/pull/17645">here</a>  to debug</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:29 UTC
+    </footer>
+</body>
+</html>

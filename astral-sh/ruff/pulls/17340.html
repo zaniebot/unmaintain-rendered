@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add `Checker::import_from_typing` - astral-sh/ruff #17340</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Add <code>Checker::import_from_typing</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17340">#17340</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-04-10 18:18
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-10 18:18</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR replaces uses of version-dependent imports from <code>typing</code> or <code>typing_extensions</code> with a centralized <code>Checker::import_from_typing</code> method.</p>
+<p>The idea here is to make the fix for #9761 (whatever it ends up being) applicable to all of the rules performing similar checks.</p>
+<p>I found these with a pretty naive grep for <code>&quot;typing_extensions&quot;</code> in the <code>ruff_linter/src/rules</code> directory, so if there are any rules I missed, please let me know. @AlexWaygood mentioned &quot;lots of rules&quot; <a href="https://github.com/astral-sh/ruff/issues/9761#issuecomment-2790492853">here</a>, so I think this is likely.</p>
+<h2>Test Plan</h2>
+<p>Existing tests for FAST002, PYI019, and PYI034.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @ntBre on 2025-04-10 18:18</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-10 18:25</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-04-10 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-04-10 18:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-10 19:00</div>
+            <div class="timeline-body"><blockquote>
+<p>This PR replaces uses of version-dependent imports from <code>typing</code> or <code>typing_extensions</code> with a centralized <code>Checker::import_from_typing</code> method.</p>
+</blockquote>
+<p>Is the goal to replace all edit generation from <code>typing</code> module to be using this method? I think that makes sense as it would then be easier to find all usages of it via this method.</p>
+<blockquote>
+<p>I found these with a pretty naive grep for <code>&quot;typing_extensions&quot;</code> in the <code>ruff_linter/src/rules</code> directory, so if there are any rules I missed, please let me know.</p>
+</blockquote>
+<p>You can go through the references of <code>get_or_import_symbol</code> which should have some of the symbols that are being imported from <code>typing</code>.</p>
+<p>For example,</p>
+<p>https://github.com/astral-sh/ruff/blob/410aa4b8fdce3ad0e8c32c8801a4bbe7df0d632f/crates/ruff_linter/src/rules/flake8_annotations/helpers.rs#L129-L142</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-10 19:10</div>
+            <div class="timeline-body"><blockquote>
+<p>Is the goal to replace all edit generation from <code>typing</code> module to be using this method? I think that makes sense as it would then be easier to find all usages of it via this method.</p>
+</blockquote>
+<p>My goal was just to replace imports that might come from <code>typing</code> or <code>typing_extensions</code>, but that's a good idea.
+This could catch uses that should have considered checking the version and using <code>typing_extensions</code> but didn't.</p>
+<blockquote>
+<p>You can go through the references of <code>get_or_import_symbol</code> which should have some of the symbols that are being imported from <code>typing</code>.</p>
+<p>For example,</p>
+<p>https://github.com/astral-sh/ruff/blob/410aa4b8fdce3ad0e8c32c8801a4bbe7df0d632f/crates/ruff_linter/src/rules/flake8_annotations/helpers.rs#L129-L142</p>
+</blockquote>
+<p>Yeah this is a good example, it looks like these are both in <code>typing_extensions</code>, so this could check both <code>Never</code> vs <code>NoReturn</code> and also the module.</p>
+<p>The one downside of replacing all <code>typing</code> imports is that it will make the false positive issue from #9761 worse, i.e. affecting more rules, but only briefly, I plan to work on that after this.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-10 20:02</div>
+            <div class="timeline-body"><p>I went through all of the references for <code>get_or_import_symbol</code> and think I've handled all of the <code>typing</code> imports.</p>
+<p><code>PYI058</code> looks a lot like it needs the new method, but it does its own bookkeeping on whether <code>typing</code>, <code>typing_extensions</code>, or <code>collections.abc</code> is already imported and reuses whichever one is already present, so I think it's okay to leave alone.</p>
+<p>https://github.com/astral-sh/ruff/blob/8b2727cf67ef4ed43723ff5c11ea936838e25c26/crates/ruff_linter/src/rules/flake8_pyi/rules/bad_generator_return_type.rs#L128-L142</p>
+<p>I believe the same is true for <code>UP006</code>, which ends up in this function:</p>
+<p>https://github.com/astral-sh/ruff/blob/8b2727cf67ef4ed43723ff5c11ea936838e25c26/crates/ruff_python_stdlib/src/typing.rs#L340-L355</p>
+<p>I actually accepted new snapshot results for <code>PYI026</code>, which was previously using <code>ImportRequest::import</code> instead of <code>ImportRequest::import_from</code>. It seems to be the only one doing that, and the example in the <a href="https://docs.astral.sh/ruff/rules/type-alias-without-annotation/">docs</a> also uses <code>ImportFrom</code>, so hopefully this doesn't need to be preview-gated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_annotations/helpers.rs</code>:134 on 2025-04-10 20:24</div>
+            <div class="timeline-body"><p>Is this the lowest Python version? The <code>NoReturn</code> seems to have been introduced in 3.6 (https://docs.python.org/3/library/typing.html#typing.NoReturn). If so, we could introduce a <code>PythonVersion::lowest</code> method. What do you think?</p>
+<p>(Same comment for other places using this pattern.)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:540 on 2025-04-10 20:28</div>
+            <div class="timeline-body"><p>Should this be a method on the <code>Importer</code> instead? This is, I think, the main interface to generate import edits:</p>
+<p>https://github.com/astral-sh/ruff/blob/172af7b4b0b2864681d607cd1ad36f9d3ec256b5/crates/ruff_linter/src/checkers/ast/mod.rs#L434-L437</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-04-10 20:28</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-10 20:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:540 on 2025-04-10 20:58</div>
+            <div class="timeline-body"><p>It could be, but we get the Python version from <code>Checker</code> and also the <code>SemanticModel</code> for <code>Importer::get_or_import_symbol</code>, so we'd have to pass a couple more arguments if it were an <code>Importer</code> method.</p>
+<p>I also think the <code>Checker</code> will be more likely to contain any additional information we need to fix #9761, such as the <code>LinterSettings</code>, if we add a configuration option.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-10 21:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_annotations/helpers.rs</code>:134 on 2025-04-10 21:01</div>
+            <div class="timeline-body"><p>Yeah I wondered about that. I think 3.8 is our lowest supported version? That was the motivation for picking it. I like the idea of a <code>lowest</code> method to make that more explicit.</p>
+<p>With this <code>PythonVersion</code> representation we could define <code>lowest</code> as something exotic like 0.0, but I'll go with 3.8 in the off chance it appears in an error or log message.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-10 21:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:540 on 2025-04-10 21:13</div>
+            <div class="timeline-body"><p>The <code>Checker</code> creates the <code>Importer</code> so we can just update the <code>Importer</code> to also contain a reference to the <code>SemanticModel</code> but I trust your judgement about the issue that needs to be fixed so we can leave it as is for now and do a follow-up change if required.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-10 21:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_linter/src/rules/flake8_annotations/helpers.rs</code>:134 on 2025-04-10 21:13</div>
+            <div class="timeline-body"><p>I think the lowest supported version is 3.7 ?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/rules/flake8_annotations/helpers.rs</code>:134 on 2025-04-10 21:14</div>
+            <div class="timeline-body"><p>Oh you're right, that explains why there's a <code>PY37</code> constant. I'll go with that.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-10 21:14</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-10 21:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:540 on 2025-04-10 21:39</div>
+            <div class="timeline-body"><p>Oh interesting, I see. I think I'll lean toward leaving it like this for now, but I'll keep this in mind if we don't end up using any more code from the <code>Checker</code>. It would logically make more sense on the <code>Importer</code>, as you said.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> approved on 2025-04-11 06:41</div>
+            <div class="timeline-body"><p>We can more freely change behavior of fixes because they aren't observed as &quot;breaking&quot; for users unlike rules that can trigger new lint violations. The main reason for gating fixes behind preview is to get more feedback on the fixe's correctness.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:545 on 2025-04-11 12:34</div>
+            <div class="timeline-body"><p>not really something to be addressed in this PR, but FWIW I don't <em>love</em> the return type of <code>get_or_import_symbol</code>. It seems too easy to misuse it by throwing away the second element of the tuple when you get an <code>Ok(Edit, String)</code> returned. E.g. https://github.com/astral-sh/ruff/pull/15853</p>
+<p>It also seems like it's too easy to call <code>.ok()</code> on the <code>Result</code> returned, when what you're <em>meant</em> to do is to use it in combination with <code>try_set_fix()</code> so that the information from the error is logged to the terminal when <code>--verbose</code> is specified on the CLI</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:542 on 2025-04-11 12:39</div>
+            <div class="timeline-body"><p>nit: maybe this parameter name would be slightly clearer about what the parameter indicates?</p>
+<pre><code class="language-suggestion">        version_added_to_typing: PythonVersion,
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-04-11 12:44</div>
+            <div class="timeline-body"><p>This is great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-11 13:31</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:545 on 2025-04-11 13:31</div>
+            <div class="timeline-body"><p>Agreed, I thought that return type looked a bit suspicious (especially when I considered adding a third element to the tuple :laughing:)</p>
+<p>I'll keep an eye on this and see if I can come up with anything.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/ntBre">@ntBre</a> reviewed on 2025-04-11 13:32</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/ntBre">@ntBre</a> on <code>crates/ruff_linter/src/checkers/ast/mod.rs</code>:542 on 2025-04-11 13:32</div>
+            <div class="timeline-body"><p>I like that, thanks!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-04-11 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-11 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-11 13:37</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2025-04-13 15:35</div>
+            <div class="timeline-body"><p>Can this be merged with the logic for the import upgrading rules in PYUP as that should have version info for all these import calls.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-14 13:21</div>
+            <div class="timeline-body"><blockquote>
+<p>Can this be merged with the logic for the import upgrading rules in PYUP as that should have version info for all these import calls.</p>
+</blockquote>
+<p>Do you have any specific pyupgrade rules in mind? I looked through them briefly and didn't see any obvious ones. I thought most of these rules only run at all when the target Python version is high enough, but it's certainly plausible that this logic could be generalized and used elsewhere. I guess the idea here was that <code>typing</code> was a common-enough specific case that it made sense to have a special method for it.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2025-04-14 15:26</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/blob/701aecb2a63b72fa7cc36d5db77a3c14d0ac226a/crates/ruff_linter/src/rules/pyupgrade/rules/deprecated_import.rs#L204</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/Skylion007">@Skylion007</a> on 2025-04-14 15:26</div>
+            <div class="timeline-body"><blockquote>
+<blockquote>
+<p>Can this be merged with the logic for the import upgrading rules in PYUP as that should have version info for all these import calls.</p>
+</blockquote>
+<p>Do you have any specific pyupgrade rules in mind? I looked through them briefly and didn't see any obvious ones. I thought most of these rules only run at all when the target Python version is high enough, but it's certainly plausible that this logic could be generalized and used elsewhere. I guess the idea here was that <code>typing</code> was a common-enough specific case that it made sense to have a special method for it.</p>
+</blockquote>
+<p>https://github.com/astral-sh/ruff/blob/701aecb2a63b72fa7cc36d5db77a3c14d0ac226a/crates/ruff_linter/src/rules/pyupgrade/rules/deprecated_import.rs#L204</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-14 15:52</div>
+            <div class="timeline-body"><p>Ah yes, thank you! Those did not come up in my searches but look very relevant.</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:28 UTC
+    </footer>
+</body>
+</html>

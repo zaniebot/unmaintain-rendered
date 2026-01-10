@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Add basic subtyping between class literal and callable - astral-sh/ruff #17469</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Add basic subtyping between class literal and callable</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17469">#17469</a>
+        opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a>
+        on 2025-04-18 18:38
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-04-18 18:38</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This covers step 1 from https://typing.python.org/en/latest/spec/constructors.html#converting-a-constructor-to-callable</p>
+<p>Part of astral-sh/ty#129</p>
+<h2>Test Plan</h2>
+<p>Update is_subtype_of.md and is_assignable_to.md</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-18 18:40</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-04-18 18:43</div>
+            <div class="timeline-body"><p>To note: currently we don't emit an error for this</p>
+<pre><code class="language-py">class A:
+    def __new__(cls) -&gt; A:
+        return object.__new__(cls)
+
+    def __init__(self, x: int) -&gt; None:
+        self.x = x
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-04-18 19:46</div>
+            <div class="timeline-body"><p>I'm not sure this will have a great impact without our understanding of <code>Self</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @ntBre on 2025-04-18 21:02</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MatthewMckee4 on 2025-04-21 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MatthewMckee4 on 2025-04-21 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MatthewMckee4 on 2025-04-21 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MatthewMckee4 on 2025-04-21 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MatthewMckee4 on 2025-04-21 16:09</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Converted to draft by @MatthewMckee4 on 2025-04-21 16:16</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MatthewMckee4 on 2025-04-21 16:26</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:1145 on 2025-04-21 17:38</div>
+            <div class="timeline-body"><p>I agree that this should not error, but for a different reason -- I think (as discussed in Discord) that the text in the spec about ignoring certain metaclass <code>__call__</code> methods for purposes of converting a constructor to a callable is making unwarranted assumptions that can lead to false positive errors. I think it is more correct to always respect the signature of the metaclass <code>__call__</code> method.</p>
+<p>If this causes problems in practice (including with the spec conformance suite, and we can't effectuate an update to the spec), we can consider a future change. But for now I think we should unconditionally use metaclass <code>__call__</code> if present (which I think will make this test pass as written and remove the need for the TODO comment?)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:1168 on 2025-04-21 17:41</div>
+            <div class="timeline-body"><p>I'm not sure it makes sense to include this test at all, and if we do, it should not behave as asserted here.</p>
+<p>The <code>Self</code> annotation above is in the context of <code>class MetaWithSelfReturn</code>, so it is requiring that the <code>__call__</code> method return an instance of <code>MetaWithSelfReturn</code>, not an instance of <code>C</code>. So <code>C</code> should not be a subtype of any callable type returning <code>C</code>.</p>
+<p>I think we should just omit this test for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types.rs</code>:1142 on 2025-04-21 17:44</div>
+            <div class="timeline-body"><p>As discussed above, I think for now let's just always use the metaclass <code>__call__</code> signature, if present, and add a comment <code>// TODO: this intentionally diverges from step 1 in https://typing.python.org/en/latest/spec/constructors.html#converting-a-constructor-to-callable, which makes unwarranted assumptions</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-21 17:44</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_subtype_of.md</code>:1168 on 2025-04-21 21:38</div>
+            <div class="timeline-body"><p>Ah yes my bad, thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-04-21 21:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-21 22:26</div>
+            <div class="timeline-body"><p>Looks great, thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-04-21 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-04-21 22:29</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-25 20:55</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:28 UTC
+    </footer>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Infer the members of a protocol class - astral-sh/ruff #17556</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Infer the members of a protocol class</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17556">#17556</a>
+        opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a>
+        on 2025-04-22 16:40
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on 2025-04-22 16:40</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR adds the necessary machinery to infer the members of a protocol class, and uses that machinery to infer a precise return type for the <code>get_protocol_members</code> introspection function.</p>
+<p>What this PR <em>doesn't</em> do is infer what the <em>type</em> of each protocol member is. We'll obviously have to do that in due course to properly implement protocol subtyping and assignability; when we add that functionality, I'm envisaging that <code>ProtocolClassLiteral::members()</code> would return a <code>HashMap</code> mapping from the member to its type rather than a boxed slice of <code>Name</code>s. I'm deliberately not doing that right now, however, as implementing all the subtyping rules around protocols is a somewhat large task, which I intend to approach incrementally over several PRs. The first stage will possibly not even consider the types of the protocol members at all.</p>
+<h2>Test Plan</h2>
+<p>Existing mdtests updated.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-22 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-04-22 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-04-22 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @AlexWaygood on 2025-04-22 16:40</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-22 16:44</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-22 21:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:1788 on 2025-04-22 21:13</div>
+            <div class="timeline-body"><p>I don't think this will take visibility into account? I tried something similar for listing members of dataclasses at first, but then decided to iterate over declarations instead. You may want to do something similar here? See <code>ClassLiteralType::dataclass_fields</code>/<code>ClassLiteralType::own_dataclass_fields</code> and the <code>all_public_declarations</code> method I added on the use def map.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> reviewed on 2025-04-22 21:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:1788 on 2025-04-22 21:16</div>
+            <div class="timeline-body"><p>The other advantage is that you'll get the type as well, using <code>symbol_from_declarations</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/call/bind.rs</code>:568 on 2025-04-22 23:18</div>
+            <div class="timeline-body"><p>TODO here also for the use of <code>Type::Tuple</code>? I think ideally for maximum clarity to future-us, we have TODOs both on tests that are known-wrong, and by the specific part of the implementation that is known wrong.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:1736 on 2025-04-22 23:36</div>
+            <div class="timeline-body"><p>Keep in mind (both in terms of method naming, and where you put what functionality) that autocomplete is definitely going to require the ability for <code>ClassLiteralType</code> itself to have a &quot;list all members&quot; method. And if  <code>ProtocolClassLiteral</code> will be used inside a future <code>Type::ProtocolInstance</code>, it will probably also need to expose that list-all-members method, without all the Protocol-specific filtering.  That could suggest some future refactoring to share some aspects of list-members functionality, but more concretely I think it suggests that we should reserve the method name <code>members</code> for the general &quot;list all known members&quot; that all types will need, and use something like <code>protocol_members</code> to distinguish this protocol-specific method.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:1788 on 2025-04-22 23:52</div>
+            <div class="timeline-body"><p>We should probably add a test for a protocol with a member defined under <code>if False</code> (or more realistically, <code>if sys.version_info &gt;= ...</code> which evaluates to <code>False</code>).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-22 23:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:1736 on 2025-04-23 10:37</div>
+            <div class="timeline-body"><blockquote>
+<p>autocomplete</p>
+</blockquote>
+<p>for some reason it took me a moment there to realise that you mean &quot;the autocompletion feature we intend to build into the red-knot LSP for IDE users&quot; rather than &quot;autocompletion in the IDE now for red-knot developers&quot; 😆</p>
+<blockquote>
+<p>That could suggest some future refactoring to share some aspects of list-members functionality, but more concretely I think it suggests that we should reserve the method name <code>members</code> for the general &quot;list all known members&quot; that all types will need, and use something like <code>protocol_members</code> to distinguish this protocol-specific method.</p>
+</blockquote>
+<p>Interesting -- I think they will end up doing <em>nearly</em> the same thing. I suppose the only difference between them really is that the <code>members</code> method I'm adding here (which I'll rename to <code>protocol_members</code>) should <em>not</em> include implicit instance attributes (these are illegal in protocol classes, and do not constitute protocol members). But the autocomplete feature probably <em>should</em> include those members:</p>
+<pre><code class="language-py">class Foo(Protocol):
+    x: int
+
+    def __init__(self):
+        self.y = 42  # we should emit an error here,
+                     # and not infer `Foo` as having a protocol member `y`
+                     # (it should only have a single member, `x`)
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-23 10:37</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:1788 on 2025-04-23 10:39</div>
+            <div class="timeline-body"><blockquote>
+<p>I don't think this will take visibility into account? I tried something similar for listing members of dataclasses at first, but then decided to iterate over declarations instead.</p>
+</blockquote>
+<p>Great point, thank you!! I did look at the methods you added for dataclasses, but only briefly, as I realised that I would need to include methods, properties and bindings-without-declarations in the list of protocol members, so I realised I wouldn't be able to simply reuse the methods you added for dataclasses. I should have looked more closely!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-23 10:39</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-23 11:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:1832 on 2025-04-23 11:52</div>
+            <div class="timeline-body"><p>in due course this will need to be converted to a <code>HashMap</code> of some kind where the keys are the names of the protocol members and the values are the types of the protocol members. But I don't want to do that yet because I'm not yet sure whether e.g. an attribute member annotated with <code>Callable</code> should be treated the same as a method member (I need to write some more tests...)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @AlexWaygood on 2025-04-23 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @AlexWaygood on 2025-04-23 11:54</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-23 19:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:1736 on 2025-04-23 19:01</div>
+            <div class="timeline-body"><p>Right, makes sense. It seems like also the filtering-out of some &quot;special&quot; names is something we might not want to do for autocomplete?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:1788 on 2025-04-23 19:22</div>
+            <div class="timeline-body"><p><code>cached_protocol_members</code>?</p>
+<p>Not that it matters for namespacing since it's nested, but it may be clearer when it shows up in Salsa query traces.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:1827 on 2025-04-23 19:29</div>
+            <div class="timeline-body"><p>I guess this is necessary because you want to include undeclared bindings on the class, even though they are an error?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-23 19:29</div>
+            <div class="timeline-body"><p>Looks great!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-23 19:35</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/class.rs</code>:1827 on 2025-04-23 19:35</div>
+            <div class="timeline-body"><p>Yes, exactly! Even though we might consider such members as being invalid, it's important that we nonetheless include them in the list of members or we could infer a class <code>X</code> as being a subtype of a protocol class <code>Y</code> even though <code>issubclass(X, Y)</code> evaluates to <code>False</code> at runtime. And that would obviously lead to incorrect inferences from us if a user was employing <code>issubclass()</code> or <code>isinstance()</code> to do type narrowing.</p>
+<p>I'll add a comment!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-04-23 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Reopened by @AlexWaygood on 2025-04-23 21:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @AlexWaygood on 2025-04-23 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @AlexWaygood on 2025-04-23 21:36</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-23 21:36</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:29 UTC
+    </footer>
+</body>
+</html>

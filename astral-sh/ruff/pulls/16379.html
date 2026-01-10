@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Detect version-related syntax errors - astral-sh/ruff #16379</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Detect version-related syntax errors</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/16379">#16379</a>
+        opened by <a href="https://github.com/ntBre">@ntBre</a>
+        on 2025-02-25 18:19
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/ntBre">@ntBre</a> on 2025-02-25 18:19</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR extends version-related syntax error detection to red-knot. The main changes here are:</p>
+<ol>
+<li>Passing <code>ParseOptions</code> specifying a <code>PythonVersion</code> to parser calls</li>
+<li>Adding a <code>python_version</code> method to the <code>Db</code> trait to make this possible</li>
+<li>Converting <code>UnsupportedSyntaxError</code>s to <code>Diagnostic</code>s</li>
+<li>Updating existing mdtests  to avoid unrelated syntax errors</li>
+</ol>
+<p>My initial draft of (1) and (2) in #16090 instead tried passing a <code>PythonVersion</code> down to every parser call, but @MichaReiser suggested the <code>Db</code> approach instead <a href="https://github.com/astral-sh/ruff/pull/16090#discussion_r1969198407">here</a>, and I think it turned out much nicer.</p>
+<p>All of the new <code>python_version</code> methods look like this:</p>
+<pre><code class="language-rust">fn python_version(&amp;self) -&gt; ruff_python_ast::PythonVersion {
+    Program::get(self).python_version(self)
+}
+</code></pre>
+<p>with the exception of the <code>TestDb</code> in <code>ruff_db</code>, which hard-codes <code>PythonVersion::latest()</code>.</p>
+<h2>Test Plan</h2>
+<p>Existing mdtests, plus a new mdtest to see at least one of the new diagnostics.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @ntBre on 2025-02-25 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[`red-knot`] Detect version-related syntax errors" to "[red-knot] Detect version-related syntax errors" by @ntBre on 2025-02-25 18:19</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/codspeed-hq[bot]">@codspeed-hq[bot]</a> on 2025-02-25 19:06</div>
+            <div class="timeline-body"><!-- __CODSPEED_PERFORMANCE_REPORT_COMMENT__ -->
+
+<!-- __CODSPEED_INSTRUMENTATION_PERFORMANCE_REPORT_COMMENT__ -->
+
+<h2><a href="https://codspeed.io/astral-sh/ruff/branches/brent%2Fsyntax-errors-red-knot">CodSpeed Performance Report</a></h2>
+<h3>Merging #16379 will <strong>not alter performance</strong></h3>
+<p><sub>Comparing <code>brent/syntax-errors-red-knot</code> (2ede1e0) with <code>main</code> (d2ebfd6)</sub></p>
+<h3>Summary</h3>
+<p><code>✅ 33</code> untouched benchmarks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-02-25 19:10</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-15 21:28</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<details>
+<summary>Changes were detected when running on open source projects</summary>
+
+<pre><code class="language-diff">psycopg (https://github.com/psycopg/psycopg)
++ error[invalid-syntax] /tmp/mypy_primer/projects/psycopg/tools/async_to_sync.py:243:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
++ error[invalid-syntax] /tmp/mypy_primer/projects/psycopg/tools/async_to_sync.py:345:13: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
++ error[invalid-syntax] /tmp/mypy_primer/projects/psycopg/tools/async_to_sync.py:355:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
++ error[invalid-syntax] /tmp/mypy_primer/projects/psycopg/tools/async_to_sync.py:371:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
++ error[invalid-syntax] /tmp/mypy_primer/projects/psycopg/tools/async_to_sync.py:379:13: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
++ error[invalid-syntax] /tmp/mypy_primer/projects/psycopg/tools/async_to_sync.py:390:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
++ error[invalid-syntax] /tmp/mypy_primer/projects/psycopg/tools/async_to_sync.py:416:13: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
++ error[invalid-syntax] /tmp/mypy_primer/projects/psycopg/tools/async_to_sync.py:459:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
++ error[invalid-syntax] /tmp/mypy_primer/projects/psycopg/tools/bump_version.py:103:9: Cannot use `match` statement on Python 3.9 (syntax was added in Python 3.10)
+- Found 1589 diagnostics
++ Found 1598 diagnostics
+
+</code></pre>
+</details>
+
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @ntBre on 2025-04-16 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @ntBre on 2025-04-16 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @ntBre on 2025-04-16 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @ntBre on 2025-04-16 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @ntBre on 2025-04-16 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @MichaReiser by @ntBre on 2025-04-16 17:13</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/annotations/callable.md</code>:6 on 2025-04-17 06:32</div>
+            <div class="timeline-body"><p>Maybe move this down to the <code>Using </code>typing.ParamSpec`` section?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/assignment/annotations.md</code>:7 on 2025-04-17 06:35</div>
+            <div class="timeline-body"><p>Maybe move this down to the <code>Tuple annotations are understood</code> section?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/call/methods.md</code>:6 on 2025-04-17 06:36</div>
+            <div class="timeline-body"><p>Can we move this to the <code>Classmethods mixed with other decorators</code> test?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/dataclasses.md</code>:6 on 2025-04-17 06:36</div>
+            <div class="timeline-body"><p>Can we move this to the <code>Generic dataclasses</code> test?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/function/parameters.md</code>:6 on 2025-04-17 06:38</div>
+            <div class="timeline-body"><p>Maybe move this to the <code>Stub function</code> section?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/import/star.md</code>:6 on 2025-04-17 06:41</div>
+            <div class="timeline-body"><p>Move this down to the &quot;Esoteric definitions and redefinintions&quot; section?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/metaclass.md</code>:6 on 2025-04-17 06:42</div>
+            <div class="timeline-body"><p>Move this to &quot;PEP 695 generic&quot; test?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/narrow/type.md</code>:6 on 2025-04-17 06:42</div>
+            <div class="timeline-body"><p>Move this to &quot;Narrowing for generic classes&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/stubs/class.md</code>:8 on 2025-04-17 06:43</div>
+            <div class="timeline-body"><p>Move this to the &quot;Cyclical class definition&quot; test just below?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/sharkdp">@sharkdp</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_properties/is_disjoint_from.md</code>:6 on 2025-04-17 06:44</div>
+            <div class="timeline-body"><p>Move to &quot;Class, module and function literals&quot;?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/sharkdp">@sharkdp</a> approved on 2025-04-17 06:48</div>
+            <div class="timeline-body"><p>This looks great — thank you @ntBre!</p>
+<p>As you suggested in the PR description, I think we should try to be a bit more fine grained with increasing Python versions in the tests. Python typing has evolved a lot between 3.9 and 3.13, and we want to make sure that a large part of our tests still work for 3.9.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-17 14:02</div>
+            <div class="timeline-body"><p>Thanks @sharkdp! Sorry about the mdtests, I didn't mean to make you go through them all, but I appreciate it. I'll update those now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-17 17:41</div>
+            <div class="timeline-body"><blockquote>
+<p>Thanks @sharkdp! Sorry about the mdtests, I didn't mean to make you go through them all, but I appreciate it. I'll update those now.</p>
+</blockquote>
+<p>No worries! I was interested in how it affected particular parts of our test suite and looked at it anyway.</p>
+<p>Interestingly, we now see some ecosystem changes (I merged a PR which added some new projects this morning). And they are correct, because https://github.com/psycopg/psycopg does not specify a python-version. I would like to make some improvements to how the ecosystem checks work (how exactly we run red knot on projects), but for now, I think we can just ignore it. Might even be interesting to have a few true positives in there.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/ntBre">@ntBre</a> on 2025-04-17 17:53</div>
+            <div class="timeline-body"><blockquote>
+<p>Interestingly, we now see some ecosystem changes (I merged a PR which added some new projects this morning). And they are correct, because https://github.com/psycopg/psycopg does not specify a python-version. I would like to make some improvements to how the ecosystem checks work (how exactly we run red knot on projects), but for now, I think we can just ignore it. Might even be interesting to have a few true positives in there.</p>
+</blockquote>
+<p>Oh good catch, I hadn't scrolled back up to check these after merging <code>main</code>.</p>
+<p>So go ahead and merge? I can also leave it open a bit longer in case anyone else wants to review it.</p>
+<p>(I see some emotes from @AlexWaygood, so I can consider that two reviews :laughing:)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/sharkdp">@sharkdp</a> on 2025-04-17 17:58</div>
+            <div class="timeline-body"><p>I say, go ahead an merge it! :smile: Others can still do post-merge reviews, if they want.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @ntBre on 2025-04-17 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @ntBre on 2025-04-17 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-17 18:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-17 19:34</div>
+            <div class="timeline-body"><p>Looks good!</p>
+</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:28 UTC
+    </footer>
+</body>
+</html>

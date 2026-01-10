@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Do not assume that `x != 0` if `x` inhabits `~Literal[0]` - astral-sh/ruff #17370</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Do not assume that <code>x != 0</code> if <code>x</code> inhabits <code>~Literal[0]</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17370">#17370</a>
+        opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a>
+        on 2025-04-12 23:21
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-04-12 23:21</div>
+            <div class="timeline-body"><!--
+Thank you for contributing to Ruff! To help us out with reviewing, please consider the following:
+
+- Does this pull request include a summary of the change? (See below.)
+- Does this pull request include a descriptive title?
+- Does this pull request include references to any relevant issues?
+-->
+
+<h2>Summary</h2>
+<p>Fixes incorrect negated type eq and ne assertions in infer_binary_intersection_type_comparison</p>
+<p>fixes #17360</p>
+<h2>Test Plan</h2>
+<p>Remove and update some now incorrect tests</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MatthewMckee4 on 2025-04-12 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MatthewMckee4 on 2025-04-12 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MatthewMckee4 on 2025-04-12 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MatthewMckee4 on 2025-04-12 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MatthewMckee4 on 2025-04-12 23:21</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-12 23:23</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Fix eq static assert" to "[red-knot] Fix eq static assert" by @MatthewMckee4 on 2025-04-13 00:15</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-13 14:34</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_api.md</code>:28 on 2025-04-13 14:44</div>
+            <div class="timeline-body"><p>Rather than deleting this test entirely, I think it would be good to replace it with something like this:</p>
+<pre><code class="language-py">def static_truthiness(not_one: Not[Literal[1]]) -&gt; None:
+    # these are both boolean-literal types,
+    # since all possible runtime objects that are created by the literal syntax `1`
+    # are members of the type `Literal[1]`
+    reveal_type(not_one is not 1)  # revealed: Literal[True]
+    reveal_type(not_one is 1)  # revealed: Literal[False]
+
+    # But these are both `bool`, rather than `Literal[True]` or `Literal[False]`
+    # as there are many runtime objects that inhabit the type `~Literal[1]`
+    # but still compare equal to `1`. Two examples are `1.0` and `True`.
+    reveal_type(not_one != 1)  # revealed: bool
+    reveal_type(not_one == 1)  # revealed: bool
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/intersections.md</code>:54 on 2025-04-13 14:51</div>
+            <div class="timeline-body"><p>ah, this is a bit unfortunate. If <code>x</code> has type <code>~Literal[0]</code>, then you can't say for sure that it won't compare equal to <code>0</code>, and you can't even say for sure that it won't compare equal to <code>0</code> if it has type <code>int &amp; ~Literal[0]</code>: e.g. the runtime object <code>False</code> inhabits the type <code>int &amp; ~Literal[0]</code>, but it compares equal to <code>0</code>.</p>
+<p>The same goes if <code>x</code> has type <code>~Literal[&quot;abc&quot;]</code> or <code>str &amp; ~Literal[&quot;abc&quot;]</code>: you can't say anything in particular about whether <code>x</code> will compare equal to <code>&quot;abc&quot;</code> or not at runtime, since <code>x</code> could be an instance of a <code>str</code> subclass and still compare equal to <code>&quot;abc&quot;</code>. But if <code>x</code> has type <code>LiteralString &amp; ~Literal[&quot;abc&quot;]</code>, we <em>can</em> say for sure that it won't compare equal to <code>&quot;abc&quot;</code>, since for <code>x</code> to inhabit the type <code>LiteralString</code> we know that it <em>must</em> have <em>exactly</em> <code>str</code> as its <code>__class__</code> (it <em>can't</em> be an instance of a <code>str</code> subclass).</p>
+<p>Ideally we'd find a way of fixing this issue that didn't regress on our ability to narrow from a <code>LiteralString</code> into a string-literal type. I suppose this may involve some special-casing in <code>infer_binary_intersection_type_comparison</code>.</p>
+<p>Having said that, it feels like achieving this might be fairly complex, and our current inference is quite incorrect in some obvious cases. I'd be okay with going with what you have now if you added some <code># TODO</code> comments above these <code>reveal_type</code> calls saying that ideally we'd be able to narrow the <code>LiteralString</code> type to string-literal types using <code>==</code> and <code>!=</code>. The same goes for the assertions on lines 58-59</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-13 14:51</div>
+            <div class="timeline-body"><p>Thank you!</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Fix eq static assert" to "[red-knot] Do not assume that `x != 0` if `x` inhabits `~Literal[0]`" by @AlexWaygood on 2025-04-13 15:00</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-04-13 21:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/intersections.md</code>:54 on 2025-04-13 21:58</div>
+            <div class="timeline-body"><p>Got it. Am i right in saying we should be able to determine these (as <code>Literal[False]</code>) too?</p>
+<pre><code>reveal_type(x == &quot;something else&quot;)  # revealed: bool
+reveal_type(&quot;something else&quot; == x)  # revealed: bool
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on 2025-04-14 19:23</div>
+            <div class="timeline-body"><p>@AlexWaygood currently <code>reveal_type(not_one is not 1)</code> revealed <code>bool</code>, with my changes it now returns <code>Literal[True]</code></p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-04-14 19:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5327 on 2025-04-14 19:25</div>
+            <div class="timeline-body"><p>I'm not the biggest fan of this implementation at the moment, but previously this function could return object, which seems wrong. This would happen when positive was empty. If anyone could advise on a better way to implement this that would be great</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5327 on 2025-04-14 20:25</div>
+            <div class="timeline-body"><p>I think we should normalize our representation of negation-only types. This is probably necessary in order to get <code>is_equivalent_to</code> correct, also.</p>
+<p>I think we should ensure that <code>intersection.positive(db)</code> (or a method we add that we use instead of accessing that directly) always returns at least <code>object</code>, and never empty; that will give the correct behavior in cases like this one.</p>
+<p>Then the remaining question is whether we normalize to that by always ensuring in <code>IntersectionBuilder</code> that we add <code>object</code> to the positive elements of every union with otherwise empty positive elements, or whether we normalize to &quot;empty positive elements&quot;, make <code>positive</code> private, and add a public method that returns an iterator over just <code>object</code> if positive elements is empty.</p>
+<p>The former is simpler, but perhaps more costly. Not sure if negation types will be common enough that it matters, but we do generate them commonly in narrowing. I would probably go for the former first and see if it causes a detectable regression.</p>
+<p>It might make sense to do this as a separate PR (with some tests for equivalence of such intersections), and then rebase this PR after landing that one?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/integers.md</code>:11 on 2025-04-14 20:29</div>
+            <div class="timeline-body"><p>This is only necessarily true for small integers, and that's a CPython implementation detail. (Well, if you do it all in one expression like this it will always be true for any sized integer, but if you store one of them in a variable first it won't be -- and we're operating in terms of the types of arbitrary LHS and RHS here, not a requirement that both sides of the <code>is</code> operator are actual literals.)</p>
+<pre><code class="language-py">&gt;&gt;&gt; 1200 is 1200
+&lt;python-input-0&gt;:1: SyntaxWarning: &quot;is&quot; with 'int' literal. Did you mean &quot;==&quot;?
+  1200 is 1200
+True
+&gt;&gt;&gt; x = 1200
+&gt;&gt;&gt; x is 1200
+&lt;python-input-2&gt;:1: SyntaxWarning: &quot;is&quot; with 'int' literal. Did you mean &quot;==&quot;?
+  x is 1200
+False
+</code></pre>
+<p>So I think the previous result here is correct, we cannot say that two equal int literal types will return <code>True</code> from an <code>is</code> comparison.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5394 on 2025-04-14 20:34</div>
+            <div class="timeline-body"><p>As discussed above in the tests, this change isn't right. I think the previous code was accurate. If two integers are equal, we do not know what the result of an <code>is</code> test between them will be (that is, we do not know if they are the same object). If two integers are not equal, we can be sure they are not the same object.</p>
+<p>Might be worth adding a comment here explaining why this is the case, to avoid future contributors trying to change this again.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/integers.md</code>:12 on 2025-04-14 20:36</div>
+            <div class="timeline-body"><p>Same as above, we can't be sure they are the same object, this comparison could return <code>True</code>:</p>
+<pre><code class="language-py">&gt;&gt;&gt; x = 1000
+&gt;&gt;&gt; y = 1000
+&gt;&gt;&gt; x is not y
+True
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5272 on 2025-04-14 21:11</div>
+            <div class="timeline-body"><p>Yeah, I think this removal is correct. I guess to address the TODO comments added above (where we intersect with <code>LiteralString</code>, we would need to introduce some Type method which would be true for <code>LiteralString</code>, which would mean &quot;inhabitants of this type can never be equal to any object that doesn't inhabit this type, and all proper subtypes are single-valued.&quot; And then here, we could apply these removed cases only if all positive members of the intersection are such a type.</p>
+<p>But I think maybe <code>LiteralString</code> is the only such type we need to care about, so a <code>Type</code> method might be overkill, we could also just special-case <code>LiteralString</code> here for now.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5327 on 2025-04-14 21:13</div>
+            <div class="timeline-body"><p>While we're looking at this method, its implementation seems kind of wasteful, in that we might end up calling <code>infer_binary_type_comparison</code> twice for every positive member of the intersection. Seems like we could collapse the two loops over positive elements into one loop, with early short-circuit if possible? But that probably doesn't belong in this PR.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-14 21:13</div>
+            <div class="timeline-body"><p>Thank you for looking into this! This stuff is so subtle...</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-04-14 21:16</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/integers.md</code>:11 on 2025-04-14 21:16</div>
+            <div class="timeline-body"><p>Sorry yes, -128 &lt;= x &lt;= 127 right? I will revert anyway</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-14 21:30</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/resources/mdtest/comparison/integers.md</code>:11 on 2025-04-14 21:30</div>
+            <div class="timeline-body"><p>No, the range is much odder / more arbitrary than that, it's -5 through 256. Because it's not based on any implementation considerations like bit-width of internal representation, it's purely based on some analysis (I presume) of how common various numbers are as integer literals.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-04-14 21:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5327 on 2025-04-14 21:45</div>
+            <div class="timeline-body"><p>Okay sounds good, thanks</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-04-14 22:50</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5327 on 2025-04-14 22:50</div>
+            <div class="timeline-body"><blockquote>
+<p>make positive private, and add a public method that returns an iterator over just object if positive elements is empty.</p>
+</blockquote>
+<p>Lots of pre-existing code calls <code>.iter()</code> or <code>.len()</code> on positive and negative.</p>
+<pre><code class="language-rs">#[salsa::interned(debug)]
+pub struct IntersectionType&lt;'db&gt; {
+    /// The intersection type includes only values in all of these types.
+    #[return_ref]
+    _positive: FxOrderSet&lt;Type&lt;'db&gt;&gt;,
+
+    /// The intersection type does not include any value in any of these types.
+    ///
+    /// Negation types aren't expressible in annotations, and are most likely to arise from type
+    /// narrowing along with intersections (e.g. `if not isinstance(...)`), so we represent them
+    /// directly in intersections rather than as a separate type.
+    #[return_ref]
+    _negative: FxOrderSet&lt;Type&lt;'db&gt;&gt;,
+}
+
+impl&lt;'db&gt; IntersectionType&lt;'db&gt; {
+    pub fn positive(&amp;self, db: &amp;'db dyn Db) -&gt; Box&lt;dyn Iterator&lt;Item = Type&lt;'db&gt;&gt; + 'db&gt; {
+        if self._positive(db).is_empty() {
+            Box::new(std::iter::once(Type::object(db)))
+        } else {
+            Box::new(self._positive(db).iter().copied())
+        }
+    }
+
+    pub fn negative(&amp;self, db: &amp;'db dyn Db) -&gt; Box&lt;dyn Iterator&lt;Item = Type&lt;'db&gt;&gt; + 'db&gt; {
+        Box::new(self._negative(db).iter().copied())
+    }
+
+    pub fn positive_len(&amp;self, db: &amp;'db dyn Db) -&gt; usize {
+        self._positive(db).len()
+    }
+
+    pub fn negative_len(&amp;self, db: &amp;'db dyn Db) -&gt; usize {
+        self._negative(db).len()
+    }
+}
+</code></pre>
+<p>Do you think this is a good change as it will require lots of other updates to the codebase</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-14 22:58</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5327 on 2025-04-14 22:58</div>
+            <div class="timeline-body"><p>Well, my suggestion above was that we should first try the simpler approach of just adding <code>object</code> to the positive side of all intersections with empty positive side, and see if that causes a regression. If it does, we can iterate on the details of the other approach (adding <code>object</code> only when we iterate the positive types).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-04-14 23:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5327 on 2025-04-14 23:05</div>
+            <div class="timeline-body"><p>Okay sure, will have a go at that</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-04-14 23:45</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5327 on 2025-04-14 23:45</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/17400</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-15 14:41</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5327 on 2025-04-15 14:41</div>
+            <div class="timeline-body"><p>Ok, thanks for trying that, looks like that path isn't going to work out.</p>
+<p>So I think instead we should ensure that <code>IntersectionBuilder</code> always removes <code>object</code> if it is the sole positive element, so that we are consistent about never having it.</p>
+<p>Then the problem becomes, how to ensure correct treatment of intersections so that they behave as if they have <code>object</code> on the positive side, if the positive side is empty.</p>
+<p>I think trying to do this the way I suggested above, by hiding the <code>positive</code> elements and using a method that always returns <code>object</code>, is nice and generic, but is pretty invasive (as you observed) and is also likely to cause regression due to many more lookups of <code>object</code>. It might be worth instead just auditing every case where iterate over <code>intersection.positive(db)</code> and ensure we have correct handling if it is empty. Because <code>object</code> is so predictable in many cases (e.g. in subtyping), it's likely that in many/most cases we don't have to actually load <code>object</code> at all in order to provide the right behavior.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-15 15:18</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5327 on 2025-04-15 15:18</div>
+            <div class="timeline-body"><blockquote>
+<p>Because <code>object</code> is so predictable in many cases (e.g. in subtyping), it's likely that in many/most cases we don't have to actually load <code>object</code> at all in order to provide the right behavior.</p>
+</blockquote>
+<p>yeah, I've wondered in the past if we should have a <code>Type::Object</code> variant to avoid having so many typeshed lookups from loading the <code>object</code> type. <code>object</code> is such a special type that it feels like it would be pretty defensible to do that. But the refactor would probably be tricky to pull off.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-04-15 22:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5327 on 2025-04-15 22:27</div>
+            <div class="timeline-body"><p>Would we expect this test to pass, or should these types be bool?</p>
+<pre><code class="language-py">def static_truthiness(not_one: Not[Literal[1]], not_int: Not[int]) -&gt; None:
+    ...
+    reveal_type(isinstance(not_int, int))  # revealed: Literal[False]
+    reveal_type(not isinstance(not_int, int))  # revealed: Literal[True]
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> reviewed on 2025-04-15 22:42</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/carljm">@carljm</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5327 on 2025-04-15 22:42</div>
+            <div class="timeline-body"><p>I think those tests are correct as you've written them. The type <code>Not[int]</code> excludes every object that is an instance of <code>int</code>.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-04-15 22:43</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5327 on 2025-04-15 22:43</div>
+            <div class="timeline-body"><p>Then i'll have a look into why they're failing</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-04-15 23:20</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5327 on 2025-04-15 23:20</div>
+            <div class="timeline-body"><p>I can probably add this to a new PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MatthewMckee4 on 2025-04-15 23:30</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/carljm">@carljm</a> approved on 2025-04-16 05:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @carljm on 2025-04-16 05:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @carljm on 2025-04-16 05:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_api.md</code>:34 on 2025-04-16 10:32</div>
+            <div class="timeline-body"><p>this comment doesn't seem to reflect the code immediately below it anymore. The comment says &quot;these are both boolean-literal types&quot;, but the assertion reveals <code>bool</code>, not <code>Literal[True]</code> or <code>Literal[False]</code>?</p>
+<p><code>bool</code> isn't incorrect here, but it would be great if we could fix this comment to something like</p>
+<pre><code class="language-suggestion">    # TODO: `bool` is not incorrect, but these would ideally be `Literal[True]` and `Literal[False]`
+    # respectively, since all possible runtime objects that are created by the literal syntax `1`
+    # are members of the type `Literal[1]`
+    reveal_type(not_one is not 1)  # revealed: bool
+    reveal_type(not_one is 1)  # revealed: bool
+</code></pre>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_python_semantic/src/types/infer.rs</code>:5272 on 2025-04-16 10:38</div>
+            <div class="timeline-body"><blockquote>
+<p>But I think maybe <code>LiteralString</code> is the only such type we need to care about, so a <code>Type</code> method might be overkill, we could also just special-case <code>LiteralString</code> here for now.</p>
+</blockquote>
+<p>No, I don't think so. <code>bool</code> can be safely narrowed to <code>Literal[True]</code> using an <code>== True</code> comparison. And in due course we'll want to be able to narrow <code>&lt;instance of enum class&gt;</code> to <code>&lt;Literal member of that enum&gt;</code> using equality as well (assuming all enum members have unique values, and the the enum class doesn't have a custom <code>__eq__</code> method -- either case would mean such narrowing would not be sound).</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-16 10:38</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> reviewed on 2025-04-16 11:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MatthewMckee4">@MatthewMckee4</a> on <code>crates/red_knot_python_semantic/resources/mdtest/type_api.md</code>:34 on 2025-04-16 11:05</div>
+            <div class="timeline-body"><p>https://github.com/astral-sh/ruff/pull/17425</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-19 13:59</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:28 UTC
+    </footer>
+</body>
+</html>

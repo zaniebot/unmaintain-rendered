@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[red-knot] Early return from `project.is_file_open` for vendored files - astral-sh/ruff #17580</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>[red-knot] Early return from <code>project.is_file_open</code> for vendored files</h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17580">#17580</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-04-23 12:15
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-23 12:15</div>
+            <div class="timeline-body"><p>This is partially addresses https://github.com/astral-sh/ty/issues/114</p>
+<p>It avoids reading <code>files</code> or <code>open_file_set</code>, which both have low durability for typeshed files. This prevents downgrading typeshed queries to durability low if we happen to emit a diagnostic in them.</p>
+<p>Ideally, we'd also short-circuit for third-party files but it's less clear to me how we would do that while supporting open-file-set (we could check the <code>included_paths</code>). That's why I decided to only optimize this for typeshed for now.</p>
+<p>The incremental benchmarks improve by 2% which suggests that we try to emit diagnostics for at least some typeshed files.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">red-knot</span> added by @AlexWaygood on 2025-04-23 12:17</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-23 12:19</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-04-23 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-04-23 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-04-23 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-04-23 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-04-23 13:01</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-23 13:05</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_project/src/lib.rs</code>:322 on 2025-04-23 13:05</div>
+            <div class="timeline-body"><p>Why <code>true</code>? I thought the &quot;open&quot; files were the files that we were directly checking (and therefore emitting diagnostics on)? Shouldn't we be returning <code>false</code> here for vendored stub files, since we don't want to emit any diagnostics on those?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-23 13:10</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_project/src/lib.rs</code>:322 on 2025-04-23 13:10</div>
+            <div class="timeline-body"><p>(Apologies if I'm misunderstanding/misremembering what the &quot;open&quot; files are meant to represent!)</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-23 13:13</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_project/src/lib.rs</code>:322 on 2025-04-23 13:13</div>
+            <div class="timeline-body"><p>Whoops yeah. That's what you get for trying to do 3 things at the same time. Sorry</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> reviewed on 2025-04-23 13:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/AlexWaygood">@AlexWaygood</a> on <code>crates/red_knot_project/src/lib.rs</code>:322 on 2025-04-23 13:25</div>
+            <div class="timeline-body"><p>Whoop whoop, now it's a 3% speedup on the incremental benchmark and 1% on the cold benchmark! https://codspeed.io/astral-sh/ruff/branches/micha%2Fis-file-open</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/AlexWaygood">@AlexWaygood</a> approved on 2025-04-23 13:25</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "[red-knot] Try to early return from `project.is_file_open`" to "[red-knot] Early return from `project.is_file_open` for vendored files" by @MichaReiser on 2025-04-23 13:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-04-23 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-04-23 13:32</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-23 13:32</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:29 UTC
+    </footer>
+</body>
+</html>

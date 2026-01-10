@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split `SourceLocation` into `LineColumn` and `SourceLocation` - astral-sh/ruff #17587</title>
+    <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+    <div class="back-link">
+        <a href="../../../index.html">Back to index</a>
+    </div>
+
+    <h1>Split <code>SourceLocation</code> into <code>LineColumn</code> and <code>SourceLocation</code></h1>
+
+    <div class="meta">
+        <span class="state-icon state-merged"></span>
+        <a href="https://github.com/astral-sh/ruff/pull/17587">#17587</a>
+        opened by <a href="https://github.com/MichaReiser">@MichaReiser</a>
+        on 2025-04-23 17:24
+    </div>
+
+    <div class="timeline">
+        <div class="timeline-entry">
+            <div class="timeline-header">Pull request opened by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-23 17:24</div>
+            <div class="timeline-body"><h2>Summary</h2>
+<p>This PR splits <code>SourceLocation</code> into <code>LineColumn</code> and <code>SourceLocation</code> and moves the <code>TextSize</code> to LSP position conversion logic into <code>LineIndex</code>.</p>
+<p><code>LineIndex</code> as it is before this PR had two methods:</p>
+<ul>
+<li><code>source_location</code>: Converts a <code>TextSize</code> to a <code>SourceLocation</code></li>
+<li><code>offset: </code>Converts a <code>SourceLocation</code> back to a <code>TextSize</code></li>
+</ul>
+<p>The problem with the current implementation is that <code>source_location</code> trims a leading BOM offset, whereas <code>offset</code> doesn't have any custom BOM handling.
+That means, mapping the first character right after a BOM to the old <code>source_location</code> would give <code>row: 0</code>, <code>column: 0</code>, but mapping that position back to an offset would point <strong>before</strong> instead of <strong>after</strong> the BOM.</p>
+<p>This PR fixes this inconsistency by removing the <code>offset</code> for the old <code>SourceLocation</code> (now <code>LineColumn)</code> because the only case where we need to map back a column is in the formatter but the special BOM handling doesn't matter.</p>
+<p>However, we don't want to skip the BOM for LSP operations because LSP operations don't return line/column information; instead, they map a position to a line and the <code>nth</code> character on that line.
+This is why this PR introduces a new pair of <code>source_location</code> and <code>offset</code> methods to map between <code>TextSize</code> and a <code>line</code> and <code>character_offset</code> where <code>character_offset</code> is an <code>UTF8</code>, <code>UTF16</code> or <code>UTF32</code> offset (bytes, code units, Unicode scalar values).</p>
+<p>The reason I dove into all this is because the playground needs to convert the ranges to UTF16 and I wanted to avoid copying the whole conversion logic a third time (ruff server, red knot server, wasm)</p>
+<h2>Test Plan</h2>
+<ul>
+<li>Tested the Ruff and VS code extension with unicode content</li>
+<li>Tested that the line numbers in the CLI are correct</li>
+<li>Tested notebooks</li>
+<li><code>cargo test</code></li>
+</ul>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Label <span class="label">internal</span> added by @MichaReiser on 2025-04-23 17:25</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-23 17:27</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/red_knot_wasm/src/lib.rs</code>:411 on 2025-04-23 17:27</div>
+            <div class="timeline-body"><p>I'll update the playground to use <code>LineCharacter</code> in a seprate PR</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-23 17:41</div>
+            <div class="timeline-body"><!-- generated-comment mypy_primer -->
+
+<h2><code>mypy_primer</code> results</h2>
+<p>No ecosystem changes detected ✅</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/github-actions[bot]">@github-actions[bot]</a> on 2025-04-23 17:47</div>
+            <div class="timeline-body"><!-- generated-comment ecosystem -->
+
+<h2><code>ruff-ecosystem</code> results</h2>
+<h3>Linter (stable)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Linter (preview)</h3>
+<p>✅ ecosystem check detected no linter changes.</p>
+<h3>Formatter (stable)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+<h3>Formatter (preview)</h3>
+<p>✅ ecosystem check detected no format changes.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Renamed from "Split `SourceLocation` into `LineColumn` and `LineCharacter`" to "Split `SourceLocation` into `LineColumn` and `SourceLocation`" by @MichaReiser on 2025-04-23 17:58</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Marked ready for review by @MichaReiser on 2025-04-24 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @carljm by @MichaReiser on 2025-04-24 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @AlexWaygood by @MichaReiser on 2025-04-24 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @sharkdp by @MichaReiser on 2025-04-24 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dcreager by @MichaReiser on 2025-04-24 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review requested from @dhruvmanila by @MichaReiser on 2025-04-24 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @dcreager removed by @MichaReiser on 2025-04-24 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @carljm removed by @MichaReiser on 2025-04-24 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @sharkdp removed by @MichaReiser on 2025-04-24 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Review request for @AlexWaygood removed by @MichaReiser on 2025-04-24 07:31</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_source_file/src/line_index.rs</code>:109 on 2025-04-25 17:41</div>
+            <div class="timeline-body"><p>Should we be explicit here that this includes the BOM character? i.e., it'll panic if the offset is inside the BOM charcater.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_source_file/src/line_index.rs</code>:131 on 2025-04-25 17:43</div>
+            <div class="timeline-body"><p>Does this <code>LineCharacter</code> correspond to any data structure as I couldn't find any? We should probably provide a reference for what that is or just use &quot;line character&quot; instead?</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_source_file/src/line_index.rs</code>:320 on 2025-04-25 17:47</div>
+            <div class="timeline-body"><p>From what I gather the sub-headers in the &quot;Examples&quot; header is related to the content and not the position encoding, it might be worth updating the header to be explicit about it by using something like &quot;ASCII source&quot; or &quot;ASCII text&quot; and similarly down below to &quot;UTF8 source&quot; or &quot;UTF8 text&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_wasm/src/lib.rs</code>:324 on 2025-04-25 17:52</div>
+            <div class="timeline-body"><p>Is this now required or can we use <code>LineColumn</code> wherever this is being used? Looking at the <code>impl From</code>, it seems to be a 1-1 mapping. Or, are you thinking to change this in a follow-up PR for the playground changes? This does require changing the TypeScript types and the frontend code to use &quot;line&quot; instead of &quot;row&quot;.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> approved on 2025-04-25 18:04</div>
+            <div class="timeline-body"><p>This is great, much better API, thanks for taking a look at this!</p>
+<p>I've a few comments but otherwise this looks like a pretty straightforward and logical change to me.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on 2025-04-25 18:04</div>
+            <div class="timeline-body"><p>Also, apologies for the late review, falling a bit behind on notifications.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-26 11:52</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_wasm/src/lib.rs</code>:324 on 2025-04-26 11:52</div>
+            <div class="timeline-body"><p>I introduced it because I didn't wanted to break the WASM api because there are some projects that use it outside the playground.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/dhruvmanila">@dhruvmanila</a> reviewed on 2025-04-26 15:36</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/dhruvmanila">@dhruvmanila</a> on <code>crates/ruff_wasm/src/lib.rs</code>:324 on 2025-04-26 15:36</div>
+            <div class="timeline-body"><p>Understood, that makes sense.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on 2025-04-27 10:01</div>
+            <div class="timeline-body"><blockquote>
+<p>Also, apologies for the late review, falling a bit behind on notifications.</p>
+</blockquote>
+<p>No worries. I think you prioritized correctly. This PR isn't urgent.</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header"><a href="https://github.com/MichaReiser">@MichaReiser</a> reviewed on 2025-04-27 10:01</div>
+            <div class="timeline-body"></div>
+        </div>
+        <div class="timeline-entry">
+            <div class="timeline-header">Review comment by <a href="https://github.com/MichaReiser">@MichaReiser</a> on <code>crates/ruff_source_file/src/line_index.rs</code>:320 on 2025-04-27 10:01</div>
+            <div class="timeline-body"><p>That's a great point</p>
+</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Merged by @MichaReiser on 2025-04-27 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Closed by @MichaReiser on 2025-04-27 10:27</div>
+        </div>
+        <div class="timeline-entry">
+            <div class="event">Branch deleted on 2025-04-27 10:27</div>
+        </div>
+    </div>
+
+    <footer>
+        Synced at 2026-01-10 19:33:29 UTC
+    </footer>
+</body>
+</html>
